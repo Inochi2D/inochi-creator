@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/inochi-creator
+inochi-creator.so
+inochi-creator.dylib
+inochi-creator.dll
+inochi-creator.a
+inochi-creator.lib
+inochi-creator-test-*
+*.exe
+*.o
+*.obj
+*.lst
