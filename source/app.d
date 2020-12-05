@@ -5,7 +5,6 @@ import gtk.Main;
 void main(string[] args)
 {
 	Main.init(args);
-	InochiWindow win = new InochiWindow;
-	win.showAll();
+	(new InochiWindow).showAll();
 	Main.run();
 }
