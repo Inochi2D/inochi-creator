@@ -3,8 +3,6 @@ description "Inochi2D rigging application"
 authors "Luna Nielsen"
 copyright "Copyright © 2020, InochProject"
 license "BSD 2-clause"
-dependency "gtk-d" version="~>3.9.0"
-
-// This is only used for the file format impl
-// A custom renderer is to be used
 dependency "inochi2d" version="~>1.0.0"
+dependency "gl3n" version="~>1.3.1"
+dependency "gtk-d" version="~>3.9.0"
