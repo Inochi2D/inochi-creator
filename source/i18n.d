@@ -78,14 +78,15 @@ void language(string language) {
         // NOTE: File is component 0, Line is component 1
         transtable[transidx(components[0], components[1].to!int)] = str;
     }
+
+    import std.stdio : writefln;
+    debug writefln("Loaded language %s...", table.name);
 }
 
 /**
     Returns a translated string, defaults to the given text if no translation was found
 */
 string _(string file=__FILE__, int line = __LINE__)(string text) {
-    import std.stdio : writefln;
-    debug writefln("[%s:%s] %s", file, line, text);
 
     // No translation was loaded
     if (transtable.length == 0) return text;
@@ -101,5 +102,5 @@ string _(string file=__FILE__, int line = __LINE__)(string text) {
 
 shared static this() {
     genLangList();
-    language("日本語");
+    language("English");
 }

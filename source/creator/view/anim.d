@@ -6,9 +6,11 @@
 */
 module creator.view.anim;
 import creator.view;
+import i18n;
 
-class AnimView : View!("AnimView", "Animation") {
+class AnimView : View!("AnimView") {
     this() {
+        super(_("Animation"));
         this.showAll();
     }
 }

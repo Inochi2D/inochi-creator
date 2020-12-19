@@ -6,12 +6,12 @@
 */
 module creator.view.rig;
 import creator.view;
+import i18n;
 
-class RigView : View!("RigView", "Rigging") {
+class RigView : View!("RigView") {
     this() {
-        import gtk.Label;
-        this.add(new Label("Rigging view"));
-
+        super(_("Rigging"));
+        
         this.showAll();
     }
 }

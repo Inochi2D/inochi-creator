@@ -13,3 +13,5 @@ inochi-creator-test-*
 *.o
 *.obj
 *.lst
+
+testing

@@ -1,0 +1,8 @@
+{
+    "name": "English",
+    "table": {
+        "source/creator/view/layout.d:13": "Layout",
+        "source/creator/view/rig.d:13": "Rigging",
+        "source/creator/view/anim.d:13": "Animation"
+    }
+}

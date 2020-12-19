@@ -11,7 +11,7 @@ public import creator.view.layout;
 
 
 import gtk.Box;
-class View(string name, string title) : Box {
+class View(string name) : Box {
 private:
 
 public:
@@ -24,12 +24,13 @@ public:
     /**
         Title of the view
     */
-    enum Title = title;
+    string Title;
 
     /**
         Base constructor for a view
     */
-    this() {
+    this(string title) {
+        Title = title;
         super(GtkOrientation.HORIZONTAL, 0);
         this.showAll();
     }
