@@ -22,7 +22,7 @@ public:
     }
 
     override void init() {
-
+        throw new Exception("Test");
     }
 
     override void update(double deltaTime) {

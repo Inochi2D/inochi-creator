@@ -7,10 +7,17 @@
 import std.stdio;
 import creator.appwindow;
 import gtk.Main;
+import crashdump;
 
-void main(string[] args)
+int main(string[] args)
 {
-	Main.init(args);
-	(new InochiWindow).showAll();
-	Main.run();
+    try {
+        Main.init(args);
+        (new InochiWindow).showAll();
+        Main.run();
+    } catch(Throwable throwable) {
+        crashdump.crashdump(throwable);
+        return -1;
+    }
+    return 0;
 }
