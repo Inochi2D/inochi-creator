@@ -30,6 +30,6 @@ public:
     }
 
     override void draw(double deltaTime) {
-        glClearColor(0, 0, 0, 1);
+        glClearColor(0, 0, 0, 0);
     }
 }
