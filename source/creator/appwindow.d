@@ -10,24 +10,12 @@ import gtk.MainWindow;
 import gtk.HeaderBar;
 import gtk.Stack;
 
-import creator.viewport;
 import creator.view;
+import core.itime;
 
-
-
-class InochiHeader : HeaderBar {
-    import gtk.StackSwitcher;
-    import gtk.Button;
-    
-    this(Stack stack) {
-        this.setShowCloseButton(true);
-
-        StackSwitcher switcher = new StackSwitcher();
-        switcher.setStack(stack);
-        this.setCustomTitle(switcher);
-    }
-}
-
+/**
+    The Inochi editor window
+*/
 class InochiWindow : MainWindow {
 private:
     InochiHeader header;
@@ -55,5 +43,24 @@ public:
 
         // Show all the content in the window.
         this.showAll();
+
+        // Make sure delta time tick happens
+        this.registerUpdateTick();
+    }
+}
+
+/**
+    The Headerbar on top of the window
+*/
+class InochiHeader : HeaderBar {
+    import gtk.StackSwitcher;
+    import gtk.Button;
+    
+    this(Stack stack) {
+        this.setShowCloseButton(true);
+
+        StackSwitcher switcher = new StackSwitcher();
+        switcher.setStack(stack);
+        this.setCustomTitle(switcher);
     }
 }
