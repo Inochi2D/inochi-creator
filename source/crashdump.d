@@ -32,7 +32,7 @@ version(Windows) {
     }
 }
 
-version(linux) {
+version(Posix) {
     void crashdump(Throwable throwable) {
         write(expandTilde("~/inochi-creator-crashdump.txt"), throwable.toString);
         writeln(_("Inochi Creator has crashed, please check the inochi-creator-crashdump.txt file in your home folder"));
