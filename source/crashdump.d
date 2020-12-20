@@ -35,6 +35,6 @@ version(Windows) {
 version(Posix) {
     void crashdump(Throwable throwable) {
         write(expandTilde("~/inochi-creator-crashdump.txt"), throwable.toString);
-        writeln(_("Inochi Creator has crashed, please check the inochi-creator-crashdump.txt file in your home folder"));
+        writeln(_("\n\n\n===   Inochi Creator has crashed   ===\nPlease send us the inochi-creator-crashdump.txt file in your home folder\nAttach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/issues"));
     }
 }
