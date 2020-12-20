@@ -20,7 +20,7 @@ version(Windows) {
     }
 
     private void ShowMessageBox(string message, string title) {
-        MessageBoxW(null, toUTF16z(message).ptr, toUTF16z(title).ptr, 0);
+        MessageBoxW(null, toUTF16z(message), toUTF16z(title), 0);
     }
 
     void crashdump(Throwable throwable) {
