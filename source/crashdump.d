@@ -7,7 +7,7 @@ import std.path;
 version(Windows) {
     pragma(lib, "user32.lib");
     pragma(lib, "shell32.lib");
-    import core.sys.windows.winuser : MessageBoxExW;
+    import core.sys.windows.winuser : MessageBoxW;
     import std.utf : toUTF16, toUTF8;
     import std.string : fromStringz;
 
