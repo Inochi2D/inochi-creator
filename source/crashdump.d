@@ -8,7 +8,7 @@ version(Windows) {
     pragma(lib, "user32.lib");
     pragma(lib, "shell32.lib");
     import core.sys.windows.winuser : MessageBoxW;
-    import std.utf : toUTF16, toUTF8;
+    import std.utf : toUTF16z, toUTF8;
     import std.string : fromStringz;
 
     private string getDesktopDir() {
@@ -20,7 +20,7 @@ version(Windows) {
     }
 
     private void ShowMessageBox(string message, string title) {
-        MessageBoxW(null, toUTF16(message).ptr, toUTF16(title).ptr, 0);
+        MessageBoxW(null, toUTF16z(message).ptr, toUTF16z(title).ptr, 0);
     }
 
     void crashdump(Throwable throwable) {
