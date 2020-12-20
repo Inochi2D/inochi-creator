@@ -15,12 +15,12 @@ version(Windows) {
         import core.sys.windows.windows;
         import core.sys.windows.shlobj;
         wstring desktopDir = new wstring(MAX_PATH);
-        SHGetSpecialFolderPath(HWND_DESKTOP, desktopDir.ptr, CSIDL_DESKTOP, FALSE);
+        SHGetSpecialFolderPath(HWND_DESKTOP, cast(wchar*)desktopDir.ptr, CSIDL_DESKTOP, FALSE);
         return (cast(wstring)fromStringz!wchar(desktopDir.ptr)).toUTF8;
     }
 
     private void ShowMessageBox(string message, string title) {
-        MessageBoxW(null, toUTF16(message).ptr, toUTF16(title).ptr);
+        MessageBoxW(null, toUTF16(message).ptr, toUTF16(title).ptr, 0);
     }
 
     void crashdump(Throwable throwable) {
