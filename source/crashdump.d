@@ -9,17 +9,18 @@ version(Windows) {
     pragma(lib, "shell32.lib");
     import core.sys.windows.winuser : MessageBoxExW;
     import std.utf : toUTF16, toUTF8;
+    import std.string : fromStringz;
 
     private string getDesktopDir() {
         import core.sys.windows.windows;
         import core.sys.windows.shlobj;
-        dstring desktopDir = new dstring(MAX_PATH);
+        wstring desktopDir = new wstring(MAX_PATH);
         SHGetSpecialFolderPath(HWND_DESKTOP, desktopDir.ptr, CSIDL_DESKTOP, FALSE);
-        return desktopDir.toUTF8;
+        return (cast(wstring)fromStringz!wchar(desktopDir.ptr)).toUTF8;
     }
 
     private void ShowMessageBox(string message, string title) {
-        MessageBoxExW(null, toUTF16(message).ptr, toUTF16(title).ptr);
+        MessageBoxW(null, toUTF16(message).ptr, toUTF16(title).ptr);
     }
 
     void crashdump(Throwable throwable) {
