@@ -9,6 +9,7 @@ import creator.app;
 import gtk.Main;
 import crashdump;
 import std.process;
+import bindbc.imgui;
 
 int main(string[] args)
 {
@@ -16,6 +17,7 @@ int main(string[] args)
     environment.remove("GTK_THEME");
 
     try {
+        loadImGui();
         Main.init(args);
         (new InochiCreator).showAll();
         Main.run();

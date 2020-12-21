@@ -56,7 +56,7 @@ public:
             // Initialize OpenGL and Inochi2D renderer if needed
             initRenderer();
 
-            this.init();
+            this.initialize();
 
             // Make sure that we update this widget every timer tick
             viewport.addTickCallback(safeWrapCallback((Widget widget, FrameClock fclock) {
@@ -96,7 +96,7 @@ public:
     /**
         Resource initialization function
     */
-    abstract void init();
+    abstract void initialize();
 
     /**
         Update function

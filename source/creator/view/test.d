@@ -6,10 +6,15 @@
 */
 module creator.view.test;
 import creator.view;
+import core.imgui_surface;
 import i18n;
 
 class TestView : View!("TestView") {
     this() {
         super(_("Test"));
+        
+        this.packStart(new ImGuiSurface(), true, true, 0);
+
+        this.showAll();
     }
 }
