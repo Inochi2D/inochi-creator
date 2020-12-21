@@ -25,7 +25,7 @@ auto safeWrapCallback(T, string file = __FILE__, int line = __LINE__)(T func) {
 
         // Windows wrapper
         return cast(ReturnType!T delegate(Parameters!T))(Parameters!T args) {
-            try func(args); 
+            try { return func(args); } 
             catch (Throwable t) terminate(t);
         };
     } else {
