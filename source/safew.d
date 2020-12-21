@@ -6,7 +6,7 @@ version(Windows) {
     import core.stdc.stdlib : exit, EXIT_FAILURE;
 
     private void terminate(Throwable t) {
-        crashdump(t, state);
+        crashdump(t);
         exit(EXIT_FAILURE);
     }
 }
