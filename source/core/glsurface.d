@@ -6,6 +6,10 @@ import gtk.EventBox;
 import gtk.Widget;
 import bindbc.opengl;
 import std.stdio;
+import safew;
+import gtk.Widget;
+import gdk.FrameClock;
+import gdk.GLContext;
 
 abstract class GLSurface : EventBox {
 private:
@@ -25,7 +29,7 @@ public:
         viewport = new GLArea();
         viewport.setRequiredVersion(3, 3);
 
-        viewport.addOnRealize((Widget widget) {
+        viewport.addOnRealize(safeWrapCallback((Widget widget) {
             this.width = widget.getAllocatedWidth();
             this.height = widget.getAllocatedHeight();
 
@@ -44,7 +48,7 @@ public:
             this.init();
 
             // Make sure that we update this widget every timer tick
-            viewport.addTickCallback((widget, fclock) {
+            viewport.addTickCallback(safeWrapCallback((Widget widget, FrameClock fclock) {
                 
                 // Update our widget
                 this.update(deltaTime());
@@ -52,11 +56,11 @@ public:
                 // Queue the widget for re-rendering, which calls onRender for the viewport
                 widget.queueDraw();
                 return G_SOURCE_CONTINUE;
-            });
-        });
+            }));
+        }));
 
         // Render the viewport, with GL context
-        viewport.addOnRender((ctx, area) {
+        viewport.addOnRender(safeWrapCallback((GLContext ctx, GLArea area) {
             
             // Clear the color buffer
             glClear(GL_COLOR_BUFFER_BIT);
@@ -66,10 +70,10 @@ public:
             
             // We always want to continue the frame clock
             return G_SOURCE_CONTINUE;
-        });
+        }));
 
         // Update viewport area on resize
-        viewport.addOnResize(&onResize);
+        viewport.addOnResize(safeWrapCallback(&onResize));
 
         // Set our child widget to the viewport, this will allow us to map the events to the child
         this.add(viewport);
