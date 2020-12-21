@@ -5,7 +5,7 @@ version(Windows) {
     import crashdump : crashdump;
     import core.stdc.stdlib : exit, EXIT_FAILURE;
 
-    private void terminate(T...)(Throwable t, T state) {
+    private void terminate(Throwable t) {
         crashdump(t, state);
         exit(EXIT_FAILURE);
     }
@@ -30,7 +30,7 @@ auto safeWrapCallback(T, string file = __FILE__, int line = __LINE__)(T func) {
                     func(args);
                 } else return func(args);
             } 
-            catch (Throwable t) { terminate(t, args); assert(0); }
+            catch (Throwable t) { terminate(t); assert(0); }
         };
 
     } else {
@@ -50,7 +50,7 @@ void safeExec(void delegate() dg) {
     } catch(Throwable t) {
         
         // Early terminate if needed with crashdump
-        version(Windows) terminate(t, args);
+        version(Windows) terminate(t);
         else throw t;
     }
 }
