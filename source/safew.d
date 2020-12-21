@@ -5,8 +5,8 @@ version(Windows) {
     import crashdump : crashdump;
     import core.stdc.stdlib : exit, EXIT_FAILURE;
 
-    private void terminate(Throwable t) {
-        crashdump(t);
+    private void terminate(T...)(Throwable t, T state) {
+        crashdump(t, state);
         exit(EXIT_FAILURE);
     }
 }
