@@ -16,7 +16,7 @@ int main(string[] args)
         (new InochiWindow).showAll();
         Main.run();
     } catch(Throwable throwable) {
-        crashdump.crashdump(throwable);
+        crashdump.crashdump(throwable, args);
         return -1;
     }
     return 0;

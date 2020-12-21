@@ -3,6 +3,22 @@ import std.file : write;
 import i18n;
 import std.stdio;
 import std.path;
+import vibe.data.json;
+import std.traits;
+import std.array;
+
+string genCrashDump(T...)(Throwable t, T state) {
+    string[] args;
+    static foreach(i; 0 .. state.length) {
+        args ~= serializeToPrettyJson(state[i]);
+    }
+    Appender!string str;
+    str.put("=== Args State ===\n");
+    str.put(args.join(",\n"));
+    str.put("\n\n=== Exception ===\n");
+    str.put(t.toString());
+    return str.data;
+}
 
 version(Windows) {
     pragma(lib, "user32.lib");
@@ -23,8 +39,8 @@ version(Windows) {
         MessageBoxW(null, toUTF16z(message), toUTF16z(title), 0);
     }
 
-    void crashdump(Throwable throwable) {
-        write(buildPath(getDesktopDir(), "inochi-creator-crashdump.txt"), throwable.toString);
+    void crashdump(T...)(Throwable throwable, T state) {
+        write(buildPath(getDesktopDir(), "inochi-creator-crashdump.txt"), genCrashDump!T(throwable, state));
 
         ShowMessageBox(
             _("The application has unexpectedly crashed\nPlease send the developers the inochi-creator-crashdump.txt which has been put on your desktop\nVia https://github.com/Inochi2D/inochi-creator/issues"),
@@ -34,8 +50,8 @@ version(Windows) {
 }
 
 version(Posix) {
-    void crashdump(Throwable throwable) {
-        write(expandTilde("~/inochi-creator-crashdump.txt"), throwable.toString);
+    void crashdump(T...)(Throwable throwable, T state) {
+        write(expandTilde("~/inochi-creator-crashdump.txt"), genCrashDump!T(throwable, state));
         writeln(_("\n\n\n===   Inochi Creator has crashed   ===\nPlease send us the inochi-creator-crashdump.txt file in your home folder\nAttach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/issues"));
     }
 }
