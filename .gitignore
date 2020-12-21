@@ -2,6 +2,7 @@
 docs.json
 __dummy.html
 docs/
+out/
 /inochi-creator
 inochi-creator.so
 inochi-creator.dylib
