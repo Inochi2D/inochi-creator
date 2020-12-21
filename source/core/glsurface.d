@@ -98,7 +98,7 @@ public:
     /**
         Resource initialization function
     */
-    abstract void init();
+    abstract void initialize();
 
     /**
         Update function
