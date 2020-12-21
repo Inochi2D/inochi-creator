@@ -17,7 +17,7 @@ version(Windows) {
     On Windows any uncaught exceptions caught will instantly print a crashdump and exit the application
 */
 auto safeWrapCallback(T, string file = __FILE__, int line = __LINE__)(T func) {
-
+    
     version(Windows) {
 
         // Let the dev know that a safe wrapper has been applied
@@ -25,9 +25,14 @@ auto safeWrapCallback(T, string file = __FILE__, int line = __LINE__)(T func) {
 
         // Windows wrapper
         return cast(ReturnType!T delegate(Parameters!T))(Parameters!T args) {
-            try { return func(args); } 
-            catch (Throwable t) terminate(t);
+            try { 
+                static if (is(ReturnType!T == void)) {
+                    func(args);
+                } else return func(args);
+            } 
+            catch (Throwable t) { terminate(t); assert(0); }
         };
+
     } else {
         // Other platforms don't need wrappers yet
         return func;
