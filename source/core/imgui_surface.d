@@ -58,11 +58,8 @@ public:
 
             // Setup Platform/Renderer backends
             //ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-            imgui_gtkd_init(cast(Widget)this);
+            imgui_gtk_init(cast(GLSurface)this);
             bindbc.imgui.ImGuiOpenGLBackend.init("#version 130");
-
-            
-            getViewport().addOnEvent(toDelegate(&imgui_gtkd_handle_events));
     }
     
     override void update(double delta_time) {
@@ -70,7 +67,7 @@ public:
 
         // Start the Dear ImGui frame
         bindbc.imgui.ImGuiOpenGLBackend.new_frame();
-        imgui_gtkd_new_frame(cast(GLSurface)this, delta_time);
+        imgui_gtk_new_frame(cast(GLSurface)this);
         igNewFrame();
 
         igDockSpaceOverViewport(null, cast(ImGuiDockNodeFlags)0, null);
@@ -153,6 +150,350 @@ public:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import core.stdc.float_;
+import gdk.Cursor;
+import gdk.Device;
+import gdk.Keymap;
+import gdk.Keysyms;
+import gdk.Window;
+import glib.TimeVal;
+import gtk.Clipboard;
+import gtk.Widget;
+import std.conv;
+
+GdkAtom MakeAtom(int u)
+{
+    return cast(GdkAtom)(cast(void*)(cast(long)(u)));
+}
+
+const GdkAtom cGdkSelectionClipboard = MakeAtom(69); // not a joke, this really is 69. This was very annoying to figure out how to do.
+
+const int cEventMask = GdkEventMask.STRUCTURE_MASK |
+      GdkEventMask.FOCUS_CHANGE_MASK |
+      GdkEventMask.EXPOSURE_MASK |
+      GdkEventMask.PROPERTY_CHANGE_MASK |
+      GdkEventMask.ENTER_NOTIFY_MASK |
+      GdkEventMask.LEAVE_NOTIFY_MASK |
+      GdkEventMask.KEY_PRESS_MASK |
+      GdkEventMask.KEY_RELEASE_MASK |
+      GdkEventMask.BUTTON_PRESS_MASK |
+      GdkEventMask.BUTTON_RELEASE_MASK |
+      GdkEventMask.POINTER_MOTION_MASK |
+      GdkEventMask.SMOOTH_SCROLL_MASK |
+      GdkEventMask.SCROLL_MASK;
+
+      
+struct gdk_key_to_imgui_key_map
+{
+    this(ImGuiKey_ a, uint b) {
+		this.imgui = a;
+		this.gdk = b;
+	}
+
+    ImGuiKey_ imgui;
+    uint gdk;
+}
+
+shared immutable gdk_key_to_imgui_key_map[] gdk_key_to_imgui_key;
+//shared immutable string[string] cTypeMap;
+
+shared static this()
+{
+    gdk_key_to_imgui_key =
+            [
+                gdk_key_to_imgui_key_map(ImGuiKey_Tab, GdkKeysyms.GDK_Tab),
+                gdk_key_to_imgui_key_map(ImGuiKey_Tab, GdkKeysyms.GDK_ISO_Left_Tab),
+                gdk_key_to_imgui_key_map(ImGuiKey_LeftArrow, GdkKeysyms.GDK_Left),
+                gdk_key_to_imgui_key_map(ImGuiKey_RightArrow, GdkKeysyms.GDK_Right),
+                gdk_key_to_imgui_key_map(ImGuiKey_UpArrow, GdkKeysyms.GDK_Up),
+                gdk_key_to_imgui_key_map(ImGuiKey_DownArrow, GdkKeysyms.GDK_Down),
+                gdk_key_to_imgui_key_map(ImGuiKey_PageUp, GdkKeysyms.GDK_Page_Up),
+                gdk_key_to_imgui_key_map(ImGuiKey_PageDown, GdkKeysyms.GDK_Page_Down),
+                gdk_key_to_imgui_key_map(ImGuiKey_Home, GdkKeysyms.GDK_Home),
+                gdk_key_to_imgui_key_map(ImGuiKey_End, GdkKeysyms.GDK_End),
+                gdk_key_to_imgui_key_map(ImGuiKey_Delete, GdkKeysyms.GDK_Delete),
+                gdk_key_to_imgui_key_map(ImGuiKey_Backspace, GdkKeysyms.GDK_BackSpace),
+                gdk_key_to_imgui_key_map(ImGuiKey_Enter, GdkKeysyms.GDK_Return),
+                gdk_key_to_imgui_key_map(ImGuiKey_Escape, GdkKeysyms.GDK_Escape),
+                gdk_key_to_imgui_key_map(ImGuiKey_A, GdkKeysyms.GDK_a),
+                gdk_key_to_imgui_key_map(ImGuiKey_C, GdkKeysyms.GDK_c),
+                gdk_key_to_imgui_key_map(ImGuiKey_V, GdkKeysyms.GDK_v),
+                gdk_key_to_imgui_key_map(ImGuiKey_X, GdkKeysyms.GDK_x),
+                gdk_key_to_imgui_key_map(ImGuiKey_Y, GdkKeysyms.GDK_y),
+                gdk_key_to_imgui_key_map(ImGuiKey_Z, GdkKeysyms.GDK_z),
+            ];
+}
+
+// Data
+static Uint64           g_Time = 0;
+static bool[5]          g_MousePressed = [ false, false, false, false, false ];
+static ImVec2           g_MousePosition = ImVec2(-FLT_MAX, -FLT_MAX);
+static float            g_MouseWheel = 0.0f;
+static Cursor[ImGuiMouseCursor_COUNT] g_MouseCursors = [];
+static Clipboard g_Clipboard;
+
+static const (char)* imgui_gtk_get_clipboard_text(void* user_data)
+{
+    static string last_clipboard;
+    last_clipboard = g_Clipboard.waitForText();
+    return last_clipboard.ptr;
+}
+
+static void imgui_gtk_set_clipboard_text(void* user_data, const (char)* text)
+{
+    string clip = to!string(text);
+    g_Clipboard.setText(clip, clip.sizeof);
+}
+
+
+bool imgui_gtk_handle_event(Event event, Widget widget)
+{
+    ImGuiIO* io = igGetIO();
+
+    switch (event.type)
+    {
+    case GdkEventType.MOTION_NOTIFY:
+    {
+        g_MousePosition = ImVec2(event.motion().x, event.motion().y);
+        break;
+    }
+    case GdkEventType.BUTTON_PRESS:
+    case GdkEventType.BUTTON_RELEASE:
+    {
+        if (event.type == GdkEventType.BUTTON_PRESS)
+            g_MousePressed[event.button().button - 1] = true;
+        break;
+    }
+    case GdkEventType.SCROLL:
+    {
+        g_MouseWheel = -event.scroll().y;
+        break;
+    }
+    case GdkEventType.KEY_PRESS:
+    case GdkEventType.KEY_RELEASE:
+    {
+        GdkEventKey* e = event.key();
+
+        foreach (key; gdk_key_to_imgui_key)
+        {
+            if (e.keyval == key.gdk)
+                io.KeysDown[key.imgui] = event.type == GdkEventType.KEY_PRESS;
+        }
+
+        if (e.keyval >= ImGuiKey_COUNT && e.keyval < io.KeysDown.sizeof)
+            io.KeysDown[e.keyval] = event.type == GdkEventType.KEY_PRESS;
+
+        if (event.type == GdkEventType.KEY_PRESS && (0 != Keymap.keyvalToUnicode(e.keyval)))
+        {
+            //import std.utf;
+            //import glib.Unicode;
+            //
+            //char[32] buffer;
+            //int charactersWritten = Unicode.unicharToUtf8(cast(dchar)Keymap.keyvalToUnicode(e.keyval), cast(char[])buffer);
+            //string utf8String = to!string(buffer.ptr);
+            //ImGuiIO_AddInputCharactersUTF8(&io, utf8String.ptr);
+        }
+
+        struct mods_map{
+            this(bool* a, GdkModifierType b, GdkKeysyms[3] c) {
+                this.var = a;
+                this.modifier = b;
+                this.keyvals = c;
+            }
+
+            bool* var;
+            GdkModifierType modifier;
+            GdkKeysyms[3] keyvals;
+        } 
+        
+        mods_map[] mods = [
+            mods_map(&io.KeyCtrl, GdkModifierType.CONTROL_MASK, [ GdkKeysyms.GDK_Control_L, GdkKeysyms.GDK_Control_R, cast(GdkKeysyms)0 ]),
+            mods_map(&io.KeyShift, GdkModifierType.SHIFT_MASK, [ GdkKeysyms.GDK_Shift_L, GdkKeysyms.GDK_Shift_R, cast(GdkKeysyms)0 ]),
+            mods_map(&io.KeyAlt, GdkModifierType.MOD1_MASK, [ GdkKeysyms.GDK_Alt_L, GdkKeysyms.GDK_Alt_R, cast(GdkKeysyms)0 ]),
+            mods_map(&io.KeySuper, GdkModifierType.SUPER_MASK, [ GdkKeysyms.GDK_Super_L, GdkKeysyms.GDK_Super_R, cast(GdkKeysyms)0 ],)
+        ];
+        
+
+        foreach (mod; mods)
+        {
+            *mod.var = (mod.modifier & e.state) > 0;
+
+            bool match = false;
+            for (int j = 0; mod.keyvals[j] != 0; j++)
+                if (e.keyval == mod.keyvals[j])
+                    match = true;
+
+            if (match)
+                *mod.var = event.type == GdkEventType.KEY_PRESS;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
+    //gtk_gl_area_queue_render(GTK_GL_AREA(g_GtkGlArea));
+    //gtk_widget_queue_draw(g_GtkGlArea);
+
+    return true;
+}
+
+import gdk.Atom;
+
+bool imgui_gtk_init(GLSurface surface)
+{
+    surface.getViewport().setCanFocus(true);
+    surface.getViewport().grabFocus();
+    surface.getViewport().addEvents(cEventMask);
+    surface.getViewport().addOnEvent(toDelegate(&imgui_gtk_handle_event));
+
+    ImGuiIO* io = igGetIO();
+    for (int i = 0; i < ImGuiKey_COUNT; i++)
+    {
+        io.KeyMap[i] = i;
+    }
+
+    //io.SetClipboardTextFn = imgui_gtk_set_clipboard_text;
+    //io.GetClipboardTextFn = imgui_gtk_get_clipboard_text;
+    //io.ClipboardUserData = null;
+    //g_Clipboard = surface.getViewport().getClipboard(cGdkSelectionClipboard);
+
+    auto display = surface.getViewport().getDisplay();
+    g_MouseCursors[ImGuiMouseCursor_Arrow] = new Cursor(display, "default");
+    g_MouseCursors[ImGuiMouseCursor_TextInput] = new Cursor(display, "text");
+    g_MouseCursors[ImGuiMouseCursor_ResizeAll] = new Cursor(display, "all-scroll");
+    g_MouseCursors[ImGuiMouseCursor_ResizeNS] = new Cursor(display, "ns-resize");
+    g_MouseCursors[ImGuiMouseCursor_ResizeEW] = new Cursor(display, "ew-resize");
+    g_MouseCursors[ImGuiMouseCursor_ResizeNESW] = new Cursor(display, "nesw-resize");
+    g_MouseCursors[ImGuiMouseCursor_ResizeNWSE] = new Cursor(display, "nwse-resize");
+    g_MouseCursors[ImGuiMouseCursor_Hand] = new Cursor(display, "pointer");
+
+    return true;
+}
+
+static void imgui_gtk_update_mouse_cursor(Window window)
+{
+    const ImGuiIO* io = igGetIO();
+    if (io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange)
+        return;
+
+    ImGuiMouseCursor imgui_cursor = igGetMouseCursor();
+    if (imgui_cursor != ImGuiMouseCursor_None && !io.MouseDrawCursor)
+        window.setCursor(g_MouseCursors[imgui_cursor]);
+}
+
+void imgui_gtk_new_frame(GLSurface surface)
+{
+    ImGuiIO* io = igGetIO();
+
+    // Setup display size (every frame to accommodate for window resizing)
+    GtkAllocation allocation;
+    surface.getViewport().getAllocation(allocation);
+    
+    io.DisplaySize = ImVec2(cast(float)allocation.width, cast(float)allocation.height);
+    const int scale_factor = surface.getViewport().getScaleFactor();
+    io.DisplayFramebufferScale = ImVec2(scale_factor, scale_factor);
+
+    // Setup time step
+    const long current_time = TimeVal.getMonotonicTime();
+    io.DeltaTime = g_Time > 0 ? (cast(float)(current_time - g_Time) / 1_000_000.0f) : cast(float)(1.0f/60.0f);
+    g_Time = current_time;
+
+    // Setup inputs
+    if (surface.getViewport().hasFocus())
+    {
+        io.MousePos = g_MousePosition;   // Mouse position in screen coordinates (set to -1,-1 if no mouse / on another screen, etc.)
+    }
+    else
+    {
+        io.MousePos = ImVec2(-FLT_MAX, -FLT_MAX);
+    }
+    
+    Window window = surface.getViewport().getWindow();
+
+
+    GdkModifierType modifiers;
+    window.getDisplay().getDeviceManager().getClientPointer().getState(window, null, modifiers);
+
+    for (int i = 0; i < 3; i++)
+    {
+        io.MouseDown[i] = g_MousePressed[i] || (modifiers & (GdkModifierType.BUTTON1_MASK << i)) != 0;
+        g_MousePressed[i] = false;
+    }
+
+    io.MouseWheel = g_MouseWheel;
+    g_MouseWheel = 0.0f;
+
+    imgui_gtk_update_mouse_cursor(window);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 
 
 
@@ -815,9 +1156,7 @@ bool imgui_gtkd_handle_events(Event event, Widget widget) {
         {
             break;
         }
-        /**
-        * a key has been pressed/released.
-        */
+        // a key has been pressed/released.
         case GdkEventType.KEY_PRESS:
         case GdkEventType.KEY_RELEASE:
         {
@@ -1031,3 +1370,5 @@ bool imgui_gtkd_handle_events(Event event, Widget widget) {
 
     return false;
 }
+
+*/
