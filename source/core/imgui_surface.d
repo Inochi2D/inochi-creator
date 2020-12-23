@@ -83,6 +83,10 @@ public:
 
             igBegin("Hello, world!", null, cast(ImGuiWindowFlags)0);                          // Create a window called "Hello, world!" and append into it.
 
+            igCheckbox("Left Mouse Down", &io.MouseDown[0]);
+            igCheckbox("Right Mouse Down", &io.MouseDown[2]);
+            igInputFloat2("Mouse Position", cast(float[2]*)&io.MousePos, null, 0);
+
             igText("This is some useful text.");               // Display some text (you can use a format strings too)
             igCheckbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
             igCheckbox("Another Window", &show_another_window);
@@ -108,15 +112,21 @@ public:
                 show_another_window = false;
             igEnd();
         }
+        
+        igRender();
 
         // Rendering
         //igUpdatePlatformWindows();
     }
 
     override void draw(double deltaTime) {
+        // hacky hack hack hack
+        this.getViewport().setCanFocus(true);
+        this.getViewport().grabFocus();
+
+
         ImGuiIO* io = igGetIO();
         glClearColor(0, 0, 0, 0);
-        igRender();
         glViewport(0, 0, cast(int)io.DisplaySize.x, cast(int)io.DisplaySize.y);
         bindbc.imgui.ImGuiOpenGLBackend.render_draw_data(igGetDrawData());
     }
@@ -275,8 +285,7 @@ bool imgui_gtk_handle_event(Event event, Widget widget)
     case GdkEventType.BUTTON_PRESS:
     case GdkEventType.BUTTON_RELEASE:
     {
-        if (event.type == GdkEventType.BUTTON_PRESS)
-            g_MousePressed[event.button().button - 1] = true;
+        g_MousePressed[event.button().button - 1] = event.type == GdkEventType.BUTTON_PRESS;
         break;
     }
     case GdkEventType.SCROLL:
@@ -430,11 +439,12 @@ void imgui_gtk_new_frame(GLSurface surface)
     GdkModifierType modifiers;
     window.getDisplay().getDeviceManager().getClientPointer().getState(window, null, modifiers);
 
-    for (int i = 0; i < 3; i++)
-    {
-        io.MouseDown[i] = g_MousePressed[i] || (modifiers & (GdkModifierType.BUTTON1_MASK << i)) != 0;
-        g_MousePressed[i] = false;
-    }
+    io.MouseDown[0] = g_MousePressed[0]; // left
+    io.MouseDown[1] = g_MousePressed[1]; // right
+    io.MouseDown[2] = g_MousePressed[2]; // middle
+    //g_MousePressed[0] = false;
+    //g_MousePressed[1] = false;
+    //g_MousePressed[2] = false;
 
     io.MouseWheel = g_MouseWheel;
     g_MouseWheel = 0.0f;
