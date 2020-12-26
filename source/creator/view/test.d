@@ -4,12 +4,12 @@
     
     Authors: Luna Nielsen
 */
-module creator.view.layout;
+module creator.view.test;
 import creator.view;
 import i18n;
 
-class LayoutView : View!("LayoutView") {
+class TestView : View!("TestView") {
     this() {
-        super(_("Layout"));
+        super(_("Test"));
     }
 }

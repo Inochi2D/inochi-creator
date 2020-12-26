@@ -30,9 +30,11 @@ public:
 
         // Prepare the views
         views = new Stack();
-        views.addToStack(new LayoutView);
         views.addToStack(new RigView);
         views.addToStack(new AnimView);
+        
+        // TODO: Move Test View somewhere else
+        //views.addToStack(new TestView);
 
         // Makes so the views show
         this.add(views);
