@@ -16,11 +16,11 @@ configuration "winapp" {
 	targetType "executable"
 
     // Note, you need Visual Studio 2017 for this to work
-    preBuildCommands "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\VsDevCmd.bat\" & rc.exe /v res\\inochi-creator.rc" platform="windows"
-    sourceFiles "res/inochi-creator.res" platform="windows"
+    preBuildCommands "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\VsDevCmd.bat\" & rc.exe /v res\\inochi-creator.rc"
+    sourceFiles "res\\inochi-creator.res"
 
     // On Windows hide the command prompt unless invoked from a command prompt
-    lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows"
+    lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup"
 }
 
 // This one does not require Visual Studio 2017, but will not compile in any icons
@@ -29,7 +29,7 @@ configuration "winapp-noicon" {
 	targetType "executable"
 
     // On Windows hide the command prompt unless invoked from a command prompt
-    lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows"
+    lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup"
 }
 
 // POSIX version of the app
