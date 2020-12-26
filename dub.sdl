@@ -9,3 +9,32 @@ dependency "vibe-d:data" version="~>0.9.2"
 dependency "inochi2d" version="~>1.0.0"
 versions "GL_33"
 targetPath "out/"
+
+
+configuration "winapp" {
+    platforms "windows"
+	targetType "executable"
+
+    // Note, you need Visual Studio 2017 for this to work
+    preBuildCommands "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\VsDevCmd.bat\" & rc.exe /v res\\inochi-creator.rc" platform="windows"
+    sourceFiles "res/inochi-creator.res" platform="windows"
+
+    // On Windows hide the command prompt unless invoked from a command prompt
+    lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows"
+}
+
+// This one does not require Visual Studio 2017, but will not compile in any icons
+configuration "winapp-noicon" {
+    platforms "windows"
+	targetType "executable"
+
+    // On Windows hide the command prompt unless invoked from a command prompt
+    lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows"
+}
+
+// POSIX version of the app
+configuration "posix" {
+	targetType "executable"
+
+    // No settings, yet at least
+}
