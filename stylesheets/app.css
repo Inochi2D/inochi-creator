@@ -1,0 +1,17 @@
+.titlebar {
+    min-height: 24px;
+}
+
+.titlebutton {
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+stackswitcher > button {
+	margin-top: 4px;
+	margin-bottom: 4px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}

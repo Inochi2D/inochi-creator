@@ -5,7 +5,7 @@
     Authors: Luna Nielsen
 */
 import std.stdio;
-import creator.appwindow;
+import creator.app;
 import gtk.Main;
 import crashdump;
 
@@ -13,7 +13,7 @@ int main(string[] args)
 {
     try {
         Main.init(args);
-        (new InochiWindow).showAll();
+        (new InochiCreator).showAll();
         Main.run();
     } catch(Throwable throwable) {
         crashdump.crashdump(throwable, args);

@@ -8,6 +8,7 @@ module creator.view;
 public import creator.view.rig;
 public import creator.view.anim;
 public import creator.view.test;
+public import creator.view.startpage;
 
 
 import gtk.Box;
