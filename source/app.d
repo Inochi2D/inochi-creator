@@ -8,9 +8,13 @@ import std.stdio;
 import creator.app;
 import gtk.Main;
 import crashdump;
+import std.process;
 
 int main(string[] args)
 {
+    // We do NOT want this app themed
+    environment.remove("GTK_THEME");
+
     try {
         Main.init(args);
         (new InochiCreator).showAll();

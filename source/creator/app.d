@@ -9,6 +9,7 @@ public import gtk.Widget;
 import gtk.MainWindow;
 import gtk.HeaderBar;
 import gtk.Stack;
+import gtk.Widget;
 
 import creator.widgets.header;
 import creator.view;
@@ -49,6 +50,9 @@ public:
         // Sets dark mode and adds the app stylesheet
         this.setDarkMode(true);
         this.addStylesheet(import("app.css"));
+
+        // Enforce use of Adwaita to make sure theming doesn't break.
+        this.getSettings().setProperty("gtk-theme-name", "Adwaita");
 
         // Set a headerbar
         header = new InochiHeader();

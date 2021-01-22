@@ -1,7 +1,12 @@
-
 # Inochi Creator
 An in-progress rigging application for Inochi2D.
 Written in D using GTK, imgui and Inochi2D.
+
+# Why can't I theme this app?
+There's some checks in place to ensure that the app does not use any other themes than Adwaita  
+This is to prevent breakage due to unsupported theme usage.  
+On top of this, widgets in this app are made specifically for Adwaita and can not be styled  
+with css.
 
 # Building on Linux
 Just run `dub build`
