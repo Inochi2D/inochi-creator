@@ -29,9 +29,16 @@ public:
     this() {
         viewport = new GLArea();
 
-        // We want OpenGL 4.2 Compatibility profile
-        viewport.setRequiredVersion(4, 2);
-        viewport.getContext().setForwardCompatible(false);
+        viewport.addOnCreateContext(safeWrapCallback((GLArea area) {
+            auto ctx = area.getWindow().createGlContext();
+
+            // We want OpenGL 4.2 Compatibility profile
+            // Force backwards compatibility, so that NVIDIA GPUs work.
+            ctx.setForwardCompatible(false);
+            ctx.setRequiredVersion(4, 2);
+
+            return ctx;
+        }));
 
         viewport.addOnRealize(safeWrapCallback((Widget widget) {
             this.width = widget.getAllocatedWidth();

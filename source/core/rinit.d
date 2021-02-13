@@ -2,6 +2,8 @@ module core.rinit;
 import bindbc.opengl;
 import core.itime;
 import inochi2d;
+import std.format;
+import std.exception;
 
 private bool glInit;
 
@@ -13,9 +15,10 @@ void initRenderer() {
 
     // Load OpenGL and ensure that OpenGL 3.3 was supported, AT LEAST.
     auto support = loadOpenGL();
-    if (support < GLSupport.gl33) {
-        throw new Error("OpenGL 3.3 is not supported on this device. Inochi Creator and Inochi2D requires at least OpenGL 3.3 support.");
-    }
+    enforce(support >= GLSupport.gl42, "OpenGL 4.2 is not supported on this device. Inochi Creator and Inochi2D requires at least OpenGL 3.3 support.\ngot %s, ctx=%s".format(
+        support,
+        openGLContextVersion()
+    ));
 
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_MULTISAMPLE);
