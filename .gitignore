@@ -16,4 +16,5 @@ inochi-creator-test-*
 *.lst
 *.res
 
+dub.selections.json
 testing

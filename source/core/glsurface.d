@@ -23,11 +23,15 @@ private:
 
 public:
 
+    /**
+        Constructor
+    */
     this() {
-        
-        // Set up viewport with GL 3.3 requirement
         viewport = new GLArea();
-        viewport.setRequiredVersion(3, 3);
+
+        // We want OpenGL 4.2 Compatibility profile
+        viewport.setRequiredVersion(4, 2);
+        viewport.getContext().setForwardCompatible(false);
 
         viewport.addOnRealize(safeWrapCallback((Widget widget) {
             this.width = widget.getAllocatedWidth();
