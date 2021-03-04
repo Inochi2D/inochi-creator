@@ -3,6 +3,7 @@ docs.json
 __dummy.html
 docs/
 out/
+.vscode/
 /inochi-creator
 inochi-creator.so
 inochi-creator.dylib
