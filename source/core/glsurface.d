@@ -23,6 +23,10 @@ private:
 
 public:
 
+    GLArea getGLArea(){
+        return viewport;
+    }
+
     /**
         Constructor
     */

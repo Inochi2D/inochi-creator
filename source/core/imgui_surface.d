@@ -50,7 +50,7 @@ public:
             //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
             //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
             io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-            //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+            io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
             // Setup Dear ImGui style
             igStyleColorsDark(null);
@@ -58,7 +58,7 @@ public:
 
             // Setup Platform/Renderer backends
             //ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-            imgui_gtk_init(cast(GLSurface)this);
+            imgui_gtk_init(this);
             bindbc.imgui.ImGuiOpenGLBackend.init("#version 130");
     }
     
@@ -124,8 +124,12 @@ public:
         this.getViewport().setCanFocus(true);
         this.getViewport().grabFocus();
 
+        //this.getViewport().add
+
 
         ImGuiIO* io = igGetIO();
+        
+        this.getViewport().makeCurrent();
         glClearColor(0, 0, 0, 0);
         glViewport(0, 0, cast(int)io.DisplaySize.x, cast(int)io.DisplaySize.y);
         bindbc.imgui.ImGuiOpenGLBackend.render_draw_data(igGetDrawData());
@@ -134,6 +138,26 @@ public:
 
 
 
+
+
+
+
+class ImGuiManagedSurface : GLSurface {
+private:
+public:
+
+    this() {
+    }
+
+    override void initialize() {
+    }
+    
+    override void update(double delta_time) {
+    }
+
+    override void draw(double deltaTime) {
+    }
+}
 
 
 
@@ -255,6 +279,7 @@ static bool[5]          g_MousePressed = [ false, false, false, false, false ];
 static ImVec2           g_MousePosition = ImVec2(-FLT_MAX, -FLT_MAX);
 static float            g_MouseWheel = 0.0f;
 static Cursor[ImGuiMouseCursor_COUNT] g_MouseCursors = [];
+static GLSurface[] g_Surfaces;
 static Clipboard g_Clipboard;
 
 static const (char)* imgui_gtk_get_clipboard_text(void* user_data)
@@ -364,14 +389,26 @@ bool imgui_gtk_handle_event(Event event, Widget widget)
 
 import gdk.Atom;
 
-bool imgui_gtk_init(GLSurface surface)
+bool imgui_gtk_init(ImGuiSurface surface)
 {
+    g_Surfaces.length += 1;
+    g_Surfaces[g_Surfaces.length - 1] = surface;
+
+    //if (g_Surfaces.length > 1)
+    //{
+    //    return;
+    //}
+
     surface.getViewport().setCanFocus(true);
     surface.getViewport().grabFocus();
     surface.getViewport().addEvents(cEventMask);
     surface.getViewport().addOnEvent(toDelegate(&imgui_gtk_handle_event));
 
     ImGuiIO* io = igGetIO();
+
+    io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;       // We can honor GetMouseCursor() values (optional)
+    io.BackendFlags |= ImGuiBackendFlags_PlatformHasViewports;  // We can create multi-viewports on the Platform side (optional)
+
     for (int i = 0; i < ImGuiKey_COUNT; i++)
     {
         io.KeyMap[i] = i;
@@ -391,6 +428,9 @@ bool imgui_gtk_init(GLSurface surface)
     g_MouseCursors[ImGuiMouseCursor_ResizeNESW] = new Cursor(display, "nesw-resize");
     g_MouseCursors[ImGuiMouseCursor_ResizeNWSE] = new Cursor(display, "nwse-resize");
     g_MouseCursors[ImGuiMouseCursor_Hand] = new Cursor(display, "pointer");
+    
+    imgui_gtk_update_monitors();
+    imgui_gtk_init_platform_interface(surface);
 
     return true;
 }
@@ -450,6 +490,222 @@ void imgui_gtk_new_frame(GLSurface surface)
     g_MouseWheel = 0.0f;
 
     imgui_gtk_update_mouse_cursor(window);
+    imgui_gtk_update_monitors();
+}
+
+
+
+
+static void imgui_gtk_update_monitors()
+{
+    import gdk.Display;
+    import gdk.DisplayManager;
+    import gdk.MonitorG;
+    import gdk.Screen;
+
+    ImGuiPlatformIO* platform_io = igGetPlatformIO();
+
+    ImVector!ImGuiPlatformMonitor tempVecDoNotInteract;
+    tempVecDoNotInteract.Size = platform_io.Monitors.Size;
+    tempVecDoNotInteract.Capacity = platform_io.Monitors.Capacity;
+    tempVecDoNotInteract.Data = platform_io.Monitors.Data;
+
+    tempVecDoNotInteract.resize(0);
+    Screen screen = Screen.getDefault();
+    for (int i = 0; i < Screen.getDefault().getNMonitors(); ++i)
+    {
+        ImGuiPlatformMonitor monitor;        
+        
+        GdkRectangle rect;
+        screen.getMonitorGeometry(i, rect);
+        monitor.MainPos = monitor.WorkPos = ImVec2(cast(float)rect.x, cast(float)rect.y);
+        monitor.MainSize = monitor.WorkSize = ImVec2(cast(float)rect.width, cast(float)rect.height);
+
+        monitor.DpiScale = screen.getMonitorScaleFactor(i);
+        tempVecDoNotInteract.push_back(&monitor);
+    }
+
+    platform_io.Monitors.Size = tempVecDoNotInteract.Size;
+    platform_io.Monitors.Capacity = tempVecDoNotInteract.Capacity;
+    platform_io.Monitors.Data = tempVecDoNotInteract.Data;
+}
+
+
+
+struct ImVector(tType) {
+    int Size;
+    int Capacity;
+    tType* Data;
+
+    import core.stdc.string;
+
+
+    bool empty() const                       
+    {
+        return Size == 0; 
+    }
+
+    int size() const                        
+    {
+        return Size; 
+    }
+
+    int size_in_bytes() const               
+    {
+        return Size * cast(int)tType.sizeof; 
+    }
+
+    int max_size() const                    
+    {
+        return 0x7FFFFFFF / cast(int)tType.sizeof; 
+    }
+
+    int capacity() const                    
+    {
+        return Capacity; 
+    }
+
+    void clear()                             
+    {
+        if (Data) 
+        {
+            Size = Capacity = 0;
+            igMemFree(Data);
+            Data = null; 
+        } 
+    }
+
+    void swap(ImVector* rhs)
+    {
+        int rhs_size = rhs.Size;
+        rhs.Size = Size;
+        Size = rhs_size;
+        int rhs_cap = rhs.Capacity;
+        rhs.Capacity = Capacity;
+        Capacity = rhs_cap;
+        tType* rhs_data = rhs.Data;
+        rhs.Data = Data;
+        Data = rhs_data;
+    }
+
+    int _grow_capacity(int sz) const        
+    {
+        int new_capacity = Capacity ? (Capacity + Capacity / 2) : 8;
+        return new_capacity > sz ? new_capacity : sz; 
+    }
+
+    void resize(int new_size)                
+    {
+        if (new_size > Capacity) 
+            reserve(_grow_capacity(new_size)); Size = new_size; 
+    }
+
+    void resize(int new_size, const tType* v)    
+    {
+        if (new_size > Capacity)
+            reserve(_grow_capacity(new_size));
+        if (new_size > Size)
+            for (int n = Size; n < new_size; n++) 
+                memcpy(&Data[n], v, tType.sizeof); 
+        
+        Size = new_size; 
+    }
+
+    // Resize a vector to a smaller size, guaranteed not to cause a reallocation
+    void shrink(int new_size)                
+    {
+        //IM_ASSERT(new_size <= Size);
+        Size = new_size; 
+    } 
+
+    void reserve(int new_capacity)           
+    {
+        if (new_capacity <= Capacity) 
+            return; 
+
+        tType* new_data = cast(tType*)igMemAlloc(cast(size_t)new_capacity * tType.sizeof); 
+        
+        if (Data) 
+        {
+            memcpy(new_data, Data, cast(size_t)Size * tType.sizeof); 
+            igMemFree(Data);
+        } 
+
+        Data = new_data; 
+        Capacity = new_capacity; 
+    }
+
+
+    // NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
+    void push_back(const tType* v)               
+    {
+        if (Size == Capacity)
+            reserve(_grow_capacity(Size + 1)); 
+        
+        memcpy(&Data[Size], v, tType.sizeof);
+        Size++; 
+    }
+
+    void pop_back()                          
+    {
+         //IM_ASSERT(Size > 0);
+         Size--; 
+    }
+
+    void push_front(const tType* v)              
+    {
+        if (Size == 0)
+            push_back(v); 
+        else 
+            insert(Data, v); 
+    }
+
+    tType* erase(const tType* it)
+    {
+         //IM_ASSERT(it >= Data && it < Data + Size);
+         const ptrdiff_t off = it - Data;
+         memmove(Data + off, Data + off + 1, (cast(size_t)Size - cast(size_t)off - 1) * tType.sizeof);
+         Size--;
+         return Data + off; 
+    }
+
+    tType* erase(const tType* it, const tType* it_last)
+    {
+         //IM_ASSERT(it >= Data && it < Data + Size && it_last > it && it_last <= Data + Size);
+         const ptrdiff_t count = it_last - it;
+         const ptrdiff_t off = it - Data;
+         memmove(Data + off, Data + off + count, (cast(size_t)Size - cast(size_t)off - count) * tType.sizeof);
+         Size -= cast(int)count;
+         return Data + off; 
+    }
+
+    tType* erase_unsorted(const tType* it)
+    {
+        //IM_ASSERT(it >= Data && it < Data + Size);
+        const ptrdiff_t off = it - Data;
+         
+        if (it < Data + Size - 1)
+            memcpy(Data + off, Data + Size - 1, tType.sizeof);
+        
+        Size--;
+        return Data + off; 
+    }
+
+    tType* insert(const tType* it, const tType* v)
+    {
+         //IM_ASSERT(it >= Data && it <= Data + Size); 
+         const ptrdiff_t off = it - Data;
+         
+        if (Size == Capacity) 
+            reserve(_grow_capacity(Size + 1));
+        
+        if (off < cast(int)Size) 
+            memmove(Data + off + 1, Data + off, (cast(size_t)Size - cast(size_t)off) * tType.sizeof);
+
+        memcpy(&Data[off], v, tType.sizeof);
+        Size++;
+        return Data + off; 
+    }
 }
 
 
@@ -481,18 +737,228 @@ void imgui_gtk_new_frame(GLSurface surface)
 
 
 
+import gtk.Window : GtkImGuiWindow = Window;
 
+// Helper structure we store in the void* RenderUserData field of each ImGuiViewport to easily retrieve our backend data.
+struct ImGuiViewportDataGtk
+{
+    ImGuiSurface mainSurface;
+    ImGuiManagedSurface surface;
+    GtkImGuiWindow gtkWindow;
+    bool isMinimized = false;
+    bool isOwned = true;
+//    SDL_Window*     Window;
+//    Uint32          WindowID;
+//    bool            WindowOwned;
+//    SDL_GLContext   GLContext;
+//
+//    ImGuiViewportDataGtk() { Window = NULL; WindowID = 0; WindowOwned = false; GLContext = NULL; }
+////    ~ImGuiViewportDataGtk() { IM_ASSERT(Window == NULL && GLContext == NULL); }
+}
 
+extern (C)
+{
+    static void imgui_gtk_create_window(ImGuiViewport* viewport)
+    {
+        ImGuiViewportDataGtk* data = new ImGuiViewportDataGtk;
+        viewport.PlatformUserData = data;
 
+        ImGuiViewport* main_viewport = igGetMainViewport();
+        ImGuiViewportDataGtk* main_viewport_data = cast(ImGuiViewportDataGtk*)main_viewport.PlatformUserData;
+    //
+    //    // Share GL resources with main context
+    //    bool use_opengl = (main_viewport_data.GLContext != NULL);
+    //    SDL_GLContext backup_context = NULL;
+    //    if (use_opengl)
+    //    {
+    //        backup_context = SDL_GL_GetCurrentContext();
+    //        SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
+    //        SDL_GL_MakeCurrent(main_viewport_data.Window, main_viewport_data.GLContext);
+    //    }
 
+        data.gtkWindow = new GtkImGuiWindow("imgui window");
+        data.gtkWindow.move(cast(double)viewport.Pos.x, cast(double)viewport.Pos.y);
+        data.gtkWindow.setDecorated(false);
+        data.gtkWindow.setDefaultSize(cast(int)viewport.Size.x, cast(int)viewport.Size.y);
+        data.surface = new ImGuiManagedSurface();
+        data.gtkWindow.add(data.surface);
+        
+        //window.setSizeRe(cast(int)viewport.Size.x, cast(int)viewport.Size.y);
 
+    //    Uint32 sdl_flags = 0;
+    //    sdl_flags |= use_opengl ? SDL_WINDOW_OPENGL : (g_UseVulkan ? SDL_WINDOW_VULKAN : 0);
+    //    sdl_flags |= SDL_GetWindowFlags(g_Window) & SDL_WINDOW_ALLOW_HIGHDPI;
+    //    sdl_flags |= SDL_WINDOW_HIDDEN;
+    //    sdl_flags |= (viewport.Flags & ImGuiViewportFlags_NoDecoration) ? SDL_WINDOW_BORDERLESS : 0;
+    //    sdl_flags |= (viewport.Flags & ImGuiViewportFlags_NoDecoration) ? 0 : SDL_WINDOW_RESIZABLE;
+    //#if !defined(_WIN32)
+    //    // See SDL hack in ImGui_ImplSDL2_ShowWindow().
+    //    sdl_flags |= (viewport.Flags & ImGuiViewportFlags_NoTaskBarIcon) ? SDL_WINDOW_SKIP_TASKBAR : 0;
+    //#endif
+    //#if SDL_HAS_ALWAYS_ON_TOP
+    //    sdl_flags |= (viewport.Flags & ImGuiViewportFlags_TopMost) ? SDL_WINDOW_ALWAYS_ON_TOP : 0;
+    //#endif
+    //    data.Window = SDL_CreateWindow("No Title Yet", (int)viewport.Pos.x, (int)viewport.Pos.y, (int)viewport.Size.x, (int)viewport.Size.y, sdl_flags);
+    //    data.WindowOwned = true;
+    //    if (use_opengl)
+    //    {
+    //        data.GLContext = SDL_GL_CreateContext(data.Window);
+    //        SDL_GL_SetSwapInterval(0);
+    //    }
+    //    if (use_opengl && backup_context)
+    //        SDL_GL_MakeCurrent(data.Window, backup_context);
+    //
+        viewport.PlatformHandle = cast(void*)&data.gtkWindow;
+    //#if defined(_WIN32)
+    //    SDL_SysWMinfo info;
+    //    SDL_VERSION(&info.version);
+    //    if (SDL_GetWindowWMInfo(data.Window, &info))
+    //        viewport.PlatformHandleRaw = info.info.win.window;
+    //#endif
+    }
 
+    static void imgui_gtk_destroy_window(ImGuiViewport* viewport)
+    {
+        if (ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)viewport.PlatformUserData)
+        {
+            data.surface.destroy();
+            data.gtkWindow.destroy();
+        }
 
+        viewport.PlatformUserData = viewport.PlatformHandle = null;
+    }
 
+    static void imgui_gtk_show_window(ImGuiViewport* viewport)
+    {
+        ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)viewport.PlatformUserData;
+        data.gtkWindow.showAll();
+    }
 
+    static ImVec2 imgui_gtk_get_window_pos(ImGuiViewport* viewport)
+    {
+        void* test = viewport.PlatformUserData;
+        ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)test;
+        if (data.isOwned == false) 
+            return ImVec2(0.0f, 0.0f);
 
+        int x = 0;
+        int y = 0;
+        data.gtkWindow.getPosition(x, y);
+        return ImVec2(cast(float)x, cast(float)y);
+    }
 
+    static void imgui_gtk_set_window_pos(ImGuiViewport* viewport, ImVec2 pos)
+    {
+        ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)viewport.PlatformUserData;
+        data.gtkWindow.move(pos.x, pos.y);
+    }
 
+    static ImVec2 imgui_gtk_get_window_size(ImGuiViewport* viewport)
+    {
+        ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)viewport.PlatformUserData;
+        int x = 0;
+        int y = 0;
+        data.gtkWindow.getSize(x, y);
+        return ImVec2(cast(float)x, cast(float)y);
+    }
+
+    static void imgui_gtk_set_window_size(ImGuiViewport* viewport, ImVec2 size)
+    {
+    //    ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)viewport.PlatformUserData;
+    //    SDL_SetWindowSize(data.Window, (int)size.x, (int)size.y);
+    }
+
+    static void imgui_gtk_set_window_title(ImGuiViewport* viewport, const char* title)
+    {
+        ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)viewport.PlatformUserData;
+        data.gtkWindow.setTitle(to!string(title));
+    }
+
+    ////#if SDL_HAS_WINDOW_ALPHA
+    //static void imgui_gtk_set_window_alpha(ImGuiViewport* viewport, float alpha)
+    //{
+    ////    ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)viewport.PlatformUserData;
+    ////    SDL_SetWindowOpacity(data.Window, alpha);
+    //}
+    ////#endif
+
+    static void imgui_gtk_set_window_focus(ImGuiViewport* viewport)
+    {
+        ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)viewport.PlatformUserData;
+        data.gtkWindow.present();
+    }
+
+    static bool imgui_gtk_get_window_focus(ImGuiViewport* viewport)
+    {
+        ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)viewport.PlatformUserData;
+        return data.gtkWindow.isActive();
+    }
+
+    static bool imgui_gtk_get_window_minimized(ImGuiViewport* viewport)
+    {
+        ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)viewport.PlatformUserData;
+        return data.isMinimized;
+    }
+
+    static void imgui_gtk_render_window(ImGuiViewport* viewport, void*)
+    {
+        ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)viewport.PlatformUserData;
+        data.surface.getViewport().makeCurrent();
+    }
+
+    static void imgui_gtk_swap_buffers(ImGuiViewport* viewport, void*)
+    {
+    //    ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)viewport.PlatformUserData;
+    //    if (data.GLContext)
+    //    {
+    //        SDL_GL_MakeCurrent(data.Window, data.GLContext);
+    //        SDL_GL_SwapWindow(data.Window);
+    //    }
+    }
+}
+
+static void imgui_gtk_init_platform_interface(ImGuiSurface surface)
+{
+    // Register platform interface (will be coupled with a renderer interface)
+    ImGuiPlatformIO* platform_io = igGetPlatformIO();
+    platform_io.Platform_CreateWindow = &imgui_gtk_create_window;
+    platform_io.Platform_DestroyWindow = &imgui_gtk_destroy_window;
+    platform_io.Platform_ShowWindow = &imgui_gtk_show_window;
+    platform_io.Platform_SetWindowPos = &imgui_gtk_set_window_pos;
+    platform_io.Platform_GetWindowPos = &imgui_gtk_get_window_pos;
+    platform_io.Platform_SetWindowSize = &imgui_gtk_set_window_size;
+    platform_io.Platform_GetWindowSize = &imgui_gtk_get_window_size;
+    platform_io.Platform_SetWindowFocus = &imgui_gtk_set_window_focus;
+    platform_io.Platform_GetWindowFocus = &imgui_gtk_get_window_focus;
+    platform_io.Platform_GetWindowMinimized = &imgui_gtk_get_window_minimized;
+    platform_io.Platform_SetWindowTitle = &imgui_gtk_set_window_title;
+    platform_io.Platform_RenderWindow = &imgui_gtk_render_window;
+    platform_io.Platform_SwapBuffers = &imgui_gtk_swap_buffers;
+//#if SDL_HAS_WINDOW_ALPHA
+//    platform_io.Platform_SetWindowAlpha = imgui_gtk_SetWindowAlpha;
+//#endif
+//#if SDL_HAS_VULKAN
+//    platform_io.Platform_CreateVkSurface = imgui_gtk_CreateVkSurface;
+//#endif
+//
+//    // SDL2 by default doesn't pass mouse clicks to the application when the click focused a window. This is getting in the way of our interactions and we disable that behavior.
+//#if SDL_HAS_MOUSE_FOCUS_CLICKTHROUGH
+//    SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
+//#endif
+//
+    // Register main window handle (which is owned by the main application, not by us)
+    // This is mostly for simplicity and consistency, so that our code (e.g. mouse handling etc.) can use same logic for main and secondary viewports.
+    ImGuiViewport* main_viewport = igGetMainViewport();
+    ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)igMemAlloc(ImGuiViewportDataGtk.sizeof);
+    data.mainSurface = surface;
+    data.isOwned = false;
+    main_viewport.PlatformUserData = cast(void*)data;
+    main_viewport.PlatformHandle = null;
+}
+
+static void imgui_gtk_ShutdownPlatformInterface()
+{
+}
 
 
 
@@ -504,529 +970,6 @@ void imgui_gtk_new_frame(GLSurface surface)
 
 
 /*
-
-
-
-import bindbc.sdl;
-
-GdkKeysyms to_gdk(SDL_Scancode key)
-{
-    switch (key)
-    {
-    default:
-    case SDL_SCANCODE_UNKNOWN: return cast(GdkKeysyms)0;  // 0,
-    case SDL_SCANCODE_RETURN: return GdkKeysyms.GDK_Return;  // '\r',
-    case SDL_SCANCODE_ESCAPE: return GdkKeysyms.GDK_Escape;  // '\033',
-    case SDL_SCANCODE_BACKSPACE: return GdkKeysyms.GDK_BackSpace;  // '\b',
-    case SDL_SCANCODE_TAB: return GdkKeysyms.GDK_Tab;  // '\t',
-    case SDL_SCANCODE_SPACE: return GdkKeysyms.GDK_space;  // ' ',
-//    case SDL_SCANCODE_: return GdkKeysyms.GDK_exclam;  // '!',
-//    case SDL_SCANCODE_: return GdkKeysyms.GDK_quotedbl;  // '"',
-//    case SDL_SCANCODE_HASH: return GdkKeysyms.GDK_numbersign;  // '#',
-//    case SDL_SCANCODE_PERCENT: return GdkKeysyms.GDK_percent;  // '%',
-//    case SDL_SCANCODE_DOLLAR: return GdkKeysyms.GDK_dollar;  // '$',
-//    case SDL_SCANCODE_AMPERSAND: return GdkKeysyms.GDK_ampersand;  // '&',
-    case SDL_SCANCODE_APOSTROPHE: return GdkKeysyms.GDK_quoteright;  // '\'',
-//    case SDL_SCANCODE_LEFTPAREN: return GdkKeysyms.GDK_parenleft;  // '(',
-//    case SDL_SCANCODE_RIGHTPAREN: return GdkKeysyms.GDK_parenright;  // ')',
-//    case SDL_SCANCODE_ASTERISK: return GdkKeysyms.GDK_asterisk;  // '*',
-//    case SDL_SCANCODE_PLUS: return GdkKeysyms.GDK_plus;  // '+',
-    case SDL_SCANCODE_COMMA: return GdkKeysyms.GDK_comma;  // ',',
-    case SDL_SCANCODE_MINUS: return GdkKeysyms.GDK_minus;  // '-',
-    case SDL_SCANCODE_PERIOD: return GdkKeysyms.GDK_period;  // '.',
-    case SDL_SCANCODE_SLASH: return GdkKeysyms.GDK_slash;  // '/',
-    case SDL_SCANCODE_0: return GdkKeysyms.GDK_0;  // '0',
-    case SDL_SCANCODE_1: return GdkKeysyms.GDK_1;  // '1',
-    case SDL_SCANCODE_2: return GdkKeysyms.GDK_2;  // '2',
-    case SDL_SCANCODE_3: return GdkKeysyms.GDK_3;  // '3',
-    case SDL_SCANCODE_4: return GdkKeysyms.GDK_4;  // '4',
-    case SDL_SCANCODE_5: return GdkKeysyms.GDK_5;  // '5',
-    case SDL_SCANCODE_6: return GdkKeysyms.GDK_6;  // '6',
-    case SDL_SCANCODE_7: return GdkKeysyms.GDK_7;  // '7',
-    case SDL_SCANCODE_8: return GdkKeysyms.GDK_8;  // '8',
-    case SDL_SCANCODE_9: return GdkKeysyms.GDK_9;  // '9',
-//    case SDL_SCANCODE_COLON: return GdkKeysyms.GDK_colon;  // ':',
-    case SDL_SCANCODE_SEMICOLON: return GdkKeysyms.GDK_semicolon;  // ';',
-//    case SDL_SCANCODE_LESS: return GdkKeysyms.GDK_less;  // '<',
-    case SDL_SCANCODE_EQUALS: return GdkKeysyms.GDK_equal;  //  '=',
-//    case SDL_SCANCODE_GREATER: return GdkKeysyms.GDK_greater;  // '>',
-//    case SDL_SCANCODE_QUESTION: return GdkKeysyms.GDK_question;  // '?',
-//    case SDL_SCANCODE_: return GdkKeysyms.GDK_at;  // '@',
-
-    case SDL_SCANCODE_LEFTBRACKET: return GdkKeysyms.GDK_bracketleft;  // '[',
-    case SDL_SCANCODE_BACKSLASH: return GdkKeysyms.GDK_backslash;  // '\\',
-    case SDL_SCANCODE_RIGHTBRACKET: return GdkKeysyms.GDK_bracketright;  // ']',
-//    case SDL_SCANCODE_CARET: return GdkKeysyms.GDK_caret;  // '^',
-//    case SDL_SCANCODE_UNDERSCORE: return GdkKeysyms.GDK_underscore;  // '_',
-    case SDL_SCANCODE_GRAVE: return GdkKeysyms.GDK_quoteleft;  // '`',
-    case SDL_SCANCODE_A: return GdkKeysyms.GDK_A;  // 'A',
-    case SDL_SCANCODE_B: return GdkKeysyms.GDK_B;  // 'B',
-    case SDL_SCANCODE_C: return GdkKeysyms.GDK_C;  // 'C',
-    case SDL_SCANCODE_D: return GdkKeysyms.GDK_D;  // 'D',
-    case SDL_SCANCODE_E: return GdkKeysyms.GDK_E;  // 'E',
-    case SDL_SCANCODE_F: return GdkKeysyms.GDK_F;  // 'F',
-    case SDL_SCANCODE_G: return GdkKeysyms.GDK_G;  // 'G',
-    case SDL_SCANCODE_H: return GdkKeysyms.GDK_H;  // 'H',
-    case SDL_SCANCODE_I: return GdkKeysyms.GDK_I;  // 'I',
-    case SDL_SCANCODE_J: return GdkKeysyms.GDK_J;  // 'J',
-    case SDL_SCANCODE_K: return GdkKeysyms.GDK_K;  // 'K',
-    case SDL_SCANCODE_L: return GdkKeysyms.GDK_L;  // 'L',
-    case SDL_SCANCODE_M: return GdkKeysyms.GDK_M;  // 'M',
-    case SDL_SCANCODE_N: return GdkKeysyms.GDK_N;  // 'N',
-    case SDL_SCANCODE_O: return GdkKeysyms.GDK_O;  // 'O',
-    case SDL_SCANCODE_P: return GdkKeysyms.GDK_P;  // 'P',
-    case SDL_SCANCODE_Q: return GdkKeysyms.GDK_Q;  // 'Q',
-    case SDL_SCANCODE_R: return GdkKeysyms.GDK_R;  // 'R',
-    case SDL_SCANCODE_S: return GdkKeysyms.GDK_S;  // 'S',
-    case SDL_SCANCODE_T: return GdkKeysyms.GDK_T;  // 'T',
-    case SDL_SCANCODE_U: return GdkKeysyms.GDK_U;  // 'U',
-    case SDL_SCANCODE_V: return GdkKeysyms.GDK_V;  // 'V',
-    case SDL_SCANCODE_W: return GdkKeysyms.GDK_W;  // 'W',
-    case SDL_SCANCODE_X: return GdkKeysyms.GDK_X;  // 'X',
-    case SDL_SCANCODE_Y: return GdkKeysyms.GDK_Y;  // 'Y',
-    case SDL_SCANCODE_Z: return GdkKeysyms.GDK_Z;  // 'Z',
-
-    case SDL_SCANCODE_CAPSLOCK: return GdkKeysyms.GDK_Caps_Lock;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CAPSLOCK),
-
-    case SDL_SCANCODE_F1: return GdkKeysyms.GDK_F1;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F1),
-    case SDL_SCANCODE_F2: return GdkKeysyms.GDK_F2;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F2),
-    case SDL_SCANCODE_F3: return GdkKeysyms.GDK_F3;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F3),
-    case SDL_SCANCODE_F4: return GdkKeysyms.GDK_F4;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F4),
-    case SDL_SCANCODE_F5: return GdkKeysyms.GDK_F5;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F5),
-    case SDL_SCANCODE_F6: return GdkKeysyms.GDK_F6;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F6),
-    case SDL_SCANCODE_F7: return GdkKeysyms.GDK_F7;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F7),
-    case SDL_SCANCODE_F8: return GdkKeysyms.GDK_F8;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F8),
-    case SDL_SCANCODE_F9: return GdkKeysyms.GDK_F9;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F9),
-    case SDL_SCANCODE_F10: return GdkKeysyms.GDK_F10;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F10),
-    case SDL_SCANCODE_F11: return GdkKeysyms.GDK_F11;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F11),
-    case SDL_SCANCODE_F12: return GdkKeysyms.GDK_F12;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F12),
-
-    case SDL_SCANCODE_PRINTSCREEN: return GdkKeysyms.GDK_3270_PrintScreen;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_PRINTSCREEN),
-    case SDL_SCANCODE_SCROLLLOCK: return GdkKeysyms.GDK_Scroll_Lock;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_SCROLLLOCK),
-    case SDL_SCANCODE_PAUSE: return GdkKeysyms.GDK_Pause;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_PAUSE),
-    case SDL_SCANCODE_INSERT: return GdkKeysyms.GDK_Insert;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_INSERT),
-    case SDL_SCANCODE_HOME: return GdkKeysyms.GDK_Home;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_HOME),
-    case SDL_SCANCODE_PAGEUP: return GdkKeysyms.GDK_Page_Up;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_PAGEUP),
-    case SDL_SCANCODE_DELETE: return GdkKeysyms.GDK_Delete;  // '\177',
-    case SDL_SCANCODE_END: return GdkKeysyms.GDK_End;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_END),
-    case SDL_SCANCODE_PAGEDOWN: return GdkKeysyms.GDK_Page_Down;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_PAGEDOWN),
-    case SDL_SCANCODE_RIGHT: return GdkKeysyms.GDK_Right;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_RIGHT),
-    case SDL_SCANCODE_LEFT: return GdkKeysyms.GDK_Left;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_LEFT),
-    case SDL_SCANCODE_DOWN: return GdkKeysyms.GDK_Down;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_DOWN),
-    case SDL_SCANCODE_UP: return GdkKeysyms.GDK_Up;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_UP),
-
-    case SDL_SCANCODE_NUMLOCKCLEAR: return GdkKeysyms.GDK_Num_Lock;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_NUMLOCKCLEAR),
-    case SDL_SCANCODE_KP_DIVIDE: return GdkKeysyms.GDK_KP_Divide;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_DIVIDE),
-    case SDL_SCANCODE_KP_MULTIPLY: return GdkKeysyms.GDK_KP_Multiply;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MULTIPLY),
-    case SDL_SCANCODE_KP_MINUS: return GdkKeysyms.GDK_KP_Subtract;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MINUS),
-    case SDL_SCANCODE_KP_PLUS: return GdkKeysyms.GDK_KP_Add;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_PLUS),
-    case SDL_SCANCODE_KP_ENTER: return GdkKeysyms.GDK_KP_Enter;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_ENTER),
-    case SDL_SCANCODE_KP_1: return GdkKeysyms.GDK_KP_1;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_1),
-    case SDL_SCANCODE_KP_2: return GdkKeysyms.GDK_KP_2;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_2),
-    case SDL_SCANCODE_KP_3: return GdkKeysyms.GDK_KP_3;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_3),
-    case SDL_SCANCODE_KP_4: return GdkKeysyms.GDK_KP_4;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_4),
-    case SDL_SCANCODE_KP_5: return GdkKeysyms.GDK_KP_5;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_5),
-    case SDL_SCANCODE_KP_6: return GdkKeysyms.GDK_KP_6;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_6),
-    case SDL_SCANCODE_KP_7: return GdkKeysyms.GDK_KP_7;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_7),
-    case SDL_SCANCODE_KP_8: return GdkKeysyms.GDK_KP_8;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_8),
-    case SDL_SCANCODE_KP_9: return GdkKeysyms.GDK_KP_9;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_9),
-    case SDL_SCANCODE_KP_0: return GdkKeysyms.GDK_KP_0;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_0),
-    case SDL_SCANCODE_KP_PERIOD: return GdkKeysyms.GDK_KP_Decimal;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_PERIOD),
-
-    case SDL_SCANCODE_APPLICATION: return GdkKeysyms.GDK_ApplicationLeft;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_APPLICATION),
-    case SDL_SCANCODE_POWER: return GdkKeysyms.GDK_PowerOff;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_POWER),
-    case SDL_SCANCODE_KP_EQUALS: return GdkKeysyms.GDK_KP_Equal;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_EQUALS),
-    case SDL_SCANCODE_F13: return GdkKeysyms.GDK_F13;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F13),
-    case SDL_SCANCODE_F14: return GdkKeysyms.GDK_F14;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F14),
-    case SDL_SCANCODE_F15: return GdkKeysyms.GDK_F15;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F15),
-    case SDL_SCANCODE_F16: return GdkKeysyms.GDK_F16;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F16),
-    case SDL_SCANCODE_F17: return GdkKeysyms.GDK_F17;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F17),
-    case SDL_SCANCODE_F18: return GdkKeysyms.GDK_F18;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F18),
-    case SDL_SCANCODE_F19: return GdkKeysyms.GDK_F19;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F19),
-    case SDL_SCANCODE_F20: return GdkKeysyms.GDK_F20;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F20),
-    case SDL_SCANCODE_F21: return GdkKeysyms.GDK_F21;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F21),
-    case SDL_SCANCODE_F22: return GdkKeysyms.GDK_F22;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F22),
-    case SDL_SCANCODE_F23: return GdkKeysyms.GDK_F23;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F23),
-    case SDL_SCANCODE_F24: return GdkKeysyms.GDK_F24;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F24),
-    case SDL_SCANCODE_EXECUTE: return GdkKeysyms.GDK_Execute;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_EXECUTE),
-    case SDL_SCANCODE_HELP: return GdkKeysyms.GDK_Help;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_HELP),
-    case SDL_SCANCODE_MENU: return GdkKeysyms.GDK_Menu;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_MENU),
-    case SDL_SCANCODE_SELECT: return GdkKeysyms.GDK_Select;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_SELECT),
-    case SDL_SCANCODE_STOP: return GdkKeysyms.GDK_Stop;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_STOP),
-//    case SDL_SCANCODE_AGAIN: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AGAIN),
-    case SDL_SCANCODE_UNDO: return GdkKeysyms.GDK_Undo;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_UNDO),
-    case SDL_SCANCODE_CUT: return GdkKeysyms.GDK_Cut;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CUT),
-    case SDL_SCANCODE_COPY: return GdkKeysyms.GDK_Copy;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_COPY),
-    case SDL_SCANCODE_PASTE: return GdkKeysyms.GDK_Paste;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_PASTE),
-    case SDL_SCANCODE_FIND: return GdkKeysyms.GDK_Find;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_FIND),
-    case SDL_SCANCODE_MUTE: return GdkKeysyms.GDK_AudioMute;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_MUTE),
-    case SDL_SCANCODE_VOLUMEUP: return GdkKeysyms.GDK_AudioRaiseVolume;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_VOLUMEUP),
-    case SDL_SCANCODE_VOLUMEDOWN: return GdkKeysyms.GDK_AudioLowerVolume;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_VOLUMEDOWN),
-//    case SDL_SCANCODE_KP_COMMA: return GdkKeysyms.GDK_KP;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_COMMA),
-//    case SDL_SCANCODE_KP_EQUALSAS400: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_EQUALSAS400),
-//
-//    case SDL_SCANCODE_ALTERASE: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_ALTERASE),
-//    case SDL_SCANCODE_SYSREQ: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_SYSREQ),
-//    case SDL_SCANCODE_CANCEL: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CANCEL),
-//    case SDL_SCANCODE_CLEAR: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CLEAR),
-//    case SDL_SCANCODE_PRIOR: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_PRIOR),
-//    case SDL_SCANCODE_RETURN2: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_RETURN2),
-//    case SDL_SCANCODE_SEPARATOR: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_SEPARATOR),
-//    case SDL_SCANCODE_OUT: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_OUT),
-//    case SDL_SCANCODE_OPER: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_OPER),
-//    case SDL_SCANCODE_CLEARAGAIN: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CLEARAGAIN),
-//    case SDL_SCANCODE_CRSEL: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CRSEL),
-//    case SDL_SCANCODE_EXSEL: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_EXSEL),
-//
-//    case SDL_SCANCODE_KP_00: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_00),
-//    case SDL_SCANCODE_KP_000: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_000),
-//    case SDL_SCANCODE_THOUSANDSSEPARATOR: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_THOUSANDSSEPARATOR),
-//    case SDL_SCANCODE_DECIMALSEPARATOR: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_DECIMALSEPARATOR),
-//    case SDL_SCANCODE_CURRENCYUNIT: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CURRENCYUNIT),
-//    case SDL_SCANCODE_CURRENCYSUBUNIT: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CURRENCYSUBUNIT),
-//    case SDL_SCANCODE_KP_LEFTPAREN: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_LEFTPAREN),
-//    case SDL_SCANCODE_KP_RIGHTPAREN: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_RIGHTPAREN),
-//    case SDL_SCANCODE_KP_LEFTBRACE: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_LEFTBRACE),
-//    case SDL_SCANCODE_KP_RIGHTBRACE: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_RIGHTBRACE),
-    case SDL_SCANCODE_KP_TAB: return GdkKeysyms.GDK_KP_Tab;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_TAB),
-    case SDL_SCANCODE_KP_BACKSPACE: return GdkKeysyms.GDK_KP_Delete;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_BACKSPACE),
-//    case SDL_SCANCODE_KP_A: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_A),
-//    case SDL_SCANCODE_KP_B: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_B),
-//    case SDL_SCANCODE_KP_C: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_C),
-//    case SDL_SCANCODE_KP_D: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_D),
-//    case SDL_SCANCODE_KP_E: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_E),
-//    case SDL_SCANCODE_KP_F: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_F),
-//    case SDL_SCANCODE_KP_XOR: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_XOR),
-//    case SDL_SCANCODE_KP_POWER: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_POWER),
-//    case SDL_SCANCODE_KP_PERCENT: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_PERCENT),
-//    case SDL_SCANCODE_KP_LESS: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_LESS),
-//    case SDL_SCANCODE_KP_GREATER: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_GREATER),
-//    case SDL_SCANCODE_KP_AMPERSAND: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_AMPERSAND),
-//    case SDL_SCANCODE_KP_DBLAMPERSAND: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_DBLAMPERSAND),
-//    case SDL_SCANCODE_KP_VERTICALBAR: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_VERTICALBAR),
-//    case SDL_SCANCODE_KP_DBLVERTICALBAR: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_DBLVERTICALBAR),
-//    case SDL_SCANCODE_KP_COLON: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_COLON),
-//    case SDL_SCANCODE_KP_HASH: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_HASH),
-//    case SDL_SCANCODE_KP_SPACE: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_SPACE),
-//    case SDL_SCANCODE_KP_AT: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_AT),
-//    case SDL_SCANCODE_KP_EXCLAM: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_EXCLAM),
-//    case SDL_SCANCODE_KP_MEMSTORE: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MEMSTORE),
-//    case SDL_SCANCODE_KP_MEMRECALL: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MEMRECALL),
-//    case SDL_SCANCODE_KP_MEMCLEAR: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MEMCLEAR),
-//    case SDL_SCANCODE_KP_MEMADD: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MEMADD),
-//    case SDL_SCANCODE_KP_MEMSUBTRACT: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MEMSUBTRACT),
-//    case SDL_SCANCODE_KP_MEMMULTIPLY: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MEMMULTIPLY),
-//    case SDL_SCANCODE_KP_MEMDIVIDE: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MEMDIVIDE),
-//    case SDL_SCANCODE_KP_PLUSMINUS: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_PLUSMINUS),
-//    case SDL_SCANCODE_KP_CLEAR: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_CLEAR),
-//    case SDL_SCANCODE_KP_CLEARENTRY: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_CLEARENTRY),
-//    case SDL_SCANCODE_KP_BINARY: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_BINARY),
-//    case SDL_SCANCODE_KP_OCTAL: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_OCTAL),
-//    case SDL_SCANCODE_KP_DECIMAL: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_DECIMAL),
-//    case SDL_SCANCODE_KP_HEXADECIMAL: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_HEXADECIMAL),
-
-    case SDL_SCANCODE_LCTRL: return GdkKeysyms.GDK_Control_L;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_LCTRL),
-    case SDL_SCANCODE_LSHIFT: return GdkKeysyms.GDK_Shift_L;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_LSHIFT),
-    case SDL_SCANCODE_LALT: return GdkKeysyms.GDK_Alt_L;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_LALT),
-    case SDL_SCANCODE_LGUI: return GdkKeysyms.GDK_Super_L;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_LGUI),
-    case SDL_SCANCODE_RCTRL: return GdkKeysyms.GDK_Control_R;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_RCTRL),
-    case SDL_SCANCODE_RSHIFT: return GdkKeysyms.GDK_Shift_R;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_RSHIFT),
-    case SDL_SCANCODE_RALT: return GdkKeysyms.GDK_Alt_R;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_RALT),
-    case SDL_SCANCODE_RGUI: return GdkKeysyms.GDK_Super_R;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_RGUI),
-
-    case SDL_SCANCODE_MODE: return GdkKeysyms.GDK_Mode_switch;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_MODE),
-
-    case SDL_SCANCODE_AUDIONEXT: return GdkKeysyms.GDK_AudioNext;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AUDIONEXT),
-    case SDL_SCANCODE_AUDIOPREV: return GdkKeysyms.GDK_AudioPrev;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AUDIOPREV),
-    case SDL_SCANCODE_AUDIOSTOP: return GdkKeysyms.GDK_AudioStop;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AUDIOSTOP),
-    case SDL_SCANCODE_AUDIOPLAY: return GdkKeysyms.GDK_AudioPlay;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AUDIOPLAY),
-    case SDL_SCANCODE_AUDIOMUTE: return GdkKeysyms.GDK_AudioMute;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AUDIOMUTE),
-//    case SDL_SCANCODE_MEDIASELECT: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_MEDIASELECT),
-    case SDL_SCANCODE_WWW: return GdkKeysyms.GDK_WWW;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_WWW),
-    case SDL_SCANCODE_MAIL: return GdkKeysyms.GDK_Mail;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_MAIL),
-    case SDL_SCANCODE_CALCULATOR: return GdkKeysyms.GDK_Calculator;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CALCULATOR),
-    case SDL_SCANCODE_COMPUTER: return GdkKeysyms.GDK_MyComputer;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_COMPUTER),
-//    case SDL_SCANCODE_AC_SEARCH: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AC_SEARCH),
-//    case SDL_SCANCODE_AC_HOME: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AC_HOME),
-//    case SDL_SCANCODE_AC_BACK: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AC_BACK),
-//    case SDL_SCANCODE_AC_FORWARD: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AC_FORWARD),
-//    case SDL_SCANCODE_AC_STOP: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AC_STOP),
-//    case SDL_SCANCODE_AC_REFRESH: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AC_REFRESH),
-//    case SDL_SCANCODE_AC_BOOKMARKS: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AC_BOOKMARKS),
-//
-//    case SDL_SCANCODE_BRIGHTNESSDOWN: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_BRIGHTNESSDOWN),
-//    case SDL_SCANCODE_BRIGHTNESSUP: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_BRIGHTNESSUP),
-//    case SDL_SCANCODE_DISPLAYSWITCH: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_DISPLAYSWITCH),
-//    case SDL_SCANCODE_KBDILLUMTOGGLE: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KBDILLUMTOGGLE),
-//    case SDL_SCANCODE_KBDILLUMDOWN: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KBDILLUMDOWN),
-//    case SDL_SCANCODE_KBDILLUMUP: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KBDILLUMUP),
-//    case SDL_SCANCODE_EJECT: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_EJECT),
-//    case SDL_SCANCODE_SLEEP: return GdkKeysyms.GDK_;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_SLEEP),
-    }
-}
-
-SDL_Scancode to_sdl(GdkKeysyms key)
-{
-    switch (key)
-    {
-    default: return SDL_SCANCODE_UNKNOWN;  // 0,
-    case GdkKeysyms.GDK_Return: return SDL_SCANCODE_RETURN;  // '\r',
-    case GdkKeysyms.GDK_Escape: return SDL_SCANCODE_ESCAPE;  // '\033',
-    case GdkKeysyms.GDK_BackSpace: return SDL_SCANCODE_BACKSPACE;  // '\b',
-    case GdkKeysyms.GDK_Tab: return SDL_SCANCODE_TAB;  // '\t',
-    case GdkKeysyms.GDK_space: return SDL_SCANCODE_SPACE;  // ' ',
-//    case GdkKeysyms.GDK_exclam: return SDL_SCANCODE_EXCLAIM;  // '!',
-//    case GdkKeysyms.GDK_quotedbl: return SDL_SCANCODE_QUOTEDBL;  // '"',
-//    case GdkKeysyms.GDK_numbersign: return SDL_SCANCODE_HASH;  // '#',
-//    case GdkKeysyms.GDK_percent: return SDL_SCANCODE_PERCENT;  // '%',
-//    case GdkKeysyms.GDK_dollar: return SDL_SCANCODE_DOLLAR;  // '$',
-//    case GdkKeysyms.GDK_ampersand: return SDL_SCANCODE_AMPERSAND;  // '&',
-    case GdkKeysyms.GDK_quoteright: return SDL_SCANCODE_APOSTROPHE;  // '\'',
-//    case GdkKeysyms.GDK_parenleft: return SDL_SCANCODE_LEFTPAREN;  // '(',
-//    case GdkKeysyms.GDK_parenright: return SDL_SCANCODE_RIGHTPAREN;  // ')',
-//    case GdkKeysyms.GDK_asterisk: return SDL_SCANCODE_ASTERISK;  // '*',
-//    case GdkKeysyms.GDK_plus: return SDL_SCANCODE_PLUS;  // '+',
-    case GdkKeysyms.GDK_comma: return SDL_SCANCODE_COMMA;  // ',',
-    case GdkKeysyms.GDK_minus: return SDL_SCANCODE_MINUS;  // '-',
-    case GdkKeysyms.GDK_period: return SDL_SCANCODE_PERIOD;  // '.',
-    case GdkKeysyms.GDK_slash: return SDL_SCANCODE_SLASH;  // '/',
-    case GdkKeysyms.GDK_0: return SDL_SCANCODE_0;  // '0',
-    case GdkKeysyms.GDK_1: return SDL_SCANCODE_1;  // '1',
-    case GdkKeysyms.GDK_2: return SDL_SCANCODE_2;  // '2',
-    case GdkKeysyms.GDK_3: return SDL_SCANCODE_3;  // '3',
-    case GdkKeysyms.GDK_4: return SDL_SCANCODE_4;  // '4',
-    case GdkKeysyms.GDK_5: return SDL_SCANCODE_5;  // '5',
-    case GdkKeysyms.GDK_6: return SDL_SCANCODE_6;  // '6',
-    case GdkKeysyms.GDK_7: return SDL_SCANCODE_7;  // '7',
-    case GdkKeysyms.GDK_8: return SDL_SCANCODE_8;  // '8',
-    case GdkKeysyms.GDK_9: return SDL_SCANCODE_9;  // '9',
-//    case GdkKeysyms.GDK_colon: return SDL_SCANCODE_COLON;  // ':',
-    case GdkKeysyms.GDK_semicolon: return SDL_SCANCODE_SEMICOLON;  // ';',
-//    case GdkKeysyms.GDK_less: return SDL_SCANCODE_LESS;  // '<',
-    case GdkKeysyms.GDK_equal: return SDL_SCANCODE_EQUALS;  //  '=',
-//    case GdkKeysyms.GDK_greater: return SDL_SCANCODE_GREATER;  // '>',
-//    case GdkKeysyms.GDK_question: return SDL_SCANCODE_QUESTION;  // '?',
-//    case GdkKeysyms.GDK_at: return SDL_SCANCODE_AT;  // '@',
-
-    case GdkKeysyms.GDK_bracketleft: return SDL_SCANCODE_LEFTBRACKET;  // '[',
-    case GdkKeysyms.GDK_backslash: return SDL_SCANCODE_BACKSLASH;  // '\\',
-    case GdkKeysyms.GDK_bracketright: return SDL_SCANCODE_RIGHTBRACKET;  // ']',
-//    case GdkKeysyms.GDK_caret: return SDL_SCANCODE_CARET;  // '^',
-//    case GdkKeysyms.GDK_underscore: return SDL_SCANCODE_UNDERSCORE;  // '_',
-    case GdkKeysyms.GDK_quoteleft: return SDL_SCANCODE_GRAVE;  // '`',
-    case GdkKeysyms.GDK_A: return SDL_SCANCODE_A;  // 'a',
-    case GdkKeysyms.GDK_B: return SDL_SCANCODE_B;  // 'b',
-    case GdkKeysyms.GDK_C: return SDL_SCANCODE_C;  // 'c',
-    case GdkKeysyms.GDK_D: return SDL_SCANCODE_D;  // 'd',
-    case GdkKeysyms.GDK_E: return SDL_SCANCODE_E;  // 'e',
-    case GdkKeysyms.GDK_F: return SDL_SCANCODE_F;  // 'f',
-    case GdkKeysyms.GDK_G: return SDL_SCANCODE_G;  // 'g',
-    case GdkKeysyms.GDK_H: return SDL_SCANCODE_H;  // 'h',
-    case GdkKeysyms.GDK_I: return SDL_SCANCODE_I;  // 'i',
-    case GdkKeysyms.GDK_J: return SDL_SCANCODE_J;  // 'j',
-    case GdkKeysyms.GDK_K: return SDL_SCANCODE_K;  // 'k',
-    case GdkKeysyms.GDK_L: return SDL_SCANCODE_L;  // 'l',
-    case GdkKeysyms.GDK_M: return SDL_SCANCODE_M;  // 'm',
-    case GdkKeysyms.GDK_N: return SDL_SCANCODE_N;  // 'n',
-    case GdkKeysyms.GDK_O: return SDL_SCANCODE_O;  // 'o',
-    case GdkKeysyms.GDK_P: return SDL_SCANCODE_P;  // 'p',
-    case GdkKeysyms.GDK_Q: return SDL_SCANCODE_Q;  // 'q',
-    case GdkKeysyms.GDK_R: return SDL_SCANCODE_R;  // 'r',
-    case GdkKeysyms.GDK_S: return SDL_SCANCODE_S;  // 's',
-    case GdkKeysyms.GDK_T: return SDL_SCANCODE_T;  // 't',
-    case GdkKeysyms.GDK_U: return SDL_SCANCODE_U;  // 'u',
-    case GdkKeysyms.GDK_V: return SDL_SCANCODE_V;  // 'v',
-    case GdkKeysyms.GDK_W: return SDL_SCANCODE_W;  // 'w',
-    case GdkKeysyms.GDK_X: return SDL_SCANCODE_X;  // 'x',
-    case GdkKeysyms.GDK_Y: return SDL_SCANCODE_Y;  // 'y',
-    case GdkKeysyms.GDK_Z: return SDL_SCANCODE_Z;  // 'z',
-
-    case GdkKeysyms.GDK_Caps_Lock: return SDL_SCANCODE_CAPSLOCK;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CAPSLOCK),
-
-    case GdkKeysyms.GDK_F1: return SDL_SCANCODE_F1;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F1),
-    case GdkKeysyms.GDK_F2: return SDL_SCANCODE_F2;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F2),
-    case GdkKeysyms.GDK_F3: return SDL_SCANCODE_F3;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F3),
-    case GdkKeysyms.GDK_F4: return SDL_SCANCODE_F4;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F4),
-    case GdkKeysyms.GDK_F5: return SDL_SCANCODE_F5;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F5),
-    case GdkKeysyms.GDK_F6: return SDL_SCANCODE_F6;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F6),
-    case GdkKeysyms.GDK_F7: return SDL_SCANCODE_F7;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F7),
-    case GdkKeysyms.GDK_F8: return SDL_SCANCODE_F8;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F8),
-    case GdkKeysyms.GDK_F9: return SDL_SCANCODE_F9;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F9),
-    case GdkKeysyms.GDK_F10: return SDL_SCANCODE_F10;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F10),
-    case GdkKeysyms.GDK_F11: return SDL_SCANCODE_F11;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F11),
-    case GdkKeysyms.GDK_F12: return SDL_SCANCODE_F12;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F12),
-
-    case GdkKeysyms.GDK_3270_PrintScreen: return SDL_SCANCODE_PRINTSCREEN;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_PRINTSCREEN),
-    case GdkKeysyms.GDK_Scroll_Lock: return SDL_SCANCODE_SCROLLLOCK;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_SCROLLLOCK),
-    case GdkKeysyms.GDK_Pause: return SDL_SCANCODE_PAUSE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_PAUSE),
-    case GdkKeysyms.GDK_Insert: return SDL_SCANCODE_INSERT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_INSERT),
-    case GdkKeysyms.GDK_Home: return SDL_SCANCODE_HOME;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_HOME),
-    case GdkKeysyms.GDK_Page_Up: return SDL_SCANCODE_PAGEUP;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_PAGEUP),
-    case GdkKeysyms.GDK_Delete: return SDL_SCANCODE_DELETE;  // '\177',
-    case GdkKeysyms.GDK_End: return SDL_SCANCODE_END;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_END),
-    case GdkKeysyms.GDK_Page_Down: return SDL_SCANCODE_PAGEDOWN;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_PAGEDOWN),
-    case GdkKeysyms.GDK_Right: return SDL_SCANCODE_RIGHT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_RIGHT),
-    case GdkKeysyms.GDK_Left: return SDL_SCANCODE_LEFT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_LEFT),
-    case GdkKeysyms.GDK_Down: return SDL_SCANCODE_DOWN;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_DOWN),
-    case GdkKeysyms.GDK_Up: return SDL_SCANCODE_UP;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_UP),
-
-    case GdkKeysyms.GDK_Num_Lock: return SDL_SCANCODE_NUMLOCKCLEAR;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_NUMLOCKCLEAR),
-    case GdkKeysyms.GDK_KP_Divide: return SDL_SCANCODE_KP_DIVIDE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_DIVIDE),
-    case GdkKeysyms.GDK_KP_Multiply: return SDL_SCANCODE_KP_MULTIPLY;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MULTIPLY),
-    case GdkKeysyms.GDK_KP_Subtract: return SDL_SCANCODE_KP_MINUS;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MINUS),
-    case GdkKeysyms.GDK_KP_Add: return SDL_SCANCODE_KP_PLUS;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_PLUS),
-    case GdkKeysyms.GDK_KP_Enter: return SDL_SCANCODE_KP_ENTER;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_ENTER),
-    case GdkKeysyms.GDK_KP_1: return SDL_SCANCODE_KP_1;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_1),
-    case GdkKeysyms.GDK_KP_2: return SDL_SCANCODE_KP_2;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_2),
-    case GdkKeysyms.GDK_KP_3: return SDL_SCANCODE_KP_3;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_3),
-    case GdkKeysyms.GDK_KP_4: return SDL_SCANCODE_KP_4;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_4),
-    case GdkKeysyms.GDK_KP_5: return SDL_SCANCODE_KP_5;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_5),
-    case GdkKeysyms.GDK_KP_6: return SDL_SCANCODE_KP_6;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_6),
-    case GdkKeysyms.GDK_KP_7: return SDL_SCANCODE_KP_7;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_7),
-    case GdkKeysyms.GDK_KP_8: return SDL_SCANCODE_KP_8;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_8),
-    case GdkKeysyms.GDK_KP_9: return SDL_SCANCODE_KP_9;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_9),
-    case GdkKeysyms.GDK_KP_0: return SDL_SCANCODE_KP_0;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_0),
-    case GdkKeysyms.GDK_KP_Decimal: return SDL_SCANCODE_KP_PERIOD;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_PERIOD),
-
-    case GdkKeysyms.GDK_ApplicationLeft: return SDL_SCANCODE_APPLICATION;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_APPLICATION),
-    case GdkKeysyms.GDK_PowerOff: return SDL_SCANCODE_POWER;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_POWER),
-    case GdkKeysyms.GDK_KP_Equal: return SDL_SCANCODE_KP_EQUALS;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_EQUALS),
-    case GdkKeysyms.GDK_F13: return SDL_SCANCODE_F13;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F13),
-    case GdkKeysyms.GDK_F14: return SDL_SCANCODE_F14;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F14),
-    case GdkKeysyms.GDK_F15: return SDL_SCANCODE_F15;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F15),
-    case GdkKeysyms.GDK_F16: return SDL_SCANCODE_F16;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F16),
-    case GdkKeysyms.GDK_F17: return SDL_SCANCODE_F17;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F17),
-    case GdkKeysyms.GDK_F18: return SDL_SCANCODE_F18;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F18),
-    case GdkKeysyms.GDK_F19: return SDL_SCANCODE_F19;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F19),
-    case GdkKeysyms.GDK_F20: return SDL_SCANCODE_F20;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F20),
-    case GdkKeysyms.GDK_F21: return SDL_SCANCODE_F21;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F21),
-    case GdkKeysyms.GDK_F22: return SDL_SCANCODE_F22;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F22),
-    case GdkKeysyms.GDK_F23: return SDL_SCANCODE_F23;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F23),
-    case GdkKeysyms.GDK_F24: return SDL_SCANCODE_F24;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_F24),
-    case GdkKeysyms.GDK_Execute: return SDL_SCANCODE_EXECUTE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_EXECUTE),
-    case GdkKeysyms.GDK_Help: return SDL_SCANCODE_HELP;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_HELP),
-    case GdkKeysyms.GDK_Menu: return SDL_SCANCODE_MENU;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_MENU),
-    case GdkKeysyms.GDK_Select: return SDL_SCANCODE_SELECT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_SELECT),
-    case GdkKeysyms.GDK_Stop: return SDL_SCANCODE_STOP;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_STOP),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_AGAIN;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AGAIN),
-    case GdkKeysyms.GDK_Undo: return SDL_SCANCODE_UNDO;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_UNDO),
-    case GdkKeysyms.GDK_Cut: return SDL_SCANCODE_CUT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CUT),
-    case GdkKeysyms.GDK_Copy: return SDL_SCANCODE_COPY;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_COPY),
-    case GdkKeysyms.GDK_Paste: return SDL_SCANCODE_PASTE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_PASTE),
-    case GdkKeysyms.GDK_Find: return SDL_SCANCODE_FIND;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_FIND),
-//    case GdkKeysyms.GDK_MUTE: return SDL_SCANCODE_MUTE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_MUTE),
-    case GdkKeysyms.GDK_AudioRaiseVolume: return SDL_SCANCODE_VOLUMEUP;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_VOLUMEUP),
-    case GdkKeysyms.GDK_AudioLowerVolume: return SDL_SCANCODE_VOLUMEDOWN;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_VOLUMEDOWN),
-//    case GdkKeysyms.GDK_KP: return SDL_SCANCODE_KP_COMMA;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_COMMA),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_EQUALSAS400;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_EQUALSAS400),
-//
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_ALTERASE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_ALTERASE),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_SYSREQ;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_SYSREQ),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_CANCEL;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CANCEL),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_CLEAR;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CLEAR),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_PRIOR;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_PRIOR),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_RETURN2;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_RETURN2),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_SEPARATOR;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_SEPARATOR),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_OUT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_OUT),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_OPER;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_OPER),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_CLEARAGAIN;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CLEARAGAIN),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_CRSEL;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CRSEL),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_EXSEL;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_EXSEL),
-//
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_00;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_00),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_000;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_000),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_THOUSANDSSEPARATOR;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_THOUSANDSSEPARATOR),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_DECIMALSEPARATOR;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_DECIMALSEPARATOR),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_CURRENCYUNIT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CURRENCYUNIT),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_CURRENCYSUBUNIT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CURRENCYSUBUNIT),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_LEFTPAREN;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_LEFTPAREN),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_RIGHTPAREN;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_RIGHTPAREN),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_LEFTBRACE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_LEFTBRACE),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_RIGHTBRACE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_RIGHTBRACE),
-    case GdkKeysyms.GDK_KP_Tab: return SDL_SCANCODE_KP_TAB;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_TAB),
-    case GdkKeysyms.GDK_KP_Delete: return SDL_SCANCODE_KP_BACKSPACE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_BACKSPACE),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_A;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_A),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_B;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_B),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_C;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_C),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_D;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_D),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_E;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_E),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_F;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_F),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_XOR;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_XOR),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_POWER;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_POWER),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_PERCENT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_PERCENT),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_LESS;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_LESS),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_GREATER;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_GREATER),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_AMPERSAND;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_AMPERSAND),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_DBLAMPERSAND;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_DBLAMPERSAND),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_VERTICALBAR;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_VERTICALBAR),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_DBLVERTICALBAR;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_DBLVERTICALBAR),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_COLON;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_COLON),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_HASH;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_HASH),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_SPACE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_SPACE),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_AT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_AT),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_EXCLAM;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_EXCLAM),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_MEMSTORE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MEMSTORE),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_MEMRECALL;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MEMRECALL),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_MEMCLEAR;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MEMCLEAR),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_MEMADD;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MEMADD),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_MEMSUBTRACT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MEMSUBTRACT),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_MEMMULTIPLY;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MEMMULTIPLY),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_MEMDIVIDE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_MEMDIVIDE),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_PLUSMINUS;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_PLUSMINUS),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_CLEAR;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_CLEAR),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_CLEARENTRY;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_CLEARENTRY),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_BINARY;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_BINARY),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_OCTAL;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_OCTAL),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_DECIMAL;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_DECIMAL),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KP_HEXADECIMAL;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KP_HEXADECIMAL),
-
-    case GdkKeysyms.GDK_Control_L: return SDL_SCANCODE_LCTRL;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_LCTRL),
-    case GdkKeysyms.GDK_Shift_L: return SDL_SCANCODE_LSHIFT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_LSHIFT),
-    case GdkKeysyms.GDK_Alt_L: return SDL_SCANCODE_LALT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_LALT),
-    case GdkKeysyms.GDK_Super_L: return SDL_SCANCODE_LGUI;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_LGUI),
-    case GdkKeysyms.GDK_Control_R: return SDL_SCANCODE_RCTRL;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_RCTRL),
-    case GdkKeysyms.GDK_Shift_R: return SDL_SCANCODE_RSHIFT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_RSHIFT),
-    case GdkKeysyms.GDK_Alt_R: return SDL_SCANCODE_RALT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_RALT),
-    case GdkKeysyms.GDK_Super_R: return SDL_SCANCODE_RGUI;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_RGUI),
-
-    case GdkKeysyms.GDK_Mode_switch: return SDL_SCANCODE_MODE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_MODE),
-
-    case GdkKeysyms.GDK_AudioNext: return SDL_SCANCODE_AUDIONEXT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AUDIONEXT),
-    case GdkKeysyms.GDK_AudioPrev: return SDL_SCANCODE_AUDIOPREV;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AUDIOPREV),
-    case GdkKeysyms.GDK_AudioStop: return SDL_SCANCODE_AUDIOSTOP;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AUDIOSTOP),
-    case GdkKeysyms.GDK_AudioPlay: return SDL_SCANCODE_AUDIOPLAY;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AUDIOPLAY),
-    case GdkKeysyms.GDK_AudioMute: return SDL_SCANCODE_AUDIOMUTE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AUDIOMUTE),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_MEDIASELECT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_MEDIASELECT),
-    case GdkKeysyms.GDK_WWW: return SDL_SCANCODE_WWW;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_WWW),
-    case GdkKeysyms.GDK_Mail: return SDL_SCANCODE_MAIL;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_MAIL),
-    case GdkKeysyms.GDK_Calculator: return SDL_SCANCODE_CALCULATOR;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_CALCULATOR),
-    case GdkKeysyms.GDK_MyComputer: return SDL_SCANCODE_COMPUTER;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_COMPUTER),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_AC_SEARCH;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AC_SEARCH),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_AC_HOME;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AC_HOME),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_AC_BACK;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AC_BACK),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_AC_FORWARD;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AC_FORWARD),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_AC_STOP;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AC_STOP),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_AC_REFRESH;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AC_REFRESH),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_AC_BOOKMARKS;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_AC_BOOKMARKS),
-//
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_BRIGHTNESSDOWN;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_BRIGHTNESSDOWN),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_BRIGHTNESSUP;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_BRIGHTNESSUP),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_DISPLAYSWITCH;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_DISPLAYSWITCH),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KBDILLUMTOGGLE;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KBDILLUMTOGGLE),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KBDILLUMDOWN;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KBDILLUMDOWN),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_KBDILLUMUP;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_KBDILLUMUP),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_EJECT;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_EJECT),
-//    case GdkKeysyms.GDK_: return SDL_SCANCODE_SLEEP;  // SDL_SCANCODE_TO_KEYCODE!(SDL_Scancode.SDL_SCANCODE_SLEEP),
-    }
-}
-
-
-
-
-
-
-
-
 
 
 import gdk.Keysyms; //keys enums are defined here
@@ -1099,7 +1042,7 @@ void imgui_gtkd_init(Widget widget) {
 void imgui_gtkd_new_frame(GLSurface widget, float delta_time) {
     ImGuiIO* io = igGetIO();
 
-//    IM_ASSERT(io.Fonts->IsBuilt() && "Font atlas not built! It is generally built by the renderer back-end. Missing call to renderer _NewFrame() function? e.g. ImGui_ImplOpenGL3_NewFrame().");
+//    IM_ASSERT(io.Fonts.IsBuilt() && "Font atlas not built! It is generally built by the renderer back-end. Missing call to renderer _NewFrame() function? e.g. ImGui_ImplOpenGL3_NewFrame().");
 
     // Setup display size (every frame to accommodate for window resizing)
     GtkAllocation allocation;
