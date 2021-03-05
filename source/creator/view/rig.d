@@ -9,12 +9,13 @@ import creator.view;
 import i18n;
 import creator.widgets.viewport;
 import core.project;
+import core.imgui_surface;
 
 class RigView : View!("RigView") {
     this() {
         super(_("Rigging"));
         
-        this.packStart(new Viewport(new Project()), true, true, 0);
+        this.packStart(new ImGuiSurface(), true, true, 0);
 
         this.showAll();
     }

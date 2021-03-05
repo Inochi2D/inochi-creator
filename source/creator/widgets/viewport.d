@@ -21,7 +21,7 @@ public:
         this.project = project;
     }
 
-    override void init() {
+    override void initialize() {
         //throw new Exception("Test");
     }
 

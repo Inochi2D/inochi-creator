@@ -132,7 +132,10 @@ public:
         this.getViewport().makeCurrent();
         glClearColor(0, 0, 0, 0);
         glViewport(0, 0, cast(int)io.DisplaySize.x, cast(int)io.DisplaySize.y);
-        bindbc.imgui.ImGuiOpenGLBackend.render_draw_data(igGetDrawData());
+
+        auto drawData = igGetDrawData();
+        if (drawData != null)
+            bindbc.imgui.ImGuiOpenGLBackend.render_draw_data(drawData);
     }
 }
 
