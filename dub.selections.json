@@ -1,6 +1,7 @@
 {
 	"fileVersion": 1,
 	"versions": {
+		"asdf": "0.7.5",
 		"bindbc-imgui": "~master",
 		"bindbc-loader": "0.3.2",
 		"bindbc-opengl": "0.13.0",
@@ -9,7 +10,9 @@
 		"gtk-d": "3.9.0",
 		"imagefmt": "2.1.1",
 		"inochi2d": "1.0.0",
+		"mir-algorithm": "3.10.20",
+		"mir-core": "1.1.62",
 		"stdx-allocator": "2.77.5",
-		"vibe-d": "0.9.2"
+		"vibe-d": "0.9.3"
 	}
 }
