@@ -8,8 +8,8 @@ import bindbc.opengl;
 import std.stdio;
 import safew;
 import gtk.Widget;
-import gdk.FrameClock;
 import gdk.GLContext;
+import gtk.EventBox;
 
 abstract class GLSurface : EventBox {
 private:
@@ -17,7 +17,9 @@ private:
     int width, height;
 
     void onResize(int width, int height, GLArea area) {
-        import inochi2d;
+        import inochi2d : inSetViewport;
+        this.width = width;
+        this.height = height;
         inSetViewport(width, height);
     }
 
@@ -28,6 +30,7 @@ public:
     */
     this() {
         viewport = new GLArea();
+        viewport.setAutoRender(true);
 
         viewport.addOnCreateContext(safeWrapCallback((GLArea area) {
             auto ctx = area.getWindow().createGlContext();
@@ -44,11 +47,11 @@ public:
             this.width = widget.getAllocatedWidth();
             this.height = widget.getAllocatedHeight();
 
-            viewport.setDoubleBuffered(true);
-
             // These are technically not needed but we're adding them anyways just in case we might need it later.
+            viewport.setDoubleBuffered(true);
             viewport.setHasDepthBuffer(true);
             viewport.setHasStencilBuffer(true);
+            viewport.setHasAlpha(true);
 
             // Make this context current, otherwise OpenGL won't init correctly
             viewport.makeCurrent();
@@ -57,31 +60,30 @@ public:
             initRenderer();
 
             this.init();
-
-            // Make sure that we update this widget every timer tick
-            viewport.addTickCallback(safeWrapCallback((Widget widget, FrameClock fclock) {
-                
-                // Update our widget
-                this.update(deltaTime());
-
-                // Queue the widget for re-rendering, which calls onRender for the viewport
-                widget.queueDraw();
-                return G_SOURCE_CONTINUE;
-            }));
+        
         }));
 
         // Render the viewport, with GL context
         viewport.addOnRender(safeWrapCallback((GLContext ctx, GLArea area) {
-            
+
             // Clear the color buffer
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             // Run our custom draw routine
             this.draw(deltaTime());
             
             // We always want to continue the frame clock
-            return G_SOURCE_CONTINUE;
+            return true;
         }));
+
+        // TODO: make this more robust
+        onUpdateDelegates ~= () {
+            // Update our widget
+            this.update(deltaTime());
+
+            // Queue the widget for re-rendering, which calls onRender for the viewport
+            viewport.queueDraw();
+        };
 
         // Update viewport area on resize
         viewport.addOnResize(safeWrapCallback(&onResize));

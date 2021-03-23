@@ -1,6 +1,8 @@
 module core.itime;
 import core.time;
 import gtk.Widget;
+import gdk.FrameClock;
+import safew;
 
 /// Alias for a fast monotonic time clock
 alias FastMonoTime = MonoTimeImpl!(ClockType.coarse);
@@ -27,6 +29,8 @@ private {
     }
 }
 
+void delegate()[] onUpdateDelegates;
+
 /**
     Register time update tick on a widget
 
@@ -38,13 +42,17 @@ void registerUpdateTick(Widget window) {
     resetTime();
 
     // Our tick callback that updates the time
-    window.addTickCallback((widget, fclock) {
+    window.addTickCallback(safeWrapCallback((Widget widget, FrameClock fclock) {
 
         updateTime();
 
+        foreach(dlg; onUpdateDelegates) {
+            dlg();
+        }
+
         // We want to continue calling this tick callback
         return G_SOURCE_CONTINUE;
-    });
+    }));
 }
 
 /**
