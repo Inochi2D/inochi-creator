@@ -33,6 +33,16 @@ configuration "winapp-noicon" {
     lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup"
 }
 
+configuration "winapp-debug" {
+    platforms "windows"
+	targetType "executable"
+
+    // Note, you need Visual Studio 2017 for this to work
+    preBuildCommands "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Common7\\Tools\\VsDevCmd.bat\" & rc.exe /v res\\inochi-creator.rc"
+    sourceFiles "res\\inochi-creator.res"
+}
+
+
 // POSIX version of the app
 configuration "posix" {
 	targetType "executable"
