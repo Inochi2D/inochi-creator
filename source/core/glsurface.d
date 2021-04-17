@@ -63,7 +63,7 @@ public:
             // Initialize OpenGL and Inochi2D renderer if needed
             initRenderer();
 
-            this.init();
+            this.initialize();
         
         }));
 

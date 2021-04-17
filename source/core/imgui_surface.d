@@ -535,204 +535,6 @@ static void imgui_gtk_update_monitors()
 
 
 
-struct ImVector(tType) {
-    int Size;
-    int Capacity;
-    tType* Data;
-
-    import core.stdc.string;
-
-
-    bool empty() const                       
-    {
-        return Size == 0; 
-    }
-
-    int size() const                        
-    {
-        return Size; 
-    }
-
-    int size_in_bytes() const               
-    {
-        return Size * cast(int)tType.sizeof; 
-    }
-
-    int max_size() const                    
-    {
-        return 0x7FFFFFFF / cast(int)tType.sizeof; 
-    }
-
-    int capacity() const                    
-    {
-        return Capacity; 
-    }
-
-    void clear()                             
-    {
-        if (Data) 
-        {
-            Size = Capacity = 0;
-            igMemFree(Data);
-            Data = null; 
-        } 
-    }
-
-    void swap(ImVector* rhs)
-    {
-        int rhs_size = rhs.Size;
-        rhs.Size = Size;
-        Size = rhs_size;
-        int rhs_cap = rhs.Capacity;
-        rhs.Capacity = Capacity;
-        Capacity = rhs_cap;
-        tType* rhs_data = rhs.Data;
-        rhs.Data = Data;
-        Data = rhs_data;
-    }
-
-    int _grow_capacity(int sz) const        
-    {
-        int new_capacity = Capacity ? (Capacity + Capacity / 2) : 8;
-        return new_capacity > sz ? new_capacity : sz; 
-    }
-
-    void resize(int new_size)                
-    {
-        if (new_size > Capacity) 
-            reserve(_grow_capacity(new_size)); Size = new_size; 
-    }
-
-    void resize(int new_size, const tType* v)    
-    {
-        if (new_size > Capacity)
-            reserve(_grow_capacity(new_size));
-        if (new_size > Size)
-            for (int n = Size; n < new_size; n++) 
-                memcpy(&Data[n], v, tType.sizeof); 
-        
-        Size = new_size; 
-    }
-
-    // Resize a vector to a smaller size, guaranteed not to cause a reallocation
-    void shrink(int new_size)                
-    {
-        //IM_ASSERT(new_size <= Size);
-        Size = new_size; 
-    } 
-
-    void reserve(int new_capacity)           
-    {
-        if (new_capacity <= Capacity) 
-            return; 
-
-        tType* new_data = cast(tType*)igMemAlloc(cast(size_t)new_capacity * tType.sizeof); 
-        
-        if (Data) 
-        {
-            memcpy(new_data, Data, cast(size_t)Size * tType.sizeof); 
-            igMemFree(Data);
-        } 
-
-        Data = new_data; 
-        Capacity = new_capacity; 
-    }
-
-
-    // NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    void push_back(const tType* v)               
-    {
-        if (Size == Capacity)
-            reserve(_grow_capacity(Size + 1)); 
-        
-        memcpy(&Data[Size], v, tType.sizeof);
-        Size++; 
-    }
-
-    void pop_back()                          
-    {
-         //IM_ASSERT(Size > 0);
-         Size--; 
-    }
-
-    void push_front(const tType* v)              
-    {
-        if (Size == 0)
-            push_back(v); 
-        else 
-            insert(Data, v); 
-    }
-
-    tType* erase(const tType* it)
-    {
-         //IM_ASSERT(it >= Data && it < Data + Size);
-         const ptrdiff_t off = it - Data;
-         memmove(Data + off, Data + off + 1, (cast(size_t)Size - cast(size_t)off - 1) * tType.sizeof);
-         Size--;
-         return Data + off; 
-    }
-
-    tType* erase(const tType* it, const tType* it_last)
-    {
-         //IM_ASSERT(it >= Data && it < Data + Size && it_last > it && it_last <= Data + Size);
-         const ptrdiff_t count = it_last - it;
-         const ptrdiff_t off = it - Data;
-         memmove(Data + off, Data + off + count, (cast(size_t)Size - cast(size_t)off - count) * tType.sizeof);
-         Size -= cast(int)count;
-         return Data + off; 
-    }
-
-    tType* erase_unsorted(const tType* it)
-    {
-        //IM_ASSERT(it >= Data && it < Data + Size);
-        const ptrdiff_t off = it - Data;
-         
-        if (it < Data + Size - 1)
-            memcpy(Data + off, Data + Size - 1, tType.sizeof);
-        
-        Size--;
-        return Data + off; 
-    }
-
-    tType* insert(const tType* it, const tType* v)
-    {
-         //IM_ASSERT(it >= Data && it <= Data + Size); 
-         const ptrdiff_t off = it - Data;
-         
-        if (Size == Capacity) 
-            reserve(_grow_capacity(Size + 1));
-        
-        if (off < cast(int)Size) 
-            memmove(Data + off + 1, Data + off, (cast(size_t)Size - cast(size_t)off) * tType.sizeof);
-
-        memcpy(&Data[off], v, tType.sizeof);
-        Size++;
-        return Data + off; 
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -742,29 +544,31 @@ struct ImVector(tType) {
 
 import gtk.Window : GtkImGuiWindow = Window;
 
-// Helper structure we store in the void* RenderUserData field of each ImGuiViewport to easily retrieve our backend data.
-struct ImGuiViewportDataGtk
-{
-    ImGuiSurface mainSurface;
-    ImGuiManagedSurface surface;
-    GtkImGuiWindow gtkWindow;
-    bool isMinimized = false;
-    bool isOwned = true;
-//    SDL_Window*     Window;
-//    Uint32          WindowID;
-//    bool            WindowOwned;
-//    SDL_GLContext   GLContext;
-//
-//    ImGuiViewportDataGtk() { Window = NULL; WindowID = 0; WindowOwned = false; GLContext = NULL; }
-////    ~ImGuiViewportDataGtk() { IM_ASSERT(Window == NULL && GLContext == NULL); }
-}
 
 extern (C)
 {
+    // Helper structure we store in the void* RenderUserData field of each ImGuiViewport to easily retrieve our backend data.
+    struct ImGuiViewportDataGtk
+    {
+        ImGuiSurface mainSurface;
+        ImGuiManagedSurface surface;
+        GtkImGuiWindow gtkWindow;
+        bool isMinimized = false;
+        bool isOwned = true;
+    //    SDL_Window*     Window;
+    //    Uint32          WindowID;
+    //    bool            WindowOwned;
+    //    SDL_GLContext   GLContext;
+    //
+    //    ImGuiViewportDataGtk() { Window = NULL; WindowID = 0; WindowOwned = false; GLContext = NULL; }
+    ////    ~ImGuiViewportDataGtk() { IM_ASSERT(Window == NULL && GLContext == NULL); }
+    }
+
     static void imgui_gtk_create_window(ImGuiViewport* viewport)
     {
         ImGuiViewportDataGtk* data = new ImGuiViewportDataGtk;
         viewport.PlatformUserData = data;
+        viewport.PlatformHandle = data;
 
         ImGuiViewport* main_viewport = igGetMainViewport();
         ImGuiViewportDataGtk* main_viewport_data = cast(ImGuiViewportDataGtk*)main_viewport.PlatformUserData;
@@ -839,6 +643,23 @@ extern (C)
 
     static ImVec2 imgui_gtk_get_window_pos(ImGuiViewport* viewport)
     {
+        writeln("ID: ", viewport.ID);
+        writeln("Flags: ", viewport.Flags);
+        writeln("Pos: ", viewport.Pos);
+        writeln("Size: ", viewport.Size);
+        writeln("WorkPos: ", viewport.WorkPos);
+        writeln("WorkSize: ", viewport.WorkSize);
+        writeln("DpiScale: ", viewport.DpiScale);
+        writeln("ParentViewportId: ", viewport.ParentViewportId);
+        writeln("DrawData: ", viewport.DrawData);
+        writeln("RendererUserData: ", viewport.RendererUserData);
+        writeln("PlatformUserData: ", viewport.PlatformUserData);
+        writeln("PlatformHandle: ", viewport.PlatformHandle);
+        writeln("PlatformHandleRaw: ", viewport.PlatformHandleRaw);
+        writeln("PlatformRequestMove: ", viewport.PlatformRequestMove);
+        writeln("PlatformRequestResize: ", viewport.PlatformRequestResize);
+        writeln("PlatformRequestClose: ", viewport.PlatformRequestClose);
+
         void* test = viewport.PlatformUserData;
         ImGuiViewportDataGtk* data = cast(ImGuiViewportDataGtk*)test;
         if (data.isOwned == false) 
@@ -956,7 +777,7 @@ static void imgui_gtk_init_platform_interface(ImGuiSurface surface)
     data.mainSurface = surface;
     data.isOwned = false;
     main_viewport.PlatformUserData = cast(void*)data;
-    main_viewport.PlatformHandle = null;
+    main_viewport.PlatformHandle = cast(void*)data;
 }
 
 static void imgui_gtk_ShutdownPlatformInterface()
