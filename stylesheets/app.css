@@ -1,7 +1,32 @@
+
+
+/**
+	Allow for small headerbar buttons
+*/
+stackswitcher > button {
+
+	/* We want to allow smaller buttons, but not too small*/
+	min-width: 32px;
+
+	/* Remove forced padding */
+	padding-left: 0px;
+	padding-right: 0px;
+
+	/* Make top-bottom padding smaller */
+	padding-top: 4px;
+	padding-bottom: 4px;
+
+	/* Match margins with normal buttons */
+	margin-top: 6px;
+	margin-bottom: 6px;
+}
+
 /*
 	Smaller header bar
 */
-.titlebar {
+
+
+/* .titlebar {
     min-height: 24px;
 }
 
@@ -17,13 +42,37 @@ stackswitcher > button {
 	margin-bottom: 4px;
 	padding-top: 0px;
 	padding-bottom: 0px;
-}
+} */
 
 /*
 	Rounded bottom corners
 */
-decoration, window {
+/* decoration, window {
 	border-bottom-left-radius: 8px;
 	border-bottom-right-radius: 8px;
 	border-bottom-style: solid;
+} */
+
+/* headerbar > button { */
+
+	/* We want to allow smaller buttons, but not too small*/
+	/* min-width: 32px; */
+
+	/* Remove forced padding */
+	/* padding-left: 0px;
+	padding-right: 0px; */
+
+	/* Make top-bottom padding smaller */
+	/* padding-top: 4px;
+	padding-bottom: 4px;
+}*/
+
+/* headerbar > .text-button, stackswitcher > .text-button {
+	min-height: 16px;
+	min-width: 24px;
 }
+
+headerbar > .image-button, stackswitcher > .image-button  {
+	min-height: 16px;
+	min-width: 24px;
+} */

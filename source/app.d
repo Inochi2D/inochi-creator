@@ -5,23 +5,18 @@
     Authors: Luna Nielsen
 */
 import std.stdio;
-import creator.app;
-import gtk.Main;
-import crashdump;
-import std.process;
+import std.string;
+import creator.core;
 
 int main(string[] args)
 {
-    // We do NOT want this app themed
-    environment.remove("GTK_THEME");
 
-    try {
-        Main.init(args);
-        (new InochiCreator).showAll();
-        Main.run();
-    } catch(Throwable throwable) {
-        crashdump.crashdump(throwable, args);
-        return -1;
+    incOpenWindow();
+    while(!incIsCloseRequested()) {
+        incBeginLoop();
+
+        incEndLoop();
     }
+    incFinalize();
     return 0;
 }

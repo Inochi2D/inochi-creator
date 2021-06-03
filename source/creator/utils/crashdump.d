@@ -1,9 +1,8 @@
-module crashdump;
+module creator.utils.crashdump;
 import std.file : write;
-import i18n;
+//import i18n;
 import std.stdio;
 import std.path;
-import vibe.data.json;
 import std.traits;
 import std.array;
 

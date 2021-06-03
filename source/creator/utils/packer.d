@@ -4,7 +4,7 @@
     
     Authors: Luna Nielsen
 */
-module core.packer;
+module tokeep.packer;
 import gl3n.linalg;
 import gl3n.math;
 import std.exception;
