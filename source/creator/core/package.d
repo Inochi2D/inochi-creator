@@ -26,23 +26,29 @@ private {
     Texture inLogo;
 
     ImFont* mainFont;
+    ImFont* iconFont;
     ImFont* biggerFont;
 
     bool showStatsForNerds;
+    bool dbgShowStyleEditor;
+    bool dbgShowDebugger;
+
+    bool isDarkMode = true;
 }
 
 /**
     Finalizes everything by freeing imgui resources, etc.
 */
 void incFinalize() {
-        // Cleanup
-        ImGuiOpenGLBackend.shutdown();
-        ImGui_ImplSDL2_Shutdown();
-        igDestroyContext(null);
 
-        SDL_GL_DeleteContext(gl_context);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
+    // Cleanup
+    ImGuiOpenGLBackend.shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    igDestroyContext(null);
+
+    SDL_GL_DeleteContext(gl_context);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }
 
 /**
@@ -50,6 +56,27 @@ void incFinalize() {
 */
 ImGuiID incGetViewportDockSpace() {
     return viewportDock;
+}
+
+/**
+    Initialize styling
+*/
+void incInitStyling() {
+    auto style = igGetStyle();
+    style.WindowBorderSize = 0;
+    style.ChildBorderSize = 0;
+    style.PopupBorderSize = 0;
+    style.FrameBorderSize = 0;
+    style.TabBorderSize = 0;
+
+    style.WindowRounding = 6;
+    style.ChildRounding = 6;
+    style.FrameRounding = 6;
+    style.PopupRounding = 6;
+    style.ScrollbarRounding = 18;
+    style.GrabRounding = 6;
+    style.LogSliderDeadzone = 6;
+    style.TabRounding = 6;
 }
 
 /**
@@ -69,30 +96,64 @@ void incOpenWindow() {
     SDL_GL_MakeCurrent(window, gl_context);
     SDL_GL_SetSwapInterval(1);
     loadOpenGL();
-
-    // Setup IMGUI
-    igCreateContext(null);
-    io = igGetIO();
-
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Navigation
-    io.ConfigWindowsResizeFromEdges = true;                     // Enable Edge resizing
-    igStyleColorsDark(null);
-    ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-    ImGuiOpenGLBackend.init("#version 130\0".ptr);
-
-    // Font loading
-    mainFont = loadFont("Kosugi Maru", cast(ubyte[])import("KosugiMaru-Regular.ttf"));
-    biggerFont = loadFont("Kosugi Maru", cast(ubyte[])import("KosugiMaru-Regular.ttf"), 18);
-
+    
     // Setup Inochi2D
     inInit(() { return igGetTime(); });
+
+    incCreateContext();
+
 
     // Load image resources
     inLogo = new Texture(ShallowTexture(cast(ubyte[])import("logo.png")));
 
     // Load Settings
     showStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
+
+    // Font loading
+    incUseOpenDyslexic(incSettingsGet!bool("UseOpenDyslexic"));
+}
+
+void incCreateContext() {
+
+    // Setup IMGUI
+    igCreateContext(null);
+    io = igGetIO();
+
+    incSetDarkMode(incSettingsGet!bool("DarkMode", true));
+
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Navigation
+    io.ConfigWindowsResizeFromEdges = true;                     // Enable Edge resizing
+    ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
+    ImGuiOpenGLBackend.init("#version 130\0".ptr);
+
+    incInitStyling();
+}
+
+void incRecreateContext() {
+    ImGuiOpenGLBackend.shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    igDestroyContext(null);
+    
+    incCreateContext();
+
+    // Inochi2D's camera gets messed up by context
+    // recreation, redo it
+    inGetCamera().position = incTargetPosition;
+    inGetCamera().scale = vec2(incTargetZoom);
+}
+
+void incSetDarkMode(bool darkMode) {
+    if (darkMode) igStyleColorsDark(null);
+    else igStyleColorsLight(null);
+
+    // Set Dark mode setting
+    incSettingsSet("DarkMode", darkMode);
+    isDarkMode = darkMode;
+}
+
+bool incGetDarkMode() {
+    return isDarkMode;
 }
 
 /**
@@ -107,6 +168,12 @@ void incBeginLoop() {
         if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
             done = true;
     }
+    
+    incFontsProcessChanges();
+
+    mainFont = incFontsGet(0);
+    iconFont = incFontsGet(1);
+    biggerFont = incFontsGet(2);
 
     // Start the Dear ImGui frame
     ImGuiOpenGLBackend.new_frame();
@@ -161,10 +228,51 @@ ImFont* incBiggerFont() {
 }
 
 /**
+    Bigger sized font
+*/
+ImFont* incIconFont() {
+    return iconFont;
+}
+
+/**
     Gets the Inochi2D Logo
 */
 GLuint incGetLogo() {
     return inLogo.getTextureId;
+}
+
+void incSetFontPair(string fontPair) {
+    incFontsClear();
+    switch(fontPair) {
+        default:
+        case "Kosugi Maru":
+            incFontsLoad("Kosugi Maru", cast(ubyte[])import("KosugiMaru-Regular.ttf"));
+            incFontsLoad(
+                "MaterialIcons", 
+                cast(ubyte[])import("MaterialIcons.ttf"), 
+                16, 
+                [cast(ImWchar)0xE000, cast(ImWchar)0xF23B].ptr, // Range aquired from CharMap
+                false
+            );
+            incFontsLoad("Kosugi Maru", cast(ubyte[])import("KosugiMaru-Regular.ttf"), 18);
+            break;
+        case "OpenDyslexic":
+            incFontsLoad("OpenDyslexic", cast(ubyte[])import("OpenDyslexic.otf"), 18);
+            incFontsLoad(
+                "MaterialIcons", 
+                cast(ubyte[])import("MaterialIcons.ttf"), 
+                18, 
+                [cast(ImWchar)0xE000, cast(ImWchar)0xF23B].ptr, // Range aquired from CharMap
+                false
+            );
+            incFontsLoad("OpenDyslexic", cast(ubyte[])import("OpenDyslexic.otf"), 24);
+            break;
+    }
+}
+
+void incUseOpenDyslexic(bool useOpenDyslexic) {
+    incSetFontPair(useOpenDyslexic ? "OpenDyslexic" : "Kosugi Maru");
+    incSettingsSet("UseOpenDyslexic", useOpenDyslexic);
 }
 
 /**
@@ -235,6 +343,17 @@ void incRenderMenu() {
             if(igMenuItemBool("Settings", "", false, true)) {
                 incPushWindow(new SettingsWindow);
             }
+            
+            debug {
+                igSpacing();
+                igSpacing();
+
+                igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "ImGui Debugging");
+
+                igSeparator();
+                if(igMenuItemBool("Style Editor", "", false, true)) dbgShowStyleEditor = !dbgShowStyleEditor;
+                if(igMenuItemBool("ImGui Debugger", "", false, true)) dbgShowDebugger = !dbgShowDebugger;
+            }
             igEndMenu();
         }
 
@@ -295,6 +414,9 @@ void incRenderMenu() {
         }
 
         igEndMainMenuBar();
+
+        if (dbgShowStyleEditor) igShowStyleEditor(igGetStyle());
+        if (dbgShowDebugger) igShowAboutWindow(&dbgShowDebugger);
     }
 }
 

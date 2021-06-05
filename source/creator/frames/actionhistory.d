@@ -14,13 +14,12 @@ protected:
     override
     void onUpdate() {
 
-
         igText("Undo History");
         igSeparator();
 
         ImVec2 avail;
         igGetContentRegionAvail(&avail);
-        if (igBeginChildStr("##ActionList", ImVec2(0, avail.y-28), true, 0)) {
+        igBeginChildStr("##ActionList", ImVec2(0, avail.y-28), true, 0);
             if (incActionHistory().length > 0) {
 
                 foreach(i, action; incActionHistory()) {
@@ -34,8 +33,8 @@ protected:
                     }
                 }
             }
-            igEndChild();
-        }
+        igEndChild();
+        
 
         igSeparator();
         if (igButton("Clear History", ImVec2(0, 0))) {

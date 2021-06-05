@@ -2,6 +2,7 @@ module creator.frames.nodes;
 import creator.core.actionstack;
 import creator.frames;
 import creator;
+import creator.core;
 import bindbc.imgui;
 import inochi2d;
 import std.string;
@@ -156,30 +157,19 @@ protected:
 
         ImVec2 avail;
         igGetContentRegionAvail(&avail);
-        igBeginChildStr("##nolabel", ImVec2(0, avail.y-24), false, ImGuiWindowFlags_HorizontalScrollbar);
+        
+        igBeginChildStr("##nolabel", ImVec2(0, avail.y-28), false, ImGuiWindowFlags_HorizontalScrollbar);
             treeAddNode!true(incActivePuppet.root);
         igEndChild();
+
         if (igIsItemClicked(ImGuiMouseButton_Left)) {
             incSelectNode(null);
         }
         
-        if (igButton("Trash", ImVec2(0, 0))) {
-            Node payloadNode = incSelectedNode();
-
-            // Push action to stack
-            incActionPush(new NodeChangeAction(
-                payloadNode.parent,
-                payloadNode,
-                null
-            ));
-
-            payloadNode.parent = null;
-            incActivePuppet().rescanNodes();
-        }
-        if(igBeginDragDropTarget()) {
-            ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE", 0);
-            if (payload !is null) {
-                Node payloadNode = *cast(Node*)payload.Data;
+        igPushFont(incIconFont());
+            //igText("\ue92e", ImVec2(0, 0));
+            if (igButton("\ue92e", ImVec2(24, 24))) {
+                Node payloadNode = incSelectedNode();
 
                 // Push action to stack
                 incActionPush(new NodeChangeAction(
@@ -190,11 +180,27 @@ protected:
 
                 payloadNode.parent = null;
                 incActivePuppet().rescanNodes();
-                
-                return;
             }
-            igEndDragDropTarget();
-        }
+            if(igBeginDragDropTarget()) {
+                ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE", 0);
+                if (payload !is null) {
+                    Node payloadNode = *cast(Node*)payload.Data;
+
+                    // Push action to stack
+                    incActionPush(new NodeChangeAction(
+                        payloadNode.parent,
+                        payloadNode,
+                        null
+                    ));
+
+                    payloadNode.parent = null;
+                    incActivePuppet().rescanNodes();
+                    
+                    return;
+                }
+                igEndDragDropTarget();
+            }
+        igPopFont();
     }
 
 public:

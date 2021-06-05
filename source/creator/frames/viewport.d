@@ -41,7 +41,7 @@ protected:
         auto camera = inGetCamera();
 
         // Resize Inochi2D viewport according to frame
-        if (igBeginChildStr("##ViewportMainControls", ImVec2(0, 32), false, 0)) {
+        igBeginChildStr("##ViewportMainControls", ImVec2(0, 32), false, 0);
             if (igButton("P", ImVec2(0, 0))) {
                 inDbgDrawMeshVertexPoints = !inDbgDrawMeshVertexPoints;
             }
@@ -53,14 +53,13 @@ protected:
             if (igButton("O", ImVec2(0, 0))) {
                 inDbgDrawMeshOrientation = !inDbgDrawMeshOrientation;
             }
-            igEndChild();
-        }
+        igEndChild();
 
         // Draw viewport itself
         ImVec2 currSize;
         igGetContentRegionAvail(&currSize);
         currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
-        if (igBeginChildStr("##ViewportView", ImVec2(0, currSize.y-24), false, 0)) {
+        igBeginChildStr("##ViewportView", ImVec2(0, currSize.y-24), false, 0);
 
             if (currSize != lastSize) {
                 inSetViewport(cast(int)currSize.x, cast(int)currSize.y-32);
@@ -81,7 +80,6 @@ protected:
             );
 
             lastSize = currSize;
-            igEndChild();
 
             if (igIsWindowHovered(ImGuiFocusedFlags_ChildWindows)) {
 
@@ -113,10 +111,10 @@ protected:
                 camera.scale = vec2(zoom);
                 incTargetZoom = zoom;
             }
-        }
+        igEndChild();
 
         igGetContentRegionAvail(&currSize);
-        if (igBeginChildStr("##ViewportControls", ImVec2(0, currSize.y), false, 0)) {
+        igBeginChildStr("##ViewportControls", ImVec2(0, currSize.y), false, 0);
             igPushItemWidth(72);
                 if (igSliderFloat("##Zoom", &zoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX, "%.2f", 0)) {
                     camera.scale = vec2(zoom);
@@ -141,8 +139,7 @@ protected:
 
 
             igPopItemWidth();
-            igEndChild();
-        }
+        igEndChild();
 
         // Handle smooth move
         camera.scale = vec2(dampen(camera.scale.x, incTargetZoom, deltaTime, 1));

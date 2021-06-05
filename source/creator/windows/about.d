@@ -14,7 +14,7 @@ protected:
     override
     void onUpdate() {
 
-        if (igBeginChildStr("##LogoArea", ImVec2(512, 72), false, 0)) {
+        igBeginChildStr("##LogoArea", ImVec2(512, 72), false, 0);
             igImage(
                 cast(void*)incGetLogo(), 
                 ImVec2(64, 64), 
@@ -31,17 +31,15 @@ protected:
             igPushFont(incBiggerFont());
                 igText("Inochi Creator");
             igPopFont();
-            igEndChild();
-        }
-        if (igBeginChildStr("##CreditsArea", ImVec2(512, 256), false, 0)) {
+        igEndChild();
+        igBeginChildStr("##CreditsArea", ImVec2(512, 256), false, 0);
 
             igText("Created By");
             igSeparator();
 
             igText(import("CONTRIBUTORS.md"));
 
-            igEndChild();
-        }
+        igEndChild();
 
         if (igButton("Fork us on GitHub", ImVec2(0, 0))) {
             openLink("https://github.com/Inochi2D/inochi-creator");

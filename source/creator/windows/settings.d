@@ -11,6 +11,7 @@ class SettingsWindow : Window {
 private:
     bool generalTabOpen = true;
     bool otherTabOpen = true;
+    bool useOpenDyslexic;
 
 protected:
     override
@@ -20,7 +21,7 @@ protected:
 
     override
     void onUpdate() {
-        if (igBeginChildStr("SettingsWindowChild", ImVec2(512, 512), false, 0)) {
+        igBeginChildStr("SettingsWindowChild", ImVec2(512, 512), false, 0);
             if (igBeginTabBar("SettingsWindowTabs", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
 
                 ImVec2 avail;
@@ -28,7 +29,29 @@ protected:
 
                 if(igBeginTabItem("General", &generalTabOpen, ImGuiTabItemFlags_NoCloseButton | ImGuiTabItemFlags_NoCloseWithMiddleMouseButton)) {
 
-                    if (igBeginChildStr("#GeneralTabItems", ImVec2(0, avail.y-24), false, 0)) {
+                    igBeginChildStr("#GeneralTabItems", ImVec2(0, avail.y-24), false, 0);
+                        igText("Look and Feel");
+                        igSeparator();
+                        if(igBeginCombo("Color Theme", incGetDarkMode() ? "Dark" : "Light", 0)) {
+
+                            if (igSelectableBool("Dark", incGetDarkMode(), 0, ImVec2(0, 0))) incSetDarkMode(true);
+                            if (igSelectableBool("Light", !incGetDarkMode(), 0, ImVec2(0, 0))) incSetDarkMode(false);
+
+                            igEndCombo();
+                        }
+                        if(igBeginCombo("Language", "English", 0)) {
+                            igEndCombo();
+                        }
+
+                        useOpenDyslexic = incSettingsGet!bool("UseOpenDyslexic");
+                        if(igCheckbox("Use OpenDyslexic", &useOpenDyslexic)) {
+                            incUseOpenDyslexic(useOpenDyslexic);
+                        }
+
+
+
+                        igSpacing();
+                        igSpacing();
 
                         igText("Undo/Redo History");
                         igSeparator();
@@ -38,18 +61,16 @@ protected:
                             incActionSetUndoHistoryLength(maxHistory);
                         }
 
-                        igEndChild();
-                    }
+                    igEndChild();
 
                     igEndTabItem();
                 }
 
                 if(igBeginTabItem("Other", &otherTabOpen, ImGuiTabItemFlags_NoCloseButton | ImGuiTabItemFlags_NoCloseWithMiddleMouseButton)) {
 
-                    if (igBeginChildStr("#OtherTabItems", ImVec2(0, avail.y-24), false, 0)) {
+                    igBeginChildStr("#OtherTabItems", ImVec2(0, avail.y-24), false, 0);
 
-                        igEndChild();
-                    }
+                    igEndChild();
                     igEndTabItem();
                 }
 
@@ -61,8 +82,7 @@ protected:
                 this.close();
             }
 
-            igEndChild();
-        }
+        igEndChild();
     }
 
     override

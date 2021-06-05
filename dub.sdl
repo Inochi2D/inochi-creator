@@ -10,7 +10,7 @@ dependency "bindbc-sdl" version="~>0.21.4"
 dependency "inochi2d" version="~>1.0.0"
 targetPath "out/"
 versions "GL_42" "GL_AllowDeprecated" "USE_SDL2" "USE_GL"
-stringImportPaths "stylesheets/" "res/"
+stringImportPaths "res/"
 stringImportPaths "./"
 
 configuration "posix" {

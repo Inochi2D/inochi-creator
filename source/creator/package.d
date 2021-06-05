@@ -83,12 +83,12 @@ void incSelectNode(Node n = null) {
 /**
     Target camera position in scene
 */
-vec2 incTargetPosition;
+vec2 incTargetPosition = vec2(0);
 
 /**
     Target camera zoom in scene
 */
-float incTargetZoom;
+float incTargetZoom = 1;
 
 enum incVIEWPORT_ZOOM_MIN = 0.15;
 enum incVIEWPORT_ZOOM_MAX = 8.0;
