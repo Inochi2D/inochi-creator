@@ -1,9 +1,73 @@
 module creator.frames.nodes;
+import creator.core.actionstack;
 import creator.frames;
 import creator;
 import bindbc.imgui;
 import inochi2d;
 import std.string;
+import std.format;
+
+/**
+    An action that happens when a node is changed
+*/
+class NodeChangeAction : Action {
+public:
+    /**
+        Creates a new node change action
+    */
+    this(Node prev, Node self, Node new_) {
+        this.prevParent = prev;
+        this.self = self;
+        this.newParent = new_;
+    }
+
+    /**
+        Previous parent of node
+    */
+    Node prevParent;
+
+    /**
+        Node itself
+    */
+    Node self;
+
+    /**
+        New parent of node
+    */
+    Node newParent;
+
+    /**
+        Rollback
+    */
+    void rollback() {
+        self.parent = prevParent;
+        incActivePuppet().rescanNodes();
+    }
+
+    /**
+        Redo
+    */
+    void redo() {
+        self.parent = newParent;
+        incActivePuppet().rescanNodes();
+    }
+
+    /**
+        Describe the action
+    */
+    string describe() {
+        if (newParent is null) return "Deleted %s".format(self.name);
+        return "Moved %s to %s".format(self.name, newParent.name);
+    }
+
+    /**
+        Describe the action
+    */
+    string describeUndo() {
+        if (prevParent is null) return "Created %s".format(self.name);
+        return "Moved %s from %s".format(self.name, prevParent.name);
+    }
+}
 
 /**
     The logger frame
@@ -53,6 +117,14 @@ protected:
                 ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE", 0);
                 if (payload !is null) {
                     Node payloadNode = *cast(Node*)payload.Data;
+
+                    // Push action to stack
+                    incActionPush(new NodeChangeAction(
+                        payloadNode.parent,
+                        payloadNode,
+                        n
+                    ));
+
                     payloadNode.parent = n;
                     
                     igTreePop();
@@ -93,16 +165,30 @@ protected:
         
         if (igButton("Trash", ImVec2(0, 0))) {
             Node payloadNode = incSelectedNode();
+
+            // Push action to stack
+            incActionPush(new NodeChangeAction(
+                payloadNode.parent,
+                payloadNode,
+                null
+            ));
+
             payloadNode.parent = null;
-            destroy(payloadNode);
             incActivePuppet().rescanNodes();
         }
         if(igBeginDragDropTarget()) {
             ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE", 0);
             if (payload !is null) {
                 Node payloadNode = *cast(Node*)payload.Data;
+
+                // Push action to stack
+                incActionPush(new NodeChangeAction(
+                    payloadNode.parent,
+                    payloadNode,
+                    null
+                ));
+
                 payloadNode.parent = null;
-                destroy(payloadNode);
                 incActivePuppet().rescanNodes();
                 
                 return;

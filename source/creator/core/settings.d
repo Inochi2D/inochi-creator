@@ -40,6 +40,16 @@ T incSettingsGet(T)(string name) {
 }
 
 /**
+    Gets a value from the settings store, with custom default value
+*/
+T incSettingsGet(T)(string name, T default_) {
+    if (name in settings) {
+        return settings[name].get!T;
+    }
+    return default_;
+}
+
+/**
     Gets whether a setting is obtainable
 */
 bool incSettingsCanGet(string name) {

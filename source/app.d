@@ -9,6 +9,7 @@ import std.string;
 import creator.core;
 import creator.frames;
 import creator.windows;
+import creator.core.actionstack;
 import inochi2d;
 import creator;
 
@@ -16,6 +17,7 @@ int main(string[] args)
 {
     incSettingsLoad();
     incInitFrames();
+    incActionInit();
 
     incOpenWindow();
     incNewProject();

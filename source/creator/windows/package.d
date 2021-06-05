@@ -5,6 +5,7 @@ import std.string;
 import std.conv;
 
 public import creator.windows.about;
+public import creator.windows.settings;
 
 /**
     A Widget
@@ -21,12 +22,14 @@ protected:
     abstract void onUpdate();
 
     void onBeginUpdate(int id) {
-        igBegin((name~"##"~id.text).toStringz, &visible, flags);
+        igBegin(name.toStringz, &visible, flags);
     }
     
     void onEndUpdate() {
         igEnd();
     }
+
+    void onClose() { }
 
 public:
 
@@ -36,6 +39,10 @@ public:
     this(string name) {
         this.name_ = name;
         this.restore();
+    }
+
+    final void close() {
+        this.visible = false;
     }
 
     final string name() {
@@ -97,6 +104,7 @@ void incPushWindow(Window window) {
     Pops a window
 */
 void incPopWindow() {
+    windowStack[$-1].onClose();
     windowStack.length--;
     if (windowStack.length > 0) windowStack[$-1].restore();
 }

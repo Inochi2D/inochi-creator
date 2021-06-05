@@ -1,6 +1,7 @@
 module creator;
 import inochi2d;
 import inochi2d.core.dbg;
+import creator.core.actionstack;
 
 /**
     A project
@@ -47,6 +48,8 @@ void incNewProject() {
 
     incTargetPosition = vec2(0);
     incTargetZoom = 1;
+
+    incActionClearHistory();
 }
 
 /**

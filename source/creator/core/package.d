@@ -14,6 +14,7 @@ import std.stdio;
 
 public import bindbc.imgui;
 public import creator.core.settings;
+public import creator.core.actionstack;
 
 private {
     SDL_GLContext gl_context;
@@ -218,6 +219,22 @@ void incRenderMenu() {
             }
 
             if(igMenuItemBool("Quit", "Alt+F4", false, true)) incExit();
+            igEndMenu();
+        }
+        
+        if (igBeginMenu("Edit", true)) {
+            if(igMenuItemBool("Undo", "Ctrl+Z", false, incActionCanUndo())) incActionUndo();
+            if(igMenuItemBool("Redo", "Ctrl+Shift+Z", false, incActionCanRedo())) incActionRedo();
+            
+            igSeparator();
+            if(igMenuItemBool("Cut", "Ctrl+X", false, false)) {}
+            if(igMenuItemBool("Copy", "Ctrl+C", false, false)) {}
+            if(igMenuItemBool("Paste", "Ctrl+V", false, false)) {}
+
+            igSeparator();
+            if(igMenuItemBool("Settings", "", false, true)) {
+                incPushWindow(new SettingsWindow);
+            }
             igEndMenu();
         }
 
