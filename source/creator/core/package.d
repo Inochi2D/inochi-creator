@@ -13,6 +13,7 @@ import std.string;
 import std.stdio;
 
 public import bindbc.imgui;
+public import creator.core.settings;
 
 private {
     SDL_GLContext gl_context;
@@ -86,7 +87,11 @@ void incOpenWindow() {
     // Setup Inochi2D
     inInit(() { return igGetTime(); });
 
+    // Load image resources
     inLogo = new Texture(ShallowTexture(cast(ubyte[])import("logo.png")));
+
+    // Load Settings
+    showStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
 }
 
 /**
@@ -226,7 +231,10 @@ void incRenderMenu() {
                 if (frame.alwaysVisible) continue;
 
                 // Show menu item for frame
-                if(igMenuItemBool(frame.name.ptr, null, frame.visible, true)) frame.visible = !frame.visible;
+                if(igMenuItemBool(frame.name.ptr, null, frame.visible, true)) {
+                    frame.visible = !frame.visible;
+                    incSettingsSet(frame.name~".visible", frame.visible);
+                }
             }
 
             // Spacing
@@ -238,6 +246,7 @@ void incRenderMenu() {
 
             if (igMenuItemBool("Show Stats for Nerds", "", showStatsForNerds, true)) {
                 showStatsForNerds = !showStatsForNerds;
+                incSettingsSet("NerdStats", showStatsForNerds);
             }
 
             igEndMenu();

@@ -105,8 +105,7 @@ protected:
 
 public:
     this() {
-        super("Inspector");
-        this.visible = true;
+        super("Inspector", true);
     }
 }
 

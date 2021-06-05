@@ -21,3 +21,4 @@ testing
 
 *.inp
 imgui.ini
+settings.json

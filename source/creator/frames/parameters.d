@@ -15,8 +15,7 @@ protected:
 
 public:
     this() {
-        super("Parameters");
-        this.visible = true;
+        super("Parameters", true);
     }
 }
 

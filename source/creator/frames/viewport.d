@@ -151,9 +151,8 @@ protected:
 
 public:
     this() {
-        super("Viewport");
+        super("Viewport", true);
         this.alwaysVisible = true;
-        this.visible = true;
     }
 
 }

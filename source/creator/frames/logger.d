@@ -15,8 +15,7 @@ protected:
 
 public:
     this() {
-        super("Logger");
-        this.visible = true;
+        super("Logger", false);
     }
 }
 

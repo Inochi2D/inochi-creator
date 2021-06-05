@@ -1,4 +1,5 @@
 module creator.frames;
+import creator.core.settings;
 import bindbc.imgui;
 import std.string;
 
@@ -22,12 +23,14 @@ protected:
         igEnd();
     }
 
+    void onInit() { }
+
 public:
 
     /**
         Whether the frame is visible
     */
-    bool visible = false;
+    bool visible;
 
     /**
         Whether the frame is always visible
@@ -37,8 +40,19 @@ public:
     /**
         Constructs a frame
     */
-    this(string name) {
+    this(string name, bool defaultVisibility) {
         this.name_ = name;
+        this.visible = defaultVisibility;
+    }
+
+    /**
+        Initializes the Frame
+    */
+    final void init_() {
+        onInit();
+        if (incSettingsCanGet(this.name_~".visible")) {
+            visible = incSettingsGet!bool(this.name_~".visible");
+        }
     }
 
     final string name() {
@@ -79,6 +93,15 @@ void incUpdateFrames() {
         if (!frame.visible && !frame.alwaysVisible) continue;
 
         frame.update();
+    }
+}
+
+/**
+    Draws frames
+*/
+void incInitFrames() {
+    foreach(frame; incFrames) {
+        frame.init_();
     }
 }
 

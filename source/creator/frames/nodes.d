@@ -114,8 +114,7 @@ protected:
 public:
 
     this() {
-        super("Nodes");
-        this.visible = true;
+        super("Nodes", true);
     }
 }
 

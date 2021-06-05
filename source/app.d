@@ -14,6 +14,9 @@ import creator;
 
 int main(string[] args)
 {
+    incSettingsLoad();
+    incInitFrames();
+
     incOpenWindow();
     incNewProject();
 
@@ -31,6 +34,7 @@ int main(string[] args)
             incUpdateWindows();
         incEndLoop();
     }
+    incSettingsSave();
     incFinalize();
     return 0;
 }
