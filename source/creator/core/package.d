@@ -1,15 +1,18 @@
 module creator.core;
 import creator.core.font;
 import creator.frames;
+import creator.windows;
+import creator.utils.link;
 import creator;
 
 import bindbc.sdl;
-import bindbc.imgui;
 import bindbc.opengl;
 import inochi2d;
 import tinyfiledialogs;
 import std.string;
 import std.stdio;
+
+public import bindbc.imgui;
 
 private {
     SDL_GLContext gl_context;
@@ -17,6 +20,13 @@ private {
     ImGuiIO* io;
     bool done = false;
     ImGuiID viewportDock;
+
+    Texture inLogo;
+
+    ImFont* mainFont;
+    ImFont* biggerFont;
+
+    bool showStatsForNerds;
 }
 
 /**
@@ -70,11 +80,13 @@ void incOpenWindow() {
     ImGuiOpenGLBackend.init("#version 130\0".ptr);
 
     // Font loading
-    loadFont("Kosugi Maru", cast(ubyte[])import("KosugiMaru-Regular.ttf"));
+    mainFont = loadFont("Kosugi Maru", cast(ubyte[])import("KosugiMaru-Regular.ttf"));
+    biggerFont = loadFont("Kosugi Maru", cast(ubyte[])import("KosugiMaru-Regular.ttf"), 18);
 
     // Setup Inochi2D
     inInit(() { return igGetTime(); });
 
+    inLogo = new Texture(ShallowTexture(cast(ubyte[])import("logo.png")));
 }
 
 /**
@@ -129,10 +141,36 @@ void incExit() {
 }
 
 /**
+    Main font
+*/
+ImFont* incMainFont() {
+    return mainFont;
+}
+
+/**
+    Bigger sized font
+*/
+ImFont* incBiggerFont() {
+    return biggerFont;
+}
+
+/**
+    Gets the Inochi2D Logo
+*/
+GLuint incGetLogo() {
+    return inLogo.getTextureId;
+}
+
+/**
     Renders the main menu
 */
 void incRenderMenu() {
     if(igBeginMainMenuBar()) {
+        ImVec2 avail;
+        igGetContentRegionAvail(&avail);
+        igImage(cast(void*)inLogo.getTextureId, ImVec2(avail.y*2, avail.y*2), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+        igSeparator();
+
         if (igBeginMenu("File", true)) {
             if (igBeginMenu("Open", true)) {
                 igEndMenu();
@@ -179,7 +217,7 @@ void incRenderMenu() {
         }
 
         if (igBeginMenu("View", true)) {
-            igText("Frames");
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Frames");
             igSeparator();
 
             foreach(frame; incFrames) {
@@ -190,11 +228,45 @@ void incRenderMenu() {
                 // Show menu item for frame
                 if(igMenuItemBool(frame.name.ptr, null, frame.visible, true)) frame.visible = !frame.visible;
             }
+
+            // Spacing
+            igSpacing();
+            igSpacing();
+            
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Extras");
+            igSeparator();
+
+            if (igMenuItemBool("Show Stats for Nerds", "", showStatsForNerds, true)) {
+                showStatsForNerds = !showStatsForNerds;
+            }
+
             igEndMenu();
         }
 
-        igSeparator();
-        igText("%.0fms %.1fFPS", 1000f/io.Framerate, io.Framerate);
+        if (igBeginMenu("Help", true)) {
+
+            if(igMenuItemBool("Tutorial", "(TODO)", false, false)) { }
+            igSeparator();
+            
+            if(igMenuItemBool("Online Documentation", "", false, true)) {
+                openLink("https://github.com/Inochi2D/inochi-creator/wiki");
+            }
+            
+            if(igMenuItemBool("Inochi2D Documentation", "", false, true)) {
+                openLink("https://github.com/Inochi2D/inochi2d/wiki");
+            }
+            igSeparator();
+
+            if(igMenuItemBool("About", "", false, true)) {
+                incPushWindow(new AboutWindow);
+            }
+            igEndMenu();
+        }
+
+        if (showStatsForNerds) {
+            igSeparator();
+            igText("%.0fms %.1fFPS", 1000f/io.Framerate, io.Framerate);
+        }
 
         igEndMainMenuBar();
     }

@@ -108,7 +108,7 @@ protected:
                 }
 
                 // HANDLE ZOOM
-                zoom += io.MouseWheel/50;
+                zoom += (io.MouseWheel/50)*zoom;
                 zoom = clamp(zoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX);
                 camera.scale = vec2(zoom);
                 incTargetZoom = zoom;

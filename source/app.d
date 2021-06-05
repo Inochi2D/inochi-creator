@@ -8,6 +8,7 @@ import std.stdio;
 import std.string;
 import creator.core;
 import creator.frames;
+import creator.windows;
 import inochi2d;
 import creator;
 
@@ -25,8 +26,9 @@ int main(string[] args)
         // Begin IMGUI loop
         incBeginLoop();
             incRenderMenu();
-            incUpdateFrames();
 
+            incUpdateFrames();
+            incUpdateWindows();
         incEndLoop();
     }
     incFinalize();

@@ -11,6 +11,8 @@ dependency "inochi2d" version="~>1.0.0"
 targetPath "out/"
 versions "GL_42" "GL_AllowDeprecated" "USE_SDL2" "USE_GL"
 stringImportPaths "stylesheets/" "res/"
+stringImportPaths "./"
+
 configuration "posix" {
 	targetType "executable"
 }

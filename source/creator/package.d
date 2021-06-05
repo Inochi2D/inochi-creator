@@ -87,5 +87,5 @@ vec2 incTargetPosition;
 */
 float incTargetZoom;
 
-enum incVIEWPORT_ZOOM_MIN = 0.5;
+enum incVIEWPORT_ZOOM_MIN = 0.15;
 enum incVIEWPORT_ZOOM_MAX = 8.0;
