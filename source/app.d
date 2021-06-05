@@ -7,13 +7,25 @@
 import std.stdio;
 import std.string;
 import creator.core;
+import creator.frames;
+import inochi2d;
+import creator;
 
 int main(string[] args)
 {
-
     incOpenWindow();
+    incNewProject();
+
     while(!incIsCloseRequested()) {
+
+        // Update Inochi2D
+        inUpdate();
+        incUpdateActiveProject();
+
+        // Begin IMGUI loop
         incBeginLoop();
+            incRenderMenu();
+            incUpdateFrames();
 
         incEndLoop();
     }

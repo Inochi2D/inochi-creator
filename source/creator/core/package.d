@@ -1,15 +1,22 @@
 module creator.core;
+import creator.core.font;
+import creator.frames;
+import creator;
 
 import bindbc.sdl;
 import bindbc.imgui;
 import bindbc.opengl;
 import inochi2d;
+import tinyfiledialogs;
+import std.string;
+import std.stdio;
 
 private {
     SDL_GLContext gl_context;
     SDL_Window* window;
     ImGuiIO* io;
     bool done = false;
+    ImGuiID viewportDock;
 }
 
 /**
@@ -24,6 +31,13 @@ void incFinalize() {
         SDL_GL_DeleteContext(gl_context);
         SDL_DestroyWindow(window);
         SDL_Quit();
+}
+
+/**
+    Gets dockspace of the viewport
+*/
+ImGuiID incGetViewportDockSpace() {
+    return viewportDock;
 }
 
 /**
@@ -47,10 +61,16 @@ void incOpenWindow() {
     // Setup IMGUI
     igCreateContext(null);
     io = igGetIO();
+
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Navigation
+    io.ConfigWindowsResizeFromEdges = true;                     // Enable Edge resizing
     igStyleColorsDark(null);
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGuiOpenGLBackend.init("#version 130\0".ptr);
+
+    // Font loading
+    loadFont("Kosugi Maru", cast(ubyte[])import("KosugiMaru-Regular.ttf"));
 
     // Setup Inochi2D
     inInit(() { return igGetTime(); });
@@ -76,20 +96,7 @@ void incBeginLoop() {
     igNewFrame();
 
     // Add docking space
-    igDockSpaceOverViewport(null, cast(ImGuiDockNodeFlags)0, null);
-
-    if(igBeginMainMenuBar()) {
-        if (igBeginMenu("File", true)) {
-
-            if(igMenuItemBool("Quit", "Alt+F4", false, true)) incExit();
-            igEndMenu();
-        }
-
-        igSeparator();
-        igText("%.0fms %.1fFPS", 1000f/io.Framerate, io.Framerate);
-
-        igEndMainMenuBar();
-    }
+    viewportDock = igDockSpaceOverViewport(null, cast(ImGuiDockNodeFlags)0, null);
 }
 
 /**
@@ -119,6 +126,78 @@ bool incIsCloseRequested() {
 */
 void incExit() {
     done = true;
+}
+
+/**
+    Renders the main menu
+*/
+void incRenderMenu() {
+    if(igBeginMainMenuBar()) {
+        if (igBeginMenu("File", true)) {
+            if (igBeginMenu("Open", true)) {
+                igEndMenu();
+            }
+            
+            if(igMenuItemBool("Save", "Ctrl+S", false, true)) {
+            }
+            
+            if(igMenuItemBool("Save As...", "Ctrl+Shift+S", false, true)) {
+            }
+
+            if (igBeginMenu("Import", true)) {
+                if(igMenuItemBool("Inochi Puppet", "", false, true)) {
+                    const TFD_Filter[] filters = [
+                        { ["*.inp"], "Inochi2D Puppet (*.inp)" }
+                    ];
+
+                    c_str filename = tinyfd_openFileDialog("Import...", "", filters, false);
+                    if (filename !is null) {
+                        string file = cast(string)filename.fromStringz;
+                        incNewProject();
+                        incActiveProject().puppet = inLoadPuppet(file);
+                    }
+                }
+                igEndMenu();
+            }
+            if (igBeginMenu("Export", true)) {
+                if(igMenuItemBool("Inochi Puppet", "", false, true)) {
+                    const TFD_Filter[] filters = [
+                        { ["*.inp"], "Inochi2D Puppet (*.inp)" }
+                    ];
+
+                    c_str filename = tinyfd_saveFileDialog("Export...", "", filters);
+                    if (filename !is null) {
+                        string file = cast(string)filename.fromStringz;
+                        inWriteINPPuppet(incActivePuppet(), file);
+                    }
+                }
+                igEndMenu();
+            }
+
+            if(igMenuItemBool("Quit", "Alt+F4", false, true)) incExit();
+            igEndMenu();
+        }
+
+        if (igBeginMenu("View", true)) {
+            igText("Frames");
+            igSeparator();
+
+            foreach(frame; incFrames) {
+
+                // Skip frames that'll always be visible
+                if (frame.alwaysVisible) continue;
+
+                // Show menu item for frame
+                if(igMenuItemBool(frame.name.ptr, null, frame.visible, true)) frame.visible = !frame.visible;
+            }
+            igEndMenu();
+        }
+
+        igSeparator();
+        igText("%.0fms %.1fFPS", 1000f/io.Framerate, io.Framerate);
+
+        igEndMainMenuBar();
+    }
 }
 
 static this() {
