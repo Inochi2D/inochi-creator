@@ -58,6 +58,14 @@ protected:
         // Draw viewport itself
         ImVec2 currSize;
         igGetContentRegionAvail(&currSize);
+
+        // We do not want the viewport to be NaN
+        // That will crash the app
+        if (currSize.x.isNaN || currSize.y.isNaN) {
+            currSize = ImVec2(0, 0);
+        }
+
+        // Also viewport of 0 is too small, minimum 128.
         currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
         igBeginChildStr("##ViewportView", ImVec2(0, currSize.y-24), false, 0);
 
