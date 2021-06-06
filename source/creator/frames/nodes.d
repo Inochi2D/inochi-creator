@@ -57,6 +57,7 @@ public:
         Describe the action
     */
     string describe() {
+        if (prevParent is null) return "Created %s".format(self.name);
         if (newParent is null) return "Deleted %s".format(self.name);
         return "Moved %s to %s".format(self.name, newParent.name);
     }
@@ -82,6 +83,72 @@ protected:
         }
     }
 
+    string typeIdToIcon(string typeId) {
+        switch(typeId) {
+            case "Part": return "\ue40a\0";
+            case "Mask": return "\ue14e\0";
+            case "PathDeform": return "\ue922\0";
+            default: return "\ue97a\0"; 
+        }
+    }
+
+    void moveChildWithHistory(Node n, Node to) {
+        // Push action to stack
+        incActionPush(new NodeChangeAction(
+            n.parent,
+            n,
+            to
+        ));
+        n.parent = to;
+        incActivePuppet().rescanNodes();
+    }
+
+    void addChildWithHistory(Node n, Node to) {
+        // Push action to stack
+        incActionPush(new NodeChangeAction(
+            null,
+            n,
+            to
+        ));
+        to.addChild(n);
+        incActivePuppet().rescanNodes();
+    }
+
+    void deleteChildWithHistory(Node n) {
+        // Push action to stack
+        incActionPush(new NodeChangeAction(
+            n.parent,
+            n,
+            null
+        ));
+
+        n.parent = null;
+        incActivePuppet().rescanNodes();
+    }
+
+    void nodeActionsPopup(bool isRoot = false)(Node n) {
+        if (igIsItemClicked(ImGuiMouseButton_Right)) {
+            igOpenPopup("NodeActionsPopup", 0);
+        }
+
+        if (igBeginPopup("NodeActionsPopup", 0)) {
+            if (igBeginMenu("Add", true)) {
+                if (igMenuItemBool("Node", "", false, true)) this.addChildWithHistory(new Node, n);
+                if (igMenuItemBool("Mask", "", false, true))this.addChildWithHistory(new Mask, n);
+                if (igMenuItemBool("PathDeform", "", false, true)) this.addChildWithHistory(new PathDeform, n);
+                
+                igEndMenu();
+            }
+            
+            // We don't want to delete the root
+            if (igMenuItemBool("Delete", "", false, !isRoot)) {
+                this.deleteChildWithHistory(n);
+            }
+
+            igEndPopup();
+        }
+    }
+
     void treeAddNode(bool isRoot = false)(Node n) {
         igPushIDInt(n.uuid());
 
@@ -97,6 +164,11 @@ protected:
             
             static if (!isRoot) {
                 bool selected = n == incSelectedNode();
+
+                igPushFont(incIconFont());
+                    igText(typeIdToIcon(n.typeId).ptr);
+                igPopFont();
+                igSameLine(0, 2);
                 if (igSelectableBool(n.name.toStringz, selected, ImGuiSelectableFlags_None, ImVec2(0, 0))) {
                     if (selected) {
                         vec3 tr = n.transform.translation;
@@ -104,29 +176,27 @@ protected:
                     }
                     incSelectNode(n);
                 }
+                this.nodeActionsPopup(n);
 
-                if(igBeginDragDropSource(0)) {
+                if(igBeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
                     igSetDragDropPayload("_PUPPETNTREE", cast(void*)&n, (&n).sizeof, ImGuiCond_Always);
                     igText(n.name.toStringz);
                     igEndDragDropSource();
                 }
             } else {
+                igPushFont(incIconFont());
+                    igText("\ue97a");
+                igPopFont();
+                igSameLine(0, 2);
                 igText(n.name.toStringz);
+                this.nodeActionsPopup!true(n);
             }
 
             if(igBeginDragDropTarget()) {
                 ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE", 0);
                 if (payload !is null) {
                     Node payloadNode = *cast(Node*)payload.Data;
-
-                    // Push action to stack
-                    incActionPush(new NodeChangeAction(
-                        payloadNode.parent,
-                        payloadNode,
-                        n
-                    ));
-
-                    payloadNode.parent = n;
+                    this.moveChildWithHistory(payloadNode, n);
                     
                     igTreePop();
                     igPopID();
@@ -170,32 +240,16 @@ protected:
             //igText("\ue92e", ImVec2(0, 0));
             if (igButton("\ue92e", ImVec2(24, 24))) {
                 Node payloadNode = incSelectedNode();
-
-                // Push action to stack
-                incActionPush(new NodeChangeAction(
-                    payloadNode.parent,
-                    payloadNode,
-                    null
-                ));
-
-                payloadNode.parent = null;
-                incActivePuppet().rescanNodes();
+                this.deleteChildWithHistory(payloadNode);
             }
+
             if(igBeginDragDropTarget()) {
                 ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE", 0);
                 if (payload !is null) {
                     Node payloadNode = *cast(Node*)payload.Data;
-
-                    // Push action to stack
-                    incActionPush(new NodeChangeAction(
-                        payloadNode.parent,
-                        payloadNode,
-                        null
-                    ));
-
-                    payloadNode.parent = null;
-                    incActivePuppet().rescanNodes();
+                    this.deleteChildWithHistory(payloadNode);
                     
+                    igPopFont();
                     return;
                 }
                 igEndDragDropTarget();

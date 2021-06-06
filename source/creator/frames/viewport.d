@@ -64,13 +64,17 @@ protected:
         if (currSize.x.isNaN || currSize.y.isNaN) {
             currSize = ImVec2(0, 0);
         }
+        igSeparator();
 
         // Also viewport of 0 is too small, minimum 128.
         currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
-        igBeginChildStr("##ViewportView", ImVec2(0, currSize.y-24), false, 0);
+        igBeginChildStr("##ViewportView", ImVec2(0, currSize.y-31), false, 0);
+            
+            igGetContentRegionAvail(&currSize);
+            currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
 
             if (currSize != lastSize) {
-                inSetViewport(cast(int)currSize.x, cast(int)currSize.y-32);
+                inSetViewport(cast(int)currSize.x, cast(int)currSize.y);
                 
                 // Redraw
                 incUpdateActiveProject();
@@ -110,6 +114,7 @@ protected:
                         csx+((io.MousePos.x-sx)/zoom),
                         csy+((io.MousePos.y-sy)/zoom)
                     );
+
                     incTargetPosition = camera.position;
                 }
 
@@ -120,6 +125,7 @@ protected:
                 incTargetZoom = zoom;
             }
         igEndChild();
+        igSeparator();
 
         igGetContentRegionAvail(&currSize);
         igBeginChildStr("##ViewportControls", ImVec2(0, currSize.y), false, 0);
@@ -132,6 +138,7 @@ protected:
                     igSameLine(0, 8);
                     if (igButton("Reset", ImVec2(0, 0))) {
                         zoom = 1;
+                        incTargetZoom = zoom;
                     }
                 }
                 igSameLine(0, 8);

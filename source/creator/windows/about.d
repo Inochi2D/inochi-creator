@@ -8,7 +8,8 @@ class AboutWindow : Window {
 protected:
     override
     void onBeginUpdate(int id) {
-        super.onBeginUpdate(id);
+        flags |= ImGuiWindowFlags_NoResize;
+        super.onBeginUpdate(0);
     }
 
     override

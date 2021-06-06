@@ -27,13 +27,16 @@ int main(string[] args)
         // Update Inochi2D
         inUpdate();
         incUpdateActiveProject();
+        
 
         // Begin IMGUI loop
         incBeginLoop();
-            incRenderMenu();
+            if (incShouldProcess()) {
+                incRenderMenu();
 
-            incUpdateFrames();
-            incUpdateWindows();
+                incUpdateFrames();
+                incUpdateWindows();
+            }
         incEndLoop();
     }
     incSettingsSave();

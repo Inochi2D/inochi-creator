@@ -77,6 +77,14 @@ void incInitStyling() {
     style.GrabRounding = 6;
     style.LogSliderDeadzone = 6;
     style.TabRounding = 6;
+
+    style.IndentSpacing = 10;
+    style.ItemSpacing.y = 3;
+    style.FramePadding.y = 4;
+
+    style.GrabMinSize = 13;
+    style.ScrollbarSize = 14;
+    style.ChildBorderSize = 1;
 }
 
 /**
@@ -96,7 +104,7 @@ void incOpenWindow() {
     SDL_GL_MakeCurrent(window, gl_context);
     SDL_GL_SetSwapInterval(1);
     loadOpenGL();
-    
+
     // Setup Inochi2D
     inInit(() { return igGetTime(); });
 
@@ -157,9 +165,17 @@ bool incGetDarkMode() {
 }
 
 /**
+    Gets whether a frame should be processed
+*/
+bool incShouldProcess() {
+    return (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) == 0;
+}
+
+/**
     Begins the Inochi Creator rendering loop
 */
 void incBeginLoop() {
+
     SDL_Event event;
     while(SDL_PollEvent(&event)) {
         ImGui_ImplSDL2_ProcessEvent(&event);
@@ -341,7 +357,7 @@ void incRenderMenu() {
 
             igSeparator();
             if(igMenuItemBool("Settings", "", false, true)) {
-                incPushWindow(new SettingsWindow);
+                if (!incIsSettingsOpen) incPushWindow(new SettingsWindow);
             }
             
             debug {

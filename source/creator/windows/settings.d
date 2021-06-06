@@ -4,6 +4,8 @@ import creator.core;
 import std.string;
 import creator.utils.link;
 
+bool incIsSettingsOpen;
+
 /**
     Settings window
 */
@@ -16,7 +18,9 @@ private:
 protected:
     override
     void onBeginUpdate(int id) {
-        super.onBeginUpdate(id);
+        flags |= ImGuiWindowFlags_NoResize;
+        super.onBeginUpdate(0);
+        incIsSettingsOpen = true;
     }
 
     override
@@ -88,6 +92,7 @@ protected:
     override
     void onClose() {
         incSettingsSave();
+        incIsSettingsOpen = false;
     }
 
 public:

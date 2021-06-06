@@ -6,6 +6,7 @@ import std.conv;
 
 public import creator.windows.about;
 public import creator.windows.settings;
+public import creator.windows.texviewer;
 
 /**
     A Widget
@@ -22,7 +23,7 @@ protected:
     abstract void onUpdate();
 
     void onBeginUpdate(int id) {
-        igBegin(name.toStringz, &visible, flags);
+        igBegin((name~"##"~id.text).toStringz, &visible, flags);
     }
     
     void onEndUpdate() {
@@ -73,7 +74,6 @@ public:
             ImGuiWindowFlags_NoCollapse | 
             ImGuiWindowFlags_NoNav | 
             ImGuiWindowFlags_NoMove |
-            ImGuiWindowFlags_NoResize |
             ImGuiWindowFlags_NoScrollWithMouse |
             ImGuiWindowFlags_NoScrollbar;
         disabled = true;
@@ -81,12 +81,13 @@ public:
 
     void restore() {
         disabled = false;
-        this.flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
+        this.flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse;
     }
 }
 
 private {
     Window[] windowStack;
+    Window[] windowList;
 }
 
 /**
@@ -98,6 +99,27 @@ void incPushWindow(Window window) {
     }
 
     windowStack ~= window;
+}
+
+/**
+    Pushes window to stack
+*/
+void incPushWindowList(Window window) {
+    windowList ~= window;
+}
+
+/**
+    Pop window from Window List
+*/
+void incPopWindowList(Window window) {
+    import std.algorithm.searching : countUntil;
+    import std.algorithm.mutation : remove;
+
+    ptrdiff_t i = windowList.countUntil(window);
+    if (i != -1) {
+        if (windowList.length == 1) windowList.length = 0;
+        else windowList = windowList.remove(i);
+    }
 }
 
 /**
@@ -117,6 +139,16 @@ void incUpdateWindows() {
     foreach(window; windowStack) {
         window.update(id++);
         if (!window.visible) incPopWindow();
+    }
+    
+    Window[] closedWindows;
+    foreach(window; windowList) {
+        window.update(id++);
+        closedWindows ~= window;
+    }
+
+    foreach(window; closedWindows) {
+        if (!window.visible) incPopWindowList(window);
     }
 }
 
