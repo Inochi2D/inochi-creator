@@ -436,6 +436,16 @@ void incRenderMenu() {
     }
 }
 
+void incHandleShortcuts() {
+    auto io = igGetIO();
+    
+    if (io.KeyCtrl && io.KeyShift && igIsKeyPressed(igGetKeyIndex(ImGuiKey_Z), false)) {
+        incActionRedo();
+    } else if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey_Z), false)) {
+        incActionUndo();
+    }
+}
+
 static this() {
     loadSDL();
     loadImGui();

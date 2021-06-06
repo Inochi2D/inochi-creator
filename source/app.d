@@ -32,6 +32,7 @@ int main(string[] args)
         // Begin IMGUI loop
         incBeginLoop();
             if (incShouldProcess()) {
+                incHandleShortcuts();
                 incRenderMenu();
 
                 incUpdateFrames();

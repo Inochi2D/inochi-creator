@@ -133,8 +133,23 @@ protected:
 
         if (igBeginPopup("NodeActionsPopup", 0)) {
             if (igBeginMenu("Add", true)) {
+
+                igPushFont(incIconFont());
+                    igText(typeIdToIcon("Node").ptr);
+                igPopFont();
+                igSameLine(0, 2);
                 if (igMenuItemBool("Node", "", false, true)) this.addChildWithHistory(new Node, n);
-                if (igMenuItemBool("Mask", "", false, true))this.addChildWithHistory(new Mask, n);
+                
+                igPushFont(incIconFont());
+                    igText(typeIdToIcon("Mask").ptr);
+                igPopFont();
+                igSameLine(0, 2);
+                if (igMenuItemBool("Mask", "", false, true)) this.addChildWithHistory(new Mask, n);
+                
+                igPushFont(incIconFont());
+                    igText(typeIdToIcon("PathDeform").ptr);
+                igPopFont();
+                igSameLine(0, 2);
                 if (igMenuItemBool("PathDeform", "", false, true)) this.addChildWithHistory(new PathDeform, n);
                 
                 igEndMenu();
