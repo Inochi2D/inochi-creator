@@ -19,6 +19,7 @@ private:
     bool disabled;
 
 protected:
+    bool onlyOne;
     ImGuiWindowFlags flags;
 
     abstract void onUpdate();
@@ -95,6 +96,14 @@ private {
     Pushes window to stack
 */
 void incPushWindow(Window window) {
+    
+    // Only allow one instance of the window
+    if (window.onlyOne) {
+        foreach(win; windowStack) {
+            if (win.name == window.name) return;
+        }
+    }
+
     if (windowStack.length > 0) {
         windowStack[$-1].disable();
     }
@@ -106,6 +115,14 @@ void incPushWindow(Window window) {
     Pushes window to stack
 */
 void incPushWindowList(Window window) {
+    
+    // Only allow one instance of the window
+    if (window.onlyOne) {
+        foreach(win; windowList) {
+            if (win.name == window.name) return;
+        }
+    }
+
     windowList ~= window;
 }
 

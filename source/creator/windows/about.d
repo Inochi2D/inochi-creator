@@ -71,5 +71,6 @@ protected:
 public:
     this() {
         super("About");
+        this.onlyOne = true;
     }
 }
