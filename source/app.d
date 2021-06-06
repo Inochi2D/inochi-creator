@@ -16,36 +16,43 @@ import creator;
 
 int main(string[] args)
 {
-    incSettingsLoad();
-    incInitFrames();
-    incActionInit();
+    try {
+        incSettingsLoad();
+        incInitFrames();
+        incActionInit();
 
-    incOpenWindow();
-    incNewProject();
+        incOpenWindow();
+        incNewProject();
 
-    if (incSettingsGet!bool("ShowWarning", true)) {
-        incPushWindow(new NoticeWindow());
+        if (incSettingsGet!bool("ShowWarning", true)) {
+            incPushWindow(new NoticeWindow());
+        }
+
+        while(!incIsCloseRequested()) {
+
+            // Update Inochi2D
+            inUpdate();
+            incUpdateActiveProject();
+            
+
+            // Begin IMGUI loop
+            incBeginLoop();
+                if (incShouldProcess()) {
+                    incHandleShortcuts();
+                    incRenderMenu();
+
+                    incUpdateFrames();
+                    incUpdateWindows();
+                }
+            incEndLoop();
+        }
+        incSettingsSave();
+        incFinalize();
+        return 0;
+    } catch(Exception ex) {
+        import std.file : write;
+        write("crash.log", ex.msg);
+        debug throw ex;
+        return -1;
     }
-
-    while(!incIsCloseRequested()) {
-
-        // Update Inochi2D
-        inUpdate();
-        incUpdateActiveProject();
-        
-
-        // Begin IMGUI loop
-        incBeginLoop();
-            if (incShouldProcess()) {
-                incHandleShortcuts();
-                incRenderMenu();
-
-                incUpdateFrames();
-                incUpdateWindows();
-            }
-        incEndLoop();
-    }
-    incSettingsSave();
-    incFinalize();
-    return 0;
 }

@@ -63,7 +63,7 @@ ImGuiID incGetViewportDockSpace() {
 */
 void incInitStyling() {
     auto style = igGetStyle();
-    style.WindowBorderSize = 0;
+    //style.WindowBorderSize = 0;
     style.ChildBorderSize = 0;
     style.PopupBorderSize = 0;
     style.FrameBorderSize = 0;
@@ -152,8 +152,19 @@ void incRecreateContext() {
 }
 
 void incSetDarkMode(bool darkMode) {
-    if (darkMode) igStyleColorsDark(null);
-    else igStyleColorsLight(null);
+    auto style = igGetStyle();
+    if (darkMode) {
+        igStyleColorsDark(null);
+        style.Colors[ImGuiCol_Border] = ImVec4(0, 0, 0, 0.5);
+        style.FrameBorderSize = 0;
+    }
+    else {
+        igStyleColorsLight(null);
+        style.Colors[ImGuiCol_Border] = ImVec4(0.8, 0.8, 0.8, 0.5);
+        style.Colors[ImGuiCol_BorderShadow] = ImVec4(0, 0, 0, 0.05);
+
+        style.FrameBorderSize = 1;
+    } 
 
     // Set Dark mode setting
     incSettingsSet("DarkMode", darkMode);
