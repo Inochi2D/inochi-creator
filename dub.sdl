@@ -13,6 +13,8 @@ versions "GL_42" "GL_AllowDeprecated" "USE_SDL2" "USE_GL"
 stringImportPaths "res/"
 stringImportPaths "./"
 
+preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname Inochi Creator"
+
 configuration "posix" {
 	targetType "executable"
 }

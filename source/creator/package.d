@@ -3,6 +3,8 @@ import inochi2d;
 import inochi2d.core.dbg;
 import creator.core.actionstack;
 
+public import creator.ver;
+
 /**
     A project
 */

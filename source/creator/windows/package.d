@@ -7,6 +7,7 @@ import std.conv;
 public import creator.windows.about;
 public import creator.windows.settings;
 public import creator.windows.texviewer;
+public import creator.windows.notice;
 
 /**
     A Widget

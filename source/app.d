@@ -7,6 +7,7 @@
 import std.stdio;
 import std.string;
 import creator.core;
+import creator.core.settings;
 import creator.frames;
 import creator.windows;
 import creator.core.actionstack;
@@ -21,6 +22,10 @@ int main(string[] args)
 
     incOpenWindow();
     incNewProject();
+
+    if (incSettingsGet!bool("ShowWarning", true)) {
+        incPushWindow(new NoticeWindow());
+    }
 
     while(!incIsCloseRequested()) {
 

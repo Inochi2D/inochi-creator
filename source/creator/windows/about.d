@@ -1,8 +1,10 @@
 module creator.windows.about;
 import creator.windows;
 import creator.core;
+import creator;
 import std.string;
 import creator.utils.link;
+import inochi2d;
 
 class AboutWindow : Window {
 protected:
@@ -28,10 +30,15 @@ protected:
             igSameLine(0, 8);
             igSeparatorEx(ImGuiSeparatorFlags_Vertical);
             igSameLine(0, 8);
+            igBeginChildStr("##LogoTextArea", ImVec2(0, 0), false, 0);
 
-            igPushFont(incBiggerFont());
-                igText("Inochi Creator");
-            igPopFont();
+                igPushFont(incBiggerFont());
+                    igText("Inochi Creator");
+                igPopFont();
+                igText("%s", (INC_VERSION~"\0").ptr);
+                igSeparator();
+                igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "I2D v. %s", (IN_VERSION~"\0").ptr);
+            igEndChild();
         igEndChild();
         igBeginChildStr("##CreditsArea", ImVec2(512, 256), false, 0);
 
