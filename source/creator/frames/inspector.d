@@ -19,13 +19,13 @@ private:
         igSameLine(0, 0);
         igPushIDStr(origin.ptr);
             igPushFont(incIconFont());
-            igPushItemWidth(16);
-                igText(((*val ? "\uE897" : "\uE898")).toStringz);
-                
-                if (igIsItemClicked(ImGuiMouseButton_Left)) {
-                    *val = !*val;
-                }
-            igPopItemWidth();
+                igPushItemWidth(16);
+                    igText(((*val ? "\uE897" : "\uE898")).toStringz);
+                    
+                    if (igIsItemClicked(ImGuiMouseButton_Left)) {
+                        *val = !*val;
+                    }
+                igPopItemWidth();
             igPopFont();
         igPopID();
     }
@@ -116,7 +116,6 @@ private:
                 if (igSelectableBool("Dodge", partNode.maskingMode == MaskingMode.DodgeMask, 0, ImVec2(0, 0))) {
                     partNode.maskingMode = MaskingMode.DodgeMask;
                 }
-
                 igEndCombo();
             }
 
@@ -124,7 +123,7 @@ private:
             igSliderFloat("Threshold", &partNode.maskAlphaThreshold, 0.0, 1.0, "%.2f", 0);
 
             // MASKED BY
-            igBeginListBox("Masked By", ImVec2(0, 128));
+            if (igBeginListBox("Masked By", ImVec2(0, 128))) {
                 foreach(i, masker; partNode.mask) {
                     igPushIDInt(cast(int)i);
                         if(igBeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
@@ -135,7 +134,8 @@ private:
                     igPopID();
                     igText(masker.name.toStringz);
                 }
-            igEndListBox();
+                igEndListBox();
+            }
 
             if(igBeginDragDropTarget()) {
                 ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE", 0);
@@ -191,12 +191,15 @@ protected:
                 node.zSort = zsortV;
             }
 
-            // Padding
-            igSpacing();
-            igSpacing();
-            igSpacing();
-            igSpacing();
-            handlePartNodes(node);
+            if (node.typeId != "Node") {
+
+                // Padding
+                igSpacing();
+                igSpacing();
+                igSpacing();
+                igSpacing();
+                handlePartNodes(node);
+            }
         }
     }
 

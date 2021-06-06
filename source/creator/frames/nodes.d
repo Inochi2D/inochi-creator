@@ -159,7 +159,6 @@ protected:
             if (igMenuItemBool("Delete", "", false, !isRoot)) {
                 this.deleteChildWithHistory(n);
             }
-
             igEndPopup();
         }
     }
