@@ -91,9 +91,12 @@ void incInitStyling() {
     Opens Window
 */
 void incOpenWindow() {
+    // Load GL 1
+    loadOpenGL();
+
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -103,7 +106,26 @@ void incOpenWindow() {
     gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
     SDL_GL_SetSwapInterval(1);
-    loadOpenGL();
+
+    // Load GL 3
+    GLSupport support = loadOpenGL();
+    switch(support) {
+        case GLSupport.noLibrary:
+            throw new Exception("OpenGL library could not be loaded!");
+
+        case GLSupport.noContext:
+            throw new Exception("No valid OpenGL 4.2 context was found!");
+
+        default: break;
+    }
+
+    import std.string : fromStringz;
+    writefln("GLInfo:\n\t%s\n\t%s\n\t%s\n\tgls=%s",
+        glGetString(GL_VERSION).fromStringz,
+        glGetString(GL_VENDOR).fromStringz,
+        glGetString(GL_RENDERER).fromStringz,
+        support
+    );
 
     // Setup Inochi2D
     inInit(() { return igGetTime(); });
@@ -130,7 +152,7 @@ void incCreateContext() {
     incSetDarkMode(incSettingsGet!bool("DarkMode", true));
 
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Navigation
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Navigation
     io.ConfigWindowsResizeFromEdges = true;                     // Enable Edge resizing
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGuiOpenGLBackend.init("#version 130\0".ptr);
@@ -183,18 +205,32 @@ bool incShouldProcess() {
 }
 
 /**
+    Gets SDL Window Pointer
+*/
+SDL_Window* incGetWindowPtr() {
+    return window;
+}
+
+/**
     Begins the Inochi Creator rendering loop
 */
 void incBeginLoop() {
-
     SDL_Event event;
+
     while(SDL_PollEvent(&event)) {
-        ImGui_ImplSDL2_ProcessEvent(&event);
-        if (event.type == SDL_QUIT)
-            done = true;
-        if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
-            done = true;
+        switch(event.type) {
+            case SDL_QUIT:
+                done = true;
+                break;
+            
+            default: 
+                ImGui_ImplSDL2_ProcessEvent(&event);
+                if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
+                    done = true;
+                break;
+        }
     }
+
     
     incFontsProcessChanges();
 
@@ -344,10 +380,12 @@ void incRenderMenu() {
                         { ["*.inp"], "Inochi2D Puppet (*.inp)" }
                     ];
 
+                    import std.path : setExtension;
+
                     c_str filename = tinyfd_saveFileDialog("Export...", "", filters);
                     if (filename !is null) {
                         string file = cast(string)filename.fromStringz;
-                        inWriteINPPuppet(incActivePuppet(), file);
+                        inWriteINPPuppet(incActivePuppet(), file.setExtension(".inp"));
                     }
                 }
                 igEndMenu();

@@ -2,11 +2,12 @@ module creator.frames.nodes;
 import creator.core.actionstack;
 import creator.frames;
 import creator;
+import creator.widgets;
 import creator.core;
-import bindbc.imgui;
 import inochi2d;
 import std.string;
 import std.format;
+import std.conv;
 
 /**
     An action that happens when a node is changed
@@ -72,6 +73,43 @@ public:
 }
 
 /**
+    Action for whether a node was activated or deactivated
+*/
+class NodeActiveAction : Action {
+public:
+    Node self;
+    bool newState;
+
+    /**
+        Rollback
+    */
+    void rollback() {
+        self.enabled = !newState;
+    }
+
+    /**
+        Redo
+    */
+    void redo() {
+        self.enabled = newState;
+    }
+
+    /**
+        Describe the action
+    */
+    string describe() {
+        return "%s %s".format(newState ? "Enabled" : "Disabled", self.name);
+    }
+
+    /**
+        Describe the action
+    */
+    string describeUndo() {
+        return "%s was %s".format(self.name, !newState ? "Enabled" : "Disabled");
+    }
+}
+
+/**
     The logger frame
 */
 class NodesFrame : Frame {
@@ -110,6 +148,8 @@ protected:
             n,
             to
         ));
+
+        n.name = "Unnamed "~n.typeId();
         to.addChild(n);
         incActivePuppet().rescanNodes();
     }
@@ -164,18 +204,27 @@ protected:
     }
 
     void treeAddNode(bool isRoot = false)(Node n) {
-        igPushIDInt(n.uuid());
+        igTableNextRow(0, 0);
 
-            ImGuiTreeNodeFlags flags;
-            if (n.children.length == 0) flags |= ImGuiTreeNodeFlags_Leaf;
-            flags |= ImGuiTreeNodeFlags_DefaultOpen;
-            flags |= ImGuiTreeNodeFlags_OpenOnArrow;
+        // // Draw Enabler for this node first
+        // igTableSetColumnIndex(1);
+        // igPushFont(incIconFont());
+        //     igText(n.enabled ? "\ue8f4" : "\ue8f5");
+        // igPopFont();
 
-            bool open = igTreeNodeExPtr(cast(void*)n.uuid, flags, "");
+        ImGuiTreeNodeFlags flags;
+        if (n.children.length == 0) flags |= ImGuiTreeNodeFlags_Leaf;
+        flags |= ImGuiTreeNodeFlags_DefaultOpen;
+        flags |= ImGuiTreeNodeFlags_OpenOnArrow;
+        //flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+
+        // Then draw the node tree index
+        igTableSetColumnIndex(0);
+        bool open = igTreeNodeExPtr(cast(void*)n.uuid, flags, "");
 
             // Show node entry stuff
             igSameLine(0, 4);
-            
+
             static if (!isRoot) {
                 bool selected = n == incSelectedNode();
 
@@ -213,20 +262,20 @@ protected:
                     this.moveChildWithHistory(payloadNode, n);
                     
                     igTreePop();
-                    igPopID();
                     return;
                 }
                 igEndDragDropTarget();
             }
 
+        if (open) {
             // Draw children
-            if (open) {
-                foreach(child; n.children) {
-                    treeAddNode(child);
-                }
-                igTreePop();
+            foreach(child; n.children) {
+                treeAddNode(child);
             }
-        igPopID();
+            igTreePop();
+        }
+        
+
     }
 
     override
@@ -241,9 +290,17 @@ protected:
 
         ImVec2 avail;
         igGetContentRegionAvail(&avail);
-        
-        igBeginChildStr("##nolabel", ImVec2(0, avail.y-28), false, ImGuiWindowFlags_HorizontalScrollbar);
-            treeAddNode!true(incActivePuppet.root);
+
+        igBeginChildStr("NodesMain", ImVec2(0, -28), false, 0);
+
+            if (igBeginTable("NodesContent", 2, ImGuiTableFlags_ScrollX, ImVec2(0, 0), 0)) {
+                igTableSetupColumn("Nodes", ImGuiTableColumnFlags_WidthFixed, 0, 0);
+                //igTableSetupColumn("Visibility", ImGuiTableColumnFlags_WidthFixed, 32, 1);
+                
+                treeAddNode!true(incActivePuppet.root);
+
+                igEndTable();
+            }
         igEndChild();
 
         if (igIsItemClicked(ImGuiMouseButton_Left)) {

@@ -1,9 +1,9 @@
 module creator.frames.inspector;
 import creator.core;
 import creator.frames;
+import creator.widgets;
 import creator;
 import inochi2d;
-import bindbc.imgui;
 import std.string;
 import std.algorithm.searching;
 import std.algorithm.mutation;
@@ -58,17 +58,17 @@ private:
         igSpacing();
         igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Rotation");
         igPushItemWidth((avail.x-4f-(fontSize*3f))/3f);
-            igDragFloat("##rotation_x", &node.localTransform.rotation.vector[0], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags_NoRoundToFormat);
+            igDragFloat("##rotation_x", &node.localTransform.rotation.vector[0], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags_NoRoundToFormat);
             
             createLock(&node.localTransform.lockRotationX, "rot_x");
             
             igSameLine(0, 4);
-            igDragFloat("##rotation_y", &node.localTransform.rotation.vector[1], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags_NoRoundToFormat);
+            igDragFloat("##rotation_y", &node.localTransform.rotation.vector[1], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags_NoRoundToFormat);
             
             createLock(&node.localTransform.lockRotationY, "rot_y");
 
             igSameLine(0, 4);
-            igDragFloat("##rotation_z", &node.localTransform.rotation.vector[2], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags_NoRoundToFormat);
+            igDragFloat("##rotation_z", &node.localTransform.rotation.vector[2], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags_NoRoundToFormat);
             
             createLock(&node.localTransform.lockRotationZ, "rot_z");
         igPopItemWidth();
@@ -176,11 +176,13 @@ protected:
     void onUpdate() {
         Node node = incSelectedNode();
         if (node !is null) {
-            igText(node.typeId().toStringz);
-            igSameLine(0, 4);
-            igSeparatorEx(ImGuiSeparatorFlags_Vertical);
-            igSameLine(0, 8);
-            igText(node.name.toStringz);
+            igPushIDInt(node.uuid);
+                igText(node.typeId().toStringz);
+                igSameLine(0, 4);
+                igSeparatorEx(ImGuiSeparatorFlags_Vertical);
+                igSameLine(0, 8);
+                incInputText("", node.name, 0);
+            igPopID();
             igSeparator();
 
             handleTRS(node);

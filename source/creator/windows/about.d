@@ -38,6 +38,7 @@ protected:
                 igText("%s", (INC_VERSION~"\0").ptr);
                 igSeparator();
                 igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "I2D v. %s", (IN_VERSION~"\0").ptr);
+                igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "imgui v. %s", igGetVersion());
             igEndChild();
         igEndChild();
         igBeginChildStr("##CreditsArea", ImVec2(512, 256), false, 0);

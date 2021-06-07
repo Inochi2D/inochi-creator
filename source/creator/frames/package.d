@@ -11,12 +11,13 @@ public import creator.frames.logger;
 abstract class Frame {
 private:
     string name_;
-
 protected:
+    ImVec2 frameSpace;
     abstract void onUpdate();
 
     void onBeginUpdate() {
         igBegin(name.ptr, &visible, ImGuiWindowFlags_None);
+        igGetContentRegionAvail(&frameSpace);
     }
     
     void onEndUpdate() {

@@ -57,21 +57,21 @@ void incNewProject() {
 /**
     Gets puppet in active project
 */
-Puppet incActivePuppet() {
+ref Puppet incActivePuppet() {
     return activeProject.puppet;
 }
 
 /**
     Gets active project
 */
-Project incActiveProject() {
+ref Project incActiveProject() {
     return activeProject;
 }
 
 /**
     Gets the currently selected node
 */
-Node incSelectedNode() {
+ref Node incSelectedNode() {
     return selectedNode;
 }
 
