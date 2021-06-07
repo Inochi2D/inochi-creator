@@ -43,15 +43,15 @@ private:
 
         igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Translation");
         igPushItemWidth((avail.x-4f-(fontSize*3f))/3f);
-            igDragFloat("##translation_x", &node.localTransform.translation.vector[0], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags_NoRoundToFormat);
+            igDragFloat("##translation_x", &node.localTransform.translation.vector[0], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
             createLock(&node.localTransform.lockTranslationX, "tra_x");
 
             igSameLine(0, 4);
-            igDragFloat("##translation_y", &node.localTransform.translation.vector[1], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags_NoRoundToFormat);
+            igDragFloat("##translation_y", &node.localTransform.translation.vector[1], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
             createLock(&node.localTransform.lockTranslationY, "tra_y");
 
             igSameLine(0, 4);
-            igDragFloat("##translation_z", &node.localTransform.translation.vector[2], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags_NoRoundToFormat);
+            igDragFloat("##translation_z", &node.localTransform.translation.vector[2], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
             createLock(&node.localTransform.lockTranslationZ, "tra_z");
         igPopItemWidth();
 
@@ -78,11 +78,11 @@ private:
         igSpacing();
         igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Scale");
         igPushItemWidth((avail.x-14f-(fontSize*2f))/2f);
-            igDragFloat("##scale_x", &node.localTransform.scale.vector[0], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags_NoRoundToFormat);
+            igDragFloat("##scale_x", &node.localTransform.scale.vector[0], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
             createLock(&node.localTransform.lockScaleX, "sca_z");
 
             igSameLine(0, 4);
-            igDragFloat("##scale_y", &node.localTransform.scale.vector[1], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags_NoRoundToFormat);
+            igDragFloat("##scale_y", &node.localTransform.scale.vector[1], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
             createLock(&node.localTransform.lockScaleY, "sca_z");
         igPopItemWidth();
 
@@ -110,10 +110,10 @@ private:
             // MASK MODE
             if (igBeginCombo("Mode", partNode.maskingMode ? "Dodge" : "Mask", 0)) {
 
-                if (igSelectableBool("Mask", partNode.maskingMode == MaskingMode.Mask, 0, ImVec2(0, 0))) {
+                if (igSelectable_Bool("Mask", partNode.maskingMode == MaskingMode.Mask, 0, ImVec2(0, 0))) {
                     partNode.maskingMode = MaskingMode.Mask;
                 }
-                if (igSelectableBool("Dodge", partNode.maskingMode == MaskingMode.DodgeMask, 0, ImVec2(0, 0))) {
+                if (igSelectable_Bool("Dodge", partNode.maskingMode == MaskingMode.DodgeMask, 0, ImVec2(0, 0))) {
                     partNode.maskingMode = MaskingMode.DodgeMask;
                 }
                 igEndCombo();

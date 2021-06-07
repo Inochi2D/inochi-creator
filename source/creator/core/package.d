@@ -177,13 +177,13 @@ void incSetDarkMode(bool darkMode) {
     auto style = igGetStyle();
     if (darkMode) {
         igStyleColorsDark(null);
-        style.Colors[ImGuiCol_Border] = ImVec4(0, 0, 0, 0.5);
+        style.Colors[ImGuiCol.Border] = ImVec4(0, 0, 0, 0.5);
         style.FrameBorderSize = 0;
     }
     else {
         igStyleColorsLight(null);
-        style.Colors[ImGuiCol_Border] = ImVec4(0.8, 0.8, 0.8, 0.5);
-        style.Colors[ImGuiCol_BorderShadow] = ImVec4(0, 0, 0, 0.05);
+        style.Colors[ImGuiCol.Border] = ImVec4(0.8, 0.8, 0.8, 0.5);
+        style.Colors[ImGuiCol.BorderShadow] = ImVec4(0, 0, 0, 0.05);
 
         style.FrameBorderSize = 1;
     } 
@@ -353,14 +353,14 @@ void incRenderMenu() {
                 igEndMenu();
             }
             
-            if(igMenuItemBool("Save", "Ctrl+S", false, true)) {
+            if(igMenuItem_Bool("Save", "Ctrl+S", false, true)) {
             }
             
-            if(igMenuItemBool("Save As...", "Ctrl+Shift+S", false, true)) {
+            if(igMenuItem_Bool("Save As...", "Ctrl+Shift+S", false, true)) {
             }
 
             if (igBeginMenu("Import", true)) {
-                if(igMenuItemBool("Inochi Puppet", "", false, true)) {
+                if(igMenuItem_Bool("Inochi Puppet", "", false, true)) {
                     const TFD_Filter[] filters = [
                         { ["*.inp"], "Inochi2D Puppet (*.inp)" }
                     ];
@@ -375,7 +375,7 @@ void incRenderMenu() {
                 igEndMenu();
             }
             if (igBeginMenu("Export", true)) {
-                if(igMenuItemBool("Inochi Puppet", "", false, true)) {
+                if(igMenuItem_Bool("Inochi Puppet", "", false, true)) {
                     const TFD_Filter[] filters = [
                         { ["*.inp"], "Inochi2D Puppet (*.inp)" }
                     ];
@@ -391,21 +391,21 @@ void incRenderMenu() {
                 igEndMenu();
             }
 
-            if(igMenuItemBool("Quit", "Alt+F4", false, true)) incExit();
+            if(igMenuItem_Bool("Quit", "Alt+F4", false, true)) incExit();
             igEndMenu();
         }
         
         if (igBeginMenu("Edit", true)) {
-            if(igMenuItemBool("Undo", "Ctrl+Z", false, incActionCanUndo())) incActionUndo();
-            if(igMenuItemBool("Redo", "Ctrl+Shift+Z", false, incActionCanRedo())) incActionRedo();
+            if(igMenuItem_Bool("Undo", "Ctrl+Z", false, incActionCanUndo())) incActionUndo();
+            if(igMenuItem_Bool("Redo", "Ctrl+Shift+Z", false, incActionCanRedo())) incActionRedo();
             
             igSeparator();
-            if(igMenuItemBool("Cut", "Ctrl+X", false, false)) {}
-            if(igMenuItemBool("Copy", "Ctrl+C", false, false)) {}
-            if(igMenuItemBool("Paste", "Ctrl+V", false, false)) {}
+            if(igMenuItem_Bool("Cut", "Ctrl+X", false, false)) {}
+            if(igMenuItem_Bool("Copy", "Ctrl+C", false, false)) {}
+            if(igMenuItem_Bool("Paste", "Ctrl+V", false, false)) {}
 
             igSeparator();
-            if(igMenuItemBool("Settings", "", false, true)) {
+            if(igMenuItem_Bool("Settings", "", false, true)) {
                 if (!incIsSettingsOpen) incPushWindow(new SettingsWindow);
             }
             
@@ -416,8 +416,8 @@ void incRenderMenu() {
                 igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "ImGui Debugging");
 
                 igSeparator();
-                if(igMenuItemBool("Style Editor", "", false, true)) dbgShowStyleEditor = !dbgShowStyleEditor;
-                if(igMenuItemBool("ImGui Debugger", "", false, true)) dbgShowDebugger = !dbgShowDebugger;
+                if(igMenuItem_Bool("Style Editor", "", false, true)) dbgShowStyleEditor = !dbgShowStyleEditor;
+                if(igMenuItem_Bool("ImGui Debugger", "", false, true)) dbgShowDebugger = !dbgShowDebugger;
             }
             igEndMenu();
         }
@@ -432,7 +432,7 @@ void incRenderMenu() {
                 if (frame.alwaysVisible) continue;
 
                 // Show menu item for frame
-                if(igMenuItemBool(frame.name.ptr, null, frame.visible, true)) {
+                if(igMenuItem_Bool(frame.name.ptr, null, frame.visible, true)) {
                     frame.visible = !frame.visible;
                     incSettingsSet(frame.name~".visible", frame.visible);
                 }
@@ -445,7 +445,7 @@ void incRenderMenu() {
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Extras");
             igSeparator();
 
-            if (igMenuItemBool("Show Stats for Nerds", "", showStatsForNerds, true)) {
+            if (igMenuItem_Bool("Show Stats for Nerds", "", showStatsForNerds, true)) {
                 showStatsForNerds = !showStatsForNerds;
                 incSettingsSet("NerdStats", showStatsForNerds);
             }
@@ -455,19 +455,19 @@ void incRenderMenu() {
 
         if (igBeginMenu("Help", true)) {
 
-            if(igMenuItemBool("Tutorial", "(TODO)", false, false)) { }
+            if(igMenuItem_Bool("Tutorial", "(TODO)", false, false)) { }
             igSeparator();
             
-            if(igMenuItemBool("Online Documentation", "", false, true)) {
+            if(igMenuItem_Bool("Online Documentation", "", false, true)) {
                 openLink("https://github.com/Inochi2D/inochi-creator/wiki");
             }
             
-            if(igMenuItemBool("Inochi2D Documentation", "", false, true)) {
+            if(igMenuItem_Bool("Inochi2D Documentation", "", false, true)) {
                 openLink("https://github.com/Inochi2D/inochi2d/wiki");
             }
             igSeparator();
 
-            if(igMenuItemBool("About", "", false, true)) {
+            if(igMenuItem_Bool("About", "", false, true)) {
                 incPushWindow(new AboutWindow);
             }
             igEndMenu();
@@ -488,9 +488,9 @@ void incRenderMenu() {
 void incHandleShortcuts() {
     auto io = igGetIO();
     
-    if (io.KeyCtrl && io.KeyShift && igIsKeyPressed(igGetKeyIndex(ImGuiKey_Z), false)) {
+    if (io.KeyCtrl && io.KeyShift && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), false)) {
         incActionRedo();
-    } else if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey_Z), false)) {
+    } else if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), false)) {
         incActionUndo();
     }
 }
