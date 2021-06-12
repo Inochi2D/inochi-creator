@@ -23,7 +23,7 @@ protected:
     void onBeginUpdate() {
         
         ImGuiWindowClass wmclass;
-        wmclass.DockNodeFlagsOverrideSet = cast(ImGuiDockNodeFlags)ImGuiDockNodeFlagsPrivate.ImGuiDockNodeFlags_NoTabBar;
+        wmclass.DockNodeFlagsOverrideSet = ImGuiDockNodeFlagsI.NoTabBar;
         igSetNextWindowClass(&wmclass);
         igSetNextWindowDockID(incGetViewportDockSpace(), ImGuiCond.Always);
         super.onBeginUpdate();

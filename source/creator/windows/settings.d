@@ -31,7 +31,7 @@ protected:
                 ImVec2 avail;
                 igGetContentRegionAvail(&avail);
 
-                if(igBeginTabItem("General", &generalTabOpen, cast(ImGuiTabItemFlags)ImGuiTabItemFlagsPrivate.ImGuiTabItemFlags_NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
+                if(igBeginTabItem("General", &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
 
                     igBeginChild("#GeneralTabItems", ImVec2(0, avail.y-24));
                         igText("Look and Feel");
@@ -70,7 +70,7 @@ protected:
                     igEndTabItem();
                 }
 
-                if(igBeginTabItem("Other", &otherTabOpen, cast(ImGuiTabItemFlags)ImGuiTabItemFlagsPrivate.ImGuiTabItemFlags_NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
+                if(igBeginTabItem("Other", &otherTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
 
                     igBeginChild("#OtherTabItems", ImVec2(0, avail.y-24));
 
