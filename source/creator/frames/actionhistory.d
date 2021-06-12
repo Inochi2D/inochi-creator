@@ -19,16 +19,16 @@ protected:
 
         ImVec2 avail;
         igGetContentRegionAvail(&avail);
-        igBeginChild_Str("##ActionList", ImVec2(0, avail.y-28), true, 0);
+        igBeginChild("##ActionList", ImVec2(0, avail.y-28));
             if (incActionHistory().length > 0) {
 
                 foreach(i, action; incActionHistory()) {
                     if (i == 0) {
-                        if (igSelectable_Bool(action.describeUndo().toStringz, i <= cast(ptrdiff_t)incActionIndex(), 0, ImVec2(0, 0))) {
+                        if (igSelectable(action.describeUndo().toStringz, i <= cast(ptrdiff_t)incActionIndex())) {
                             incActionSetIndex(0);
                         }
                     }
-                    if (igSelectable_Bool(action.describe().toStringz, i+1 <= incActionIndex(), 0, ImVec2(0, 0))) {
+                    if (igSelectable(action.describe().toStringz, i+1 <= incActionIndex())) {
                         incActionSetIndex(i+1);
                     }
                 }

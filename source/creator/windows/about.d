@@ -10,14 +10,14 @@ class AboutWindow : Window {
 protected:
     override
     void onBeginUpdate(int id) {
-        flags |= ImGuiWindowFlags_NoResize;
+        flags |= ImGuiWindowFlags.NoResize;
         super.onBeginUpdate(0);
     }
 
     override
     void onUpdate() {
 
-        igBeginChildStr("##LogoArea", ImVec2(512, 72), false, 0);
+        igBeginChild("##LogoArea", ImVec2(512, 72));
             igImage(
                 cast(void*)incGetLogo(), 
                 ImVec2(64, 64), 
@@ -28,9 +28,9 @@ protected:
             );
             
             igSameLine(0, 8);
-            igSeparatorEx(ImGuiSeparatorFlags_Vertical);
+            igSeparatorEx(ImGuiSeparatorFlags.Vertical);
             igSameLine(0, 8);
-            igBeginChildStr("##LogoTextArea", ImVec2(0, 0), false, 0);
+            igBeginChild("##LogoTextArea");
 
                 igPushFont(incBiggerFont());
                     igText("Inochi Creator");
@@ -41,7 +41,7 @@ protected:
                 igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "imgui v. %s", igGetVersion());
             igEndChild();
         igEndChild();
-        igBeginChildStr("##CreditsArea", ImVec2(512, 256), false, 0);
+        igBeginChild("##CreditsArea", ImVec2(512, 256));
 
             igText("Created By");
             igSeparator();

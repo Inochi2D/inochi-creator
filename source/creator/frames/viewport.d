@@ -23,10 +23,9 @@ protected:
     void onBeginUpdate() {
         
         ImGuiWindowClass wmclass;
-        wmclass.DockNodeFlagsOverrideSet = 
-            ImGuiDockNodeFlags_NoTabBar;
+        wmclass.DockNodeFlagsOverrideSet = cast(ImGuiDockNodeFlags)ImGuiDockNodeFlagsPrivate.ImGuiDockNodeFlags_NoTabBar;
         igSetNextWindowClass(&wmclass);
-        igSetNextWindowDockID(incGetViewportDockSpace(), ImGuiCond_Always);
+        igSetNextWindowDockID(incGetViewportDockSpace(), ImGuiCond.Always);
         super.onBeginUpdate();
     }
 
@@ -41,7 +40,7 @@ protected:
         auto camera = inGetCamera();
 
         // Resize Inochi2D viewport according to frame
-        igBeginChildStr("##ViewportMainControls", ImVec2(0, 32), false, 0);
+        igBeginChild("##ViewportMainControls", ImVec2(0, 32));
             if (igButton("P", ImVec2(0, 0))) {
                 inDbgDrawMeshVertexPoints = !inDbgDrawMeshVertexPoints;
             }
@@ -68,7 +67,7 @@ protected:
 
         // Also viewport of 0 is too small, minimum 128.
         currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
-        igBeginChildStr("##ViewportView", ImVec2(0, currSize.y-31), false, 0);
+        igBeginChild("##ViewportView", ImVec2(0, currSize.y-31));
             
             igGetContentRegionAvail(&currSize);
             currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
@@ -93,7 +92,7 @@ protected:
 
             lastSize = currSize;
 
-            if (igIsWindowHovered(ImGuiFocusedFlags_ChildWindows)) {
+            if (igIsWindowHovered(ImGuiHoveredFlags.ChildWindows)) {
 
                 // HANDLE MOVE VIEWPORT
                 if (!isMovingViewport && io.MouseDown[1]) {
@@ -128,9 +127,9 @@ protected:
         igSeparator();
 
         igGetContentRegionAvail(&currSize);
-        igBeginChildStr("##ViewportControls", ImVec2(0, currSize.y), false, 0);
+        igBeginChild("##ViewportControls", ImVec2(0, currSize.y));
             igPushItemWidth(72);
-                if (igSliderFloat("##Zoom", &zoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX, "%.2f", 0)) {
+                if (igSliderFloat("##Zoom", &zoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX, "%.2f")) {
                     camera.scale = vec2(zoom);
                     incTargetZoom = zoom;
                 }
@@ -142,7 +141,7 @@ protected:
                     }
                 }
                 igSameLine(0, 8);
-                igSeparatorEx(ImGuiSeparatorFlags_Vertical);
+                igSeparatorEx(ImGuiSeparatorFlags.Vertical);
 
                 igSameLine(0, 8);
                 igText("x = %.2f y = %.2f", camera.position.x, camera.position.y);

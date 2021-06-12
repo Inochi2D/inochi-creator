@@ -16,7 +16,7 @@ protected:
     abstract void onUpdate();
 
     void onBeginUpdate() {
-        igBegin(name.ptr, &visible, ImGuiWindowFlags_None);
+        igBegin(name.ptr, &visible, ImGuiWindowFlags.None);
         igGetContentRegionAvail(&frameSpace);
     }
     

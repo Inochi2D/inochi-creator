@@ -151,8 +151,8 @@ void incCreateContext() {
 
     incSetDarkMode(incSettingsGet!bool("DarkMode", true));
 
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Navigation
+    io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;           // Enable Docking
+    //io.ConfigFlags |= ImGuiConfigFlags.NavEnableKeyboard;       // Enable Keyboard Navigation
     io.ConfigWindowsResizeFromEdges = true;                     // Enable Edge resizing
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGuiOpenGLBackend.init("#version 130\0".ptr);
