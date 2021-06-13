@@ -18,32 +18,32 @@ private:
 protected:
     override
     void onBeginUpdate(int id) {
-        flags |= ImGuiWindowFlags_NoResize;
+        flags |= ImGuiWindowFlags.NoResize;
         super.onBeginUpdate(0);
         incIsSettingsOpen = true;
     }
 
     override
     void onUpdate() {
-        igBeginChildStr("SettingsWindowChild", ImVec2(512, 512), false, 0);
-            if (igBeginTabBar("SettingsWindowTabs", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton)) {
+        igBeginChild("SettingsWindowChild", ImVec2(512, 512));
+            if (igBeginTabBar("SettingsWindowTabs", ImGuiTabBarFlags.NoCloseWithMiddleMouseButton)) {
 
                 ImVec2 avail;
                 igGetContentRegionAvail(&avail);
 
-                if(igBeginTabItem("General", &generalTabOpen, ImGuiTabItemFlags_NoCloseButton | ImGuiTabItemFlags_NoCloseWithMiddleMouseButton)) {
+                if(igBeginTabItem("General", &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
 
-                    igBeginChildStr("#GeneralTabItems", ImVec2(0, avail.y-24), false, 0);
+                    igBeginChild("#GeneralTabItems", ImVec2(0, avail.y-24));
                         igText("Look and Feel");
                         igSeparator();
-                        if(igBeginCombo("Color Theme", incGetDarkMode() ? "Dark" : "Light", 0)) {
+                        if(igBeginCombo("Color Theme", incGetDarkMode() ? "Dark" : "Light")) {
 
-                            if (igSelectableBool("Dark", incGetDarkMode(), 0, ImVec2(0, 0))) incSetDarkMode(true);
-                            if (igSelectableBool("Light", !incGetDarkMode(), 0, ImVec2(0, 0))) incSetDarkMode(false);
+                            if (igSelectable("Dark", incGetDarkMode())) incSetDarkMode(true);
+                            if (igSelectable("Light", !incGetDarkMode())) incSetDarkMode(false);
 
                             igEndCombo();
                         }
-                        if(igBeginCombo("Language", "English", 0)) {
+                        if(igBeginCombo("Language", "English")) {
                             igEndCombo();
                         }
 
@@ -61,7 +61,7 @@ protected:
                         igSeparator();
                         
                         int maxHistory = cast(int)incActionGetUndoHistoryLength();
-                        if (igSliderInt("Max Undo History", &maxHistory, 0, 1000, "%d", 0)) {
+                        if (igSliderInt("Max Undo History", &maxHistory, 0, 1000, "%d")) {
                             incActionSetUndoHistoryLength(maxHistory);
                         }
 
@@ -70,9 +70,9 @@ protected:
                     igEndTabItem();
                 }
 
-                if(igBeginTabItem("Other", &otherTabOpen, ImGuiTabItemFlags_NoCloseButton | ImGuiTabItemFlags_NoCloseWithMiddleMouseButton)) {
+                if(igBeginTabItem("Other", &otherTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
 
-                    igBeginChildStr("#OtherTabItems", ImVec2(0, avail.y-24), false, 0);
+                    igBeginChild("#OtherTabItems", ImVec2(0, avail.y-24));
 
                     igEndChild();
                     igEndTabItem();
