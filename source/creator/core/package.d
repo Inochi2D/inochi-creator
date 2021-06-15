@@ -167,7 +167,6 @@ void incCreateContext() {
     //io.ConfigFlags |= ImGuiConfigFlags.NavEnableKeyboard;       // Enable Keyboard Navigation
     io.ConfigWindowsResizeFromEdges = true;                     // Enable Edge resizing
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-    writeln("initopengl");
     ImGuiOpenGLBackend.init("#version 330");
 
     incInitStyling();
