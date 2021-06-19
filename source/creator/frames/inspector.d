@@ -197,7 +197,7 @@ protected:
                 node.zSort = zsortV;
             }
 
-            if (node.typeId != "Node") {
+            if (node.typeId == "Part") {
 
                 // Padding
                 igSpacing();
@@ -206,6 +206,8 @@ protected:
                 igSpacing();
                 handlePartNodes(node);
             }
+        } else {
+            igText("No nodes selected...");
         }
     }
 

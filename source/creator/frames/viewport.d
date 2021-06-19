@@ -68,7 +68,7 @@ protected:
 
         // Also viewport of 0 is too small, minimum 128.
         currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
-        igBeginChild("##ViewportView", ImVec2(0, currSize.y-31));
+        igBeginChild("##ViewportView", ImVec2(0, -32));
             
             igGetContentRegionAvail(&currSize);
             currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
@@ -119,10 +119,12 @@ protected:
                 }
 
                 // HANDLE ZOOM
-                zoom += (io.MouseWheel/50)*zoom;
-                zoom = clamp(zoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX);
-                camera.scale = vec2(zoom);
-                incTargetZoom = zoom;
+                if (io.MouseWheel != 0) {
+                    zoom += (io.MouseWheel/50)*zoom;
+                    zoom = clamp(zoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX);
+                    camera.scale = vec2(zoom);
+                    incTargetZoom = zoom;
+                }
             }
         igEndChild();
         igSeparator();
@@ -154,12 +156,11 @@ protected:
                 igSeparatorEx(ImGuiSeparatorFlags.Vertical);
 
                 igSameLine(0, 8);
-                igText("x = %.2f y = %.2f", camera.position.x, camera.position.y);
+                igText("x = %.2f y = %.2f", incTargetPosition.x, incTargetPosition.y);
                 igSameLine(0, 8);
                 igPushFont(incIconFont());
                     if (igButton("##2", ImVec2(0, 0))) {
-                        camera.position = vec2(0, 0);
-                        incTargetPosition = camera.position;
+                        incTargetPosition = vec2(0, 0);
                     }
                 igPopFont();
 
@@ -168,8 +169,9 @@ protected:
         igEndChild();
 
         // Handle smooth move
-        camera.scale = vec2(dampen(camera.scale.x, incTargetZoom, deltaTime, 1));
-        camera.position = vec2(dampen(camera.position, incTargetPosition, deltaTime, 1));
+        zoom = dampen(zoom, incTargetZoom, deltaTime, 1);
+        camera.scale = vec2(zoom, zoom);
+        camera.position = vec2(dampen(camera.position, incTargetPosition, deltaTime, 1.5));
     }
 
 public:
