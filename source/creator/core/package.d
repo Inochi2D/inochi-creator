@@ -94,9 +94,20 @@ void incOpenWindow() {
     loadOpenGL();
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    version(OSX) {
+		pragma(msg, "Building in macOS support mode...");
+
+		// macOS only supports up to GL 4.1 with some extra stuff
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+	} else {
+
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    }
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
@@ -119,10 +130,11 @@ void incOpenWindow() {
     }
 
     import std.string : fromStringz;
-    writefln("GLInfo:\n\t%s\n\t%s\n\t%s\n\tgls=%s",
+    writefln("GLInfo:\n\t%s\n\t%s\n\t%s\n\t%s\n\tgls=%s",
         glGetString(GL_VERSION).fromStringz,
         glGetString(GL_VENDOR).fromStringz,
         glGetString(GL_RENDERER).fromStringz,
+        glGetString(GL_SHADING_LANGUAGE_VERSION).fromStringz,
         support
     );
 
@@ -155,7 +167,7 @@ void incCreateContext() {
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Navigation
     io.ConfigWindowsResizeFromEdges = true;                     // Enable Edge resizing
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-    ImGuiOpenGLBackend.init("#version 130\0".ptr);
+    ImGuiOpenGLBackend.init("#version 330");
 
     incInitStyling();
 }
@@ -235,7 +247,6 @@ void incSetDarkMode(bool darkMode) {
 
         style.FrameBorderSize = 1;
         style.TabBorderSize = 1;
-
     }
     else {
         igStyleColorsLight(null);

@@ -23,8 +23,7 @@ protected:
     void onBeginUpdate() {
         
         ImGuiWindowClass wmclass;
-        wmclass.DockNodeFlagsOverrideSet = 
-            ImGuiDockNodeFlagsI.NoTabBar;
+        wmclass.DockNodeFlagsOverrideSet = ImGuiDockNodeFlagsI.NoTabBar;
         igSetNextWindowClass(&wmclass);
         igSetNextWindowDockID(incGetViewportDockSpace(), ImGuiCond.Always);
         super.onBeginUpdate();
@@ -41,7 +40,7 @@ protected:
         auto camera = inGetCamera();
 
         // Resize Inochi2D viewport according to frame
-        igBeginChild_Str("##ViewportMainControls", ImVec2(0, 32), false);
+        igBeginChild("##ViewportMainControls", ImVec2(0, 32));
             if (igButton("P", ImVec2(0, 0))) {
                 inDbgDrawMeshVertexPoints = !inDbgDrawMeshVertexPoints;
             }
@@ -68,7 +67,7 @@ protected:
 
         // Also viewport of 0 is too small, minimum 128.
         currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
-        igBeginChild_Str("##ViewportView", ImVec2(0, currSize.y-31), false);
+        igBeginChild("##ViewportView", ImVec2(0, currSize.y-31));
             
             igGetContentRegionAvail(&currSize);
             currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
@@ -128,7 +127,7 @@ protected:
         igSeparator();
 
         igGetContentRegionAvail(&currSize);
-        igBeginChild_Str("##ViewportControls", ImVec2(0, currSize.y), false);
+        igBeginChild("##ViewportControls", ImVec2(0, currSize.y));
             igPushItemWidth(72);
                 if (igSliderFloat("##Zoom", &zoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX, "%.2f")) {
                     camera.scale = vec2(zoom);

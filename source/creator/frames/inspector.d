@@ -17,7 +17,7 @@ private:
     void createLock(bool* val, string origin) {
         
         igSameLine(0, 0);
-        igPushID_Str(origin.ptr);
+        igPushID(origin.ptr);
             igPushFont(incIconFont());
                 igPushItemWidth(16);
                     igText(((*val ? "\uE897" : "\uE898")).toStringz);
@@ -110,10 +110,10 @@ private:
             // MASK MODE
             if (igBeginCombo("Mode", partNode.maskingMode ? "Dodge" : "Mask")) {
 
-                if (igSelectable_Bool("Mask", partNode.maskingMode == MaskingMode.Mask)) {
+                if (igSelectable("Mask", partNode.maskingMode == MaskingMode.Mask)) {
                     partNode.maskingMode = MaskingMode.Mask;
                 }
-                if (igSelectable_Bool("Dodge", partNode.maskingMode == MaskingMode.DodgeMask)) {
+                if (igSelectable("Dodge", partNode.maskingMode == MaskingMode.DodgeMask)) {
                     partNode.maskingMode = MaskingMode.DodgeMask;
                 }
                 igEndCombo();
@@ -125,11 +125,10 @@ private:
             // MASKED BY
             if (igBeginListBox("Masked By", ImVec2(0, 128))) {
                 foreach(i, masker; partNode.mask) {
-                    igPushID_Int(masker.uuid);
-                        igText(masker.name.toStringz);
+                    igPushID(cast(int)i);
                         if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
                             igSetDragDropPayload("_MASKITEM", cast(void*)&masker, (&masker).sizeof, ImGuiCond.Always);
-                            igText(("%s (%s)".format(masker.name, masker.uuid)).toStringz);
+                            igText(masker.name.toStringz);
                             igEndDragDropSource();
                         }
                     igPopID();
@@ -177,12 +176,12 @@ protected:
     void onUpdate() {
         Node node = incSelectedNode();
         if (node !is null) {
-            igPushID_Int(node.uuid);
+            igPushID(node.uuid);
                 igText(node.typeId().toStringz);
                 igSameLine(0, 4);
                 igSeparatorEx(ImGuiSeparatorFlags.Vertical);
                 igSameLine(0, 8);
-                incInputText("", node.name, ImGuiInputTextFlags.None);
+                incInputText("", node.name);
             igPopID();
             igSeparator();
 

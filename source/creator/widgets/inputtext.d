@@ -15,8 +15,8 @@ private {
 /**
     D compatible text input
 */
-bool incInputText(const(char)* label, ref string buffer, ImGuiInputTextFlags flags) {
-    auto id = igGetID_Str(label);
+bool incInputText(const(char)* label, ref string buffer, ImGuiInputTextFlags flags = ImGuiInputTextFlags.None) {
+    auto id = igGetID(label);
     auto storage = igGetStateStorage();
 
     // We put a new string container on the heap and make sure the GC doesn't yeet it.
@@ -81,13 +81,13 @@ bool incInputText(const(char)* label, ref string buffer, ImGuiInputTextFlags fla
 //         cast(char*)(buffer).ptr, 
 //         clamp(buffer.length, 0, limit),
 //         flags | 
-//             ImGuiInputTextFlags_CallbackResize |
-//             ImGuiInputTextFlags_EnterReturnsTrue,
+//             ImGuiInputTextFlags.CallbackResize |
+//             ImGuiInputTextFlags.EnterReturnsTrue,
 //         cast(ImGuiInputTextCallback)(ImGuiInputTextCallbackData* data) {
-//             if (data.EventFlag == ImGuiInputTextFlags_CallbackCompletion) {
+//             if (data.EventFlag == ImGuiInputTextFlags.CallbackCompletion) {
 
 //             }
-//             if (data.EventFlag == ImGuiInputTextFlags_CallbackResize) {
+//             if (data.EventFlag == ImGuiInputTextFlags.CallbackResize) {
 //                 string* str = (cast(string*)data.UserData);
 //                 str.length = data.BufTextLen;
 //                 (*str) ~= "\0";

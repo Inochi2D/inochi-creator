@@ -10,8 +10,8 @@ import inochi2d;
 */
 void incParameterView(Parameter param) {
 
-    igPushID_Int(param.uuid);
-        incInputText("", param.name, ImGuiInputTextFlags.None);
+    igPushID(param.uuid);
+    incInputText("", param.name);
     igPopID();
     igNewLine();
     incController("Test", param, ImVec2(0, 128));
@@ -38,7 +38,7 @@ protected:
     void onUpdate() {
         auto parameters = incActivePuppet().parameters;
 
-        igBeginChild_Str("ParametersList", ImVec2(0, -32), false);
+        igBeginChild("ParametersList", ImVec2(0, -32));
             foreach(param; parameters) {
                 incParameterView(param);
             }

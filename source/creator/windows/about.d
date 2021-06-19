@@ -17,7 +17,7 @@ protected:
     override
     void onUpdate() {
 
-        igBeginChild_Str("##LogoArea", ImVec2(512, 72), false);
+        igBeginChild("##LogoArea", ImVec2(512, 72));
             igImage(
                 cast(void*)incGetLogo(), 
                 ImVec2(64, 64), 
@@ -30,7 +30,7 @@ protected:
             igSameLine(0, 8);
             igSeparatorEx(ImGuiSeparatorFlags.Vertical);
             igSameLine(0, 8);
-            igBeginChild_Str("##LogoTextArea", ImVec2(0, 0), false);
+            igBeginChild("##LogoTextArea");
 
                 igPushFont(incBiggerFont());
                     igText("Inochi Creator");
@@ -41,7 +41,7 @@ protected:
                 igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "imgui v. %s", igGetVersion());
             igEndChild();
         igEndChild();
-        igBeginChild_Str("##CreditsArea", ImVec2(512, 256), false);
+        igBeginChild("##CreditsArea", ImVec2(512, 256));
 
             igText("Created By");
             igSeparator();

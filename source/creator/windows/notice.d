@@ -18,7 +18,7 @@ protected:
     override
     void onUpdate() {
 
-        igBeginChild_Str("##LogoArea", ImVec2(512, 72), false);
+        igBeginChild("##LogoArea", ImVec2(512, 72));
             igImage(
                 cast(void*)incGetLogo(), 
                 ImVec2(64, 64), 
@@ -36,7 +36,7 @@ protected:
                 igText("Inochi Creator");
             igPopFont();
         igEndChild();
-        igBeginChild_Str("##CreditsArea", ImVec2(512, 232), false);
+        igBeginChild("##CreditsArea", ImVec2(512, 232));
 
             igPushFont(incBiggerFont());
                 igTextColored(ImVec4(1, 0, 0, 1), "THIS IS BETA SOFTWARE!");

@@ -180,25 +180,25 @@ protected:
                     igText(typeIdToIcon("Node").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItem_Bool("Node", "", false, true)) this.addChildWithHistory(new Node, n);
+                if (igMenuItem("Node", "", false, true)) this.addChildWithHistory(new Node, n);
                 
                 igPushFont(incIconFont());
                     igText(typeIdToIcon("Mask").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItem_Bool("Mask", "", false, true)) this.addChildWithHistory(new Mask, n);
+                if (igMenuItem("Mask", "", false, true)) this.addChildWithHistory(new Mask, n);
                 
                 igPushFont(incIconFont());
                     igText(typeIdToIcon("PathDeform").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItem_Bool("PathDeform", "", false, true)) this.addChildWithHistory(new PathDeform, n);
+                if (igMenuItem("PathDeform", "", false, true)) this.addChildWithHistory(new PathDeform, n);
                 
                 igEndMenu();
             }
             
             // We don't want to delete the root
-            if (igMenuItem_Bool("Delete", "", false, !isRoot)) {
+            if (igMenuItem("Delete", "", false, !isRoot)) {
                 this.deleteChildWithHistory(n);
             }
             igEndPopup();
@@ -206,7 +206,7 @@ protected:
     }
 
     void treeAddNode(bool isRoot = false)(Node n) {
-        igTableNextRow(ImGuiTableRowFlags.None, 0);
+        igTableNextRow();
 
         // // Draw Enabler for this node first
         // igTableSetColumnIndex(1);
@@ -218,11 +218,11 @@ protected:
         if (n.children.length == 0) flags |= ImGuiTreeNodeFlags.Leaf;
         flags |= ImGuiTreeNodeFlags.DefaultOpen;
         flags |= ImGuiTreeNodeFlags.OpenOnArrow;
-        //flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+        //flags |= ImGuiTreeNodeFlags.SpanAvailWidth;
 
         // Then draw the node tree index
         igTableSetColumnIndex(0);
-        bool open = igTreeNodeEx_Ptr(cast(void*)n.uuid, flags, "");
+        bool open = igTreeNodeEx(cast(void*)n.uuid, flags, "");
 
             // Show node entry stuff
             igSameLine(0, 4);
@@ -234,7 +234,7 @@ protected:
                     igText(typeIdToIcon(n.typeId).ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igSelectable_Bool(n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
+                if (igSelectable(n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
                     if (selected) {
                         vec3 tr = n.transform.translation;
                         incTargetPosition = -vec2(tr.x, tr.y);
