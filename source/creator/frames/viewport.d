@@ -127,6 +127,30 @@ protected:
                 }
             }
         igEndChild();
+
+        if (igBeginDragDropTarget()) {
+            ImGuiPayload* payload = igAcceptDragDropPayload("__PARTS_DROP");
+            if (payload !is null) {
+                string[] files = *cast(string[]*)payload.Data;
+                import std.path : baseName;
+                foreach(file; files) {
+                    string fname = file.baseName;
+
+                    Node parentNode = incSelectedNode() is null ? incActivePuppet().root : incSelectedNode;
+
+                    inCreateSimplePart(ShallowTexture(file), parentNode, fname);
+                }
+
+                // We've added new stuff, rescan nodes
+                incActivePuppet().rescanNodes();
+
+                // Finish the file drag
+                incFinishFileDrag();
+            }
+
+            igEndDragDropTarget();
+        }
+
         igSeparator();
 
         igGetContentRegionAvail(&currSize);

@@ -30,6 +30,7 @@ private {
     ImFont* biggerFont;
 
     bool isDarkMode = true;
+    string[] files;
 }
 
 bool incShowStatsForNerds;
@@ -279,6 +280,10 @@ SDL_Window* incGetWindowPtr() {
     return window;
 }
 
+void incFinishFileDrag() {
+    files.length = 0;
+}
+
 /**
     Begins the Inochi Creator rendering loop
 */
@@ -289,6 +294,11 @@ void incBeginLoop() {
         switch(event.type) {
             case SDL_QUIT:
                 done = true;
+                break;
+
+            case SDL_DROPFILE:
+                files ~= cast(string)event.drop.file.fromStringz;
+                SDL_RaiseWindow(window);
                 break;
             
             default: 
@@ -310,6 +320,18 @@ void incBeginLoop() {
     ImGuiOpenGLBackend.new_frame();
     ImGui_ImplSDL2_NewFrame(window);
     igNewFrame();
+
+    if (files.length > 0) {
+        if (igBeginDragDropSource(ImGuiDragDropFlags.SourceExtern)) {
+            igSetDragDropPayload("__PARTS_DROP", &files, files.sizeof);
+            igBeginTooltip();
+            foreach(file; files) {
+                igText(file.toStringz);
+            }
+            igEndTooltip();
+            igEndDragDropSource();
+        }
+    }
 
     // Add docking space
     viewportDock = igDockSpaceOverViewport(null, cast(ImGuiDockNodeFlags)0, null);

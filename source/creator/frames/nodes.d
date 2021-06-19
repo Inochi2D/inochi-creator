@@ -198,6 +198,12 @@ protected:
             
             // We don't want to delete the root
             if (igMenuItem("Delete", "", false, !isRoot)) {
+
+                // Make sure we don't keep selecting a node we've removed
+                if (n == incSelectedNode()) {
+                    incSelectNode(null);
+                }
+
                 this.deleteChildWithHistory(n);
             }
             
@@ -242,8 +248,7 @@ protected:
                 igSameLine(0, 2);
                 if (igSelectable(n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
                     if (selected) {
-                        vec3 tr = n.transform.translation;
-                        incTargetPosition = -vec2(tr.x, tr.y);
+                        incFocusCamera(n);
                     }
                     incSelectNode(n);
                 }
@@ -326,6 +331,12 @@ protected:
                 ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
                 if (payload !is null) {
                     Node payloadNode = *cast(Node*)payload.Data;
+
+                    // Make sure we don't keep selecting a node we've removed
+                    if (payloadNode == incSelectedNode()) {
+                        incSelectNode(null);
+                    }
+
                     this.deleteChildWithHistory(payloadNode);
                     
                     igPopFont();

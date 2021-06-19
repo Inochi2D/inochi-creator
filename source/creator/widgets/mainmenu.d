@@ -26,14 +26,18 @@ void incMainMenu() {
         igSeparator();
 
         if (igBeginMenu("File", true)) {
+            if(igMenuItem("New", "Ctrl+N", false, true)) {
+                incNewProject();
+            }
+
             if (igBeginMenu("Open", true)) {
                 igEndMenu();
             }
             
-            if(igMenuItem_Bool("Save", "Ctrl+S", false, true)) {
+            if(igMenuItem("Save", "Ctrl+S", false, true)) {
             }
             
-            if(igMenuItem_Bool("Save As...", "Ctrl+Shift+S", false, true)) {
+            if(igMenuItem("Save As...", "Ctrl+Shift+S", false, true)) {
             }
 
             if (igBeginMenu("Import", true)) {
@@ -62,6 +66,11 @@ void incMainMenu() {
                     c_str filename = tinyfd_saveFileDialog("Export...", "", filters);
                     if (filename !is null) {
                         string file = cast(string)filename.fromStringz;
+
+                        // Remember to populate texture slots otherwise things will break real bad!
+                        incActivePuppet().populateTextureSlots();
+
+                        // Write the puppet to file
                         inWriteINPPuppet(incActivePuppet(), file.setExtension(".inp"));
                     }
                 }
