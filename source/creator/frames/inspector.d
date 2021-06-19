@@ -123,9 +123,11 @@ private:
             igSliderFloat("Threshold", &partNode.maskAlphaThreshold, 0.0, 1.0, "%.2f");
 
             // MASKED BY
+
             if (igBeginListBox("Masked By", ImVec2(0, 128))) {
                 foreach(i, masker; partNode.mask) {
                     igPushID(cast(int)i);
+                        igText(masker.name.toStringz);
                         if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
                             igSetDragDropPayload("_MASKITEM", cast(void*)&masker, (&masker).sizeof, ImGuiCond.Always);
                             igText(masker.name.toStringz);
@@ -147,6 +149,7 @@ private:
                         }
                     }
                 }
+                
                 igEndDragDropTarget();
             }
 
@@ -155,10 +158,11 @@ private:
                 ImGuiPayload* payload = igAcceptDragDropPayload("_MASKITEM");
                 if (payload !is null) {
                     if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
-                        if(size_t i = partNode.mask.countUntil(payloadDrawable) != -1) {
-                            import std.stdio : writeln;
-                            writeln(i, " ", partNode.mask[i].uuid, " ", payloadDrawable.uuid);
-                            partNode.mask = partNode.mask.remove(i);
+                        foreach(i; 0..partNode.mask.length) {
+                            if (payloadDrawable.uuid == partNode.mask[i].uuid) {
+                                partNode.mask = partNode.mask.remove(i);
+                                break;
+                            }
                         }
                     }
                 }
