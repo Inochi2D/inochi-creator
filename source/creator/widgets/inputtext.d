@@ -16,7 +16,7 @@ private {
     D compatible text input
 */
 bool incInputText(const(char)* label, ref string buffer, ImGuiInputTextFlags flags) {
-    auto id = igGetIDStr(label);
+    auto id = igGetID_Str(label);
     auto storage = igGetStateStorage();
 
     // We put a new string container on the heap and make sure the GC doesn't yeet it.
@@ -34,12 +34,12 @@ bool incInputText(const(char)* label, ref string buffer, ImGuiInputTextFlags fla
         cast(char*)str.str.ptr, 
         str.str.length,
         flags | 
-            ImGuiInputTextFlags_CallbackResize |
-            ImGuiInputTextFlags_EnterReturnsTrue,
+            ImGuiInputTextFlags.CallbackResize |
+            ImGuiInputTextFlags.EnterReturnsTrue,
         cast(ImGuiInputTextCallback)(ImGuiInputTextCallbackData* data) {
 
             // Allow resizing strings on GC heap
-            if (data.EventFlag == ImGuiInputTextFlags_CallbackResize) {
+            if (data.EventFlag == ImGuiInputTextFlags.CallbackResize) {
                 Str* str = (cast(Str*)data.UserData);
                 str.str ~= "\0";
                 str.str.length = data.BufTextLen;

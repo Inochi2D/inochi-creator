@@ -14,14 +14,14 @@ protected:
 
     override
     void onBeginUpdate(int id) {
-        igSetNextWindowSize(ImVec2(512, 512), ImGuiCond_FirstUseEver);
+        igSetNextWindowSize(ImVec2(512, 512), ImGuiCond.FirstUseEver);
         super.onBeginUpdate(id);
     }
 
     override
     void onUpdate() {
-        igSliderFloat("Zoom", &zoom, 0.1, 10, "%.2f", 0);
-        igBeginChildStr("TextureViewerArea", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+        igSliderFloat("Zoom", &zoom, 0.1, 10, "%.2f");
+        igBeginChild_Str("TextureViewerArea", ImVec2(0, 0), false, ImGuiWindowFlags.HorizontalScrollbar);
             igImage(
                 cast(void*)texture.getTextureId(), 
                 ImVec2(texture.width*zoom, texture.height*zoom), 

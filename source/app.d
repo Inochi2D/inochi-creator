@@ -10,6 +10,7 @@ import creator.core;
 import creator.core.settings;
 import creator.frames;
 import creator.windows;
+import creator.widgets;
 import creator.core.actionstack;
 import inochi2d;
 import creator;
@@ -38,7 +39,8 @@ int main(string[] args)
         incBeginLoop();
             if (incShouldProcess()) {
                 incHandleShortcuts();
-                incRenderMenu();
+                incMainMenu();
+                incToolbar();
 
                 incUpdateFrames();
                 incUpdateWindows();

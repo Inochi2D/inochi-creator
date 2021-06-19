@@ -13,8 +13,8 @@ class TextureSlotsFrame : Frame {
 private:
 
     void namedIcon(string name, Texture texture, ImVec2 size) {
-        igBeginChildStr(("tex_"~name~"\0").ptr, size, false, 0);
-            if (igSelectableBool("", false, 0, size)) {
+        igBeginChild_Str(("tex_"~name~"\0").ptr, size, false);
+            if (igSelectable_Bool("", false, ImGuiSelectableFlags.None, size)) {
                 incPushWindowList(new TextureViewerWindow(texture));
             }
             igSameLine(0.1, 0);
@@ -43,7 +43,7 @@ private:
 protected:
     override
     void onUpdate() {
-        igBeginChildStr("TexturesList", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+        igBeginChild_Str("TexturesList", ImVec2(0, 0), false, ImGuiWindowFlags.HorizontalScrollbar);
             ImVec2 avail;
             igGetContentRegionAvail(&avail);
 

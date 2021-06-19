@@ -11,14 +11,14 @@ private:
 protected:
     override
     void onBeginUpdate(int id) {
-        flags |= ImGuiWindowFlags_NoResize;
+        flags |= ImGuiWindowFlags.NoResize;
         super.onBeginUpdate(0);
     }
 
     override
     void onUpdate() {
 
-        igBeginChildStr("##LogoArea", ImVec2(512, 72), false, 0);
+        igBeginChild_Str("##LogoArea", ImVec2(512, 72), false);
             igImage(
                 cast(void*)incGetLogo(), 
                 ImVec2(64, 64), 
@@ -29,14 +29,14 @@ protected:
             );
             
             igSameLine(0, 8);
-            igSeparatorEx(ImGuiSeparatorFlags_Vertical);
+            igSeparatorEx(ImGuiSeparatorFlags.Vertical);
             igSameLine(0, 8);
 
             igPushFont(incBiggerFont());
                 igText("Inochi Creator");
             igPopFont();
         igEndChild();
-        igBeginChildStr("##CreditsArea", ImVec2(512, 232), false, 0);
+        igBeginChild_Str("##CreditsArea", ImVec2(512, 232), false);
 
             igPushFont(incBiggerFont());
                 igTextColored(ImVec4(1, 0, 0, 1), "THIS IS BETA SOFTWARE!");

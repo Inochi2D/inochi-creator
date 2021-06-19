@@ -25,7 +25,11 @@ protected:
     abstract void onUpdate();
 
     void onBeginUpdate(int id) {
-        igBegin((name~"##"~id.text).toStringz, &visible, flags);
+        igBegin(
+            (name~"##"~id.text).toStringz,
+             &visible, 
+            flags | ImGuiWindowFlags.NoSavedSettings
+        );
     }
     
     void onEndUpdate() {
@@ -56,7 +60,7 @@ public:
         Draws the frame
     */
     final void update(int id) {
-        igPushItemFlag(ImGuiItemFlags_Disabled, disabled);
+        igPushItemFlag(ImGuiItemFlags.Disabled, disabled);
             this.onBeginUpdate(id);
                 this.onUpdate();
             this.onEndUpdate();
@@ -72,18 +76,18 @@ public:
     }
 
     void disable() {
-        this.flags = ImGuiWindowFlags_NoDocking | 
-            ImGuiWindowFlags_NoCollapse | 
-            ImGuiWindowFlags_NoNav | 
-            ImGuiWindowFlags_NoMove |
-            ImGuiWindowFlags_NoScrollWithMouse |
-            ImGuiWindowFlags_NoScrollbar;
+        this.flags = ImGuiWindowFlags.NoDocking | 
+            ImGuiWindowFlags.NoCollapse | 
+            ImGuiWindowFlags.NoNav | 
+            ImGuiWindowFlags.NoMove |
+            ImGuiWindowFlags.NoScrollWithMouse |
+            ImGuiWindowFlags.NoScrollbar;
         disabled = true;
     }
 
     void restore() {
         disabled = false;
-        this.flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse;
+        this.flags = ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoCollapse;
     }
 }
 

@@ -167,36 +167,38 @@ protected:
     }
 
     void nodeActionsPopup(bool isRoot = false)(Node n) {
-        if (igIsItemClicked(ImGuiMouseButton_Right)) {
-            igOpenPopup("NodeActionsPopup", 0);
+        if (igIsItemClicked(ImGuiMouseButton.Right)) {
+            igOpenPopup("NodeActionsPopup");
         }
 
-        if (igBeginPopup("NodeActionsPopup", 0)) {
+        if (igBeginPopup("NodeActionsPopup")) {
+            igText("%lu", n.uuid);
+
             if (igBeginMenu("Add", true)) {
 
                 igPushFont(incIconFont());
                     igText(typeIdToIcon("Node").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItemBool("Node", "", false, true)) this.addChildWithHistory(new Node, n);
+                if (igMenuItem_Bool("Node", "", false, true)) this.addChildWithHistory(new Node, n);
                 
                 igPushFont(incIconFont());
                     igText(typeIdToIcon("Mask").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItemBool("Mask", "", false, true)) this.addChildWithHistory(new Mask, n);
+                if (igMenuItem_Bool("Mask", "", false, true)) this.addChildWithHistory(new Mask, n);
                 
                 igPushFont(incIconFont());
                     igText(typeIdToIcon("PathDeform").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItemBool("PathDeform", "", false, true)) this.addChildWithHistory(new PathDeform, n);
+                if (igMenuItem_Bool("PathDeform", "", false, true)) this.addChildWithHistory(new PathDeform, n);
                 
                 igEndMenu();
             }
             
             // We don't want to delete the root
-            if (igMenuItemBool("Delete", "", false, !isRoot)) {
+            if (igMenuItem_Bool("Delete", "", false, !isRoot)) {
                 this.deleteChildWithHistory(n);
             }
             igEndPopup();
@@ -204,7 +206,7 @@ protected:
     }
 
     void treeAddNode(bool isRoot = false)(Node n) {
-        igTableNextRow(0, 0);
+        igTableNextRow(ImGuiTableRowFlags.None, 0);
 
         // // Draw Enabler for this node first
         // igTableSetColumnIndex(1);
@@ -213,14 +215,14 @@ protected:
         // igPopFont();
 
         ImGuiTreeNodeFlags flags;
-        if (n.children.length == 0) flags |= ImGuiTreeNodeFlags_Leaf;
-        flags |= ImGuiTreeNodeFlags_DefaultOpen;
-        flags |= ImGuiTreeNodeFlags_OpenOnArrow;
+        if (n.children.length == 0) flags |= ImGuiTreeNodeFlags.Leaf;
+        flags |= ImGuiTreeNodeFlags.DefaultOpen;
+        flags |= ImGuiTreeNodeFlags.OpenOnArrow;
         //flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 
         // Then draw the node tree index
         igTableSetColumnIndex(0);
-        bool open = igTreeNodeExPtr(cast(void*)n.uuid, flags, "");
+        bool open = igTreeNodeEx_Ptr(cast(void*)n.uuid, flags, "");
 
             // Show node entry stuff
             igSameLine(0, 4);
@@ -232,7 +234,7 @@ protected:
                     igText(typeIdToIcon(n.typeId).ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igSelectableBool(n.name.toStringz, selected, ImGuiSelectableFlags_None, ImVec2(0, 0))) {
+                if (igSelectable_Bool(n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
                     if (selected) {
                         vec3 tr = n.transform.translation;
                         incTargetPosition = -vec2(tr.x, tr.y);
@@ -241,8 +243,8 @@ protected:
                 }
                 this.nodeActionsPopup(n);
 
-                if(igBeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-                    igSetDragDropPayload("_PUPPETNTREE", cast(void*)&n, (&n).sizeof, ImGuiCond_Always);
+                if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
+                    igSetDragDropPayload("_PUPPETNTREE", cast(void*)&n, (&n).sizeof, ImGuiCond.Always);
                     igText(n.name.toStringz);
                     igEndDragDropSource();
                 }
@@ -256,7 +258,7 @@ protected:
             }
 
             if(igBeginDragDropTarget()) {
-                ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE", 0);
+                ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
                 if (payload !is null) {
                     Node payloadNode = *cast(Node*)payload.Data;
                     this.moveChildWithHistory(payloadNode, n);
@@ -280,7 +282,7 @@ protected:
 
     override
     void onBeginUpdate() {
-        igBegin(name.ptr, &this.visible, ImGuiWindowFlags_AlwaysAutoResize);
+        igBegin(name.ptr, &this.visible, ImGuiWindowFlags.AlwaysAutoResize);
     }
 
     override
@@ -291,10 +293,10 @@ protected:
         ImVec2 avail;
         igGetContentRegionAvail(&avail);
 
-        igBeginChildStr("NodesMain", ImVec2(0, -28), false, 0);
+        igBeginChild_Str("NodesMain", ImVec2(0, -28), false);
 
-            if (igBeginTable("NodesContent", 2, ImGuiTableFlags_ScrollX, ImVec2(0, 0), 0)) {
-                igTableSetupColumn("Nodes", ImGuiTableColumnFlags_WidthFixed, 0, 0);
+            if (igBeginTable("NodesContent", 2, ImGuiTableFlags.ScrollX, ImVec2(0, 0), 0)) {
+                igTableSetupColumn("Nodes", ImGuiTableColumnFlags.WidthFixed, 0, 0);
                 //igTableSetupColumn("Visibility", ImGuiTableColumnFlags_WidthFixed, 32, 1);
                 
                 treeAddNode!true(incActivePuppet.root);
@@ -303,7 +305,7 @@ protected:
             }
         igEndChild();
 
-        if (igIsItemClicked(ImGuiMouseButton_Left)) {
+        if (igIsItemClicked(ImGuiMouseButton.Left)) {
             incSelectNode(null);
         }
         
@@ -315,7 +317,7 @@ protected:
             }
 
             if(igBeginDragDropTarget()) {
-                ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE", 0);
+                ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
                 if (payload !is null) {
                     Node payloadNode = *cast(Node*)payload.Data;
                     this.deleteChildWithHistory(payloadNode);

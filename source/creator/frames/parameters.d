@@ -10,9 +10,13 @@ import inochi2d;
 */
 void incParameterView(Parameter param) {
 
-    igPushIDInt(param.uuid);
-        incInputText("", param.name, 0);
+    igPushID_Int(param.uuid);
+        incInputText("", param.name, ImGuiInputTextFlags.None);
     igPopID();
+    igNewLine();
+    incController("Test", param, ImVec2(0, 128));
+    param.isVec2 = true;
+    igText("%.2f %.2f", param.handle.x, param.handle.y);
     igSeparator();
     
     // Each param vec mode needs to be rendered individually
@@ -34,7 +38,7 @@ protected:
     void onUpdate() {
         auto parameters = incActivePuppet().parameters;
 
-        igBeginChildStr("ParametersList", ImVec2(0, -32), false, 0);
+        igBeginChild_Str("ParametersList", ImVec2(0, -32), false);
             foreach(param; parameters) {
                 incParameterView(param);
             }

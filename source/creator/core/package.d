@@ -29,12 +29,11 @@ private {
     ImFont* iconFont;
     ImFont* biggerFont;
 
-    bool showStatsForNerds;
-    bool dbgShowStyleEditor;
-    bool dbgShowDebugger;
-
     bool isDarkMode = true;
 }
+
+bool incShowStatsForNerds;
+
 
 /**
     Finalizes everything by freeing imgui resources, etc.
@@ -64,17 +63,17 @@ ImGuiID incGetViewportDockSpace() {
 void incInitStyling() {
     auto style = igGetStyle();
     //style.WindowBorderSize = 0;
-    style.ChildBorderSize = 0;
-    style.PopupBorderSize = 0;
-    style.FrameBorderSize = 0;
-    style.TabBorderSize = 0;
+    style.ChildBorderSize = 1;
+    style.PopupBorderSize = 1;
+    style.FrameBorderSize = 1;
+    style.TabBorderSize = 1;
 
     style.WindowRounding = 6;
     style.ChildRounding = 6;
     style.FrameRounding = 6;
     style.PopupRounding = 6;
     style.ScrollbarRounding = 18;
-    style.GrabRounding = 6;
+    style.GrabRounding = 3;
     style.LogSliderDeadzone = 6;
     style.TabRounding = 6;
 
@@ -137,7 +136,7 @@ void incOpenWindow() {
     inLogo = new Texture(ShallowTexture(cast(ubyte[])import("logo.png")));
 
     // Load Settings
-    showStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
+    incShowStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
 
     // Font loading
     incUseOpenDyslexic(incSettingsGet!bool("UseOpenDyslexic"));
@@ -151,7 +150,8 @@ void incCreateContext() {
 
     incSetDarkMode(incSettingsGet!bool("DarkMode", true));
 
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+    io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;           // Enable Docking
+    //io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;           // Enable Viewports (causes freezes)
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Navigation
     io.ConfigWindowsResizeFromEdges = true;                     // Enable Edge resizing
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
@@ -175,15 +175,72 @@ void incRecreateContext() {
 
 void incSetDarkMode(bool darkMode) {
     auto style = igGetStyle();
+
     if (darkMode) {
-        igStyleColorsDark(null);
-        style.Colors[ImGuiCol_Border] = ImVec4(0, 0, 0, 0.5);
-        style.FrameBorderSize = 0;
+        style.Colors[ImGuiCol.Text]                   = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+        style.Colors[ImGuiCol.TextDisabled]           = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+        style.Colors[ImGuiCol.WindowBg]               = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
+        style.Colors[ImGuiCol.ChildBg]                = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+        style.Colors[ImGuiCol.PopupBg]                = ImVec4(0.08f, 0.08f, 0.08f, 0.94f);
+        style.Colors[ImGuiCol.Border]                 = ImVec4(0.00f, 0.00f, 0.00f, 0.16f);
+        style.Colors[ImGuiCol.BorderShadow]           = ImVec4(0.00f, 0.00f, 0.00f, 0.16f);
+        style.Colors[ImGuiCol.FrameBg]                = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+        style.Colors[ImGuiCol.FrameBgHovered]         = ImVec4(0.15f, 0.15f, 0.15f, 0.40f);
+        style.Colors[ImGuiCol.FrameBgActive]          = ImVec4(0.22f, 0.22f, 0.22f, 0.67f);
+        style.Colors[ImGuiCol.TitleBg]                = ImVec4(0.04f, 0.04f, 0.04f, 1.00f);
+        style.Colors[ImGuiCol.TitleBgActive]          = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+        style.Colors[ImGuiCol.TitleBgCollapsed]       = ImVec4(0.00f, 0.00f, 0.00f, 0.51f);
+        style.Colors[ImGuiCol.MenuBarBg]              = ImVec4(0.05f, 0.05f, 0.05f, 1.00f);
+        style.Colors[ImGuiCol.ScrollbarBg]            = ImVec4(0.02f, 0.02f, 0.02f, 0.53f);
+        style.Colors[ImGuiCol.ScrollbarGrab]          = ImVec4(0.31f, 0.31f, 0.31f, 1.00f);
+        style.Colors[ImGuiCol.ScrollbarGrabHovered]   = ImVec4(0.41f, 0.41f, 0.41f, 1.00f);
+        style.Colors[ImGuiCol.ScrollbarGrabActive]    = ImVec4(0.51f, 0.51f, 0.51f, 1.00f);
+        style.Colors[ImGuiCol.CheckMark]              = ImVec4(0.76f, 0.76f, 0.76f, 1.00f);
+        style.Colors[ImGuiCol.SliderGrab]             = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
+        style.Colors[ImGuiCol.SliderGrabActive]       = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
+        style.Colors[ImGuiCol.Button]                 = ImVec4(0.39f, 0.39f, 0.39f, 0.40f);
+        style.Colors[ImGuiCol.ButtonHovered]          = ImVec4(0.44f, 0.44f, 0.44f, 1.00f);
+        style.Colors[ImGuiCol.ButtonActive]           = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+        style.Colors[ImGuiCol.Header]                 = ImVec4(0.25f, 0.25f, 0.25f, 0.31f);
+        style.Colors[ImGuiCol.HeaderHovered]          = ImVec4(0.28f, 0.28f, 0.28f, 0.80f);
+        style.Colors[ImGuiCol.HeaderActive]           = ImVec4(0.44f, 0.44f, 0.44f, 1.00f);
+        style.Colors[ImGuiCol.Separator]              = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+        style.Colors[ImGuiCol.SeparatorHovered]       = ImVec4(0.29f, 0.29f, 0.29f, 0.78f);
+        style.Colors[ImGuiCol.SeparatorActive]        = ImVec4(0.47f, 0.47f, 0.47f, 1.00f);
+        style.Colors[ImGuiCol.ResizeGrip]             = ImVec4(0.35f, 0.35f, 0.35f, 0.00f);
+        style.Colors[ImGuiCol.ResizeGripHovered]      = ImVec4(0.40f, 0.40f, 0.40f, 0.00f);
+        style.Colors[ImGuiCol.ResizeGripActive]       = ImVec4(0.55f, 0.55f, 0.56f, 0.00f);
+        style.Colors[ImGuiCol.Tab]                    = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+        style.Colors[ImGuiCol.TabHovered]             = ImVec4(0.34f, 0.34f, 0.34f, 0.80f);
+        style.Colors[ImGuiCol.TabActive]              = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
+        style.Colors[ImGuiCol.TabUnfocused]           = ImVec4(0.14f, 0.14f, 0.14f, 0.97f);
+        style.Colors[ImGuiCol.TabUnfocusedActive]     = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
+        style.Colors[ImGuiCol.DockingPreview]         = ImVec4(0.62f, 0.68f, 0.75f, 0.70f);
+        style.Colors[ImGuiCol.DockingEmptyBg]         = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+        style.Colors[ImGuiCol.PlotLines]              = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
+        style.Colors[ImGuiCol.PlotLinesHovered]       = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
+        style.Colors[ImGuiCol.PlotHistogram]          = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
+        style.Colors[ImGuiCol.PlotHistogramHovered]   = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
+        style.Colors[ImGuiCol.TableHeaderBg]          = ImVec4(0.19f, 0.19f, 0.20f, 1.00f);
+        style.Colors[ImGuiCol.TableBorderStrong]      = ImVec4(0.31f, 0.31f, 0.35f, 1.00f);
+        style.Colors[ImGuiCol.TableBorderLight]       = ImVec4(0.23f, 0.23f, 0.25f, 1.00f);
+        style.Colors[ImGuiCol.TableRowBg]             = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+        style.Colors[ImGuiCol.TableRowBgAlt]          = ImVec4(1.00f, 1.00f, 1.00f, 0.06f);
+        style.Colors[ImGuiCol.TextSelectedBg]         = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
+        style.Colors[ImGuiCol.DragDropTarget]         = ImVec4(1.00f, 1.00f, 0.00f, 0.90f);
+        style.Colors[ImGuiCol.NavHighlight]           = ImVec4(0.32f, 0.32f, 0.32f, 1.00f);
+        style.Colors[ImGuiCol.NavWindowingHighlight]  = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
+        style.Colors[ImGuiCol.NavWindowingDimBg]      = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
+        style.Colors[ImGuiCol.ModalWindowDimBg]       = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+
+        style.FrameBorderSize = 1;
+        style.TabBorderSize = 1;
+
     }
     else {
         igStyleColorsLight(null);
-        style.Colors[ImGuiCol_Border] = ImVec4(0.8, 0.8, 0.8, 0.5);
-        style.Colors[ImGuiCol_BorderShadow] = ImVec4(0, 0, 0, 0.05);
+        style.Colors[ImGuiCol.Border] = ImVec4(0.8, 0.8, 0.8, 0.5);
+        style.Colors[ImGuiCol.BorderShadow] = ImVec4(0, 0, 0, 0.05);
 
         style.FrameBorderSize = 1;
     } 
@@ -338,159 +395,12 @@ void incUseOpenDyslexic(bool useOpenDyslexic) {
     incSettingsSet("UseOpenDyslexic", useOpenDyslexic);
 }
 
-/**
-    Renders the main menu
-*/
-void incRenderMenu() {
-    if(igBeginMainMenuBar()) {
-        ImVec2 avail;
-        igGetContentRegionAvail(&avail);
-        igImage(cast(void*)inLogo.getTextureId, ImVec2(avail.y*2, avail.y*2), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-        igSeparator();
-
-        if (igBeginMenu("File", true)) {
-            if (igBeginMenu("Open", true)) {
-                igEndMenu();
-            }
-            
-            if(igMenuItemBool("Save", "Ctrl+S", false, true)) {
-            }
-            
-            if(igMenuItemBool("Save As...", "Ctrl+Shift+S", false, true)) {
-            }
-
-            if (igBeginMenu("Import", true)) {
-                if(igMenuItemBool("Inochi Puppet", "", false, true)) {
-                    const TFD_Filter[] filters = [
-                        { ["*.inp"], "Inochi2D Puppet (*.inp)" }
-                    ];
-
-                    c_str filename = tinyfd_openFileDialog("Import...", "", filters, false);
-                    if (filename !is null) {
-                        string file = cast(string)filename.fromStringz;
-                        incNewProject();
-                        incActiveProject().puppet = inLoadPuppet(file);
-                    }
-                }
-                igEndMenu();
-            }
-            if (igBeginMenu("Export", true)) {
-                if(igMenuItemBool("Inochi Puppet", "", false, true)) {
-                    const TFD_Filter[] filters = [
-                        { ["*.inp"], "Inochi2D Puppet (*.inp)" }
-                    ];
-
-                    import std.path : setExtension;
-
-                    c_str filename = tinyfd_saveFileDialog("Export...", "", filters);
-                    if (filename !is null) {
-                        string file = cast(string)filename.fromStringz;
-                        inWriteINPPuppet(incActivePuppet(), file.setExtension(".inp"));
-                    }
-                }
-                igEndMenu();
-            }
-
-            if(igMenuItemBool("Quit", "Alt+F4", false, true)) incExit();
-            igEndMenu();
-        }
-        
-        if (igBeginMenu("Edit", true)) {
-            if(igMenuItemBool("Undo", "Ctrl+Z", false, incActionCanUndo())) incActionUndo();
-            if(igMenuItemBool("Redo", "Ctrl+Shift+Z", false, incActionCanRedo())) incActionRedo();
-            
-            igSeparator();
-            if(igMenuItemBool("Cut", "Ctrl+X", false, false)) {}
-            if(igMenuItemBool("Copy", "Ctrl+C", false, false)) {}
-            if(igMenuItemBool("Paste", "Ctrl+V", false, false)) {}
-
-            igSeparator();
-            if(igMenuItemBool("Settings", "", false, true)) {
-                if (!incIsSettingsOpen) incPushWindow(new SettingsWindow);
-            }
-            
-            debug {
-                igSpacing();
-                igSpacing();
-
-                igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "ImGui Debugging");
-
-                igSeparator();
-                if(igMenuItemBool("Style Editor", "", false, true)) dbgShowStyleEditor = !dbgShowStyleEditor;
-                if(igMenuItemBool("ImGui Debugger", "", false, true)) dbgShowDebugger = !dbgShowDebugger;
-            }
-            igEndMenu();
-        }
-
-        if (igBeginMenu("View", true)) {
-            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Frames");
-            igSeparator();
-
-            foreach(frame; incFrames) {
-
-                // Skip frames that'll always be visible
-                if (frame.alwaysVisible) continue;
-
-                // Show menu item for frame
-                if(igMenuItemBool(frame.name.ptr, null, frame.visible, true)) {
-                    frame.visible = !frame.visible;
-                    incSettingsSet(frame.name~".visible", frame.visible);
-                }
-            }
-
-            // Spacing
-            igSpacing();
-            igSpacing();
-            
-            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Extras");
-            igSeparator();
-
-            if (igMenuItemBool("Show Stats for Nerds", "", showStatsForNerds, true)) {
-                showStatsForNerds = !showStatsForNerds;
-                incSettingsSet("NerdStats", showStatsForNerds);
-            }
-
-            igEndMenu();
-        }
-
-        if (igBeginMenu("Help", true)) {
-
-            if(igMenuItemBool("Tutorial", "(TODO)", false, false)) { }
-            igSeparator();
-            
-            if(igMenuItemBool("Online Documentation", "", false, true)) {
-                openLink("https://github.com/Inochi2D/inochi-creator/wiki");
-            }
-            
-            if(igMenuItemBool("Inochi2D Documentation", "", false, true)) {
-                openLink("https://github.com/Inochi2D/inochi2d/wiki");
-            }
-            igSeparator();
-
-            if(igMenuItemBool("About", "", false, true)) {
-                incPushWindow(new AboutWindow);
-            }
-            igEndMenu();
-        }
-
-        if (showStatsForNerds) {
-            igSeparator();
-            igText("%.0fms %.1fFPS", 1000f/io.Framerate, io.Framerate);
-        }
-
-        igEndMainMenuBar();
-
-        if (dbgShowStyleEditor) igShowStyleEditor(igGetStyle());
-        if (dbgShowDebugger) igShowAboutWindow(&dbgShowDebugger);
-    }
-}
-
 void incHandleShortcuts() {
     auto io = igGetIO();
     
-    if (io.KeyCtrl && io.KeyShift && igIsKeyPressed(igGetKeyIndex(ImGuiKey_Z), false)) {
+    if (io.KeyCtrl && io.KeyShift && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), false)) {
         incActionRedo();
-    } else if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey_Z), false)) {
+    } else if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), false)) {
         incActionUndo();
     }
 }
