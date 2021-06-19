@@ -28,11 +28,8 @@ protected:
         igBeginChild("SettingsWindowChild", ImVec2(512, 512));
             if (igBeginTabBar("SettingsWindowTabs", ImGuiTabBarFlags.NoCloseWithMiddleMouseButton)) {
 
-                ImVec2 avail;
-                igGetContentRegionAvail(&avail);
-
                 if(igBeginTabItem("General", &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
-                    igBeginChild("#GeneralTabItems", ImVec2(0, avail.y-24));
+                    igBeginChild("#GeneralTabItems", ImVec2(0, -26));
                         igText("Look and Feel");
                         igSeparator();
                         if(igBeginCombo("Color Theme", incGetDarkMode() ? "Dark" : "Light")) {
@@ -44,12 +41,6 @@ protected:
                         if(igBeginCombo("Language", "English")) {
                             igEndCombo();
                         }
-
-                        useOpenDyslexic = incSettingsGet!bool("UseOpenDyslexic");
-                        if(igCheckbox("Use OpenDyslexic", &useOpenDyslexic)) {
-                            incUseOpenDyslexic(useOpenDyslexic);
-                        }
-
 
 
                         igSpacing();
@@ -68,9 +59,22 @@ protected:
                     igEndTabItem();
                 }
 
+                if(igBeginTabItem("Accessibility", &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
+                    
+                    igBeginChild("#GeneralTabItems", ImVec2(0, -26));
+
+                        useOpenDyslexic = incSettingsGet!bool("UseOpenDyslexic");
+                        if(igCheckbox("Use Dyslexia optimized font", &useOpenDyslexic)) {
+                            incUseOpenDyslexic(useOpenDyslexic);
+                        }
+
+                    igEndChild();
+                    igEndTabItem();
+                }
+
                 if(igBeginTabItem("Other", &otherTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
 
-                    igBeginChild("#OtherTabItems", ImVec2(0, avail.y-24));
+                    igBeginChild("#OtherTabItems", ImVec2(0, -26));
 
                     igEndChild();
                     igEndTabItem();
