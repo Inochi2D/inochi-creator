@@ -172,7 +172,6 @@ protected:
         }
 
         if (igBeginPopup("NodeActionsPopup")) {
-            igText("%lu", n.uuid);
 
             if (igBeginMenu("Add", true)) {
 
@@ -200,6 +199,13 @@ protected:
             // We don't want to delete the root
             if (igMenuItem("Delete", "", false, !isRoot)) {
                 this.deleteChildWithHistory(n);
+            }
+            
+            // We don't want to delete the root
+            if (igBeginMenu("More Info", true)) {
+                igText("ID: %lu", n.uuid);
+
+                igEndMenu();
             }
             igEndPopup();
         }
