@@ -21,6 +21,20 @@ private {
 }
 
 /**
+    Edit modes
+*/
+enum EditMode {
+    ModelEdit,
+    ParamEdit,
+    VertexEdit
+}
+
+/**
+    Current edit mode
+*/
+EditMode incEditMode;
+
+/**
     Updates the active Inochi2D project
 */
 void incUpdateActiveProject() {

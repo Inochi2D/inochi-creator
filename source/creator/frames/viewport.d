@@ -5,6 +5,7 @@ import creator;
 import inochi2d;
 import inochi2d.core.dbg;
 import bindbc.imgui;
+import std.string;
 
 /**
     A viewport
@@ -129,16 +130,25 @@ protected:
         igGetContentRegionAvail(&currSize);
         igBeginChild("##ViewportControls", ImVec2(0, currSize.y));
             igPushItemWidth(72);
-                if (igSliderFloat("##Zoom", &zoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX, "%.2f")) {
+                if (igSliderFloat(
+                    "##Zoom", 
+                    &zoom, 
+                    incVIEWPORT_ZOOM_MIN, 
+                    incVIEWPORT_ZOOM_MAX, 
+                    "%s%%\0".format(cast(int)(zoom*100)).ptr, 
+                    ImGuiSliderFlags.NoRoundToFormat)
+                ) {
                     camera.scale = vec2(zoom);
                     incTargetZoom = zoom;
                 }
                 if (zoom != 1) {
-                    igSameLine(0, 8);
-                    if (igButton("Reset", ImVec2(0, 0))) {
-                        zoom = 1;
-                        incTargetZoom = zoom;
-                    }
+                    igPushFont(incIconFont());
+                        igSameLine(0, 8);
+                        if (igButton("", ImVec2(0, 0))) {
+                            zoom = 1;
+                            incTargetZoom = zoom;
+                        }
+                    igPopFont();
                 }
                 igSameLine(0, 8);
                 igSeparatorEx(ImGuiSeparatorFlags.Vertical);
@@ -146,10 +156,12 @@ protected:
                 igSameLine(0, 8);
                 igText("x = %.2f y = %.2f", camera.position.x, camera.position.y);
                 igSameLine(0, 8);
-                if (igButton("Reset##2", ImVec2(0, 0))) {
-                    camera.position = vec2(0, 0);
-                    incTargetPosition = camera.position;
-                }
+                igPushFont(incIconFont());
+                    if (igButton("##2", ImVec2(0, 0))) {
+                        camera.position = vec2(0, 0);
+                        incTargetPosition = camera.position;
+                    }
+                igPopFont();
 
 
             igPopItemWidth();

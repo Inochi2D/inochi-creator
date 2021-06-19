@@ -68,8 +68,8 @@ void incInitStyling() {
     style.FrameBorderSize = 1;
     style.TabBorderSize = 1;
 
-    style.WindowRounding = 6;
-    style.ChildRounding = 6;
+    style.WindowRounding = 0;
+    style.ChildRounding = 0;
     style.FrameRounding = 6;
     style.PopupRounding = 6;
     style.ScrollbarRounding = 18;
@@ -216,7 +216,7 @@ void incSetDarkMode(bool darkMode) {
         style.Colors[ImGuiCol.Header]                 = ImVec4(0.25f, 0.25f, 0.25f, 0.31f);
         style.Colors[ImGuiCol.HeaderHovered]          = ImVec4(0.28f, 0.28f, 0.28f, 0.80f);
         style.Colors[ImGuiCol.HeaderActive]           = ImVec4(0.44f, 0.44f, 0.44f, 1.00f);
-        style.Colors[ImGuiCol.Separator]              = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+        style.Colors[ImGuiCol.Separator]              = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
         style.Colors[ImGuiCol.SeparatorHovered]       = ImVec4(0.29f, 0.29f, 0.29f, 0.78f);
         style.Colors[ImGuiCol.SeparatorActive]        = ImVec4(0.47f, 0.47f, 0.47f, 1.00f);
         style.Colors[ImGuiCol.ResizeGrip]             = ImVec4(0.35f, 0.35f, 0.35f, 0.00f);
