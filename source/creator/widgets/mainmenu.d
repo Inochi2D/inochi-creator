@@ -20,10 +20,19 @@ void incMainMenu() {
     auto io = igGetIO();
 
     if(igBeginMainMenuBar()) {
-        ImVec2 avail;
-        igGetContentRegionAvail(&avail);
-        igImage(cast(void*)incGetLogo(), ImVec2(avail.y*2, avail.y*2), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
-        igSeparator();
+        if (incGetUseNativeTitlebar()) {
+            ImVec2 avail;
+            igGetContentRegionAvail(&avail);
+            igImage(
+                cast(void*)incGetLogo(), 
+                ImVec2(avail.y*2, avail.y*2), 
+                ImVec2(0, 0), ImVec2(1, 1), 
+                ImVec4(1, 1, 1, 1), 
+                ImVec4(0, 0, 0, 0)
+            );
+
+            igSeparator();
+        }
 
         if (igBeginMenu("File", true)) {
             if(igMenuItem("New", "Ctrl+N", false, true)) {
@@ -135,6 +144,37 @@ void incMainMenu() {
                 incShowStatsForNerds = !incShowStatsForNerds;
                 incSettingsSet("NerdStats", incShowStatsForNerds);
             }
+
+            igEndMenu();
+        }
+
+        if (igBeginMenu("Tools", true)) {
+            import creator.utils.repair : incAttemptRepairPuppet, incRegenerateNodeIDs;
+
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Puppet Recovery");
+            igSeparator();
+
+            // FULL REPAIR
+            if (igMenuItem("Attempt full repair...", "", false)) {
+                incAttemptRepairPuppet(incActivePuppet());
+            }
+            incTooltip("Attempts all the recovery and repair methods below on the currently loaded model");
+
+            // REGEN NODE IDs
+            if (igMenuItem("Regenerate Node IDs", "", false)) {
+                import creator.utils.repair : incAttemptRepairPuppet;
+                incRegenerateNodeIDs(incActivePuppet().root);
+            }
+            incTooltip("Regenerates all the unique IDs for the model");
+
+            // Spacing
+            igSpacing();
+            igSpacing();
+            igSeparator();
+            if (igMenuItem("Verify INP File...", "", false)) {
+                incAttemptRepairPuppet(incActivePuppet());
+            }
+            incTooltip("Attempts to verify and repair INP files");
 
             igEndMenu();
         }

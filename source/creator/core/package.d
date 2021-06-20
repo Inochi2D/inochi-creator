@@ -113,7 +113,7 @@ void incOpenWindow() {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     window = SDL_CreateWindow("Inochi Creator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1024, 1024, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-    
+
     gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
     SDL_GL_SetSwapInterval(1);
@@ -151,6 +151,9 @@ void incOpenWindow() {
     // Load Settings
     incShowStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
 
+    import creator.widgets.titlebar : incSetUseNativeTitlebar, incGetUseNativeTitlebar;
+    incSetUseNativeTitlebar(incSettingsGet("UseNativeTitleBar", false));
+    
     // Font loading
     incUseOpenDyslexic(incSettingsGet!bool("UseOpenDyslexic"));
 }

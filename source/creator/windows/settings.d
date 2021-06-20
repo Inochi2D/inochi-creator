@@ -1,5 +1,6 @@
 module creator.windows.settings;
 import creator.windows;
+import creator.widgets;
 import creator.core;
 import std.string;
 import creator.utils.link;
@@ -40,6 +41,12 @@ protected:
                         }
                         if(igBeginCombo("Language", "English")) {
                             igEndCombo();
+                        }
+
+                        bool useNative = incGetUseNativeTitlebar();
+                        if (igCheckbox("Use Native Titlebar", &useNative)) {
+                            incSettingsSet("UseNativeTitleBar", useNative);
+                            incSetUseNativeTitlebar(useNative);
                         }
 
 

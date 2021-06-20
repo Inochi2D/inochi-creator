@@ -38,6 +38,10 @@ int main(string[] args)
         // Begin IMGUI loop
         incBeginLoop();
             if (incShouldProcess()) {
+                if (!incGetUseNativeTitlebar()) {
+                    incTitlebar();
+                }
+
                 incHandleShortcuts();
                 incMainMenu();
                 incToolbar();

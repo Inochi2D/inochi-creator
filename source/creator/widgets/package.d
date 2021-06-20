@@ -7,3 +7,4 @@ public import creator.widgets.controller;
 public import creator.widgets.toolbar;
 public import creator.widgets.mainmenu;
 public import creator.widgets.tooltip;
+public import creator.widgets.titlebar;
