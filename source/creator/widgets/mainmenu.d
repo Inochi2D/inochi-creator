@@ -20,9 +20,9 @@ void incMainMenu() {
     auto io = igGetIO();
 
     if(igBeginMainMenuBar()) {
+        ImVec2 avail;
+        igGetContentRegionAvail(&avail);
         if (incGetUseNativeTitlebar()) {
-            ImVec2 avail;
-            igGetContentRegionAvail(&avail);
             igImage(
                 cast(void*)incGetLogo(), 
                 ImVec2(avail.y*2, avail.y*2), 
@@ -138,8 +138,8 @@ void incMainMenu() {
             igSpacing();
             
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Extras");
-            igSeparator();
 
+            igSeparator();
             if (igMenuItem_Bool("Show Stats for Nerds", "", incShowStatsForNerds, true)) {
                 incShowStatsForNerds = !incShowStatsForNerds;
                 incSettingsSet("NerdStats", incShowStatsForNerds);
@@ -201,7 +201,14 @@ void incMainMenu() {
 
         if (incShowStatsForNerds) {
             igSeparator();
-            igText("%.0fms %.1fFPS", 1000f/io.Framerate, io.Framerate);
+            igGetContentRegionAvail(&avail);
+            string fpsText = "%.0fms\0".format(1000f/io.Framerate);
+
+            ImVec2 textSize;
+            igCalcTextSize(&textSize, fpsText.ptr, fpsText.ptr+fpsText.length);
+            igDummy(ImVec2(avail.x-textSize.x, 0));
+
+            igText(fpsText.ptr);
         }
 
         igEndMainMenuBar();
