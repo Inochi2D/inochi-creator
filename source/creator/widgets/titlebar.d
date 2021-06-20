@@ -35,16 +35,23 @@ private {
 }
 
 /**
+    Whether the native titlebar can be used
+*/
+bool incCanUseAppTitlebar = true;
+
+/**
     Gets whether to use the native titlebar
 */
 bool incGetUseNativeTitlebar() {
-    return incUseNativeTitlebar;
+    return incCanUseAppTitlebar && incUseNativeTitlebar;
 }
 
 /**
     Set whether to use the native titlebar
 */
 void incSetUseNativeTitlebar(bool value) {
+    if (!incCanUseAppTitlebar) return;
+
     incUseNativeTitlebar = value;
 
     if (!incUseNativeTitlebar) {

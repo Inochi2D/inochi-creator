@@ -151,8 +151,10 @@ void incOpenWindow() {
     // Load Settings
     incShowStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
 
-    import creator.widgets.titlebar : incSetUseNativeTitlebar, incGetUseNativeTitlebar;
+    import creator.widgets.titlebar : incSetUseNativeTitlebar, incGetUseNativeTitlebar, incCanUseAppTitlebar;
+    incCanUseAppTitlebar = SDL_SetWindowHitTest(incGetWindowPtr(), null, null) != -1;
     incSetUseNativeTitlebar(incSettingsGet("UseNativeTitleBar", false));
+    
     
     // Font loading
     incUseOpenDyslexic(incSettingsGet!bool("UseOpenDyslexic"));
@@ -438,9 +440,9 @@ void incUseOpenDyslexic(bool useOpenDyslexic) {
 void incHandleShortcuts() {
     auto io = igGetIO();
     
-    if (io.KeyCtrl && io.KeyShift && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), false)) {
+    if (io.KeyCtrl && io.KeyShift && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), true)) {
         incActionRedo();
-    } else if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), false)) {
+    } else if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), true)) {
         incActionUndo();
     }
 }

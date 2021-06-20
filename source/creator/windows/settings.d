@@ -43,10 +43,12 @@ protected:
                             igEndCombo();
                         }
 
-                        bool useNative = incGetUseNativeTitlebar();
-                        if (igCheckbox("Use Native Titlebar", &useNative)) {
-                            incSettingsSet("UseNativeTitleBar", useNative);
-                            incSetUseNativeTitlebar(useNative);
+                        if (incCanUseAppTitlebar) {
+                            bool useNative = incGetUseNativeTitlebar();
+                            if (igCheckbox("Use Native Titlebar", &useNative)) {
+                                incSettingsSet("UseNativeTitleBar", useNative);
+                                incSetUseNativeTitlebar(useNative);
+                            }
                         }
 
 
