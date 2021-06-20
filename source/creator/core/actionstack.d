@@ -1,31 +1,7 @@
 module creator.core.actionstack;
 import creator.core.settings;
+import creator.actions;
 import inochi2d;
-
-/**
-    An undo/redo-able action
-*/
-interface Action {
-    /**
-        Roll back the action that was done
-    */
-    void rollback();
-
-    /**
-        Redo the action that was done
-    */
-    void redo();
-
-    /**
-        Describes the action
-    */
-    string describe();
-
-    /**
-        Describes the action
-    */
-    string describeUndo();
-}
 
 private {
     Action[] actions;

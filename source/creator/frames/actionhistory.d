@@ -22,17 +22,19 @@ protected:
 
         igBeginChild("##ActionList", ImVec2(0, avail.y-28));
             if (incActionHistory().length > 0) {
-
                 foreach(i, action; incActionHistory()) {
-                    if (i == 0) {
-
-                        if (igSelectable(action.describeUndo().toStringz, i <= cast(ptrdiff_t)incActionIndex())) {
-                            incActionSetIndex(0);
+                    igPushID(cast(int)i);
+                        if (i == 0) {
+                            igPushID("ASBEGIN");
+                                if (igSelectable(action.describeUndo().toStringz, i <= cast(ptrdiff_t)incActionIndex())) {
+                                    incActionSetIndex(0);
+                                }
+                            igPopID();
                         }
-                    }
-                    if (igSelectable(action.describe().toStringz, i+1 <= incActionIndex())) {
-                        incActionSetIndex(i+1);
-                    }
+                        if (igSelectable(action.describe().toStringz, i+1 <= incActionIndex())) {
+                            incActionSetIndex(i+1);
+                        }
+                    igPopID();
                 }
             }
         igEndChild();

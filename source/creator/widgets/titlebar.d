@@ -3,6 +3,7 @@ import bindbc.sdl;
 import bindbc.imgui;
 import creator.core;
 import creator.widgets;
+import creator.utils.link;
 import app : incUpdateNoEv;
 
 private {

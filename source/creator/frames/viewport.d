@@ -1,6 +1,7 @@
 module creator.frames.viewport;
 import creator.core;
 import creator.frames;
+import creator.actions;
 import creator;
 import inochi2d;
 import inochi2d.core.dbg;
@@ -135,10 +136,8 @@ protected:
                 import std.path : baseName;
                 foreach(file; files) {
                     string fname = file.baseName;
-
-                    Node parentNode = incSelectedNode() is null ? incActivePuppet().root : incSelectedNode;
-
-                    Part p = inCreateSimplePart(ShallowTexture(file), parentNode, fname);
+                    Part p = inCreateSimplePart(ShallowTexture(file), null, fname);
+                    incAddChildWithHistory(p, incSelectedNode, fname);
                     p.updateBounds();
                 }
 

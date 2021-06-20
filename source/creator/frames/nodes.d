@@ -1,5 +1,5 @@
 module creator.frames.nodes;
-import creator.core.actionstack;
+import creator.actions;
 import creator.frames;
 import creator;
 import creator.widgets;
@@ -8,106 +8,6 @@ import inochi2d;
 import std.string;
 import std.format;
 import std.conv;
-
-/**
-    An action that happens when a node is changed
-*/
-class NodeChangeAction : Action {
-public:
-    /**
-        Creates a new node change action
-    */
-    this(Node prev, Node self, Node new_) {
-        this.prevParent = prev;
-        this.self = self;
-        this.newParent = new_;
-    }
-
-    /**
-        Previous parent of node
-    */
-    Node prevParent;
-
-    /**
-        Node itself
-    */
-    Node self;
-
-    /**
-        New parent of node
-    */
-    Node newParent;
-
-    /**
-        Rollback
-    */
-    void rollback() {
-        self.parent = prevParent;
-        incActivePuppet().rescanNodes();
-    }
-
-    /**
-        Redo
-    */
-    void redo() {
-        self.parent = newParent;
-        incActivePuppet().rescanNodes();
-    }
-
-    /**
-        Describe the action
-    */
-    string describe() {
-        if (prevParent is null) return "Created %s".format(self.name);
-        if (newParent is null) return "Deleted %s".format(self.name);
-        return "Moved %s to %s".format(self.name, newParent.name);
-    }
-
-    /**
-        Describe the action
-    */
-    string describeUndo() {
-        if (prevParent is null) return "Created %s".format(self.name);
-        return "Moved %s from %s".format(self.name, prevParent.name);
-    }
-}
-
-/**
-    Action for whether a node was activated or deactivated
-*/
-class NodeActiveAction : Action {
-public:
-    Node self;
-    bool newState;
-
-    /**
-        Rollback
-    */
-    void rollback() {
-        self.enabled = !newState;
-    }
-
-    /**
-        Redo
-    */
-    void redo() {
-        self.enabled = newState;
-    }
-
-    /**
-        Describe the action
-    */
-    string describe() {
-        return "%s %s".format(newState ? "Enabled" : "Disabled", self.name);
-    }
-
-    /**
-        Describe the action
-    */
-    string describeUndo() {
-        return "%s was %s".format(self.name, !newState ? "Enabled" : "Disabled");
-    }
-}
 
 /**
     The logger frame
@@ -130,41 +30,6 @@ protected:
         }
     }
 
-    void moveChildWithHistory(Node n, Node to) {
-        // Push action to stack
-        incActionPush(new NodeChangeAction(
-            n.parent,
-            n,
-            to
-        ));
-        n.parent = to;
-        incActivePuppet().rescanNodes();
-    }
-
-    void addChildWithHistory(Node n, Node to) {
-        // Push action to stack
-        incActionPush(new NodeChangeAction(
-            null,
-            n,
-            to
-        ));
-
-        n.name = "Unnamed "~n.typeId();
-        incActivePuppet().rescanNodes();
-    }
-
-    void deleteChildWithHistory(Node n) {
-        // Push action to stack
-        incActionPush(new NodeChangeAction(
-            n.parent,
-            n,
-            null
-        ));
-
-        n.parent = null;
-        incActivePuppet().rescanNodes();
-    }
-
     void nodeActionsPopup(bool isRoot = false)(Node n) {
         if (igIsItemClicked(ImGuiMouseButton.Right)) {
             igOpenPopup("NodeActionsPopup");
@@ -178,7 +43,7 @@ protected:
                     igText(typeIdToIcon("Node").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItem("Node", "", false, true)) this.addChildWithHistory(new Node(n), n);
+                if (igMenuItem("Node", "", false, true)) incAddChildWithHistory(new Node(n), n);
                 
                 igPushFont(incIconFont());
                     igText(typeIdToIcon("Mask").ptr);
@@ -186,14 +51,14 @@ protected:
                 igSameLine(0, 2);
                 if (igMenuItem("Mask", "", false, true)) {
                     MeshData empty;
-                    this.addChildWithHistory(new Mask(empty, n), n);
+                    incAddChildWithHistory(new Mask(empty, n), n);
                 }
                 
                 igPushFont(incIconFont());
                     igText(typeIdToIcon("PathDeform").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItem("PathDeform", "", false, true)) this.addChildWithHistory(new PathDeform(n), n);
+                if (igMenuItem("PathDeform", "", false, true)) incAddChildWithHistory(new PathDeform(n), n);
                 
                 igEndMenu();
             }
@@ -206,7 +71,7 @@ protected:
                     incSelectNode(null);
                 }
 
-                this.deleteChildWithHistory(n);
+                incDeleteChildWithHistory(n);
             }
             
             // We don't want to delete the root
@@ -274,7 +139,7 @@ protected:
                 ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
                 if (payload !is null) {
                     Node payloadNode = *cast(Node*)payload.Data;
-                    this.moveChildWithHistory(payloadNode, n);
+                    incMoveChildWithHistory(payloadNode, n);
                     
                     igTreePop();
                     return;
@@ -326,7 +191,7 @@ protected:
             //igText("\ue92e", ImVec2(0, 0));
             if (igButton("\ue92e", ImVec2(24, 24))) {
                 Node payloadNode = incSelectedNode();
-                this.deleteChildWithHistory(payloadNode);
+                incDeleteChildWithHistory(payloadNode);
             }
 
             if(igBeginDragDropTarget()) {
@@ -339,7 +204,7 @@ protected:
                         incSelectNode(null);
                     }
 
-                    this.deleteChildWithHistory(payloadNode);
+                    incDeleteChildWithHistory(payloadNode);
                     
                     igPopFont();
                     return;
