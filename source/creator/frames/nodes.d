@@ -150,7 +150,6 @@ protected:
         ));
 
         n.name = "Unnamed "~n.typeId();
-        to.addChild(n);
         incActivePuppet().rescanNodes();
     }
 
@@ -179,19 +178,22 @@ protected:
                     igText(typeIdToIcon("Node").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItem("Node", "", false, true)) this.addChildWithHistory(new Node, n);
+                if (igMenuItem("Node", "", false, true)) this.addChildWithHistory(new Node(n), n);
                 
                 igPushFont(incIconFont());
                     igText(typeIdToIcon("Mask").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItem("Mask", "", false, true)) this.addChildWithHistory(new Mask, n);
+                if (igMenuItem("Mask", "", false, true)) {
+                    MeshData empty;
+                    this.addChildWithHistory(new Mask(empty, n), n);
+                }
                 
                 igPushFont(incIconFont());
                     igText(typeIdToIcon("PathDeform").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItem("PathDeform", "", false, true)) this.addChildWithHistory(new PathDeform, n);
+                if (igMenuItem("PathDeform", "", false, true)) this.addChildWithHistory(new PathDeform(n), n);
                 
                 igEndMenu();
             }

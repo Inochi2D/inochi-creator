@@ -138,7 +138,8 @@ protected:
 
                     Node parentNode = incSelectedNode() is null ? incActivePuppet().root : incSelectedNode;
 
-                    inCreateSimplePart(ShallowTexture(file), parentNode, fname);
+                    Part p = inCreateSimplePart(ShallowTexture(file), parentNode, fname);
+                    p.updateBounds();
                 }
 
                 // We've added new stuff, rescan nodes
@@ -167,12 +168,11 @@ protected:
                     camera.scale = vec2(zoom);
                     incTargetZoom = zoom;
                 }
-                if (zoom != 1) {
+                if (incTargetZoom != 1) {
                     igPushFont(incIconFont());
                         igSameLine(0, 8);
                         if (igButton("", ImVec2(0, 0))) {
-                            zoom = 1;
-                            incTargetZoom = zoom;
+                            incTargetZoom = 1;
                         }
                     igPopFont();
                 }
