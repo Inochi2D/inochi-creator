@@ -287,32 +287,7 @@ void incFinishFileDrag() {
     files.length = 0;
 }
 
-/**
-    Begins the Inochi Creator rendering loop
-*/
-void incBeginLoop() {
-    SDL_Event event;
-
-    while(SDL_PollEvent(&event)) {
-        switch(event.type) {
-            case SDL_QUIT:
-                done = true;
-                break;
-
-            case SDL_DROPFILE:
-                files ~= cast(string)event.drop.file.fromStringz;
-                SDL_RaiseWindow(window);
-                break;
-            
-            default: 
-                ImGui_ImplSDL2_ProcessEvent(&event);
-                if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
-                    done = true;
-                break;
-        }
-    }
-
-    
+void incBeginLoopNoEv() {
     incFontsProcessChanges();
 
     mainFont = incFontsGet(0);
@@ -338,6 +313,35 @@ void incBeginLoop() {
 
     // Add docking space
     viewportDock = igDockSpaceOverViewport(null, cast(ImGuiDockNodeFlags)0, null);
+}
+
+/**
+    Begins the Inochi Creator rendering loop
+*/
+void incBeginLoop() {
+    SDL_Event event;
+
+    while(SDL_PollEvent(&event)) {
+        switch(event.type) {
+            case SDL_QUIT:
+                done = true;
+                break;
+
+            case SDL_DROPFILE:
+                files ~= cast(string)event.drop.file.fromStringz;
+                SDL_RaiseWindow(window);
+                break;
+            
+            default: 
+                ImGui_ImplSDL2_ProcessEvent(&event);
+                if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
+                    done = true;
+                break;
+        }
+    }
+
+    // Begin loop post-event
+    incBeginLoopNoEv();
 }
 
 /**

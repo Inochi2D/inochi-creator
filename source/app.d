@@ -29,29 +29,63 @@ int main(string[] args)
     }
 
     while(!incIsCloseRequested()) {
-
-        // Update Inochi2D
-        inUpdate();
-        incUpdateActiveProject();
-        
-
-        // Begin IMGUI loop
-        incBeginLoop();
-            if (incShouldProcess()) {
-                if (!incGetUseNativeTitlebar()) {
-                    incTitlebar();
-                }
-
-                incHandleShortcuts();
-                incMainMenu();
-                incToolbar();
-
-                incUpdateFrames();
-                incUpdateWindows();
-            }
-        incEndLoop();
+        incUpdate();
     }
     incSettingsSave();
     incFinalize();
     return 0;
+}
+
+/**
+    Update
+*/
+void incUpdate() {
+
+    // Update Inochi2D
+    inUpdate();
+    incUpdateActiveProject();
+    
+
+    // Begin IMGUI loop
+    incBeginLoop();
+        if (incShouldProcess()) {
+            if (!incGetUseNativeTitlebar()) {
+                incTitlebar();
+            }
+
+            incHandleShortcuts();
+            incMainMenu();
+            incToolbar();
+
+            incUpdateFrames();
+            incUpdateWindows();
+        }
+    incEndLoop();
+}
+
+/**
+    Update without any event polling
+*/
+void incUpdateNoEv() {
+
+    // Update Inochi2D
+    inUpdate();
+    incUpdateActiveProject();
+    
+
+    // Begin IMGUI loop
+    incBeginLoopNoEv();
+        if (incShouldProcess()) {
+            if (!incGetUseNativeTitlebar()) {
+                incTitlebar();
+            }
+
+            incHandleShortcuts();
+            incMainMenu();
+            incToolbar();
+
+            incUpdateFrames();
+            incUpdateWindows();
+        }
+    incEndLoop();
 }

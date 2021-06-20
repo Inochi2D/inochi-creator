@@ -3,6 +3,7 @@ import bindbc.sdl;
 import bindbc.imgui;
 import creator.core;
 import creator.widgets;
+import app : incUpdateNoEv;
 
 private {
     bool incUseNativeTitlebar;
@@ -81,6 +82,19 @@ void incTitlebar() {
                 igText("Inochi Creator (Debug Mode)");
             } else {
                 igText("Inochi Creator");
+            }
+            if (isTransMonthOfVisibility) {
+                igSeparator();
+                ImVec4 a = ImVec4(85.0/255.0, 205.0/255.0, 252.0/255.0, 255);
+                ImVec4 b;
+                ImVec4 c;
+                igColorConvertU32ToFloat4(&b, 0xF7A8B8FF);
+                igColorConvertU32ToFloat4(&c, 0xFFFFFFFF);
+                ImVec4[] transColors = [a, b, c, b];
+                foreach(i, ic; "Trans Rights!") {
+                    igTextColored(transColors[i%transColors.length], [ic, '\0'].ptr);
+                    igSameLine(0, 0);
+                }
             }
 
             igGetContentRegionAvail(&avail);
