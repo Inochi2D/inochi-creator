@@ -102,22 +102,54 @@ void incTitlebar() {
             igGetContentRegionAvail(&avail);
             igDummy(ImVec2(avail.x-(18*4), 0));
             igPushFont(incIconFont());
+                auto state = igGetStateStorage();
 
-                igText("");
+                igTextColored(
+                    ImGuiStorage_GetBool(state, igGetID("##MINIMIZE")) ? 
+                        ImVec4(1, 1, 1, 1) : 
+                        ImVec4(.5, .5, .5, 1), 
+                    ""
+                );
                 if (igIsItemClicked()) {
                     SDL_MinimizeWindow(incGetWindowPtr());
                 }
+                if(igIsItemHovered()) {
+                    ImGuiStorage_SetBool(state, igGetID("##MINIMIZE"), true);
+                } else {
+                    ImGuiStorage_SetBool(state, igGetID("##MINIMIZE"), false);
+                }
 
                 bool isMaximized = (SDL_GetWindowFlags(incGetWindowPtr()) & SDL_WINDOW_MAXIMIZED) > 0;
-                igText(isMaximized ? "" : "");
+                
+                igTextColored(
+                    ImGuiStorage_GetBool(state, igGetID("##MAXIMIZE")) ? 
+                        ImVec4(1, 1, 1, 1) : 
+                        ImVec4(.5, .5, .5, 1), 
+                    isMaximized ? "" : ""
+                );
                 if (igIsItemClicked()) {
                     if (!isMaximized) SDL_MaximizeWindow(incGetWindowPtr());
                     else SDL_RestoreWindow(incGetWindowPtr());
                 }
+                if(igIsItemHovered()) {
+                    ImGuiStorage_SetBool(state, igGetID("##MAXIMIZE"), true);
+                } else {
+                    ImGuiStorage_SetBool(state, igGetID("##MAXIMIZE"), false);
+                }
                 
-                igText("");
+                igTextColored(
+                    ImGuiStorage_GetBool(state, igGetID("##EXIT")) ? 
+                        ImVec4(1, .1, .1, 1) : 
+                        ImVec4(.5, .5, .5, 1), 
+                    ""
+                );
                 if (igIsItemClicked()) {
                     incExit();
+                }
+                if(igIsItemHovered()) {
+                    ImGuiStorage_SetBool(state, igGetID("##EXIT"), true);
+                } else {
+                    ImGuiStorage_SetBool(state, igGetID("##EXIT"), false);
                 }
             igPopFont();
 
