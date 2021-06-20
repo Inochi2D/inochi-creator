@@ -100,27 +100,31 @@ void incSelectNode(Node n = null) {
     Focus camera at node
 */
 void incFocusCamera(Node node) {
-    auto nt = node.transform;
-
-    if (Drawable drawable = cast(Drawable)node) {
+    if (node !is null) {
         int width, height;
         inGetViewport(width, height);
+
+        auto nt = node.transform;
+
+        vec4 bounds = node.getCombinedBounds();
+        vec2 boundsSize = bounds.zw - bounds.xy;
+        if (auto drawable = cast(Drawable)node) boundsSize = drawable.bounds.zw - drawable.bounds.xy;
+        else {
+            nt.translation = vec3(bounds.x + ((bounds.z-bounds.x)/2), bounds.y + ((bounds.w-bounds.y)/2), 0);
+        }
         
-        vec2 boundsSize = drawable.bounds.zw - drawable.bounds.xy;
 
         float largestViewport = max(width, height);
         float largestBounds = max(boundsSize.x, boundsSize.y);
 
         float factor = largestViewport/largestBounds;
         incTargetZoom = clamp(factor*0.85, 0.1, 2);
-    } else {
-        incTargetZoom = 1;
-    }
 
-    incTargetPosition = vec2(
-        -nt.translation.x,
-        -nt.translation.y
-    );
+        incTargetPosition = vec2(
+            -nt.translation.x,
+            -nt.translation.y
+        );
+    }
 
 }
 
