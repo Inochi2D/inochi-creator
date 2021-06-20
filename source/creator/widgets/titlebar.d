@@ -64,6 +64,8 @@ void incTitlebar() {
         ImGuiWindowFlags.NoScrollbar |
         ImGuiWindowFlags.MenuBar;
     
+    if (incGetDarkMode()) igPushStyleColor(ImGuiCol.MenuBarBg, ImVec4(0.1, 0.1, 0.1, 1));
+    else  igPushStyleColor(ImGuiCol.MenuBarBg, ImVec4(0.9, 0.9, 0.9, 1));
     if (igBeginViewportSideBar("##Titlebar", igGetMainViewport(), ImGuiDir.Up, 22, flags)) {
         if (igBeginMenuBar()) {
             ImVec2 avail;
@@ -75,8 +77,6 @@ void incTitlebar() {
                 ImVec4(1, 1, 1, 1), 
                 ImVec4(0, 0, 0, 0)
             );
-
-            igSeparator();
             
             debug {
                 igText("Inochi Creator (Debug Mode)");
@@ -106,7 +106,7 @@ void incTitlebar() {
 
                 igTextColored(
                     ImGuiStorage_GetBool(state, igGetID("##MINIMIZE")) ? 
-                        ImVec4(1, 1, 1, 1) : 
+                        (incGetDarkMode() ? ImVec4(1, 1, 1, 1) : ImVec4(.3, .3, .3, 1)) : 
                         ImVec4(.5, .5, .5, 1), 
                     ""
                 );
@@ -123,7 +123,7 @@ void incTitlebar() {
                 
                 igTextColored(
                     ImGuiStorage_GetBool(state, igGetID("##MAXIMIZE")) ? 
-                        ImVec4(1, 1, 1, 1) : 
+                        (incGetDarkMode() ? ImVec4(1, 1, 1, 1) : ImVec4(.3, .3, .3, 1)) : 
                         ImVec4(.5, .5, .5, 1), 
                     isMaximized ? "" : ""
                 );
@@ -158,4 +158,5 @@ void incTitlebar() {
             
         igEnd();
     }
+    igPopStyleColor();
 }
