@@ -84,7 +84,7 @@ protected:
         }
     }
 
-    void treeAddNode(bool isRoot = false)(Node n) {
+    void treeAddNode(bool isRoot = false)(ref Node n) {
         igTableNextRow();
 
         // // Draw Enabler for this node first
@@ -106,34 +106,37 @@ protected:
             // Show node entry stuff
             igSameLine(0, 4);
 
-            static if (!isRoot) {
-                bool selected = n == incSelectedNode();
+            igPushID(n.uuid);
+                static if (!isRoot) {
+                    bool selected = n == incSelectedNode();
 
-                igPushFont(incIconFont());
-                    igText(typeIdToIcon(n.typeId).ptr);
-                igPopFont();
-                igSameLine(0, 2);
-                if (igSelectable(n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
-                    if (selected) {
-                        incFocusCamera(n);
+                    igPushFont(incIconFont());
+                        igText(typeIdToIcon(n.typeId).ptr);
+                    igPopFont();
+                    igSameLine(0, 2);
+
+                    if (igSelectable(n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
+                        if (selected) {
+                            incFocusCamera(n);
+                        }
+                        incSelectNode(n);
                     }
-                    incSelectNode(n);
-                }
-                this.nodeActionsPopup(n);
+                    this.nodeActionsPopup(n);
 
-                if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
-                    igSetDragDropPayload("_PUPPETNTREE", cast(void*)&n, (&n).sizeof, ImGuiCond.Always);
+                    if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
+                        igSetDragDropPayload("_PUPPETNTREE", cast(void*)&n, (&n).sizeof, ImGuiCond.Always);
+                        igText(n.name.toStringz);
+                        igEndDragDropSource();
+                    }
+                } else {
+                    igPushFont(incIconFont());
+                        igText("\ue97a");
+                    igPopFont();
+                    igSameLine(0, 2);
                     igText(n.name.toStringz);
-                    igEndDragDropSource();
+                    this.nodeActionsPopup!true(n);
                 }
-            } else {
-                igPushFont(incIconFont());
-                    igText("\ue97a");
-                igPopFont();
-                igSameLine(0, 2);
-                igText(n.name.toStringz);
-                this.nodeActionsPopup!true(n);
-            }
+            igPopID();
 
             if(igBeginDragDropTarget()) {
                 ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
@@ -165,13 +168,8 @@ protected:
 
     override
     void onUpdate() {
-        igText("<Action Buttons Go Here>");
-        igSeparator();
-
-        ImVec2 avail;
-        igGetContentRegionAvail(&avail);
-
-        igBeginChild_Str("NodesMain", ImVec2(0, -28), false);
+        igBeginChild_Str("NodesMain", ImVec2(0, -30), false);
+            igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 0));
 
             if (igBeginTable("NodesContent", 2, ImGuiTableFlags.ScrollX, ImVec2(0, 0), 0)) {
                 igTableSetupColumn("Nodes", ImGuiTableColumnFlags.WidthFixed, 0, 0);
@@ -181,11 +179,13 @@ protected:
 
                 igEndTable();
             }
+            if (igIsItemClicked(ImGuiMouseButton.Left)) {
+                incSelectNode(null);
+            }
+            igPopStyleVar();
         igEndChild();
 
-        if (igIsItemClicked(ImGuiMouseButton.Left)) {
-            incSelectNode(null);
-        }
+        igSeparator();
         
         igPushFont(incIconFont());
             //igText("\ue92e", ImVec2(0, 0));
