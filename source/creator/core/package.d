@@ -112,13 +112,13 @@ void incOpenWindow() {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    
+
     window = SDL_CreateWindow(
         "Inochi Creator", 
         incSettingsGet("WinX", SDL_WINDOWPOS_UNDEFINED), 
         incSettingsGet("WinY", SDL_WINDOWPOS_UNDEFINED), 
-        incSettingsGet("WinW", 1024), 
-        incSettingsGet("WinH", 1024), 
+        incSettingsGet("WinW", 1280), 
+        incSettingsGet("WinH", 800), 
         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
     );
 
