@@ -112,7 +112,15 @@ void incOpenWindow() {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    window = SDL_CreateWindow("Inochi Creator", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1024, 1024, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    
+    window = SDL_CreateWindow(
+        "Inochi Creator", 
+        incSettingsGet("WinX", SDL_WINDOWPOS_UNDEFINED), 
+        incSettingsGet("WinY", SDL_WINDOWPOS_UNDEFINED), 
+        incSettingsGet("WinW", 1024), 
+        incSettingsGet("WinH", 1024), 
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
+    );
 
     gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
@@ -381,6 +389,15 @@ bool incIsCloseRequested() {
 */
 void incExit() {
     done = true;
+
+    int x, y;
+    int w, h;
+    SDL_GetWindowPosition(window, &x, &y);
+    SDL_GetWindowSize(window, &w, &h);
+    incSettingsSet("WinX", x);
+    incSettingsSet("WinY", y);
+    incSettingsSet("WinW", w);
+    incSettingsSet("WinH", h);
 }
 
 /**
