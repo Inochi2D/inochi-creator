@@ -1,4 +1,5 @@
 module creator.frames.viewport;
+import creator.widgets;
 import creator.core;
 import creator.frames;
 import creator.actions;
@@ -27,12 +28,14 @@ protected:
         ImGuiWindowClass wmclass;
         wmclass.DockNodeFlagsOverrideSet = ImGuiDockNodeFlagsI.NoTabBar;
         igSetNextWindowClass(&wmclass);
+        igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(1, 2));
         igSetNextWindowDockID(incGetViewportDockSpace(), ImGuiCond.Always);
         super.onBeginUpdate();
     }
 
     override void onEndUpdate() {
         super.onEndUpdate();
+        igPopStyleVar();
     }
 
     override
@@ -40,21 +43,6 @@ protected:
 
         auto io = igGetIO();
         auto camera = inGetCamera();
-
-        // Resize Inochi2D viewport according to frame
-        igBeginChild("##ViewportMainControls", ImVec2(0, 32));
-            if (igButton("P", ImVec2(0, 0))) {
-                inDbgDrawMeshVertexPoints = !inDbgDrawMeshVertexPoints;
-            }
-            igSameLine(0, 8);
-            if (igButton("L", ImVec2(0, 0))) {
-                inDbgDrawMeshOutlines = !inDbgDrawMeshOutlines;
-            }
-            igSameLine(0, 8);
-            if (igButton("O", ImVec2(0, 0))) {
-                inDbgDrawMeshOrientation = !inDbgDrawMeshOrientation;
-            }
-        igEndChild();
 
         // Draw viewport itself
         ImVec2 currSize;
@@ -65,14 +53,18 @@ protected:
         if (currSize.x.isNaN || currSize.y.isNaN) {
             currSize = ImVec2(0, 0);
         }
-        igSeparator();
 
+        // Resize Inochi2D viewport according to frame
         // Also viewport of 0 is too small, minimum 128.
         currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
+        
+
         igBeginChild("##ViewportView", ImVec2(0, -32));
-            
             igGetContentRegionAvail(&currSize);
-            currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
+            currSize = ImVec2(
+                clamp(currSize.x, 128, float.max), 
+                clamp(currSize.y, 128, float.max)-4
+            );
 
             if (currSize != lastSize) {
                 inSetViewport(cast(int)currSize.x, cast(int)currSize.y);
@@ -84,6 +76,10 @@ protected:
             int width, height;
             inGetViewport(width, height);
 
+            // Render our viewport
+            ImVec2 sPos;
+            ImVec2 sPosA;
+            igGetCursorScreenPos(&sPos);
             igImage(
                 cast(void*)inGetRenderImage(), 
                 ImVec2(width, height), 
@@ -91,6 +87,44 @@ protected:
                 ImVec2(1, 0), 
                 ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0)
             );
+            igGetCursorScreenPos(&sPosA);
+
+            // Render our fancy in-viewport buttons
+            igSetCursorScreenPos(ImVec2(sPos.x+8, sPos.y+8));
+                igSetItemAllowOverlap();
+                
+                igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
+                    igBeginChild("##ViewportMainControls", ImVec2(128, 28));
+                        igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
+
+                            igPushFont(incIconFont());
+                                if (igButton("", ImVec2(0, 0))) {
+                                    inDbgDrawMeshVertexPoints = !inDbgDrawMeshVertexPoints;
+                                }
+                            igPopFont();
+                            incTooltip("Show/hide Vertices");
+                                
+                            igPushFont(incIconFont());
+                                igSameLine(0, 0);
+                                if (igButton("", ImVec2(0, 0))) {
+                                    inDbgDrawMeshOutlines = !inDbgDrawMeshOutlines;
+                                }
+                            igPopFont();
+                            incTooltip("Show/hide Lines");
+
+                            igPushFont(incIconFont());
+                                igSameLine(0, 0);
+                                if (igButton("", ImVec2(0, 0))) {
+                                    inDbgDrawMeshOrientation = !inDbgDrawMeshOrientation;
+                                }
+                            igPopFont();
+                            incTooltip("Show/hide Orientation Gizmo");
+
+                        igPopStyleVar();
+                    igEndChild();
+                igPopStyleVar();
+
+            igSetCursorScreenPos(sPosA);
 
             lastSize = currSize;
 
@@ -136,13 +170,21 @@ protected:
                 import std.path : baseName;
                 foreach(file; files) {
                     string fname = file.baseName;
-                    Part p = inCreateSimplePart(ShallowTexture(file), null, fname);
-                    incAddChildWithHistory(p, incSelectedNode, fname);
-                    p.updateBounds();
+
+                    incAddChildWithHistory(
+                        inCreateSimplePart(ShallowTexture(file), null, fname), 
+                        incSelectedNode, 
+                        fname
+                    );
                 }
 
                 // We've added new stuff, rescan nodes
                 incActivePuppet().rescanNodes();
+
+                foreach(Part part; incActivePuppet().getRootParts()) {
+                    import std.stdio : writeln;
+                    writeln(part);
+                }
 
                 // Finish the file drag
                 incFinishFileDrag();
@@ -150,8 +192,6 @@ protected:
 
             igEndDragDropTarget();
         }
-
-        igSeparator();
 
         igGetContentRegionAvail(&currSize);
         igBeginChild("##ViewportControls", ImVec2(0, currSize.y));
