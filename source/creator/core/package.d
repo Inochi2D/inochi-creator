@@ -101,8 +101,8 @@ void incOpenWindow() {
 		// macOS only supports up to GL 4.1 with some extra stuff
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 	} else {
 
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
@@ -169,7 +169,7 @@ void incCreateContext() {
     incSetDarkMode(incSettingsGet!bool("DarkMode", true));
 
     io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;           // Enable Docking
-    //io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;           // Enable Viewports (causes freezes)
+    io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;           // Enable Viewports (causes freezes)
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Navigation
     io.ConfigWindowsResizeFromEdges = true;                     // Enable Edge resizing
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
@@ -357,8 +357,16 @@ void incEndLoop() {
     glClearColor(0.5, 0.5, 0.5, 1);
     glClear(GL_COLOR_BUFFER_BIT);
     ImGuiOpenGLBackend.render_draw_data(igGetDrawData());
+
+    if (io.ConfigFlags & ImGuiConfigFlags.ViewportsEnable) {
+        SDL_Window* currentWindow = SDL_GL_GetCurrentWindow();
+        SDL_GLContext currentCtx = SDL_GL_GetCurrentContext();
+        igUpdatePlatformWindows();
+        igRenderPlatformWindowsDefault();
+        SDL_GL_MakeCurrent(currentWindow, currentCtx);
+    }
+
     SDL_GL_SwapWindow(window);
-    igUpdatePlatformWindows();
 }
 
 /**
