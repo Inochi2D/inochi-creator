@@ -1,5 +1,5 @@
 # Inochi Creator
-![inu1i](https://user-images.githubusercontent.com/7032834/120922864-dc342e00-c6cb-11eb-8ab1-2700aa30d6c2.jpg)
+![billede](https://user-images.githubusercontent.com/7032834/122684869-6621e200-d208-11eb-8bed-2b98747c6f1c.png)
 
 Inochi Creator is tool to create and edit [Inochi2D puppets](https://github.com/Inochi2D/inochi2d).
 
