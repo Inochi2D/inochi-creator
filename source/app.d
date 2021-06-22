@@ -15,6 +15,10 @@ import creator.core.actionstack;
 import inochi2d;
 import creator;
 
+version(D_X32) {
+    static assert(0, "😎👉👉 no");
+}
+
 int main(string[] args)
 {
     incSettingsLoad();
