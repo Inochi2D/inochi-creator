@@ -5,6 +5,8 @@ import creator.windows;
 import creator.utils.link;
 import creator;
 
+import std.exception;
+
 import bindbc.sdl;
 import bindbc.opengl;
 import inochi2d;
@@ -91,8 +93,18 @@ void incInitStyling() {
     Opens Window
 */
 void incOpenWindow() {
-    // Load GL 1
-    loadOpenGL();
+    
+    import core.stdc.stdlib : exit;
+
+    auto sdlSupport = loadSDL();
+    enforce(sdlSupport != SDLSupport.noLibrary, "SDL2.dll not found!");
+    enforce(sdlSupport != SDLSupport.badLibrary, "Bad SDL2.dll found!");
+    
+    auto imSupport = loadImGui();
+    enforce(imSupport != ImGuiSupport.noLibrary, "cimgui.dll not found!");
+    // enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui.dll found!"); // TODO: bindbc-imgui reports badLibrary for valid libraries rn!
+
+    SDL_Init(SDL_INIT_EVERYTHING);
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
     version(OSX) {
@@ -125,6 +137,9 @@ void incOpenWindow() {
     gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
     SDL_GL_SetSwapInterval(1);
+    
+    // Load GL
+    loadOpenGL();
 
     // Load GL 3
     GLSupport support = loadOpenGL();
@@ -470,11 +485,4 @@ void incHandleShortcuts() {
     } else if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), true)) {
         incActionUndo();
     }
-}
-
-static this() {
-    loadSDL();
-    loadImGui();
-
-    SDL_Init(SDL_INIT_EVERYTHING);
 }
