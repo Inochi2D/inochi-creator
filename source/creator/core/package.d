@@ -127,10 +127,10 @@ void incOpenWindow() {
 
     window = SDL_CreateWindow(
         "Inochi Creator", 
-        incSettingsGet("WinX", SDL_WINDOWPOS_UNDEFINED), 
-        incSettingsGet("WinY", SDL_WINDOWPOS_UNDEFINED), 
-        incSettingsGet("WinW", 1280), 
-        incSettingsGet("WinH", 800), 
+        cast(uint)incSettingsGet!int("WinX", SDL_WINDOWPOS_UNDEFINED), 
+        cast(uint)incSettingsGet!int("WinY", SDL_WINDOWPOS_UNDEFINED), 
+        cast(uint)incSettingsGet!int("WinW", 1280), 
+        cast(uint)incSettingsGet!int("WinH", 800), 
         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
     );
 
@@ -154,13 +154,15 @@ void incOpenWindow() {
     }
 
     import std.string : fromStringz;
-    writefln("GLInfo:\n\t%s\n\t%s\n\t%s\n\t%s\n\tgls=%s",
-        glGetString(GL_VERSION).fromStringz,
-        glGetString(GL_VENDOR).fromStringz,
-        glGetString(GL_RENDERER).fromStringz,
-        glGetString(GL_SHADING_LANGUAGE_VERSION).fromStringz,
-        support
-    );
+    debug {
+        writefln("GLInfo:\n\t%s\n\t%s\n\t%s\n\t%s\n\tgls=%s",
+            glGetString(GL_VERSION).fromStringz,
+            glGetString(GL_VENDOR).fromStringz,
+            glGetString(GL_RENDERER).fromStringz,
+            glGetString(GL_SHADING_LANGUAGE_VERSION).fromStringz,
+            support
+        );
+    }
 
     // Setup Inochi2D
     inInit(() { return igGetTime(); });
