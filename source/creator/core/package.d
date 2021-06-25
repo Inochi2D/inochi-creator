@@ -102,7 +102,7 @@ void incOpenWindow() {
     
     auto imSupport = loadImGui();
     enforce(imSupport != ImGuiSupport.noLibrary, "cimgui.dll not found!");
-    // enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui.dll found!"); // TODO: bindbc-imgui reports badLibrary for valid libraries rn!
+    enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui.dll found!"); // TODO: bindbc-imgui reports badLibrary for valid libraries rn!
 
     SDL_Init(SDL_INIT_EVERYTHING);
 
@@ -125,22 +125,25 @@ void incOpenWindow() {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
+    SDL_WindowFlags flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+
+    if (incSettingsGet!bool("WinMax", false)) {
+        flags |= SDL_WINDOW_MAXIMIZED;
+    }
+
     window = SDL_CreateWindow(
         "Inochi Creator", 
-        cast(uint)incSettingsGet!int("WinX", SDL_WINDOWPOS_UNDEFINED), 
-        cast(uint)incSettingsGet!int("WinY", SDL_WINDOWPOS_UNDEFINED), 
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
         cast(uint)incSettingsGet!int("WinW", 1280), 
         cast(uint)incSettingsGet!int("WinH", 800), 
-        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
+        flags
     );
 
     gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
     SDL_GL_SetSwapInterval(1);
     
-    // Load GL
-    loadOpenGL();
-
     // Load GL 3
     GLSupport support = loadOpenGL();
     switch(support) {
@@ -351,7 +354,7 @@ void incBeginLoop() {
     while(SDL_PollEvent(&event)) {
         switch(event.type) {
             case SDL_QUIT:
-                done = true;
+                incExit();
                 break;
 
             case SDL_DROPFILE:
@@ -361,8 +364,11 @@ void incBeginLoop() {
             
             default: 
                 ImGui_ImplSDL2_ProcessEvent(&event);
-                if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
-                    done = true;
+                if (
+                    event.type == SDL_WINDOWEVENT && 
+                    event.window.event == SDL_WINDOWEVENT_CLOSE && 
+                    event.window.windowID == SDL_GetWindowID(window)
+                ) incExit();
                 break;
         }
     }
@@ -407,14 +413,13 @@ bool incIsCloseRequested() {
 void incExit() {
     done = true;
 
-    int x, y;
     int w, h;
-    SDL_GetWindowPosition(window, &x, &y);
+    SDL_WindowFlags flags;
+    flags = SDL_GetWindowFlags(window);
     SDL_GetWindowSize(window, &w, &h);
-    incSettingsSet("WinX", x);
-    incSettingsSet("WinY", y);
     incSettingsSet("WinW", w);
     incSettingsSet("WinH", h);
+    incSettingsSet!bool("WinMax", (flags & SDL_WINDOW_MAXIMIZED) > 0);
 }
 
 /**
