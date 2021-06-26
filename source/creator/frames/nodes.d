@@ -92,17 +92,6 @@ protected:
         }
     }
 
-    bool checkCanReparent(Node n, Node to) {
-        Node tmp = to;
-        while(tmp !is null) {
-            if (tmp.uuid == n.uuid) return false;
-            
-            // Check next up
-            tmp = tmp.parent;
-        }
-        return true;
-    }
-
     void treeAddNode(bool isRoot = false)(ref Node n) {
         igTableNextRow();
 
@@ -181,7 +170,7 @@ protected:
                     if (payload !is null) {
                         Node payloadNode = *cast(Node*)payload.Data;
                         
-                        if (checkCanReparent(payloadNode, n)) {
+                        if (payloadNode.canReparent(n)) {
                             incMoveChildWithHistory(payloadNode, n);
                         }
                         
