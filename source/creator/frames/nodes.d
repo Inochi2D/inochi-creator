@@ -197,8 +197,20 @@ protected:
         igBegin(name.ptr, &this.visible, ImGuiWindowFlags.AlwaysAutoResize);
     }
 
+    override void onEndUpdate() {
+        super.onEndUpdate();
+    }
+
     override
     void onUpdate() {
+
+        if (incEditMode == EditMode.ModelEdit){ 
+            auto io = igGetIO();
+            if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.A), false)) {
+                incSelectAll();
+            }
+        }
+
         igBeginChild_Str("NodesMain", ImVec2(0, -30), false);
             igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 0));
 
@@ -248,6 +260,7 @@ protected:
                 igEndDragDropTarget();
             }
         igPopFont();
+
     }
 
 public:

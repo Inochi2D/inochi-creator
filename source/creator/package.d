@@ -46,7 +46,14 @@ void incUpdateActiveProject() {
         if (selectedNodes.length > 0) {
             foreach(selectedNode; selectedNodes) {
                 if (selectedNode is null) continue; 
-                selectedNode.drawOutlineOne();
+                selectedNode.drawOrientation();
+
+                if (Drawable selectedDraw = cast(Drawable)selectedNode) {
+
+                    selectedDraw.drawMeshLines();
+                    selectedDraw.drawMeshPoints();
+                }
+                
             }
         }
 
@@ -103,7 +110,8 @@ ref Node incSelectedNode() {
     Selects a node
 */
 void incSelectNode(Node n = null) {
-    selectedNodes = [n];
+    if (n is null) selectedNodes.length = 0;
+    else selectedNodes = [n];
 }
 
 /**
@@ -122,6 +130,23 @@ void incRemoveSelectNode(Node n) {
             import std.algorithm.mutation : remove;
             selectedNodes = selectedNodes.remove(i);
         }
+    }
+}
+
+private void incSelectAllRecurse(Node n) {
+    incAddSelectNode(n);
+    foreach(child; n.children) {
+        incSelectAllRecurse(child);
+    }
+}
+
+/**
+    Selects all nodes
+*/
+void incSelectAll() {
+    incSelectNode();
+    foreach(child; incActivePuppet().root.children) {
+        incSelectAllRecurse(child);
     }
 }
 
