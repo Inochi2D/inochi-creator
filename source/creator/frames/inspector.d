@@ -9,27 +9,13 @@ import std.algorithm.searching;
 import std.algorithm.mutation;
 import std.conv;
 
+import creator.actions.node;
+
 /**
     The inspector frame
 */
 class InspectorFrame : Frame {
 private:
-    void createLock(bool* val, string origin) {
-        
-        igSameLine(0, 0);
-        igPushID(origin.ptr);
-            igPushFont(incIconFont());
-                igPushItemWidth(16);
-                    igText(((*val ? "\uE897" : "\uE898")).toStringz);
-                    
-                    if (igIsItemClicked(ImGuiMouseButton.Left)) {
-                        *val = !*val;
-                    }
-                igPopItemWidth();
-            igPopFont();
-        igPopID();
-    }
-
     void handleTRS(Node node) {
         float adjustSpeed = 1;
         // if (igIsKeyDown(igGetKeyIndex(ImGuiKeyModFlags_Shift))) {
@@ -41,49 +27,241 @@ private:
 
         float fontSize = 16;
 
+        //
+        // Translation
+        //
         igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Translation");
         igPushItemWidth((avail.x-4f-(fontSize*3f))/3f);
-            igDragFloat("##translation_x", &node.localTransform.translation.vector[0], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-            createLock(&node.localTransform.lockTranslationX, "tra_x");
+
+            // Translation X
+            igPushID(0);
+            if (incDragFloat("translation_x", &node.localTransform.translation.vector[0], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                incActionPush(
+                    new NodeValueChangeAction!(Node, float, "X")(
+                        node, 
+                        incGetDragFloatInitialValue("translation_x"),
+                        node.localTransform.translation.vector[0],
+                        &node.localTransform.translation.vector[0]
+                    )
+                );
+            }
+            igPopID();
+
+            if (incLockButton(&node.localTransform.lockTranslationX, "tra_x")) {
+                incActionPush(
+                    new NodeValueChangeAction!(Node, bool, "Lock Translate X")(
+                        node, 
+                        !node.localTransform.lockTranslationX,
+                        node.localTransform.lockTranslationX,
+                        &node.localTransform.lockTranslationX
+                    )
+                );
+            }
 
             igSameLine(0, 4);
-            igDragFloat("##translation_y", &node.localTransform.translation.vector[1], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-            createLock(&node.localTransform.lockTranslationY, "tra_y");
+
+            // Translation Y
+            igPushID(1);
+                if (incDragFloat("translation_y", &node.localTransform.translation.vector[1], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float, "Y")(
+                            node, 
+                            incGetDragFloatInitialValue("translation_y"),
+                            node.localTransform.translation.vector[1],
+                            &node.localTransform.translation.vector[1]
+                        )
+                    );
+                }
+            igPopID();
+            
+            if (incLockButton(&node.localTransform.lockTranslationY, "tra_y")) {
+                incActionPush(
+                    new NodeValueChangeAction!(Node, bool, "Lock Translate Y")(
+                        node, 
+                        !node.localTransform.lockTranslationY,
+                        node.localTransform.lockTranslationY,
+                        &node.localTransform.lockTranslationY
+                    )
+                );
+            }
 
             igSameLine(0, 4);
-            igDragFloat("##translation_z", &node.localTransform.translation.vector[2], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-            createLock(&node.localTransform.lockTranslationZ, "tra_z");
+
+            // Translation Z
+            igPushID(2);
+                if (incDragFloat("translation_z", &node.localTransform.translation.vector[2], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float, "Z")(
+                            node, 
+                            incGetDragFloatInitialValue("translation_z"),
+                            node.localTransform.translation.vector[2],
+                            &node.localTransform.translation.vector[2]
+                        )
+                    );
+                }
+            igPopID();
+            
+            if (incLockButton(&node.localTransform.lockTranslationZ, "tra_z")) {
+                incActionPush(
+                    new NodeValueChangeAction!(Node, bool, "Lock Translate Z")(
+                        node, 
+                        !node.localTransform.lockTranslationZ,
+                        node.localTransform.lockTranslationZ,
+                        &node.localTransform.lockTranslationZ
+                    )
+                );
+            }
+
         igPopItemWidth();
 
+
+        //
+        // Rotation
+        //
         igSpacing();
         igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Rotation");
         igPushItemWidth((avail.x-4f-(fontSize*3f))/3f);
-            igDragFloat("##rotation_x", &node.localTransform.rotation.vector[0], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-            
-            createLock(&node.localTransform.lockRotationX, "rot_x");
+
+            // Rotation X
+            igPushID(3);
+                if (incDragFloat("rotation_x", &node.localTransform.rotation.vector[0], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float, "Rotation X")(
+                            node, 
+                            incGetDragFloatInitialValue("rotation_x"),
+                            node.localTransform.rotation.vector[0],
+                            &node.localTransform.rotation.vector[0]
+                        )
+                    );
+                }
+            igPopID();
+
+            if (incLockButton(&node.localTransform.lockRotationX, "rot_x")) {
+                incActionPush(
+                    new NodeValueChangeAction!(Node, bool, "Lock Rotation X")(
+                        node, 
+                        !node.localTransform.lockRotationX,
+                        node.localTransform.lockRotationX,
+                        &node.localTransform.lockRotationX
+                    )
+                );
+            }
             
             igSameLine(0, 4);
-            igDragFloat("##rotation_y", &node.localTransform.rotation.vector[1], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+
+            // Rotation Y
+            igPushID(4);
+                if (incDragFloat("rotation_y", &node.localTransform.rotation.vector[1], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float, "Rotation Y")(
+                            node, 
+                            incGetDragFloatInitialValue("rotation_y"),
+                            node.localTransform.rotation.vector[1],
+                            &node.localTransform.rotation.vector[1]
+                        )
+                    );
+                }
+            igPopID();
             
-            createLock(&node.localTransform.lockRotationY, "rot_y");
+            if (incLockButton(&node.localTransform.lockRotationY, "rot_y")) {
+                incActionPush(
+                    new NodeValueChangeAction!(Node, bool, "Lock Rotation Y")(
+                        node, 
+                        !node.localTransform.lockRotationY,
+                        node.localTransform.lockRotationY,
+                        &node.localTransform.lockRotationY
+                    )
+                );
+            }
 
             igSameLine(0, 4);
-            igDragFloat("##rotation_z", &node.localTransform.rotation.vector[2], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+
+            // Rotation Z
+            igPushID(5);
+                if (incDragFloat("rotation_z", &node.localTransform.rotation.vector[2], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float, "Rotation Z")(
+                            node, 
+                            incGetDragFloatInitialValue("rotation_z"),
+                            node.localTransform.rotation.vector[2],
+                            &node.localTransform.rotation.vector[2]
+                        )
+                    );
+                }
+            igPopID();
             
-            createLock(&node.localTransform.lockRotationZ, "rot_z");
+            if (incLockButton(&node.localTransform.lockRotationZ, "rot_z")) {
+                incActionPush(
+                    new NodeValueChangeAction!(Node, bool, "Lock Rotation Z")(
+                        node, 
+                        !node.localTransform.lockRotationZ,
+                        node.localTransform.lockRotationZ,
+                        &node.localTransform.lockRotationZ
+                    )
+                );
+            }
+
         igPopItemWidth();
 
         avail.x += igGetFontSize();
 
+        //
+        // Scaling
+        //
         igSpacing();
         igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Scale");
         igPushItemWidth((avail.x-14f-(fontSize*2f))/2f);
-            igDragFloat("##scale_x", &node.localTransform.scale.vector[0], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-            createLock(&node.localTransform.lockScaleX, "sca_z");
+            
+            // Scale X
+            igPushID(6);
+                if (incDragFloat("scale_x", &node.localTransform.scale.vector[0], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float, "Scale X")(
+                            node, 
+                            incGetDragFloatInitialValue("scale_x"),
+                            node.localTransform.scale.vector[0],
+                            &node.localTransform.scale.vector[0]
+                        )
+                    );
+                }
+            igPopID();
+            if (incLockButton(&node.localTransform.lockScaleX, "sca_x")) {
+                incActionPush(
+                    new NodeValueChangeAction!(Node, bool, "Lock Scale X")(
+                        node, 
+                        !node.localTransform.lockScaleX,
+                        node.localTransform.lockScaleX,
+                        &node.localTransform.lockScaleX
+                    )
+                );
+            }
 
             igSameLine(0, 4);
-            igDragFloat("##scale_y", &node.localTransform.scale.vector[1], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-            createLock(&node.localTransform.lockScaleY, "sca_z");
+
+            // Scale Y
+            igPushID(7);
+                if (incDragFloat("scale_y", &node.localTransform.scale.vector[1], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float, "Scale Y")(
+                            node, 
+                            incGetDragFloatInitialValue("scale_y"),
+                            node.localTransform.scale.vector[1],
+                            &node.localTransform.scale.vector[1]
+                        )
+                    );
+                }
+            igPopID();
+            if (incLockButton(&node.localTransform.lockScaleY, "sca_y")) {
+                incActionPush(
+                    new NodeValueChangeAction!(Node, bool, "Lock Scale Y")(
+                        node, 
+                        !node.localTransform.lockScaleY,
+                        node.localTransform.lockScaleY,
+                        &node.localTransform.lockScaleY
+                    )
+                );
+            }
+
         igPopItemWidth();
 
         igSpacing();
@@ -92,8 +270,17 @@ private:
         ImVec2 textLength = incMeasureString("Snap to Pixel");
         igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Snap to Pixel");
         incSpacer(ImVec2(-12, 1));
-        createLock(&node.localTransform.pixelSnap, "pix_lk");
-
+        if (incLockButton(&node.localTransform.pixelSnap, "pix_lk")) {
+            incActionPush(
+                new NodeValueChangeAction!(Node, bool, "Snap to Pixel")(
+                    node, 
+                    !node.localTransform.pixelSnap,
+                    node.localTransform.pixelSnap,
+                    &node.localTransform.pixelSnap
+                )
+            );
+        }
+        
         // Padding
         igSpacing();
         igSpacing();

@@ -28,9 +28,14 @@ void incActionPush(Action action) {
         actions = actions[toChop..$];
     }
 
-    // Add to the history
-    actions = actions[0..actionPointer]~action;
-    actionPointer++;
+    if (incActionTop() !is null && incActionTop().canMerge(action)) {
+        incActionTop().merge(action);
+        incActionNotifyTopChanged();
+    } else {
+        // Add to the history
+        actions = actions[0..actionPointer]~action;
+        actionPointer++;
+    }
 }
 
 /**
@@ -83,6 +88,20 @@ Action[] incActionHistory() {
 */
 size_t incActionIndex() {
     return actionPointer;
+}
+
+/**
+    Gets the "top" action
+*/
+Action incActionTop() {
+    return actionPointer > 0 && actionPointer <= actions.length ? actions[actionPointer-1] : null;
+}
+
+/**
+    Notify that the top action has changed
+*/
+void incActionNotifyTopChanged() {
+    actions.length = actionPointer;
 }
 
 /**

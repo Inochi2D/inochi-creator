@@ -66,6 +66,16 @@ public:
         if (prevParent is null) return "Created %s".format(self.name);
         return "Moved %s from %s".format(self.name, prevParent.name);
     }
+
+    /**
+        Gets name of this action
+    */
+    string getName() {
+        return this.stringof;
+    }
+    
+    bool merge(Action other) { return false; }
+    bool canMerge(Action other) { return false; }
 }
 
 /**
@@ -103,8 +113,17 @@ public:
     string describeUndo() {
         return "%s was %s".format(self.name, !newState ? "Enabled" : "Disabled");
     }
-}
 
+    /**
+        Gets name of this action
+    */
+    string getName() {
+        return this.stringof;
+    }
+    
+    bool merge(Action other) { return false; }
+    bool canMerge(Action other) { return false; }
+}
 
 /**
     Moves child with history
@@ -152,4 +171,77 @@ void incDeleteChildWithHistory(Node n) {
 
     n.parent = null;
     incActivePuppet().rescanNodes();
+}
+
+/**
+    Node value changed action
+*/
+class NodeValueChangeAction(TNode, T, string name) : Action if (is(TNode : Node)) {
+public:
+    alias TSelf = typeof(this);
+    TNode node;
+    T oldValue;
+    T newValue;
+    T* valuePtr;
+
+    this(TNode node, T oldValue, T newValue, T* valuePtr) {
+        this.node = node;
+        this.oldValue = oldValue;
+        this.newValue = newValue;
+        this.valuePtr = valuePtr;
+    }
+
+    /**
+        Rollback
+    */
+    void rollback() {
+        *valuePtr = oldValue;
+    }
+
+    /**
+        Redo
+    */
+    void redo() {
+        *valuePtr = newValue;
+    }
+
+    /**
+        Describe the action
+    */
+    string describe() {
+        return "%s->%s changed to %s".format(node.name, name, newValue);
+    }
+
+    /**
+        Describe the action
+    */
+    string describeUndo() {
+        return "%s->%s changed from %s".format(node.name, name, oldValue);
+    }
+
+    /**
+        Gets name of this action
+    */
+    string getName() {
+        return name;
+    }
+    
+    /**
+        Merge
+    */
+    bool merge(Action other) {
+        if (this.canMerge(other)) {
+            this.newValue = (cast(TSelf)other).newValue;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+        Gets whether this node can merge with an other
+    */
+    bool canMerge(Action other) {
+        TSelf otherChange = cast(TSelf) other;
+        return (otherChange !is null && otherChange.getName() == this.getName());
+    }
 }
