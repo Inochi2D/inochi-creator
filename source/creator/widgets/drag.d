@@ -1,7 +1,6 @@
 module creator.widgets.drag;
 import creator.widgets;
 import core.stdc.stdlib : malloc, free;
-import std.stdio;
 
 private {
     struct DragState {
@@ -40,7 +39,6 @@ bool incDragFloat(string id, float* value, float adjustSpeed, float minValue, fl
             dragState.initialState = inState;
             dragState.isActive = true;
             dragState.wasJustCreated = false;
-            writeln(dragState.initialState);
         }
 
     } else {
@@ -71,7 +69,6 @@ float incGetDragFloatInitialValue(string id) {
     auto igID = igGetID(id.ptr, id.ptr+id.length);
 
     DragState* dragState = cast(DragState*)ImGuiStorage_GetVoidPtr(storage, igID);
-    writeln("dragstate is ", dragState);
     if (dragState !is null) return dragState.initialState;
     return float.nan;
 }
