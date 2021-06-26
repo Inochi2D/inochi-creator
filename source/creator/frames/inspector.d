@@ -208,9 +208,9 @@ protected:
                     igSpacing();
                     handlePartNodes(node);
                 }
-            } else {
-                igText("No nodes selected...");
-            }
+            } 
+        } else if (nodes.length == 0) {
+            igText("No nodes selected...");
         } else {
             igText("Can only inspect a single node...");
         }
