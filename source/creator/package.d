@@ -17,7 +17,7 @@ class Project {
 
 private {
     Project activeProject;
-    Node selectedNode;
+    Node[] selectedNodes;
 }
 
 /**
@@ -43,8 +43,11 @@ void incUpdateActiveProject() {
         activeProject.puppet.update();
         activeProject.puppet.draw();
 
-        if (selectedNode !is null) {
-            selectedNode.drawOutlineOne();
+        if (selectedNodes.length > 0) {
+            foreach(selectedNode; selectedNodes) {
+                if (selectedNode is null) continue; 
+                selectedNode.drawOutlineOne();
+            }
         }
 
     inEndScene();
@@ -85,15 +88,54 @@ ref Project incActiveProject() {
 /**
     Gets the currently selected node
 */
+ref Node[] incSelectedNodes() {
+    return selectedNodes;
+}
+
+/**
+    Gets the currently selected root node
+*/
 ref Node incSelectedNode() {
-    return selectedNode;
+    return selectedNodes.length == 0 ? incActivePuppet.root : selectedNodes[0];
 }
 
 /**
     Selects a node
 */
 void incSelectNode(Node n = null) {
-    selectedNode = n;
+    selectedNodes = [n];
+}
+
+/**
+    Adds node to selection
+*/
+void incAddSelectNode(Node n) {
+    selectedNodes ~= n;
+}
+
+/**
+    Remove node from selection
+*/
+void incRemoveSelectNode(Node n) {
+    foreach(i, nn; selectedNodes) {
+        if (n.uuid == nn.uuid) {
+            import std.algorithm.mutation : remove;
+            selectedNodes = selectedNodes.remove(i);
+        }
+    }
+}
+
+/**
+    Gets whether the node is in the selection
+*/
+bool incNodeInSelection(Node n) {
+    foreach(i, nn; selectedNodes) {
+        if (nn is null) continue;
+        
+        if (n.uuid == nn.uuid) return true;
+    }
+
+    return false;
 }
 
 /**

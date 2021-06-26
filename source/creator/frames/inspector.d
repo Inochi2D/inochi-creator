@@ -178,36 +178,41 @@ private:
 protected:
     override
     void onUpdate() {
-        Node node = incSelectedNode();
-        if (node !is null) {
-            igPushID(node.uuid);
-                igText(node.typeId().toStringz);
-                igSameLine(0, 4);
-                igSeparatorEx(ImGuiSeparatorFlags.Vertical);
-                igSameLine(0, 8);
-                incInputText("", node.name);
-            igPopID();
-            igSeparator();
+        auto nodes = incSelectedNodes();
+        if (nodes.length == 1) {
+            Node node = nodes[0];
+            if (node !is null) {
+                igPushID(node.uuid);
+                    igText(node.typeId().toStringz);
+                    igSameLine(0, 4);
+                    igSeparatorEx(ImGuiSeparatorFlags.Vertical);
+                    igSameLine(0, 8);
+                    incInputText("", node.name);
+                igPopID();
+                igSeparator();
 
-            handleTRS(node);
+                handleTRS(node);
 
-            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Sorting");
-            float zsortV = node.relZSort;
-            if (igInputFloat("ZSort", &zsortV, 0.01, 0.05, "%0.2f")) {
-                node.zSort = zsortV;
-            }
+                igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Sorting");
+                float zsortV = node.relZSort;
+                if (igInputFloat("ZSort", &zsortV, 0.01, 0.05, "%0.2f")) {
+                    node.zSort = zsortV;
+                }
 
-            if (node.typeId == "Part") {
+                if (node.typeId == "Part") {
 
-                // Padding
-                igSpacing();
-                igSpacing();
-                igSpacing();
-                igSpacing();
-                handlePartNodes(node);
+                    // Padding
+                    igSpacing();
+                    igSpacing();
+                    igSpacing();
+                    igSpacing();
+                    handlePartNodes(node);
+                }
+            } else {
+                igText("No nodes selected...");
             }
         } else {
-            igText("No nodes selected...");
+            igText("Can only inspect a single node...");
         }
     }
 

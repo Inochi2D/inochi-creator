@@ -36,7 +36,9 @@ protected:
         }
 
         if (igBeginPopup("NodeActionsPopup")) {
-
+            
+            auto selected = incSelectedNodes();
+            
             if (igBeginMenu("Add", true)) {
 
                 igPushFont(incIconFont());
@@ -66,17 +68,23 @@ protected:
             // We don't want to delete the root
             if (igMenuItem("Delete", "", false, !isRoot)) {
 
-                // Make sure we don't keep selecting a node we've removed
-                if (n == incSelectedNode()) {
-                    incSelectNode(null);
+                foreach(sn; selected) {
+                    incDeleteChildWithHistory(sn);
                 }
 
-                incDeleteChildWithHistory(n);
+                // Make sure we don't keep selecting a node we've removed
+                incSelectNode(null);
             }
             
             // We don't want to delete the root
             if (igBeginMenu("More Info", true)) {
-                igText("ID: %lu", n.uuid);
+                if (selected.length > 1) {
+                    foreach(sn; selected) {
+                        igText("%s ID: %lu", sn.name.ptr, sn.uuid);
+                    }
+                } else {
+                    igText("ID: %lu", n.uuid);
+                }
 
                 igEndMenu();
             }
@@ -84,8 +92,21 @@ protected:
         }
     }
 
+    bool checkCanReparent(Node n, Node to) {
+        Node tmp = to;
+        while(tmp !is null) {
+            if (tmp.uuid == n.uuid) return false;
+            
+            // Check next up
+            tmp = tmp.parent;
+        }
+        return true;
+    }
+
     void treeAddNode(bool isRoot = false)(ref Node n) {
         igTableNextRow();
+
+        auto io = igGetIO();
 
         // // Draw Enabler for this node first
         // igTableSetColumnIndex(1);
@@ -93,11 +114,12 @@ protected:
         //     igText(n.enabled ? "\ue8f4" : "\ue8f5");
         // igPopFont();
 
+
+        // Prepare node flags
         ImGuiTreeNodeFlags flags;
         if (n.children.length == 0) flags |= ImGuiTreeNodeFlags.Leaf;
         flags |= ImGuiTreeNodeFlags.DefaultOpen;
         flags |= ImGuiTreeNodeFlags.OpenOnArrow;
-        //flags |= ImGuiTreeNodeFlags.SpanAvailWidth;
 
         // Then draw the node tree index
         igTableSetColumnIndex(0);
@@ -106,9 +128,10 @@ protected:
             // Show node entry stuff
             igSameLine(0, 4);
 
+            auto selectedNodes = incSelectedNodes();
             igPushID(n.uuid);
                 static if (!isRoot) {
-                    bool selected = n == incSelectedNode();
+                    bool selected = incNodeInSelection(n);
 
                     igPushFont(incIconFont());
                         igText(typeIdToIcon(n.typeId).ptr);
@@ -117,15 +140,28 @@ protected:
 
                     if (igSelectable(n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
                         if (selected) {
-                            incFocusCamera(n);
+                            if (incSelectedNodes().length > 1) {
+                                if (io.KeyCtrl) incRemoveSelectNode(n);
+                                else incSelectNode(n);
+                            } else {
+                                incFocusCamera(n);
+                            }
+                        } else {
+                            if (io.KeyCtrl) incAddSelectNode(n);
+                            else incSelectNode(n);
                         }
-                        incSelectNode(n);
                     }
                     this.nodeActionsPopup(n);
 
                     if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
                         igSetDragDropPayload("_PUPPETNTREE", cast(void*)&n, (&n).sizeof, ImGuiCond.Always);
-                        igText(n.name.toStringz);
+                        if (selectedNodes.length > 1) {
+                            foreach(node; selectedNodes) {
+                                igText(node.name.toStringz);
+                            }
+                        } else {
+                            igText(n.name.toStringz);
+                        }
                         igEndDragDropSource();
                     }
                 } else {
@@ -138,16 +174,22 @@ protected:
                 }
             igPopID();
 
-            if(igBeginDragDropTarget()) {
-                ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
-                if (payload !is null) {
-                    Node payloadNode = *cast(Node*)payload.Data;
-                    incMoveChildWithHistory(payloadNode, n);
-                    
-                    igTreePop();
-                    return;
+            // Only allow reparenting one node
+            if (selectedNodes.length < 2) {
+                if(igBeginDragDropTarget()) {
+                    ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+                    if (payload !is null) {
+                        Node payloadNode = *cast(Node*)payload.Data;
+                        
+                        if (checkCanReparent(payloadNode, n)) {
+                            incMoveChildWithHistory(payloadNode, n);
+                        }
+                        
+                        igTreePop();
+                        return;
+                    }
+                    igEndDragDropTarget();
                 }
-                igEndDragDropTarget();
             }
 
         if (open) {
@@ -188,23 +230,31 @@ protected:
         igSeparator();
         
         igPushFont(incIconFont());
+            auto selected = incSelectedNodes();
             //igText("\ue92e", ImVec2(0, 0));
+            
             if (igButton("\ue92e", ImVec2(24, 24))) {
-                Node payloadNode = incSelectedNode();
-                incDeleteChildWithHistory(payloadNode);
+                foreach(payloadNode; selected) incDeleteChildWithHistory(payloadNode);
             }
+
 
             if(igBeginDragDropTarget()) {
                 ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
                 if (payload !is null) {
                     Node payloadNode = *cast(Node*)payload.Data;
 
-                    // Make sure we don't keep selecting a node we've removed
-                    if (payloadNode == incSelectedNode()) {
+                    if (selected.length > 1) {
+                        foreach(pn; selected) incDeleteChildWithHistory(pn);
                         incSelectNode(null);
-                    }
+                    } else {
 
-                    incDeleteChildWithHistory(payloadNode);
+                        // Make sure we don't keep selecting a node we've removed
+                        if (incNodeInSelection(payloadNode)) {
+                            incSelectNode(null);
+                        }
+
+                        incDeleteChildWithHistory(payloadNode);
+                    }
                     
                     igPopFont();
                     return;

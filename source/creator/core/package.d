@@ -102,7 +102,7 @@ void incOpenWindow() {
     
     auto imSupport = loadImGui();
     enforce(imSupport != ImGuiSupport.noLibrary, "cimgui.dll not found!");
-    enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui.dll found!"); // TODO: bindbc-imgui reports badLibrary for valid libraries rn!
+    enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui.dll found!");
 
     SDL_Init(SDL_INIT_EVERYTHING);
 
@@ -247,7 +247,7 @@ void incSetDarkMode(bool darkMode) {
         style.Colors[ImGuiCol.Button]                 = ImVec4(0.39f, 0.39f, 0.39f, 0.40f);
         style.Colors[ImGuiCol.ButtonHovered]          = ImVec4(0.44f, 0.44f, 0.44f, 1.00f);
         style.Colors[ImGuiCol.ButtonActive]           = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
-        style.Colors[ImGuiCol.Header]                 = ImVec4(0.25f, 0.25f, 0.25f, 0.31f);
+        style.Colors[ImGuiCol.Header]                 = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
         style.Colors[ImGuiCol.HeaderHovered]          = ImVec4(0.28f, 0.28f, 0.28f, 0.80f);
         style.Colors[ImGuiCol.HeaderActive]           = ImVec4(0.44f, 0.44f, 0.44f, 1.00f);
         style.Colors[ImGuiCol.Separator]              = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);

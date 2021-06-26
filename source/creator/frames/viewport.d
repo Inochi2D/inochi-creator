@@ -173,7 +173,7 @@ protected:
 
                     incAddChildWithHistory(
                         inCreateSimplePart(ShallowTexture(file), null, fname), 
-                        incSelectedNode, 
+                        incSelectedNode(), 
                         fname
                     );
                 }
