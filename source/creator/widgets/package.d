@@ -9,3 +9,4 @@ public import creator.widgets.mainmenu;
 public import creator.widgets.tooltip;
 public import creator.widgets.titlebar;
 public import creator.widgets.secrets;
+public import creator.widgets.dummy;

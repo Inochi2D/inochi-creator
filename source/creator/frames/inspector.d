@@ -87,11 +87,15 @@ private:
         igPopItemWidth();
 
         igSpacing();
+        igSpacing();
 
-        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Pixel Locking");
+        ImVec2 textLength = incMeasureString("Snap to Pixel");
+        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Snap to Pixel");
+        incSpacer(ImVec2(-12, 1));
         createLock(&node.localTransform.pixelSnap, "pix_lk");
 
         // Padding
+        igSpacing();
         igSpacing();
     }
 

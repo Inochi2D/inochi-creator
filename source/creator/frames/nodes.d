@@ -220,12 +220,9 @@ protected:
         
         igPushFont(incIconFont());
             auto selected = incSelectedNodes();
-            //igText("\ue92e", ImVec2(0, 0));
-            
             if (igButton("\ue92e", ImVec2(24, 24))) {
                 foreach(payloadNode; selected) incDeleteChildWithHistory(payloadNode);
             }
-
 
             if(igBeginDragDropTarget()) {
                 ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
