@@ -99,7 +99,7 @@ protected:
 
                             igPushFont(incIconFont());
                                 if (igButton("", ImVec2(0, 0))) {
-                                    inDbgDrawMeshVertexPoints = !inDbgDrawMeshVertexPoints;
+                                    incShowVertices = !incShowVertices;
                                 }
                             igPopFont();
                             incTooltip("Show/hide Vertices");
@@ -107,15 +107,15 @@ protected:
                             igPushFont(incIconFont());
                                 igSameLine(0, 0);
                                 if (igButton("", ImVec2(0, 0))) {
-                                    inDbgDrawMeshOutlines = !inDbgDrawMeshOutlines;
+                                    incShowBounds = !incShowBounds;
                                 }
                             igPopFont();
-                            incTooltip("Show/hide Lines");
+                            incTooltip("Show/hide Bounds");
 
                             igPushFont(incIconFont());
                                 igSameLine(0, 0);
                                 if (igButton("", ImVec2(0, 0))) {
-                                    inDbgDrawMeshOrientation = !inDbgDrawMeshOrientation;
+                                    incShowOrientation = !incShowOrientation;
                                 }
                             igPopFont();
                             incTooltip("Show/hide Orientation Gizmo");

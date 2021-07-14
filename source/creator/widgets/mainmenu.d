@@ -199,17 +199,30 @@ void incMainMenu() {
             igEndMenu();
         }
 
+        // We need to pre-calculate the size of the right adjusted section
+        // This code is very ugly because imgui doesn't really exactly understand this
+        // stuff natively.
+        ImVec2 secondSectionLength = ImVec2(0, 0);
+        secondSectionLength.x += incMeasureString("Donate").x+16; // Add 16 px padding
+        if (incShowStatsForNerds) { // Extra padding I guess
+            secondSectionLength.x += igGetStyle().ItemSpacing.x;
+            secondSectionLength.x += incMeasureString("1000ms").x;
+        }
+        incDummy(ImVec2(-secondSectionLength.x, 0));
+
         if (incShowStatsForNerds) {
-            igSeparator();
-            igGetContentRegionAvail(&avail);
             string fpsText = "%.0fms\0".format(1000f/io.Framerate);
-
-            ImVec2 textSize;
-            igCalcTextSize(&textSize, fpsText.ptr, fpsText.ptr+fpsText.length);
-            igDummy(ImVec2(avail.x-textSize.x, 0));
-
+            float textAreaDummyWidth = incMeasureString("1000ms").x-incMeasureString(fpsText).x;
+            incDummy(ImVec2(textAreaDummyWidth, 0));
             igText(fpsText.ptr);
         }
+        
+        // Donate button
+        // NOTE: Is this too obstructive in the UI?
+        if(igMenuItem("Donate")) {
+            openLink("https://www.patreon.com/clipsey");
+        }
+        incTooltip("Support development via Patreon");
 
         igEndMainMenuBar();
 

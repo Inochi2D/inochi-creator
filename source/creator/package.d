@@ -13,6 +13,13 @@ class Project {
         The puppet in the project
     */
     Puppet puppet;
+
+    /**
+        Textures for use in the puppet
+
+        Can be rearranged
+    */
+    Texture[] textures;
 }
 
 private {
@@ -28,6 +35,10 @@ enum EditMode {
     ParamEdit,
     VertexEdit
 }
+
+bool incShowVertices    = true; /// Show vertices of selected parts
+bool incShowBounds      = true; /// Show bounds of selected parts
+bool incShowOrientation = true; /// Show orientation gizmo of selected parts
 
 /**
     Current edit mode
@@ -46,12 +57,15 @@ void incUpdateActiveProject() {
         if (selectedNodes.length > 0) {
             foreach(selectedNode; selectedNodes) {
                 if (selectedNode is null) continue; 
-                selectedNode.drawOrientation();
+                if (incShowOrientation) selectedNode.drawOrientation();
+                if (incShowBounds) selectedNode.drawBounds();
 
                 if (Drawable selectedDraw = cast(Drawable)selectedNode) {
 
-                    selectedDraw.drawMeshLines();
-                    selectedDraw.drawMeshPoints();
+                    if (incShowVertices || incEditMode != EditMode.ModelEdit) {
+                        selectedDraw.drawMeshLines();
+                        selectedDraw.drawMeshPoints();
+                    }
                 }
                 
             }
