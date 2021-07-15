@@ -51,19 +51,19 @@ protected:
         igEndChild();
 
         if (igButton("Fork us on GitHub", ImVec2(0, 0))) {
-            openLink("https://github.com/Inochi2D/inochi-creator");
+            incOpenLink("https://github.com/Inochi2D/inochi-creator");
         }
 
         igSameLine(0, 8);
 
         if (igButton("Donate", ImVec2(0, 0))) {
-            openLink("https://www.patreon.com/clipsey");
+            incOpenLink("https://www.patreon.com/clipsey");
         }
 
         igSameLine(0, 8);
 
         if (igButton("Follow us on Twitter", ImVec2(0, 0))) {
-            openLink("https://twitter.com/Inochi2D");
+            incOpenLink("https://twitter.com/Inochi2D");
         }
 
 

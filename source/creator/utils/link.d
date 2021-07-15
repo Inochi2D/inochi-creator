@@ -1,7 +1,10 @@
 module creator.utils.link;
 import std.process;
 
-void openLink(string link) {
+/**
+    Opens a link with the user's preferred webbrowser
+*/
+void incOpenLink(string link) {
     version(Windows) {
         spawnShell("start " ~ link);
     } else version(OSX) {

@@ -185,11 +185,11 @@ void incMainMenu() {
             igSeparator();
             
             if(igMenuItem_Bool("Online Documentation", "", false, true)) {
-                openLink("https://github.com/Inochi2D/inochi-creator/wiki");
+                incOpenLink("https://github.com/Inochi2D/inochi-creator/wiki");
             }
             
             if(igMenuItem_Bool("Inochi2D Documentation", "", false, true)) {
-                openLink("https://github.com/Inochi2D/inochi2d/wiki");
+                incOpenLink("https://github.com/Inochi2D/inochi2d/wiki");
             }
             igSeparator();
 
@@ -220,7 +220,7 @@ void incMainMenu() {
         // Donate button
         // NOTE: Is this too obstructive in the UI?
         if(igMenuItem("Donate")) {
-            openLink("https://www.patreon.com/clipsey");
+            incOpenLink("https://www.patreon.com/clipsey");
         }
         incTooltip("Support development via Patreon");
 
