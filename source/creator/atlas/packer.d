@@ -4,7 +4,7 @@
     
     Authors: Luna Nielsen
 */
-module creator.parts.packer;
+module creator.atlas.packer;
 import gl3n.linalg;
 import gl3n.math;
 import std.exception;

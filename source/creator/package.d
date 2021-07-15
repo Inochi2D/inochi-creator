@@ -1,7 +1,14 @@
+/*
+    Copyright © 2020, Inochi2D Project
+    Distributed under the 2-Clause BSD License, see LICENSE file.
+    
+    Authors: Luna Nielsen
+*/
 module creator;
 import inochi2d;
 import inochi2d.core.dbg;
 import creator.core.actionstack;
+import creator.atlas;
 
 public import creator.ver;
 
@@ -25,6 +32,7 @@ class Project {
 private {
     Project activeProject;
     Node[] selectedNodes;
+    AtlasPart* activePart;
 }
 
 /**
@@ -104,6 +112,13 @@ ref Puppet incActivePuppet() {
 */
 ref Project incActiveProject() {
     return activeProject;
+}
+
+/**
+    Gets the current active part being edited (if any)
+*/
+ref AtlasPart* incActivePart() {
+    return activePart;
 }
 
 /**

@@ -1,3 +1,9 @@
+/*
+    Copyright © 2020, Inochi2D Project
+    Distributed under the 2-Clause BSD License, see LICENSE file.
+    
+    Authors: Luna Nielsen
+*/
 module creator.windows.texviewer;
 import creator.windows;
 import creator.core;
