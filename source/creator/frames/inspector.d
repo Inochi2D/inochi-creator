@@ -294,6 +294,14 @@ private:
 
     void handlePartNodes(Node node) {
         if (Part partNode = cast(Part)node) {
+
+            if (!partNode.getMesh().isReady()) { 
+                igText("Part");
+                igSeparator();
+                igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Cannot inspect an unmeshed part");
+                return;
+            }
+
             igText("Part");
             igSeparator();
 
