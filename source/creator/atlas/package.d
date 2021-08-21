@@ -9,118 +9,74 @@ import inochi2d;
 import std.format;
 import std.exception;
 
-private {
-    Texture[] atlasses;
-    AtlasPart*[] parts;
-}
+public import creator.atlas.part;
+public import creator.atlas.atlas;
+import creator.atlas.packer;
 
 /**
-    Clears the internal atlas of parts
+    Atlas manager system
 */
-void incAtlasClear() {
-    parts.length = 0;
-    atlasses.length = 0;
-}
+AtlasManagerSystem AtlasManager;
 
 /**
-    Load atlas from a puppet
+    The atlas manager
 */
-void incAtlasLoad(Puppet puppet) {
-    incAtlasClear();
-    foreach(texture; puppet.textureSlots) {
-        atlasses ~= texture;
+class AtlasManagerSystem {
+private:
+    // Atlas parts
+    AtlasPart[uint] loadedParts;
+    Atlas[] atlasses;
+    uint selectedPart;
+
+    Atlas* findAtlasForTexture(Texture toFind) {
+        
+        foreach(i, atlas; atlasses) {
+            if (atlas.texture == toFind) return &atlasses[i];
+        }
+
+        return null;
     }
-}
 
-/**
-    Adds part to atlas
-*/
-void incAtlasAddPart(ShallowTexture texture, Node parent = null) {
-    AtlasPart* apart = new AtlasPart;
-    apart.uuid = inCreateUUID();
-    apart.textureData = texture;
-    apart.texture = new Texture(texture);
-    apart.part = new Part(apart.mesh, [], apart.uuid, parent);
-
-    parts ~= apart;
-}
-
-/**
-    Remove part from atlas
-
-    TODO: This needs to be plugged in to the action stack system
-          so for now this won't be used.
-          This does mean that Inochi Creator essentially leaks
-          memory.
-*/
-void incAtlasRemovePart(uint partUUID) {
-    import std.algorithm.mutation : remove;
-
-    ptrdiff_t idx = incAtlasFindPartIndex(partUUID);
-    enforce(idx >= 0, "Could not find part with uuid %s".format(partUUID));
-
-    parts = parts.remove(idx);
-}
-
-/**
-    Find the index of a part in the internal list
-*/
-ptrdiff_t incAtlasFindPartIndex(uint partUUID) {
-    foreach(i, part; parts) if (part.uuid == partUUID) return i;
-    return -1;
-}
-
-/**
-    Gets an atlas part from a in-node part
-*/
-AtlasPart* incGetAtlasPartFromPart(Part part) {
-    foreach(ipart; parts) {
-        if (part.uuid == ipart.uuid) return ipart; 
-    }
-    throw new Exception("Could not find part with uuid %s".format(part.uuid));
-}
-
-/**
-    A part in the texture atlas
-*/
-struct AtlasPart {
+public:
 
     /**
-        UUID of atlas part
+        Returns the current active part
     */
-    uint uuid;
-
-    /**
-        The Inochi2D part this atlas part is connected to 
-    */
-    Part part;
-
-    /**
-        The texture data of this part
-    */
-    ShallowTexture textureData;
-
-    /**
-        The texture of the part
-    */
-    Texture texture;
-
-    /**
-        This part's mesh
-    */
-    MeshData mesh;
-
-    /**
-        Applies the UVs to the part in question
-    */
-    void apply() {
-        part.rebuffer(mesh);
+    AtlasPart* getActivePart() {
+        return selectedPart in loadedParts;
     }
 
     /**
-        Draws the part
+        Loads an existing puppet in to the texture atlasser
     */
-    void draw() {
-        inDrawTextureAtPart(texture, part);
+    void loadFromPuppet(Puppet puppet) {
+        
+        // First off we need to take all the textures in the texture slots and turn them in to atlas parts
+        foreach(Texture tex; puppet.textureSlots) {
+            atlasses ~= Atlas(tex, new TexturePacker());
+        }
+
+        Part[] parts = puppet.getAllParts();
+        foreach(inpart; parts) {
+            AtlasPart part;
+            part.texture = inpart.textures[0];
+            part.mesh = inpart.getMesh();
+            part.packedIn = findAtlasForTexture(part.texture);
+
+            // Finally, add it to the atlasser
+            loadedParts[inpart.uuid] = part;
+        }
     }
+
+    /**
+        Clears the atlas manager of items
+    */
+    void clear() {
+        loadedParts.clear();
+        selectedPart = 0;
+    }
+}
+
+static this() {
+    AtlasManager = new AtlasManagerSystem();
 }

@@ -176,6 +176,10 @@ public:
         freeRectangles = [vec4i(0, 0, size.x, size.y)];
     }
 
+    void resize(vec2i size) {
+        // TODO: Actually resize
+    }
+
     /**
         Inserts a new rectangle in to the bin
     */
@@ -202,6 +206,9 @@ public:
         freeRectangles ~= area;
     }
 
+    /**
+        Clears the bin
+    */
     void clear() {
         freeRectangles = [vec4i(0, 0, size.x, size.y)];
         usedRectangles = [];
@@ -216,6 +223,13 @@ public:
             surfaceArea += rect.z*rect.w;
         }
         return surfaceArea / (size.x*size.y);
+    }
+
+    /**
+        Gets the size of the bin
+    */
+    vec2i getSize() {
+        return size;
     }
 }
 
