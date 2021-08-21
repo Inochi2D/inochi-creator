@@ -11,6 +11,7 @@ import creator.core.actionstack;
 import creator.atlas;
 
 public import creator.ver;
+public import creator.atlas;
 
 /**
     A project
@@ -32,7 +33,6 @@ class Project {
 private {
     Project activeProject;
     Node[] selectedNodes;
-    AtlasPart* activePart;
 }
 
 /**
@@ -101,6 +101,17 @@ void incNewProject() {
 }
 
 /**
+    Imports an INP puppet
+*/
+void incImportINP(string file) {
+    incNewProject();
+
+    Puppet puppet = inLoadPuppet(file);
+    AtlasManager.loadFromPuppet(puppet);
+    incActiveProject().puppet = puppet;
+}
+
+/**
     Gets puppet in active project
 */
 ref Puppet incActivePuppet() {
@@ -112,13 +123,6 @@ ref Puppet incActivePuppet() {
 */
 ref Project incActiveProject() {
     return activeProject;
-}
-
-/**
-    Gets the current active part being edited (if any)
-*/
-ref AtlasPart* incActivePart() {
-    return activePart;
 }
 
 /**

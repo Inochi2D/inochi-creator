@@ -64,8 +64,7 @@ void incMainMenu() {
                     c_str filename = tinyfd_openFileDialog("Import...", "", filters, false);
                     if (filename !is null) {
                         string file = cast(string)filename.fromStringz;
-                        incNewProject();
-                        incActiveProject().puppet = inLoadPuppet(file);
+                        incImportINP(file);
                     }
                 }
                 igEndMenu();
