@@ -115,10 +115,7 @@ void incImportPSD(string file) {
         if (layer.type != LayerType.Any) continue;
 
         layer.extractLayerImage();
-        Part part = AtlasManager.addTexture(
-            layer.name,
-            new Texture(ShallowTexture(layer.data, layer.width, layer.height))
-        );
+        Part part = inCreateSimplePart(ShallowTexture(layer.data, layer.width, layer.height), puppet.root, layer.name);
 
         auto layerSize = cast(int[2])layer.size();
         vec2i layerPosition = vec2i(
@@ -149,9 +146,7 @@ void incImportPSD(string file) {
 */
 void incImportINP(string file) {
     incNewProject();
-
     Puppet puppet = inLoadPuppet(file);
-    AtlasManager.loadFromPuppet(puppet);
     incActiveProject().puppet = puppet;
 }
 
