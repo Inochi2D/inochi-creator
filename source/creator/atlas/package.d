@@ -69,6 +69,22 @@ public:
     }
 
     /**
+        Adds new texture to the atlas
+    */
+    Part addTexture(string name, Texture texture) {
+        atlasses ~= Atlas(texture, new TexturePacker());
+
+        Part part = inCreateSimplePart(texture, null, name);
+        AtlasPart apart;
+        apart.texture = texture;
+        apart.mesh = part.getMesh();
+        apart.packedIn = findAtlasForTexture(apart.texture);
+
+        loadedParts[part.uuid] = apart;
+        return part;
+    }
+
+    /**
         Clears the atlas manager of items
     */
     void clear() {

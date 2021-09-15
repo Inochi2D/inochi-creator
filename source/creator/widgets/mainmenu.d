@@ -56,15 +56,15 @@ void incMainMenu() {
             }
 
             if (igBeginMenu("Import", true)) {
-                if(igMenuItem_Bool("Inochi Puppet", "", false, true)) {
+                if(igMenuItem_Bool("Photoshop Document", "", false, true)) {
                     const TFD_Filter[] filters = [
-                        { ["*.inp"], "Inochi2D Puppet (*.inp)" }
+                        { ["*.psd"], "Photoshop Document (*.psd)" }
                     ];
 
                     c_str filename = tinyfd_openFileDialog("Import...", "", filters, false);
                     if (filename !is null) {
                         string file = cast(string)filename.fromStringz;
-                        incImportINP(file);
+                        incImportPSD(file);
                     }
                 }
                 igEndMenu();

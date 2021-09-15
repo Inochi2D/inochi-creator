@@ -100,6 +100,50 @@ void incNewProject() {
     incActionClearHistory();
 }
 
+void incImportPSD(string file) {
+    import std.stdio : writeln;
+    import psd : PSD, Layer, LayerType, LayerFlags, parseDocument;
+    PSD doc = parseDocument(file);
+    vec2i docCenter = vec2i(doc.width/2, doc.height/2);
+
+    writeln(docCenter);
+
+    Puppet puppet = new Puppet();
+    foreach(i, Layer layer; doc.layers) {
+
+        // Skip folders ( for now )
+        if (layer.type != LayerType.Any) continue;
+
+        layer.extractLayerImage();
+        Part part = AtlasManager.addTexture(
+            layer.name,
+            new Texture(ShallowTexture(layer.data, layer.width, layer.height))
+        );
+
+        auto layerSize = cast(int[2])layer.size();
+        vec2i layerPosition = vec2i(
+            layer.left,
+            layer.top
+        );
+
+        part.localTransform.translation = vec3(
+            (layerPosition.x+(layerSize[0]/2))-docCenter.x,
+            (layerPosition.y+(layerSize[1]/2))-docCenter.y,
+            0
+        );
+
+        part.opacity = (layer.flags & LayerFlags.Visible) == 0 ? 
+            (cast(float)layer.opacity)/255 : 
+            0;
+        
+        part.zSort = -(cast(float)i)/100;
+
+        puppet.root.addChild(part);
+    }
+    puppet.rescanNodes();
+    incActiveProject().puppet = puppet;
+}
+
 /**
     Imports an INP puppet
 */
