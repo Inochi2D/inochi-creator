@@ -100,13 +100,35 @@ void incNewProject() {
     incActionClearHistory();
 }
 
+/**
+    Imports image files from a selected folder.
+*/
+void incImportFolder(string folder) {
+    import std.file : dirEntries, SpanMode;
+    import std.path : stripExtension, baseName;
+
+    // For each file find PNG, TGA and JPEG files and import them
+    Puppet puppet = new Puppet();
+    size_t i;
+    foreach(file; dirEntries(folder, SpanMode.shallow, false)) {
+
+        // TODO: Check for position.ini
+        Part part = inCreateSimplePart(ShallowTexture(file), null, file.baseName.stripExtension);
+        part.zSort = -((cast(float)i++)/100);
+        puppet.root.addChild(part);
+    }
+    puppet.rescanNodes();
+    incActiveProject().puppet = puppet;
+}
+
+/**
+    Imports a PSD file.
+*/
 void incImportPSD(string file) {
     import std.stdio : writeln;
     import psd : PSD, Layer, LayerType, LayerFlags, parseDocument;
     PSD doc = parseDocument(file);
     vec2i docCenter = vec2i(doc.width/2, doc.height/2);
-
-    writeln(docCenter);
 
     Puppet puppet = new Puppet();
     foreach(i, Layer layer; doc.layers) {

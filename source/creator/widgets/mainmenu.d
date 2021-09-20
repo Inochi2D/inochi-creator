@@ -67,6 +67,14 @@ void incMainMenu() {
                         incImportPSD(file);
                     }
                 }
+
+                incTooltip("Supports PNGs, TGAs and JPEGs.");
+                if (igMenuItem_Bool("Image Folder")) {
+                    c_str folder = tinyfd_selectFolderDialog("Select a Folder...", null);
+                    if (folder !is null) {
+                        incImportFolder(cast(string)folder.fromStringz);
+                    }
+                }
                 igEndMenu();
             }
             if (igBeginMenu("Export", true)) {
