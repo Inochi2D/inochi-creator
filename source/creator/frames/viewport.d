@@ -179,12 +179,13 @@ protected:
                     string fname = file.baseName;
 
                     switch(fname.extension.toLower) {
-                    case ".png", ".tga", ".jpeg":
+                    case ".png", ".tga", ".jpeg", ".jpg":
                         incAddChildWithHistory(
                             inCreateSimplePart(ShallowTexture(file), null, fname), 
                             incSelectedNode(), 
                             fname
                         );
+
                         // We've added new stuff, rescan nodes
                         incActivePuppet().rescanNodes();
 
