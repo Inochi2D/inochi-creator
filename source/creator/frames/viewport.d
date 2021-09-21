@@ -173,23 +173,29 @@ protected:
             ImGuiPayload* payload = igAcceptDragDropPayload("__PARTS_DROP");
             if (payload !is null) {
                 string[] files = *cast(string[]*)payload.Data;
-                import std.path : baseName;
+                import std.path : baseName, extension;
+                import std.uni : toLower;
                 foreach(file; files) {
                     string fname = file.baseName;
 
-                    incAddChildWithHistory(
-                        inCreateSimplePart(ShallowTexture(file), null, fname), 
-                        incSelectedNode(), 
-                        fname
-                    );
-                }
+                    switch(fname.extension.toLower) {
+                    case ".png", ".tga", ".jpeg":
+                        incAddChildWithHistory(
+                            inCreateSimplePart(ShallowTexture(file), null, fname), 
+                            incSelectedNode(), 
+                            fname
+                        );
+                        // We've added new stuff, rescan nodes
+                        incActivePuppet().rescanNodes();
 
-                // We've added new stuff, rescan nodes
-                incActivePuppet().rescanNodes();
+                        foreach(Part part; incActivePuppet().getRootParts()) {
+                            import std.stdio : writeln;
+                            writeln(part);
+                        }
+                        break;
 
-                foreach(Part part; incActivePuppet().getRootParts()) {
-                    import std.stdio : writeln;
-                    writeln(part);
+                    default: break;
+                    }
                 }
 
                 // Finish the file drag
