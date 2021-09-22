@@ -68,10 +68,10 @@ void incMainMenu() {
                         incImportPSD(file);
                     }
                 }
+                incTooltip("Import a standard Photoshop PSD file.");
 
                 // This is only really useful for testing
                 debug {
-                    incTooltip("Import existing puppet file");
                     if(igMenuItem_Bool("Inochi2D Puppet", "", false, true)) {
                         const TFD_Filter[] filters = [
                             { ["*.inp"], "Inochi2D Puppet (*.inp)" }
@@ -83,15 +83,16 @@ void incMainMenu() {
                             incImportINP(file);
                         }
                     }
+                    incTooltip("Import existing puppet file");
                 }
 
-                incTooltip("Supports PNGs, TGAs and JPEGs.");
                 if (igMenuItem_Bool("Image Folder")) {
                     c_str folder = tinyfd_selectFolderDialog("Select a Folder...", null);
                     if (folder !is null) {
                         incImportFolder(cast(string)folder.fromStringz);
                     }
                 }
+                incTooltip("Supports PNGs, TGAs and JPEGs.");
                 igEndMenu();
             }
             if (igBeginMenu("Export", true)) {
