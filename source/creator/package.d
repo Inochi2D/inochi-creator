@@ -12,6 +12,7 @@ import creator.atlas;
 
 public import creator.ver;
 public import creator.atlas;
+import creator.core.colorbleed;
 
 /**
     A project
@@ -98,12 +99,15 @@ void incNewProject() {
     incTargetZoom = 1;
 
     incActionClearHistory();
+    incFreeMemory();
 }
 
 /**
     Imports image files from a selected folder.
 */
 void incImportFolder(string folder) {
+    incNewProject();
+
     import std.file : dirEntries, SpanMode;
     import std.path : stripExtension, baseName;
 
@@ -113,19 +117,24 @@ void incImportFolder(string folder) {
     foreach(file; dirEntries(folder, SpanMode.shallow, false)) {
 
         // TODO: Check for position.ini
-        Part part = inCreateSimplePart(ShallowTexture(file), null, file.baseName.stripExtension);
+
+        auto tex = new Texture(file);
+        incColorBleedPixels(tex, 64);
+
+        Part part = inCreateSimplePart(tex, null, file.baseName.stripExtension);
         part.zSort = -((cast(float)i++)/100);
         puppet.root.addChild(part);
     }
     puppet.rescanNodes();
     incActiveProject().puppet = puppet;
+    incFreeMemory();
 }
 
 /**
     Imports a PSD file.
 */
 void incImportPSD(string file) {
-    import std.stdio : writeln;
+    incNewProject();
     import psd : PSD, Layer, LayerType, LayerFlags, parseDocument;
     PSD doc = parseDocument(file);
     vec2i docCenter = vec2i(doc.width/2, doc.height/2);
@@ -137,7 +146,9 @@ void incImportPSD(string file) {
         if (layer.type != LayerType.Any) continue;
 
         layer.extractLayerImage();
-        Part part = inCreateSimplePart(ShallowTexture(layer.data, layer.width, layer.height), puppet.root, layer.name);
+        auto tex = new ShallowTexture(layer.data, layer.width, layer.height);
+        incColorBleedPixels(tex, 64);
+        Part part = inCreateSimplePart(*tex, puppet.root, layer.name);
 
         auto layerSize = cast(int[2])layer.size();
         vec2i layerPosition = vec2i(
@@ -161,6 +172,7 @@ void incImportPSD(string file) {
     }
     puppet.rescanNodes();
     incActiveProject().puppet = puppet;
+    incFreeMemory();
 }
 
 /**
@@ -170,6 +182,21 @@ void incImportINP(string file) {
     incNewProject();
     Puppet puppet = inLoadPuppet(file);
     incActiveProject().puppet = puppet;
+    incFreeMemory();
+}
+
+/**
+    Re-bleeds textures in a model
+*/
+void incRebleedTextures() {
+    foreach(Texture texture; activeProject.puppet.textureSlots) {
+        incColorBleedPixels(texture);
+    }
+}
+
+void incFreeMemory() {
+    import core.memory : GC;
+    GC.collect();
 }
 
 /**

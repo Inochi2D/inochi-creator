@@ -56,6 +56,7 @@ void incMainMenu() {
             }
 
             if (igBeginMenu("Import", true)) {
+                incTooltip("Import photoshop document");
                 if(igMenuItem_Bool("Photoshop Document", "", false, true)) {
                     const TFD_Filter[] filters = [
                         { ["*.psd"], "Photoshop Document (*.psd)" }
@@ -65,6 +66,22 @@ void incMainMenu() {
                     if (filename !is null) {
                         string file = cast(string)filename.fromStringz;
                         incImportPSD(file);
+                    }
+                }
+
+                // This is only really useful for testing
+                debug {
+                    incTooltip("Import existing puppet file");
+                    if(igMenuItem_Bool("Inochi2D Puppet", "", false, true)) {
+                        const TFD_Filter[] filters = [
+                            { ["*.inp"], "Inochi2D Puppet (*.inp)" }
+                        ];
+
+                        c_str filename = tinyfd_openFileDialog("Import...", "", filters, false);
+                        if (filename !is null) {
+                            string file = cast(string)filename.fromStringz;
+                            incImportINP(file);
+                        }
                     }
                 }
 
@@ -163,6 +180,13 @@ void incMainMenu() {
 
         if (igBeginMenu("Tools", true)) {
             import creator.utils.repair : incAttemptRepairPuppet, incRegenerateNodeIDs;
+
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Puppet Texturing");
+            igSeparator();
+            if (igMenuItem("Rebleed textures...", "", false)) {
+                incRebleedTextures();
+            }
+
 
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Puppet Recovery");
             igSeparator();
