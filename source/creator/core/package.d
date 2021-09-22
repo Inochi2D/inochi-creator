@@ -103,12 +103,12 @@ void incOpenWindow() {
     import core.stdc.stdlib : exit;
 
     auto sdlSupport = loadSDL();
-    enforce(sdlSupport != SDLSupport.noLibrary, "SDL2.dll not found!");
-    enforce(sdlSupport != SDLSupport.badLibrary, "Bad SDL2.dll found!");
+    enforce(sdlSupport != SDLSupport.noLibrary, "SDL2 library not found!");
+    enforce(sdlSupport != SDLSupport.badLibrary, "Bad SDL2 library found!");
     
     auto imSupport = loadImGui();
-    enforce(imSupport != ImGuiSupport.noLibrary, "cimgui.dll not found!");
-    enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui.dll found!");
+    enforce(imSupport != ImGuiSupport.noLibrary, "cimgui library not found!");
+    enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui library found!");
 
     SDL_Init(SDL_INIT_EVERYTHING);
 
