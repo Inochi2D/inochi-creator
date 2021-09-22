@@ -7,6 +7,7 @@
 module creator.frames.viewport;
 import creator.widgets;
 import creator.core;
+import creator.core.colorbleed;
 import creator.frames;
 import creator.actions;
 import creator;
@@ -180,8 +181,11 @@ protected:
 
                     switch(fname.extension.toLower) {
                     case ".png", ".tga", ".jpeg", ".jpg":
+
+                        auto tex = new ShallowTexture(file);
+                        incColorBleedPixels(tex);
                         incAddChildWithHistory(
-                            inCreateSimplePart(ShallowTexture(file), null, fname), 
+                            inCreateSimplePart(*tex, null, fname), 
                             incSelectedNode(), 
                             fname
                         );
