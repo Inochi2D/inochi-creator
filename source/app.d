@@ -56,6 +56,7 @@ void incUpdate() {
             if (!incGetUseNativeTitlebar()) {
                 incTitlebar();
             }
+            incStatusbar();
 
             incHandleShortcuts();
             incMainMenu();
@@ -83,6 +84,7 @@ void incUpdateNoEv() {
             if (!incGetUseNativeTitlebar()) {
                 incTitlebar();
             }
+            incStatusbar();
 
             incHandleShortcuts();
             incMainMenu();

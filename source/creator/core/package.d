@@ -23,6 +23,7 @@ import std.stdio;
 public import bindbc.imgui;
 public import creator.core.settings;
 public import creator.core.actionstack;
+public import creator.core.taskstack;
 
 private {
     SDL_GLContext gl_context;
@@ -378,6 +379,8 @@ void incBeginLoop() {
                 break;
         }
     }
+
+    incTaskUpdate();
 
     // Begin loop post-event
     incBeginLoopNoEv();

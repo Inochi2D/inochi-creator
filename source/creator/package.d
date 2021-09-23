@@ -7,6 +7,7 @@
 module creator;
 import inochi2d;
 import inochi2d.core.dbg;
+import creator.core;
 import creator.core.actionstack;
 import creator.atlas;
 
@@ -134,45 +135,51 @@ void incImportFolder(string folder) {
     Imports a PSD file.
 */
 void incImportPSD(string file) {
-    incNewProject();
-    import psd : PSD, Layer, LayerType, LayerFlags, parseDocument;
-    PSD doc = parseDocument(file);
-    vec2i docCenter = vec2i(doc.width/2, doc.height/2);
+    incTaskAdd("Import "~file, () {
+        incNewProject();
+        import psd : PSD, Layer, LayerType, LayerFlags, parseDocument;
+        PSD doc = parseDocument(file);
+        vec2i docCenter = vec2i(doc.width/2, doc.height/2);
 
-    Puppet puppet = new Puppet();
-    foreach(i, Layer layer; doc.layers) {
+        Puppet puppet = new Puppet();
+        foreach(i, Layer layer; doc.layers) {
 
-        // Skip folders ( for now )
-        if (layer.type != LayerType.Any) continue;
+            // Skip folders ( for now )
+            if (layer.type != LayerType.Any) continue;
 
-        layer.extractLayerImage();
-        auto tex = new ShallowTexture(layer.data, layer.width, layer.height);
-        incColorBleedPixels(tex, 64);
-        Part part = inCreateSimplePart(*tex, puppet.root, layer.name);
+            incTaskStatus("Importing "~layer.name~"...");
+            incTaskYield();
 
-        auto layerSize = cast(int[2])layer.size();
-        vec2i layerPosition = vec2i(
-            layer.left,
-            layer.top
-        );
+            layer.extractLayerImage();
+            auto tex = new ShallowTexture(layer.data, layer.width, layer.height);
+            incColorBleedPixels(tex, 64);
+            Part part = inCreateSimplePart(*tex, puppet.root, layer.name);
 
-        part.localTransform.translation = vec3(
-            (layerPosition.x+(layerSize[0]/2))-docCenter.x,
-            (layerPosition.y+(layerSize[1]/2))-docCenter.y,
-            0
-        );
+            auto layerSize = cast(int[2])layer.size();
+            vec2i layerPosition = vec2i(
+                layer.left,
+                layer.top
+            );
 
-        part.opacity = (layer.flags & LayerFlags.Visible) == 0 ? 
-            (cast(float)layer.opacity)/255 : 
-            0;
-        
-        part.zSort = -(cast(float)i)/100;
+            part.localTransform.translation = vec3(
+                (layerPosition.x+(layerSize[0]/2))-docCenter.x,
+                (layerPosition.y+(layerSize[1]/2))-docCenter.y,
+                0
+            );
 
-        puppet.root.addChild(part);
-    }
-    puppet.rescanNodes();
-    incActiveProject().puppet = puppet;
-    incFreeMemory();
+            part.opacity = (layer.flags & LayerFlags.Visible) == 0 ? 
+                (cast(float)layer.opacity)/255 : 
+                0;
+            
+            part.zSort = -(cast(float)i)/100;
+
+            puppet.root.addChild(part);
+        }
+        puppet.rescanNodes();
+        incActiveProject().puppet = puppet;
+        incFreeMemory();
+        incTaskStatus("Import Finished.");
+    });
 }
 
 /**
