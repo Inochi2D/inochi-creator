@@ -15,6 +15,7 @@ stringImportPaths "res/" "./"
 preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\""
 configuration "posix" {
 	targetType "executable"
+	lflags "-rpath=$$ORIGIN"
 }
 configuration "winapp" {
 	platforms "windows"
