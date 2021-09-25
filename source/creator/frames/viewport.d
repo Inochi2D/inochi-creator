@@ -75,10 +75,8 @@ protected:
 
             if (currSize != lastSize) {
                 inSetViewport(cast(int)currSize.x, cast(int)currSize.y);
-                
-                // Redraw
-                incUpdateActiveProject();
             }
+            incUpdateActiveProject();
 
             int width, height;
             inGetViewport(width, height);
