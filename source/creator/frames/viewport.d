@@ -76,6 +76,41 @@ protected:
             if (currSize != lastSize) {
                 inSetViewport(cast(int)currSize.x, cast(int)currSize.y);
             }
+
+            if (igIsWindowHovered(ImGuiHoveredFlags.ChildWindows)) {
+
+                // HANDLE MOVE VIEWPORT
+                if (!isMovingViewport && io.MouseDown[1]) {
+                    isMovingViewport = true;
+                    sx = io.MousePos.x;
+                    sy = io.MousePos.y;
+                    csx = camera.position.x;
+                    csy = camera.position.y;
+                }
+
+                if (isMovingViewport && !io.MouseDown[1]) {
+                    isMovingViewport = false;
+                }
+
+                if (isMovingViewport) {
+
+                    camera.position = vec2(
+                        csx+((io.MousePos.x-sx)/zoom),
+                        csy+((io.MousePos.y-sy)/zoom)
+                    );
+
+                    incTargetPosition = camera.position;
+                }
+
+                // HANDLE ZOOM
+                if (io.MouseWheel != 0) {
+                    zoom += (io.MouseWheel/50)*zoom;
+                    zoom = clamp(zoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX);
+                    camera.scale = vec2(zoom);
+                    incTargetZoom = zoom;
+                }
+            }
+
             incUpdateActiveProject();
 
             int width, height;
@@ -132,40 +167,6 @@ protected:
             igSetCursorScreenPos(sPosA);
 
             lastSize = currSize;
-
-            if (igIsWindowHovered(ImGuiHoveredFlags.ChildWindows)) {
-
-                // HANDLE MOVE VIEWPORT
-                if (!isMovingViewport && io.MouseDown[1]) {
-                    isMovingViewport = true;
-                    sx = io.MousePos.x;
-                    sy = io.MousePos.y;
-                    csx = camera.position.x;
-                    csy = camera.position.y;
-                }
-
-                if (isMovingViewport && !io.MouseDown[1]) {
-                    isMovingViewport = false;
-                }
-
-                if (isMovingViewport) {
-
-                    camera.position = vec2(
-                        csx+((io.MousePos.x-sx)/zoom),
-                        csy+((io.MousePos.y-sy)/zoom)
-                    );
-
-                    incTargetPosition = camera.position;
-                }
-
-                // HANDLE ZOOM
-                if (io.MouseWheel != 0) {
-                    zoom += (io.MouseWheel/50)*zoom;
-                    zoom = clamp(zoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX);
-                    camera.scale = vec2(zoom);
-                    incTargetZoom = zoom;
-                }
-            }
         igEndChild();
 
         if (igBeginDragDropTarget()) {
