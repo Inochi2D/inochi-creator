@@ -197,9 +197,14 @@ void incImportINP(string file) {
     Re-bleeds textures in a model
 */
 void incRebleedTextures() {
-    foreach(Texture texture; activeProject.puppet.textureSlots) {
-        incColorBleedPixels(texture);
-    }
+    incTaskAdd("Rebleed", () {
+        incTaskStatus("Bleeding textures...");
+        foreach(i, Texture texture; activeProject.puppet.textureSlots) {
+            incTaskProgress(cast(float)i/activeProject.puppet.textureSlots.length);
+            incTaskYield();
+            incColorBleedPixels(texture);
+        }
+    });
 }
 
 void incFreeMemory() {
