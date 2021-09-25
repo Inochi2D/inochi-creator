@@ -198,6 +198,39 @@ protected:
 
     }
 
+    void treeAddDrawable(ref Drawable n) {
+        igTableNextRow();
+        igTableSetColumnIndex(0);
+        
+        ImGuiTreeNodeFlags flags;
+        flags |= ImGuiTreeNodeFlags.Leaf;
+        flags |= ImGuiTreeNodeFlags.DefaultOpen;
+        flags |= ImGuiTreeNodeFlags.OpenOnArrow;
+
+        igTreeNodeEx(cast(void*)n.uuid, flags, "");
+            // Show node entry stuff
+            igSameLine(0, 4);
+
+            igPushID(n.uuid);
+
+                bool selected = incNodeInSelection(n);
+
+                igPushFont(incIconFont());
+                    igText(typeIdToIcon(n.typeId).ptr);
+                igPopFont();
+                igSameLine(0, 2);
+
+                if (igSelectable(n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
+                    if (selected) {
+                        incFocusCamera(n);
+                    }
+                    incSelectNode(n);
+                }
+                // this.nodeActionsPopup(n);
+            igPopID();
+        igTreePop();
+    }
+
     override
     void onBeginUpdate() {
         igBegin(name.ptr, &this.visible, ImGuiWindowFlags.AlwaysAutoResize);
@@ -225,7 +258,13 @@ protected:
                 igTableSetupColumn("Nodes", ImGuiTableColumnFlags.WidthFixed, 0, 0);
                 //igTableSetupColumn("Visibility", ImGuiTableColumnFlags_WidthFixed, 32, 1);
                 
-                treeAddNode!true(incActivePuppet.root);
+                if (incEditMode == EditMode.ModelEdit) {
+                    treeAddNode!true(incActivePuppet.root);
+                } else {
+                    foreach(drawable; incDrawables()) {
+                            treeAddDrawable(drawable);
+                    }
+                }
 
                 igEndTable();
             }
@@ -238,33 +277,35 @@ protected:
         igSeparator();
         
         igPushFont(incIconFont());
-            auto selected = incSelectedNodes();
-            if (igButton("\ue92e", ImVec2(24, 24))) {
-                foreach(payloadNode; selected) incDeleteChildWithHistory(payloadNode);
-            }
-
-            if(igBeginDragDropTarget()) {
-                ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
-                if (payload !is null) {
-                    Node payloadNode = *cast(Node*)payload.Data;
-
-                    if (selected.length > 1) {
-                        foreach(pn; selected) incDeleteChildWithHistory(pn);
-                        incSelectNode(null);
-                    } else {
-
-                        // Make sure we don't keep selecting a node we've removed
-                        if (incNodeInSelection(payloadNode)) {
-                            incSelectNode(null);
-                        }
-
-                        incDeleteChildWithHistory(payloadNode);
-                    }
-                    
-                    igPopFont();
-                    return;
+            if (incEditMode() == EditMode.ModelEdit) {
+                auto selected = incSelectedNodes();
+                if (igButton("\ue92e", ImVec2(24, 24))) {
+                    foreach(payloadNode; selected) incDeleteChildWithHistory(payloadNode);
                 }
-                igEndDragDropTarget();
+
+                if(igBeginDragDropTarget()) {
+                    ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+                    if (payload !is null) {
+                        Node payloadNode = *cast(Node*)payload.Data;
+
+                        if (selected.length > 1) {
+                            foreach(pn; selected) incDeleteChildWithHistory(pn);
+                            incSelectNode(null);
+                        } else {
+
+                            // Make sure we don't keep selecting a node we've removed
+                            if (incNodeInSelection(payloadNode)) {
+                                incSelectNode(null);
+                            }
+
+                            incDeleteChildWithHistory(payloadNode);
+                        }
+                        
+                        igPopFont();
+                        return;
+                    }
+                    igEndDragDropTarget();
+                }
             }
         igPopFont();
 

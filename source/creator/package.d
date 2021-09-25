@@ -35,6 +35,7 @@ class Project {
 private {
     Project activeProject;
     Node[] selectedNodes;
+    Drawable[] drawables;
 }
 
 /**
@@ -53,7 +54,7 @@ bool incShowOrientation = true; /// Show orientation gizmo of selected parts
 /**
     Current edit mode
 */
-EditMode incEditMode;
+EditMode editMode_;
 
 /**
     Updates the active Inochi2D project
@@ -91,6 +92,7 @@ void incUpdateActiveProject() {
 void incNewProject() {
     activeProject = new Project;
     activeProject.puppet = new Puppet;
+    incSelectNode(null);
 
     inDbgDrawMeshVertexPoints = true;
     inDbgDrawMeshOutlines = true;
@@ -207,6 +209,9 @@ void incRebleedTextures() {
     });
 }
 
+/**
+    Force the garbage collector to collect model memory
+*/
 void incFreeMemory() {
     import core.memory : GC;
     GC.collect();
@@ -231,6 +236,13 @@ ref Project incActiveProject() {
 */
 ref Node[] incSelectedNodes() {
     return selectedNodes;
+}
+
+/**
+    Gets a list of the current drawables
+*/
+ref Drawable[] incDrawables() {
+    return drawables;
 }
 
 /**
@@ -327,6 +339,24 @@ void incFocusCamera(Node node) {
         );
     }
 
+}
+
+/**
+    Gets the current editing mode
+*/
+EditMode incEditMode() {
+    return editMode_;
+}
+
+/**
+    Sets the current editing mode
+*/
+void incSetEditMode(EditMode editMode) {
+    incSelectNode(null);
+    if (editMode != EditMode.ModelEdit) {
+        drawables = activeProject.puppet.findNodesType!Drawable(activeProject.puppet.root);
+    }
+    editMode_ = editMode;
 }
 
 /**

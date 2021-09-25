@@ -32,17 +32,17 @@ void incToolbar() {
 
                     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
                         if (igButton(incEditMode == EditMode.ModelEdit ? "" : "", ImVec2(32, 32))) {
-                            incEditMode = EditMode.ModelEdit;
+                            incSetEditMode(EditMode.ModelEdit);
                         }
                         incTooltip("Edit Model");
 
                         if (igButton(incEditMode == EditMode.ParamEdit ? "" : "", ImVec2(32, 32))) {
-                            incEditMode = EditMode.ParamEdit;
+                            incSetEditMode(EditMode.ParamEdit);
                         }
                         incTooltip("Edit Deformation");
 
                         if (igButton(incEditMode == EditMode.VertexEdit ? "" : "", ImVec2(32, 32))) {
-                            incEditMode = EditMode.VertexEdit;
+                            incSetEditMode(EditMode.VertexEdit);
                         }
                         incTooltip("Edit Vertex Data");
                     igPopStyleVar();

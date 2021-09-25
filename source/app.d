@@ -47,7 +47,6 @@ void incUpdate() {
 
     // Update Inochi2D
     inUpdate();
-    
 
     // Begin IMGUI loop
     incBeginLoop();
@@ -75,7 +74,6 @@ void incUpdateNoEv() {
     // Update Inochi2D
     inUpdate();
     
-
     // Begin IMGUI loop
     incBeginLoopNoEv();
         if (incShouldProcess()) {
