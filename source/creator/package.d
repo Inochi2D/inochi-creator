@@ -170,9 +170,8 @@ void incImportPSD(string file) {
                 0
             );
 
-            part.opacity = (layer.flags & LayerFlags.Visible) == 0 ? 
-                (cast(float)layer.opacity)/255 : 
-                0;
+            part.enabled = (layer.flags & LayerFlags.Visible) == 0;
+            part.opacity = (cast(float)layer.opacity)/255;
             
             part.zSort = -(cast(float)i)/100;
 

@@ -70,6 +70,10 @@ protected:
                 
                 igEndMenu();
             }
+
+            if (igMenuItem(n.enabled ? "Hide" : "Show")) {
+                n.enabled = !n.enabled;
+            }
             
             // We don't want to delete the root
             if (igMenuItem("Delete", "", false, !isRoot)) {
@@ -129,7 +133,8 @@ protected:
                     bool selected = incNodeInSelection(n);
 
                     igPushFont(incIconFont());
-                        igText(typeIdToIcon(n.typeId).ptr);
+                        if (n.enabled) igText(typeIdToIcon(n.typeId).ptr);
+                        else igTextDisabled(typeIdToIcon(n.typeId).ptr);
                     igPopFont();
                     igSameLine(0, 2);
 
