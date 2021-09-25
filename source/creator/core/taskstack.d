@@ -5,6 +5,7 @@ private {
 __gshared:
     Task[] tasks;
     string status_ = "No pending tasks...";
+    float progress_ = -1;
 }
 
 public:
@@ -45,6 +46,27 @@ string incTaskGetStatus() {
 }
 
 /**
+    Gets the current progress of the current task
+*/
+float incTaskGetProgress() {
+    return progress_;
+}
+
+/**
+    Sets the progress of the current task
+*/
+void incTaskProgress(float progress) {
+    progress_ = progress;
+}
+
+/**
+    Gets count of pending tasks
+*/
+size_t incTaskLength() {
+    return tasks.length;
+}
+
+/**
     Yields a task/fiber
 */
 void incTaskYield() {
@@ -60,6 +82,7 @@ void incTaskUpdate() {
             tasks[0].worker.call();
         } else {
             tasks = tasks[1..$];
+            progress_ = -1;
         }
 
         if (tasks.length == 0) {

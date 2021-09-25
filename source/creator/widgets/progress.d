@@ -71,7 +71,7 @@ bool incSpinner(string label, float radius, int thickness, ImU32 color) {
     ImVec2 size = ImVec2((radius*2), ((radius+style.FramePadding.y)*2));
     ImRect bb = ImRect(pos, ImVec2(pos.x+size.x, pos.y+size.y));
     igItemSize_Rect(bb, style.FramePadding.y);
-    if (!igItemAdd(bb, id, null))
+    if (!igItemAdd(bb, id))
         return false;
 
     // Render

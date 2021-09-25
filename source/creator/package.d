@@ -148,6 +148,7 @@ void incImportPSD(string file) {
             if (layer.type != LayerType.Any) continue;
 
             incTaskStatus("Importing "~layer.name~"...");
+            incTaskProgress(cast(float)i/doc.layers.length);
             incTaskYield();
 
             layer.extractLayerImage();

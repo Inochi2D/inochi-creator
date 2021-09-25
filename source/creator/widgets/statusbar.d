@@ -23,10 +23,18 @@ void incStatusbar() {
         ImGuiWindowFlags.MenuBar;
     
     if (incGetDarkMode()) igPushStyleColor(ImGuiCol.MenuBarBg, ImVec4(0.1, 0.1, 0.1, 1));
-    else  igPushStyleColor(ImGuiCol.MenuBarBg, ImVec4(0.9, 0.9, 0.9, 1));
+    else igPushStyleColor(ImGuiCol.MenuBarBg, ImVec4(0.9, 0.9, 0.9, 1));
     if (igBeginViewportSideBar("##Statusbar", igGetMainViewport(), ImGuiDir.Down, 24, flags)) {
         if (igBeginMenuBar()) {
-            igText(incTaskGetStatus().toStringz);
+
+            if (incTaskLength() > 0) {
+                if (incTaskGetProgress() >= 0) {
+                    igProgressBar(incTaskGetProgress(), ImVec2(128, 0));
+                }
+
+                igText(incTaskGetStatus().toStringz);
+            }
+            
             igEndMenuBar();
         }
         igEnd();
