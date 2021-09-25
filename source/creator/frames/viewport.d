@@ -175,7 +175,7 @@ protected:
                 string[] files = *cast(string[]*)payload.Data;
                 import std.path : baseName, extension;
                 import std.uni : toLower;
-                foreach(file; files) {
+                mainLoop: foreach(file; files) {
                     string fname = file.baseName;
 
                     switch(fname.extension.toLower) {
@@ -197,6 +197,11 @@ protected:
                             writeln(part);
                         }
                         break;
+
+                    // Allow dragging PSD in to main window
+                    case ".psd":
+                        incImportPSD(file);
+                        break mainLoop;
 
                     default: break;
                     }
