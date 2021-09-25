@@ -19,10 +19,24 @@ public:
     /**
         Creates a new node change action
     */
+    this(Node prev, Node self, Node new_, Transform prevPos, Transform newPos) {
+        this.prevParent = prev;
+        this.self = self;
+        this.newParent = new_;
+        this.originalTransform = prevPos;
+        this.newTransform = newPos;
+    }
+    
+    /**
+        Creates a new node change action
+    */
     this(Node prev, Node self, Node new_) {
         this.prevParent = prev;
         this.self = self;
         this.newParent = new_;
+
+        this.originalTransform = self.localTransform;
+        this.newTransform = self.localTransform;
     }
 
     /**
@@ -41,10 +55,21 @@ public:
     Node newParent;
 
     /**
+        The original transform of the node
+    */
+    Transform originalTransform;
+
+    /**
+        The new transform of the node
+    */
+    Transform newTransform;
+
+    /**
         Rollback
     */
     void rollback() {
         self.parent = prevParent;
+        self.localTransform = originalTransform;
         incActivePuppet().rescanNodes();
     }
 
@@ -53,6 +78,7 @@ public:
     */
     void redo() {
         self.parent = newParent;
+        self.localTransform = newTransform;
         incActivePuppet().rescanNodes();
     }
 
@@ -135,12 +161,24 @@ public:
     Moves child with history
 */
 void incMoveChildWithHistory(Node n, Node to) {
+
+    // Calculate transforms
+    Transform currentLocal = n.localTransform;
+
+    vec3 worldPosition = n.transform.translation;
+    vec3 newParentWorldPosition = to.transform.translation;
+    vec3 newPosition = worldPosition-newParentWorldPosition;
+
     // Push action to stack
     incActionPush(new NodeChangeAction(
         n.parent,
         n,
-        to
+        to,
+        currentLocal,
+        Transform(newPosition)
     ));
+
+    n.localTransform.translation = newPosition;
     n.parent = to;
     incActivePuppet().rescanNodes();
 }

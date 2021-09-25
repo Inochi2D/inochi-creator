@@ -203,7 +203,8 @@ protected:
         igBegin(name.ptr, &this.visible, ImGuiWindowFlags.AlwaysAutoResize);
     }
 
-    override void onEndUpdate() {
+    override
+    void onEndUpdate() {
         super.onEndUpdate();
     }
 
