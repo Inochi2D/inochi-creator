@@ -14,9 +14,10 @@ versions "GL_32" "GL_AllowDeprecated" "USE_SDL2" "USE_GL" "SDL_204"
 stringImportPaths "res/" "./"
 dflags "-link-defaultlib-shared=false" platform="ldc"
 preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\""
+lflags "-rpath=$$ORIGIN" platform="linux"
+
 configuration "posix" {
 	targetType "executable"
-	lflags "-rpath=$$ORIGIN"
 }
 configuration "winapp" {
 	platforms "windows"
