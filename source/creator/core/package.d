@@ -38,6 +38,13 @@ private {
     ImFont* iconFont;
     ImFont* biggerFont;
 
+    
+    version(Windows) {
+        HWND windowHandle = null;
+        bool inPaint = false;
+        bool redrawDuringPaint = false;
+    }
+
     bool isDarkMode = true;
     string[] files;
 }
@@ -51,7 +58,8 @@ bool incShowStatsForNerds;
 void incFinalize() {
 
     // Cleanup
-    ImGuiOpenGLBackend.shutdown();
+    ImGui_ImplOpenGL3_Shutdown();
+
     ImGui_ImplSDL2_Shutdown();
     igDestroyContext(null);
 
@@ -93,7 +101,73 @@ void incInitStyling() {
 
     style.GrabMinSize = 13;
     style.ScrollbarSize = 14;
-    style.ChildBorderSize = 1;
+    style.ChildBorderSize = 10;
+}
+
+
+version(Windows) {
+    import core.sys.windows.windows;
+    
+    extern (C) {
+        struct MARGINS {
+            int cxLeftWidth;      // width of left border that retains its size
+            int cxRightWidth;     // width of right border that retains its size
+            int cyTopHeight;      // height of top border that retains its size
+            int cyBottomHeight;   // height of bottom border that retains its size
+        }
+
+        pragma(lib, "dwmapi.lib");
+        extern(Windows) HRESULT DwmExtendFrameIntoClientArea(HWND hWnd, const(MARGINS)* pMarInset);
+
+		extern(C) nothrow int incSDLEventWatcher(void* userData, SDL_Event* event)
+		{
+            if (event.type != SDL_SYSWMEVENT)
+            {
+                return 0;
+            }
+
+            auto winMsg =  event.syswm.msg.msg.win;
+            
+            try {
+                import app;
+                writeln(winMsg.msg);
+
+                // If this isn't our primary window, then don't repaint.
+                if (windowHandle != winMsg.hwnd) {
+                    return 0;
+                }
+
+                switch(winMsg.msg)
+                {
+                    case WM_ENTERSIZEMOVE:
+                    {
+                        redrawDuringPaint = true;
+                        break;
+                    }
+                    case WM_EXITSIZEMOVE:
+                    {
+                        redrawDuringPaint = false;
+                        break;
+                    }
+                    case WM_PAINT: {
+                        if (redrawDuringPaint && !inPaint)
+                        {
+                            inPaint = true;
+                            incUpdateNoEv();
+                            inPaint = false;
+                        }
+                        break;
+                    }
+                    default:{}
+                }
+            }
+            catch (Throwable)
+            {
+            
+            }
+            return 0;
+		}
+    }
 }
 
 /**
@@ -138,6 +212,9 @@ void incOpenWindow() {
         flags |= SDL_WINDOW_MAXIMIZED;
     }
 
+    SDL_SetHintWithPriority("SDL_BORDERLESS_RESIZABLE_STYLE", "1", SDL_HINT_OVERRIDE);
+    SDL_SetHintWithPriority("SDL_BORDERLESS_WINDOWED_STYLE", "1", SDL_HINT_OVERRIDE);
+
     window = SDL_CreateWindow(
         "Inochi Creator", 
         SDL_WINDOWPOS_UNDEFINED,
@@ -146,6 +223,23 @@ void incOpenWindow() {
         cast(uint)incSettingsGet!int("WinH", 800), 
         flags
     );
+
+    version(Windows) {
+        import core.sys.windows.windows;
+
+        SDL_SysWMinfo wmInfo;
+        wmInfo.version_.major = 2;
+        wmInfo.version_.minor = 0;
+        wmInfo.version_.patch = 16;
+        SDL_GetWindowWMInfo(window, &wmInfo);
+        windowHandle = wmInfo.info.win.window;
+        
+        SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
+        SDL_AddEventWatch(&incSDLEventWatcher, null);
+
+        const MARGINS shadow_state = MARGINS(1,1,1,1);
+        DwmExtendFrameIntoClientArea(windowHandle, &shadow_state);
+    }
 
     gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
@@ -208,18 +302,17 @@ void incCreateContext() {
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Navigation
     io.ConfigWindowsResizeFromEdges = true;                     // Enable Edge resizing
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-    ImGuiOpenGLBackend.init("#version 330");
+    ImGui_ImplOpenGL3_Init("#version 330");
 
     incInitStyling();
 }
 
 void incRecreateContext() {
-    ImGuiOpenGLBackend.shutdown();
+    ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     igDestroyContext(null);
-    
     incCreateContext();
-
+    
     // Inochi2D's camera gets messed up by context
     // recreation, redo it
     inGetCamera().position = incTargetPosition;
@@ -332,8 +425,8 @@ void incBeginLoopNoEv() {
     biggerFont = incFontsGet(2);
 
     // Start the Dear ImGui frame
-    ImGuiOpenGLBackend.new_frame();
-    ImGui_ImplSDL2_NewFrame(window);
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame();
     igNewFrame();
 
     if (files.length > 0) {
@@ -396,7 +489,7 @@ void incEndLoop() {
     glViewport(0, 0, cast(int)io.DisplaySize.x, cast(int)io.DisplaySize.y);
     glClearColor(0.5, 0.5, 0.5, 1);
     glClear(GL_COLOR_BUFFER_BIT);
-    ImGuiOpenGLBackend.render_draw_data(igGetDrawData());
+    ImGui_ImplOpenGL3_RenderDrawData(igGetDrawData());
 
     if (io.ConfigFlags & ImGuiConfigFlags.ViewportsEnable) {
         SDL_Window* currentWindow = SDL_GL_GetCurrentWindow();
@@ -464,26 +557,26 @@ void incSetFontPair(string fontPair) {
     switch(fontPair) {
         default:
         case "Kosugi Maru":
-            incFontsLoad("Kosugi Maru", cast(ubyte[])import("KosugiMaru-Regular.ttf"));
+            incFontsLoad("KosugiMaru-Regular.ttf", cast(ubyte[])import("KosugiMaru-Regular.ttf"));
             incFontsLoad(
-                "MaterialIcons", 
+                "MaterialIcons.ttf", 
                 cast(ubyte[])import("MaterialIcons.ttf"), 
                 16, 
                 [cast(ImWchar)0xE000, cast(ImWchar)0xF23B].ptr, // Range aquired from CharMap
                 false
             );
-            incFontsLoad("Kosugi Maru", cast(ubyte[])import("KosugiMaru-Regular.ttf"), 18);
+            incFontsLoad("KosugiMaru-Regular.ttf", cast(ubyte[])import("KosugiMaru-Regular.ttf"), 18);
             break;
         case "OpenDyslexic":
-            incFontsLoad("OpenDyslexic", cast(ubyte[])import("OpenDyslexic.otf"), 18);
+            incFontsLoad("OpenDyslexic.otf", cast(ubyte[])import("OpenDyslexic.otf"), 18);
             incFontsLoad(
-                "MaterialIcons", 
+                "MaterialIcons.ttf", 
                 cast(ubyte[])import("MaterialIcons.ttf"), 
                 18, 
                 [cast(ImWchar)0xE000, cast(ImWchar)0xF23B].ptr, // Range aquired from CharMap
                 false
             );
-            incFontsLoad("OpenDyslexic", cast(ubyte[])import("OpenDyslexic.otf"), 24);
+            incFontsLoad("OpenDyslexic.otf", cast(ubyte[])import("OpenDyslexic.otf"), 24);
             break;
     }
 }

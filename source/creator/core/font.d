@@ -7,7 +7,6 @@
 module creator.core.font;
 import creator.core;
 import bindbc.imgui;
-import bindbc.imgui.ogl;
 import core.stdc.stdlib : malloc;
 import core.stdc.string : memcpy;
 import std.string;
@@ -28,24 +27,24 @@ private {
 
     ImFont* loadFont(ImFontAtlas* atlas, string name, ubyte[] data, uint size = 14, ImWchar* range = null, bool merge = false) {
 
-        ubyte* c_data = cast(ubyte*)igMemAlloc(data.length);
-        memcpy(c_data, data.dup.ptr, data.length);
-
+        //ubyte* c_data = cast(ubyte*)igMemAlloc(data.length);
+        //memcpy(c_data, data.dup.ptr, data.length);
+        //
         if (range is null) {
             range = ImFontAtlas_GetGlyphRangesJapanese(atlas);
         }
         ImFontConfig* cfg = ImFontConfig_ImFontConfig();
         cfg.MergeMode = merge;
+        //
+        //// Add name
+        //const char* c_name = cast(char*)igMemAlloc(name.length);
+        //memcpy(cast(void*)c_name, name.ptr, name.length);
+        //cfg.Name[0..name.length] = c_name[0..name.length];
+        //
+        //// Load Font
+        //ImFont* font = ImFontAtlas_AddFontFromMemoryTTF(atlas, c_data, size, size, cfg, range);
 
-        // Add name
-        const char* c_name = cast(char*)igMemAlloc(name.length);
-        memcpy(cast(void*)c_name, name.ptr, name.length);
-        cfg.Name[0..name.length] = c_name[0..name.length];
-
-        // Load Font
-        ImFont* font = ImFontAtlas_AddFontFromMemoryTTF(atlas, c_data, size, size, cfg, range);
-
-        return font;
+        return ImFontAtlas_AddFontFromFileTTF(atlas, name.ptr, size, cfg, range);
     }
 }
 
