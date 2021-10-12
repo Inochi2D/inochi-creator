@@ -36,8 +36,8 @@ void incToolbar() {
                         }
                         incTooltip("Edit Model");
 
-                        if (igButton(incEditMode == EditMode.ParamEdit ? "" : "", ImVec2(32, 32))) {
-                            incSetEditMode(EditMode.ParamEdit);
+                        if (igButton(incEditMode == EditMode.DeformEdit ? "" : "", ImVec2(32, 32))) {
+                            incSetEditMode(EditMode.DeformEdit);
                         }
                         incTooltip("Edit Deformation");
 

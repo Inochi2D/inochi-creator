@@ -43,7 +43,7 @@ private {
 */
 enum EditMode {
     ModelEdit,
-    ParamEdit,
+    DeformEdit,
     VertexEdit
 }
 
@@ -56,32 +56,37 @@ bool incShowOrientation = true; /// Show orientation gizmo of selected parts
 */
 EditMode editMode_;
 
+void incBeginUpdate() {
+    inBeginScene();
+}
+
 /**
     Updates the active Inochi2D project
 */
 void incUpdateActiveProject() {
-    inBeginScene();
 
-        activeProject.puppet.update();
-        activeProject.puppet.draw();
+    activeProject.puppet.update();
+    activeProject.puppet.draw();
 
-        if (selectedNodes.length > 0) {
-            foreach(selectedNode; selectedNodes) {
-                if (selectedNode is null) continue; 
-                if (incShowOrientation) selectedNode.drawOrientation();
-                if (incShowBounds) selectedNode.drawBounds();
+    if (selectedNodes.length > 0) {
+        foreach(selectedNode; selectedNodes) {
+            if (selectedNode is null) continue; 
+            if (incShowOrientation) selectedNode.drawOrientation();
+            if (incShowBounds) selectedNode.drawBounds();
 
-                if (Drawable selectedDraw = cast(Drawable)selectedNode) {
+            if (Drawable selectedDraw = cast(Drawable)selectedNode) {
 
-                    if (incShowVertices || incEditMode != EditMode.ModelEdit) {
-                        selectedDraw.drawMeshLines();
-                        selectedDraw.drawMeshPoints();
-                    }
+                if (incShowVertices || incEditMode != EditMode.ModelEdit) {
+                    selectedDraw.drawMeshLines();
+                    selectedDraw.drawMeshPoints();
                 }
-                
             }
+            
         }
+    }
+}
 
+void incEndUpdate() {
     inEndScene();
 }
 

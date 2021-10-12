@@ -9,6 +9,7 @@ import creator.widgets;
 import creator.core;
 import creator.core.colorbleed;
 import creator.frames;
+import creator.core.input;
 import creator.actions;
 import creator;
 import inochi2d;
@@ -28,6 +29,37 @@ private:
     float sx, sy;
     float csx, csy;
 
+    void _updateMode() {
+        
+        switch(incEditMode) {
+            case EditMode.ModelEdit:
+                break;
+            
+            case EditMode.DeformEdit:
+                break;
+
+            case EditMode.VertexEdit:
+                break;
+            
+            default: assert(0);
+        }
+    }
+
+    void _drawMode() {
+
+        switch(incEditMode) {
+            case EditMode.ModelEdit:
+                break;
+            
+            case EditMode.DeformEdit:
+                break;
+
+            case EditMode.VertexEdit:
+                break;
+            
+            default: assert(0);
+        }
+    }
 protected:
     override
     void onBeginUpdate() {
@@ -111,7 +143,20 @@ protected:
                 }
             }
 
-            incUpdateActiveProject();
+            incBeginUpdate();
+                incInputBegin();
+                    ImVec2 pos;
+                    ImVec2 mpos;
+                    igGetItemRectMin(&pos);
+                    igGetMousePos(&mpos);
+                    incInputSetViewportMouse(pos.x-mpos.x, pos.y-mpos.y);
+
+                    _updateMode();
+                    incUpdateActiveProject();
+                    _drawMode();
+
+                // NOTE: No End Needed
+            incEndUpdate();
 
             int width, height;
             inGetViewport(width, height);
