@@ -2,6 +2,7 @@
 ![billede](https://user-images.githubusercontent.com/7032834/122684869-6621e200-d208-11eb-8bed-2b98747c6f1c.png)
 
 [![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dclipsey%26type%3Dpatrons&style=for-the-badge)](https://patreon.com/clipsey)
+[![Join the Discord](https://img.shields.io/discord/855173611409506334?label=Community&logo=discord&logoColor=FFFFFF&style=for-the-badge)](https://discord.com/invite/abnxwN6r9v)
 
 Inochi Creator is tool to create and edit [Inochi2D puppets](https://github.com/Inochi2D/inochi2d).
 
