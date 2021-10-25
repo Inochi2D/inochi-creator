@@ -10,6 +10,7 @@ import creator.frames;
 import creator;
 import creator.widgets;
 import creator.core;
+import creator.utils;
 import inochi2d;
 import std.string;
 import std.format;
@@ -27,15 +28,6 @@ protected:
         }
     }
 
-    string typeIdToIcon(string typeId) {
-        switch(typeId) {
-            case "Part": return "\ue40a\0";
-            case "Mask": return "\ue14e\0";
-            case "PathDeform": return "\ue922\0";
-            default: return "\ue97a\0"; 
-        }
-    }
-
     void nodeActionsPopup(bool isRoot = false)(Node n) {
         if (igIsItemClicked(ImGuiMouseButton.Right)) {
             igOpenPopup("NodeActionsPopup");
@@ -48,13 +40,13 @@ protected:
             if (igBeginMenu("Add", true)) {
 
                 igPushFont(incIconFont());
-                    igText(typeIdToIcon("Node").ptr);
+                    igText(incTypeIdToIcon("Node").ptr);
                 igPopFont();
                 igSameLine(0, 2);
                 if (igMenuItem("Node", "", false, true)) incAddChildWithHistory(new Node(n), n);
                 
                 igPushFont(incIconFont());
-                    igText(typeIdToIcon("Mask").ptr);
+                    igText(incTypeIdToIcon("Mask").ptr);
                 igPopFont();
                 igSameLine(0, 2);
                 if (igMenuItem("Mask", "", false, true)) {
@@ -63,7 +55,7 @@ protected:
                 }
                 
                 igPushFont(incIconFont());
-                    igText(typeIdToIcon("PathDeform").ptr);
+                    igText(incTypeIdToIcon("PathDeform").ptr);
                 igPopFont();
                 igSameLine(0, 2);
                 if (igMenuItem("PathDeform", "", false, true)) incAddChildWithHistory(new PathDeform(n), n);
@@ -133,8 +125,8 @@ protected:
                     bool selected = incNodeInSelection(n);
 
                     igPushFont(incIconFont());
-                        if (n.enabled) igText(typeIdToIcon(n.typeId).ptr);
-                        else igTextDisabled(typeIdToIcon(n.typeId).ptr);
+                        if (n.enabled) igText(incTypeIdToIcon(n.typeId).ptr);
+                        else igTextDisabled(incTypeIdToIcon(n.typeId).ptr);
                     igPopFont();
                     igSameLine(0, 2);
 
@@ -221,7 +213,7 @@ protected:
                 bool selected = incNodeInSelection(n);
 
                 igPushFont(incIconFont());
-                    igText(typeIdToIcon(n.typeId).ptr);
+                    igText(incTypeIdToIcon(n.typeId).ptr);
                 igPopFont();
                 igSameLine(0, 2);
 
@@ -238,7 +230,7 @@ protected:
 
     override
     void onBeginUpdate() {
-        igBegin(name.ptr, &this.visible, ImGuiWindowFlags.AlwaysAutoResize);
+        igBegin(name.ptr, &this.visible, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoScrollbar);
     }
 
     override
@@ -257,7 +249,8 @@ protected:
         }
 
         igBeginChild_Str("NodesMain", ImVec2(0, -30), false);
-            igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 0));
+            igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 1));
+            igPushStyleVar(ImGuiStyleVar.IndentSpacing, 14);
 
             if (igBeginTable("NodesContent", 2, ImGuiTableFlags.ScrollX, ImVec2(0, 0), 0)) {
                 igTableSetupColumn("Nodes", ImGuiTableColumnFlags.WidthFixed, 0, 0);
@@ -277,9 +270,11 @@ protected:
                 incSelectNode(null);
             }
             igPopStyleVar();
+            igPopStyleVar();
         igEndChild();
 
         igSeparator();
+        igSpacing();
         
         igPushFont(incIconFont());
             if (incEditMode() == EditMode.ModelEdit) {

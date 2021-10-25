@@ -20,9 +20,10 @@ private:
 protected:
     ImVec2 frameSpace;
     abstract void onUpdate();
+    ImGuiWindowFlags flags;
 
     void onBeginUpdate() {
-        igBegin(name.ptr, &visible, ImGuiWindowFlags.None);
+        igBegin(name.ptr, &visible, flags);
         igGetContentRegionAvail(&frameSpace);
     }
     

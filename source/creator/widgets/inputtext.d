@@ -36,7 +36,7 @@ bool incInputText(const(char)* label, ref string buffer, ImGuiInputTextFlags fla
     Str* str = cast(Str*)ImGuiStorage_GetVoidPtr(storage, id);
 
     if (igInputText(
-        label, 
+        label,
         cast(char*)str.str.ptr, 
         str.str.length,
         flags | 

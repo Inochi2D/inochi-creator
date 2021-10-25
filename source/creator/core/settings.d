@@ -7,17 +7,23 @@
 module creator.core.settings;
 import std.json;
 import std.file;
+import std.path : buildPath;
+import creator.core.path;
 
 private {
     JSONValue settings = JSONValue(string[string].init);
+}
+
+string incSettingsPath() {
+    return buildPath(incGetAppConfigPath(), "settings.json");
 }
 
 /**
     Load settings from settings file
 */
 void incSettingsLoad() {
-    if (exists("settings.json")) {
-        settings = parseJSON(readText("settings.json"));
+    if (exists(incSettingsPath())) {
+        settings = parseJSON(readText(incSettingsPath()));
     }
 }
 
@@ -25,7 +31,7 @@ void incSettingsLoad() {
     Saves settings from settings store
 */
 void incSettingsSave() {
-    write("settings.json", settings.toString());
+    write(incSettingsPath(), settings.toString());
 }
 
 /**

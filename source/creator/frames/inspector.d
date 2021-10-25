@@ -8,6 +8,7 @@ module creator.frames.inspector;
 import creator.core;
 import creator.frames;
 import creator.widgets;
+import creator.utils;
 import creator;
 import inochi2d;
 import std.string;
@@ -388,11 +389,13 @@ protected:
             Node node = nodes[0];
             if (node !is null) {
                 igPushID(node.uuid);
-                    igText(node.typeId().toStringz);
-                    igSameLine(0, 4);
-                    igSeparatorEx(ImGuiSeparatorFlags.Vertical);
-                    igSameLine(0, 8);
+                    string typeString = "%s\0".format(incTypeIdToIcon(node.typeId()));
+                    auto len = incMeasureString(typeString);
                     incInputText("", node.name);
+                    igSameLine(0, 0);
+                    incDummy(ImVec2(-(len.x-14), len.y));
+                    igSameLine(0, 0);
+                    igText(typeString.ptr);
                 igPopID();
                 igSeparator();
 

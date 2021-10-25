@@ -23,10 +23,10 @@ protected:
     override
     void onUpdate() {
 
-        igBeginChild("##LogoArea", ImVec2(512, 72));
+        igBeginChild("##LogoArea", ImVec2(512*incGetUIScale(), 72*incGetUIScale()));
             igImage(
                 cast(void*)incGetLogo(), 
-                ImVec2(64, 64), 
+                ImVec2(64*incGetUIScale(), 64*incGetUIScale()), 
                 ImVec2(0, 0), 
                 ImVec2(1, 1), 
                 ImVec4(1, 1, 1, 1), 
@@ -38,16 +38,14 @@ protected:
             igSameLine(0, 8);
             igBeginChild("##LogoTextArea");
 
-                igPushFont(incBiggerFont());
-                    igText("Inochi Creator");
-                igPopFont();
+                igText("Inochi Creator");
                 igText("%s", (INC_VERSION~"\0").ptr);
                 igSeparator();
                 igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "I2D v. %s", (IN_VERSION~"\0").ptr);
                 igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "imgui v. %s", igGetVersion());
             igEndChild();
         igEndChild();
-        igBeginChild("##CreditsArea", ImVec2(512, 256));
+        igBeginChild("##CreditsArea", ImVec2(512*incGetUIScale(), 256*incGetUIScale()));
 
             igText("Created By");
             igSeparator();

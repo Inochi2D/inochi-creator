@@ -19,6 +19,7 @@ private {
         int winWidth, winHeight;
         SDL_GetWindowSize(win, &winWidth, &winHeight);
         
+        // GET PROPER RESIZE AREA
         enum RESIZE_AREA = 4;
         enum RESIZE_AREAC = RESIZE_AREA*2;
 
@@ -80,97 +81,98 @@ void incTitlebar() {
     
     if (incGetDarkMode()) igPushStyleColor(ImGuiCol.MenuBarBg, ImVec4(0.1, 0.1, 0.1, 1));
     else  igPushStyleColor(ImGuiCol.MenuBarBg, ImVec4(0.9, 0.9, 0.9, 1));
-    if (igBeginViewportSideBar("##Titlebar", igGetMainViewport(), ImGuiDir.Up, 22, flags)) {
-        if (igBeginMenuBar()) {
-            ImVec2 avail;
-            igGetContentRegionAvail(&avail);
-            igImage(
-                cast(void*)incGetLogo(), 
-                ImVec2(avail.y*2, avail.y*2), 
-                ImVec2(0, 0), ImVec2(1, 1), 
-                ImVec4(1, 1, 1, 1), 
-                ImVec4(0, 0, 0, 0)
-            );
-            
-            debug {
-                igText("Inochi Creator (Debug Mode)");
-            } else {
-                igText("Inochi Creator");
-            }
-
-            // :)
-            if (isTransMonthOfVisibility) {
-                igSeparator();
-                ImVec4 a = ImVec4(85.0/255.0, 205.0/255.0, 252.0/255.0, 255);
-                ImVec4 b;
-                ImVec4 c;
-                igColorConvertU32ToFloat4(&b, 0xF7A8B8FF);
-                igColorConvertU32ToFloat4(&c, 0xFFFFFFFF);
-                ImVec4[] transColors = [a, b, c, b];
-                static foreach(i, ic; "Trans Rights!") {
-                    igTextColored(transColors[i%transColors.length], [ic, '\0'].ptr);
-                    igSameLine(0, 0);
-                }
-            }
-
-            igGetContentRegionAvail(&avail);
-            igDummy(ImVec2(avail.x-(18*4), 0));
-            igPushFont(incIconFont());
-                auto state = igGetStateStorage();
-
-                igTextColored(
-                    ImGuiStorage_GetBool(state, igGetID("##MINIMIZE")) ? 
-                        (incGetDarkMode() ? ImVec4(1, 1, 1, 1) : ImVec4(.3, .3, .3, 1)) : 
-                        ImVec4(.5, .5, .5, 1), 
-                    ""
+    igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(0, 4*incGetUIScale()));
+        if (igBeginViewportSideBar("##Titlebar", igGetMainViewport(), ImGuiDir.Up, 22*incGetUIScale(), flags)) {
+            if (igBeginMenuBar()) {
+                ImVec2 avail;
+                igGetContentRegionAvail(&avail);
+                igImage(
+                    cast(void*)incGetLogo(), 
+                    ImVec2(avail.y*2, avail.y*2), 
+                    ImVec2(0, 0), ImVec2(1, 1), 
+                    ImVec4(1, 1, 1, 1), 
+                    ImVec4(0, 0, 0, 0)
                 );
-                if (igIsItemClicked()) {
-                    SDL_MinimizeWindow(incGetWindowPtr());
-                }
-                if(igIsItemHovered()) {
-                    ImGuiStorage_SetBool(state, igGetID("##MINIMIZE"), true);
-                } else {
-                    ImGuiStorage_SetBool(state, igGetID("##MINIMIZE"), false);
-                }
-
-                bool isMaximized = (SDL_GetWindowFlags(incGetWindowPtr()) & SDL_WINDOW_MAXIMIZED) > 0;
                 
-                igTextColored(
-                    ImGuiStorage_GetBool(state, igGetID("##MAXIMIZE")) ? 
-                        (incGetDarkMode() ? ImVec4(1, 1, 1, 1) : ImVec4(.3, .3, .3, 1)) : 
-                        ImVec4(.5, .5, .5, 1), 
-                    isMaximized ? "" : ""
-                );
-                if (igIsItemClicked()) {
-                    if (!isMaximized) SDL_MaximizeWindow(incGetWindowPtr());
-                    else SDL_RestoreWindow(incGetWindowPtr());
-                }
-                if(igIsItemHovered()) {
-                    ImGuiStorage_SetBool(state, igGetID("##MAXIMIZE"), true);
+                debug {
+                    igText("Inochi Creator (Debug Mode)");
                 } else {
-                    ImGuiStorage_SetBool(state, igGetID("##MAXIMIZE"), false);
+                    igText("Inochi Creator");
+                }
+
+                // :)
+                if (isTransMonthOfVisibility) {
+                    igSeparator();
+                    ImVec4 a = ImVec4(85.0/255.0, 205.0/255.0, 252.0/255.0, 255);
+                    ImVec4 b;
+                    ImVec4 c;
+                    igColorConvertU32ToFloat4(&b, 0xF7A8B8FF);
+                    igColorConvertU32ToFloat4(&c, 0xFFFFFFFF);
+                    ImVec4[] transColors = [a, b, c, b];
+                    static foreach(i, ic; "Trans Rights!") {
+                        igTextColored(transColors[i%transColors.length], [ic, '\0'].ptr);
+                        igSameLine(0, 0);
+                    }
                 }
                 
-                igTextColored(
-                    ImGuiStorage_GetBool(state, igGetID("##EXIT")) ? 
-                        ImVec4(1, .1, .1, 1) : 
-                        ImVec4(.5, .5, .5, 1), 
-                    ""
-                );
-                if (igIsItemClicked()) {
-                    incExit();
-                }
-                if(igIsItemHovered()) {
-                    ImGuiStorage_SetBool(state, igGetID("##EXIT"), true);
-                } else {
-                    ImGuiStorage_SetBool(state, igGetID("##EXIT"), false);
-                }
-            igPopFont();
+                incDummy(ImVec2(-((16*4*incGetUIScale())+8), 0));
+                igPushFont(incIconFont());
+                    auto state = igGetStateStorage();
 
-            igEndMenuBar();
+                    igTextColored(
+                        ImGuiStorage_GetBool(state, igGetID("##MINIMIZE")) ? 
+                            (incGetDarkMode() ? ImVec4(1, 1, 1, 1) : ImVec4(.3, .3, .3, 1)) : 
+                            ImVec4(.5, .5, .5, 1), 
+                        ""
+                    );
+                    if (igIsItemClicked()) {
+                        SDL_MinimizeWindow(incGetWindowPtr());
+                    }
+                    if(igIsItemHovered()) {
+                        ImGuiStorage_SetBool(state, igGetID("##MINIMIZE"), true);
+                    } else {
+                        ImGuiStorage_SetBool(state, igGetID("##MINIMIZE"), false);
+                    }
+
+                    bool isMaximized = (SDL_GetWindowFlags(incGetWindowPtr()) & SDL_WINDOW_MAXIMIZED) > 0;
+                    
+                    igTextColored(
+                        ImGuiStorage_GetBool(state, igGetID("##MAXIMIZE")) ? 
+                            (incGetDarkMode() ? ImVec4(1, 1, 1, 1) : ImVec4(.3, .3, .3, 1)) : 
+                            ImVec4(.5, .5, .5, 1), 
+                        isMaximized ? "" : ""
+                    );
+                    if (igIsItemClicked()) {
+                        if (!isMaximized) SDL_MaximizeWindow(incGetWindowPtr());
+                        else SDL_RestoreWindow(incGetWindowPtr());
+                    }
+                    if(igIsItemHovered()) {
+                        ImGuiStorage_SetBool(state, igGetID("##MAXIMIZE"), true);
+                    } else {
+                        ImGuiStorage_SetBool(state, igGetID("##MAXIMIZE"), false);
+                    }
+                    
+                    igTextColored(
+                        ImGuiStorage_GetBool(state, igGetID("##EXIT")) ? 
+                            ImVec4(1, .1, .1, 1) : 
+                            ImVec4(.5, .5, .5, 1), 
+                        ""
+                    );
+                    if (igIsItemClicked()) {
+                        incExit();
+                    }
+                    if(igIsItemHovered()) {
+                        ImGuiStorage_SetBool(state, igGetID("##EXIT"), true);
+                    } else {
+                        ImGuiStorage_SetBool(state, igGetID("##EXIT"), false);
+                    }
+                igPopFont();
+
+                igEndMenuBar();
+            }
+                
+            igEnd();
         }
-            
-        igEnd();
-    }
     igPopStyleColor();
+    igPopStyleVar();
 }

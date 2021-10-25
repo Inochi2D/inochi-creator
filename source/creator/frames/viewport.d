@@ -29,10 +29,32 @@ private:
     float sx, sy;
     float csx, csy;
 
+    bool isMovingPart;
+
     void _updateMode() {
-        
+        ImGuiIO* io = igGetIO();
+        vec2 mpos = incInputGetMousePosition();
+
         switch(incEditMode) {
             case EditMode.ModelEdit:
+                if (igIsMouseClicked(ImGuiMouseButton.Left)) {
+                    // TODO: allow selecting
+                }
+
+                if (igIsMouseClicked(ImGuiMouseButton.Right)) {
+                    // TODO: Allow selecting from everything in the area of the click
+                }
+                
+                // TODO: Allow dragging elements
+                if (!isMovingPart && igIsMouseDragging(ImGuiMouseButton.Left)) {
+                    isMovingPart = true;
+                }
+                if (isMovingPart) {
+                    // TODO: Show drag
+                }
+                if (igIsMouseReleased(ImGuiMouseButton.Left)) {
+                    // TODO: settle dragged element
+                }
                 break;
             
             case EditMode.DeformEdit:
@@ -98,7 +120,7 @@ protected:
         currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
         
 
-        igBeginChild("##ViewportView", ImVec2(0, -32));
+        igBeginChild("##ViewportView", ImVec2(0, -30));
             igGetContentRegionAvail(&currSize);
             currSize = ImVec2(
                 clamp(currSize.x, 128, float.max), 
@@ -260,8 +282,10 @@ protected:
         }
 
         igGetContentRegionAvail(&currSize);
-        igBeginChild("##ViewportControls", ImVec2(0, currSize.y));
+        igBeginChild("##ViewportControls", ImVec2(0, currSize.y), false, flags.NoScrollbar);
             igPushItemWidth(72);
+                igSpacing();
+                igSameLine(0, 8);
                 if (igSliderFloat(
                     "##Zoom", 
                     &zoom, 
@@ -286,12 +310,14 @@ protected:
 
                 igSameLine(0, 8);
                 igText("x = %.2f y = %.2f", incTargetPosition.x, incTargetPosition.y);
-                igSameLine(0, 8);
-                igPushFont(incIconFont());
-                    if (igButton("##2", ImVec2(0, 0))) {
-                        incTargetPosition = vec2(0, 0);
-                    }
-                igPopFont();
+                if (incTargetPosition != vec2(0)) {
+                    igSameLine(0, 8);
+                    igPushFont(incIconFont());
+                        if (igButton("##2", ImVec2(0, 0))) {
+                            incTargetPosition = vec2(0, 0);
+                        }
+                    igPopFont();
+                }
 
 
             igPopItemWidth();

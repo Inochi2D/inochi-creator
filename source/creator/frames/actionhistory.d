@@ -9,6 +9,8 @@ import creator.frames;
 import bindbc.imgui;
 import creator.core.actionstack;
 import std.string;
+import creator.widgets;
+import std.format;
 
 /**
     The logger frame
@@ -26,7 +28,7 @@ protected:
         ImVec2 avail;
         igGetContentRegionAvail(&avail);
 
-        igBeginChild("##ActionList", ImVec2(0, avail.y-28));
+        igBeginChild("##ActionList", ImVec2(0, avail.y-30));
             if (incActionHistory().length > 0) {
                 foreach(i, action; incActionHistory()) {
                     igPushID(cast(int)i);
@@ -47,16 +49,23 @@ protected:
         
 
         igSeparator();
+        igSpacing();
         if (igButton("Clear History", ImVec2(0, 0))) {
             incActionClearHistory();
         }
-        igSameLine(0, 8);
-        igText("%d of %d", incActionHistory().length, incActionGetUndoHistoryLength());
+        igSameLine(0, 0);
+
+        string count = "%d of %d\0".format(incActionHistory().length, incActionGetUndoHistoryLength());
+        ImVec2 len = incMeasureString(count);
+        incDummy(ImVec2(-(len.x-8), 1));
+        igSameLine(0, 0);
+        igText(count.ptr);
     }
 
 public:
     this() {
         super("History", false);
+        flags |= ImGuiWindowFlags.NoScrollbar;
     }
 }
 

@@ -21,9 +21,12 @@ import std.string;
 import std.stdio;
 
 public import bindbc.imgui;
+public import bindbc.imgui.ogl;
 public import creator.core.settings;
 public import creator.core.actionstack;
 public import creator.core.taskstack;
+public import creator.core.path;
+public import creator.core.font;
 
 private {
     SDL_GLContext gl_context;
@@ -49,6 +52,7 @@ bool incShowStatsForNerds;
     Finalizes everything by freeing imgui resources, etc.
 */
 void incFinalize() {
+    igSaveIniSettingsToDisk(toStringz(incGetAppImguiConfigFile));
 
     // Cleanup
     ImGuiOpenGLBackend.shutdown();
@@ -78,9 +82,9 @@ void incInitStyling() {
     style.FrameBorderSize = 1;
     style.TabBorderSize = 1;
 
-    style.WindowRounding = 0;
+    style.WindowRounding = 4;
     style.ChildRounding = 0;
-    style.FrameRounding = 6;
+    style.FrameRounding = 3;
     style.PopupRounding = 6;
     style.ScrollbarRounding = 18;
     style.GrabRounding = 3;
@@ -190,9 +194,6 @@ void incOpenWindow() {
     incCanUseAppTitlebar = SDL_SetWindowHitTest(incGetWindowPtr(), null, null) != -1;
     incSetUseNativeTitlebar(incSettingsGet("UseNativeTitleBar", false));
     
-    
-    // Font loading
-    incUseOpenDyslexic(incSettingsGet!bool("UseOpenDyslexic"));
 }
 
 void incCreateContext() {
@@ -200,30 +201,27 @@ void incCreateContext() {
     // Setup IMGUI
     igCreateContext(null);
     io = igGetIO();
+    
+    // Setup font handling
+    incInitFonts();
+
+    import std.file : exists;
+    if (!exists(incGetAppImguiConfigFile())) {
+        // TODO: Setup a base config
+    }
+    io.IniFilename = toStringz(incGetAppImguiConfigFile);
+    igLoadIniSettingsFromDisk(toStringz(incGetAppImguiConfigFile));
 
     incSetDarkMode(incSettingsGet!bool("DarkMode", true));
 
     io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;           // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;           // Enable Viewports (causes freezes)
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Navigation
+    io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;         // Enable Viewports (causes freezes)
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Navigation
     io.ConfigWindowsResizeFromEdges = true;                     // Enable Edge resizing
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-    ImGuiOpenGLBackend.init("#version 330");
+    ImGuiOpenGLBackend.init(null);
 
     incInitStyling();
-}
-
-void incRecreateContext() {
-    ImGuiOpenGLBackend.shutdown();
-    ImGui_ImplSDL2_Shutdown();
-    igDestroyContext(null);
-    
-    incCreateContext();
-
-    // Inochi2D's camera gets messed up by context
-    // recreation, redo it
-    inGetCamera().position = incTargetPosition;
-    inGetCamera().scale = vec2(incTargetZoom);
 }
 
 void incSetDarkMode(bool darkMode) {
@@ -325,15 +323,9 @@ void incFinishFileDrag() {
 }
 
 void incBeginLoopNoEv() {
-    incFontsProcessChanges();
-
-    mainFont = incFontsGet(0);
-    iconFont = incFontsGet(1);
-    biggerFont = incFontsGet(2);
-
     // Start the Dear ImGui frame
     ImGuiOpenGLBackend.new_frame();
-    ImGui_ImplSDL2_NewFrame(window);
+    ImGui_ImplSDL2_NewFrame();
     igNewFrame();
 
     if (files.length > 0) {
@@ -457,40 +449,6 @@ ImFont* incIconFont() {
 */
 GLuint incGetLogo() {
     return inLogo.getTextureId;
-}
-
-void incSetFontPair(string fontPair) {
-    incFontsClear();
-    switch(fontPair) {
-        default:
-        case "Kosugi Maru":
-            incFontsLoad("Kosugi Maru", cast(ubyte[])import("KosugiMaru-Regular.ttf"));
-            incFontsLoad(
-                "MaterialIcons", 
-                cast(ubyte[])import("MaterialIcons.ttf"), 
-                16, 
-                [cast(ImWchar)0xE000, cast(ImWchar)0xF23B].ptr, // Range aquired from CharMap
-                false
-            );
-            incFontsLoad("Kosugi Maru", cast(ubyte[])import("KosugiMaru-Regular.ttf"), 18);
-            break;
-        case "OpenDyslexic":
-            incFontsLoad("OpenDyslexic", cast(ubyte[])import("OpenDyslexic.otf"), 18);
-            incFontsLoad(
-                "MaterialIcons", 
-                cast(ubyte[])import("MaterialIcons.ttf"), 
-                18, 
-                [cast(ImWchar)0xE000, cast(ImWchar)0xF23B].ptr, // Range aquired from CharMap
-                false
-            );
-            incFontsLoad("OpenDyslexic", cast(ubyte[])import("OpenDyslexic.otf"), 24);
-            break;
-    }
-}
-
-void incUseOpenDyslexic(bool useOpenDyslexic) {
-    incSetFontPair(useOpenDyslexic ? "OpenDyslexic" : "Kosugi Maru");
-    incSettingsSet("UseOpenDyslexic", useOpenDyslexic);
 }
 
 void incHandleShortcuts() {
