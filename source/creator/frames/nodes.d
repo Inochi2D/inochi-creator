@@ -229,16 +229,6 @@ protected:
     }
 
     override
-    void onBeginUpdate() {
-        igBegin(name.ptr, &this.visible, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoScrollbar);
-    }
-
-    override
-    void onEndUpdate() {
-        super.onEndUpdate();
-    }
-
-    override
     void onUpdate() {
 
         if (incEditMode == EditMode.ModelEdit){ 
@@ -315,6 +305,7 @@ public:
 
     this() {
         super("Nodes", true);
+        flags |= ImGuiWindowFlags.NoScrollbar;
     }
 }
 
