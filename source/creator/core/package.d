@@ -52,7 +52,7 @@ bool incShowStatsForNerds;
     Finalizes everything by freeing imgui resources, etc.
 */
 void incFinalize() {
-    igSaveIniSettingsToDisk(toStringz(incGetAppImguiConfigFile));
+    igSaveIniSettingsToDisk(igGetIO().IniFilename);
 
     // Cleanup
     ImGuiOpenGLBackend.shutdown();
@@ -209,8 +209,14 @@ void incCreateContext() {
     if (!exists(incGetAppImguiConfigFile())) {
         // TODO: Setup a base config
     }
-    io.IniFilename = toStringz(incGetAppImguiConfigFile);
-    igLoadIniSettingsFromDisk(toStringz(incGetAppImguiConfigFile));
+
+
+    // Copy string out of GC memory to make sure it doesn't get yeeted before imgui exits.
+    import core.stdc.stdlib : malloc;
+    import core.stdc.string : memcpy;
+    io.IniFilename = cast(char*)malloc(incGetAppImguiConfigFile().length+1);
+    memcpy(cast(void*)io.IniFilename, toStringz(incGetAppImguiConfigFile), incGetAppImguiConfigFile().length+1);
+    igLoadIniSettingsFromDisk(io.IniFilename);
 
     incSetDarkMode(incSettingsGet!bool("DarkMode", true));
 
