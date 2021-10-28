@@ -12,8 +12,15 @@ dependency "inochi2d" version="~>1.0.0"
 targetPath "out/"
 versions "GL_32" "GL_AllowDeprecated" "USE_SDL2" "USE_GL" "SDL_204" "USE_OpenGL3"
 stringImportPaths "res/" "./"
+
+// This makes sure LDC2 builds will properly link in libphobos
+// Shipping libphobos with the app is a hassle, easier to just depend on libc.
 dflags "-link-defaultlib-shared=false" platform="ldc"
+
+// Automate versioning
 preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\""
+
+// Some important linux linker flags
 lflags "-rpath=$$ORIGIN" platform="linux"
 
 configuration "posix" {
