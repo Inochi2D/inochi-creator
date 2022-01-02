@@ -5,6 +5,7 @@
     Authors: Luna Nielsen
 */
 module creator.windows.about;
+import creator.widgets.dummy;
 import creator.windows;
 import creator.core;
 import creator;
@@ -16,14 +17,15 @@ class AboutWindow : Window {
 protected:
     override
     void onBeginUpdate(int id) {
-        flags |= ImGuiWindowFlags.NoResize;
+        //flags |= ImGuiWindowFlags.NoResize;
+        igSetNextWindowSize(ImVec2(640, 512), ImGuiCond.Appearing);
         super.onBeginUpdate(0);
     }
 
     override
     void onUpdate() {
 
-        igBeginChild("##LogoArea", ImVec2(512*incGetUIScale(), 72*incGetUIScale()));
+        igBeginChild("##LogoArea", ImVec2(0, 72*incGetUIScale()));
             igImage(
                 cast(void*)incGetLogo(), 
                 ImVec2(64*incGetUIScale(), 64*incGetUIScale()), 
@@ -45,7 +47,7 @@ protected:
                 igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "imgui v. %s", igGetVersion());
             igEndChild();
         igEndChild();
-        igBeginChild("##CreditsArea", ImVec2(512*incGetUIScale(), 256*incGetUIScale()));
+        igBeginChild("##CreditsArea", ImVec2(0, -28*incGetUIScale()));
 
             igText("Created By");
             igSeparator();
@@ -54,21 +56,30 @@ protected:
 
         igEndChild();
 
-        if (igButton("Fork us on GitHub", ImVec2(0, 0))) {
-            incOpenLink("https://github.com/Inochi2D/inochi-creator");
-        }
+        igBeginChild("##ButtonArea", ImVec2(0, 0));
+            ImVec2 space = incAvailableSpace();
+            incDummy(ImVec2(space.x/2, space.y));
+            igSameLine(0, 0);
 
-        igSameLine(0, 8);
+            space = incAvailableSpace();
+            float spacing = (space.x/3)-8;
 
-        if (igButton("Donate", ImVec2(0, 0))) {
-            incOpenLink("https://www.patreon.com/clipsey");
-        }
+            if (igButton("GitHub", ImVec2(8+spacing, 0))) {
+                incOpenLink("https://github.com/Inochi2D/inochi-creator");
+            }
 
-        igSameLine(0, 8);
+            igSameLine(0, 8);
 
-        if (igButton("Follow us on Twitter", ImVec2(0, 0))) {
-            incOpenLink("https://twitter.com/Inochi2D");
-        }
+            if (igButton("Twitter", ImVec2(spacing, 0))) {
+                incOpenLink("https://twitter.com/Inochi2D");
+            }
+
+            igSameLine(0, 8);
+
+            if (igButton("Donate", ImVec2(spacing, 0))) {
+                incOpenLink("https://www.patreon.com/clipsey");
+            }
+        igEndChild();
 
 
     }
