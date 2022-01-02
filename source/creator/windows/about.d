@@ -17,8 +17,8 @@ class AboutWindow : Window {
 protected:
     override
     void onBeginUpdate(int id) {
-        //flags |= ImGuiWindowFlags.NoResize;
         igSetNextWindowSize(ImVec2(640, 512), ImGuiCond.Appearing);
+        igSetNextWindowSizeConstraints(ImVec2(640, 512), ImVec2(float.max, float.max));
         super.onBeginUpdate(0);
     }
 
