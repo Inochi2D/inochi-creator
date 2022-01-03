@@ -171,6 +171,35 @@ void incMainMenu() {
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Extras");
 
             igSeparator();
+            
+            if (igMenuItem_Bool("Save Screenshot", "", incShowStatsForNerds, true)) {
+                const TFD_Filter[] filters = [
+                    { ["*.png"], "PNG Image (*.png)" },
+                    { ["*.tga"], "TARGA Image (*.png)" }
+                ];
+
+                import std.path : setExtension;
+                c_str filename = tinyfd_saveFileDialog("Export...", "", filters);
+                if (filename !is null) {
+                    string file = cast(string)filename.fromStringz;
+
+                    // Dump viewport to RGBA byte array
+                    int width, height;
+                    inGetViewport(width, height);
+                    Texture outTexture = new Texture(null, width, height);
+
+                    // Texture data
+                    ubyte[] textureData = new ubyte[inViewportDataLength()];
+                    inDumpViewport(textureData);
+                    
+                    // Write to texture
+                    outTexture.setData(textureData);
+
+                    outTexture.save(file);
+                }
+            }
+            incTooltip("Saves screenshot as PNG of the editor framebuffer.");
+
             if (igMenuItem_Bool("Show Stats for Nerds", "", incShowStatsForNerds, true)) {
                 incShowStatsForNerds = !incShowStatsForNerds;
                 incSettingsSet("NerdStats", incShowStatsForNerds);
