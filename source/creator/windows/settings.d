@@ -27,8 +27,8 @@ protected:
     void onBeginUpdate(int id) {
         flags |= ImGuiWindowFlags.NoResize;
         flags |= ImGuiWindowFlags.NoSavedSettings;
-        super.onBeginUpdate(0);
         incIsSettingsOpen = true;
+        super.onBeginUpdate(0);
     }
 
     override

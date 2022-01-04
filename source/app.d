@@ -52,7 +52,7 @@ void incUpdate() {
     incBeginLoop();
         if (incShouldProcess()) {
             if (!incGetUseNativeTitlebar()) {
-                incTitlebar();
+                incTitlebar("Inochi Creator");
             }
             incStatusbar();
 
@@ -78,7 +78,7 @@ void incUpdateNoEv() {
     incBeginLoopNoEv();
         if (incShouldProcess()) {
             if (!incGetUseNativeTitlebar()) {
-                incTitlebar();
+                incTitlebar("Inochi Creator");
             }
             incStatusbar();
 

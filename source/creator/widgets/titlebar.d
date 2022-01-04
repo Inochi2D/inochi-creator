@@ -10,6 +10,7 @@ import bindbc.imgui;
 import creator.core;
 import creator.widgets;
 import creator.utils.link;
+import std.string;
 import app : incUpdateNoEv;
 
 private {
@@ -58,27 +59,34 @@ bool incGetUseNativeTitlebar() {
 */
 void incSetUseNativeTitlebar(bool value) {
     if (!incCanUseAppTitlebar) return;
-
     incUseNativeTitlebar = value;
+    incApplyTitlebar(incGetWindowPtr());
+}
 
+/**
+    Applies titlebar settings to a window
+*/
+void incApplyTitlebar(void* window) {
     if (!incUseNativeTitlebar) {
-        SDL_SetWindowBordered(incGetWindowPtr(), cast(SDL_bool)false);
-        SDL_SetWindowHitTest(incGetWindowPtr(), &_incHitTestCallback, null);
+        SDL_SetWindowBordered(cast(SDL_Window*)window, cast(SDL_bool)false);
+        SDL_SetWindowHitTest(cast(SDL_Window*)window, &_incHitTestCallback, null);
     } else {
-        SDL_SetWindowBordered(incGetWindowPtr(), cast(SDL_bool)true);
-        SDL_SetWindowHitTest(incGetWindowPtr(), null, null);
+        SDL_SetWindowBordered(cast(SDL_Window*)window, cast(SDL_bool)true);
+        SDL_SetWindowHitTest(cast(SDL_Window*)window, null, null);
     }
 }
 
 /**
     Draws the custom titlebar
 */
-void incTitlebar() {
+void incTitlebar(string title) {
     auto flags = 
         ImGuiWindowFlags.NoSavedSettings |
         ImGuiWindowFlags.NoScrollbar |
         ImGuiWindowFlags.MenuBar;
     
+    SDL_Window* window = cast(SDL_Window*)igGetWindowViewport().PlatformHandle;
+
     if (incGetDarkMode()) igPushStyleColor(ImGuiCol.MenuBarBg, ImVec4(0.1, 0.1, 0.1, 1));
     else  igPushStyleColor(ImGuiCol.MenuBarBg, ImVec4(0.9, 0.9, 0.9, 1));
     igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(0, 4*incGetUIScale()));
@@ -95,9 +103,9 @@ void incTitlebar() {
                 );
                 
                 debug {
-                    igText("Inochi Creator (Debug Mode)");
+                    igText((title~" (Debug Mode)").toStringz);
                 } else {
-                    igText("Inochi Creator");
+                    igText(title.toStringz);
                 }
 
                 // :)
@@ -126,7 +134,7 @@ void incTitlebar() {
                         ""
                     );
                     if (igIsItemClicked()) {
-                        SDL_MinimizeWindow(incGetWindowPtr());
+                        SDL_MinimizeWindow(window);
                     }
                     if(igIsItemHovered()) {
                         ImGuiStorage_SetBool(state, igGetID("##MINIMIZE"), true);
@@ -134,7 +142,7 @@ void incTitlebar() {
                         ImGuiStorage_SetBool(state, igGetID("##MINIMIZE"), false);
                     }
 
-                    bool isMaximized = (SDL_GetWindowFlags(incGetWindowPtr()) & SDL_WINDOW_MAXIMIZED) > 0;
+                    bool isMaximized = (SDL_GetWindowFlags(window) & SDL_WINDOW_MAXIMIZED) > 0;
                     
                     igTextColored(
                         ImGuiStorage_GetBool(state, igGetID("##MAXIMIZE")) ? 
@@ -143,8 +151,8 @@ void incTitlebar() {
                         isMaximized ? "" : ""
                     );
                     if (igIsItemClicked()) {
-                        if (!isMaximized) SDL_MaximizeWindow(incGetWindowPtr());
-                        else SDL_RestoreWindow(incGetWindowPtr());
+                        if (!isMaximized) SDL_MaximizeWindow(window);
+                        else SDL_RestoreWindow(window);
                     }
                     if(igIsItemHovered()) {
                         ImGuiStorage_SetBool(state, igGetID("##MAXIMIZE"), true);

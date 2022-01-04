@@ -293,6 +293,24 @@ private:
         igSpacing();
     }
 
+    void handleDrawableNodes(Drawable node) {
+        igText("Drawable");
+        igSeparator();
+
+        igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(8, 8));
+            igSpacing();
+            igSpacing();
+
+            if (igButton("")) {
+
+            }
+            incTooltip("Edit vertex data");
+            
+            igSpacing();
+            igSpacing();
+        igPopStyleVar();
+    }
+
     void handlePartNodes(Node node) {
         if (Part partNode = cast(Part)node) {
 
@@ -405,6 +423,17 @@ protected:
                 float zsortV = node.relZSort;
                 if (igInputFloat("ZSort", &zsortV, 0.01, 0.05, "%0.2f")) {
                     node.zSort = zsortV;
+                }
+
+                // If the node has a mesh allow editing it
+                if (Drawable drawable = cast(Drawable)node) {
+
+                    // Padding
+                    igSpacing();
+                    igSpacing();
+                    igSpacing();
+                    igSpacing();
+                    handleDrawableNodes(drawable);
                 }
 
                 if (node.typeId == "Part") {

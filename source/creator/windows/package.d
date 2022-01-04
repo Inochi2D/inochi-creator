@@ -9,11 +9,14 @@ import creator.core;
 import bindbc.imgui;
 import std.string;
 import std.conv;
+import creator.widgets.titlebar;
 
 public import creator.windows.about;
 public import creator.windows.settings;
 public import creator.windows.texviewer;
 public import creator.windows.notice;
+
+private ImGuiWindowClass* windowClass;
 
 /**
     A Widget
@@ -31,10 +34,11 @@ protected:
     abstract void onUpdate();
 
     void onBeginUpdate(int id) {
+        igSetNextWindowClass(windowClass);
         igBegin(
             (name~"##"~id.text).toStringz,
-             &visible, 
-            flags | ImGuiWindowFlags.NoSavedSettings
+            &visible, 
+            flags | ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.NoDecoration
         );
     }
     
@@ -94,6 +98,10 @@ public:
     void restore() {
         disabled = false;
         this.flags = ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoCollapse;
+
+        windowClass = ImGuiWindowClass_ImGuiWindowClass();
+        windowClass.ViewportFlagsOverrideClear = ImGuiViewportFlags.NoDecoration | ImGuiViewportFlags.NoTaskBarIcon;
+        windowClass.ViewportFlagsOverrideSet = ImGuiViewportFlags.NoAutoMerge | ImGuiViewportFlags.TopMost;
     }
 }
 
