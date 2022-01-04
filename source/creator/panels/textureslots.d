@@ -4,8 +4,8 @@
     
     Authors: Luna Nielsen
 */
-module creator.frames.textureslots;
-import creator.frames;
+module creator.panels.textureslots;
+import creator.panels;
 import creator.windows;
 import creator : incActivePuppet;
 import bindbc.imgui;
@@ -15,7 +15,7 @@ import std.conv;
 /**
     The textures frame
 */
-class TextureSlotsFrame : Frame {
+class TextureSlotsPanel : Panel {
 private:
 
     void namedIcon(string name, Texture texture, ImVec2 size) {
@@ -69,6 +69,6 @@ public:
 /**
     Generate logger frame
 */
-mixin incFrame!TextureSlotsFrame;
+mixin incPanel!TextureSlotsPanel;
 
 

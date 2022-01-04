@@ -25,7 +25,7 @@ protected:
     override
     void onUpdate() {
 
-        igBeginChild("##LogoArea", ImVec2(0, 72*incGetUIScale()));
+        igBeginChild("##LogoArea", ImVec2(0, 92*incGetUIScale()));
             igImage(
                 cast(void*)incGetLogo(), 
                 ImVec2(64*incGetUIScale(), 64*incGetUIScale()), 
@@ -38,7 +38,7 @@ protected:
             igSameLine(0, 8);
             igSeparatorEx(ImGuiSeparatorFlags.Vertical);
             igSameLine(0, 8);
-            igBeginChild("##LogoTextArea");
+            igBeginChild("##LogoTextArea", ImVec2(0, -24));
 
                 igText("Inochi Creator");
                 igText("%s", (INC_VERSION~"\0").ptr);
@@ -46,11 +46,13 @@ protected:
                 igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "I2D v. %s", (IN_VERSION~"\0").ptr);
                 igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "imgui v. %s", igGetVersion());
             igEndChild();
+            
+            igSpacing();
+            igText("Credits");
+            igSeparator();
         igEndChild();
         igBeginChild("##CreditsArea", ImVec2(0, -28*incGetUIScale()));
 
-            igText("Created By");
-            igSeparator();
 
             igText(import("CONTRIBUTORS.md"));
 

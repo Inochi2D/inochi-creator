@@ -4,13 +4,13 @@
     
     Authors: Luna Nielsen
 */
-module creator.frames.logger;
-import creator.frames;
+module creator.panels.logger;
+import creator.panels;
 
 /**
     The logger frame
 */
-class LoggerFrame : Frame {
+class LoggerPanel : Panel {
 private:
 
 protected:
@@ -28,6 +28,6 @@ public:
 /**
     Generate logger frame
 */
-mixin incFrame!LoggerFrame;
+mixin incPanel!LoggerPanel;
 
 

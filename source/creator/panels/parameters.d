@@ -4,8 +4,8 @@
     
     Authors: Luna Nielsen
 */
-module creator.frames.parameters;
-import creator.frames;
+module creator.panels.parameters;
+import creator.panels;
 import creator.widgets;
 import creator;
 import std.string;
@@ -36,7 +36,7 @@ void incParameterView(Parameter param) {
 /**
     The logger frame
 */
-class ParametersFrame : Frame {
+class ParametersPanel : Panel {
 private:
 
 protected:
@@ -66,6 +66,6 @@ public:
 /**
     Generate logger frame
 */
-mixin incFrame!ParametersFrame;
+mixin incPanel!ParametersPanel;
 
 

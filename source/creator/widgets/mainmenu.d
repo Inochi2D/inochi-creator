@@ -7,7 +7,7 @@
 module creator.widgets.mainmenu;
 import creator.windows;
 import creator.widgets;
-import creator.frames;
+import creator.panels;
 import creator.core;
 import creator.utils.link;
 import creator;
@@ -149,18 +149,18 @@ void incMainMenu() {
         }
 
         if (igBeginMenu("View", true)) {
-            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Frames");
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Panels");
             igSeparator();
 
-            foreach(frame; incFrames) {
+            foreach(panel; incPanels) {
 
-                // Skip frames that'll always be visible
-                if (frame.alwaysVisible) continue;
+                // Skip panels that'll always be visible
+                if (panel.alwaysVisible) continue;
 
-                // Show menu item for frame
-                if(igMenuItem_Bool(frame.name.ptr, null, frame.visible, true)) {
-                    frame.visible = !frame.visible;
-                    incSettingsSet(frame.name~".visible", frame.visible);
+                // Show menu item for panel
+                if(igMenuItem_Bool(panel.name.ptr, null, panel.visible, true)) {
+                    panel.visible = !panel.visible;
+                    incSettingsSet(panel.name~".visible", panel.visible);
                 }
             }
 

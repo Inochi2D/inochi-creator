@@ -4,8 +4,8 @@
     
     Authors: Luna Nielsen
 */
-module creator.frames.actionhistory;
-import creator.frames;
+module creator.panels.actionhistory;
+import creator.panels;
 import bindbc.imgui;
 import creator.core.actionstack;
 import std.string;
@@ -13,9 +13,9 @@ import creator.widgets;
 import std.format;
 
 /**
-    The logger frame
+    The logger panel
 */
-class ActionHistoryFrame : Frame {
+class ActionHistoryPanel : Panel {
 private:
 
 protected:
@@ -72,6 +72,6 @@ public:
 /**
     Generate logger frame
 */
-mixin incFrame!ActionHistoryFrame;
+mixin incPanel!ActionHistoryPanel;
 
 

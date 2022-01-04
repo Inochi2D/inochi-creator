@@ -8,7 +8,7 @@ import std.stdio;
 import std.string;
 import creator.core;
 import creator.core.settings;
-import creator.frames;
+import creator.panels;
 import creator.windows;
 import creator.widgets;
 import creator.core.actionstack;
@@ -22,7 +22,7 @@ version(D_X32) {
 int main(string[] args)
 {
     incSettingsLoad();
-    incInitFrames();
+    incInitPanels();
     incActionInit();
 
     incOpenWindow();
@@ -60,7 +60,7 @@ void incUpdate() {
             incMainMenu();
             incToolbar();
 
-            incUpdateFrames();
+            incUpdatePanels();
             incUpdateWindows();
         }
     incEndLoop();
@@ -86,7 +86,7 @@ void incUpdateNoEv() {
             incMainMenu();
             incToolbar();
 
-            incUpdateFrames();
+            incUpdatePanels();
             incUpdateWindows();
         }
     incEndLoop();

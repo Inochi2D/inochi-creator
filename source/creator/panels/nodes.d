@@ -4,9 +4,9 @@
     
     Authors: Luna Nielsen
 */
-module creator.frames.nodes;
+module creator.panels.nodes;
 import creator.actions;
-import creator.frames;
+import creator.panels;
 import creator;
 import creator.widgets;
 import creator.core;
@@ -19,7 +19,7 @@ import std.conv;
 /**
     The logger frame
 */
-class NodesFrame : Frame {
+class NodesPanel : Panel {
 protected:
     void treeSetEnabled(Node n, bool enabled) {
         n.enabled = enabled;
@@ -312,6 +312,6 @@ public:
 /**
     Generate nodes frame
 */
-mixin incFrame!NodesFrame;
+mixin incPanel!NodesPanel;
 
 

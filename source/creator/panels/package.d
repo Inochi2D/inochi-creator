@@ -4,27 +4,27 @@
     
     Authors: Luna Nielsen
 */
-module creator.frames;
+module creator.panels;
 import creator.core.settings;
 import bindbc.imgui;
 import std.string;
 
-public import creator.frames.logger;
+public import creator.panels.logger;
 
 /**
     A Widget
 */
-abstract class Frame {
+abstract class Panel {
 private:
     string name_;
 protected:
-    ImVec2 frameSpace;
+    ImVec2 panelSpace;
     abstract void onUpdate();
     ImGuiWindowFlags flags;
 
     void onBeginUpdate() {
         igBegin(name.ptr, &visible, flags);
-        igGetContentRegionAvail(&frameSpace);
+        igGetContentRegionAvail(&panelSpace);
     }
     
     void onEndUpdate() {
@@ -36,17 +36,17 @@ protected:
 public:
 
     /**
-        Whether the frame is visible
+        Whether the panel is visible
     */
     bool visible;
 
     /**
-        Whether the frame is always visible
+        Whether the panel is always visible
     */
     bool alwaysVisible = false;
 
     /**
-        Constructs a frame
+        Constructs a panel
     */
     this(string name, bool defaultVisibility) {
         this.name_ = name;
@@ -54,7 +54,7 @@ public:
     }
 
     /**
-        Initializes the Frame
+        Initializes the Panel
     */
     final void init_() {
         onInit();
@@ -68,7 +68,7 @@ public:
     }
 
     /**
-        Draws the frame
+        Draws the panel
     */
     final void update() {
         this.onBeginUpdate();
@@ -78,42 +78,42 @@ public:
 }
 
 /**
-    Auto generate frame adder
+    Auto generate panel adder
 */
-template incFrame(T) {
+template incPanel(T) {
     static this() {
-        incAddFrame(new T);
+        incAddPanel(new T);
     }
 }
 
 /**
-    Adds frame to frame list
+    Adds panel to panel list
 */
-void incAddFrame(Frame frame) {
-    incFrames ~= frame;
+void incAddPanel(Panel panel) {
+    incPanels ~= panel;
 }
 
 /**
-    Draws frames
+    Draws panels
 */
-void incUpdateFrames() {
-    foreach(frame; incFrames) {
-        if (!frame.visible && !frame.alwaysVisible) continue;
+void incUpdatePanels() {
+    foreach(panel; incPanels) {
+        if (!panel.visible && !panel.alwaysVisible) continue;
 
-        frame.update();
+        panel.update();
     }
 }
 
 /**
-    Draws frames
+    Draws panels
 */
-void incInitFrames() {
-    foreach(frame; incFrames) {
-        frame.init_();
+void incInitPanels() {
+    foreach(panel; incPanels) {
+        panel.init_();
     }
 }
 
 /**
-    Frame list
+    Panel list
 */
-Frame[] incFrames;
+Panel[] incPanels;

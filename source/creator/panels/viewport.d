@@ -4,11 +4,11 @@
     
     Authors: Luna Nielsen
 */
-module creator.frames.viewport;
+module creator.panels.viewport;
 import creator.widgets;
 import creator.core;
 import creator.core.colorbleed;
-import creator.frames;
+import creator.panels;
 import creator.core.input;
 import creator.actions;
 import creator;
@@ -20,7 +20,7 @@ import std.string;
 /**
     A viewport
 */
-class ViewportFrame : Frame {
+class ViewportPanel : Panel {
 private:
     ImVec2 lastSize;
     float zoom = 1;
@@ -337,4 +337,4 @@ public:
 
 }
 
-mixin incFrame!ViewportFrame;
+mixin incPanel!ViewportPanel;

@@ -4,9 +4,9 @@
     
     Authors: Luna Nielsen
 */
-module creator.frames.inspector;
+module creator.panels.inspector;
 import creator.core;
-import creator.frames;
+import creator.panels;
 import creator.widgets;
 import creator.utils;
 import creator;
@@ -19,9 +19,9 @@ import std.conv;
 import creator.actions.node;
 
 /**
-    The inspector frame
+    The inspector panel
 */
-class InspectorFrame : Frame {
+class InspectorPanel : Panel {
 private:
     void handleTRS(Node node) {
         float adjustSpeed = 1;
@@ -433,6 +433,6 @@ public:
 /**
     Generate logger frame
 */
-mixin incFrame!InspectorFrame;
+mixin incPanel!InspectorPanel;
 
 

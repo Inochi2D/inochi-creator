@@ -6,7 +6,7 @@
 */
 module creator.core;
 import creator.core.font;
-import creator.frames;
+import creator.panels;
 import creator.windows;
 import creator.utils.link;
 import creator;
