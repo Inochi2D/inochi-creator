@@ -44,7 +44,7 @@ void incToolbar() {
                         if (igButton(incEditMode == EditMode.VertexEdit ? "" : "", ImVec2(32, 32))) {
                             incSetEditMode(EditMode.VertexEdit);
                         }
-                        incTooltip("Edit Vertex Data");
+                        incTooltip("Edit Mesh");
                     igPopStyleVar();
 
                     igSpacing();

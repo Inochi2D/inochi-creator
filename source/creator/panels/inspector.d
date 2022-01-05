@@ -9,6 +9,7 @@ import creator.core;
 import creator.panels;
 import creator.widgets;
 import creator.utils;
+import creator.windows;
 import creator;
 import inochi2d;
 import std.string;
@@ -302,10 +303,13 @@ private:
             igSpacing();
 
             if (igButton("")) {
-
+                // TODO: Switch to editing that mesh
+                incSetEditMode(EditMode.VertexEdit);
+                incSelectNode(node);
+                incFocusCamera(node);
             }
-            incTooltip("Edit vertex data");
-            
+            incTooltip("Edit Mesh");
+
             igSpacing();
             igSpacing();
         igPopStyleVar();

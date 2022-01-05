@@ -38,7 +38,7 @@ protected:
         igBegin(
             (name~"##"~id.text).toStringz,
             &visible, 
-            flags | ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.NoDecoration
+            flags | ImGuiWindowFlags.NoDecoration
         );
     }
     
@@ -97,7 +97,7 @@ public:
 
     void restore() {
         disabled = false;
-        this.flags = ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoCollapse;
+        this.flags = ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoSavedSettings;
 
         windowClass = ImGuiWindowClass_ImGuiWindowClass();
         windowClass.ViewportFlagsOverrideClear = ImGuiViewportFlags.NoDecoration | ImGuiViewportFlags.NoTaskBarIcon;
