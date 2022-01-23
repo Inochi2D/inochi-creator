@@ -165,6 +165,8 @@ protected:
                 }
             }
 
+            auto style = igGetStyle();
+            inSetClearColor(style.Colors[ImGuiCol.WindowBg].x, style.Colors[ImGuiCol.WindowBg].y, style.Colors[ImGuiCol.WindowBg].z, 1);
             incBeginUpdate();
                 incInputBegin();
                     ImVec2 pos;
@@ -187,6 +189,7 @@ protected:
             ImVec2 sPos;
             ImVec2 sPosA;
             igGetCursorScreenPos(&sPos);
+            
             igImage(
                 cast(void*)inGetRenderImage(), 
                 ImVec2(width, height), 
@@ -250,6 +253,7 @@ protected:
 
                         auto tex = new ShallowTexture(file);
                         incColorBleedPixels(tex);
+                        inTexPremultiply(tex.data);
                         incAddChildWithHistory(
                             inCreateSimplePart(*tex, null, fname), 
                             incSelectedNode(), 

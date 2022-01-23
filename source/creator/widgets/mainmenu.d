@@ -189,8 +189,14 @@ void incMainMenu() {
                     Texture outTexture = new Texture(null, width, height);
 
                     // Texture data
+                    inSetClearColor(0, 0, 0, 0);
+                    inBeginScene();
+                        incActivePuppet().update();
+                        incActivePuppet().draw();
+                    inEndScene();
                     ubyte[] textureData = new ubyte[inViewportDataLength()];
                     inDumpViewport(textureData);
+                    inTexUnPremuliply(textureData);
                     
                     // Write to texture
                     outTexture.setData(textureData);
@@ -236,6 +242,13 @@ void incMainMenu() {
                 incRegenerateNodeIDs(incActivePuppet().root);
             }
             incTooltip("Regenerates all the unique IDs for the model");
+
+            // Premultiply textures
+            if (igMenuItem("Premultiply textures", "", false)) {
+                import creator.utils.repair : incPremultTextures;
+                incPremultTextures(incActivePuppet());
+            }
+            incTooltip("Premultiplies textures");
 
             // Spacing
             igSpacing();

@@ -126,10 +126,10 @@ void incImportFolder(string folder) {
 
         // TODO: Check for position.ini
 
-        auto tex = new Texture(file);
-        incColorBleedPixels(tex, 64);
+        auto tex = ShallowTexture(file);
+        inTexPremultiply(tex.data);
 
-        Part part = inCreateSimplePart(tex, null, file.baseName.stripExtension);
+        Part part = inCreateSimplePart(new Texture(tex), null, file.baseName.stripExtension);
         part.zSort = -((cast(float)i++)/100);
         puppet.root.addChild(part);
     }
@@ -160,7 +160,7 @@ void incImportPSD(string file) {
 
             layer.extractLayerImage();
             auto tex = new ShallowTexture(layer.data, layer.width, layer.height);
-            incColorBleedPixels(tex, 64);
+            inTexPremultiply(tex.data);
             Part part = inCreateSimplePart(*tex, puppet.root, layer.name);
 
             auto layerSize = cast(int[2])layer.size();

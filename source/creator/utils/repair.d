@@ -33,3 +33,11 @@ void incRegenerateNodeIDs(Node n) {
     // Force a new UUID
     n.forceSetUUID(inCreateUUID());
 }
+
+void incPremultTextures(Puppet p) {
+    foreach(ref Texture texture; p.textureSlots) {
+        ubyte[] data = texture.getTextureData();
+        inTexPremultiply(data);
+        texture.setData(data);
+    }
+}
