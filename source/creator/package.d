@@ -144,7 +144,7 @@ void incImportFolder(string folder) {
 void incImportPSD(string file) {
     incTaskAdd("Import "~file, () {
         incNewProject();
-        import psd : PSD, Layer, LayerType, LayerFlags, parseDocument;
+        import psd : PSD, Layer, LayerType, LayerFlags, parseDocument, BlendingMode;
         PSD doc = parseDocument(file);
         vec2i docCenter = vec2i(doc.width/2, doc.height/2);
 
@@ -159,9 +159,9 @@ void incImportPSD(string file) {
             incTaskYield();
 
             layer.extractLayerImage();
-            auto tex = new ShallowTexture(layer.data, layer.width, layer.height);
-            inTexPremultiply(tex.data);
-            Part part = inCreateSimplePart(*tex, puppet.root, layer.name);
+            inTexPremultiply(layer.data);
+            auto tex = new Texture(layer.data, layer.width, layer.height);
+            Part part = inCreateSimplePart(tex, puppet.root, layer.name);
 
             auto layerSize = cast(int[2])layer.size();
             vec2i layerPosition = vec2i(
@@ -177,6 +177,13 @@ void incImportPSD(string file) {
 
             part.enabled = (layer.flags & LayerFlags.Visible) == 0;
             part.opacity = (cast(float)layer.opacity)/255;
+
+            switch(layer.blendModeKey) {
+                case BlendingMode.Multiply: 
+                    part.blendingMode = BlendMode.Multiply; break;
+                default:
+                    part.blendingMode = BlendMode.Normal; break;
+            }
             
             part.zSort = -(cast(float)i)/100;
 
