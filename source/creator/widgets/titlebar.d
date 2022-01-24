@@ -85,7 +85,7 @@ void incTitlebar(string title) {
         ImGuiWindowFlags.NoScrollbar |
         ImGuiWindowFlags.MenuBar;
     
-    SDL_Window* window = cast(SDL_Window*)igGetWindowViewport().PlatformHandle;
+    SDL_Window* window = incGetWindowPtr();
 
     if (incGetDarkMode()) igPushStyleColor(ImGuiCol.MenuBarBg, ImVec4(0.1, 0.1, 0.1, 1));
     else  igPushStyleColor(ImGuiCol.MenuBarBg, ImVec4(0.9, 0.9, 0.9, 1));
