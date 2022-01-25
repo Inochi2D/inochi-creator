@@ -348,6 +348,33 @@ void incBeginLoopNoEv() {
 
     // Add docking space
     viewportDock = igDockSpaceOverViewport(null, cast(ImGuiDockNodeFlags)0, null);
+    if (!incSettingsCanGet("firstrun_complete")) {
+        incSetDefaultLayout();
+        incSettingsSet("firstrun_complete", true);
+    }
+}
+
+void incSetDefaultLayout() {
+    igDockBuilderRemoveNodeChildNodes(viewportDock);
+    ImGuiID 
+        dockMainID, dockIDNodes, dockIDInspector, dockIDHistory, dockIDParams,
+        dockIDLoggerAndTextureSlots;
+
+    dockMainID = viewportDock;
+    dockIDNodes = igDockBuilderSplitNode(dockMainID, ImGuiDir.Left, 0.10f, null, &dockMainID);
+    dockIDInspector = igDockBuilderSplitNode(dockIDNodes, ImGuiDir.Down, 0.60f, null, &dockIDNodes);
+    dockIDHistory = igDockBuilderSplitNode(dockMainID, ImGuiDir.Right, 0.10f, null, &dockMainID);
+    dockIDParams = igDockBuilderSplitNode(dockMainID, ImGuiDir.Left, 0.15f, null, &dockMainID);
+    dockIDLoggerAndTextureSlots = igDockBuilderSplitNode(dockMainID, ImGuiDir.Down, 0.10f, null, &dockMainID);
+
+    igDockBuilderDockWindow("Nodes", dockIDNodes);
+    igDockBuilderDockWindow("Inspector", dockIDInspector);
+    igDockBuilderDockWindow("History", dockIDHistory);
+    igDockBuilderDockWindow("Parameters", dockIDParams);
+    igDockBuilderDockWindow("Texture Slots", dockIDLoggerAndTextureSlots);
+    igDockBuilderDockWindow("Logger", dockIDLoggerAndTextureSlots);
+
+    igDockBuilderFinish(viewportDock);
 }
 
 /**

@@ -64,7 +64,7 @@ protected:
 
 public:
     this() {
-        super("History", false);
+        super("History", true);
         flags |= ImGuiWindowFlags.NoScrollbar;
     }
 }

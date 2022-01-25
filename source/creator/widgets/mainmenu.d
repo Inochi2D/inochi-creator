@@ -149,6 +149,15 @@ void incMainMenu() {
         }
 
         if (igBeginMenu("View", true)) {
+            if (igMenuItem("Reset Layout", null, false, true)) {
+                incSetDefaultLayout();
+            }
+            igSeparator();
+
+            // Spacing
+            igSpacing();
+            igSpacing();
+
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Panels");
             igSeparator();
 

@@ -17,13 +17,14 @@ public import creator.panels.logger;
 abstract class Panel {
 private:
     string name_;
+    bool defaultVisibility;
 protected:
     ImVec2 panelSpace;
     abstract void onUpdate();
     ImGuiWindowFlags flags;
 
     void onBeginUpdate() {
-        igBegin(name.ptr, &visible, flags);
+        igBegin(name.toStringz, &visible, flags);
         igGetContentRegionAvail(&panelSpace);
     }
     
@@ -51,6 +52,7 @@ public:
     this(string name, bool defaultVisibility) {
         this.name_ = name;
         this.visible = defaultVisibility;
+        this.defaultVisibility = defaultVisibility;
     }
 
     /**
@@ -74,6 +76,10 @@ public:
         this.onBeginUpdate();
             this.onUpdate();
         this.onEndUpdate();
+    }
+
+    final bool getDefaultVisibility() {
+        return defaultVisibility;
     }
 }
 
