@@ -134,6 +134,7 @@ void incImportFolder(string folder) {
         puppet.root.addChild(part);
     }
     puppet.rescanNodes();
+    puppet.populateTextureSlots();
     incActiveProject().puppet = puppet;
     incFreeMemory();
 }
@@ -142,58 +143,52 @@ void incImportFolder(string folder) {
     Imports a PSD file.
 */
 void incImportPSD(string file) {
-    incTaskAdd("Import "~file, () {
-        incNewProject();
-        import psd : PSD, Layer, LayerType, LayerFlags, parseDocument, BlendingMode;
-        PSD doc = parseDocument(file);
-        vec2i docCenter = vec2i(doc.width/2, doc.height/2);
+    incNewProject();
+    import psd : PSD, Layer, LayerType, LayerFlags, parseDocument, BlendingMode;
+    PSD doc = parseDocument(file);
+    vec2i docCenter = vec2i(doc.width/2, doc.height/2);
+    Puppet puppet = new Puppet();
+    foreach(i, Layer layer; doc.layers) {
 
-        Puppet puppet = new Puppet();
-        foreach(i, Layer layer; doc.layers) {
+        // Skip folders ( for now )
+        if (layer.type != LayerType.Any) continue;
 
-            // Skip folders ( for now )
-            if (layer.type != LayerType.Any) continue;
+        layer.extractLayerImage();
+        inTexPremultiply(layer.data);
+        auto tex = new Texture(layer.data, layer.width, layer.height);
+        Part part = inCreateSimplePart(tex, puppet.root, layer.name);
 
-            incTaskStatus("Importing "~layer.name~"...");
-            incTaskProgress(cast(float)i/doc.layers.length);
-            incTaskYield();
+        auto layerSize = cast(int[2])layer.size();
+        vec2i layerPosition = vec2i(
+            layer.left,
+            layer.top
+        );
 
-            layer.extractLayerImage();
-            inTexPremultiply(layer.data);
-            auto tex = new Texture(layer.data, layer.width, layer.height);
-            Part part = inCreateSimplePart(tex, puppet.root, layer.name);
+        part.localTransform.translation = vec3(
+            (layerPosition.x+(layerSize[0]/2))-docCenter.x,
+            (layerPosition.y+(layerSize[1]/2))-docCenter.y,
+            0
+        );
 
-            auto layerSize = cast(int[2])layer.size();
-            vec2i layerPosition = vec2i(
-                layer.left,
-                layer.top
-            );
+        part.enabled = (layer.flags & LayerFlags.Visible) == 0;
+        part.opacity = (cast(float)layer.opacity)/255;
 
-            part.localTransform.translation = vec3(
-                (layerPosition.x+(layerSize[0]/2))-docCenter.x,
-                (layerPosition.y+(layerSize[1]/2))-docCenter.y,
-                0
-            );
-
-            part.enabled = (layer.flags & LayerFlags.Visible) == 0;
-            part.opacity = (cast(float)layer.opacity)/255;
-
-            switch(layer.blendModeKey) {
-                case BlendingMode.Multiply: 
-                    part.blendingMode = BlendMode.Multiply; break;
-                default:
-                    part.blendingMode = BlendMode.Normal; break;
-            }
-            
-            part.zSort = -(cast(float)i)/100;
-
-            puppet.root.addChild(part);
+        switch(layer.blendModeKey) {
+            case BlendingMode.Multiply: 
+                part.blendingMode = BlendMode.Multiply; break;
+            default:
+                part.blendingMode = BlendMode.Normal; break;
         }
-        puppet.rescanNodes();
-        incActiveProject().puppet = puppet;
-        incFreeMemory();
-        incTaskStatus("Import Finished.");
-    });
+        
+        part.zSort = -(cast(float)i)/100;
+
+        puppet.root.addChild(part);
+    }
+
+    puppet.rescanNodes();
+    puppet.populateTextureSlots();
+    incActiveProject().puppet = puppet;
+    incFreeMemory();
 }
 
 /**
@@ -204,6 +199,15 @@ void incImportINP(string file) {
     Puppet puppet = inLoadPuppet(file);
     incActiveProject().puppet = puppet;
     incFreeMemory();
+}
+
+void incRegenerateMipmaps() {
+
+    // Allow for nice looking filtering
+    foreach(texture; incActiveProject().puppet.textureSlots) {
+        texture.genMipmap();
+        texture.setFiltering(Filtering.Linear);
+    }
 }
 
 /**

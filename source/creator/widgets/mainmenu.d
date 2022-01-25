@@ -231,6 +231,11 @@ void incMainMenu() {
             if (igMenuItem("Rebleed textures...", "", false)) {
                 incRebleedTextures();
             }
+
+            if (igMenuItem("Generate Mipmaps...", "", false)) {
+                incRegenerateMipmaps();
+            }
+            incTooltip("In some instances mipmaps may need to be re-generated.\nFor example PSD imports will need their mipmaps regenerated.");
             
             // Spacing
             igSpacing();
