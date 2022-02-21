@@ -179,7 +179,9 @@ void incOpenWindow() {
         );
 
         glEnable(GL_DEBUG_OUTPUT);
-        glDebugMessageCallback(&incDebugCallback, null);
+        version(Posix) {
+            glDebugMessageCallback(&incDebugCallback, null);
+        }
     }
 
     // Setup Inochi2D
