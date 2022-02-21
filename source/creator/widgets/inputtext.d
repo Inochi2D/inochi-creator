@@ -24,6 +24,7 @@ private {
 bool incInputText(const(char)* label, ref string buffer, ImGuiInputTextFlags flags = ImGuiInputTextFlags.None) {
     auto id = igGetID(label);
     auto storage = igGetStateStorage();
+    auto available = incAvailableSpace();
 
     // We put a new string container on the heap and make sure the GC doesn't yeet it.
     if (ImGuiStorage_GetVoidPtr(storage, id) is null) {
@@ -35,13 +36,13 @@ bool incInputText(const(char)* label, ref string buffer, ImGuiInputTextFlags fla
     // We get it
     Str* str = cast(Str*)ImGuiStorage_GetVoidPtr(storage, id);
 
+    igPushItemWidth(available.x);
     if (igInputText(
         label,
         cast(char*)str.str.ptr, 
         str.str.length,
         flags | 
-            ImGuiInputTextFlags.CallbackResize |
-            ImGuiInputTextFlags.EnterReturnsTrue,
+            ImGuiInputTextFlags.CallbackResize,
         cast(ImGuiInputTextCallback)(ImGuiInputTextCallbackData* data) {
 
             // Allow resizing strings on GC heap
