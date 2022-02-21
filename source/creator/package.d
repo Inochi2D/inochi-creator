@@ -185,7 +185,6 @@ void incImportPSD(string file) {
         puppet.root.addChild(part);
     }
 
-    puppet.rescanNodes();
     puppet.populateTextureSlots();
     incActiveProject().puppet = puppet;
     incFreeMemory();
