@@ -33,24 +33,12 @@ protected:
         auto nodes = incSelectedNodes();
         if (nodes.length == 1) {
             Node node = nodes[0];
-            if (node !is null) {
-                
-                // Top level
-                igPushID(node.uuid);
-                    string typeString = "%s\0".format(incTypeIdToIcon(node.typeId()));
-                    auto len = incMeasureString(typeString);
-                    incInputText("", node.name);
-                    igSameLine(0, 0);
-                    incDummy(ImVec2(-(len.x-14), len.y));
-                    igSameLine(0, 0);
-                    igText(typeString.ptr);
-                igPopID();
-                igSeparator();
+            if (node !is null && node != incActivePuppet().root) {
 
                 // Per-edit mode inspector drawers
                 switch(incEditMode()) {
                     case EditMode.ModelEdit:
-
+                        incModelModeHeader(node);
                         incInspectorModelTRS(node);
 
                         igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Sorting");
@@ -83,13 +71,15 @@ protected:
                     
                     break;
                     case EditMode.VertexEdit:
+                        incCommonNonEditHeader(node);
                         incInspectorMeshEditDrawable(cast(Drawable)node);
                         break;
                     case EditMode.DeformEdit:
+                        incCommonNonEditHeader(node);
                         break;
                     default: assert(0);
                 }
-            }
+            } else incInspectorModelInfo();
         } else if (nodes.length == 0) {
             igText("No nodes selected...");
         } else {
@@ -113,8 +103,56 @@ mixin incPanel!InspectorPanel;
 private:
 
 //
+// COMMON
+//
+
+void incCommonNonEditHeader(Node node) {
+    // Top level
+    igPushID(node.uuid);
+        string typeString = "%s\0".format(incTypeIdToIcon(node.typeId()));
+        auto len = incMeasureString(typeString);
+        igText(node.name.toStringz);
+        igSameLine(0, 0);
+        incDummy(ImVec2(-(len.x-14), len.y));
+        igSameLine(0, 0);
+        igText(typeString.ptr);
+    igPopID();
+    igSeparator();
+}
+
+//
 //  MODEL MODE
 //
+
+void incInspectorModelInfo() {
+    auto rootNode = incActivePuppet().root; 
+    
+    // Top level
+    igPushID(rootNode.uuid);
+        string typeString = "\0";
+        auto len = incMeasureString(typeString);
+        igText("Puppet");
+        igSameLine(0, 0);
+        incDummy(ImVec2(-(len.x-14), len.y));
+        igSameLine(0, 0);
+        igText(typeString.ptr);
+    igPopID();
+    igSeparator();
+}
+
+void incModelModeHeader(Node node) {
+    // Top level
+    igPushID(node.uuid);
+        string typeString = "%s\0".format(incTypeIdToIcon(node.typeId()));
+        auto len = incMeasureString(typeString);
+        incInputText("", node.name);
+        igSameLine(0, 0);
+        incDummy(ImVec2(-(len.x-14), len.y));
+        igSameLine(0, 0);
+        igText(typeString.ptr);
+    igPopID();
+    igSeparator();
+}
 
 void incInspectorModelTRS(Node node) {
     float adjustSpeed = 1;

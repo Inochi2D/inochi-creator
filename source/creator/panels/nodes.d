@@ -63,32 +63,34 @@ protected:
                 igEndMenu();
             }
 
-            if (igMenuItem(n.enabled ? "Hide" : "Show")) {
-                n.enabled = !n.enabled;
-            }
-            
-            // We don't want to delete the root
-            if (igMenuItem("Delete", "", false, !isRoot)) {
-
-                foreach(sn; selected) {
-                    incDeleteChildWithHistory(sn);
+            static if (!isRoot) {
+                if (igMenuItem(n.enabled ? "Hide" : "Show")) {
+                    n.enabled = !n.enabled;
                 }
+                
+                // We don't want to delete the root
+                if (igMenuItem("Delete", "", false, !isRoot)) {
 
-                // Make sure we don't keep selecting a node we've removed
-                incSelectNode(null);
-            }
-            
-            // We don't want to delete the root
-            if (igBeginMenu("More Info", true)) {
-                if (selected.length > 1) {
                     foreach(sn; selected) {
-                        igText("%s ID: %lu", sn.name.ptr, sn.uuid);
+                        incDeleteChildWithHistory(sn);
                     }
-                } else {
-                    igText("ID: %lu", n.uuid);
-                }
 
-                igEndMenu();
+                    // Make sure we don't keep selecting a node we've removed
+                    incSelectNode(null);
+                }
+                
+                // We don't want to delete the root
+                if (igBeginMenu("More Info", true)) {
+                    if (selected.length > 1) {
+                        foreach(sn; selected) {
+                            igText("%s ID: %lu", sn.name.ptr, sn.uuid);
+                        }
+                    } else {
+                        igText("ID: %lu", n.uuid);
+                    }
+
+                    igEndMenu();
+                }
             }
             igEndPopup();
         }
@@ -121,16 +123,19 @@ protected:
 
             auto selectedNodes = incSelectedNodes();
             igPushID(n.uuid);
-                static if (!isRoot) {
                     bool selected = incNodeInSelection(n);
 
                     igPushFont(incIconFont());
-                        if (n.enabled) igText(incTypeIdToIcon(n.typeId).ptr);
-                        else igTextDisabled(incTypeIdToIcon(n.typeId).ptr);
+                        static if (!isRoot) {
+                            if (n.enabled) igText(incTypeIdToIcon(n.typeId).ptr);
+                            else igTextDisabled(incTypeIdToIcon(n.typeId).ptr);
+                        } else {
+                            igText("");
+                        }
                     igPopFont();
                     igSameLine(0, 2);
 
-                    if (igSelectable(n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
+                    if (igSelectable(isRoot ? "Puppet" : n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
                         if (selected) {
                             if (incSelectedNodes().length > 1) {
                                 if (io.KeyCtrl) incRemoveSelectNode(n);
@@ -143,27 +148,21 @@ protected:
                             else incSelectNode(n);
                         }
                     }
-                    this.nodeActionsPopup(n);
+                    this.nodeActionsPopup!isRoot(n);
 
-                    if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
-                        igSetDragDropPayload("_PUPPETNTREE", cast(void*)&n, (&n).sizeof, ImGuiCond.Always);
-                        if (selectedNodes.length > 1) {
-                            foreach(node; selectedNodes) {
-                                igText(node.name.toStringz);
+                    static if (!isRoot) {
+                        if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
+                            igSetDragDropPayload("_PUPPETNTREE", cast(void*)&n, (&n).sizeof, ImGuiCond.Always);
+                            if (selectedNodes.length > 1) {
+                                foreach(node; selectedNodes) {
+                                    igText(node.name.toStringz);
+                                }
+                            } else {
+                                igText(n.name.toStringz);
                             }
-                        } else {
-                            igText(n.name.toStringz);
+                            igEndDragDropSource();
                         }
-                        igEndDragDropSource();
                     }
-                } else {
-                    igPushFont(incIconFont());
-                        igText("\ue97a");
-                    igPopFont();
-                    igSameLine(0, 2);
-                    igText(n.name.toStringz);
-                    this.nodeActionsPopup!true(n);
-                }
             igPopID();
 
             // Only allow reparenting one node
