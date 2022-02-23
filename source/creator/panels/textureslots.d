@@ -63,7 +63,7 @@ protected:
 
 public:
     this() {
-        super(_("Texture Slots"), false);
+        super("Texture Slots", _("Texture Slots"), false);
     }
 }
 

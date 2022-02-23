@@ -361,6 +361,8 @@ void incBeginLoopNoEv() {
 }
 
 void incSetDefaultLayout() {
+    import creator.panels;
+    
     igDockBuilderRemoveNodeChildNodes(viewportDock);
     ImGuiID 
         dockMainID, dockIDNodes, dockIDInspector, dockIDHistory, dockIDParams,
@@ -373,12 +375,12 @@ void incSetDefaultLayout() {
     dockIDParams = igDockBuilderSplitNode(dockMainID, ImGuiDir.Left, 0.15f, null, &dockMainID);
     dockIDLoggerAndTextureSlots = igDockBuilderSplitNode(dockMainID, ImGuiDir.Down, 0.10f, null, &dockMainID);
 
-    igDockBuilderDockWindow("Nodes", dockIDNodes);
-    igDockBuilderDockWindow("Inspector", dockIDInspector);
-    igDockBuilderDockWindow("History", dockIDHistory);
-    igDockBuilderDockWindow("Parameters", dockIDParams);
-    igDockBuilderDockWindow("Texture Slots", dockIDLoggerAndTextureSlots);
-    igDockBuilderDockWindow("Logger", dockIDLoggerAndTextureSlots);
+    igDockBuilderDockWindow("###Nodes", dockIDNodes);
+    igDockBuilderDockWindow("###Inspector", dockIDInspector);
+    igDockBuilderDockWindow("###History", dockIDHistory);
+    igDockBuilderDockWindow("###Parameters", dockIDParams);
+    igDockBuilderDockWindow("###Texture Slots", dockIDLoggerAndTextureSlots);
+    igDockBuilderDockWindow("###Logger", dockIDLoggerAndTextureSlots);
 
     igDockBuilderFinish(viewportDock);
 }

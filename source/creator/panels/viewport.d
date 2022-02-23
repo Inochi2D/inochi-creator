@@ -336,7 +336,7 @@ protected:
 
 public:
     this() {
-        super(_("Viewport"), true);
+        super("Viewport", _("Viewport"), true);
         this.alwaysVisible = true;
     }
 

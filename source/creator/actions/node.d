@@ -10,6 +10,7 @@ import creator.actions;
 import creator;
 import inochi2d;
 import std.format;
+import i18n;
 
 /**
     An action that happens when a node is changed
@@ -88,7 +89,7 @@ public:
     string describe() {
         if (prevParent is null) return "Created %s".format(self.name);
         if (newParent is null) return "Deleted %s".format(self.name);
-        return "Moved %s to %s".format(self.name, newParent.name);
+        return _("Moved %s to %s").format(self.name, newParent.name);
     }
 
     /**
@@ -96,7 +97,7 @@ public:
     */
     string describeUndo() {
         if (prevParent is null) return "Created %s".format(self.name);
-        return "Moved %s from %s".format(self.name, prevParent.name);
+        return _("Moved %s from %s").format(self.name, prevParent.name);
     }
 
     /**
@@ -136,14 +137,14 @@ public:
         Describe the action
     */
     string describe() {
-        return "%s %s".format(newState ? "Enabled" : "Disabled", self.name);
+        return "%s %s".format(newState ? _("Enabled") : _("Disabled"), self.name);
     }
 
     /**
         Describe the action
     */
     string describeUndo() {
-        return "%s was %s".format(self.name, !newState ? "Enabled" : "Disabled");
+        return _("%s was %s").format(self.name, !newState ? _("Enabled") : _("Disabled"));
     }
 
     /**
@@ -197,7 +198,7 @@ void incAddChildWithHistory(Node n, Node to, string name=null) {
     ));
 
     n.insert(to, Node.OFFSET_START);
-    if (name is null) n.name = "Unnamed "~n.typeId();
+    if (name is null) n.name = _("Unnamed ")~_(n.typeId());
     else n.name = name;
     incActivePuppet().rescanNodes();
 }
@@ -255,14 +256,14 @@ public:
         Describe the action
     */
     string describe() {
-        return "%s->%s changed to %s".format(node.name, name, newValue);
+        return _("%s->%s changed to %s").format(node.name, name, newValue);
     }
 
     /**
         Describe the action
     */
     string describeUndo() {
-        return "%s->%s changed from %s".format(node.name, name, oldValue);
+        return _("%s->%s changed from %s").format(node.name, name, oldValue);
     }
 
     /**

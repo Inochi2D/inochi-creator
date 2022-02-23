@@ -60,7 +60,7 @@ protected:
 
 public:
     this() {
-        super(_("Parameters"), false);
+        super("Parameters", _("Parameters"), false);
     }
 }
 

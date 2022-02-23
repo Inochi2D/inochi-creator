@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-23 15:21+0100\n"
+"POT-Creation-Date: 2022-02-23 20:07+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,43 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: source/creator/actions/node.d:92
+#, c-format
+msgid "Moved %s to %s"
+msgstr ""
+
+#: source/creator/actions/node.d:100
+#, c-format
+msgid "Moved %s from %s"
+msgstr ""
+
+#: source/creator/actions/node.d:140 source/creator/actions/node.d:147
+msgid "Enabled"
+msgstr ""
+
+#: source/creator/actions/node.d:140 source/creator/actions/node.d:147
+msgid "Disabled"
+msgstr ""
+
+#: source/creator/actions/node.d:147
+#, c-format
+msgid "%s was %s"
+msgstr ""
+
+#: source/creator/actions/node.d:201
+msgid "Unnamed "
+msgstr ""
+
+#: source/creator/actions/node.d:259
+#, c-format
+msgid "%s->%s changed to %s"
+msgstr ""
+
+#: source/creator/actions/node.d:266
+#, c-format
+msgid "%s->%s changed from %s"
+msgstr ""
 
 #. Ugly hack to please imgui
 #: source/creator/panels/actionhistory.d:60
@@ -229,6 +266,7 @@ msgid "Dodge"
 msgstr ""
 
 #: source/creator/panels/inspector.d:569 source/creator/panels/inspector.d:571
+#: source/creator/panels/nodes.d:53
 msgid "Mask"
 msgstr ""
 
@@ -262,6 +300,14 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
+#: source/creator/panels/nodes.d:47
+msgid "Node"
+msgstr ""
+
+#: source/creator/panels/nodes.d:62
+msgid "PathDeform"
+msgstr ""
+
 #. Option to hide the node (and subnodes)
 #: source/creator/panels/nodes.d:68
 msgid "Hide"
@@ -274,6 +320,10 @@ msgstr ""
 
 #: source/creator/panels/nodes.d:72
 msgid "Delete"
+msgstr ""
+
+#: source/creator/panels/nodes.d:83
+msgid "More Info"
 msgstr ""
 
 #. %s is the name of the node in the More Info menu
@@ -370,7 +420,7 @@ msgid "Open"
 msgstr ""
 
 #. Save button
-#: source/creator/widgets/mainmenu.d:53 source/creator/windows/settings.d:107
+#: source/creator/widgets/mainmenu.d:53 source/creator/windows/settings.d:114
 msgid "Save"
 msgstr ""
 
@@ -461,7 +511,7 @@ msgstr ""
 msgid "Paste"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:135 source/creator/windows/settings.d:123
+#: source/creator/widgets/mainmenu.d:135 source/creator/windows/settings.d:130
 msgid "Settings"
 msgstr ""
 
@@ -615,43 +665,43 @@ msgstr ""
 msgid "Under Construction"
 msgstr ""
 
-#: source/creator/windows/settings.d:42
+#: source/creator/windows/settings.d:43
 msgid "Look and Feel"
 msgstr ""
 
-#: source/creator/windows/settings.d:44
+#: source/creator/windows/settings.d:45
 msgid "Color Theme"
 msgstr ""
 
-#: source/creator/windows/settings.d:44 source/creator/windows/settings.d:45
+#: source/creator/windows/settings.d:45 source/creator/windows/settings.d:46
 msgid "Dark"
 msgstr ""
 
-#: source/creator/windows/settings.d:44 source/creator/windows/settings.d:46
+#: source/creator/windows/settings.d:45 source/creator/windows/settings.d:47
 msgid "Light"
 msgstr ""
 
-#: source/creator/windows/settings.d:50
+#: source/creator/windows/settings.d:53
 msgid "Language"
 msgstr ""
 
-#: source/creator/windows/settings.d:54
+#: source/creator/windows/settings.d:61
 msgid "UI Scale (EXPERIMENTAL)"
 msgstr ""
 
-#: source/creator/windows/settings.d:64
+#: source/creator/windows/settings.d:71
 msgid "Use Native Titlebar"
 msgstr ""
 
-#: source/creator/windows/settings.d:78
+#: source/creator/windows/settings.d:85
 msgid "Max Undo History"
 msgstr ""
 
-#: source/creator/windows/settings.d:87
+#: source/creator/windows/settings.d:94
 msgid "Accessibility"
 msgstr ""
 
-#: source/creator/windows/settings.d:95
+#: source/creator/windows/settings.d:102
 msgid "Other"
 msgstr ""
 

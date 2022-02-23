@@ -24,18 +24,17 @@ version(D_X32) {
 int main(string[] args)
 {
     incSettingsLoad();
-    incInitPanels();
-    incActionInit();
-
-    incOpenWindow();
-    incNewProject();
-
     incLocaleInit();
     if (incSettingsCanGet("lang")) {
         string lang = incSettingsGet!string("lang");
         i18nLoadLanguage(incLocaleGetEntryFor(lang).file);
     }
 
+    incInitPanels();
+    incActionInit();
+
+    incOpenWindow();
+    incNewProject();
     if (incSettingsGet!bool("ShowWarning", true)) {
         incPushWindow(new NoticeWindow());
     }

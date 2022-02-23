@@ -90,7 +90,7 @@ protected:
 
 public:
     this() {
-        super(_("Inspector"), true);
+        super("Inspector", _("Inspector"), true);
     }
 }
 

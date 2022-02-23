@@ -6,6 +6,7 @@
 */
 module creator.panels.logger;
 import creator.panels;
+import i18n;
 
 /**
     The logger frame
@@ -21,7 +22,7 @@ protected:
 
 public:
     this() {
-        super("Logger", false);
+        super("", _("Logger"), false);
     }
 }
 

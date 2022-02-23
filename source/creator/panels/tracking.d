@@ -43,7 +43,7 @@ protected:
 
 public:
     this() {
-        super(_("Tracking"), false);
+        super("Tracking", _("Tracking"), false);
     }
 }
 

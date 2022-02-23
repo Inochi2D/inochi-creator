@@ -44,13 +44,13 @@ protected:
                     igText(incTypeIdToIcon("Node").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItem("Node", "", false, true)) incAddChildWithHistory(new Node(n), n);
+                if (igMenuItem(__("Node"), "", false, true)) incAddChildWithHistory(new Node(n), n);
                 
                 igPushFont(incIconFont());
                     igText(incTypeIdToIcon("Mask").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItem("Mask", "", false, true)) {
+                if (igMenuItem(__("Mask"), "", false, true)) {
                     MeshData empty;
                     incAddChildWithHistory(new Mask(empty, n), n);
                 }
@@ -59,7 +59,7 @@ protected:
                     igText(incTypeIdToIcon("PathDeform").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItem("PathDeform", "", false, true)) incAddChildWithHistory(new PathDeform(n), n);
+                if (igMenuItem(__("PathDeform"), "", false, true)) incAddChildWithHistory(new PathDeform(n), n);
                 
                 igEndMenu();
             }
@@ -80,7 +80,7 @@ protected:
                 }
                 
 
-                if (igBeginMenu("More Info", true)) {
+                if (igBeginMenu(__("More Info"), true)) {
                     if (selected.length > 1) {
                         foreach(sn; selected) {
                             
@@ -307,7 +307,7 @@ protected:
 public:
 
     this() {
-        super(_("Nodes"), true);
+        super("Nodes", _("Nodes"), true);
         flags |= ImGuiWindowFlags.NoScrollbar;
     }
 }

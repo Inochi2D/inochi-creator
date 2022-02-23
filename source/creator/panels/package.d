@@ -8,6 +8,7 @@ module creator.panels;
 import creator.core.settings;
 import bindbc.imgui;
 import std.string;
+import i18n;
 
 public import creator.panels.logger;
 
@@ -17,14 +18,17 @@ public import creator.panels.logger;
 abstract class Panel {
 private:
     string name_;
+    string displayName_;
     bool defaultVisibility;
+    const(char)* windowID;
+
 protected:
     ImVec2 panelSpace;
     abstract void onUpdate();
     ImGuiWindowFlags flags;
 
     void onBeginUpdate() {
-        igBegin(name.toStringz, &visible, flags);
+        igBegin(windowID, &visible, flags);
         igGetContentRegionAvail(&panelSpace);
     }
     
@@ -49,8 +53,9 @@ public:
     /**
         Constructs a panel
     */
-    this(string name, bool defaultVisibility) {
+    this(string name, string displayName, bool defaultVisibility) {
         this.name_ = name;
+        this.displayName_ = displayName;
         this.visible = defaultVisibility;
         this.defaultVisibility = defaultVisibility;
     }
@@ -60,9 +65,14 @@ public:
     */
     final void init_() {
         onInit();
+
+        // Workaround for the fact that panels are initialized in shared static this
+        this.displayName_ = _(this.displayName_);
         if (incSettingsCanGet(this.name_~".visible")) {
             visible = incSettingsGet!bool(this.name_~".visible");
         }
+
+        windowID = "%s###%s".format(displayName_, name_).toStringz;
     }
 
     final string name() {
