@@ -42,7 +42,7 @@ protected:
                         incModelModeHeader(node);
                         incInspectorModelTRS(node);
 
-                        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Sorting");
+                        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Sorting"));
                         float zsortV = node.relZSort;
                         if (igInputFloat("ZSort", &zsortV, 0.01, 0.05, "%0.2f")) {
                             node.zSort = zsortV;

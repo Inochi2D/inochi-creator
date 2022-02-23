@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-23 22:22+0100\n"
+"POT-Creation-Date: 2022-02-23 22:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,6 +62,10 @@ msgstr ""
 
 #: source/creator/panels/actionhistory.d:69
 msgid "History"
+msgstr ""
+
+#: source/creator/panels/inspector.d:45
+msgid "Sorting"
 msgstr ""
 
 #: source/creator/panels/inspector.d:85
