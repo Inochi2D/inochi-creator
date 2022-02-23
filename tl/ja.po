@@ -1,300 +1,301 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Language jp translations for PACKAGE package.
+# Copyright (C) 2022 Inochi2D Project
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Luna the Foxgirl <cli-luna@protonmail.com>, 2022.
+# Sae Okuri <sae.okuri@gmail.com>, 2022.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-23 22:22+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2022-02-23 19:07+0100\n"
+"Last-Translator: Sae Okuri <sae.okuri@gmail.com>\n"
+"Language-Team: Language ja\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: source/creator/actions/node.d:92
 #, c-format
 msgid "Moved %s to %s"
-msgstr ""
+msgstr "%1$sを%2$sに移動しました"
 
 #: source/creator/actions/node.d:100
 #, c-format
 msgid "Moved %s from %s"
-msgstr ""
+msgstr "%2$sから%1$sに移動しました"
 
 #: source/creator/actions/node.d:140 source/creator/actions/node.d:147
 msgid "Enabled"
-msgstr ""
+msgstr "有効"
 
 #: source/creator/actions/node.d:140 source/creator/actions/node.d:147
+#, fuzzy
 msgid "Disabled"
-msgstr ""
+msgstr "無効"
 
 #: source/creator/actions/node.d:147
 #, c-format
 msgid "%s was %s"
-msgstr ""
+msgstr "%1$sは%2$sでした"
 
 #: source/creator/actions/node.d:201
 msgid "Unnamed "
-msgstr ""
+msgstr "無題"
 
 #: source/creator/actions/node.d:259
 #, c-format
 msgid "%s->%s changed to %s"
-msgstr ""
+msgstr "%1$s→%2$s %3$sに変更しました"
 
 #: source/creator/actions/node.d:266
 #, c-format
 msgid "%s->%s changed from %s"
-msgstr ""
+msgstr "%1$s→%2$s %3$sを変更しました"
 
 #. Ugly hack to please imgui
 #: source/creator/panels/actionhistory.d:60
 #, c-format
 msgid "%d of %d"
-msgstr ""
+msgstr "%d/%d"
 
 #: source/creator/panels/actionhistory.d:69
 msgid "History"
-msgstr ""
+msgstr "履歴"
 
 #: source/creator/panels/inspector.d:85
 msgid "No nodes selected..."
-msgstr ""
+msgstr "ノードが選択されていません"
 
 #: source/creator/panels/inspector.d:87
 msgid "Can only inspect a single node..."
-msgstr ""
+msgstr "単一のノードのみを検査できます..."
 
 #: source/creator/panels/inspector.d:93
 msgid "Inspector"
-msgstr ""
+msgstr "インスペクター"
 
 #: source/creator/panels/inspector.d:136 source/creator/panels/nodes.d:142
 msgid "Puppet"
-msgstr ""
+msgstr "パペット"
 
 #: source/creator/panels/inspector.d:149 source/creator/panels/inspector.d:154
 msgid "Inochi2D Ver."
-msgstr ""
+msgstr "バージョン."
 
 #: source/creator/panels/inspector.d:160
 msgid "General Info"
-msgstr ""
+msgstr "基本情報"
 
 #: source/creator/panels/inspector.d:164
 msgid "Name"
-msgstr ""
+msgstr "名称"
 
 #: source/creator/panels/inspector.d:165
 msgid "Name of the puppet"
-msgstr ""
+msgstr "パペットの名称"
 
 #: source/creator/panels/inspector.d:171
 msgid "Artist(s)"
-msgstr ""
+msgstr "イラストレーター"
 
 #: source/creator/panels/inspector.d:172
 msgid "Artists who've drawn the puppet, seperated by comma"
-msgstr ""
+msgstr "イラストレーター（カンマ区切り）"
 
 #: source/creator/panels/inspector.d:178
 msgid "Rigger(s)"
-msgstr ""
+msgstr "モデラー"
 
 #: source/creator/panels/inspector.d:179
 msgid "Riggers who've rigged the puppet, seperated by comma"
-msgstr ""
+msgstr "モデラー（カンマ区切り）"
 
 #: source/creator/panels/inspector.d:185
 msgid "Contact"
-msgstr ""
+msgstr "お問い合わせ"
 
 #: source/creator/panels/inspector.d:186
 msgid "Where to contact the main author of the puppet"
-msgstr ""
+msgstr "連絡先"
 
 #: source/creator/panels/inspector.d:191
 msgid "License Info"
-msgstr ""
+msgstr "ライセンス"
 
 #: source/creator/panels/inspector.d:195
 msgid "License URL"
-msgstr ""
+msgstr "ライセンスURL"
 
 #: source/creator/panels/inspector.d:196
 msgid "Link/URL to license"
-msgstr ""
+msgstr "ライセンスへのリンク"
 
 #: source/creator/panels/inspector.d:202
 msgid "Copyright"
-msgstr ""
+msgstr "著作者"
 
 #: source/creator/panels/inspector.d:203
 msgid "Copyright holder information of the puppet"
-msgstr ""
+msgstr "著作者情報"
 
 #: source/creator/panels/inspector.d:209
 msgid "Origin"
-msgstr ""
+msgstr "オリジナル"
 
 #: source/creator/panels/inspector.d:210
 msgid "Where the model comes from on the internet."
-msgstr ""
+msgstr "元になったモデル"
 
 #.
 #. Translation
 #.
 #: source/creator/panels/inspector.d:243
 msgid "Translation"
-msgstr ""
+msgstr "翻訳"
 
 #: source/creator/panels/inspector.d:264
 msgid "Lock Translate X"
-msgstr ""
+msgstr "Xの翻訳を固定"
 
 #: source/creator/panels/inspector.d:293
 msgid "Lock Translate Y"
-msgstr ""
+msgstr "Yの翻訳を固定"
 
 #: source/creator/panels/inspector.d:322
 msgid "Lock Translate Z"
-msgstr ""
+msgstr "Zの翻訳を固定"
 
 #: source/creator/panels/inspector.d:338
 msgid "Rotation"
-msgstr ""
+msgstr "回転"
 
 #: source/creator/panels/inspector.d:346
 msgid "Rotation X"
-msgstr ""
+msgstr "X軸回転"
 
 #: source/creator/panels/inspector.d:359
 msgid "Lock Rotation X"
-msgstr ""
+msgstr "X軸回転を固定"
 
 #: source/creator/panels/inspector.d:375
 msgid "Rotation Y"
-msgstr ""
+msgstr "Y軸回転"
 
 #: source/creator/panels/inspector.d:388
 msgid "Lock Rotation Y"
-msgstr ""
+msgstr "Y軸回転を固定"
 
 #: source/creator/panels/inspector.d:404
 msgid "Rotation Z"
-msgstr ""
+msgstr "Z軸回転"
 
 #: source/creator/panels/inspector.d:417
 msgid "Lock Rotation Z"
-msgstr ""
+msgstr "Z軸回転を固定"
 
 #: source/creator/panels/inspector.d:434
 msgid "Scale"
-msgstr ""
+msgstr "スケール"
 
 #: source/creator/panels/inspector.d:442
 msgid "Scale X"
-msgstr ""
+msgstr "X軸スケール"
 
 #: source/creator/panels/inspector.d:454
 msgid "Lock Scale X"
-msgstr ""
+msgstr "X軸スケールを固定"
 
 #: source/creator/panels/inspector.d:470
 msgid "Scale Y"
-msgstr ""
+msgstr "Y軸スケール"
 
 #: source/creator/panels/inspector.d:482
 msgid "Lock Scale Y"
-msgstr ""
+msgstr "Y軸スケールを固定"
 
 #: source/creator/panels/inspector.d:496 source/creator/panels/inspector.d:497
 #: source/creator/panels/inspector.d:502
 msgid "Snap to Pixel"
-msgstr ""
+msgstr "ピクセルにスナップ"
 
 #: source/creator/panels/inspector.d:517 source/creator/panels/inspector.d:639
 msgid "Drawable"
-msgstr ""
+msgstr "描画可能"
 
 #: source/creator/panels/inspector.d:530
 msgid "Edit Mesh"
-msgstr ""
+msgstr "メッシュの編集"
 
 #: source/creator/panels/inspector.d:539 source/creator/panels/inspector.d:545
 msgid "Part"
-msgstr ""
+msgstr "パーツ"
 
 #: source/creator/panels/inspector.d:541
 msgid "Cannot inspect an unmeshed part"
-msgstr ""
+msgstr "メッシュされていないパーツは検査できません"
 
 #: source/creator/panels/inspector.d:551
 msgid "Blending"
-msgstr ""
+msgstr "合成"
 
 #: source/creator/panels/inspector.d:553
 msgid "Normal"
-msgstr ""
+msgstr "通常"
 
 #: source/creator/panels/inspector.d:554
 msgid "Multiply"
-msgstr ""
+msgstr "複数"
 
 #: source/creator/panels/inspector.d:561
 msgid "Opacity"
-msgstr ""
+msgstr "不透明度"
 
 #: source/creator/panels/inspector.d:565
 msgid "Masks"
-msgstr ""
+msgstr "マスク"
 
 #. MASK MODE
 #: source/creator/panels/inspector.d:569
 msgid "Mode"
-msgstr ""
+msgstr "モード"
 
 #: source/creator/panels/inspector.d:569 source/creator/panels/inspector.d:574
 msgid "Dodge"
-msgstr ""
+msgstr "回避"
 
 #: source/creator/panels/inspector.d:569 source/creator/panels/inspector.d:571
 #: source/creator/panels/nodes.d:53
 msgid "Mask"
-msgstr ""
+msgstr "マスク"
 
 #. Sensitivity slider
 #: source/creator/panels/inspector.d:581
 msgid "Threshold"
-msgstr ""
+msgstr "スレッショルド"
 
 #. MASKED BY
 #: source/creator/panels/inspector.d:585
 msgid "Mask Sources"
-msgstr ""
+msgstr "マスクソース"
 
 #: source/creator/panels/inspector.d:647
 msgid "Triangulate"
-msgstr ""
+msgstr "三角形に分割"
 
 #: source/creator/panels/inspector.d:651
 msgid "Automatically connects vertices"
-msgstr ""
+msgstr "頂点を接続"
 
 #: source/creator/panels/inspector.d:662
 msgid "Apply"
-msgstr ""
+msgstr "確定"
 
 #: source/creator/panels/inspector.d:673
 msgid "Cancel"
-msgstr ""
+msgstr "キャンセル"
 
 #: source/creator/panels/logger.d:25
 msgid "Logger"
@@ -302,33 +303,33 @@ msgstr ""
 
 #: source/creator/panels/nodes.d:41
 msgid "Add"
-msgstr ""
+msgstr "追加"
 
 #: source/creator/panels/nodes.d:47
 msgid "Node"
-msgstr ""
+msgstr "ノード"
 
 #: source/creator/panels/nodes.d:62
 msgid "PathDeform"
-msgstr ""
+msgstr "パス変形"
 
 #. Option to hide the node (and subnodes)
 #: source/creator/panels/nodes.d:68
 msgid "Hide"
-msgstr ""
+msgstr "隠す"
 
 #. Option to show the node (and subnodes)
 #: source/creator/panels/nodes.d:68
 msgid "Show"
-msgstr ""
+msgstr "表示"
 
 #: source/creator/panels/nodes.d:72
 msgid "Delete"
-msgstr ""
+msgstr "削除"
 
 #: source/creator/panels/nodes.d:83
 msgid "More Info"
-msgstr ""
+msgstr "もっと見る"
 
 #. %s is the name of the node in the More Info menu
 #. %lu is the UUID of the node in the More Info menu
@@ -345,48 +346,48 @@ msgstr ""
 
 #: source/creator/panels/nodes.d:310
 msgid "Nodes"
-msgstr ""
+msgstr "ノード"
 
 #: source/creator/panels/parameters.d:63
 msgid "Parameters"
-msgstr ""
+msgstr "パラメータ"
 
 #: source/creator/panels/textureslots.d:66
 msgid "Texture Slots"
-msgstr ""
+msgstr "テクスチャスロット"
 
 #. TODO: check if in model test mode
 #: source/creator/panels/tracking.d:31
 msgid "VMC Receiver"
-msgstr ""
+msgstr "VMC レシーバー"
 
 #: source/creator/panels/tracking.d:33
 msgid "Port"
-msgstr ""
+msgstr "ポート"
 
 #: source/creator/panels/tracking.d:38
 msgid "OpenSeeFace Receiver"
-msgstr ""
+msgstr "OpenSeeFace レシーバー"
 
 #: source/creator/panels/tracking.d:46
 msgid "Tracking"
-msgstr ""
+msgstr "トラッキング"
 
 #: source/creator/panels/viewport.d:216
 msgid "Show/hide Vertices"
-msgstr ""
+msgstr "頂点の表示"
 
 #: source/creator/panels/viewport.d:224
 msgid "Show/hide Bounds"
-msgstr ""
+msgstr "境界の表示"
 
 #: source/creator/panels/viewport.d:232
 msgid "Show/hide Orientation Gizmo"
-msgstr ""
+msgstr "ギズモの表示"
 
 #: source/creator/panels/viewport.d:339
 msgid "Viewport"
-msgstr ""
+msgstr "表示領域"
 
 #: source/creator/utils/crashdump.d:51
 msgid ""
@@ -395,10 +396,14 @@ msgid ""
 "put on your desktop\n"
 "Via https://github.com/Inochi2D/inochi-creator/issues"
 msgstr ""
+"予期せずアプリケーションがクラッシュしました。\n"
+"問題解決のため、デスクトップにある inochi-creator-crashdump.txt の内容を以下"
+"の開発者窓口にお送りください。\n"
+"https://github.com/Inochi2D/inochi-creator/issues"
 
 #: source/creator/utils/crashdump.d:52
 msgid "Inochi Creator Crashdump"
-msgstr ""
+msgstr "クラッシュログ"
 
 #: source/creator/utils/crashdump.d:60
 msgid ""
@@ -410,241 +415,249 @@ msgid ""
 "Attach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/"
 "issues"
 msgstr ""
+"\n"
+"\n"
+"\n"
+"===   Inochi Creator がクラッシュしました   ===\n"
+"ホームフォルダにある inochi-creator-crashdump.txt を以下にgit issueとしてお送"
+"りください。\n"
+"https://github.com/Inochi2D/inochi-creator/issues"
 
 #: source/creator/widgets/mainmenu.d:44
 msgid "File"
-msgstr ""
+msgstr "ファイル"
 
 #: source/creator/widgets/mainmenu.d:45
 msgid "New"
-msgstr ""
+msgstr "新規作成"
 
 #: source/creator/widgets/mainmenu.d:49
 msgid "Open"
-msgstr ""
+msgstr "開く"
 
 #. Save button
 #: source/creator/widgets/mainmenu.d:53 source/creator/windows/settings.d:114
 msgid "Save"
-msgstr ""
+msgstr "保存"
 
 #: source/creator/widgets/mainmenu.d:56
 msgid "Save As..."
-msgstr ""
+msgstr "名前を付けて保存"
 
 #: source/creator/widgets/mainmenu.d:59
 msgid "Import"
-msgstr ""
+msgstr "インポート"
 
 #: source/creator/widgets/mainmenu.d:60
 msgid "Import photoshop document"
-msgstr ""
+msgstr "PSDファイルをインポート"
 
 #: source/creator/widgets/mainmenu.d:61
 msgid "Photoshop Document"
-msgstr ""
+msgstr "PSDファイル"
 
 #: source/creator/widgets/mainmenu.d:66 source/creator/widgets/mainmenu.d:81
 msgid "Import..."
-msgstr ""
+msgstr "インポート..."
 
 #: source/creator/widgets/mainmenu.d:72
 msgid "Import a standard Photoshop PSD file."
-msgstr ""
+msgstr "PSDファイルをインポート"
 
 #. This is only really useful for testing
 #. debug {
 #: source/creator/widgets/mainmenu.d:76
 msgid "Inochi2D Puppet"
-msgstr ""
+msgstr "Inochi2D パペット"
 
 #: source/creator/widgets/mainmenu.d:87
 msgid "Import existing puppet file"
-msgstr ""
+msgstr "パペットファイルをインポート"
 
 #. }
 #: source/creator/widgets/mainmenu.d:90
 msgid "Image Folder"
-msgstr ""
+msgstr "画像フォルダ"
 
 #: source/creator/widgets/mainmenu.d:91
 msgid "Select a Folder..."
-msgstr ""
+msgstr "フォルダを選択してください"
 
 #: source/creator/widgets/mainmenu.d:96
 msgid "Supports PNGs, TGAs and JPEGs."
-msgstr ""
+msgstr "サポート形式: PNG / TGA / JPEG"
 
 #: source/creator/widgets/mainmenu.d:99
 msgid "Export"
-msgstr ""
+msgstr "エクスポート"
 
 #: source/creator/widgets/mainmenu.d:100
 msgid "Inochi Puppet"
-msgstr ""
+msgstr "Inochi2D パペット"
 
 #: source/creator/widgets/mainmenu.d:107 source/creator/widgets/mainmenu.d:192
 msgid "Export..."
-msgstr ""
+msgstr "エクスポート中..."
 
 #: source/creator/widgets/mainmenu.d:121
 msgid "Quit"
-msgstr ""
+msgstr "終了"
 
 #: source/creator/widgets/mainmenu.d:125
 msgid "Edit"
-msgstr ""
+msgstr "編集"
 
 #: source/creator/widgets/mainmenu.d:126
 msgid "Undo"
-msgstr ""
+msgstr "戻る"
 
 #: source/creator/widgets/mainmenu.d:127
 msgid "Redo"
-msgstr ""
+msgstr "やり直す"
 
 #: source/creator/widgets/mainmenu.d:130
 msgid "Cut"
-msgstr ""
+msgstr "切り取り"
 
 #: source/creator/widgets/mainmenu.d:131
 msgid "Copy"
-msgstr ""
+msgstr "コピー"
 
 #: source/creator/widgets/mainmenu.d:132
 msgid "Paste"
-msgstr ""
+msgstr "貼り付け"
 
 #: source/creator/widgets/mainmenu.d:135 source/creator/windows/settings.d:130
 msgid "Settings"
-msgstr ""
+msgstr "設定"
 
 #: source/creator/widgets/mainmenu.d:146
 msgid "Style Editor"
-msgstr ""
+msgstr "スタイルエディター"
 
 #: source/creator/widgets/mainmenu.d:147
 msgid "ImGui Debugger"
-msgstr ""
+msgstr "ImGuiデバッガー"
 
 #: source/creator/widgets/mainmenu.d:152
 msgid "View"
-msgstr ""
+msgstr "表示"
 
 #: source/creator/widgets/mainmenu.d:153
 msgid "Reset Layout"
-msgstr ""
+msgstr "レイアウトをリセット"
 
 #: source/creator/widgets/mainmenu.d:185
 msgid "Save Screenshot"
-msgstr ""
+msgstr "スクリーンショットを保存"
 
 #: source/creator/widgets/mainmenu.d:217
 msgid "Saves screenshot as PNG of the editor framebuffer."
-msgstr ""
+msgstr "クリップボードにコピー"
 
 #: source/creator/widgets/mainmenu.d:219
 msgid "Show Stats for Nerds"
-msgstr ""
+msgstr "詳細情報"
 
 #: source/creator/widgets/mainmenu.d:227
 msgid "Tools"
-msgstr ""
+msgstr "ツール"
 
 #: source/creator/widgets/mainmenu.d:232
 msgid "Rebleed textures..."
-msgstr ""
+msgstr "テクスチャをリブリード中..."
 
 #: source/creator/widgets/mainmenu.d:236
 msgid "Generate Mipmaps..."
-msgstr ""
+msgstr "ミップマップを生成中..."
 
 #: source/creator/widgets/mainmenu.d:239
 msgid ""
 "In some instances mipmaps may need to be re-generated.\n"
 "For example PSD imports will need their mipmaps regenerated."
 msgstr ""
+"ミップマップの再作成が必要なことがあります。（PSDをインポートした場合など）"
 
 #. FULL REPAIR
 #: source/creator/widgets/mainmenu.d:249
 msgid "Attempt full repair..."
-msgstr ""
+msgstr "修復を試みます..."
 
 #: source/creator/widgets/mainmenu.d:252
 msgid ""
 "Attempts all the recovery and repair methods below on the currently loaded "
 "model"
-msgstr ""
+msgstr "現在読み込まれているモデルに、以下の復旧・修復方法を試みます。"
 
 #. REGEN NODE IDs
 #: source/creator/widgets/mainmenu.d:255
 msgid "Regenerate Node IDs"
-msgstr ""
+msgstr "ノードIDの再生成"
 
 #: source/creator/widgets/mainmenu.d:259
 msgid "Regenerates all the unique IDs for the model"
-msgstr ""
+msgstr "モデルの全ユニークIDを再生成"
 
 #. Premultiply textures
 #: source/creator/widgets/mainmenu.d:262
 msgid "Premultiply textures"
-msgstr ""
+msgstr "テクスチャを事前合成"
 
 #: source/creator/widgets/mainmenu.d:266
 msgid "Premultiplies textures"
-msgstr ""
+msgstr "事前合成されたテクスチャ"
 
 #: source/creator/widgets/mainmenu.d:272
 msgid "Verify INP File..."
-msgstr ""
+msgstr "INPファイルをチェック中..."
 
 #: source/creator/widgets/mainmenu.d:275
 msgid "Attempts to verify and repair INP files"
-msgstr ""
+msgstr "INPファイルのチェックと修復を行う。"
 
 #: source/creator/widgets/mainmenu.d:280
 msgid "Help"
-msgstr ""
+msgstr "ヘルプ"
 
 #: source/creator/widgets/mainmenu.d:282
 msgid "Tutorial"
-msgstr ""
+msgstr "チュートリアル"
 
 #: source/creator/widgets/mainmenu.d:285
 msgid "Online Documentation"
-msgstr ""
+msgstr "オンラインドキュメント"
 
 #: source/creator/widgets/mainmenu.d:289
 msgid "Inochi2D Documentation"
-msgstr ""
+msgstr "Inochi2Dについて"
 
 #: source/creator/widgets/mainmenu.d:294 source/creator/windows/about.d:91
 msgid "About"
-msgstr ""
+msgstr "Inochi Creatorについて"
 
 #. Donate button
 #. NOTE: Is this too obstructive in the UI?
 #: source/creator/widgets/mainmenu.d:304 source/creator/widgets/mainmenu.d:320
 msgid "Donate"
-msgstr ""
+msgstr "寄付"
 
 #: source/creator/widgets/mainmenu.d:323
 msgid "Support development via Patreon"
-msgstr ""
+msgstr "Patreonで開発者を支援する"
 
 #: source/creator/widgets/titlebar.d:107
 msgid " (Debug Mode)"
-msgstr ""
+msgstr "（デバッグモード）"
 
 #. A call for the human rights of transgender people to be respected
 #. it is shown in the custom titlebar every transgender awareness month.
 #: source/creator/widgets/titlebar.d:124
 msgid "Trans Rights!"
-msgstr ""
+msgstr "トランスジェンダーの権利運動"
 
 #: source/creator/windows/notice.d:51
 msgid "THIS IS BETA SOFTWARE!"
-msgstr ""
+msgstr "ベータ版です！"
 
 #: source/creator/windows/notice.d:54
 msgid ""
@@ -658,63 +671,70 @@ msgid ""
 "\n"
 "If you accept this press the \"Close\" button to continue"
 msgstr ""
+"「Inochi2DとInochi Creatorは開発中のため、Inochi Creator を重要な場面で使用す"
+"ることはお勧めしません。\n"
+"まだまだ修正すべき点やバグがたくさんあり、Inochi2Dプロジェクトは本アプリを"
+"使ったことによる\n"
+"アプリケーションやファイルの破損などに対して責任を負いません。\n"
+"上記に同意できる方のみ『閉じる』ボタンをクリックしてアプリを使用してくださ"
+"い。"
 
 #: source/creator/windows/notice.d:58
 msgid "Don't show again"
-msgstr ""
+msgstr "これ以降表示しない"
 
 #: source/creator/windows/notice.d:62
 msgid "Close"
-msgstr ""
+msgstr "閉じる"
 
 #: source/creator/windows/notice.d:70
 msgid "Under Construction"
-msgstr ""
+msgstr "開発中"
 
 #: source/creator/windows/settings.d:41
 msgid "General"
-msgstr ""
+msgstr "一般"
 
 #: source/creator/windows/settings.d:43
 msgid "Look and Feel"
-msgstr ""
+msgstr "見た目や操作感"
 
 #: source/creator/windows/settings.d:45
 msgid "Color Theme"
-msgstr ""
+msgstr "カラーテーマ"
 
 #: source/creator/windows/settings.d:45 source/creator/windows/settings.d:46
 msgid "Dark"
-msgstr ""
+msgstr "ダーク"
 
 #: source/creator/windows/settings.d:45 source/creator/windows/settings.d:47
 msgid "Light"
-msgstr ""
+msgstr "明るい"
 
 #: source/creator/windows/settings.d:53
 msgid "Language"
-msgstr ""
+msgstr "言語設定"
 
 #: source/creator/windows/settings.d:61
 msgid "UI Scale (EXPERIMENTAL)"
-msgstr ""
+msgstr "UIスケール（試験段階）"
 
 #: source/creator/windows/settings.d:71
 msgid "Use Native Titlebar"
-msgstr ""
+msgstr "オリジナルのタイトルバーを使う"
 
 #: source/creator/windows/settings.d:85
 msgid "Max Undo History"
-msgstr ""
+msgstr "アンドゥの最大値"
 
 #: source/creator/windows/settings.d:94
 msgid "Accessibility"
-msgstr ""
+msgstr "アクセシビリティ"
 
 #: source/creator/windows/settings.d:102
 msgid "Other"
-msgstr ""
+msgstr "その他"
 
 #: source/creator/windows/texviewer.d:46
 msgid "Texture Viewer"
-msgstr ""
+msgstr "テクスチャビューワー"

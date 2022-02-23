@@ -33,3 +33,23 @@ Check if the merges make sense, if so replace `<langcode>.po` with `<langcode>_m
 ## I need to reorder format parameters
 To specify which format parameter you're indexing, use the `<index>$` operator.  
 Eg. `%2$s` will index the second entry of the format string.
+
+&nbsp;
+&nbsp;
+
+## Generating output file
+```
+msgfmt tl/<langcode>.po -o <langcode>.mo
+```
+The `<langcode>.mo` file can be put in the configuration directory, or next to the executable for testing.
+
+&nbsp;
+&nbsp;
+
+# Translation Storage
+Final translations will be stored in the .inochi-creator folder, which resides in
+ * `~/.config/.inochi-creator` on Linux
+ * `~/Library/Application Support/.inochi-creator` on macOS
+ * `%AppData%/.inochi-creator` on Windows
+
+But Inochi Creator will also try to locate translation files in the current executable directory, as well as the current working directory.

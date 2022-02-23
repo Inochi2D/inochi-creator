@@ -38,7 +38,7 @@ protected:
         igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(4, 4));
             igBeginChild("SettingsWindowChild", ImVec2(512*incGetUIScale(), 512*incGetUIScale()));
                 if (igBeginTabBar("SettingsWindowTabs", ImGuiTabBarFlags.NoCloseWithMiddleMouseButton)) {
-                    if(igBeginTabItem("General", &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
+                    if(igBeginTabItem(__("General"), &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
                         igBeginChild("#GeneralTabItems", ImVec2(0, -26));
                             igText(__("Look and Feel"));
                             igSeparator();

@@ -16,6 +16,7 @@ Dansk
  * Luna the Foxgirl
 日本語
  * 40Nix
+ * Sae Okuri
 
 === Technology Used ===
  * ImGui           - by Orconut
