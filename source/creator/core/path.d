@@ -7,6 +7,7 @@ private {
     string cachedConfigDir;
     string cachedImguiFileDir;
     string cachedFontDir;
+    string cachedLocaleDir;
 }
 
 /**
@@ -100,4 +101,18 @@ string incGetAppFontsPath() {
         // TODO: Write a license file for OpenDyslexic?
     }
     return cachedFontDir;
+}
+
+/**
+    Gets directory for custom fonts
+*/
+string incGetAppLocalePath() {
+    if (cachedLocaleDir) return cachedLocaleDir;
+    cachedLocaleDir = buildPath(incGetAppConfigPath(), "i18n");
+    if (!exists(cachedLocaleDir)) {
+        
+        // Create our font directory
+        mkdirRecurse(cachedLocaleDir);
+    }
+    return cachedLocaleDir;
 }

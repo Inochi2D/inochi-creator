@@ -8,6 +8,7 @@ module creator.windows.settings;
 import creator.windows;
 import creator.widgets;
 import creator.core;
+import creator.core.i18n;
 import std.string;
 import creator.utils.link;
 import i18n;
@@ -47,7 +48,13 @@ protected:
 
                                 igEndCombo();
                             }
-                            if(igBeginCombo(__("Language"), "English")) {
+                            
+                            import std.string : toStringz;
+                            if(igBeginCombo(__("Language"), incLocaleCurrentName().toStringz)) {
+                                if (igSelectable("English")) incLocaleSet(null);
+                                foreach(entry; incLocaleGetEntries()) {
+                                    if (igSelectable(entry.humanNameC)) incLocaleSet(entry.code);
+                                }
                                 igEndCombo();
                             }
 

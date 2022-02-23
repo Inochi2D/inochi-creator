@@ -12,6 +12,7 @@ import creator.panels;
 import creator.windows;
 import creator.widgets;
 import creator.core.actionstack;
+import creator.core.i18n;
 import inochi2d;
 import creator;
 import i18n;
@@ -28,6 +29,13 @@ int main(string[] args)
 
     incOpenWindow();
     incNewProject();
+
+    incLocaleInit();
+    if (incSettingsCanGet("lang")) {
+        string lang = incSettingsGet!string("lang");
+        import std.path : buildPath, setExtension;
+        i18nLoadLanguage(buildPath(incGetAppLocalePath(), lang).setExtension(".mo"));
+    }
 
     if (incSettingsGet!bool("ShowWarning", true)) {
         incPushWindow(new NoticeWindow());
