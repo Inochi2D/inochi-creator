@@ -10,6 +10,7 @@ import creator.widgets;
 import creator;
 import std.string;
 import inochi2d;
+import i18n;
 
 /**
     Generates a parameter view
@@ -59,7 +60,7 @@ protected:
 
 public:
     this() {
-        super("Parameters", false);
+        super(_("Parameters"), false);
     }
 }
 

@@ -220,15 +220,17 @@ void incDeleteChildWithHistory(Node n) {
 /**
     Node value changed action
 */
-class NodeValueChangeAction(TNode, T, string name) : Action if (is(TNode : Node)) {
+class NodeValueChangeAction(TNode, T) : Action if (is(TNode : Node)) {
 public:
     alias TSelf = typeof(this);
     TNode node;
     T oldValue;
     T newValue;
     T* valuePtr;
+    string name;
 
-    this(TNode node, T oldValue, T newValue, T* valuePtr) {
+    this(string name, TNode node, T oldValue, T newValue, T* valuePtr) {
+        this.name = name;
         this.node = node;
         this.oldValue = oldValue;
         this.newValue = newValue;

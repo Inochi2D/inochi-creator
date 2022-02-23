@@ -14,6 +14,7 @@ import creator.widgets;
 import creator.core.actionstack;
 import inochi2d;
 import creator;
+import i18n;
 
 version(D_X32) {
     static assert(0, "😎👉👉 no");
@@ -27,6 +28,8 @@ int main(string[] args)
 
     incOpenWindow();
     incNewProject();
+
+    i18nLoadLanguage("jp.mo");
 
     if (incSettingsGet!bool("ShowWarning", true)) {
         incPushWindow(new NoticeWindow());

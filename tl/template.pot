@@ -1,0 +1,660 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-02-23 15:21+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Ugly hack to please imgui
+#: source/creator/panels/actionhistory.d:60
+#, c-format
+msgid "%d of %d"
+msgstr ""
+
+#: source/creator/panels/actionhistory.d:69
+msgid "History"
+msgstr ""
+
+#: source/creator/panels/inspector.d:85
+msgid "No nodes selected..."
+msgstr ""
+
+#: source/creator/panels/inspector.d:87
+msgid "Can only inspect a single node..."
+msgstr ""
+
+#: source/creator/panels/inspector.d:93
+msgid "Inspector"
+msgstr ""
+
+#: source/creator/panels/inspector.d:136 source/creator/panels/nodes.d:142
+msgid "Puppet"
+msgstr ""
+
+#: source/creator/panels/inspector.d:149 source/creator/panels/inspector.d:154
+msgid "Inochi2D Ver."
+msgstr ""
+
+#: source/creator/panels/inspector.d:160
+msgid "General Info"
+msgstr ""
+
+#: source/creator/panels/inspector.d:164
+msgid "Name"
+msgstr ""
+
+#: source/creator/panels/inspector.d:165
+msgid "Name of the puppet"
+msgstr ""
+
+#: source/creator/panels/inspector.d:171
+msgid "Artist(s)"
+msgstr ""
+
+#: source/creator/panels/inspector.d:172
+msgid "Artists who've drawn the puppet, seperated by comma"
+msgstr ""
+
+#: source/creator/panels/inspector.d:178
+msgid "Rigger(s)"
+msgstr ""
+
+#: source/creator/panels/inspector.d:179
+msgid "Riggers who've rigged the puppet, seperated by comma"
+msgstr ""
+
+#: source/creator/panels/inspector.d:185
+msgid "Contact"
+msgstr ""
+
+#: source/creator/panels/inspector.d:186
+msgid "Where to contact the main author of the puppet"
+msgstr ""
+
+#: source/creator/panels/inspector.d:191
+msgid "License Info"
+msgstr ""
+
+#: source/creator/panels/inspector.d:195
+msgid "License URL"
+msgstr ""
+
+#: source/creator/panels/inspector.d:196
+msgid "Link/URL to license"
+msgstr ""
+
+#: source/creator/panels/inspector.d:202
+msgid "Copyright"
+msgstr ""
+
+#: source/creator/panels/inspector.d:203
+msgid "Copyright holder information of the puppet"
+msgstr ""
+
+#: source/creator/panels/inspector.d:209
+msgid "Origin"
+msgstr ""
+
+#: source/creator/panels/inspector.d:210
+msgid "Where the model comes from on the internet."
+msgstr ""
+
+#.
+#. Translation
+#.
+#: source/creator/panels/inspector.d:243
+msgid "Translation"
+msgstr ""
+
+#: source/creator/panels/inspector.d:264
+msgid "Lock Translate X"
+msgstr ""
+
+#: source/creator/panels/inspector.d:293
+msgid "Lock Translate Y"
+msgstr ""
+
+#: source/creator/panels/inspector.d:322
+msgid "Lock Translate Z"
+msgstr ""
+
+#: source/creator/panels/inspector.d:338
+msgid "Rotation"
+msgstr ""
+
+#: source/creator/panels/inspector.d:346
+msgid "Rotation X"
+msgstr ""
+
+#: source/creator/panels/inspector.d:359
+msgid "Lock Rotation X"
+msgstr ""
+
+#: source/creator/panels/inspector.d:375
+msgid "Rotation Y"
+msgstr ""
+
+#: source/creator/panels/inspector.d:388
+msgid "Lock Rotation Y"
+msgstr ""
+
+#: source/creator/panels/inspector.d:404
+msgid "Rotation Z"
+msgstr ""
+
+#: source/creator/panels/inspector.d:417
+msgid "Lock Rotation Z"
+msgstr ""
+
+#: source/creator/panels/inspector.d:434
+msgid "Scale"
+msgstr ""
+
+#: source/creator/panels/inspector.d:442
+msgid "Scale X"
+msgstr ""
+
+#: source/creator/panels/inspector.d:454
+msgid "Lock Scale X"
+msgstr ""
+
+#: source/creator/panels/inspector.d:470
+msgid "Scale Y"
+msgstr ""
+
+#: source/creator/panels/inspector.d:482
+msgid "Lock Scale Y"
+msgstr ""
+
+#: source/creator/panels/inspector.d:496 source/creator/panels/inspector.d:497
+#: source/creator/panels/inspector.d:502
+msgid "Snap to Pixel"
+msgstr ""
+
+#: source/creator/panels/inspector.d:517 source/creator/panels/inspector.d:639
+msgid "Drawable"
+msgstr ""
+
+#: source/creator/panels/inspector.d:530
+msgid "Edit Mesh"
+msgstr ""
+
+#: source/creator/panels/inspector.d:539 source/creator/panels/inspector.d:545
+msgid "Part"
+msgstr ""
+
+#: source/creator/panels/inspector.d:541
+msgid "Cannot inspect an unmeshed part"
+msgstr ""
+
+#: source/creator/panels/inspector.d:551
+msgid "Blending"
+msgstr ""
+
+#: source/creator/panels/inspector.d:553
+msgid "Normal"
+msgstr ""
+
+#: source/creator/panels/inspector.d:554
+msgid "Multiply"
+msgstr ""
+
+#: source/creator/panels/inspector.d:561
+msgid "Opacity"
+msgstr ""
+
+#: source/creator/panels/inspector.d:565
+msgid "Masks"
+msgstr ""
+
+#. MASK MODE
+#: source/creator/panels/inspector.d:569
+msgid "Mode"
+msgstr ""
+
+#: source/creator/panels/inspector.d:569 source/creator/panels/inspector.d:574
+msgid "Dodge"
+msgstr ""
+
+#: source/creator/panels/inspector.d:569 source/creator/panels/inspector.d:571
+msgid "Mask"
+msgstr ""
+
+#. Sensitivity slider
+#: source/creator/panels/inspector.d:581
+msgid "Threshold"
+msgstr ""
+
+#. MASKED BY
+#: source/creator/panels/inspector.d:585
+msgid "Mask Sources"
+msgstr ""
+
+#: source/creator/panels/inspector.d:647
+msgid "Triangulate"
+msgstr ""
+
+#: source/creator/panels/inspector.d:651
+msgid "Automatically connects vertices"
+msgstr ""
+
+#: source/creator/panels/inspector.d:662
+msgid "Apply"
+msgstr ""
+
+#: source/creator/panels/inspector.d:673
+msgid "Cancel"
+msgstr ""
+
+#: source/creator/panels/nodes.d:41
+msgid "Add"
+msgstr ""
+
+#. Option to hide the node (and subnodes)
+#: source/creator/panels/nodes.d:68
+msgid "Hide"
+msgstr ""
+
+#. Option to show the node (and subnodes)
+#: source/creator/panels/nodes.d:68
+msgid "Show"
+msgstr ""
+
+#: source/creator/panels/nodes.d:72
+msgid "Delete"
+msgstr ""
+
+#. %s is the name of the node in the More Info menu
+#. %lu is the UUID of the node in the More Info menu
+#: source/creator/panels/nodes.d:89
+#, c-format
+msgid "%s ID: %lu"
+msgstr ""
+
+#. %lu is the UUID of the node in the More Info menu
+#: source/creator/panels/nodes.d:93
+#, c-format
+msgid "ID: %lu"
+msgstr ""
+
+#: source/creator/panels/nodes.d:310
+msgid "Nodes"
+msgstr ""
+
+#: source/creator/panels/parameters.d:63
+msgid "Parameters"
+msgstr ""
+
+#: source/creator/panels/textureslots.d:66
+msgid "Texture Slots"
+msgstr ""
+
+#. TODO: check if in model test mode
+#: source/creator/panels/tracking.d:31
+msgid "VMC Receiver"
+msgstr ""
+
+#: source/creator/panels/tracking.d:33
+msgid "Port"
+msgstr ""
+
+#: source/creator/panels/tracking.d:38
+msgid "OpenSeeFace Receiver"
+msgstr ""
+
+#: source/creator/panels/tracking.d:46
+msgid "Tracking"
+msgstr ""
+
+#: source/creator/panels/viewport.d:216
+msgid "Show/hide Vertices"
+msgstr ""
+
+#: source/creator/panels/viewport.d:224
+msgid "Show/hide Bounds"
+msgstr ""
+
+#: source/creator/panels/viewport.d:232
+msgid "Show/hide Orientation Gizmo"
+msgstr ""
+
+#: source/creator/panels/viewport.d:339
+msgid "Viewport"
+msgstr ""
+
+#: source/creator/utils/crashdump.d:51
+msgid ""
+"The application has unexpectedly crashed\n"
+"Please send the developers the inochi-creator-crashdump.txt which has been "
+"put on your desktop\n"
+"Via https://github.com/Inochi2D/inochi-creator/issues"
+msgstr ""
+
+#: source/creator/utils/crashdump.d:52
+msgid "Inochi Creator Crashdump"
+msgstr ""
+
+#: source/creator/utils/crashdump.d:60
+msgid ""
+"\n"
+"\n"
+"\n"
+"===   Inochi Creator has crashed   ===\n"
+"Please send us the inochi-creator-crashdump.txt file in your home folder\n"
+"Attach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/"
+"issues"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:44
+msgid "File"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:45
+msgid "New"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:49
+msgid "Open"
+msgstr ""
+
+#. Save button
+#: source/creator/widgets/mainmenu.d:53 source/creator/windows/settings.d:107
+msgid "Save"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:56
+msgid "Save As..."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:59
+msgid "Import"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:60
+msgid "Import photoshop document"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:61
+msgid "Photoshop Document"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:66 source/creator/widgets/mainmenu.d:81
+msgid "Import..."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:72
+msgid "Import a standard Photoshop PSD file."
+msgstr ""
+
+#. This is only really useful for testing
+#. debug {
+#: source/creator/widgets/mainmenu.d:76
+msgid "Inochi2D Puppet"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:87
+msgid "Import existing puppet file"
+msgstr ""
+
+#. }
+#: source/creator/widgets/mainmenu.d:90
+msgid "Image Folder"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:91
+msgid "Select a Folder..."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:96
+msgid "Supports PNGs, TGAs and JPEGs."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:99
+msgid "Export"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:100
+msgid "Inochi Puppet"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:107 source/creator/widgets/mainmenu.d:192
+msgid "Export..."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:121
+msgid "Quit"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:125
+msgid "Edit"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:126
+msgid "Undo"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:127
+msgid "Redo"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:130
+msgid "Cut"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:131
+msgid "Copy"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:132
+msgid "Paste"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:135 source/creator/windows/settings.d:123
+msgid "Settings"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:146
+msgid "Style Editor"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:147
+msgid "ImGui Debugger"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:152
+msgid "View"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:153
+msgid "Reset Layout"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:185
+msgid "Save Screenshot"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:217
+msgid "Saves screenshot as PNG of the editor framebuffer."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:219
+msgid "Show Stats for Nerds"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:227
+msgid "Tools"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:232
+msgid "Rebleed textures..."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:236
+msgid "Generate Mipmaps..."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:239
+msgid ""
+"In some instances mipmaps may need to be re-generated.\n"
+"For example PSD imports will need their mipmaps regenerated."
+msgstr ""
+
+#. FULL REPAIR
+#: source/creator/widgets/mainmenu.d:249
+msgid "Attempt full repair..."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:252
+msgid ""
+"Attempts all the recovery and repair methods below on the currently loaded "
+"model"
+msgstr ""
+
+#. REGEN NODE IDs
+#: source/creator/widgets/mainmenu.d:255
+msgid "Regenerate Node IDs"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:259
+msgid "Regenerates all the unique IDs for the model"
+msgstr ""
+
+#. Premultiply textures
+#: source/creator/widgets/mainmenu.d:262
+msgid "Premultiply textures"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:266
+msgid "Premultiplies textures"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:272
+msgid "Verify INP File..."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:275
+msgid "Attempts to verify and repair INP files"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:280
+msgid "Help"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:282
+msgid "Tutorial"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:285
+msgid "Online Documentation"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:289
+msgid "Inochi2D Documentation"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:294 source/creator/windows/about.d:91
+msgid "About"
+msgstr ""
+
+#. Donate button
+#. NOTE: Is this too obstructive in the UI?
+#: source/creator/widgets/mainmenu.d:304 source/creator/widgets/mainmenu.d:320
+msgid "Donate"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:323
+msgid "Support development via Patreon"
+msgstr ""
+
+#: source/creator/widgets/titlebar.d:107
+msgid " (Debug Mode)"
+msgstr ""
+
+#: source/creator/widgets/titlebar.d:121
+msgid "Trans Rights!"
+msgstr ""
+
+#: source/creator/windows/notice.d:51
+msgid "THIS IS BETA SOFTWARE!"
+msgstr ""
+
+#: source/creator/windows/notice.d:54
+msgid ""
+"Inochi2D and Inochi Creator is currently under heavy development\n"
+"Using Inochi Creator in production is not advised, it *will* crash\n"
+"out of nowhere and there's still plenty of bugs to fix.\n"
+"\n"
+"The Inochi2D project is not to be held liable for broken\n"
+"puppet files or crashes resulting from using this beta \n"
+"software.\n"
+"\n"
+"If you accept this press the \"Close\" button to continue"
+msgstr ""
+
+#: source/creator/windows/notice.d:58
+msgid "Don't show again"
+msgstr ""
+
+#: source/creator/windows/notice.d:62
+msgid "Close"
+msgstr ""
+
+#: source/creator/windows/notice.d:70
+msgid "Under Construction"
+msgstr ""
+
+#: source/creator/windows/settings.d:42
+msgid "Look and Feel"
+msgstr ""
+
+#: source/creator/windows/settings.d:44
+msgid "Color Theme"
+msgstr ""
+
+#: source/creator/windows/settings.d:44 source/creator/windows/settings.d:45
+msgid "Dark"
+msgstr ""
+
+#: source/creator/windows/settings.d:44 source/creator/windows/settings.d:46
+msgid "Light"
+msgstr ""
+
+#: source/creator/windows/settings.d:50
+msgid "Language"
+msgstr ""
+
+#: source/creator/windows/settings.d:54
+msgid "UI Scale (EXPERIMENTAL)"
+msgstr ""
+
+#: source/creator/windows/settings.d:64
+msgid "Use Native Titlebar"
+msgstr ""
+
+#: source/creator/windows/settings.d:78
+msgid "Max Undo History"
+msgstr ""
+
+#: source/creator/windows/settings.d:87
+msgid "Accessibility"
+msgstr ""
+
+#: source/creator/windows/settings.d:95
+msgid "Other"
+msgstr ""
+
+#: source/creator/windows/texviewer.d:46
+msgid "Texture Viewer"
+msgstr ""

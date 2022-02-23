@@ -11,6 +11,7 @@ import creator : incActivePuppet;
 import bindbc.imgui;
 import inochi2d;
 import std.conv;
+import i18n;
 
 /**
     The textures frame
@@ -62,7 +63,7 @@ protected:
 
 public:
     this() {
-        super("Texture Slots", false);
+        super(_("Texture Slots"), false);
     }
 }
 

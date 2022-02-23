@@ -12,6 +12,7 @@ import creator;
 import std.string;
 import creator.utils.link;
 import inochi2d;
+import i18n;
 
 class AboutWindow : Window {
 protected:
@@ -53,7 +54,6 @@ protected:
         igEndChild();
         igBeginChild("##CreditsArea", ImVec2(0, -28*incGetUIScale()));
 
-
             igText(import("CONTRIBUTORS.md"));
 
         igEndChild();
@@ -88,7 +88,7 @@ protected:
 
 public:
     this() {
-        super("About");
+        super(_("About"));
         this.onlyOne = true;
     }
 }

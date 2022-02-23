@@ -16,6 +16,7 @@ import inochi2d;
 import inochi2d.core.dbg;
 import bindbc.imgui;
 import std.string;
+import i18n;
 
 /**
     A viewport
@@ -212,7 +213,7 @@ protected:
                                     incShowVertices = !incShowVertices;
                                 }
                             igPopFont();
-                            incTooltip("Show/hide Vertices");
+                            incTooltip(_("Show/hide Vertices"));
                                 
                             igPushFont(incIconFont());
                                 igSameLine(0, 0);
@@ -220,7 +221,7 @@ protected:
                                     incShowBounds = !incShowBounds;
                                 }
                             igPopFont();
-                            incTooltip("Show/hide Bounds");
+                            incTooltip(_("Show/hide Bounds"));
 
                             igPushFont(incIconFont());
                                 igSameLine(0, 0);
@@ -228,7 +229,7 @@ protected:
                                     incShowOrientation = !incShowOrientation;
                                 }
                             igPopFont();
-                            incTooltip("Show/hide Orientation Gizmo");
+                            incTooltip(_("Show/hide Orientation Gizmo"));
 
                         igPopStyleVar();
                     igEndChild();
@@ -335,7 +336,7 @@ protected:
 
 public:
     this() {
-        super("Viewport", true);
+        super(_("Viewport"), true);
         this.alwaysVisible = true;
     }
 

@@ -9,6 +9,7 @@ import creator.windows;
 import creator.core;
 import std.string;
 import creator.utils.link;
+import i18n;
 
 class NoticeWindow : Window {
 private:
@@ -47,26 +48,18 @@ protected:
         igBeginChild("##CreditsArea", ImVec2(0, -48));
 
             igPushFont(incBiggerFont());
-                igTextColored(ImVec4(1, 0, 0, 1), "THIS IS BETA SOFTWARE!");
+                igTextColored(ImVec4(1, 0, 0, 1), _("THIS IS BETA SOFTWARE!").toStringz);
             igPopFont();
             igSpacing();
-            igText("Inochi2D and Inochi Creator is currently under heavy development
-Using Inochi Creator in production is not advised, it *will* crash
-out of nowhere and there's still plenty of bugs to fix.
-
-The Inochi2D project is not to be held liable for broken
-puppet files or crashes resulting from using this beta 
-software.
-
-If you accept this press the \"Close\" button to continue");
+            igText(__("Inochi2D and Inochi Creator is currently under heavy development\nUsing Inochi Creator in production is not advised, it *will* crash\nout of nowhere and there's still plenty of bugs to fix.\n\nThe Inochi2D project is not to be held liable for broken\npuppet files or crashes resulting from using this beta \nsoftware.\n\nIf you accept this press the \"Close\" button to continue"));
 
         igEndChild();
 
-        if (igCheckbox("Don't show again", &doNotShowAgain)) {
+        if (igCheckbox(__("Don't show again"), &doNotShowAgain)) {
             incSettingsSet("ShowWarning", !doNotShowAgain);
         }
 
-        if (igButton("Close", ImVec2(0, 0))) {
+        if (igButton(__("Close"), ImVec2(0, 0))) {
             this.close();
         }
 
@@ -74,6 +67,6 @@ If you accept this press the \"Close\" button to continue");
 
 public:
     this() {
-        super("Under Construction");
+        super(_("Under Construction"));
     }
 }

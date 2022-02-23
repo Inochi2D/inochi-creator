@@ -10,6 +10,7 @@ import creator.widgets;
 import creator.core;
 import std.string;
 import creator.utils.link;
+import i18n;
 
 bool incIsSettingsOpen;
 
@@ -38,19 +39,19 @@ protected:
                 if (igBeginTabBar("SettingsWindowTabs", ImGuiTabBarFlags.NoCloseWithMiddleMouseButton)) {
                     if(igBeginTabItem("General", &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
                         igBeginChild("#GeneralTabItems", ImVec2(0, -26));
-                            igText("Look and Feel");
+                            igText(__("Look and Feel"));
                             igSeparator();
-                            if(igBeginCombo("Color Theme", incGetDarkMode() ? "Dark" : "Light")) {
-                                if (igSelectable("Dark", incGetDarkMode())) incSetDarkMode(true);
-                                if (igSelectable("Light", !incGetDarkMode())) incSetDarkMode(false);
+                            if(igBeginCombo(__("Color Theme"), incGetDarkMode() ? __("Dark") : __("Light"))) {
+                                if (igSelectable(__("Dark"), incGetDarkMode())) incSetDarkMode(true);
+                                if (igSelectable(__("Light"), !incGetDarkMode())) incSetDarkMode(false);
 
                                 igEndCombo();
                             }
-                            if(igBeginCombo("Language", "English")) {
+                            if(igBeginCombo(__("Language"), "English")) {
                                 igEndCombo();
                             }
 
-                            if(igBeginCombo("UI Scale (EXPERIMENTAL)", incGetUIScaleText().toStringz)) {
+                            if(igBeginCombo(__("UI Scale (EXPERIMENTAL)"), incGetUIScaleText().toStringz)) {
                                 if (igSelectable("100%")) incSetUIScale(1.0);
                                 if (igSelectable("150%")) incSetUIScale(1.5);
                                 if (igSelectable("200%")) incSetUIScale(2.0);
@@ -60,7 +61,7 @@ protected:
 
                             if (incCanUseAppTitlebar) {
                                 bool useNative = incGetUseNativeTitlebar();
-                                if (igCheckbox("Use Native Titlebar", &useNative)) {
+                                if (igCheckbox(__("Use Native Titlebar"), &useNative)) {
                                     incSettingsSet("UseNativeTitleBar", useNative);
                                     incSetUseNativeTitlebar(useNative);
                                 }
@@ -74,7 +75,7 @@ protected:
                             igSeparator();
                             
                             int maxHistory = cast(int)incActionGetUndoHistoryLength();
-                            if (igSliderInt("Max Undo History", &maxHistory, 0, 1000, "%d")) {
+                            if (igSliderInt(__("Max Undo History"), &maxHistory, 0, 1000, "%d")) {
                                 incActionSetUndoHistoryLength(maxHistory);
                             }
 
@@ -83,7 +84,7 @@ protected:
                         igEndTabItem();
                     }
 
-                    if(igBeginTabItem("Accessibility", &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
+                    if(igBeginTabItem(__("Accessibility"), &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
                         
                         igBeginChild("#GeneralTabItems", ImVec2(0, -26));
 
@@ -91,7 +92,7 @@ protected:
                         igEndTabItem();
                     }
 
-                    if(igBeginTabItem("Other", &otherTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
+                    if(igBeginTabItem(__("Other"), &otherTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
 
                         igBeginChild("#OtherTabItems", ImVec2(0, -26));
 
@@ -103,7 +104,7 @@ protected:
                 }
 
                 // Save button
-                if (igButton("Save", ImVec2(0, 0))) {
+                if (igButton(__("Save"), ImVec2(0, 0))) {
                     this.close();
                 }
 
@@ -119,6 +120,6 @@ protected:
 
 public:
     this() {
-        super("Settings");
+        super(_("Settings"));
     }
 }

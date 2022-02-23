@@ -12,6 +12,7 @@ import creator.widgets;
 import creator.utils.link;
 import std.string;
 import app : incUpdateNoEv;
+import i18n;
 
 private {
     bool incUseNativeTitlebar;
@@ -103,7 +104,7 @@ void incTitlebar(string title) {
                 );
                 
                 debug {
-                    igText((title~" (Debug Mode)").toStringz);
+                    igText((title~_(" (Debug Mode)")).toStringz);
                 } else {
                     igText(title.toStringz);
                 }
@@ -117,7 +118,7 @@ void incTitlebar(string title) {
                     igColorConvertU32ToFloat4(&b, 0xF7A8B8FF);
                     igColorConvertU32ToFloat4(&c, 0xFFFFFFFF);
                     ImVec4[] transColors = [a, b, c, b];
-                    static foreach(i, ic; "Trans Rights!") {
+                    foreach(i, ic; _("Trans Rights!")) {
                         igTextColored(transColors[i%transColors.length], [ic, '\0'].ptr);
                         igSameLine(0, 0);
                     }

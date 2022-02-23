@@ -22,3 +22,6 @@ testing
 *.inp
 imgui.ini
 settings.json
+
+# Ignore binary translation files, we want to build those with CI.
+*.mo

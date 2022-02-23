@@ -12,6 +12,7 @@ import creator : incActivePuppet;
 import bindbc.imgui;
 import inochi2d;
 import std.conv;
+import i18n;
 
 /**
     The textures frame
@@ -27,14 +28,14 @@ protected:
     void onUpdate() {
         // TODO: check if in model test mode
 
-        if (igCheckbox("VMC Receiver", &trackVMC)) trackOSF = false;
+        if (igCheckbox(__("VMC Receiver"), &trackVMC)) trackOSF = false;
         if (trackVMC) {
-            if (igInputInt("Port", &portN, 1, 1000, ImGuiInputTextFlags.None)) {
+            if (igInputInt(__("Port"), &portN, 1, 1000, ImGuiInputTextFlags.None)) {
                 portN = clamp(portN, 0, 65535);
             }
         }
 
-        if (igCheckbox("OpenSeeFace Receiver", &trackOSF)) trackVMC = false;
+        if (igCheckbox(__("OpenSeeFace Receiver"), &trackOSF)) trackVMC = false;
         if (trackOSF) {
 
         }
@@ -42,7 +43,7 @@ protected:
 
 public:
     this() {
-        super("Tracking", false);
+        super(_("Tracking"), false);
     }
 }
 

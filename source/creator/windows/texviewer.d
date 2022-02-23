@@ -10,6 +10,7 @@ import creator.core;
 import std.string;
 import creator.utils.link;
 import inochi2d;
+import i18n;
 
 class TextureViewerWindow : Window {
 private:
@@ -42,6 +43,6 @@ protected:
 public:
     this(Texture texture) {
         this.texture = texture;
-        super("Texture Viewer");
+        super(_("Texture Viewer"));
     }
 }

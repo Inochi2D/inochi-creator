@@ -15,6 +15,7 @@ import inochi2d;
 import std.string;
 import std.format;
 import std.conv;
+import i18n;
 
 /**
     The logger frame
@@ -37,7 +38,7 @@ protected:
             
             auto selected = incSelectedNodes();
             
-            if (igBeginMenu("Add", true)) {
+            if (igBeginMenu(__("Add"), true)) {
 
                 igPushFont(incIconFont());
                     igText(incTypeIdToIcon("Node").ptr);
@@ -64,12 +65,11 @@ protected:
             }
 
             static if (!isRoot) {
-                if (igMenuItem(n.enabled ? "Hide" : "Show")) {
+                if (igMenuItem(n.enabled ? /* Option to hide the node (and subnodes) */ __("Hide") :  /* Option to show the node (and subnodes) */ __("Show"))) {
                     n.enabled = !n.enabled;
                 }
                 
-                // We don't want to delete the root
-                if (igMenuItem("Delete", "", false, !isRoot)) {
+                if (igMenuItem(__("Delete"), "", false, !isRoot)) {
 
                     foreach(sn; selected) {
                         incDeleteChildWithHistory(sn);
@@ -79,14 +79,18 @@ protected:
                     incSelectNode(null);
                 }
                 
-                // We don't want to delete the root
+
                 if (igBeginMenu("More Info", true)) {
                     if (selected.length > 1) {
                         foreach(sn; selected) {
-                            igText("%s ID: %lu", sn.name.ptr, sn.uuid);
+                            
+                            // %s is the name of the node in the More Info menu
+                            // %lu is the UUID of the node in the More Info menu
+                            igText(__("%s ID: %lu"), sn.name.ptr, sn.uuid);
                         }
                     } else {
-                        igText("ID: %lu", n.uuid);
+                        // %lu is the UUID of the node in the More Info menu
+                        igText(__("ID: %lu"), n.uuid);
                     }
 
                     igEndMenu();
@@ -135,7 +139,7 @@ protected:
                     igPopFont();
                     igSameLine(0, 2);
 
-                    if (igSelectable(isRoot ? "Puppet" : n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
+                    if (igSelectable(isRoot ? __("Puppet") : n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
                         if (selected) {
                             if (incSelectedNodes().length > 1) {
                                 if (io.KeyCtrl) incRemoveSelectNode(n);
@@ -303,7 +307,7 @@ protected:
 public:
 
     this() {
-        super("Nodes", true);
+        super(_("Nodes"), true);
         flags |= ImGuiWindowFlags.NoScrollbar;
     }
 }
