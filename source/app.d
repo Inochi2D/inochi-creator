@@ -27,8 +27,9 @@ int main(string[] args)
     incLocaleInit();
     if (incSettingsCanGet("lang")) {
         string lang = incSettingsGet!string("lang");
-        if (lang.length > 0) {
-            i18nLoadLanguage(incLocaleGetEntryFor(lang).file);
+        auto entry = incLocaleGetEntryFor(lang);
+        if (entry !is null) {
+            i18nLoadLanguage(entry.file);
         }
     }
 
