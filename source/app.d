@@ -29,8 +29,6 @@ int main(string[] args)
     incOpenWindow();
     incNewProject();
 
-    i18nLoadLanguage("jp.mo");
-
     if (incSettingsGet!bool("ShowWarning", true)) {
         incPushWindow(new NoticeWindow());
     }
