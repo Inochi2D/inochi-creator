@@ -140,7 +140,7 @@ void incMainMenu() {
                 igSpacing();
                 igSpacing();
 
-                igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "ImGui Debugging");
+                igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("ImGui Debugging"));
 
                 igSeparator();
                 if(igMenuItem_Bool(__("Style Editor"), "", false, true)) dbgShowStyleEditor = !dbgShowStyleEditor;
@@ -159,7 +159,7 @@ void incMainMenu() {
             igSpacing();
             igSpacing();
 
-            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Panels");
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Panels"));
             igSeparator();
 
             foreach(panel; incPanels) {
@@ -178,7 +178,7 @@ void incMainMenu() {
             igSpacing();
             igSpacing();
             
-            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Extras");
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Extras"));
 
             igSeparator();
             
@@ -227,7 +227,7 @@ void incMainMenu() {
         if (igBeginMenu(__("Tools"), true)) {
             import creator.utils.repair : incAttemptRepairPuppet, incRegenerateNodeIDs;
 
-            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Puppet Texturing");
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Puppet Texturing"));
             igSeparator();
             if (igMenuItem(__("Rebleed textures..."), "", false)) {
                 incRebleedTextures();
@@ -242,7 +242,7 @@ void incMainMenu() {
             igSpacing();
             igSpacing();
 
-            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), "Puppet Recovery");
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Puppet Recovery"));
             igSeparator();
 
             // FULL REPAIR

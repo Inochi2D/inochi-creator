@@ -11,6 +11,7 @@ import std.stdio;
 import std.path;
 import std.traits;
 import std.array;
+import i18n;
 
 string genCrashDump(T...)(Throwable t, T state) {
     string[] args;

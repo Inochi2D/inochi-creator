@@ -8,6 +8,7 @@ import std.stdio;
 import std.string;
 import creator.core;
 import creator.core.settings;
+import creator.utils.crashdump;
 import creator.panels;
 import creator.windows;
 import creator.widgets;
@@ -23,30 +24,38 @@ version(D_X32) {
 
 int main(string[] args)
 {
-    incSettingsLoad();
-    incLocaleInit();
-    if (incSettingsCanGet("lang")) {
-        string lang = incSettingsGet!string("lang");
-        auto entry = incLocaleGetEntryFor(lang);
-        if (entry !is null) {
-            i18nLoadLanguage(entry.file);
+    try {
+        incSettingsLoad();
+        incLocaleInit();
+        if (incSettingsCanGet("lang")) {
+            string lang = incSettingsGet!string("lang");
+            auto entry = incLocaleGetEntryFor(lang);
+            if (entry !is null) {
+                i18nLoadLanguage(entry.file);
+            }
+        }
+
+        incInitPanels();
+        incActionInit();
+
+        incOpenWindow();
+        incNewProject();
+        if (incSettingsGet!bool("ShowWarning", true)) {
+            incPushWindow(new NoticeWindow());
+        }
+
+        while(!incIsCloseRequested()) {
+            incUpdate();
+        }
+        incSettingsSave();
+        incFinalize();
+    } catch(Throwable ex) {
+        debug {
+            throw ex;
+        } else {
+            crashdump(ex);
         }
     }
-
-    incInitPanels();
-    incActionInit();
-
-    incOpenWindow();
-    incNewProject();
-    if (incSettingsGet!bool("ShowWarning", true)) {
-        incPushWindow(new NoticeWindow());
-    }
-
-    while(!incIsCloseRequested()) {
-        incUpdate();
-    }
-    incSettingsSave();
-    incFinalize();
     return 0;
 }
 
