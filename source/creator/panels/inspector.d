@@ -42,6 +42,10 @@ protected:
                         incModelModeHeader(node);
                         incInspectorModelTRS(node);
 
+                        // The sorting order ID, which Inochi2D uses to sort
+                        // Parts to draw in the user specified order.
+                        // negative values = closer to camera
+                        // positive values = further away from camera
                         igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Sorting"));
                         float zsortV = node.relZSort;
                         if (igInputFloat("ZSort", &zsortV, 0.01, 0.05, "%0.2f")) {
@@ -240,6 +244,8 @@ void incInspectorModelTRS(Node node) {
     //
     // Translation
     //
+
+    // Translation portion of the transformation matrix.
     igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Translation"));
     igPushItemWidth((avail.x-4f-(fontSize*3f))/3f);
 
@@ -335,6 +341,8 @@ void incInspectorModelTRS(Node node) {
     // Rotation
     //
     igSpacing();
+    
+    // Rotation portion of the transformation matrix.
     igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Rotation"));
     igPushItemWidth((avail.x-4f-(fontSize*3f))/3f);
 
@@ -431,6 +439,8 @@ void incInspectorModelTRS(Node node) {
     // Scaling
     //
     igSpacing();
+    
+    // Scaling portion of the transformation matrix.
     igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Scale"));
     igPushItemWidth((avail.x-14f-(fontSize*2f))/2f);
         
@@ -493,6 +503,8 @@ void incInspectorModelTRS(Node node) {
     igSpacing();
     igSpacing();
 
+    // An option in which positions will be snapped to whole integer values.
+    // In other words texture will always be on a pixel.
     ImVec2 textLength = incMeasureString(_("Snap to Pixel"));
     igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Snap to Pixel"));
     incSpacer(ImVec2(-12, 1));
@@ -514,6 +526,8 @@ void incInspectorModelTRS(Node node) {
 }
 
 void incInspectorModelDrawable(Drawable node) {
+    // The main type of anything that can be drawn to the screen
+    // in Inochi2D.
     igText(__("Drawable"));
     igSeparator();
 
@@ -527,6 +541,10 @@ void incInspectorModelDrawable(Drawable node) {
             incFocusCamera(node);
             incMeshEditSetTarget(node);
         }
+
+        // Switches Inochi Creator over to Mesh Edit mode
+        // and selects the mesh that you had selected previously
+        // in Model Edit mode.
         incTooltip(_("Edit Mesh"));
 
         igSpacing();
@@ -548,9 +566,17 @@ void incInspectorModelPart(Part node) {
     // BLENDING MODE
     import std.conv : text;
     import std.string : toStringz;
-    if (igBeginCombo(__("Blending"), __(node.blendingMode.text))) {
 
+    // Header for the Blending options for Parts
+    igText(__("Blending"));
+    if (igBeginCombo("###Blending", __(node.blendingMode.text))) {
+
+        // Normal blending mode as used in Photoshop, generally
+        // the default blending mode photoshop starts a layer out as.
         if (igSelectable(__("Normal"), node.blendingMode == BlendMode.Normal)) node.blendingMode = BlendMode.Normal;
+        
+        // Multiply blending mode, in which this texture's color data
+        // will be multiplied with the color data already in the framebuffer.
         if (igSelectable(__("Multiply"), node.blendingMode == BlendMode.Multiply)) node.blendingMode = BlendMode.Multiply;
         
         igEndCombo();
@@ -558,31 +584,46 @@ void incInspectorModelPart(Part node) {
 
     igSpacing();
 
-    igSliderFloat(__("Opacity"), &node.opacity, 0, 1f, "%0.2f");
+    igText(__("Opacity"));
+    igSliderFloat("###Opacity", &node.opacity, 0, 1f, "%0.2f");
     igSpacing();
     igSpacing();
 
     igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Masks"));
     igSpacing();
 
-    // MASK MODE
-    if (igBeginCombo(__("Mode"), node.maskingMode ? __("Dodge") : __("Mask"))) {
+    // The masking mode to apply if there's any source specified.
+    igText(__("Mode"));
+    if (igBeginCombo("###Mode", node.maskingMode ? __("Dodge") : __("Mask"))) {
 
+        // A masking mode where only areas of this Part that overlap the other
+        // source drawables gets drawn
         if (igSelectable(__("Mask"), node.maskingMode == MaskingMode.Mask)) {
             node.maskingMode = MaskingMode.Mask;
         }
+
+        // A masking mode where areas of this Part that overlap the other
+        // source drawables gets discarded
         if (igSelectable(__("Dodge"), node.maskingMode == MaskingMode.DodgeMask)) {
             node.maskingMode = MaskingMode.DodgeMask;
         }
         igEndCombo();
     }
 
-    // Sensitivity slider
-    igSliderFloat(__("Threshold"), &node.maskAlphaThreshold, 0.0, 1.0, "%.2f");
+    igSpacing();
 
-    // MASKED BY
+    // Threshold slider name for adjusting how transparent a pixel can be
+    // before it gets discarded.
+    igText(__("Threshold"));
+    igSliderFloat("###Threshold", &node.maskAlphaThreshold, 0.0, 1.0, "%.2f");
+    
+    igSpacing();
 
-    if (igBeginListBox(__("Mask Sources"), ImVec2(0, 128))) {
+    // The sources that the part gets masked by. Depending on the masking mode
+    // either the sources will cut out things that don't overlap, or cut out
+    // things that do.
+    igText(__("Mask Sources"));
+    if (igBeginListBox("###MaskSources", ImVec2(0, 128))) {
         foreach(i, masker; node.mask) {
             igPushID(cast(int)i);
                 igText(masker.name.toStringz);

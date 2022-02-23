@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-23 22:42+0100\n"
+"POT-Creation-Date: 2022-02-23 22:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,239 +64,265 @@ msgstr ""
 msgid "History"
 msgstr ""
 
-#: source/creator/panels/inspector.d:45
+#. The sorting order ID, which Inochi2D uses to sort
+#. Parts to draw in the user specified order.
+#. negative values = closer to camera
+#. positive values = further away from camera
+#: source/creator/panels/inspector.d:49
 msgid "Sorting"
 msgstr ""
 
-#: source/creator/panels/inspector.d:85
+#: source/creator/panels/inspector.d:89
 msgid "No nodes selected..."
 msgstr ""
 
-#: source/creator/panels/inspector.d:87
+#: source/creator/panels/inspector.d:91
 msgid "Can only inspect a single node..."
 msgstr ""
 
-#: source/creator/panels/inspector.d:93
+#: source/creator/panels/inspector.d:97
 msgid "Inspector"
 msgstr ""
 
-#: source/creator/panels/inspector.d:136 source/creator/panels/nodes.d:142
+#: source/creator/panels/inspector.d:140 source/creator/panels/nodes.d:142
 msgid "Puppet"
 msgstr ""
 
-#: source/creator/panels/inspector.d:149 source/creator/panels/inspector.d:154
+#: source/creator/panels/inspector.d:153 source/creator/panels/inspector.d:158
 msgid "Inochi2D Ver."
 msgstr ""
 
-#: source/creator/panels/inspector.d:160
+#: source/creator/panels/inspector.d:164
 msgid "General Info"
 msgstr ""
 
-#: source/creator/panels/inspector.d:164
+#: source/creator/panels/inspector.d:168
 msgid "Name"
 msgstr ""
 
-#: source/creator/panels/inspector.d:165
+#: source/creator/panels/inspector.d:169
 msgid "Name of the puppet"
 msgstr ""
 
-#: source/creator/panels/inspector.d:171
+#: source/creator/panels/inspector.d:175
 msgid "Artist(s)"
 msgstr ""
 
-#: source/creator/panels/inspector.d:172
+#: source/creator/panels/inspector.d:176
 msgid "Artists who've drawn the puppet, seperated by comma"
 msgstr ""
 
-#: source/creator/panels/inspector.d:178
+#: source/creator/panels/inspector.d:182
 msgid "Rigger(s)"
 msgstr ""
 
-#: source/creator/panels/inspector.d:179
+#: source/creator/panels/inspector.d:183
 msgid "Riggers who've rigged the puppet, seperated by comma"
 msgstr ""
 
-#: source/creator/panels/inspector.d:185
+#: source/creator/panels/inspector.d:189
 msgid "Contact"
 msgstr ""
 
-#: source/creator/panels/inspector.d:186
+#: source/creator/panels/inspector.d:190
 msgid "Where to contact the main author of the puppet"
 msgstr ""
 
-#: source/creator/panels/inspector.d:191
+#: source/creator/panels/inspector.d:195
 msgid "License Info"
 msgstr ""
 
-#: source/creator/panels/inspector.d:195
+#: source/creator/panels/inspector.d:199
 msgid "License URL"
 msgstr ""
 
-#: source/creator/panels/inspector.d:196
+#: source/creator/panels/inspector.d:200
 msgid "Link/URL to license"
 msgstr ""
 
-#: source/creator/panels/inspector.d:202
+#: source/creator/panels/inspector.d:206
 msgid "Copyright"
 msgstr ""
 
-#: source/creator/panels/inspector.d:203
+#: source/creator/panels/inspector.d:207
 msgid "Copyright holder information of the puppet"
 msgstr ""
 
-#: source/creator/panels/inspector.d:209
+#: source/creator/panels/inspector.d:213
 msgid "Origin"
 msgstr ""
 
-#: source/creator/panels/inspector.d:210
+#: source/creator/panels/inspector.d:214
 msgid "Where the model comes from on the internet."
 msgstr ""
 
 #.
 #. Translation
 #.
-#: source/creator/panels/inspector.d:243
+#. Translation portion of the transformation matrix.
+#: source/creator/panels/inspector.d:249
 msgid "Translation"
 msgstr ""
 
-#: source/creator/panels/inspector.d:264
+#: source/creator/panels/inspector.d:270
 msgid "Lock Translate X"
 msgstr ""
 
-#: source/creator/panels/inspector.d:293
+#: source/creator/panels/inspector.d:299
 msgid "Lock Translate Y"
 msgstr ""
 
-#: source/creator/panels/inspector.d:322
+#: source/creator/panels/inspector.d:328
 msgid "Lock Translate Z"
 msgstr ""
 
-#: source/creator/panels/inspector.d:338
+#. Rotation portion of the transformation matrix.
+#: source/creator/panels/inspector.d:346
 msgid "Rotation"
 msgstr ""
 
-#: source/creator/panels/inspector.d:346
+#: source/creator/panels/inspector.d:354
 msgid "Rotation X"
 msgstr ""
 
-#: source/creator/panels/inspector.d:359
+#: source/creator/panels/inspector.d:367
 msgid "Lock Rotation X"
 msgstr ""
 
-#: source/creator/panels/inspector.d:375
+#: source/creator/panels/inspector.d:383
 msgid "Rotation Y"
 msgstr ""
 
-#: source/creator/panels/inspector.d:388
+#: source/creator/panels/inspector.d:396
 msgid "Lock Rotation Y"
 msgstr ""
 
-#: source/creator/panels/inspector.d:404
+#: source/creator/panels/inspector.d:412
 msgid "Rotation Z"
 msgstr ""
 
-#: source/creator/panels/inspector.d:417
+#: source/creator/panels/inspector.d:425
 msgid "Lock Rotation Z"
 msgstr ""
 
-#: source/creator/panels/inspector.d:434
+#. Scaling portion of the transformation matrix.
+#: source/creator/panels/inspector.d:444
 msgid "Scale"
 msgstr ""
 
-#: source/creator/panels/inspector.d:442
+#: source/creator/panels/inspector.d:452
 msgid "Scale X"
 msgstr ""
 
-#: source/creator/panels/inspector.d:454
+#: source/creator/panels/inspector.d:464
 msgid "Lock Scale X"
 msgstr ""
 
-#: source/creator/panels/inspector.d:470
+#: source/creator/panels/inspector.d:480
 msgid "Scale Y"
 msgstr ""
 
-#: source/creator/panels/inspector.d:482
+#: source/creator/panels/inspector.d:492
 msgid "Lock Scale Y"
 msgstr ""
 
-#: source/creator/panels/inspector.d:496 source/creator/panels/inspector.d:497
-#: source/creator/panels/inspector.d:502
+#. An option in which positions will be snapped to whole integer values.
+#. In other words texture will always be on a pixel.
+#: source/creator/panels/inspector.d:508 source/creator/panels/inspector.d:509
+#: source/creator/panels/inspector.d:514
 msgid "Snap to Pixel"
 msgstr ""
 
-#: source/creator/panels/inspector.d:517 source/creator/panels/inspector.d:639
+#. The main type of anything that can be drawn to the screen
+#. in Inochi2D.
+#: source/creator/panels/inspector.d:531 source/creator/panels/inspector.d:680
 msgid "Drawable"
 msgstr ""
 
-#: source/creator/panels/inspector.d:530
+#. Switches Inochi Creator over to Mesh Edit mode
+#. and selects the mesh that you had selected previously
+#. in Model Edit mode.
+#: source/creator/panels/inspector.d:548
 msgid "Edit Mesh"
 msgstr ""
 
-#: source/creator/panels/inspector.d:539 source/creator/panels/inspector.d:545
+#: source/creator/panels/inspector.d:557 source/creator/panels/inspector.d:563
 msgid "Part"
 msgstr ""
 
-#: source/creator/panels/inspector.d:541
+#: source/creator/panels/inspector.d:559
 msgid "Cannot inspect an unmeshed part"
 msgstr ""
 
-#: source/creator/panels/inspector.d:551
+#. Header for the Blending options for Parts
+#: source/creator/panels/inspector.d:571
 msgid "Blending"
 msgstr ""
 
-#: source/creator/panels/inspector.d:553
+#. Normal blending mode as used in Photoshop, generally
+#. the default blending mode photoshop starts a layer out as.
+#: source/creator/panels/inspector.d:576
 msgid "Normal"
 msgstr ""
 
-#: source/creator/panels/inspector.d:554
+#. Multiply blending mode, in which this texture's color data
+#. will be multiplied with the color data already in the framebuffer.
+#: source/creator/panels/inspector.d:580
 msgid "Multiply"
 msgstr ""
 
-#: source/creator/panels/inspector.d:561
+#: source/creator/panels/inspector.d:587
 msgid "Opacity"
 msgstr ""
 
-#: source/creator/panels/inspector.d:565
+#: source/creator/panels/inspector.d:592
 msgid "Masks"
 msgstr ""
 
-#. MASK MODE
-#: source/creator/panels/inspector.d:569
+#. The masking mode to apply if there's any source specified.
+#: source/creator/panels/inspector.d:596
 msgid "Mode"
 msgstr ""
 
-#: source/creator/panels/inspector.d:569 source/creator/panels/inspector.d:574
+#. A masking mode where areas of this Part that overlap the other
+#. source drawables gets discarded
+#: source/creator/panels/inspector.d:597 source/creator/panels/inspector.d:607
 msgid "Dodge"
 msgstr ""
 
-#: source/creator/panels/inspector.d:569 source/creator/panels/inspector.d:571
+#. A masking mode where only areas of this Part that overlap the other
+#. source drawables gets drawn
+#: source/creator/panels/inspector.d:597 source/creator/panels/inspector.d:601
 #: source/creator/panels/nodes.d:53
 msgid "Mask"
 msgstr ""
 
-#. Sensitivity slider
-#: source/creator/panels/inspector.d:581
+#. Threshold slider name for adjusting how transparent a pixel can be
+#. before it gets discarded.
+#: source/creator/panels/inspector.d:617
 msgid "Threshold"
 msgstr ""
 
-#. MASKED BY
-#: source/creator/panels/inspector.d:585
+#. The sources that the part gets masked by. Depending on the masking mode
+#. either the sources will cut out things that don't overlap, or cut out
+#. things that do.
+#: source/creator/panels/inspector.d:625
 msgid "Mask Sources"
 msgstr ""
 
-#: source/creator/panels/inspector.d:647
+#: source/creator/panels/inspector.d:688
 msgid "Triangulate"
 msgstr ""
 
-#: source/creator/panels/inspector.d:651
+#: source/creator/panels/inspector.d:692
 msgid "Automatically connects vertices"
 msgstr ""
 
-#: source/creator/panels/inspector.d:662
+#: source/creator/panels/inspector.d:703
 msgid "Apply"
 msgstr ""
 
-#: source/creator/panels/inspector.d:673
+#: source/creator/panels/inspector.d:714
 msgid "Cancel"
 msgstr ""
 
