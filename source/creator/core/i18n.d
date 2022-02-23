@@ -54,7 +54,7 @@ void incLocaleInit() {
 */
 string incLocaleCurrentName() {
     string code = incSettingsGet("lang", "en");
-    return i18nGetCultureLanguage(code is null ? "en" : code);
+    return i18nGetCultureLanguage(code.length == 0 ? "en" : code);
 }
 
 /**
@@ -62,6 +62,16 @@ string incLocaleCurrentName() {
 */
 void incLocaleSet(string code) {
     incSettingsSet("lang", code);
+}
+
+/**
+    Get locale entry for a code
+*/
+TLEntry* incLocaleGetEntryFor(string code) {
+    foreach(ref entry; localeFiles) {
+        if (entry.code == code) return &entry;
+    }
+    return null;
 }
 
 /**

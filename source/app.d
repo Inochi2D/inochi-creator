@@ -33,8 +33,7 @@ int main(string[] args)
     incLocaleInit();
     if (incSettingsCanGet("lang")) {
         string lang = incSettingsGet!string("lang");
-        import std.path : buildPath, setExtension;
-        i18nLoadLanguage(buildPath(incGetAppLocalePath(), lang).setExtension(".mo"));
+        i18nLoadLanguage(incLocaleGetEntryFor(lang).file);
     }
 
     if (incSettingsGet!bool("ShowWarning", true)) {
