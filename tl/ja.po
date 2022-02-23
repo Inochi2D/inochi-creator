@@ -271,7 +271,7 @@ msgstr "通常"
 #. will be multiplied with the color data already in the framebuffer.
 #: source/creator/panels/inspector.d:580
 msgid "Multiply"
-msgstr "複数"
+msgstr "乗算"
 
 #: source/creator/panels/inspector.d:587
 msgid "Opacity"
