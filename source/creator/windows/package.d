@@ -102,7 +102,7 @@ public:
 
         windowClass = ImGuiWindowClass_ImGuiWindowClass();
         windowClass.ViewportFlagsOverrideClear = ImGuiViewportFlags.NoDecoration | ImGuiViewportFlags.NoTaskBarIcon;
-        windowClass.ViewportFlagsOverrideSet = ImGuiViewportFlags.NoAutoMerge | ImGuiViewportFlags.TopMost;
+        windowClass.ViewportFlagsOverrideSet = ImGuiViewportFlags.NoAutoMerge;
     }
 }
 

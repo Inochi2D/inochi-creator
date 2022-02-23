@@ -27,7 +27,9 @@ int main(string[] args)
     incLocaleInit();
     if (incSettingsCanGet("lang")) {
         string lang = incSettingsGet!string("lang");
-        i18nLoadLanguage(incLocaleGetEntryFor(lang).file);
+        if (lang.length > 0) {
+            i18nLoadLanguage(incLocaleGetEntryFor(lang).file);
+        }
     }
 
     incInitPanels();
