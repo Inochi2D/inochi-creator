@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-23 20:07+0100\n"
+"POT-Creation-Date: 2022-02-23 20:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -294,6 +294,10 @@ msgstr ""
 
 #: source/creator/panels/inspector.d:673
 msgid "Cancel"
+msgstr ""
+
+#: source/creator/panels/logger.d:25
+msgid "Logger"
 msgstr ""
 
 #: source/creator/panels/nodes.d:41
@@ -632,7 +636,9 @@ msgstr ""
 msgid " (Debug Mode)"
 msgstr ""
 
-#: source/creator/widgets/titlebar.d:121
+#. A call for the human rights of transgender people to be respected
+#. it is shown in the custom titlebar every transgender awareness month.
+#: source/creator/widgets/titlebar.d:124
 msgid "Trans Rights!"
 msgstr ""
 

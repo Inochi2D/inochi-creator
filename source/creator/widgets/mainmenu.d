@@ -168,7 +168,7 @@ void incMainMenu() {
                 if (panel.alwaysVisible) continue;
 
                 // Show menu item for panel
-                if(igMenuItem_Bool(panel.name.ptr, null, panel.visible, true)) {
+                if(igMenuItem_Bool(panel.displayNameC, null, panel.visible, true)) {
                     panel.visible = !panel.visible;
                     incSettingsSet(panel.name~".visible", panel.visible);
                 }

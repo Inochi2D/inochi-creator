@@ -21,6 +21,7 @@ private:
     string displayName_;
     bool defaultVisibility;
     const(char)* windowID;
+    const(char)* displayNamePtr;
 
 protected:
     ImVec2 panelSpace;
@@ -73,10 +74,19 @@ public:
         }
 
         windowID = "%s###%s".format(displayName_, name_).toStringz;
+        displayNamePtr = displayName_.toStringz;
     }
 
     final string name() {
         return name_;
+    }
+
+    final string displayName() {
+        return displayName_;
+    }
+
+    final const(char)* displayNameC() {
+        return displayNamePtr;
     }
 
     /**

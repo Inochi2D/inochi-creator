@@ -118,6 +118,9 @@ void incTitlebar(string title) {
                     igColorConvertU32ToFloat4(&b, 0xF7A8B8FF);
                     igColorConvertU32ToFloat4(&c, 0xFFFFFFFF);
                     ImVec4[] transColors = [a, b, c, b];
+                    
+                    // A call for the human rights of transgender people to be respected
+                    // it is shown in the custom titlebar every transgender awareness month.
                     foreach(i, ic; _("Trans Rights!")) {
                         igTextColored(transColors[i%transColors.length], [ic, '\0'].ptr);
                         igSameLine(0, 0);
