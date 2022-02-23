@@ -22,7 +22,7 @@ protected:
 
 public:
     this() {
-        super("", _("Logger"), false);
+        super("Logger", _("Logger"), false);
     }
 }
 
