@@ -1,18 +1,19 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Language jp translations for PACKAGE package.
+# Copyright (C) 2022 Inochi2D Project
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Luna the Foxgirl <cli-luna@protonmail.com>, 2022.
+# LovelyA72 <a72@luotianyi.pro>, 2022.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-23 22:55+0100\n"
-"PO-Revision-Date: 2022-02-26 10:14-0600\n"
+"PO-Revision-Date: 2022-02-26 11:28-0600\n"
 "Last-Translator: LovelyA72 <a72@luotianyi.pro>\n"
-"Language-Team: Language zh-CN\n"
+"Language-Team: Chinese (Simplified)\n"
 "Language: zh-CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,12 +21,12 @@ msgstr ""
 #: source/creator/actions/node.d:92
 #, c-format
 msgid "Moved %s to %s"
-msgstr "将%s移动到了$s"
+msgstr "将 %s 移动到了 %s"
 
 #: source/creator/actions/node.d:100
 #, c-format
 msgid "Moved %s from %s"
-msgstr "将%s从%s移动了"
+msgstr "将 %s 从 %s 移动了"
 
 #: source/creator/actions/node.d:140 source/creator/actions/node.d:147
 msgid "Enabled"
@@ -38,7 +39,7 @@ msgstr "已禁用"
 #: source/creator/actions/node.d:147
 #, c-format
 msgid "%s was %s"
-msgstr "%s曾经是%s"
+msgstr "%s 曾经是 %s"
 
 #: source/creator/actions/node.d:201
 msgid "Unnamed "
@@ -47,18 +48,18 @@ msgstr "未命名"
 #: source/creator/actions/node.d:259
 #, c-format
 msgid "%s->%s changed to %s"
-msgstr "%s->%s变更为了%s"
+msgstr "%s->%s 变更为了 %s"
 
 #: source/creator/actions/node.d:266
 #, c-format
 msgid "%s->%s changed from %s"
-msgstr "%s->%s从%s变更了"
+msgstr "%s->%s 从 %s 变更了"
 
 #. Ugly hack to please imgui
 #: source/creator/panels/actionhistory.d:60
 #, c-format
 msgid "%d of %d"
-msgstr "%d/$d"
+msgstr "%d / %d"
 
 #: source/creator/panels/actionhistory.d:69
 msgid "History"
@@ -156,9 +157,9 @@ msgstr "来源"
 msgid "Where the model comes from on the internet."
 msgstr "模型的互联网来源信息"
 
-#.
+#. 
 #. Translation
-#.
+#. 
 #. Translation portion of the transformation matrix.
 #: source/creator/panels/inspector.d:249
 msgid "Translation"
@@ -228,7 +229,7 @@ msgstr "锁定Y轴缩放"
 
 #. An option in which positions will be snapped to whole integer values.
 #. In other words texture will always be on a pixel.
-#: source/creator/panels/inspector.d:508 source/creator/panels/inspector.d:509
+#: source/creator/panels/inspector.d:508 source/creator/panels/inspector.d:509 
 #: source/creator/panels/inspector.d:514
 msgid "Snap to Pixel"
 msgstr "吸附到像素"
@@ -292,7 +293,7 @@ msgstr "反蒙版"
 
 #. A masking mode where only areas of this Part that overlap the other
 #. source drawables gets drawn
-#: source/creator/panels/inspector.d:597 source/creator/panels/inspector.d:601
+#: source/creator/panels/inspector.d:597 source/creator/panels/inspector.d:601 
 #: source/creator/panels/nodes.d:53
 msgid "Mask"
 msgstr "正蒙版"
@@ -425,8 +426,8 @@ msgid ""
 "put on your desktop\n"
 "Via https://github.com/Inochi2D/inochi-creator/issues"
 msgstr ""
-"Inochi Creator 崩溃了！"
-"请将您桌面上的 inochi-creator-crashdump.txt 上传到"
+"Inochi Creator 崩溃了！\n"
+"请将您桌面上的 inochi-creator-crashdump.txt 上传到\n"
 "https://github.com/Inochi2D/inochi-creator/issues"
 
 #: source/creator/utils/crashdump.d:52
@@ -440,8 +441,8 @@ msgid ""
 "\n"
 "===   Inochi Creator has crashed   ===\n"
 "Please send us the inochi-creator-crashdump.txt file in your home folder\n"
-"Attach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/"
-"issues"
+"Attach the file as a git issue @ https://github.com/Inochi2D/inochi-"
+"creator/issues"
 msgstr ""
 
 #: source/creator/widgets/mainmenu.d:44
@@ -690,9 +691,12 @@ msgid ""
 "software.\n"
 "\n"
 "If you accept this press the \"Close\" button to continue"
-msgstr "Inochi2D 和 Inochi Creator 目前正在快速开发中"
-"本软件现在非常不稳定而且可能会随时崩溃，所以我们不建议在生产环境中使用 Inochi Creator"
-"本项目不对因使用此测试版软件而导致的文件损坏或崩溃负责。"
+msgstr ""
+"Inochi2D 和 Inochi Creator 目前正在快速开发中\n"
+"\n"
+"本软件现在非常不稳定而且可能会随时崩溃\n"
+"所以我们不建议在生产环境中使用 Inochi Creator\n"
+"本项目不对因使用此测试版软件而导致的文件损坏或崩溃负责。\n"
 "如果您接受，请按“关闭”按钮继续 "
 
 #: source/creator/windows/notice.d:58
@@ -744,8 +748,8 @@ msgid "Max Undo History"
 msgstr "最大撤销历史"
 
 #: source/creator/windows/settings.d:94
-msgid "可访问性"
-msgstr ""
+msgid "Accessibility"
+msgstr "可访问性"
 
 #: source/creator/windows/settings.d:102
 msgid "Other"
