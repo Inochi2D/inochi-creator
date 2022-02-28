@@ -100,7 +100,8 @@ void incInitFonts() {
 */
 void incSetUIScale(float scale) {
     incSettingsSet("UIScale", scale);
-    igGetIO().FontGlobalScale = incGetUIScaleFont();
+    igGetIO().DisplayFramebufferScale = ImVec2(scale, scale);
+    igGetIO().FontGlobalScale = 0.5f;
 }
 
 /**

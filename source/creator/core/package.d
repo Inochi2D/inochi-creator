@@ -305,7 +305,7 @@ void incSetDarkMode(bool darkMode) {
         style.Colors[ImGuiCol.BorderShadow] = ImVec4(0, 0, 0, 0.05);
 
         style.FrameBorderSize = 1;
-    } 
+    }
 
     // Set Dark mode setting
     incSettingsSet("DarkMode", darkMode);
@@ -330,6 +330,10 @@ SDL_Window* incGetWindowPtr() {
     return window;
 }
 
+void incGetWindowSize(out int w, out int h) {
+    SDL_GetWindowSize(window, &w, &h);
+}
+
 void incFinishFileDrag() {
     files.length = 0;
 }
@@ -338,6 +342,15 @@ void incBeginLoopNoEv() {
     // Start the Dear ImGui frame
     ImGuiOpenGLBackend.new_frame();
     ImGui_ImplSDL2_NewFrame();
+
+    int w, h;
+    SDL_GetWindowSize(window, &w, &h);
+    auto scale = incGetUIScale();
+    auto io = igGetIO();
+    io.DisplayFramebufferScale = ImVec2(scale, scale);
+    io.DisplaySize = ImVec2(w/scale, h/scale);
+    //io.MousePos = ImVec2(io.MousePos.x/scale, io.MousePos.y/scale);
+
     igNewFrame();
 
     if (files.length > 0) {
@@ -378,6 +391,7 @@ void incSetDefaultLayout() {
     igDockBuilderDockWindow("###Nodes", dockIDNodes);
     igDockBuilderDockWindow("###Inspector", dockIDInspector);
     igDockBuilderDockWindow("###History", dockIDHistory);
+    igDockBuilderDockWindow("###Tracking", dockIDHistory);
     igDockBuilderDockWindow("###Parameters", dockIDParams);
     igDockBuilderDockWindow("###Texture Slots", dockIDLoggerAndTextureSlots);
     igDockBuilderDockWindow("###Logger", dockIDLoggerAndTextureSlots);
@@ -429,12 +443,35 @@ void incEndLoop() {
     glViewport(0, 0, cast(int)io.DisplaySize.x, cast(int)io.DisplaySize.y);
     glClearColor(0.5, 0.5, 0.5, 1);
     glClear(GL_COLOR_BUFFER_BIT);
-    ImGuiOpenGLBackend.render_draw_data(igGetDrawData());
+    auto io = igGetIO();
+    auto draw = igGetDrawData();
+    auto scale = incGetUIScale();
+    //draw.FramebufferScale = ImVec2(io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
+    //draw.DisplaySize = ImVec2(/draw.FramebufferScale.x, io.DisplaySize.y/draw.FramebufferScale.y);
+
+    // ImDrawData_ScaleClipRects(draw, draw.FramebufferScale);
+    // foreach(i; 0..draw.CmdListsCount) {
+    //     ImDrawList* list = draw.CmdLists[i];
+    //     foreach(vi; 0..list.VtxBuffer.Size) {
+    //         ImDrawVert* v = &list.VtxBuffer.Data[vi];
+    //         v.pos.x += draw.FramebufferScale.x;
+    //         v.pos.y += draw.FramebufferScale.y;
+    //     }
+    // }
+
+    //ImDrawData_ScaleClipRects(draw, draw.FramebufferScale);
+    ImGuiOpenGLBackend.render_draw_data(draw);
 
     if (io.ConfigFlags & ImGuiConfigFlags.ViewportsEnable) {
         SDL_Window* currentWindow = SDL_GL_GetCurrentWindow();
         SDL_GLContext currentCtx = SDL_GL_GetCurrentContext();
         igUpdatePlatformWindows();
+
+
+        // SDL_DisplayMode dm;
+        // SDL_GetCurrentDisplayMode(0, &dm);
+        // io.DisplaySize = ImVec2(dm.w/scale, dm.h/scale);
+
         igRenderPlatformWindowsDefault();
         SDL_GL_MakeCurrent(currentWindow, currentCtx);
     }
