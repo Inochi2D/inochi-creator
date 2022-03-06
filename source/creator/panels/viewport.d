@@ -5,11 +5,11 @@
     Authors: Luna Nielsen
 */
 module creator.panels.viewport;
+import creator.viewport;
 import creator.widgets;
 import creator.core;
 import creator.core.colorbleed;
 import creator.panels;
-import creator.core.input;
 import creator.actions;
 import creator;
 import inochi2d;
@@ -24,65 +24,7 @@ import i18n;
 class ViewportPanel : Panel {
 private:
     ImVec2 lastSize;
-    float zoom = 1;
 
-    bool isMovingViewport;
-    float sx, sy;
-    float csx, csy;
-
-    bool isMovingPart;
-
-    void _updateMode() {
-        ImGuiIO* io = igGetIO();
-        vec2 mpos = incInputGetMousePosition();
-
-        switch(incEditMode) {
-            case EditMode.ModelEdit:
-                if (igIsMouseClicked(ImGuiMouseButton.Left)) {
-                    // TODO: allow selecting
-                }
-
-                if (igIsMouseClicked(ImGuiMouseButton.Right)) {
-                    // TODO: Allow selecting from everything in the area of the click
-                }
-                
-                // TODO: Allow dragging elements
-                if (!isMovingPart && igIsMouseDragging(ImGuiMouseButton.Left)) {
-                    isMovingPart = true;
-                }
-                if (isMovingPart) {
-                    // TODO: Show drag
-                }
-                if (igIsMouseReleased(ImGuiMouseButton.Left)) {
-                    // TODO: settle dragged element
-                }
-                break;
-            
-            case EditMode.DeformEdit:
-                break;
-
-            case EditMode.VertexEdit:
-                break;
-            
-            default: assert(0);
-        }
-    }
-
-    void _drawMode() {
-
-        switch(incEditMode) {
-            case EditMode.ModelEdit:
-                break;
-            
-            case EditMode.DeformEdit:
-                break;
-
-            case EditMode.VertexEdit:
-                break;
-            
-            default: assert(0);
-        }
-    }
 protected:
     override
     void onBeginUpdate() {
@@ -132,56 +74,14 @@ protected:
                 inSetViewport(cast(int)currSize.x, cast(int)currSize.y);
             }
 
+            incViewportPoll();
             if (igIsWindowHovered(ImGuiHoveredFlags.ChildWindows)) {
-
-                // HANDLE MOVE VIEWPORT
-                if (!isMovingViewport && io.MouseDown[1]) {
-                    isMovingViewport = true;
-                    sx = io.MousePos.x;
-                    sy = io.MousePos.y;
-                    csx = camera.position.x;
-                    csy = camera.position.y;
-                }
-
-                if (isMovingViewport && !io.MouseDown[1]) {
-                    isMovingViewport = false;
-                }
-
-                if (isMovingViewport) {
-
-                    camera.position = vec2(
-                        csx+((io.MousePos.x-sx)/zoom),
-                        csy+((io.MousePos.y-sy)/zoom)
-                    );
-
-                    incTargetPosition = camera.position;
-                }
-
-                // HANDLE ZOOM
-                if (io.MouseWheel != 0) {
-                    zoom += (io.MouseWheel/50)*zoom;
-                    zoom = clamp(zoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX);
-                    camera.scale = vec2(zoom);
-                    incTargetZoom = zoom;
-                }
+                incViewportUpdate();
             }
 
             auto style = igGetStyle();
             inSetClearColor(style.Colors[ImGuiCol.WindowBg].x, style.Colors[ImGuiCol.WindowBg].y, style.Colors[ImGuiCol.WindowBg].z, 1);
-            incBeginUpdate();
-                incInputBegin();
-                    ImVec2 pos;
-                    ImVec2 mpos;
-                    igGetItemRectMin(&pos);
-                    igGetMousePos(&mpos);
-                    incInputSetViewportMouse(pos.x-mpos.x, pos.y-mpos.y);
-
-                    _updateMode();
-                    incUpdateActiveProject();
-                    _drawMode();
-
-                // NOTE: No End Needed
-            incEndUpdate();
+            incViewportDraw();
 
             int width, height;
             inGetViewport(width, height);
@@ -207,30 +107,7 @@ protected:
                 igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
                     igBeginChild("##ViewportMainControls", ImVec2(128, 28));
                         igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
-
-                            igPushFont(incIconFont());
-                                if (igButton("", ImVec2(0, 0))) {
-                                    incShowVertices = !incShowVertices;
-                                }
-                            igPopFont();
-                            incTooltip(_("Show/hide Vertices"));
-                                
-                            igPushFont(incIconFont());
-                                igSameLine(0, 0);
-                                if (igButton("", ImVec2(0, 0))) {
-                                    incShowBounds = !incShowBounds;
-                                }
-                            igPopFont();
-                            incTooltip(_("Show/hide Bounds"));
-
-                            igPushFont(incIconFont());
-                                igSameLine(0, 0);
-                                if (igButton("", ImVec2(0, 0))) {
-                                    incShowOrientation = !incShowOrientation;
-                                }
-                            igPopFont();
-                            incTooltip(_("Show/hide Orientation Gizmo"));
-
+                            incViewportDrawOverlay();
                         igPopStyleVar();
                     igEndChild();
                 igPopStyleVar();
@@ -240,6 +117,8 @@ protected:
             lastSize = currSize;
         igEndChild();
 
+
+        // FILE DRAG & DROP
         if (igBeginDragDropTarget()) {
             ImGuiPayload* payload = igAcceptDragDropPayload("__PARTS_DROP");
             if (payload !is null) {
@@ -286,6 +165,7 @@ protected:
             igEndDragDropTarget();
         }
 
+        // BOTTOM VIEWPORT CONTROLS
         igGetContentRegionAvail(&currSize);
         igBeginChild("##ViewportControls", ImVec2(0, currSize.y), false, flags.NoScrollbar);
             igPushItemWidth(72);
@@ -293,20 +173,20 @@ protected:
                 igSameLine(0, 8);
                 if (igSliderFloat(
                     "##Zoom", 
-                    &zoom, 
+                    &incViewportZoom, 
                     incVIEWPORT_ZOOM_MIN, 
                     incVIEWPORT_ZOOM_MAX, 
-                    "%s%%\0".format(cast(int)(zoom*100)).ptr, 
+                    "%s%%\0".format(cast(int)(incViewportZoom*100)).ptr, 
                     ImGuiSliderFlags.NoRoundToFormat)
                 ) {
-                    camera.scale = vec2(zoom);
-                    incTargetZoom = zoom;
+                    camera.scale = vec2(incViewportZoom);
+                    incViewportTargetZoom = incViewportZoom;
                 }
-                if (incTargetZoom != 1) {
+                if (incViewportTargetZoom != 1) {
                     igPushFont(incIconFont());
                         igSameLine(0, 8);
                         if (igButton("", ImVec2(0, 0))) {
-                            incTargetZoom = 1;
+                            incViewportTargetZoom = 1;
                         }
                     igPopFont();
                 }
@@ -314,12 +194,12 @@ protected:
                 igSeparatorEx(ImGuiSeparatorFlags.Vertical);
 
                 igSameLine(0, 8);
-                igText("x = %.2f y = %.2f", incTargetPosition.x, incTargetPosition.y);
-                if (incTargetPosition != vec2(0)) {
+                igText("x = %.2f y = %.2f", incViewportTargetPosition.x, incViewportTargetPosition.y);
+                if (incViewportTargetPosition != vec2(0)) {
                     igSameLine(0, 8);
                     igPushFont(incIconFont());
                         if (igButton("##2", ImVec2(0, 0))) {
-                            incTargetPosition = vec2(0, 0);
+                            incViewportTargetPosition = vec2(0, 0);
                         }
                     igPopFont();
                 }
@@ -329,9 +209,9 @@ protected:
         igEndChild();
 
         // Handle smooth move
-        zoom = dampen(zoom, incTargetZoom, deltaTime, 1);
-        camera.scale = vec2(zoom, zoom);
-        camera.position = vec2(dampen(camera.position, incTargetPosition, deltaTime, 1.5));
+        incViewportZoom = dampen(incViewportZoom, incViewportTargetZoom, deltaTime, 1);
+        camera.scale = vec2(incViewportZoom, incViewportZoom);
+        camera.position = vec2(dampen(camera.position, incViewportTargetPosition, deltaTime, 1.5));
     }
 
 public:

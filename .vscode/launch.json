@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
     {
+        "type": "code-d",
+        "request": "launch",
+        "dubBuild": true,
+        "name": "Build & Debug DUB project",
+        "cwd": "${command:dubWorkingDirectory}",
+        "program": "${command:dubTarget}"
+    },
+    {
         "type": "gdb",
         "request": "launch",
         "name": "(Linux) Debug",

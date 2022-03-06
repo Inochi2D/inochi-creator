@@ -56,45 +56,13 @@ bool incShowOrientation = true; /// Show orientation gizmo of selected parts
 */
 EditMode editMode_;
 
-void incBeginUpdate() {
-    inBeginScene();
-}
-
-/**
-    Updates the active Inochi2D project
-*/
-void incUpdateActiveProject() {
-
-    activeProject.puppet.update();
-    activeProject.puppet.draw();
-
-    if (selectedNodes.length > 0) {
-        foreach(selectedNode; selectedNodes) {
-            if (selectedNode is null) continue; 
-            if (incShowOrientation) selectedNode.drawOrientation();
-            if (incShowBounds) selectedNode.drawBounds();
-
-            if (Drawable selectedDraw = cast(Drawable)selectedNode) {
-
-                if (incShowVertices || incEditMode != EditMode.ModelEdit) {
-                    selectedDraw.drawMeshLines();
-                    selectedDraw.drawMeshPoints();
-                }
-            }
-            
-        }
-    }
-}
-
-void incEndUpdate() {
-    inEndScene();
-}
-
 
 /**
     Creates a new project
 */
 void incNewProject() {
+    import creator.viewport : incViewportReset;
+
     activeProject = new Project;
     activeProject.puppet = new Puppet;
     incSelectNode(null);
@@ -103,8 +71,7 @@ void incNewProject() {
     inDbgDrawMeshOutlines = true;
     inDbgDrawMeshOrientation = true;
 
-    incTargetPosition = vec2(0);
-    incTargetZoom = 1;
+    incViewportReset();
 
     incActionClearHistory();
     incFreeMemory();
@@ -327,6 +294,8 @@ bool incNodeInSelection(Node n) {
     Focus camera at node
 */
 void incFocusCamera(Node node) {
+    import creator.viewport : incViewportTargetZoom, incViewportTargetPosition;
+
     if (node !is null) {
         int width, height;
         inGetViewport(width, height);
@@ -345,9 +314,9 @@ void incFocusCamera(Node node) {
         float largestBounds = max(boundsSize.x, boundsSize.y);
 
         float factor = largestViewport/largestBounds;
-        incTargetZoom = clamp(factor*0.85, 0.1, 2);
+        incViewportTargetZoom = clamp(factor*0.85, 0.1, 2);
 
-        incTargetPosition = vec2(
+        incViewportTargetPosition = vec2(
             -nt.translation.x,
             -nt.translation.y
         );
@@ -372,16 +341,3 @@ void incSetEditMode(EditMode editMode) {
     }
     editMode_ = editMode;
 }
-
-/**
-    Target camera position in scene
-*/
-vec2 incTargetPosition = vec2(0);
-
-/**
-    Target camera zoom in scene
-*/
-float incTargetZoom = 1;
-
-enum incVIEWPORT_ZOOM_MIN = 0.05;
-enum incVIEWPORT_ZOOM_MAX = 8.0;

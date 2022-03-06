@@ -298,8 +298,7 @@ void incSetDarkMode(bool darkMode) {
 
         style.FrameBorderSize = 1;
         style.TabBorderSize = 1;
-    }
-    else {
+    } else {
         igStyleColorsLight(null);
         style.Colors[ImGuiCol.Border] = ImVec4(0.8, 0.8, 0.8, 0.5);
         style.Colors[ImGuiCol.BorderShadow] = ImVec4(0, 0, 0, 0.05);

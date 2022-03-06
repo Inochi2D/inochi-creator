@@ -12,7 +12,7 @@ private {
 /**
     Begins a UI input pass
 */
-void incInputBegin() {
+void incInputPoll() {
     io = igGetIO();
 }
 
