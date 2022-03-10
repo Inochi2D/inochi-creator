@@ -19,7 +19,7 @@ import std.stdio;
 class AboutWindow : Window {
 private:
     Texture ada;
-    enum ADA_SIZE = 256;
+    enum ADA_SIZE = 373;
     enum ADA_SIZE_PARTIAL = ADA_SIZE/6;
 
 protected:
