@@ -109,9 +109,16 @@ protected:
     }
 
 public:
+    ~this() {
+        destroy(ada);
+    }
+
     this() {
         super(_("About"));
         this.onlyOne = true;
-        ada = new Texture(ShallowTexture(cast(ubyte[])import("ada-tex.png")));
+
+        auto adaData = ShallowTexture(cast(ubyte[])import("ada-tex.png"));
+        inTexPremultiply(adaData.data);
+        ada = new Texture(adaData);
     }
 }
