@@ -46,6 +46,8 @@ Dansk
  * bindbc          - by BindBC Maintainers
  * gl3n            - by Dav1dde
  * SDL2            - by SDL2 Maintainers
+ * LDC2            - by LDC2 Maintainers
+ * DLang           - by D Foundation & contributors
 
 
 === Fonts Used ===

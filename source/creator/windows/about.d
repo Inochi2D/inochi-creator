@@ -102,7 +102,7 @@ protected:
 
             igSameLine(0, 8);
 
-            if (igButton("Donate", ImVec2(spacing, 0))) {
+            if (igButton(__("Donate"), ImVec2(spacing, 0))) {
                 incOpenLink("https://www.patreon.com/clipsey");
             }
         igEndChild();
