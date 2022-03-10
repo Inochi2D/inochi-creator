@@ -6,6 +6,7 @@
 */
 module creator.windows.about;
 import creator.widgets.dummy;
+import creator.widgets.tooltip;
 import creator.windows;
 import creator.core;
 import creator;
@@ -13,8 +14,14 @@ import std.string;
 import creator.utils.link;
 import inochi2d;
 import i18n;
+import std.stdio;
 
 class AboutWindow : Window {
+private:
+    Texture ada;
+    enum ADA_SIZE = 256;
+    enum ADA_SIZE_PARTIAL = ADA_SIZE/6;
+
 protected:
     override
     void onBeginUpdate(int id) {
@@ -25,7 +32,23 @@ protected:
 
     override
     void onUpdate() {
+        ImVec2 sPos;
+        igGetCursorScreenPos(&sPos);
 
+        ImVec2 avail = incAvailableSpace();
+        igSetCursorScreenPos(ImVec2(
+            sPos.x+(avail.x-(ADA_SIZE-ADA_SIZE_PARTIAL)), 
+            sPos.y+(avail.y-(ADA_SIZE+32))
+        ));
+        igImage(
+            cast(void*)ada.getTextureId(),
+            ImVec2(ADA_SIZE, ADA_SIZE),
+            ImVec2(0, 0),
+            ImVec2(1, 1), 
+            ImVec4(1, 1, 1, 0.4), ImVec4(0, 0, 0, 0)
+        );
+
+        igSetCursorScreenPos(sPos);
         igBeginChild("##LogoArea", ImVec2(0, 92*incGetUIScale()));
             igImage(
                 cast(void*)incGetLogo(), 
@@ -52,6 +75,7 @@ protected:
             igText("Credits");
             igSeparator();
         igEndChild();
+
         igBeginChild("##CreditsArea", ImVec2(0, -28*incGetUIScale()));
 
             igText(import("CONTRIBUTORS.md"));
@@ -82,13 +106,12 @@ protected:
                 incOpenLink("https://www.patreon.com/clipsey");
             }
         igEndChild();
-
-
     }
 
 public:
     this() {
         super(_("About"));
         this.onlyOne = true;
+        ada = new Texture(ShallowTexture(cast(ubyte[])import("ada-tex.png")));
     }
 }

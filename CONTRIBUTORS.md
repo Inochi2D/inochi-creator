@@ -7,6 +7,7 @@
  * James Daniel - Inochi2D Logo
  * KinuGitsune  - Mascot Design
  * ku-ini       - Mascot Model Art
+ * いろは        - Chibi UI Mascot
 
 === Documentation ===
  * Luna the Foxgirl - Specification Documentation
