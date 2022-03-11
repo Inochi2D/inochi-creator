@@ -115,10 +115,27 @@ void incImportPSD(string file) {
     PSD doc = parseDocument(file);
     vec2i docCenter = vec2i(doc.width/2, doc.height/2);
     Puppet puppet = new Puppet();
-    foreach(i, Layer layer; doc.layers) {
+
+    Layer[] layerGroupStack;
+    bool isAnyStackItemHidden() {
+        foreach_reverse (layer; layerGroupStack) {
+            if ((layer.flags & LayerFlags.Visible) != 0) return true;
+        }
+        return false;
+    }
+
+    foreach_reverse(i, Layer layer; doc.layers) {
+        import std.stdio : writeln;
+        writeln(layer.name, " ", layer.blendModeKey);
 
         // Skip folders ( for now )
-        if (layer.type != LayerType.Any) continue;
+        if (layer.type != LayerType.Any) {
+            if (layer.name != "</Layer set>") {
+                layerGroupStack ~= layer;
+            } else layerGroupStack.length--;
+
+            continue;
+        }
 
         layer.extractLayerImage();
         inTexPremultiply(layer.data);
@@ -137,17 +154,42 @@ void incImportPSD(string file) {
             0
         );
 
+
         part.enabled = (layer.flags & LayerFlags.Visible) == 0;
         part.opacity = (cast(float)layer.opacity)/255;
-
+        part.zSort = -(cast(float)i)/100;
         switch(layer.blendModeKey) {
             case BlendingMode.Multiply: 
                 part.blendingMode = BlendMode.Multiply; break;
+            case BlendingMode.LinearDodge: 
+                part.blendingMode = BlendMode.LinearDodge; break;
+            case BlendingMode.ColorDodge: 
+                part.blendingMode = BlendMode.ColorDodge; break;
+            case BlendingMode.Screen: 
+                part.blendingMode = BlendMode.Screen; break;
             default:
                 part.blendingMode = BlendMode.Normal; break;
         }
-        
-        part.zSort = -(cast(float)i)/100;
+        writeln(part.name, ": ", part.blendingMode);
+
+        // Handle layer stack stuff
+        if (layerGroupStack.length > 0) {
+            if (isAnyStackItemHidden()) part.enabled = false;
+            if (layerGroupStack[$-1].blendModeKey != BlendingMode.PassThrough) {
+                switch(layerGroupStack[$-1].blendModeKey) {
+                    case BlendingMode.Multiply: 
+                        part.blendingMode = BlendMode.Multiply; break;
+                    case BlendingMode.LinearDodge: 
+                        part.blendingMode = BlendMode.LinearDodge; break;
+                    case BlendingMode.ColorDodge: 
+                        part.blendingMode = BlendMode.ColorDodge; break;
+                    case BlendingMode.Screen: 
+                        part.blendingMode = BlendMode.Screen; break;
+                    default:
+                        part.blendingMode = BlendMode.Normal; break;
+                }
+            }
+        }
 
         puppet.root.addChild(part);
     }
