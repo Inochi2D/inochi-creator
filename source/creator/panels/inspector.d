@@ -578,6 +578,15 @@ void incInspectorModelPart(Part node) {
         // Multiply blending mode, in which this texture's color data
         // will be multiplied with the color data already in the framebuffer.
         if (igSelectable(__("Multiply"), node.blendingMode == BlendMode.Multiply)) node.blendingMode = BlendMode.Multiply;
+                
+        // Color Dodge blending mode
+        if (igSelectable(__("Color Dodge"), node.blendingMode == BlendMode.ColorDodge)) node.blendingMode = BlendMode.ColorDodge;
+                
+        // Linear Dodge blending mode
+        if (igSelectable(__("Linear Dodge"), node.blendingMode == BlendMode.LinearDodge)) node.blendingMode = BlendMode.LinearDodge;
+                        
+        // Screen blending mode
+        if (igSelectable(__("Screen"), node.blendingMode == BlendMode.Screen)) node.blendingMode = BlendMode.Screen;
         
         igEndCombo();
     }
