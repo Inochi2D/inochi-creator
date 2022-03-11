@@ -29,8 +29,8 @@ void incActionInit() {
 void incActionPush(Action action) {
     
     // Chop away entries outside undo history
-    if (actions.length > incActionGetUndoHistoryLength()) {
-        size_t toChop = actions.length-incActionGetUndoHistoryLength();
+    if (actionPointer+1 > incActionGetUndoHistoryLength()) {
+        size_t toChop = (actionPointer+1)-incActionGetUndoHistoryLength();
         actions = actions[toChop..$];
     }
 
