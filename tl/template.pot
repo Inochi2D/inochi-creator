@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-23 22:55+0100\n"
+"POT-Creation-Date: 2022-03-12 14:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -164,165 +164,184 @@ msgstr ""
 msgid "Translation"
 msgstr ""
 
-#: source/creator/panels/inspector.d:270
-msgid "Lock Translate X"
+#. Button which locks all transformation to be based off the root node
+#. of the puppet, this more or less makes the item stay in place
+#. even if the parent moves.
+#: source/creator/panels/inspector.d:305 source/creator/panels/inspector.d:306
+msgid "Lock to Root Node"
 msgstr ""
 
-#: source/creator/panels/inspector.d:299
-msgid "Lock Translate Y"
-msgstr ""
-
-#: source/creator/panels/inspector.d:328
-msgid "Lock Translate Z"
+#. Button which locks all transformation to be based off the root node
+#. of the puppet, this more or less makes the item stay in place
+#. even if the parent moves.
+#: source/creator/panels/inspector.d:311 source/creator/panels/inspector.d:320
+msgid ""
+"Makes so that the translation of this node is based off the root node, "
+"making it stay in place even if its parent moves."
 msgstr ""
 
 #. Rotation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:346
+#: source/creator/panels/inspector.d:331
 msgid "Rotation"
 msgstr ""
 
-#: source/creator/panels/inspector.d:354
+#: source/creator/panels/inspector.d:339
 msgid "Rotation X"
 msgstr ""
 
-#: source/creator/panels/inspector.d:367
+#: source/creator/panels/inspector.d:352
 msgid "Lock Rotation X"
 msgstr ""
 
-#: source/creator/panels/inspector.d:383
+#: source/creator/panels/inspector.d:368
 msgid "Rotation Y"
 msgstr ""
 
-#: source/creator/panels/inspector.d:396
+#: source/creator/panels/inspector.d:381
 msgid "Lock Rotation Y"
 msgstr ""
 
-#: source/creator/panels/inspector.d:412
+#: source/creator/panels/inspector.d:397
 msgid "Rotation Z"
 msgstr ""
 
-#: source/creator/panels/inspector.d:425
+#: source/creator/panels/inspector.d:410
 msgid "Lock Rotation Z"
 msgstr ""
 
 #. Scaling portion of the transformation matrix.
-#: source/creator/panels/inspector.d:444
+#: source/creator/panels/inspector.d:429
 msgid "Scale"
 msgstr ""
 
-#: source/creator/panels/inspector.d:452
+#: source/creator/panels/inspector.d:437
 msgid "Scale X"
 msgstr ""
 
-#: source/creator/panels/inspector.d:464
+#: source/creator/panels/inspector.d:449
 msgid "Lock Scale X"
 msgstr ""
 
-#: source/creator/panels/inspector.d:480
+#: source/creator/panels/inspector.d:465
 msgid "Scale Y"
 msgstr ""
 
-#: source/creator/panels/inspector.d:492
+#: source/creator/panels/inspector.d:477
 msgid "Lock Scale Y"
 msgstr ""
 
 #. An option in which positions will be snapped to whole integer values.
 #. In other words texture will always be on a pixel.
-#: source/creator/panels/inspector.d:508 source/creator/panels/inspector.d:509
-#: source/creator/panels/inspector.d:514
+#: source/creator/panels/inspector.d:493 source/creator/panels/inspector.d:494
+#: source/creator/panels/inspector.d:499
 msgid "Snap to Pixel"
 msgstr ""
 
 #. The main type of anything that can be drawn to the screen
 #. in Inochi2D.
-#: source/creator/panels/inspector.d:531 source/creator/panels/inspector.d:680
+#: source/creator/panels/inspector.d:516 source/creator/panels/inspector.d:674
 msgid "Drawable"
 msgstr ""
 
 #. Switches Inochi Creator over to Mesh Edit mode
 #. and selects the mesh that you had selected previously
 #. in Model Edit mode.
-#: source/creator/panels/inspector.d:548
+#: source/creator/panels/inspector.d:533
 msgid "Edit Mesh"
 msgstr ""
 
-#: source/creator/panels/inspector.d:557 source/creator/panels/inspector.d:563
+#: source/creator/panels/inspector.d:542 source/creator/panels/inspector.d:548
 msgid "Part"
 msgstr ""
 
-#: source/creator/panels/inspector.d:559
+#: source/creator/panels/inspector.d:544
 msgid "Cannot inspect an unmeshed part"
 msgstr ""
 
 #. Header for the Blending options for Parts
-#: source/creator/panels/inspector.d:571
+#: source/creator/panels/inspector.d:556
 msgid "Blending"
 msgstr ""
 
 #. Normal blending mode as used in Photoshop, generally
 #. the default blending mode photoshop starts a layer out as.
-#: source/creator/panels/inspector.d:576
+#: source/creator/panels/inspector.d:561
 msgid "Normal"
 msgstr ""
 
 #. Multiply blending mode, in which this texture's color data
 #. will be multiplied with the color data already in the framebuffer.
-#: source/creator/panels/inspector.d:580
+#: source/creator/panels/inspector.d:565
 msgid "Multiply"
 msgstr ""
 
-#: source/creator/panels/inspector.d:587
+#. Color Dodge blending mode
+#: source/creator/panels/inspector.d:568
+msgid "Color Dodge"
+msgstr ""
+
+#. Linear Dodge blending mode
+#: source/creator/panels/inspector.d:571
+msgid "Linear Dodge"
+msgstr ""
+
+#. Screen blending mode
+#: source/creator/panels/inspector.d:574
+msgid "Screen"
+msgstr ""
+
+#: source/creator/panels/inspector.d:581
 msgid "Opacity"
 msgstr ""
 
-#: source/creator/panels/inspector.d:592
+#: source/creator/panels/inspector.d:586
 msgid "Masks"
 msgstr ""
 
 #. The masking mode to apply if there's any source specified.
-#: source/creator/panels/inspector.d:596
+#: source/creator/panels/inspector.d:590
 msgid "Mode"
 msgstr ""
 
 #. A masking mode where areas of this Part that overlap the other
 #. source drawables gets discarded
-#: source/creator/panels/inspector.d:597 source/creator/panels/inspector.d:607
+#: source/creator/panels/inspector.d:591 source/creator/panels/inspector.d:601
 msgid "Dodge"
 msgstr ""
 
 #. A masking mode where only areas of this Part that overlap the other
 #. source drawables gets drawn
-#: source/creator/panels/inspector.d:597 source/creator/panels/inspector.d:601
+#: source/creator/panels/inspector.d:591 source/creator/panels/inspector.d:595
 #: source/creator/panels/nodes.d:53
 msgid "Mask"
 msgstr ""
 
 #. Threshold slider name for adjusting how transparent a pixel can be
 #. before it gets discarded.
-#: source/creator/panels/inspector.d:617
+#: source/creator/panels/inspector.d:611
 msgid "Threshold"
 msgstr ""
 
 #. The sources that the part gets masked by. Depending on the masking mode
 #. either the sources will cut out things that don't overlap, or cut out
 #. things that do.
-#: source/creator/panels/inspector.d:625
+#: source/creator/panels/inspector.d:619
 msgid "Mask Sources"
 msgstr ""
 
-#: source/creator/panels/inspector.d:688
+#: source/creator/panels/inspector.d:682
 msgid "Triangulate"
 msgstr ""
 
-#: source/creator/panels/inspector.d:692
+#: source/creator/panels/inspector.d:686
 msgid "Automatically connects vertices"
 msgstr ""
 
-#: source/creator/panels/inspector.d:703
+#: source/creator/panels/inspector.d:697
 msgid "Apply"
 msgstr ""
 
-#: source/creator/panels/inspector.d:714
+#: source/creator/panels/inspector.d:708
 msgid "Cancel"
 msgstr ""
 
@@ -386,39 +405,44 @@ msgid "Texture Slots"
 msgstr ""
 
 #. TODO: check if in model test mode
-#: source/creator/panels/tracking.d:31
+#: source/creator/panels/tracking.d:38
 msgid "VMC Receiver"
 msgstr ""
 
-#: source/creator/panels/tracking.d:33
+#: source/creator/panels/tracking.d:39
+msgid "A reciever which uses your phone and associated app to track your body"
+msgstr ""
+
+#: source/creator/panels/tracking.d:41
 msgid "Port"
 msgstr ""
 
-#: source/creator/panels/tracking.d:38
+#: source/creator/panels/tracking.d:46
 msgid "OpenSeeFace Receiver"
 msgstr ""
 
-#: source/creator/panels/tracking.d:46
+#: source/creator/panels/tracking.d:47
+msgid ""
+"A reciever which uses a webcam connected to your computer to track your body"
+msgstr ""
+
+#: source/creator/panels/tracking.d:52
+msgid "Dummy Receiver"
+msgstr ""
+
+#: source/creator/panels/tracking.d:53
+msgid "A reciever which randomly adjusts chosen parameters"
+msgstr ""
+
+#: source/creator/panels/tracking.d:61
 msgid "Tracking"
 msgstr ""
 
-#: source/creator/panels/viewport.d:216
-msgid "Show/hide Vertices"
-msgstr ""
-
-#: source/creator/panels/viewport.d:224
-msgid "Show/hide Bounds"
-msgstr ""
-
-#: source/creator/panels/viewport.d:232
-msgid "Show/hide Orientation Gizmo"
-msgstr ""
-
-#: source/creator/panels/viewport.d:339
+#: source/creator/panels/viewport.d:219
 msgid "Viewport"
 msgstr ""
 
-#: source/creator/utils/crashdump.d:51
+#: source/creator/utils/crashdump.d:52
 msgid ""
 "The application has unexpectedly crashed\n"
 "Please send the developers the inochi-creator-crashdump.txt which has been "
@@ -426,11 +450,11 @@ msgid ""
 "Via https://github.com/Inochi2D/inochi-creator/issues"
 msgstr ""
 
-#: source/creator/utils/crashdump.d:52
+#: source/creator/utils/crashdump.d:53
 msgid "Inochi Creator Crashdump"
 msgstr ""
 
-#: source/creator/utils/crashdump.d:60
+#: source/creator/utils/crashdump.d:61
 msgid ""
 "\n"
 "\n"
@@ -439,6 +463,18 @@ msgid ""
 "Please send us the inochi-creator-crashdump.txt file in your home folder\n"
 "Attach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/"
 "issues"
+msgstr ""
+
+#: source/creator/viewport/model/package.d:22
+msgid "Show/hide Vertices"
+msgstr ""
+
+#: source/creator/viewport/model/package.d:30
+msgid "Show/hide Bounds"
+msgstr ""
+
+#: source/creator/viewport/model/package.d:38
+msgid "Show/hide Orientation Gizmo"
 msgstr ""
 
 #: source/creator/widgets/mainmenu.d:44
@@ -549,6 +585,10 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
+#: source/creator/widgets/mainmenu.d:143
+msgid "ImGui Debugging"
+msgstr ""
+
 #: source/creator/widgets/mainmenu.d:146
 msgid "Style Editor"
 msgstr ""
@@ -563,6 +603,14 @@ msgstr ""
 
 #: source/creator/widgets/mainmenu.d:153
 msgid "Reset Layout"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:162
+msgid "Panels"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:181
+msgid "Extras"
 msgstr ""
 
 #: source/creator/widgets/mainmenu.d:185
@@ -581,6 +629,10 @@ msgstr ""
 msgid "Tools"
 msgstr ""
 
+#: source/creator/widgets/mainmenu.d:230
+msgid "Puppet Texturing"
+msgstr ""
+
 #: source/creator/widgets/mainmenu.d:232
 msgid "Rebleed textures..."
 msgstr ""
@@ -593,6 +645,10 @@ msgstr ""
 msgid ""
 "In some instances mipmaps may need to be re-generated.\n"
 "For example PSD imports will need their mipmaps regenerated."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:245
+msgid "Puppet Recovery"
 msgstr ""
 
 #. FULL REPAIR
@@ -648,13 +704,14 @@ msgstr ""
 msgid "Inochi2D Documentation"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:294 source/creator/windows/about.d:91
+#: source/creator/widgets/mainmenu.d:294 source/creator/windows/about.d:122
 msgid "About"
 msgstr ""
 
 #. Donate button
 #. NOTE: Is this too obstructive in the UI?
 #: source/creator/widgets/mainmenu.d:304 source/creator/widgets/mainmenu.d:320
+#: source/creator/windows/about.d:110
 msgid "Donate"
 msgstr ""
 
