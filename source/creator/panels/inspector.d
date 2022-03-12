@@ -298,26 +298,36 @@ void incInspectorModelTRS(Node node) {
             }
         igPopID();
 
+
+    
+        // Padding
+        igSpacing();
+        igSpacing();
         
-        // Button which locks all transformation to be based off the root node
-        // of the puppet, this more or less makes the item stay in place
-        // even if the parent moves.
-        ImVec2 textLength = incMeasureString(_("Lock to Root Node"));
-        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Lock to Root Node"));
+        igBeginGroup();
+            // Button which locks all transformation to be based off the root node
+            // of the puppet, this more or less makes the item stay in place
+            // even if the parent moves.
+            ImVec2 textLength = incMeasureString(_("Lock to Root Node"));
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Lock to Root Node"));
+
+            incSpacer(ImVec2(-12, 1));
+            bool lockToRoot = node.lockToRoot;
+            if (incLockButton(&lockToRoot, "root_lk")) {
+
+                // TODO: Store this in undo history.
+                node.lockToRoot = lockToRoot;
+            }
+        igEndGroup();
 
         // Button which locks all transformation to be based off the root node
         // of the puppet, this more or less makes the item stay in place
         // even if the parent moves.
         incTooltip(_("Makes so that the translation of this node is based off the root node, making it stay in place even if its parent moves."));
-
-        incSpacer(ImVec2(-12, 1));
-        bool lockToRoot = node.lockToRoot;
-        if (incLockButton(&lockToRoot, "root_lk")) {
-
-            // TODO: Store this in undo history.
-            node.lockToRoot = lockToRoot;
-        }
-        incTooltip(_("Makes so that the translation of this node is based off the root node, making it stay in place even if its parent moves."));
+    
+        // Padding
+        igSpacing();
+        igSpacing();
 
     igPopItemWidth();
 
