@@ -151,59 +151,57 @@ void incInspectorModelInfo() {
     igSpacing();
     igSpacing();
 
-    igText(__("General Info"));
-    igSeparator();
+    if (igCollapsingHeader(__("General Info"), ImGuiTreeNodeFlags.DefaultOpen)) {
+        igPushID("Name");
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Name"));
+            incTooltip(_("Name of the puppet"));
+            incInputText("", puppet.meta.name);
+        igPopID();
+        igSpacing();
 
-    igPushID("Name");
-        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Name"));
-        incTooltip(_("Name of the puppet"));
-        incInputText("", puppet.meta.name);
-    igPopID();
-    igSpacing();
+        igPushID("Artists");
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Artist(s)"));
+            incTooltip(_("Artists who've drawn the puppet, seperated by comma"));
+            incInputText("", puppet.meta.artist);
+        igPopID();
+        igSpacing();
 
-    igPushID("Artists");
-        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Artist(s)"));
-        incTooltip(_("Artists who've drawn the puppet, seperated by comma"));
-        incInputText("", puppet.meta.artist);
-    igPopID();
-    igSpacing();
+        igPushID("Riggers");
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Rigger(s)"));
+            incTooltip(_("Riggers who've rigged the puppet, seperated by comma"));
+            incInputText("", puppet.meta.rigger);
+        igPopID();
+        igSpacing();
 
-    igPushID("Riggers");
-        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Rigger(s)"));
-        incTooltip(_("Riggers who've rigged the puppet, seperated by comma"));
-        incInputText("", puppet.meta.rigger);
-    igPopID();
-    igSpacing();
+        igPushID("Contact");
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Contact"));
+            incTooltip(_("Where to contact the main author of the puppet"));
+            incInputText("", puppet.meta.contact);
+        igPopID();
+        igSpacing();
+    }
 
-    igPushID("Contact");
-        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Contact"));
-        incTooltip(_("Where to contact the main author of the puppet"));
-        incInputText("", puppet.meta.contact);
-    igPopID();
-    igSpacing();
+    if (igCollapsingHeader(__("Licensing"), ImGuiTreeNodeFlags.DefaultOpen)) {
+        igPushID("LicenseURL");
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("License URL"));
+            incTooltip(_("Link/URL to license"));
+            incInputText("", puppet.meta.licenseURL);
+        igPopID();
+        igSpacing();
 
-    igText(__("License Info"));
-    igSeparator();
+        igPushID("Copyright");
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Copyright"));
+            incTooltip(_("Copyright holder information of the puppet"));
+            incInputText("", puppet.meta.copyright);
+        igPopID();
+        igSpacing();
 
-    igPushID("LicenseURL");
-        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("License URL"));
-        incTooltip(_("Link/URL to license"));
-        incInputText("", puppet.meta.licenseURL);
-    igPopID();
-    igSpacing();
-
-    igPushID("Copyright");
-        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Copyright"));
-        incTooltip(_("Copyright holder information of the puppet"));
-        incInputText("", puppet.meta.copyright);
-    igPopID();
-    igSpacing();
-
-    igPushID("Origin");
-        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Origin"));
-        incTooltip(_("Where the model comes from on the internet."));
-        incInputText("", puppet.meta.reference);
-    igPopID();
+        igPushID("Origin");
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Origin"));
+            incTooltip(_("Where the model comes from on the internet."));
+            incInputText("", puppet.meta.reference);
+        igPopID();
+    }
 }
 
 void incModelModeHeader(Node node) {
