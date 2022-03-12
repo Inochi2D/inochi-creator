@@ -52,6 +52,39 @@ vec2 incInputGetMousePosition() {
 }
 
 /**
+    Gets whether a mouse button is down
+*/
+bool incInputIsMouseDown(int idx) {
+    return io.MouseDown[idx];
+}
+
+/**
+    Gets whether a mouse button is down
+*/
+bool incInputIsMouseClicked(ImGuiMouseButton idx) {
+    return igIsMouseClicked(idx, false);
+}
+
+/**
+    Gets whether a mouse button is down
+*/
+bool incInputIsMouseReleased(ImGuiMouseButton idx) {
+    return igIsMouseReleased(idx);
+}
+
+/**
+    Gets whether a right click popup menu is requested by the user
+*/
+bool incInputIsPopupRequested() {
+    ImVec2 dragDelta;
+    igGetMouseDragDelta(&dragDelta, ImGuiMouseButton.Right);
+    return 
+        abs(dragDelta.x) < 0.1f && // User can drag camera, make sure they aren't doing that 
+        abs(dragDelta.y) < 0.1f && 
+        incInputIsMouseReleased(ImGuiMouseButton.Right); // Check mouse button released
+}
+
+/**
     Gets whether a key is held down
 */
 bool incInputIsKeyDown(ImGuiKey key) {
