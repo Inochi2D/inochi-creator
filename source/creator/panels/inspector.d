@@ -221,7 +221,7 @@ void incModelModeHeader(Node node) {
     igPushID(node.uuid);
         string typeString = "%s\0".format(incTypeIdToIcon(node.typeId()));
         auto len = incMeasureString(typeString);
-        incInputText("", node.name);
+        incInputText("", incAvailableSpace().x-24, node.name);
         igSameLine(0, 0);
         incDummy(ImVec2(-(len.x-14), len.y));
         igSameLine(0, 0);
@@ -304,14 +304,20 @@ void incInspectorModelTRS(Node node) {
         // even if the parent moves.
         ImVec2 textLength = incMeasureString(_("Lock to Root Node"));
         igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Lock to Root Node"));
-        incSpacer(ImVec2(-12, 1));
 
+        // Button which locks all transformation to be based off the root node
+        // of the puppet, this more or less makes the item stay in place
+        // even if the parent moves.
+        incTooltip(_("Makes so that the translation of this node is based off the root node, making it stay in place even if its parent moves."));
+
+        incSpacer(ImVec2(-12, 1));
         bool lockToRoot = node.lockToRoot;
         if (incLockButton(&lockToRoot, "root_lk")) {
-            
+
             // TODO: Store this in undo history.
             node.lockToRoot = lockToRoot;
         }
+        incTooltip(_("Makes so that the translation of this node is based off the root node, making it stay in place even if its parent moves."));
 
     igPopItemWidth();
 
