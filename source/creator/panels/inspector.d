@@ -298,8 +298,18 @@ void incInspectorModelTRS(Node node) {
             }
         igPopID();
 
+        
+        // Button which locks all transformation to be based off the root node
+        // of the puppet, this more or less makes the item stay in place
+        // even if the parent moves.
+        ImVec2 textLength = incMeasureString(_("Lock to Root Node"));
+        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Lock to Root Node"));
+        incSpacer(ImVec2(-12, 1));
+
         bool lockToRoot = node.lockToRoot;
-        if (igCheckbox(__("Lock to Root Node"), &lockToRoot)) {
+        if (incLockButton(&lockToRoot, "root_lk")) {
+            
+            // TODO: Store this in undo history.
             node.lockToRoot = lockToRoot;
         }
 
@@ -474,7 +484,7 @@ void incInspectorModelTRS(Node node) {
 
     // An option in which positions will be snapped to whole integer values.
     // In other words texture will always be on a pixel.
-    ImVec2 textLength = incMeasureString(_("Snap to Pixel"));
+    textLength = incMeasureString(_("Snap to Pixel"));
     igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Snap to Pixel"));
     incSpacer(ImVec2(-12, 1));
     if (incLockButton(&node.localTransform.pixelSnap, "pix_lk")) {
