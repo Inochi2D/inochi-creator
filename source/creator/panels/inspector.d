@@ -42,16 +42,6 @@ protected:
                         incModelModeHeader(node);
                         incInspectorModelTRS(node);
 
-                        // The sorting order ID, which Inochi2D uses to sort
-                        // Parts to draw in the user specified order.
-                        // negative values = closer to camera
-                        // positive values = further away from camera
-                        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Sorting"));
-                        float zsortV = node.relZSort;
-                        if (igInputFloat("ZSort", &zsortV, 0.01, 0.05, "%0.2f")) {
-                            node.zSort = zsortV;
-                        }
-
                         // Node Drawable Section
                         if (Drawable drawable = cast(Drawable)node) {
 
@@ -231,6 +221,9 @@ void incModelModeHeader(Node node) {
 }
 
 void incInspectorModelTRS(Node node) {
+    if (!igCollapsingHeader(__("Transform"), ImGuiTreeNodeFlags.DefaultOpen)) 
+        return;
+    
     float adjustSpeed = 1;
     // if (igIsKeyDown(igGetKeyIndex(ImGuiKeyModFlags_Shift))) {
     //     adjustSpeed = 0.1;
@@ -518,13 +511,23 @@ void incInspectorModelTRS(Node node) {
     // Padding
     igSpacing();
     igSpacing();
+
+    // The sorting order ID, which Inochi2D uses to sort
+    // Parts to draw in the user specified order.
+    // negative values = closer to camera
+    // positive values = further away from camera
+    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Sorting"));
+    float zsortV = node.relZSort;
+    if (igInputFloat("###ZSort", &zsortV, 0.01, 0.05, "%0.2f")) {
+        node.zSort = zsortV;
+    }
 }
 
 void incInspectorModelDrawable(Drawable node) {
     // The main type of anything that can be drawn to the screen
     // in Inochi2D.
-    igText(__("Drawable"));
-    igSeparator();
+    if (!igCollapsingHeader(__("Drawable"), ImGuiTreeNodeFlags.DefaultOpen)) 
+        return;
 
     igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(8, 8));
         igSpacing();
@@ -548,14 +551,15 @@ void incInspectorModelDrawable(Drawable node) {
 }
 
 void incInspectorModelPart(Part node) {
+    if (!igCollapsingHeader(__("Part"), ImGuiTreeNodeFlags.DefaultOpen)) 
+        return;
+    
     if (!node.getMesh().isReady()) { 
-        igText(__("Part"));
-        igSeparator();
+        igSpacing();
         igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Cannot inspect an unmeshed part"));
         return;
     }
 
-    igText(__("Part"));
     igSeparator();
 
     // BLENDING MODE
@@ -681,8 +685,8 @@ void incInspectorModelPart(Part node) {
 //  MESH EDIT MODE
 //
 void incInspectorMeshEditDrawable(Drawable node) {
-    igText(__("Drawable"));
-    igSeparator();
+    if (!igCollapsingHeader(__("Drawable"), ImGuiTreeNodeFlags.DefaultOpen)) 
+        return;
 
     igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(8, 8));
         igSpacing();
