@@ -247,7 +247,7 @@ void incInspectorModelTRS(Node node) {
 
     // Translation portion of the transformation matrix.
     igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Translation"));
-    igPushItemWidth((avail.x-4f-(fontSize*3f))/3f);
+    igPushItemWidth((avail.x-4f)/3f);
 
         // Translation X
         igPushID(0);
@@ -263,18 +263,6 @@ void incInspectorModelTRS(Node node) {
             );
         }
         igPopID();
-
-        if (incLockButton(&node.localTransform.lockTranslationX, "tra_x")) {
-            incActionPush(
-                new NodeValueChangeAction!(Node, bool)(
-                    _("Lock Translate X"),
-                    node, 
-                    !node.localTransform.lockTranslationX,
-                    node.localTransform.lockTranslationX,
-                    &node.localTransform.lockTranslationX
-                )
-            );
-        }
 
         igSameLine(0, 4);
 
@@ -292,18 +280,6 @@ void incInspectorModelTRS(Node node) {
                 );
             }
         igPopID();
-        
-        if (incLockButton(&node.localTransform.lockTranslationY, "tra_y")) {
-            incActionPush(
-                new NodeValueChangeAction!(Node, bool, )(
-                    _("Lock Translate Y"),
-                    node, 
-                    !node.localTransform.lockTranslationY,
-                    node.localTransform.lockTranslationY,
-                    &node.localTransform.lockTranslationY
-                )
-            );
-        }
 
         igSameLine(0, 4);
 
@@ -321,17 +297,10 @@ void incInspectorModelTRS(Node node) {
                 );
             }
         igPopID();
-        
-        if (incLockButton(&node.localTransform.lockTranslationZ, "tra_z")) {
-            incActionPush(
-                new NodeValueChangeAction!(Node, bool)(
-                    _("Lock Translate Z"),
-                    node, 
-                    !node.localTransform.lockTranslationZ,
-                    node.localTransform.lockTranslationZ,
-                    &node.localTransform.lockTranslationZ
-                )
-            );
+
+        bool lockToRoot = node.lockToRoot;
+        if (igCheckbox(__("Lock to Root Node"), &lockToRoot)) {
+            node.lockToRoot = lockToRoot;
         }
 
     igPopItemWidth();
