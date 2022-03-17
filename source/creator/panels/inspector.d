@@ -557,12 +557,32 @@ void incInspectorModelPart(Part node) {
         igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Cannot inspect an unmeshed part"));
         return;
     }
-
-    igSeparator();
+    igSpacing();
 
     // BLENDING MODE
     import std.conv : text;
     import std.string : toStringz;
+
+    igBeginGroup();
+        igIndent(16);
+            // Header for texture options    
+            if (igCollapsingHeader(__("Textures")))  {
+
+                igText("(TODO: Texture Select)");
+
+                igSpacing();
+                igSpacing();
+
+                igText(__("Tint"));
+                igColorEdit3("", cast(float[3]*)node.tint.value_ptr);
+
+                // Padding
+                igSeparator();
+                igSpacing();
+                igSpacing();
+            }
+        igUnindent();
+    igEndGroup();
 
     // Header for the Blending options for Parts
     igText(__("Blending"));
