@@ -236,7 +236,7 @@ void incMainMenu() {
                 import creator.utils.repair : incPremultTextures;
                 incPremultTextures(incActivePuppet());
             }
-            incTooltip(_("Premultiplies textures by their alpha component.\n\nOnly use this if your textures look garbled after using an older version of Inochi Creator."));
+            incTooltip(_("Premultiplies textures by their alpha component.\n\nOnly use this if your textures look garbled after importing files from an older version of Inochi Creator."));
             
             if (igMenuItem(__("Bleed textures..."), "", false)) {
                 incRebleedTextures();
