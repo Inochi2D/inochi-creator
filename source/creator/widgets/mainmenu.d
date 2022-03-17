@@ -229,15 +229,25 @@ void incMainMenu() {
 
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Puppet Texturing"));
             igSeparator();
-            if (igMenuItem(__("Rebleed textures..."), "", false)) {
-                incRebleedTextures();
+
+            // Premultiply textures, causing every pixel value in every texture to
+            // be multiplied by their Alpha (transparency) component
+            if (igMenuItem(__("Premultiply textures"), "", false)) {
+                import creator.utils.repair : incPremultTextures;
+                incPremultTextures(incActivePuppet());
             }
+            incTooltip(_("Premultiplies textures by their alpha component.\n\nOnly use this if your textures look garbled after using an older version of Inochi Creator."));
 
             if (igMenuItem(__("Generate Mipmaps..."), "", false)) {
                 incRegenerateMipmaps();
             }
             incTooltip(_("In some instances mipmaps may need to be re-generated.\nFor example PSD imports will need their mipmaps regenerated."));
             
+            if (igMenuItem(__("Bleed textures..."), "", false)) {
+                incRebleedTextures();
+            }
+            incTooltip(_("Causes color to bleed out in to fully transparent pixels, this solves outlines on straight alpha compositing.\n\nOnly use this if your game engine can't use premultiplied alpha."));
+
             // Spacing
             igSpacing();
             igSpacing();
@@ -257,13 +267,6 @@ void incMainMenu() {
                 incRegenerateNodeIDs(incActivePuppet().root);
             }
             incTooltip(_("Regenerates all the unique IDs for the model"));
-
-            // Premultiply textures
-            if (igMenuItem(__("Premultiply textures"), "", false)) {
-                import creator.utils.repair : incPremultTextures;
-                incPremultTextures(incActivePuppet());
-            }
-            incTooltip(_("Premultiplies textures"));
 
             // Spacing
             igSpacing();
