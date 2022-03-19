@@ -137,7 +137,7 @@ private {
     void incViewportMovement(ImGuiIO* io, Camera camera) {
         
         // HANDLE MOVE VIEWPORT
-        if (!isMovingViewport && io.MouseDown[1]) {
+        if (!isMovingViewport && io.MouseDown[1] && incInputIsDragRequested()) {
             isMovingViewport = true;
             sx = io.MousePos.x;
             sy = io.MousePos.y;

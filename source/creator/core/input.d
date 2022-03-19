@@ -76,12 +76,18 @@ bool incInputIsMouseReleased(ImGuiMouseButton idx) {
     Gets whether a right click popup menu is requested by the user
 */
 bool incInputIsPopupRequested() {
+    return 
+        !incInputIsDragRequested() &&  // User can drag camera, make sure they aren't doing that 
+        incInputIsMouseReleased(ImGuiMouseButton.Right); // Check mouse button released
+}
+
+/**
+    Gets whether the user has requested to drag the viewport
+*/
+bool incInputIsDragRequested() {
     ImVec2 dragDelta;
     igGetMouseDragDelta(&dragDelta, ImGuiMouseButton.Right);
-    return 
-        abs(dragDelta.x) < 0.1f && // User can drag camera, make sure they aren't doing that 
-        abs(dragDelta.y) < 0.1f && 
-        incInputIsMouseReleased(ImGuiMouseButton.Right); // Check mouse button released
+    return abs(dragDelta.x) > 0.1f && abs(dragDelta.y) > 0.1f;
 }
 
 /**
