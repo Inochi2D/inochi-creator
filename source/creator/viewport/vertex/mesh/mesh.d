@@ -1,4 +1,10 @@
-module creator.medit.mesh;
+/*
+    Copyright © 2020, Inochi2D Project
+    Distributed under the 2-Clause BSD License, see LICENSE file.
+    
+    Authors: Luna Nielsen
+*/
+module creator.viewport.vertex.mesh.mesh;
 import inochi2d;
 import inochi2d.core.dbg;
 import bindbc.opengl;

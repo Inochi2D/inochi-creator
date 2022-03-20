@@ -337,33 +337,42 @@ bool incNodeInSelection(Node n) {
 */
 void incFocusCamera(Node node) {
     import creator.viewport : incViewportTargetZoom, incViewportTargetPosition;
+    if (node is null) return;
 
-    if (node !is null) {
-        int width, height;
-        inGetViewport(width, height);
+    auto nt = node.transform;
+    incFocusCamera(node, vec2(-nt.translation.x, -nt.translation.y));
+}
 
-        auto nt = node.transform;
+/**
+    Focus camera at node
+*/
+void incFocusCamera(Node node, vec2 position) {
+    import creator.viewport : incViewportTargetZoom, incViewportTargetPosition;
+    if (node is null) return;
 
-        vec4 bounds = node.getCombinedBounds();
-        vec2 boundsSize = bounds.zw - bounds.xy;
-        if (auto drawable = cast(Drawable)node) boundsSize = drawable.bounds.zw - drawable.bounds.xy;
-        else {
-            nt.translation = vec3(bounds.x + ((bounds.z-bounds.x)/2), bounds.y + ((bounds.w-bounds.y)/2), 0);
-        }
-        
+    int width, height;
+    inGetViewport(width, height);
 
-        float largestViewport = max(width, height);
-        float largestBounds = max(boundsSize.x, boundsSize.y);
+    auto nt = node.transform;
 
-        float factor = largestViewport/largestBounds;
-        incViewportTargetZoom = clamp(factor*0.85, 0.1, 2);
-
-        incViewportTargetPosition = vec2(
-            -nt.translation.x,
-            -nt.translation.y
-        );
+    vec4 bounds = node.getCombinedBounds();
+    vec2 boundsSize = bounds.zw - bounds.xy;
+    if (auto drawable = cast(Drawable)node) boundsSize = drawable.bounds.zw - drawable.bounds.xy;
+    else {
+        nt.translation = vec3(bounds.x + ((bounds.z-bounds.x)/2), bounds.y + ((bounds.w-bounds.y)/2), 0);
     }
+    
 
+    float largestViewport = max(width, height);
+    float largestBounds = max(boundsSize.x, boundsSize.y);
+
+    float factor = largestViewport/largestBounds;
+    incViewportTargetZoom = clamp(factor*0.85, 0.1, 2);
+
+    incViewportTargetPosition = vec2(
+        position.x,
+        position.y
+    );
 }
 
 /**
@@ -376,8 +385,8 @@ EditMode incEditMode() {
 /**
     Sets the current editing mode
 */
-void incSetEditMode(EditMode editMode) {
-    incSelectNode(null);
+void incSetEditMode(EditMode editMode, bool unselect = true) {
+    if (unselect) incSelectNode(null);
     if (editMode != EditMode.ModelEdit) {
         drawables = activeProject.puppet.findNodesType!Drawable(activeProject.puppet.root);
     }

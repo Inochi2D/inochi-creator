@@ -1,9 +1,15 @@
-module creator.medit;
+/*
+    Copyright © 2020, Inochi2D Project
+    Distributed under the 2-Clause BSD License, see LICENSE file.
+    
+    Authors: Luna Nielsen
+*/
+module creator.viewport.vertex.mesh;
 import creator.core;
 import inochi2d;
 import std.exception;
 import bindbc.opengl;
-public import creator.medit.mesh;
+public import creator.viewport.vertex.mesh.mesh;
 
 private {
     Drawable target;
@@ -16,7 +22,11 @@ private {
     IncMesh editingMesh;
 }
 
-void incMeshEditSetTarget(Drawable target_) {
+Drawable incVertexEditGetTarget() {
+    return target;
+}
+
+void incVertexEditSetTarget(Drawable target_) {
     target = target_;
     editingMesh = new IncMesh(target_.getMesh());
 }

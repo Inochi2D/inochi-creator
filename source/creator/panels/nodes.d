@@ -5,6 +5,7 @@
     Authors: Luna Nielsen
 */
 module creator.panels.nodes;
+import creator.viewport.vertex;
 import creator.actions;
 import creator.panels;
 import creator;
@@ -140,16 +141,20 @@ protected:
                     igSameLine(0, 2);
 
                     if (igSelectable(isRoot ? __("Puppet") : n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
-                        if (selected) {
-                            if (incSelectedNodes().length > 1) {
-                                if (io.KeyCtrl) incRemoveSelectNode(n);
-                                else incSelectNode(n);
-                            } else {
-                                incFocusCamera(n);
-                            }
-                        } else {
-                            if (io.KeyCtrl) incAddSelectNode(n);
-                            else incSelectNode(n);
+                        switch(incEditMode) {
+                            default:
+                                if (selected) {
+                                    if (incSelectedNodes().length > 1) {
+                                        if (io.KeyCtrl) incRemoveSelectNode(n);
+                                        else incSelectNode(n);
+                                    } else {
+                                        incFocusCamera(n);
+                                    }
+                                } else {
+                                    if (io.KeyCtrl) incAddSelectNode(n);
+                                    else incSelectNode(n);
+                                }
+                                break;
                         }
                     }
                     this.nodeActionsPopup!isRoot(n);
@@ -222,9 +227,10 @@ protected:
 
                 if (igSelectable(n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
                     if (selected) {
-                        incFocusCamera(n);
+                        incFocusCamera(n, vec2(0, 0));
                     }
                     incSelectNode(n);
+                    incVertexEditSetTarget(n);
                 }
                 // this.nodeActionsPopup(n);
             igPopID();

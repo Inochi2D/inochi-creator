@@ -5,6 +5,7 @@
     Authors: Luna Nielsen
 */
 module creator.panels.inspector;
+import creator.viewport.vertex;
 import creator.core;
 import creator.panels;
 import creator.widgets;
@@ -16,7 +17,6 @@ import std.string;
 import std.algorithm.searching;
 import std.algorithm.mutation;
 import std.conv;
-import creator.medit;
 import i18n;
 
 import creator.actions.node;
@@ -534,8 +534,8 @@ void incInspectorModelDrawable(Drawable node) {
         if (igButton("")) {
             incSetEditMode(EditMode.VertexEdit);
             incSelectNode(node);
-            incFocusCamera(node);
-            incMeshEditSetTarget(node);
+            incVertexEditSetTarget(node);
+            incFocusCamera(node, vec2(0, 0));
         }
 
         // Switches Inochi Creator over to Mesh Edit mode

@@ -22,3 +22,11 @@ void incViewportDeformDraw(Camera camera) {
     incActivePuppet.draw();
 
 }
+
+void incViewportModelPresent() {
+
+}
+
+void incViewportModelWithdraw() {
+
+}

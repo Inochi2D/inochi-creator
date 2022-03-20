@@ -38,9 +38,7 @@ void incViewportModelOverlay() {
     incTooltip(_("Show/hide Orientation Gizmo"));
 }
 
-void incViewportModelUpdate(ImGuiIO* io, Camera camera) {
-
-}
+void incViewportModelUpdate(ImGuiIO* io, Camera camera) { }
 
 void incViewportModelDraw(Camera camera) {
     incActivePuppet.update();
@@ -62,4 +60,12 @@ void incViewportModelDraw(Camera camera) {
             
         }
     }
+}
+
+void incViewportModelPresent() {
+
+}
+
+void incViewportModelWithdraw() {
+
 }
