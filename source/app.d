@@ -35,6 +35,8 @@ int main(string[] args)
             }
         }
 
+        inSetUpdateBounds(true);
+
         incInitPanels();
         incActionInit();
 

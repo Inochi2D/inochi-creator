@@ -143,6 +143,9 @@ void incOpenWindow() {
         flags |= SDL_WINDOW_MAXIMIZED;
     }
 
+    // Don't make KDE freak out when Inochi Creator opens
+    SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
+
     window = SDL_CreateWindow(
         "Inochi Creator", 
         SDL_WINDOWPOS_UNDEFINED,
