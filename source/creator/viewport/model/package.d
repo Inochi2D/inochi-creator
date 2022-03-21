@@ -69,3 +69,7 @@ void incViewportModelPresent() {
 void incViewportModelWithdraw() {
 
 }
+
+void incViewportModelToolbar() {
+    
+}

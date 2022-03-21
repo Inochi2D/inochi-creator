@@ -90,6 +90,24 @@ void incViewportUpdate() {
     }
 }
 
+/**
+    Updates the viewport toolbars
+*/
+void incViewportToolbar() {
+    switch(incEditMode) {
+        case EditMode.ModelEdit:
+            incViewportModelToolbar();
+            break;
+        case EditMode.DeformEdit:
+            incViewportDeformToolbar();
+            break;
+        case EditMode.VertexEdit:
+            incViewportVertexToolbar();
+            break;
+        default: assert(0);
+    }
+}
+
 
 
 

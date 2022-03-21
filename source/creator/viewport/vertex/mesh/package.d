@@ -13,12 +13,7 @@ public import creator.viewport.vertex.mesh.mesh;
 
 private {
     Drawable target;
-    MeshData editingData;
     bool hasEdited;
-
-    GLuint vboPoints;
-    GLuint vboSegments;
-
     IncMesh editingMesh;
 }
 
@@ -29,51 +24,49 @@ Drawable incVertexEditGetTarget() {
 void incVertexEditSetTarget(Drawable target_) {
     target = target_;
     editingMesh = new IncMesh(target_.getMesh());
+    editingMesh.refresh();
 }
 
-void incMeshEditReset() {
-    editingData = target.getMesh.copy();
+void incMeshEditDraw() {
+    editingMesh.draw();
 }
 
 /**
-    Maps UV coordinates from world-space to texture space
+    Applies the mesh edits
 */
-void incMeshEditMapUV(ref vec2 uv) {
-    uv -= vec2(incMeshEditWorldPos());
-    if (Part part = cast(Part)target) {
-
-        // Texture 0 is always albedo texture
-        auto tex = part.textures[0];
-
-        // By dividing by width and height we should get the values in UV coordinate space.
-        uv.x /= cast(float)tex.width;
-        uv.y /= cast(float)tex.height;
-    }
-}
-
-void incMeshEditBarrier() {
-    //if ()
-}
-
-void incMeshEditDbg() {
-    editingData.dbg();
-}
-
-bool incMeshEditCanTriangulate() {
-    return false;
-}
-
-bool incMeshEditCanApply() {
-    return editingData.isReady();
-}
-
 void incMeshEditApply() {
-    enforce(editingData.isReady(), "Mesh is incomplete and cannot be applied.");
-    hasEdited = false;
+    import std.stdio : writeln;
 
-    // Fix winding order
-    editingData.fixWinding();
-    target.getMesh() = editingData;
+    // Export mesh
+    MeshData data = editingMesh.export_();
+    writeln(data);
+    data.fixWinding();
+
+    // Fix UVs
+    foreach(i; 0..data.uvs.length) {
+        if (Part part = cast(Part)target) {
+
+            // Texture 0 is always albedo texture
+            auto tex = part.textures[0];
+
+            // By dividing by width and height we should get the values in UV coordinate space.
+            data.uvs[i].x /= cast(float)tex.width;
+            data.uvs[i].y /= cast(float)tex.height;
+            data.uvs[i] += vec2(0.5, 0.5);
+        }
+    }
+
+    writeln(data);
+
+    // Apply the model
+    target.rebuffer(data);
+}
+
+/**
+    Resets the mesh edits
+*/
+void incMeshEditReset() {
+    editingMesh.reset();
 }
 
 bool incMeshEditIsEdited() {

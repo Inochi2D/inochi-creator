@@ -23,10 +23,14 @@ void incViewportDeformDraw(Camera camera) {
 
 }
 
-void incViewportModelPresent() {
+void incViewportDeformToolbar() {
 
 }
 
-void incViewportModelWithdraw() {
+void incViewportDeformPresent() {
+
+}
+
+void incViewportDeformWithdraw() {
 
 }

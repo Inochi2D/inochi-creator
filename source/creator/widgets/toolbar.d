@@ -5,6 +5,7 @@
     Authors: Luna Nielsen
 */
 module creator.widgets.toolbar;
+import creator.viewport;
 import creator.widgets;
 import creator.core;
 import creator;
@@ -21,9 +22,20 @@ void incToolbar() {
         if (igBeginMenuBar()) {
             igPopStyleVar();
             
+
+            // Render toolbar
+            igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(0, 0));
+            igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
+                igPushFont(incIconFont());
+
+                    // Draw the toolbar relevant for that viewport
+                    incViewportToolbar();
+                igPopFont();
+            igPopStyleVar(2);
+
+            // Render mode switch buttons
             ImVec2 avail;
             igGetContentRegionAvail(&avail);
-            
             igDummy(ImVec2(avail.x-144, 0));
 
             igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(0, 0));

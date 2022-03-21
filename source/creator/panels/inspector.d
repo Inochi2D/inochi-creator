@@ -710,24 +710,22 @@ void incInspectorMeshEditDrawable(Drawable node) {
         igSpacing();
         igSpacing();
 
-        igBeginDisabled(!incMeshEditCanTriangulate());
-            if (igButton(__("Triangulate"))) {
-                incMeshEditDbg();
-                incMeshEditDbg();
-            }
-            incTooltip(_("Automatically connects vertices"));
-        igEndDisabled();
+        // igBeginDisabled(!incMeshEditCanTriangulate());
+        //     if (igButton(__("Triangulate"))) {
+        //         incMeshEditDbg();
+        //         incMeshEditDbg();
+        //     }
+        //     incTooltip(_("Automatically connects vertices"));
+        // igEndDisabled();
         
 
-        igBeginDisabled(!incMeshEditCanApply());
-            if (igButton("")) {
-                // incSetEditMode(EditMode.ModelEdit);
-                // incSelectNode(node);
-                // incFocusCamera(node);
-                incMeshEditApply();
-            }
-            incTooltip(_("Apply"));
-        igEndDisabled();
+        if (igButton("")) {
+            // incSetEditMode(EditMode.ModelEdit);
+            // incSelectNode(node);
+            // incFocusCamera(node);
+            incMeshEditApply();
+        }
+        incTooltip(_("Apply"));
 
         igSameLine(0, 4);
 
