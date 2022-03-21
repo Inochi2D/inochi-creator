@@ -37,7 +37,6 @@ private:
     bool changed;
 
     void mImport(ref MeshData data) {
-        import std.stdio;
         // Reset vertex length
         vertices.length = 0;
 
@@ -71,8 +70,6 @@ private:
                     }
                 }
             }
-
-            writeln(i, ": ", conns, " ", coords);
         }
 
         foreach(i, vertex; iVertices) {
@@ -106,8 +103,6 @@ private:
             foreach(conn; v.connections) {
                 conns ~= indices[conn];
             }
-
-            writeln(i, ": ", conns);
         }
 
         bool hasIndiceSeq(ushort a, ushort b, ushort c) {
@@ -162,7 +157,6 @@ private:
 
         MeshVertex*[] visited;
         void mExportVisit(MeshVertex* v) {
-            import std.stdio : writefln;
 
             visited ~= v;
             printConnections(indices[v], v);

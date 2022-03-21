@@ -35,11 +35,9 @@ void incMeshEditDraw() {
     Applies the mesh edits
 */
 void incMeshEditApply() {
-    import std.stdio : writeln;
 
     // Export mesh
     MeshData data = editingMesh.export_();
-    writeln(data);
     data.fixWinding();
 
     // Fix UVs
@@ -55,8 +53,6 @@ void incMeshEditApply() {
             data.uvs[i] += vec2(0.5, 0.5);
         }
     }
-
-    writeln(data);
 
     // Apply the model
     target.rebuffer(data);
