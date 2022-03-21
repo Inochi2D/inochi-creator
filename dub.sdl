@@ -11,7 +11,7 @@ dependency "psd-d" version="~>0.6.1"
 dependency "bindbc-sdl" version="~>0.21.4"
 dependency "inochi2d" version="~>1.0.0"
 targetPath "out/"
-versions "GL_32" "GL_KHR_debug" "GL_AllowDeprecated" "USE_SDL2" "USE_GL" "SDL_204" "USE_OpenGL3"
+versions "GL_32" "GL_KHR_debug" "GL_AllowDeprecated" "USE_SDL2" "USE_GL" "SDL_208" "USE_OpenGL3"
 stringImportPaths "res/" "./"
 
 // This makes sure LDC2 builds will properly link in libphobos
