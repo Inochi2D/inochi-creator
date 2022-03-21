@@ -144,7 +144,7 @@ void incOpenWindow() {
     }
 
     // Don't make KDE freak out when Inochi Creator opens
-    SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
+    if (!incSettingsGet!bool("DisableCompositor")) SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
 
     window = SDL_CreateWindow(
         "Inochi Creator", 

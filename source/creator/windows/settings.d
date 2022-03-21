@@ -74,6 +74,13 @@ protected:
                                 }
                             }
 
+                            version(linux) {
+                                bool disableCompositor = incSettingsGet!bool("DisableCompositor");
+                                if (igCheckbox(__("Disable Compositor"), &disableCompositor)) {
+                                    incSettingsSet("DisableCompositor", disableCompositor);
+                                }
+                            }
+
 
                             igSpacing();
                             igSpacing();
