@@ -538,10 +538,27 @@ void incInspectorModelDrawable(Drawable node) {
             incFocusCamera(node, vec2(0, 0));
         }
 
-        // Switches Inochi Creator over to Mesh Edit mode
-        // and selects the mesh that you had selected previously
-        // in Model Edit mode.
-        incTooltip(_("Edit Mesh"));
+        // Allow copying mesh data via drag n drop for now
+        if(igBeginDragDropTarget()) {
+            ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+            if (payload !is null) {
+                if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
+                    incSetEditMode(EditMode.VertexEdit);
+                    incSelectNode(node);
+                    incVertexEditSetTarget(node);
+                    incFocusCamera(node, vec2(0, 0));
+                    incVertexEditCopyMeshDataToTarget(payloadDrawable.getMesh());
+                }
+            }
+            
+            igEndDragDropTarget();
+        } else {
+
+            // Switches Inochi Creator over to Mesh Edit mode
+            // and selects the mesh that you had selected previously
+            // in Model Edit mode.
+            incTooltip(_("Edit Mesh"));
+        }
 
         igSpacing();
         igSpacing();
@@ -710,6 +727,16 @@ void incInspectorMeshEditDrawable(Drawable node) {
         igSpacing();
         igSpacing();
 
+        igBeginGroup();
+            if (igButton("")) incMeshFlipHorz();
+            incTooltip(_("Flip Horizontally"));
+
+            igSameLine(0, 4);
+
+            if (igButton("")) incMeshFlipVert();
+            incTooltip(_("Flip Vertically"));
+        igEndGroup();
+
         // igBeginDisabled(!incMeshEditCanTriangulate());
         //     if (igButton(__("Triangulate"))) {
         //         incMeshEditDbg();
@@ -720,20 +747,26 @@ void incInspectorMeshEditDrawable(Drawable node) {
         
 
         if (igButton("")) {
-            // incSetEditMode(EditMode.ModelEdit);
-            // incSelectNode(node);
-            // incFocusCamera(node);
             incMeshEditApply();
+
+            incSetEditMode(EditMode.ModelEdit);
+            incSelectNode(node);
+            incFocusCamera(node);
         }
         incTooltip(_("Apply"));
 
         igSameLine(0, 4);
 
         if (igButton("")) {
-            // incSetEditMode(EditMode.ModelEdit);
-            // incSelectNode(node);
-            // incFocusCamera(node);
-            incMeshEditReset();
+            if (igGetIO().KeyShift) {
+                incMeshEditReset();
+            } else {
+                incMeshEditClear();
+            }
+
+            incSetEditMode(EditMode.ModelEdit);
+            incSelectNode(node);
+            incFocusCamera(node);
         }
         incTooltip(_("Cancel"));
 

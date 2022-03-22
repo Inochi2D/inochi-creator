@@ -24,7 +24,10 @@ Drawable incVertexEditGetTarget() {
 void incVertexEditSetTarget(Drawable target_) {
     target = target_;
     editingMesh = new IncMesh(target_.getMesh());
-    editingMesh.refresh();
+}
+
+void incVertexEditCopyMeshDataToTarget(MeshData data) {
+    editingMesh.import_(data);
 }
 
 void incMeshEditDraw() {
@@ -65,8 +68,30 @@ void incMeshEditApply() {
 /**
     Resets the mesh edits
 */
+void incMeshEditClear() {
+    editingMesh.clear();
+}
+
+
+/**
+    Resets the mesh edits
+*/
 void incMeshEditReset() {
     editingMesh.reset();
+}
+
+/**
+    Resets the mesh edits
+*/
+void incMeshFlipVert() {
+    editingMesh.flipVert();
+}
+
+/**
+    Resets the mesh edits
+*/
+void incMeshFlipHorz() {
+    editingMesh.flipHorz();
 }
 
 bool incMeshEditIsEdited() {

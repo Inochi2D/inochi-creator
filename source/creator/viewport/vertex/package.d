@@ -95,7 +95,7 @@ void incViewportVertexUpdate(ImGuiIO* io, Camera camera) {
             // Left click selection
             if (igIsMouseClicked(ImGuiMouseButton.Left)) {
                 if (incMeshEditGetMesh().isPointOverVertex(mousePos)) {
-                    if (igGetIO().KeyCtrl) toggleSelect(incMeshEditGetMesh().getVertexFromPoint(mousePos));
+                    if (io.KeyCtrl) toggleSelect(incMeshEditGetMesh().getVertexFromPoint(mousePos));
                     else selectOne(incMeshEditGetMesh().getVertexFromPoint(mousePos));
                 }
             }
@@ -135,16 +135,29 @@ void incViewportVertexUpdate(ImGuiIO* io, Camera camera) {
             if (igIsMouseClicked(ImGuiMouseButton.Left)) {
                 if (incMeshEditGetMesh().isPointOverVertex(mousePos)) {
                     auto prev = selectOne(incMeshEditGetMesh().getVertexFromPoint(mousePos));
-                    if (prev !is null && prev != selected[$-1]) {
-                        if (!prev.isConnectedTo(selected[$-1])) {
-                            prev.connect(selected[$-1]);
+                    if (prev !is null) {
+                        if (prev != selected[$-1]) {
+
+                            // Connect or disconnect between previous and this node
+                            if (!prev.isConnectedTo(selected[$-1])) {
+                                prev.connect(selected[$-1]);
+                            } else {
+                                prev.disconnect(selected[$-1]);
+                            }
+                            if (!io.KeyShift) deselectAll();
                         } else {
-                            prev.disconnect(selected[$-1]);
+
+                            // Selecting the same vert twice unselects it
+                            deselectAll();
                         }
-                        deselectAll();
                     }
+                    
 
                     incMeshEditGetMesh().refresh();
+                } else {
+
+                        // Clicking outside a vert deselect verts
+                        deselectAll();
                 }
             }
             break;

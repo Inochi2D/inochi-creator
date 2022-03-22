@@ -5,6 +5,7 @@
     Authors: Luna Nielsen
 */
 module creator.viewport.vertex.mesh.mesh;
+import creator.viewport;
 import inochi2d;
 import inochi2d.core.dbg;
 import bindbc.opengl;
@@ -91,6 +92,8 @@ private:
             printConnections(i, vertex);
             vertices ~= vertex;
         }
+
+        refresh();
     }
 
     MeshData mExport() {
@@ -213,7 +216,7 @@ private:
     vec3[] lines;
     vec3[] wlines;
     void regen() {
-        points.length = vertices.length;
+        points.length = 0;
         selpoints.length = 0;
         
         // Updates all point positions
@@ -228,6 +231,7 @@ private:
 
         // setup
         lines.length = 0;
+        wlines.length = 0;
         MeshVertex*[] visited;
         
         // our crazy recursive func
@@ -266,6 +270,11 @@ public:
         Constructs a new IncMesh
     */
     this(ref MeshData mesh) {
+        import_(mesh);
+    }
+
+    final
+    void import_(ref MeshData mesh) {
         data = &mesh;
         mImport(mesh);
     }
@@ -273,6 +282,7 @@ public:
     /**
         Exports the working mesh to a MeshData object.
     */
+    final
     MeshData export_() {
         return mExport();
     }
@@ -282,6 +292,14 @@ public:
     */
     void reset() {
         mImport(*data);
+        refresh();
+    }
+
+    /**
+        Clears the mesh of everything
+    */
+    void clear() {
+        vertices.length = 0;
         refresh();
     }
 
@@ -326,14 +344,14 @@ public:
 
     bool isPointOverVertex(vec2 point) {
         foreach(vert; vertices) {
-            if (abs(vert.position.distance(point)) < 4f) return true;
+            if (abs(vert.position.distance(point)) < 12f/incViewportZoom) return true;
         }
         return false;
     }
 
     void removeVertexAt(vec2 point) {
         foreach(i; 0..vertices.length) {
-            if (abs(vertices[i].position.distance(point)) < 4f) {
+            if (abs(vertices[i].position.distance(point)) < 12f/incViewportZoom) {
                 this.remove(vertices[i]);
                 return;
             }
@@ -342,7 +360,7 @@ public:
 
     MeshVertex* getVertexFromPoint(vec2 point) {
         foreach(ref vert; vertices) {
-            if (abs(vert.position.distance(point)) < 4f) return vert;
+            if (abs(vert.position.distance(point)) < 12f/incViewportZoom) return vert;
         }
         return null;
     }
@@ -359,9 +377,22 @@ public:
     }
 
     /**
-        Removes all vertices from the mesh
+        Flips all vertices horizontally
     */
-    void clear() {
-        vertices.length = 0;
+    void flipHorz() {
+        foreach(ref vert; vertices) {
+            vert.position.x *= -1;
+        }
+        refresh();
+    }
+
+    /**
+        Flips all vertices vertically
+    */
+    void flipVert() {
+        foreach(ref vert; vertices) {
+            vert.position.y *= -1;
+        }
+        refresh();
     }
 }
