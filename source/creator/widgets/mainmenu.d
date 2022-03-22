@@ -46,15 +46,17 @@ void incMainMenu() {
                 incNewProject();
             }
 
-            if (igBeginMenu(__("Open"), true)) {
-                igEndMenu();
-            }
-            
-            if(igMenuItem(__("Save"), "Ctrl+S", false, true)) {
-            }
-            
-            if(igMenuItem(__("Save As..."), "Ctrl+Shift+S", false, true)) {
-            }
+            igBeginDisabled();
+                if (igBeginMenu(__("Open"), true)) {
+                    igEndMenu();
+                }
+                
+                if(igMenuItem(__("Save"), "Ctrl+S", false, true)) {
+                }
+                
+                if(igMenuItem(__("Save As..."), "Ctrl+Shift+S", false, true)) {
+                }
+            igEndDisabled();
 
             if (igBeginMenu(__("Import"), true)) {
                 incTooltip(_("Import photoshop document"));
