@@ -9,6 +9,7 @@ import creator.viewport;
 import creator.widgets;
 import creator.core;
 import creator;
+import i18n;
 
 void incToolbar() {
     auto flags = 
@@ -36,33 +37,29 @@ void incToolbar() {
             // Render mode switch buttons
             ImVec2 avail;
             igGetContentRegionAvail(&avail);
-            igDummy(ImVec2(avail.x-144, 0));
+            igDummy(ImVec2(avail.x-(32*3)-8, 0));
 
             igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(0, 0));
             igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
                 igPushFont(incIconFont());
-
                     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
-                        if (igButton(incEditMode == EditMode.ModelEdit ? "" : "", ImVec2(32, 32))) {
-                            incSetEditMode(EditMode.ModelEdit);
-                        }
-                        incTooltip("Edit Model");
+                        if(incEditMode != EditMode.VertexEdit) {
+                            if (incButtonColored("", ImVec2(32, 32), incEditMode == EditMode.ModelEdit ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
+                                incSetEditMode(EditMode.ModelEdit);
+                            }
+                            incTooltip(_("Edit Puppet"));
 
-                        if (igButton(incEditMode == EditMode.DeformEdit ? "" : "", ImVec2(32, 32))) {
-                            incSetEditMode(EditMode.DeformEdit);
-                        }
-                        incTooltip("Edit Deformation");
+                            if (incButtonColored("", ImVec2(32, 32), incEditMode == EditMode.AnimEdit ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
+                                incSetEditMode(EditMode.AnimEdit);
+                            }
+                            incTooltip(_("Edit Animation"));
 
-                        if (igButton(incEditMode == EditMode.VertexEdit ? "" : "", ImVec2(32, 32))) {
-                            incSetEditMode(EditMode.VertexEdit);
+                            if (incButtonColored("", ImVec2(32, 32), incEditMode == EditMode.ModelTest ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
+                                incSetEditMode(EditMode.ModelTest);
+                            }
+                            incTooltip(_("Test Puppet"));
                         }
-                        incTooltip("Edit Mesh");
                     igPopStyleVar();
-
-                    igSpacing();
-
-                    igButton("", ImVec2(32, 32));
-                    incTooltip("Test Model");
 
                 igPopFont();
             igPopStyleVar(2);

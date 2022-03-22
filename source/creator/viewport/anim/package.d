@@ -4,33 +4,32 @@
     
     Authors: Luna Nielsen
 */
-module creator.viewport.deform;
+module creator.viewport.anim;
 import creator.core.input;
 import creator;
 import inochi2d;
 import bindbc.imgui;
 
 // No overlay in deform mode
-void incViewportDeformOverlay() { }
+void incViewportAnimOverlay() { }
 
-void incViewportDeformUpdate(ImGuiIO* io, Camera camera) {
+void incViewportAnimUpdate(ImGuiIO* io, Camera camera) {
     
 }
 
-void incViewportDeformDraw(Camera camera) {
+void incViewportAnimDraw(Camera camera) {
     incActivePuppet.update();
     incActivePuppet.draw();
+}
+
+void incViewportAnimToolbar() {
 
 }
 
-void incViewportDeformToolbar() {
+void incViewportAnimPresent() {
 
 }
 
-void incViewportDeformPresent() {
-
-}
-
-void incViewportDeformWithdraw() {
+void incViewportAnimWithdraw() {
 
 }

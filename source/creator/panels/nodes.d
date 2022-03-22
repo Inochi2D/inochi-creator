@@ -204,37 +204,38 @@ protected:
     }
 
     void treeAddDrawable(ref Drawable n) {
-        igTableNextRow();
-        igTableSetColumnIndex(0);
+        igTextColored(ImVec4(0.6f, 0f, 0f, 0f), __("Node list is unavailable while editing meshes"));
+        // igTableNextRow();
+        // igTableSetColumnIndex(0);
         
-        ImGuiTreeNodeFlags flags;
-        flags |= ImGuiTreeNodeFlags.Leaf;
-        flags |= ImGuiTreeNodeFlags.DefaultOpen;
-        flags |= ImGuiTreeNodeFlags.OpenOnArrow;
+        // ImGuiTreeNodeFlags flags;
+        // flags |= ImGuiTreeNodeFlags.Leaf;
+        // flags |= ImGuiTreeNodeFlags.DefaultOpen;
+        // flags |= ImGuiTreeNodeFlags.OpenOnArrow;
 
-        igTreeNodeEx(cast(void*)n.uuid, flags, "");
-            // Show node entry stuff
-            igSameLine(0, 4);
+        // igTreeNodeEx(cast(void*)n.uuid, flags, "");
+        //     // Show node entry stuff
+        //     igSameLine(0, 4);
 
-            igPushID(n.uuid);
+        //     igPushID(n.uuid);
 
-                bool selected = incNodeInSelection(n);
+        //         bool selected = incNodeInSelection(n);
 
-                igPushFont(incIconFont());
-                    igText(incTypeIdToIcon(n.typeId).ptr);
-                igPopFont();
-                igSameLine(0, 2);
+        //         igPushFont(incIconFont());
+        //             igText(incTypeIdToIcon(n.typeId).ptr);
+        //         igPopFont();
+        //         igSameLine(0, 2);
 
-                if (igSelectable(n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
-                    if (selected) {
-                        incFocusCamera(n, vec2(0, 0));
-                    }
-                    incSelectNode(n);
-                    incVertexEditSetTarget(n);
-                }
-                // this.nodeActionsPopup(n);
-            igPopID();
-        igTreePop();
+        //         if (igSelectable(n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
+        //             if (selected) {
+        //                 incFocusCamera(n, vec2(0, 0));
+        //             }
+        //             incSelectNode(n);
+        //             incVertexEditSetTarget(n);
+        //         }
+        //         // this.nodeActionsPopup(n);
+        //     igPopID();
+        // igTreePop();
     }
 
     override

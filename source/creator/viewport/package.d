@@ -10,8 +10,9 @@ import creator;
 import creator.core.input;
 import bindbc.imgui;
 import creator.viewport.model;
-import creator.viewport.deform;
 import creator.viewport.vertex;
+import creator.viewport.anim;
+import creator.viewport.test;
 
 /**
     Draws the viewport contents
@@ -24,11 +25,14 @@ void incViewportDraw() {
             case EditMode.ModelEdit:
                 incViewportModelDraw(camera);
                 break;
-            case EditMode.DeformEdit:
-                incViewportDeformDraw(camera);
-                break;
             case EditMode.VertexEdit:
                 incViewportVertexDraw(camera);
+                break;
+            case EditMode.AnimEdit:
+                incViewportAnimDraw(camera);
+                break;
+            case EditMode.ModelTest:
+                incViewportTestDraw(camera);
                 break;
             default: assert(0);
         }
@@ -43,11 +47,14 @@ void incViewportDrawOverlay() {
         case EditMode.ModelEdit:
             incViewportModelOverlay();
             break;
-        case EditMode.DeformEdit:
-            incViewportDeformOverlay();
-            break;
         case EditMode.VertexEdit:
             incViewportVertexOverlay();
+            break;
+        case EditMode.AnimEdit:
+            incViewportAnimOverlay();
+            break;
+        case EditMode.ModelTest:
+            incViewportTestOverlay();
             break;
         default: assert(0);
     }
@@ -80,11 +87,14 @@ void incViewportUpdate() {
         case EditMode.ModelEdit:
             incViewportModelUpdate(io, camera);
             break;
-        case EditMode.DeformEdit:
-            incViewportDeformUpdate(io, camera);
-            break;
         case EditMode.VertexEdit:
             incViewportVertexUpdate(io, camera);
+            break;
+        case EditMode.AnimEdit:
+            incViewportAnimUpdate(io, camera);
+            break;
+        case EditMode.ModelTest:
+            incViewportTestUpdate(io, camera);
             break;
         default: assert(0);
     }
@@ -98,11 +108,14 @@ void incViewportToolbar() {
         case EditMode.ModelEdit:
             incViewportModelToolbar();
             break;
-        case EditMode.DeformEdit:
-            incViewportDeformToolbar();
-            break;
         case EditMode.VertexEdit:
             incViewportVertexToolbar();
+            break;
+        case EditMode.AnimEdit:
+            incViewportAnimToolbar();
+            break;
+        case EditMode.ModelTest:
+            incViewportTestToolbar();
             break;
         default: assert(0);
     }

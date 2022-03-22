@@ -69,10 +69,9 @@ protected:
                         incCommonNonEditHeader(node);
                         incInspectorMeshEditDrawable(cast(Drawable)node);
                         break;
-                    case EditMode.DeformEdit:
+                    default:
                         incCommonNonEditHeader(node);
                         break;
-                    default: assert(0);
                 }
             } else incInspectorModelInfo();
         } else if (nodes.length == 0) {
@@ -527,11 +526,13 @@ void incInspectorModelDrawable(Drawable node) {
     if (!igCollapsingHeader(__("Drawable"), ImGuiTreeNodeFlags.DefaultOpen)) 
         return;
 
+    ImVec2 avail = incAvailableSpace();
+
     igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(8, 8));
         igSpacing();
         igSpacing();
 
-        if (igButton("")) {
+        if (igButton("", ImVec2(avail.x, 32))) {
             incSetEditMode(EditMode.VertexEdit);
             incSelectNode(node);
             incVertexEditSetTarget(node);
@@ -553,6 +554,7 @@ void incInspectorModelDrawable(Drawable node) {
             
             igEndDragDropTarget();
         } else {
+
 
             // Switches Inochi Creator over to Mesh Edit mode
             // and selects the mesh that you had selected previously
@@ -720,9 +722,6 @@ void incInspectorModelPart(Part node) {
 //  MESH EDIT MODE
 //
 void incInspectorMeshEditDrawable(Drawable node) {
-    if (!igCollapsingHeader(__("Drawable"), ImGuiTreeNodeFlags.DefaultOpen)) 
-        return;
-
     igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(8, 8));
         igSpacing();
         igSpacing();
@@ -745,19 +744,14 @@ void incInspectorMeshEditDrawable(Drawable node) {
         //     incTooltip(_("Automatically connects vertices"));
         // igEndDisabled();
         
+        ImVec2 avail = incAvailableSpace();
+        incDummy(ImVec2(avail.x, avail.y-38));
 
-        if (igButton("")) {
-            incMeshEditApply();
+        // Right align
+        incDummy(ImVec2(avail.x-72, 32));
+        igSameLine(0, 0);
 
-            incSetEditMode(EditMode.ModelEdit);
-            incSelectNode(node);
-            incFocusCamera(node);
-        }
-        incTooltip(_("Apply"));
-
-        igSameLine(0, 4);
-
-        if (igButton("")) {
+        if (igButton("", ImVec2(32, 32))) {
             if (igGetIO().KeyShift) {
                 incMeshEditReset();
             } else {
@@ -770,7 +764,15 @@ void incInspectorMeshEditDrawable(Drawable node) {
         }
         incTooltip(_("Cancel"));
 
-        igSpacing();
-        igSpacing();
+        igSameLine(0, 8);
+
+        if (igButton("", ImVec2(32, 32))) {
+            incMeshEditApply();
+
+            incSetEditMode(EditMode.ModelEdit);
+            incSelectNode(node);
+            incFocusCamera(node);
+        }
+        incTooltip(_("Apply"));
     igPopStyleVar();
 }

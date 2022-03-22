@@ -42,9 +42,25 @@ private {
     Edit modes
 */
 enum EditMode {
+    /**
+        Model editing mode
+    */
     ModelEdit,
-    DeformEdit,
-    VertexEdit
+
+    /**
+        Vertex Editing Mode
+    */
+    VertexEdit,
+
+    /**
+        Animation Editing Mode
+    */
+    AnimEdit,
+
+    /**
+        Model testing mode
+    */
+    ModelTest
 }
 
 bool incShowVertices    = true; /// Show vertices of selected parts
@@ -61,6 +77,7 @@ EditMode editMode_;
     Creates a new project
 */
 void incNewProject() {
+    editMode_ = EditMode.ModelEdit;
     import creator.viewport : incViewportReset;
 
     activeProject = new Project;
@@ -117,11 +134,8 @@ void incImportPSD(string file) {
     Puppet puppet = new Puppet();
 
     Layer[] layerGroupStack;
-    bool isAnyStackItemHidden() {
-        foreach_reverse (layer; layerGroupStack) {
-            if ((layer.flags & LayerFlags.Visible) != 0) return true;
-        }
-        return false;
+    bool isLastStackItemHidden() {
+        return layerGroupStack.length > 0 ? (layerGroupStack[$-1].flags & LayerFlags.Visible) != 0 : false;
     }
 
     foreach_reverse(i, Layer layer; doc.layers) {
@@ -174,7 +188,7 @@ void incImportPSD(string file) {
 
         // Handle layer stack stuff
         if (layerGroupStack.length > 0) {
-            if (isAnyStackItemHidden()) part.enabled = false;
+            if (isLastStackItemHidden()) part.enabled = false;
             if (layerGroupStack[$-1].blendModeKey != BlendingMode.PassThrough) {
                 switch(layerGroupStack[$-1].blendModeKey) {
                     case BlendingMode.Multiply: 
