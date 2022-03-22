@@ -189,13 +189,13 @@ void incViewportVertexToolbar() {
             incVertexToolMode = VertexToolMode.Points;
             deselectAll();
         }
-        incTooltip(_("Allows you to place vertices on to the part"));
+        incTooltip(_("Vertex Tool"));
 
         if (incButtonColored("", ImVec2(32, 32), incVertexToolMode == VertexToolMode.Connect ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
             incVertexToolMode = VertexToolMode.Connect;
             deselectAll();
         }
-        incTooltip(_("Allows you to connect vertices on to the part"));
+        incTooltip(_("Line Tool"));
 
     igPopStyleVar();
 }
