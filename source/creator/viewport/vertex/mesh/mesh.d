@@ -111,14 +111,6 @@ private:
             }
             return false;
         }
-        
-        void printConnections(ushort i, MeshVertex* v) {
-            import std.stdio;
-            ushort[] conns;
-            foreach(conn; v.connections) {
-                conns ~= indices[conn];
-            }
-        }
 
         bool hasIndiceSeq(ushort a, ushort b, ushort c) {
             foreach(i; 0..newData.indices.length/3) {
@@ -131,16 +123,6 @@ private:
                 if (score == 3) return true;
             }
             return false;
-        }
-
-        bool areLineSegmentsIntersecting(vec2 p1, vec2 p2, vec2 p3, vec2 p4) {
-            float epsilon = 0.00001f;
-            float demoninator = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
-            if (demoninator == 0) return false;
-
-            float uA = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / demoninator;
-            float uB = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / demoninator;
-            return (uA > 0+epsilon && uA < 1-epsilon && uB > 0+epsilon && uB < 1-epsilon);
         }
 
         bool isAnyEdgeIntersecting(vec2[3] t1, vec2[3] t2) {
@@ -172,9 +154,7 @@ private:
 
         MeshVertex*[] visited;
         void mExportVisit(MeshVertex* v) {
-
             visited ~= v;
-            printConnections(indices[v], v);
 
             MeshVertex* findFreeIndice() {
                 foreach (key; indices.keys) {
@@ -215,18 +195,23 @@ private:
             }
         }
 
-        mExportVisit(vertices[0]);
-        import std.math : quantize;
-        
-        data = newData;
-        refresh();
+        // Run the export
+        foreach(ref vert; vertices) {
+            if (!visited.canFind(vert)) {
+                mExportVisit(vert);
+            }
+        }
 
+        // Save the data as the new data and refresh
+        data = newData;
+        reset();
         return *newData;
     }
 
     vec3[] points;
     vec3[] selpoints;
     vec3[] lines;
+    vec3[] wlines;
     void regen() {
         points.length = vertices.length;
         selpoints.length = 0;
@@ -267,7 +252,11 @@ private:
             }
         }
 
-        if(vertices.length > 0) recurseLines(vertices[0]);
+        foreach(ref vert; vertices) {
+            if (!visited.canFind(vert)) {
+                recurseLines(vert);
+            }
+        }
     }
 
 public:
@@ -313,9 +302,14 @@ public:
             inDbgDrawLines(vec4(0.7, 0.7, 0.7, 1));
         }
 
+        if (wlines.length > 0) {
+            inDbgSetBuffer(lines);
+            inDbgDrawLines(vec4(0.7, 0.2, 0.2, 1));
+        }
+
         if (points.length > 0) {
             inDbgSetBuffer(points);
-            inDbgPointsSize(8);
+            inDbgPointsSize(10);
             inDbgDrawPoints(vec4(0, 0, 0, 1));
             inDbgPointsSize(6);
             inDbgDrawPoints(vec4(1, 1, 1, 1));
@@ -323,7 +317,7 @@ public:
 
         if (selpoints.length > 0) {
             inDbgSetBuffer(selpoints);
-            inDbgPointsSize(8);
+            inDbgPointsSize(10);
             inDbgDrawPoints(vec4(0, 0, 0, 1));
             inDbgPointsSize(6);
             inDbgDrawPoints(vec4(1, 0, 0, 1));
