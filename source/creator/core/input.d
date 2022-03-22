@@ -82,11 +82,11 @@ bool incInputIsPopupRequested() {
 }
 
 /**
-    Gets whether the user has requested to drag the viewport
+    Gets whether the user has requested to drag something
 */
-bool incInputIsDragRequested() {
+bool incInputIsDragRequested(ImGuiMouseButton btn = ImGuiMouseButton.Right) {
     ImVec2 dragDelta;
-    igGetMouseDragDelta(&dragDelta, ImGuiMouseButton.Right);
+    igGetMouseDragDelta(&dragDelta, btn);
     return abs(dragDelta.x) > 0.1f && abs(dragDelta.y) > 0.1f;
 }
 

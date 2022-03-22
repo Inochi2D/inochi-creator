@@ -31,6 +31,10 @@ void incMeshEditDraw() {
     editingMesh.draw();
 }
 
+ref IncMesh incMeshEditGetMesh() {
+    return editingMesh;
+}
+
 /**
     Applies the mesh edits
 */

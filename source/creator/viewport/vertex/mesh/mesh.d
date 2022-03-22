@@ -13,14 +13,30 @@ struct MeshVertex {
     vec2 position;
     MeshVertex*[] connections;
     bool selected;
+}
 
-    void connect(MeshVertex* other) {
-        this.connections ~= other;
-        other.connections ~= &this;
+void connect(MeshVertex* self, MeshVertex* other) {
+    self.connections ~= other;
+    other.connections ~= self;
+}
+ 
+void disconnect(MeshVertex* self, MeshVertex* other) {
+    import std.algorithm.searching : countUntil;
+    import std.algorithm.mutation : remove;
+    
+    auto idx = other.connections.countUntil(self);
+    if (idx != -1) other.connections = remove(other.connections, idx);
+
+    idx = self.connections.countUntil(other);
+    if (idx != -1) self.connections = remove(self.connections, idx);
+}
+
+void disconnectAll(MeshVertex* self) {
+    while(self.connections.length > 0) {
+        self.disconnect(self.connections[0]);
     }
 }
 
-private
 bool isConnectedTo(MeshVertex* self, MeshVertex* other) {
     if (other == null) return false;
 
@@ -33,7 +49,6 @@ bool isConnectedTo(MeshVertex* self, MeshVertex* other) {
 class IncMesh {
 private:
     MeshData* data;
-    MeshVertex*[] vertices;
     bool changed;
 
     void mImport(ref MeshData data) {
@@ -201,6 +216,8 @@ private:
         }
 
         mExportVisit(vertices[0]);
+        import std.math : quantize;
+        
         data = newData;
         refresh();
 
@@ -212,6 +229,7 @@ private:
     vec3[] lines;
     void regen() {
         points.length = vertices.length;
+        selpoints.length = 0;
         
         // Updates all point positions
         foreach(i, vert; vertices) {
@@ -249,10 +267,11 @@ private:
             }
         }
 
-        recurseLines(vertices[0]);
+        if(vertices.length > 0) recurseLines(vertices[0]);
     }
 
 public:
+    MeshVertex*[] vertices;
 
     /**
         Constructs a new IncMesh
@@ -308,6 +327,40 @@ public:
             inDbgDrawPoints(vec4(0, 0, 0, 1));
             inDbgPointsSize(6);
             inDbgDrawPoints(vec4(1, 0, 0, 1));
+        }
+    }
+
+    bool isPointOverVertex(vec2 point) {
+        foreach(vert; vertices) {
+            if (abs(vert.position.distance(point)) < 4f) return true;
+        }
+        return false;
+    }
+
+    void removeVertexAt(vec2 point) {
+        foreach(i; 0..vertices.length) {
+            if (abs(vertices[i].position.distance(point)) < 4f) {
+                this.remove(vertices[i]);
+                return;
+            }
+        }
+    }
+
+    MeshVertex* getVertexFromPoint(vec2 point) {
+        foreach(ref vert; vertices) {
+            if (abs(vert.position.distance(point)) < 4f) return vert;
+        }
+        return null;
+    }
+
+    void remove(MeshVertex* vert) {
+        import std.algorithm.searching : countUntil;
+        import std.algorithm.mutation : remove;
+        
+        auto idx = vertices.countUntil(vert);
+        if (idx != -1) {
+            disconnectAll(vert);
+            vertices = vertices.remove(idx);
         }
     }
 
