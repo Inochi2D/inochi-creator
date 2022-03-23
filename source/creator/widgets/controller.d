@@ -191,7 +191,129 @@ bool incController(string strId, ref Parameter param, ImVec2 size) {
         igItemAdd(fRect, id);
         igItemSize(size);
     } else {
+        const float lineHeight = 16;
 
+        float oRectOffsetX = 24;
+        float oRectOffsetY = 12;
+        ImRect fRect = ImRect(
+            vPos,
+            ImVec2(vPos.x + size.x, vPos.y + size.y)
+        );
+
+        ImRect oRect = ImRect(
+            ImVec2(vPos.x+oRectOffsetX, vPos.y+oRectOffsetY), 
+            ImVec2((vPos.x + size.x)-oRectOffsetX, (vPos.y + size.y)-oRectOffsetY)
+        );
+
+        igPushID(id);
+
+            igRenderFrame(oRect.Min, oRect.Max, igGetColorU32(ImGuiCol.FrameBg));
+            float sDeltaX = param.max.x-param.min.x;
+            
+            ImVec2 vSecurity = ImVec2(15, 15);
+            ImRect frameBB = ImRect(ImVec2(oRect.Min.x - vSecurity.x, oRect.Min.y - vSecurity.y), ImVec2(oRect.Max.x + vSecurity.x, oRect.Max.y + vSecurity.y));
+
+            bool hovered;
+            bool held;
+            bool pressed = igButtonBehavior(frameBB, igGetID("##Zone"), &hovered, &held);
+            if (hovered && held) {
+                igGetMousePos(&mPos);
+                ImVec2 vCursorPos = ImVec2(mPos.x - oRect.Min.x, mPos.y - oRect.Min.y);
+
+                param.value.x = clamp(vCursorPos.x / (oRect.Max.x - oRect.Min.x) * sDeltaX + param.min.x, param.min.x, param.max.x);
+
+                // Snap to closest point mode
+                if (io.KeyShift) {
+                    vec2 closestPoint = param.value;
+                    float closestDist = float.infinity;
+                    foreach(xIdx; 0..param.axisPoints[0].length) {
+                        vec2 pos = vec2(
+                            (param.max.x - param.min.x) * param.axisPoints[0][xIdx] + param.min.x,
+                            0
+                        );
+
+                        float dist = param.value.distance(pos);
+                        if (dist < closestDist) {
+                            closestDist = dist;
+                            closestPoint = pos;
+                        }
+                    }
+
+                    // clamp to closest point
+                    param.value = closestPoint;
+                }
+
+                bModified = true;
+            }
+
+            float fYCenter = oRect.Min.y+(ImRect_GetHeight(&oRect)/2);
+            float fYCenterLineLen1th = lineHeight/2;
+            float fScaleX;
+            float fScaleY;
+            ImVec2 vCursorPos;
+
+            ImDrawList* drawList = igGetWindowDrawList();
+            
+            ImS32 uDotColor = igGetColorU32(ImVec4(1f, 0f, 0f, 1f));
+            ImS32 uLineColor = igGetColorU32(style.Colors[ImGuiCol.Text]);
+            ImS32 uDotKeyColor = igGetColorU32(style.Colors[ImGuiCol.TextDisabled]);
+            ImS32 uDotKeyFilled = igGetColorU32(ImVec4(0f, 1f, 0f, 1f));
+
+            // AXIES LINES
+            foreach(xIdx; 0..param.axisPoints[0].length) {
+                float xVal = param.axisPoints[0][xIdx];
+                float xPos = (oRect.Max.x - oRect.Min.x) * xVal + oRect.Min.x;
+                
+                ImDrawList_AddLine(
+                    drawList, 
+                    ImVec2(
+                        xPos, 
+                        fYCenter-fYCenterLineLen1th-(fYCenterLineLen1th/4)
+                    ), 
+                    ImVec2(
+                        xPos, 
+                        fYCenter+fYCenterLineLen1th
+                    ), 
+                    uLineColor, 
+                    2f, 
+                );
+            
+            }
+
+            // REF LINE
+            ImDrawList_AddLine(drawList, ImVec2(oRect.Min.x, fYCenter), ImVec2(oRect.Max.x, fYCenter), uLineColor, 2f);
+            
+            // AXIES POINTS
+            foreach(xIdx; 0..param.axisPoints[0].length) {
+                float xVal = param.axisPoints[0][xIdx];
+
+                vCursorPos = ImVec2(
+                    (oRect.Max.x - oRect.Min.x) * xVal + oRect.Min.x, 
+                    fYCenter
+                );
+
+                ImDrawList_AddCircleFilled(drawList, vCursorPos, 6.0f, uDotKeyColor, 16);
+                foreach(binding; param.bindings) {
+                    if (binding.getIsSet()[xIdx][0]) {
+                        ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotKeyFilled, 16);
+                        break;
+                    }
+                }
+            }
+
+            // PARAM VALUE
+            fScaleX = (param.value.x - param.min.x) / sDeltaX;
+            vCursorPos = ImVec2(
+                (oRect.Max.x - oRect.Min.x) * fScaleX + oRect.Min.x, 
+                fYCenter
+            );
+            
+            ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotColor, 16);
+        
+        igPopID(); 
+
+        igItemAdd(fRect, id);
+        igItemSize(size);
     }
 
     return bModified;
