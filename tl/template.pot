@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-22 22:02+0100\n"
+"POT-Creation-Date: 2022-03-24 00:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -350,7 +350,9 @@ msgstr ""
 msgid "Flip Vertically"
 msgstr ""
 
+#. Cancels the edited state for the axies points
 #: source/creator/panels/inspector.d:765
+#: source/creator/windows/paramaxies.d:146
 msgid "Cancel"
 msgstr ""
 
@@ -384,7 +386,7 @@ msgstr ""
 msgid "Show"
 msgstr ""
 
-#: source/creator/panels/nodes.d:73
+#: source/creator/panels/nodes.d:73 source/creator/panels/parameters.d:56
 msgid "Delete"
 msgstr ""
 
@@ -413,7 +415,27 @@ msgstr ""
 msgid "Nodes"
 msgstr ""
 
-#: source/creator/panels/parameters.d:63
+#: source/creator/panels/parameters.d:45
+msgid "Edit Properties"
+msgstr ""
+
+#: source/creator/panels/parameters.d:49
+msgid "Edit Axies Points"
+msgstr ""
+
+#: source/creator/panels/parameters.d:83
+msgid "Add 1D Parameter"
+msgstr ""
+
+#: source/creator/panels/parameters.d:89
+msgid "Add 2D Parameter"
+msgstr ""
+
+#: source/creator/panels/parameters.d:125
+msgid "Add Parameter"
+msgstr ""
+
+#: source/creator/panels/parameters.d:130
 msgid "Parameters"
 msgstr ""
 
@@ -495,11 +517,11 @@ msgid "Show/hide Orientation Gizmo"
 msgstr ""
 
 #: source/creator/viewport/vertex/package.d:192
-msgid "Allows you to place vertices on to the part"
+msgid "Vertex Tool"
 msgstr ""
 
 #: source/creator/viewport/vertex/package.d:198
-msgid "Allows you to connect vertices on to the part"
+msgid "Line Tool"
 msgstr ""
 
 #: source/creator/widgets/mainmenu.d:44
@@ -514,8 +536,13 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
+#. Actually saves the edited state for the axies points
+#. Settings are autosaved, but in case the user
+#. feels more safe with a save button then we have
+#. it here.
 #. Save button
-#: source/creator/widgets/mainmenu.d:54 source/creator/windows/settings.d:121
+#: source/creator/widgets/mainmenu.d:54 source/creator/windows/paramaxies.d:153
+#: source/creator/windows/paramprop.d:93 source/creator/windows/settings.d:121
 msgid "Save"
 msgstr ""
 
@@ -804,6 +831,32 @@ msgstr ""
 
 #: source/creator/windows/notice.d:70
 msgid "Under Construction"
+msgstr ""
+
+#. Points where the user can set parameter values
+#: source/creator/windows/paramaxies.d:90
+msgid "Breakpoints"
+msgstr ""
+
+#. Title for the parameter axis points window
+#. This window allows adjusting axies in the
+#. Parameter it's attached to.
+#. Keypoints show up on every intersecting axis line.
+#: source/creator/windows/paramaxies.d:195
+msgid "Parameter Axies Points"
+msgstr ""
+
+#: source/creator/windows/paramprop.d:33
+msgid "Parameter Name"
+msgstr ""
+
+#: source/creator/windows/paramprop.d:40
+msgid "Parameter Constraints"
+msgstr ""
+
+#. Title for the parameter properties window.
+#: source/creator/windows/paramprop.d:106
+msgid "Parameter Properties"
 msgstr ""
 
 #: source/creator/windows/settings.d:41
