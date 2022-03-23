@@ -16,6 +16,7 @@ public import creator.windows.about;
 public import creator.windows.settings;
 public import creator.windows.texviewer;
 public import creator.windows.notice;
+public import creator.windows.paramprop;
 
 private ImGuiWindowClass* windowClass;
 
@@ -65,6 +66,10 @@ public:
 
     final string name() {
         return name_;
+    }
+
+    final void setTitle(string title) {
+        this.name_ = title;
     }
 
     /**
@@ -181,11 +186,11 @@ void incUpdateWindows() {
     Window[] closedWindows;
     foreach(window; windowList) {
         window.update(id++);
-        closedWindows ~= window;
+        if (!window.visible) closedWindows ~= window;
     }
 
     foreach(window; closedWindows) {
-        if (!window.visible) incPopWindowList(window);
+        incPopWindowList(window);
     }
 }
 

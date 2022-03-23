@@ -7,31 +7,58 @@
 module creator.panels.parameters;
 import creator.panels;
 import creator.widgets;
+import creator.windows;
 import creator;
 import std.string;
 import inochi2d;
 import i18n;
+import std.uni : toLower;
 
 /**
     Generates a parameter view
 */
-void incParameterView(Parameter param) {
+void incParameterView(ref Parameter param) {
+    if (!igCollapsingHeader(param.name.toStringz, ImGuiTreeNodeFlags.DefaultOpen)) return;
+    igIndent();
+        igPushID(cast(void*)param);
 
-    igPushID(param.uuid);
-    incInputText("", param.name);
-    igPopID();
-    igNewLine();
-    incController("Test", param, ImVec2(0, 128));
-    param.isVec2 = true;
-    igText("%.2f %.2f", param.handle.x, param.handle.y);
-    igSeparator();
-    
-    // Each param vec mode needs to be rendered individually
-    final switch(param.isVec2) {
-        case true:
-        case false:
-            break;
-    }
+            float reqSpace = param.isVec2 ? 128 : 32;
+
+            // Parameter Control
+            ImVec2 avail = incAvailableSpace();
+            igBeginChild("###PARAM", ImVec2(avail.x-24, reqSpace+32));
+                if (param.isVec2) igText("%.2f %.2f", param.value.x, param.value.y);
+                else igText("%.2f", param.value.x);
+
+                incController("Test", param, ImVec2(avail.x-18, reqSpace));
+                if (igIsItemClicked(ImGuiMouseButton.Right)) {
+
+                }
+            igEndChild();
+
+            igSameLine(0, 0);
+
+            if (incEditMode == EditMode.ModelEdit) {
+                // Parameter Setting Buttons
+                igBeginChild("###SETTING", ImVec2(avail.x-24, reqSpace));
+                    if (igBeginPopup("###EditParam")) {
+                        if (igMenuItem(__("Edit Properties"), "", false, true)) {
+                            incPushWindow(new ParamPropWindow(param));
+                        }
+
+                        if (igMenuItem(__("Delete"), "", false, true)) {
+                            incActivePuppet().removeParameter(param);
+                        }
+                        igEndPopup();
+                    }
+                    
+                    if (incButtonColored("", ImVec2(24, 24))) {
+                        igOpenPopup("###EditParam");
+                    }
+                igEndChild();
+            }
+        igPopID();
+    igUnindent();
 }
 
 /**
@@ -39,23 +66,56 @@ void incParameterView(Parameter param) {
 */
 class ParametersPanel : Panel {
 private:
-
+    string filter;
 protected:
     override
     void onUpdate() {
         auto parameters = incActivePuppet().parameters;
 
-        igBeginChild("ParametersList", ImVec2(0, -32));
-            foreach(param; parameters) {
-                incParameterView(param);
+        if (igBeginPopup("###AddParameter")) {
+            if (igMenuItem(__("Add 1D Parameter"), "", false, true)) {
+                incActivePuppet().parameters ~= new Parameter(
+                    "Param #%d\0".format(parameters.length),
+                    false
+                );
             }
-        igEndChild();
-        if (igButton("+", ImVec2(32, 32))) {
-            incActivePuppet().parameters ~= new Parameter(
-                "New Parameter %d\0".format(parameters.length)
-            );
+            if (igMenuItem(__("Add 2D Parameter"), "", false, true)) {
+                incActivePuppet().parameters ~= new Parameter(
+                    "Param #%d\0".format(parameters.length),
+                    true
+                );
+            }
+            igEndPopup();
+        }
+        if (igBeginChild("###FILTER", ImVec2(0, 32))) {
+            if (incInputText("Filter", filter)) {
+                filter = filter.toLower;
+            }
+            incTooltip("Filter, search for specific parameters");
+            igEndChild();
         }
 
+
+        if (igBeginChild("ParametersList", ImVec2(0, -36))) {
+            foreach(ref param; parameters) {
+                import std.algorithm.searching : canFind;
+                if (filter.length == 0 || param.indexableName.canFind(filter)) {
+                    incParameterView(param);
+                }
+            }
+            igEndChild();
+        }
+
+        // Right align add button
+        ImVec2 avail = incAvailableSpace();
+        incDummy(ImVec2(avail.x-32, 32));
+        igSameLine(0, 0);
+
+        // Add button
+        if (igButton("", ImVec2(32, 32))) {
+            igOpenPopup("###AddParameter");
+        }
+        incTooltip(_("Add Parameter"));
     }
 
 public:
