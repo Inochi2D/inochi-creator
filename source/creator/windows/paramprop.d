@@ -35,67 +35,66 @@ protected:
                     if (incInputText("Name", param.name)) {
                         param.makeIndexable();
                     }
+                igUnindent();
 
-                    igText(__("Parameter Constraints"));
-                    igIndent();
-                        igSetNextItemWidth(256);
+                igText(__("Parameter Constraints"));
+                igIndent();
+                    igSetNextItemWidth(256);
 
-                        if (param.isVec2) igText(__("X"));
-                        if (param.isVec2) igIndent();
-                            
-                            // X MINIMUM
+                    if (param.isVec2) igText("X");
+                    if (param.isVec2) igIndent();
+                        
+                        // X MINIMUM
+                        igSetNextItemWidth(64);
+                        igPushID(0);
+                                incDragFloat("adj_x_min", &param.min.vector[0], 1, -float.max, param.max.x-1, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                        igPopID();
+
+                        igSameLine(0, 4);
+
+                        // X MAXIUMUM
+                        igSetNextItemWidth(64);
+                        igPushID(1);
+                            incDragFloat("adj_x_max", &param.max.vector[0], 1, param.min.x+1, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                        igPopID();
+                    if (param.isVec2) igUnindent();
+                        
+                    if (param.isVec2) {
+
+                        igText("Y");
+
+                        igIndent();
+
+                            // Y MINIMUM
                             igSetNextItemWidth(64);
-                            igPushID(0);
-                                    incDragFloat("adj_x_min", &param.min.vector[0], 1, -float.max, param.max.x-1, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                            igPushID(2);
+                                incDragFloat("adj_y_min", &param.min.vector[1], 1, -float.max, param.min.y-1, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
                             igPopID();
 
                             igSameLine(0, 4);
 
-                            // X MAXIUMUM
+                            // Y Maximum
                             igSetNextItemWidth(64);
-                            igPushID(1);
-                                incDragFloat("adj_x_max", &param.max.vector[0], 1, param.min.x+1, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                            igPushID(3);
+                                incDragFloat("adj_y_max", &param.max.vector[1], 1, param.min.y+1, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
                             igPopID();
-                        if (param.isVec2) igUnindent();
-                            
-                        if (param.isVec2) {
-
-                            igText(__("Y"));
-
-                            igIndent();
-
-                                // Y MINIMUM
-                                igSetNextItemWidth(64);
-                                igPushID(2);
-                                    incDragFloat("adj_y_min", &param.min.vector[1], 1, -float.max, param.min.y-1, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-                                igPopID();
-
-                                igSameLine(0, 4);
-
-                                // Y Maximum
-                                igSetNextItemWidth(64);
-                                igPushID(3);
-                                    incDragFloat("adj_y_max", &param.max.vector[1], 1, param.min.y+1, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-                                igPopID();
-                            igUnindent();
-                        }
-                    igUnindent();
-
+                        igUnindent();
+                    }
                 igUnindent();
-                igEndChild();
-            }
-            if (igBeginChild("###SettingsBtns", ImVec2(0, 0))) {
-                incDummy(ImVec2(-64, 0));
-                igSameLine(0, 0);
+            igEndChild();
+        }
+        if (igBeginChild("###SettingsBtns", ImVec2(0, 0))) {
+            incDummy(ImVec2(-64, 0));
+            igSameLine(0, 0);
 
-                // Settings are autosaved, but in case the user
-                // feels more safe with a save button then we have
-                // it here.
-                if (igButton(__("Save"), ImVec2(64, 24))) {
-                    this.close();
-                }
-                igEndChild();
+            // Settings are autosaved, but in case the user
+            // feels more safe with a save button then we have
+            // it here.
+            if (igButton(__("Save"), ImVec2(64, 24))) {
+                this.close();
             }
+            igEndChild();
+        }
         igPopID();
     }
 
@@ -103,8 +102,7 @@ public:
     this(ref Parameter param) {
         this.param = param;
 
-        // Appended to parameter name.
-        // Window title for properties for that parameter
+        // Title for the parameter properties window.
         super(_("Parameter Properties"));
     }
 }

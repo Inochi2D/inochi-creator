@@ -30,7 +30,7 @@ void incParameterView(ref Parameter param) {
                 if (param.isVec2) igText("%.2f %.2f", param.value.x, param.value.y);
                 else igText("%.2f", param.value.x);
 
-                incController("Test", param, ImVec2(avail.x-18, reqSpace));
+                incController("###CONTROLLER", param, ImVec2(avail.x-18, reqSpace));
                 if (igIsItemClicked(ImGuiMouseButton.Right)) {
 
                 }
@@ -45,6 +45,13 @@ void incParameterView(ref Parameter param) {
                         if (igMenuItem(__("Edit Properties"), "", false, true)) {
                             incPushWindow(new ParamPropWindow(param));
                         }
+                        
+                        if (igMenuItem(__("Edit Axies Points"), "", false, true)) {
+                            incPushWindow(new ParamAxiesWindow(param));
+                        }
+
+                        igNewLine();
+                        igSeparator();
 
                         if (igMenuItem(__("Delete"), "", false, true)) {
                             incActivePuppet().removeParameter(param);
