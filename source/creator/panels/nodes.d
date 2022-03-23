@@ -279,7 +279,7 @@ protected:
         igPushFont(incIconFont());
             if (incEditMode() == EditMode.ModelEdit) {
                 auto selected = incSelectedNodes();
-                if (igButton("\ue92e", ImVec2(24, 24))) {
+                if (igButton("", ImVec2(24, 24))) {
                     foreach(payloadNode; selected) incDeleteChildWithHistory(payloadNode);
                 }
 
