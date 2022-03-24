@@ -165,12 +165,11 @@ void incViewportModelDeformUpdate(ImGuiIO* io, Camera camera, Parameter param) {
         if (incInputIsDragRequested(ImGuiMouseButton.Left)) {
             vec2 deltaMousePos = lastMousePos-currMousePos;
             dragSelectedPoints(deltaMousePos);
-            writeln("SET @ ", param.getClosestBreakpoint());
             if (deform) {
-                deform.update(deformOffsets);
+                deform.update(param.getClosestBreakpoint(), deformOffsets);
             } else {
                 deform = new DeformationParameterBinding(param, selectedDraw, "deform");
-                deform.update(deformOffsets);
+                deform.update(param.getClosestBreakpoint(), deformOffsets);
                 param.bindings ~= deform;
 
             }
