@@ -32,7 +32,7 @@ void incParameterView(Parameter param) {
 
             // Parameter Control
             ImVec2 avail = incAvailableSpace();
-            igBeginChild("###PARAM", ImVec2(avail.x-24, reqSpace));
+            if (igBeginChild("###PARAM", ImVec2(avail.x-24, reqSpace))) {
                 // Popup for rightclicking the controller
                 if (igBeginPopup("###ControlPopup")) {
                     if (incArmedParameter() == param) {
@@ -106,13 +106,14 @@ void incParameterView(Parameter param) {
                     }
                     igOpenPopup("###ControlPopup");
                 }
-            igEndChild();
+                igEndChild();
+            }
 
             igSameLine(0, 0);
 
             if (incEditMode == EditMode.ModelEdit) {
                 // Parameter Setting Buttons
-                igBeginChild("###SETTING", ImVec2(avail.x-24, reqSpace));
+                if(igBeginChild("###SETTING", ImVec2(avail.x-24, reqSpace))) {
                     if (igBeginPopup("###EditParam")) {
                         if (igMenuItem(__("Edit Properties"), "", false, true)) {
                             incPushWindowList(new ParamPropWindow(param));
@@ -143,7 +144,8 @@ void incParameterView(Parameter param) {
 
                     // Arms the parameter for recording values.
                     incTooltip(_("Arm Parameter"));
-                igEndChild();
+                    igEndChild();
+                }
             }
         igPopID();
     igUnindent();
