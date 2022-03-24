@@ -7,6 +7,7 @@
 module creator;
 import inochi2d;
 import inochi2d.core.dbg;
+import creator.viewport.model;
 import creator.core;
 import creator.core.actionstack;
 import creator.windows;
@@ -320,12 +321,14 @@ void incDisarmParameter() {
 void incSelectNode(Node n = null) {
     if (n is null) selectedNodes.length = 0;
     else selectedNodes = [n];
+    if (incArmedParameter()) incViewportModelNodeSelect(selectedNodes[$-1]);
 }
 
 /**
     Adds node to selection
 */
 void incAddSelectNode(Node n) {
+    if (incArmedParameter()) return;
     selectedNodes ~= n;
 }
 
@@ -352,6 +355,7 @@ private void incSelectAllRecurse(Node n) {
     Selects all nodes
 */
 void incSelectAll() {
+    if (incArmedParameter()) return;
     incSelectNode();
     foreach(child; incActivePuppet().root.children) {
         incSelectAllRecurse(child);
