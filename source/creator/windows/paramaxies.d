@@ -13,11 +13,13 @@ import std.string;
 import creator.utils.link;
 import i18n;
 import inochi2d;
+import std.math;
 
 class ParamAxiesWindow : Window {
 private:
     Parameter param;
     float[][2] newAxies;
+    float[][2] initialAxies;
 
 protected:
     override
@@ -51,6 +53,10 @@ protected:
                             avail = incAvailableSpace();
                             igPushID(0);
                                 foreach(x; 2..newAxies[0].length) {
+                                    
+                                    // Skip elements to-be-deleted
+                                    if (!newAxies[0][x].isFinite) continue;
+
                                     igSetNextItemWidth(avail.x-64);
                                     igPushID(cast(int)x);
                                         incDragFloat("adj_offset", &newAxies[0][x], 0.01, param.min.x+0.01, param.max.x-0.01, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
@@ -58,7 +64,7 @@ protected:
                                         incDummy(ImVec2(-24, 32));
                                         igSameLine(0, 0);
                                         if (igButton("", ImVec2(24, 24))) {
-                                            newAxies[0] = newAxies[0].remove(x);
+                                            newAxies[0][x] = float.nan;
                                         }
                                     igPopID();
                                 }
@@ -70,6 +76,10 @@ protected:
                             avail = incAvailableSpace();
                             igPushID(1);
                                 foreach(y; 2..newAxies[1].length) {
+                                    
+                                    // Skip elements to-be-deleted
+                                    if (!newAxies[1][y].isFinite) continue;
+
                                     igSetNextItemWidth(avail.x-64);
                                     igPushID(cast(int)y);
                                         incDragFloat("adj_offset", &newAxies[1][y], 0.01, param.min.y+0.01, param.max.y-0.01, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
@@ -77,7 +87,7 @@ protected:
                                         incDummy(ImVec2(-24, 0));
                                         igSameLine(0, 0);
                                         if (igButton("", ImVec2(24, 24))) {
-                                            newAxies[1] = newAxies[1].remove(y);
+                                            newAxies[1][y] = float.nan;
                                         }
                                     igPopID();
                                 }
@@ -92,6 +102,10 @@ protected:
                             avail = incAvailableSpace();
                             igPushID(0);
                                 foreach(x; 2..newAxies[0].length) {
+                                    
+                                    // Skip elements to-be-deleted
+                                    if (!newAxies[0][x].isFinite) continue;
+
                                     igSetNextItemWidth(avail.x-64);
                                     igPushID(cast(int)x);
                                         incDragFloat("adj_offset", &newAxies[0][x], 0.01, param.min.x+0.01, param.max.x-0.01, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
@@ -99,7 +113,7 @@ protected:
                                         incDummy(ImVec2(-24, 24));
                                         igSameLine(0, 0);
                                         if (igButton("", ImVec2(24, 24))) {
-                                            newAxies[0] = newAxies[0].remove(x);
+                                            newAxies[0][x] = float.nan;
                                         }
                                     igPopID();
                                 }
@@ -151,11 +165,35 @@ protected:
 
                 // Actually saves the edited state for the axies points
                 if (igButton(__("Save"), ImVec2(64, 24))) {
+                    
+                    // FIRST HANDLE MOVES
                     foreach(i, offsetList; newAxies) {
+                        foreach(ix, offset; offsetList) {
+
+                            // Can't move offsets at the start and end.
+                            if (ix < 2) continue;
+                            if (offset.isFinite) continue;
+                            if (ix >= param.axisPoints[i].length-1) break;
+
+                            uint ridx = cast(uint)ix-1;
+
+                            // Convert to space suitable for insertAxisPoint
+                            float tmpOffset = offset;
+                            if (i == 0) tmpOffset = param.adjustValue(vec2(offset, 0)).x;
+                            if (i == 1) tmpOffset = param.adjustValue(vec2(0, offset)).y;
+
+                            param.moveAxisPoint(cast(uint)i, ridx, tmpOffset);
+                        }
+                    }
+
+                    // THEN INSERTS/DELETES
+                    foreach(i, offsetList; newAxies) {
+                        uint removed = 0;
                         foreach(ix, offset; offsetList) {
 
                             // Can't delete offsets at the start and end.
                             if (ix < 2) continue;
+                            uint ridx = cast(uint)ix-1;
 
                             // Convert to space suitable for insertAxisPoint
                             float tmpOffset = offset;
@@ -164,10 +202,12 @@ protected:
                             
                             // Delete point if it's already there
                             // Add new point if not
-                            import std.algorithm.searching : canFind, countUntil;
-                            if (param.axisPoints[i].canFind(offset) && param.axisPoints[i].length > 2) {
-                                param.deleteAxisPoint(cast(uint)i, cast(uint)param.axisPoints[i].countUntil(tmpOffset));
-                            } else param.insertAxisPoint(cast(uint)i, tmpOffset);
+                            if (!offset.isFinite) {
+                                param.deleteAxisPoint(cast(uint)i, ridx);
+                                removed++;
+                            } if (ix-removed >= param.axisPoints[i].length) {
+                                param.insertAxisPoint(cast(uint)i, tmpOffset);
+                            }
                         }
                     }
                     this.close();
@@ -183,8 +223,14 @@ public:
 
         static foreach(i; 0..2) {
             newAxies[i].length = param.axisPoints[i].length;
-            if (newAxies[i].length > 0) {
-                newAxies[i][0..$] = param.axisPoints[i][0..$];
+            if (newAxies[i].length > 1) {
+
+                // We store it so that 0 and 1 = start + end
+                newAxies[i][0] = param.axisPoints[i][0];
+                newAxies[i][1] = param.axisPoints[i][$-1];
+
+                // And all the user defined ones after.
+                newAxies[i][2..$] = param.axisPoints[i][1..$-1];
             }
         }
 
