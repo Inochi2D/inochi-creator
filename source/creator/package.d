@@ -36,6 +36,7 @@ private {
     Project activeProject;
     Node[] selectedNodes;
     Drawable[] drawables;
+    Parameter armedParam;
 }
 
 /**
@@ -269,6 +270,13 @@ ref Project incActiveProject() {
 }
 
 /**
+    Gets the currently armed parameter
+*/
+ref Parameter incArmedParameter() {
+    return armedParam;
+}
+
+/**
     Gets the currently selected node
 */
 ref Node[] incSelectedNodes() {
@@ -287,6 +295,20 @@ ref Drawable[] incDrawables() {
 */
 ref Node incSelectedNode() {
     return selectedNodes.length == 0 ? incActivePuppet.root : selectedNodes[0];
+}
+
+/**
+    Arms a parameter
+*/
+void incArmParameter(ref Parameter param) {
+    armedParam = param;
+}
+
+/**
+    Disarms parameter recording
+*/
+void incDisarmParameter() {
+    armedParam = null;
 }
 
 /**

@@ -59,9 +59,18 @@ void incParameterView(ref Parameter param) {
                         igEndPopup();
                     }
                     
-                    if (incButtonColored("", ImVec2(24, 24))) {
+                    if (igButton("", ImVec2(24, 24))) {
                         igOpenPopup("###EditParam");
                     }
+                    
+                    
+                    if (incButtonColored("", ImVec2(24, 24), incArmedParameter() == param ? ImVec4(1f, 0f, 0f, 1f) : *igGetStyleColorVec4(ImGuiCol.Text))) {
+                        if (incArmedParameter() == param) incDisarmParameter();
+                        else incArmParameter(param);
+                    }
+
+                    // Arms the parameter for recording values.
+                    incTooltip(_("Arm Parameter"));
                 igEndChild();
             }
         igPopID();
@@ -104,7 +113,15 @@ protected:
 
 
         if (igBeginChild("ParametersList", ImVec2(0, -36))) {
+            
+            // Always render the currently armed parameter on top
+            if (incArmedParameter()) {
+                incParameterView(incArmedParameter());
+            }
+
+            // Render other parameters
             foreach(ref param; parameters) {
+                if (incArmedParameter() == param) continue;
                 import std.algorithm.searching : canFind;
                 if (filter.length == 0 || param.indexableName.canFind(filter)) {
                     incParameterView(param);
