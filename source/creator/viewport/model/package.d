@@ -5,6 +5,7 @@
     Authors: Luna Nielsen
 */
 module creator.viewport.model;
+import creator.viewport.model.deform;
 import creator.widgets.tooltip;
 import creator.core.input;
 import creator.core;
@@ -38,26 +39,39 @@ void incViewportModelOverlay() {
     incTooltip(_("Show/hide Orientation Gizmo"));
 }
 
-void incViewportModelUpdate(ImGuiIO* io, Camera camera) { }
+void incViewportModelNodeSelect(Node node) {
+    incViewportModelDeformNodeSelect(node);
+}
+
+void incViewportModelUpdate(ImGuiIO* io, Camera camera) {
+    if (Parameter param = incArmedParameter()) {
+        incViewportModelDeformUpdate(io, camera, param);
+    }    
+}
 
 void incViewportModelDraw(Camera camera) {
     incActivePuppet.update();
     incActivePuppet.draw();
 
-    if (incSelectedNodes.length > 0) {
-        foreach(selectedNode; incSelectedNodes) {
-            if (selectedNode is null) continue; 
-            if (incShowOrientation) selectedNode.drawOrientation();
-            if (incShowBounds) selectedNode.drawBounds();
+    if (Parameter param = incArmedParameter()) {
+        incViewportModelDeformDraw(camera, param);
+    } else {
+        if (incSelectedNodes.length > 0) {
+            foreach(selectedNode; incSelectedNodes) {
+                if (selectedNode is null) continue; 
+                if (incShowOrientation) selectedNode.drawOrientation();
+                if (incShowBounds) selectedNode.drawBounds();
 
-            if (Drawable selectedDraw = cast(Drawable)selectedNode) {
 
-                if (incShowVertices || incEditMode != EditMode.ModelEdit) {
-                    selectedDraw.drawMeshLines();
-                    selectedDraw.drawMeshPoints();
+                if (Drawable selectedDraw = cast(Drawable)selectedNode) {
+
+                    if (incShowVertices || incEditMode != EditMode.ModelEdit) {
+                        selectedDraw.drawMeshLines();
+                        selectedDraw.drawMeshPoints();
+                    }
                 }
+                
             }
-            
         }
     }
 }

@@ -5,6 +5,7 @@
     Authors: Luna Nielsen
 */
 module creator.panels.parameters;
+import creator.viewport.model.deform;
 import creator.panels;
 import creator.widgets;
 import creator.windows;
@@ -92,8 +93,11 @@ void incParameterView(Parameter param) {
                 if (param.isVec2) igText("%.2f %.2f", param.value.x, param.value.y);
                 else igText("%.2f", param.value.x);
 
-                incController("###CONTROLLER", param, ImVec2(avail.x-18, reqSpace-24), incArmedParameter() == param);
+                if (incController("###CONTROLLER", param, ImVec2(avail.x-18, reqSpace-24), incArmedParameter() == param)) {
+                    if (incArmedParameter() == param) incViewportNodeDeformNotifyParamValueChanged();
+                }
                 if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                    if (incArmedParameter() == param) incViewportNodeDeformNotifyParamValueChanged();
                     cParamBindingEntries.clear();
                     cParamBindingEntriesAll.clear();
 
