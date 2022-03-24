@@ -57,9 +57,14 @@ bool incController(string strId, ref Parameter param, ImVec2 size) {
             ImVec2 vSecurity = ImVec2(15, 15);
             ImRect frameBB = ImRect(ImVec2(oRect.Min.x - vSecurity.x, oRect.Min.y - vSecurity.y), ImVec2(oRect.Max.x + vSecurity.x, oRect.Max.y + vSecurity.y));
 
+            bool shouldSnap = io.KeyShift;
             bool hovered;
             bool held;
             bool pressed = igButtonBehavior(frameBB, igGetID("##Zone"), &hovered, &held);
+            if (hovered && igIsMouseDown(ImGuiMouseButton.Right)) {
+                held = true;
+                shouldSnap = true;
+            }
             if (hovered && held) {
                 igGetMousePos(&mPos);
                 ImVec2 vCursorPos = ImVec2(mPos.x - oRect.Min.x, mPos.y - oRect.Min.y);
@@ -70,7 +75,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size) {
                 );
 
                 // Snap to closest point mode
-                if (io.KeyShift) {
+                if (shouldSnap) {
                     vec2 closestPoint = param.value;
                     float closestDist = float.infinity;
                     foreach(xIdx; 0..param.axisPoints[0].length) {
@@ -216,9 +221,14 @@ bool incController(string strId, ref Parameter param, ImVec2 size) {
             ImVec2 vSecurity = ImVec2(15, 15);
             ImRect frameBB = ImRect(ImVec2(oRect.Min.x - vSecurity.x, oRect.Min.y - vSecurity.y), ImVec2(oRect.Max.x + vSecurity.x, oRect.Max.y + vSecurity.y));
 
+            bool shouldSnap = io.KeyShift;
             bool hovered;
             bool held;
             bool pressed = igButtonBehavior(frameBB, igGetID("##Zone"), &hovered, &held);
+            if (hovered && igIsMouseDown(ImGuiMouseButton.Right)) {
+                held = true;
+                shouldSnap = true;
+            }
             if (hovered && held) {
                 igGetMousePos(&mPos);
                 ImVec2 vCursorPos = ImVec2(mPos.x - oRect.Min.x, mPos.y - oRect.Min.y);
@@ -226,7 +236,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size) {
                 param.value.x = clamp(vCursorPos.x / (oRect.Max.x - oRect.Min.x) * sDeltaX + param.min.x, param.min.x, param.max.x);
 
                 // Snap to closest point mode
-                if (io.KeyShift) {
+                if (shouldSnap) {
                     vec2 closestPoint = param.value;
                     float closestDist = float.infinity;
                     foreach(xIdx; 0..param.axisPoints[0].length) {
