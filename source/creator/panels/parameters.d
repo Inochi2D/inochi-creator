@@ -14,6 +14,12 @@ import inochi2d;
 import i18n;
 import std.uni : toLower;
 
+private {
+    ParameterBinding[][Node] cParamBindingEntries;
+    ParameterBinding[][Node] cParamBindingEntriesAll;
+    vec2u cParamPoint;
+}
+
 /**
     Generates a parameter view
 */
@@ -22,17 +28,82 @@ void incParameterView(ref Parameter param) {
     igIndent();
         igPushID(cast(void*)param);
 
-            float reqSpace = param.isVec2 ? 128 : 32;
+            float reqSpace = param.isVec2 ? 144 : 52;
 
             // Parameter Control
             ImVec2 avail = incAvailableSpace();
-            igBeginChild("###PARAM", ImVec2(avail.x-24, reqSpace+32));
+            igBeginChild("###PARAM", ImVec2(avail.x-24, reqSpace));
+
+                // Popup for rightclicking the controller
+                if (igBeginPopup("###ControlPopup")) {
+                    if (cParamBindingEntries.length > 0) {
+                        if (igBeginMenu(__("Unlink"), true)) {
+                            foreach(node, bindingList; cParamBindingEntries) {
+                                if (igBeginMenu(node.name.toStringz, true)) {
+                                    foreach(ParameterBinding binding; bindingList) {
+                                        if (auto dparam = cast(DeformationParameterBinding)binding) {
+                                            if (igMenuItem(__("Deformation"), "", false, true)) {
+                                                dparam.unset(cParamPoint);
+                                            }
+                                        } else if (auto vparam = cast(ValueParameterBinding)binding) {
+                                            if (igMenuItem(vparam.getName().toStringz, "", false, true)) {
+                                                vparam.unset(cParamPoint);
+                                            }
+                                        }
+                                        
+                                        // Remove unused bindings.
+                                        if (binding.getSetCount() == 0) {
+                                            param.removeBinding(binding);
+                                        }
+                                    }
+                                    igEndMenu();
+                                }
+                            }
+                            igEndMenu();
+                        }
+                    }
+
+                    if (cParamBindingEntriesAll.length > 0) {
+                        if (igBeginMenu(__("Unlink All"), true)) {
+                            foreach(node, bindingList; cParamBindingEntriesAll) {
+                                if (igBeginMenu(node.name.toStringz, true)) {
+                                    foreach(ParameterBinding binding; bindingList) {
+                                        if (auto dparam = cast(DeformationParameterBinding)binding) {
+                                            if (igMenuItem(__("Deformation"), "", false, true)) {
+                                                param.removeBinding(dparam);
+                                            }
+                                        } else if (auto vparam = cast(ValueParameterBinding)binding) {
+                                            if (igMenuItem(vparam.getName().toStringz, "", false, true)) {
+                                                param.removeBinding(vparam);
+                                            }
+                                        }
+                                    }
+                                    igEndMenu();
+                                }
+                            }
+                            igEndMenu();
+                        }
+                    }
+
+                    igEndPopup();
+                }
+
                 if (param.isVec2) igText("%.2f %.2f", param.value.x, param.value.y);
                 else igText("%.2f", param.value.x);
 
-                incController("###CONTROLLER", param, ImVec2(avail.x-18, reqSpace));
+                incController("###CONTROLLER", param, ImVec2(avail.x-18, reqSpace-24));
                 if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                    cParamBindingEntries.clear();
+                    cParamBindingEntriesAll.clear();
 
+                    cParamPoint = param.getClosestBreakpoint();
+                    foreach(ParameterBinding binding; param.bindings) {
+                        cParamBindingEntriesAll[binding.getNode()] ~= binding;
+                        if (binding.getIsSet()[cParamPoint.x][cParamPoint.y]) {
+                            cParamBindingEntries[binding.getNode()] ~= binding;
+                        }
+                    }
+                    igOpenPopup("###ControlPopup");
                 }
             igEndChild();
 
