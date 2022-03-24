@@ -23,7 +23,7 @@ private {
 /**
     Generates a parameter view
 */
-void incParameterView(ref Parameter param) {
+void incParameterView(Parameter param) {
     if (!igCollapsingHeader(param.name.toStringz, ImGuiTreeNodeFlags.DefaultOpen)) return;
     igIndent();
         igPushID(cast(void*)param);
@@ -33,55 +33,56 @@ void incParameterView(ref Parameter param) {
             // Parameter Control
             ImVec2 avail = incAvailableSpace();
             igBeginChild("###PARAM", ImVec2(avail.x-24, reqSpace));
-
                 // Popup for rightclicking the controller
                 if (igBeginPopup("###ControlPopup")) {
-                    if (cParamBindingEntries.length > 0) {
-                        if (igBeginMenu(__("Unlink"), true)) {
-                            foreach(node, bindingList; cParamBindingEntries) {
-                                if (igBeginMenu(node.name.toStringz, true)) {
-                                    foreach(ParameterBinding binding; bindingList) {
-                                        if (auto dparam = cast(DeformationParameterBinding)binding) {
-                                            if (igMenuItem(_("deform (%s)".format(node.name)).toStringz, "", false, true)) {
-                                                dparam.unset(cParamPoint);
+                    if (incArmedParameter() == param) {
+                        if (cParamBindingEntries.length > 0) {
+                            if (igBeginMenu(__("Unlink"), true)) {
+                                foreach(node, bindingList; cParamBindingEntries) {
+                                    if (igBeginMenu(node.name.toStringz, true)) {
+                                        foreach(ParameterBinding binding; bindingList) {
+                                            if (auto dparam = cast(DeformationParameterBinding)binding) {
+                                                if (igMenuItem(_("deform (%s)".format(node.name)).toStringz, "", false, true)) {
+                                                    dparam.unset(cParamPoint);
+                                                }
+                                            } else if (auto vparam = cast(ValueParameterBinding)binding) {
+                                                if (igMenuItem(vparam.getName().toStringz, "", false, true)) {
+                                                    vparam.unset(cParamPoint);
+                                                }
                                             }
-                                        } else if (auto vparam = cast(ValueParameterBinding)binding) {
-                                            if (igMenuItem(vparam.getName().toStringz, "", false, true)) {
-                                                vparam.unset(cParamPoint);
+                                            
+                                            // Remove unused bindings.
+                                            if (binding.getSetCount() == 0) {
+                                                param.removeBinding(binding);
                                             }
                                         }
-                                        
-                                        // Remove unused bindings.
-                                        if (binding.getSetCount() == 0) {
-                                            param.removeBinding(binding);
-                                        }
+                                        igEndMenu();
                                     }
-                                    igEndMenu();
                                 }
+                                igEndMenu();
                             }
-                            igEndMenu();
                         }
-                    }
 
-                    if (cParamBindingEntriesAll.length > 0) {
-                        if (igBeginMenu(__("Unlink All"), true)) {
-                            foreach(node, bindingList; cParamBindingEntriesAll) {
-                                if (igBeginMenu(node.name.toStringz, true)) {
-                                    foreach(ParameterBinding binding; bindingList) {
-                                        if (auto dparam = cast(DeformationParameterBinding)binding) {
-                                            if (igMenuItem(_("deform (%s)".format(node.name)).toStringz, "", false, true)) {
-                                                param.removeBinding(dparam);
-                                            }
-                                        } else if (auto vparam = cast(ValueParameterBinding)binding) {
-                                            if (igMenuItem(vparam.getName().toStringz, "", false, true)) {
-                                                param.removeBinding(vparam);
+                        if (cParamBindingEntriesAll.length > 0) {
+                            if (igBeginMenu(__("Unlink All"), true)) {
+                                foreach(node, bindingList; cParamBindingEntriesAll) {
+                                    if (igBeginMenu(node.name.toStringz, true)) {
+                                        foreach(ParameterBinding binding; bindingList) {
+                                            if (auto dparam = cast(DeformationParameterBinding)binding) {
+                                                if (igMenuItem(_("deform (%s)".format(node.name)).toStringz, "", false, true)) {
+                                                    param.removeBinding(dparam);
+                                                }
+                                            } else if (auto vparam = cast(ValueParameterBinding)binding) {
+                                                if (igMenuItem(vparam.getName().toStringz, "", false, true)) {
+                                                    param.removeBinding(vparam);
+                                                }
                                             }
                                         }
+                                        igEndMenu();
                                     }
-                                    igEndMenu();
                                 }
+                                igEndMenu();
                             }
-                            igEndMenu();
                         }
                     }
 
@@ -91,7 +92,7 @@ void incParameterView(ref Parameter param) {
                 if (param.isVec2) igText("%.2f %.2f", param.value.x, param.value.y);
                 else igText("%.2f", param.value.x);
 
-                incController("###CONTROLLER", param, ImVec2(avail.x-18, reqSpace-24));
+                incController("###CONTROLLER", param, ImVec2(avail.x-18, reqSpace-24), incArmedParameter() == param);
                 if (igIsItemClicked(ImGuiMouseButton.Right)) {
                     cParamBindingEntries.clear();
                     cParamBindingEntriesAll.clear();
