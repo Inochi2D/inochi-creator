@@ -2,11 +2,20 @@
     Copyright © 2020, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
-    Authors: Luna Nielsen
+    Authors:
+    - Luna Nielsen
+    - Asahi Lina
 */
 module creator.widgets.controller;
 import creator.widgets;
 import inochi2d;
+
+struct EditableAxisPoint {
+    int origIndex;
+    bool fixed;
+    float value;
+    float normValue;
+};
 
 /**
     A Parameter controller
@@ -112,7 +121,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
             ImS32 uDotKeyColor = igGetColorU32(style.Colors[ImGuiCol.TextDisabled]);
             ImS32 uDotKeyFilled = igGetColorU32(ImVec4(0f, 1f, 0f, 1f));
 
-            // AXIES LINES
+            // AXES LINES
             foreach(xIdx; 0..param.axisPoints[0].length) {
                 float xVal = param.axisPoints[0][xIdx];
                 float xPos = (oRect.Max.x - oRect.Min.x) * xVal + oRect.Min.x;
@@ -162,7 +171,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
             ImDrawList_AddLine(drawList, ImVec2(oRect.Min.x, oRect.Min.y), ImVec2(oRect.Min.x, oRect.Max.y), uLineColor, 2f);
             ImDrawList_AddLine(drawList, ImVec2(oRect.Max.x, oRect.Min.y), ImVec2(oRect.Max.x, oRect.Max.y), uLineColor, 2f);
             
-            // AXIES POINTS
+            // AXES POINTS
             foreach(xIdx; 0..param.axisPoints[0].length) {
                 float xVal = param.axisPoints[0][xIdx];
                 foreach(yIdx; 0..param.axisPoints[1].length) {
@@ -270,7 +279,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
             ImS32 uDotKeyColor = igGetColorU32(style.Colors[ImGuiCol.TextDisabled]);
             ImS32 uDotKeyFilled = igGetColorU32(ImVec4(0f, 1f, 0f, 1f));
 
-            // AXIES LINES
+            // AXES LINES
             foreach(xIdx; 0..param.axisPoints[0].length) {
                 float xVal = param.axisPoints[0][xIdx];
                 float xPos = (oRect.Max.x - oRect.Min.x) * xVal + oRect.Min.x;
@@ -294,7 +303,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
             // REF LINE
             ImDrawList_AddLine(drawList, ImVec2(oRect.Min.x, fYCenter), ImVec2(oRect.Max.x, fYCenter), uLineColor, 2f);
             
-            // AXIES POINTS
+            // AXES POINTS
             foreach(xIdx; 0..param.axisPoints[0].length) {
                 float xVal = param.axisPoints[0][xIdx];
 
@@ -333,7 +342,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
 /**
     A fake controller that lets you demonstrate additional axis points
 */
-void incControllerAxisDemo(string strId, ref Parameter param, ref float[][2] axisPoints, ImVec2 size) {
+void incControllerAxisDemo(string strId, ref Parameter param, ref EditableAxisPoint[][2] axisPoints, ImVec2 size) {
     ImGuiWindow* window = igGetCurrentWindow();
     if (window.SkipItems) return;
 
@@ -378,9 +387,9 @@ void incControllerAxisDemo(string strId, ref Parameter param, ref float[][2] axi
             ImS32 uDotKeyColor = igGetColorU32(style.Colors[ImGuiCol.TextDisabled]);
             ImS32 uDotKeyFilled = igGetColorU32(ImVec4(0f, 1f, 0f, 1f));
 
-            // AXIES LINES
+            // AXES LINES
             foreach(xIdx; 0..axisPoints[0].length) {
-                float xVal = axisPoints[0][xIdx];
+                float xVal = axisPoints[0][xIdx].normValue;
                 float xPos = (oRect.Max.x - oRect.Min.x) * xVal + oRect.Min.x;
                 
                 ImDrawList_AddLineDashed(
@@ -401,7 +410,7 @@ void incControllerAxisDemo(string strId, ref Parameter param, ref float[][2] axi
             }
 
             foreach(yIdx; 0..axisPoints[1].length) {
-                float yVal = axisPoints[1][yIdx];
+                float yVal = axisPoints[1][yIdx].normValue;
                 float yPos = (oRect.Max.y - oRect.Min.y) * yVal + oRect.Min.y;
                 
                 ImDrawList_AddLineDashed(
@@ -427,11 +436,11 @@ void incControllerAxisDemo(string strId, ref Parameter param, ref float[][2] axi
             ImDrawList_AddLine(drawList, ImVec2(oRect.Min.x, oRect.Min.y), ImVec2(oRect.Min.x, oRect.Max.y), uLineColor, 2f);
             ImDrawList_AddLine(drawList, ImVec2(oRect.Max.x, oRect.Min.y), ImVec2(oRect.Max.x, oRect.Max.y), uLineColor, 2f);
             
-            // AXIES POINTS
+            // AXES POINTS
             foreach(xIdx; 0..axisPoints[0].length) {
-                float xVal = axisPoints[0][xIdx];
+                float xVal = axisPoints[0][xIdx].normValue;
                 foreach(yIdx; 0..axisPoints[1].length) {
-                    float yVal = axisPoints[1][yIdx];
+                    float yVal = axisPoints[1][yIdx].normValue;
 
                     vCursorPos = ImVec2(
                         (oRect.Max.x - oRect.Min.x) * xVal + oRect.Min.x, 
@@ -477,9 +486,9 @@ void incControllerAxisDemo(string strId, ref Parameter param, ref float[][2] axi
             ImS32 uDotKeyColor = igGetColorU32(style.Colors[ImGuiCol.TextDisabled]);
             ImS32 uDotKeyFilled = igGetColorU32(ImVec4(0f, 1f, 0f, 1f));
 
-            // AXIES LINES
+            // AXES LINES
             foreach(xIdx; 0..axisPoints[0].length) {
-                float xVal = axisPoints[0][xIdx];
+                float xVal = axisPoints[0][xIdx].normValue;
                 float xPos = (oRect.Max.x - oRect.Min.x) * xVal + oRect.Min.x;
                 
                 ImDrawList_AddLine(
@@ -501,9 +510,9 @@ void incControllerAxisDemo(string strId, ref Parameter param, ref float[][2] axi
             // REF LINE
             ImDrawList_AddLine(drawList, ImVec2(oRect.Min.x, fYCenter), ImVec2(oRect.Max.x, fYCenter), uLineColor, 2f);
             
-            // AXIES POINTS
+            // AXES POINTS
             foreach(xIdx; 0..axisPoints[0].length) {
-                float xVal = axisPoints[0][xIdx];
+                float xVal = axisPoints[0][xIdx].normValue;
 
                 vCursorPos = ImVec2(
                     (oRect.Max.x - oRect.Min.x) * xVal + oRect.Min.x, 

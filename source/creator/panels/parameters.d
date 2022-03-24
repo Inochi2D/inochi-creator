@@ -119,8 +119,8 @@ void incParameterView(Parameter param) {
                             incPushWindowList(new ParamPropWindow(param));
                         }
                         
-                        if (igMenuItem(__("Edit Axies Points"), "", false, true)) {
-                            incPushWindowList(new ParamAxiesWindow(param));
+                        if (igMenuItem(__("Edit Axes Points"), "", false, true)) {
+                            incPushWindowList(new ParamAxesWindow(param));
                         }
 
                         igNewLine();
