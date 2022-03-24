@@ -39,29 +39,48 @@ protected:
                 // Per-edit mode inspector drawers
                 switch(incEditMode()) {
                     case EditMode.ModelEdit:
-                        incModelModeHeader(node);
-                        incInspectorModelTRS(node);
+                        if (incArmedParameter()) {
+                            Parameter param = incArmedParameter();
+                            vec2u cursor = param.getClosestBreakpoint();
+                            incCommonNonEditHeader(node);
+                            incInspectorDeformTRS(node, param, cursor);
 
-                        // Node Drawable Section
-                        if (Drawable drawable = cast(Drawable)node) {
+                            // Node Part Section
+                            if (Part part = cast(Part)node) {
 
-                            // Padding
-                            igSpacing();
-                            igSpacing();
-                            igSpacing();
-                            igSpacing();
-                            incInspectorModelDrawable(drawable);
-                        }
+                                // Padding
+                                igSpacing();
+                                igSpacing();
+                                igSpacing();
+                                igSpacing();
+                                incInspectorDeformPart(part, param, cursor);
+                            }
 
-                        // Node Part Section
-                        if (Part part = cast(Part)node) {
+                        } else {
+                            incModelModeHeader(node);
+                            incInspectorModelTRS(node);
 
-                            // Padding
-                            igSpacing();
-                            igSpacing();
-                            igSpacing();
-                            igSpacing();
-                            incInspectorModelPart(part);
+                            // Node Drawable Section
+                            if (Drawable drawable = cast(Drawable)node) {
+
+                                // Padding
+                                igSpacing();
+                                igSpacing();
+                                igSpacing();
+                                igSpacing();
+                                incInspectorModelDrawable(drawable);
+                            }
+
+                            // Node Part Section
+                            if (Part part = cast(Part)node) {
+
+                                // Padding
+                                igSpacing();
+                                igSpacing();
+                                igSpacing();
+                                igSpacing();
+                                incInspectorModelPart(part);
+                            }
                         }
                     
                     break;
@@ -716,6 +735,260 @@ void incInspectorModelPart(Part node) {
     // Padding
     igSpacing();
     igSpacing();
+}
+
+//
+//  MODEL MODE ARMED
+//
+void incInspectorDeformFloatDragVal(string name, string paramName, float adjustSpeed, Node node, Parameter param, vec2u cursor) {
+    float currFloat = 0;
+    if (ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName)) {
+        currFloat = b.getValue(cursor);
+
+        if (incDragFloat(name, &currFloat, adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+            b.setValue(cursor, currFloat);
+        }
+    } else {
+        currFloat = 0;
+        if (incDragFloat(name, &currFloat, adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+            auto b = new ValueParameterBinding(param, node, paramName);
+            b.setValue(cursor, currFloat);
+            param.bindings ~= b;
+        }
+    }
+}
+
+void incInspectorDeformInputFloat(string name, string paramName, float step, float stepFast, Node node, Parameter param, vec2u cursor) {
+    float currFloat = 0;
+    if (ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName)) {
+        currFloat = b.getValue(cursor);
+        if (igInputFloat(name.toStringz, &currFloat, step, stepFast, "%.2f")) {
+            b.setValue(cursor, currFloat);
+        }
+    } else {
+        currFloat = 0;
+        if (igInputFloat(name.toStringz, &currFloat, step, stepFast, "%.2f")) {
+            auto b = new ValueParameterBinding(param, node, paramName);
+            b.setValue(cursor, currFloat);
+            param.bindings ~= b;
+        }
+    }
+}
+
+void incInspectorDeformColorEdit3(string[3] paramNames, Node node, Parameter param, vec2u cursor) {
+    import std.math : isNaN;
+    float[3] rgb = [float.nan, float.nan, float.nan];
+    float[3] rgbadj = [1, 1, 1];
+    bool[3] rgbchange = [false, false, false];
+    ValueParameterBinding pbr = cast(ValueParameterBinding)param.getBinding(node, paramNames[0]);
+    ValueParameterBinding pbg = cast(ValueParameterBinding)param.getBinding(node, paramNames[1]);
+    ValueParameterBinding pbb = cast(ValueParameterBinding)param.getBinding(node, paramNames[2]);
+
+    if (pbr) {
+        rgb[0] = pbr.getValue(cursor);
+        rgbadj[0] = rgb[0];
+    }
+
+    if (pbg) {
+        rgb[1] = pbg.getValue(cursor);
+        rgbadj[1] = rgb[1];
+    }
+
+    if (pbb) {
+        rgb[2] = pbb.getValue(cursor);
+        rgbadj[2] = rgb[2];
+    }
+
+    if (igColorEdit3("", &rgbadj)) {
+
+        // RED
+        if (!pbr && rgbadj[0] != 1) {
+            auto b = new ValueParameterBinding(param, node, paramNames[0]);
+            b.setValue(cursor, rgbadj[0]);
+            param.bindings ~= b;
+        } if (pbr && rgbadj[0] != rgb[0]) {
+            pbr.setValue(cursor, rgbadj[0]);
+        }
+
+        // GREEN
+        if (!pbg && rgbadj[1] != 1) {
+            auto b = new ValueParameterBinding(param, node, paramNames[1]);
+            b.setValue(cursor, rgbadj[1]);
+            param.bindings ~= b;
+        } if (pbg && rgbadj[1] != rgb[1]) {
+            pbg.setValue(cursor, rgbadj[1]);
+        }
+
+        // BLUE
+        if (!pbb && rgbadj[2] != 1) {
+            auto b = new ValueParameterBinding(param, node, paramNames[2]);
+            b.setValue(cursor, rgbadj[2]);
+            param.bindings ~= b;
+        } if (pbb && rgbadj[2] != rgb[2]) {
+            pbb.setValue(cursor, rgbadj[2]);
+        }
+    }
+}
+
+void incInspectorDeformSliderFloat(string name, string paramName, float min, float max, Node node, Parameter param, vec2u cursor) {
+    float currFloat = 0;
+    if (ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName)) {
+        currFloat = b.getValue(cursor);
+
+        if (igSliderFloat(name.toStringz, &currFloat, min, max, "%.2f")) {
+            b.setValue(cursor, currFloat);
+        }
+    } else {
+        currFloat = 0;
+        if (igSliderFloat(name.toStringz, &currFloat, min, max, "%.2f")) {
+            auto b = new ValueParameterBinding(param, node, paramName);
+            b.setValue(cursor, currFloat);
+            param.bindings ~= b;
+        }
+    }
+}
+
+void incInspectorDeformTRS(Node node, Parameter param, vec2u cursor) {
+    if (!igCollapsingHeader(__("Transform"), ImGuiTreeNodeFlags.DefaultOpen)) 
+        return;
+    
+    float adjustSpeed = 1;
+
+    ImVec2 avail;
+    igGetContentRegionAvail(&avail);
+
+    float fontSize = 16;
+
+    //
+    // Translation
+    //
+
+
+
+    // Translation portion of the transformation matrix.
+    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Translation"));
+    igPushItemWidth((avail.x-4f)/3f);
+
+        // Translation X
+        igPushID(0);
+            incInspectorDeformFloatDragVal("translation_x", "transform.t.x", 1f, node, param, cursor);
+        igPopID();
+
+        igSameLine(0, 4);
+
+        // Translation Y
+        igPushID(1);
+            incInspectorDeformFloatDragVal("translation_y", "transform.t.y", 1f, node, param, cursor);
+        igPopID();
+
+        igSameLine(0, 4);
+
+        // Translation Z
+        igPushID(2);
+            incInspectorDeformFloatDragVal("translation_z", "transform.t.z", 1f, node, param, cursor);
+        igPopID();
+
+
+    
+        // Padding
+        igSpacing();
+        igSpacing();
+
+    igPopItemWidth();
+
+
+    //
+    // Rotation
+    //
+    igSpacing();
+    
+    // Rotation portion of the transformation matrix.
+    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Rotation"));
+    igPushItemWidth((avail.x-4f)/3f);
+
+        // Rotation X
+        igPushID(3);
+            incInspectorDeformFloatDragVal("rotation.x", "transform.r.x", 0.05f, node, param, cursor);
+        igPopID();
+
+        igSameLine(0, 4);
+
+        // Rotation Y
+        igPushID(4);
+            incInspectorDeformFloatDragVal("rotation.y", "transform.r.y", 0.05f, node, param, cursor);
+        igPopID();
+
+        igSameLine(0, 4);
+
+        // Rotation Z
+        igPushID(5);
+            incInspectorDeformFloatDragVal("rotation.z", "transform.r.z", 0.05f, node, param, cursor);
+        igPopID();
+
+    igPopItemWidth();
+
+    avail.x += igGetFontSize();
+
+    //
+    // Scaling
+    //
+    igSpacing();
+    
+    // Scaling portion of the transformation matrix.
+    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Scale"));
+    igPushItemWidth((avail.x-14f)/2f);
+        
+        // Scale X
+        igPushID(6);
+            incInspectorDeformFloatDragVal("scale.x", "transform.s.x", 0.1f, node, param, cursor);
+        igPopID();
+
+        igSameLine(0, 4);
+
+        // Scale Y
+        igPushID(7);
+            incInspectorDeformFloatDragVal("scale.y", "transform.s.y", 0.1f, node, param, cursor);
+        igPopID();
+
+    igPopItemWidth();
+
+    igSpacing();
+    igSpacing();
+
+    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Sorting"));
+    incInspectorDeformInputFloat("zSort", "zSort", 0.01, 0.05, node, param, cursor);
+}
+
+void incInspectorDeformPart(Part node, Parameter param, vec2u cursor) {
+    if (!igCollapsingHeader(__("Part"), ImGuiTreeNodeFlags.DefaultOpen)) 
+        return;
+
+    igBeginGroup();
+        igIndent(16);
+            // Header for texture options    
+            if (igCollapsingHeader(__("Textures")))  {
+
+                igText(__("Tint"));
+
+                incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
+
+                // Padding
+                igSeparator();
+                igSpacing();
+                igSpacing();
+            }
+        igUnindent();
+    igEndGroup();
+
+    igText(__("Opacity"));
+    incInspectorDeformSliderFloat("###Opacity", "opacity", 0, 1f, node, param, cursor);
+    igSpacing();
+    igSpacing();
+
+    // Threshold slider name for adjusting how transparent a pixel can be
+    // before it gets discarded.
+    igText(__("Threshold"));
+    incInspectorDeformSliderFloat("###Threshold", "alphaThreshold", 0.0, 1.0, node, param, cursor);
 }
 
 //

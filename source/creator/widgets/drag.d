@@ -45,7 +45,7 @@ bool incDragFloat(string id, float* value, float adjustSpeed, float minValue, fl
             dragState.isActive = true;
             dragState.wasJustCreated = false;
         }
-
+        return true;
     } else {
         if (dragState !is null && dragState.isActive) {
             dragState.isActive = false;
