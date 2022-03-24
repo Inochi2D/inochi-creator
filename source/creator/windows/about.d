@@ -26,10 +26,10 @@ private:
 
 protected:
     override
-    void onBeginUpdate(int id) {
+    void onBeginUpdate() {
         igSetNextWindowSize(ImVec2(640, 512), ImGuiCond.Appearing);
         igSetNextWindowSizeConstraints(ImVec2(640, 512), ImVec2(float.max, float.max));
-        super.onBeginUpdate(0);
+        super.onBeginUpdate();
     }
 
     override

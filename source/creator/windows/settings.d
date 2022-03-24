@@ -26,11 +26,11 @@ private:
 
 protected:
     override
-    void onBeginUpdate(int id) {
+    void onBeginUpdate() {
         flags |= ImGuiWindowFlags.NoResize;
         flags |= ImGuiWindowFlags.NoSavedSettings;
         incIsSettingsOpen = true;
-        super.onBeginUpdate(0);
+        super.onBeginUpdate();
     }
 
     override

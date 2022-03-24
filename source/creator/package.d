@@ -9,6 +9,7 @@ import inochi2d;
 import inochi2d.core.dbg;
 import creator.core;
 import creator.core.actionstack;
+import creator.windows;
 import creator.atlas;
 
 public import creator.ver;
@@ -80,6 +81,8 @@ EditMode editMode_;
 void incNewProject() {
     editMode_ = EditMode.ModelEdit;
     import creator.viewport : incViewportReset;
+    
+    incPopWindowListAll();
 
     activeProject = new Project;
     activeProject.puppet = new Puppet;

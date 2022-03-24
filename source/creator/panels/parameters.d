@@ -42,7 +42,7 @@ void incParameterView(ref Parameter param) {
                                 if (igBeginMenu(node.name.toStringz, true)) {
                                     foreach(ParameterBinding binding; bindingList) {
                                         if (auto dparam = cast(DeformationParameterBinding)binding) {
-                                            if (igMenuItem(__("Deformation"), "", false, true)) {
+                                            if (igMenuItem(_("deform (%s)".format(node.name)).toStringz, "", false, true)) {
                                                 dparam.unset(cParamPoint);
                                             }
                                         } else if (auto vparam = cast(ValueParameterBinding)binding) {
@@ -69,7 +69,7 @@ void incParameterView(ref Parameter param) {
                                 if (igBeginMenu(node.name.toStringz, true)) {
                                     foreach(ParameterBinding binding; bindingList) {
                                         if (auto dparam = cast(DeformationParameterBinding)binding) {
-                                            if (igMenuItem(__("Deformation"), "", false, true)) {
+                                            if (igMenuItem(_("deform (%s)".format(node.name)).toStringz, "", false, true)) {
                                                 param.removeBinding(dparam);
                                             }
                                         } else if (auto vparam = cast(ValueParameterBinding)binding) {
@@ -114,11 +114,11 @@ void incParameterView(ref Parameter param) {
                 igBeginChild("###SETTING", ImVec2(avail.x-24, reqSpace));
                     if (igBeginPopup("###EditParam")) {
                         if (igMenuItem(__("Edit Properties"), "", false, true)) {
-                            incPushWindow(new ParamPropWindow(param));
+                            incPushWindowList(new ParamPropWindow(param));
                         }
                         
                         if (igMenuItem(__("Edit Axies Points"), "", false, true)) {
-                            incPushWindow(new ParamAxiesWindow(param));
+                            incPushWindowList(new ParamAxiesWindow(param));
                         }
 
                         igNewLine();

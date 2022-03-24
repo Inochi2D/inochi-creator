@@ -17,11 +17,11 @@ private:
 
 protected:
     override
-    void onBeginUpdate(int id) {
+    void onBeginUpdate() {
         flags |= ImGuiWindowFlags.NoResize;
         igSetNextWindowSize(ImVec2(512, 384), ImGuiCond.Appearing);
         igSetNextWindowSizeConstraints(ImVec2(512, 384), ImVec2(float.max, float.max));
-        super.onBeginUpdate(0);
+        super.onBeginUpdate();
     }
 
     override
