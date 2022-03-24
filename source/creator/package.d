@@ -275,8 +275,8 @@ ref Project incActiveProject() {
 /**
     Gets the currently armed parameter
 */
-ref Parameter incArmedParameter() {
-    return armedParam;
+Parameter incArmedParameter() {
+    return editMode_ == EditMode.ModelEdit ? armedParam : null;
 }
 
 /**
@@ -425,6 +425,9 @@ EditMode incEditMode() {
     Sets the current editing mode
 */
 void incSetEditMode(EditMode editMode, bool unselect = true) {
+    if (armedParam) {
+        armedParam.value = armedParam.getClosestBreakpointLocation();
+    }
     if (unselect) incSelectNode(null);
     if (editMode != EditMode.ModelEdit) {
         drawables = activeProject.puppet.findNodesType!Drawable(activeProject.puppet.root);

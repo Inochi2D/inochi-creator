@@ -11,7 +11,7 @@ import inochi2d;
 /**
     A Parameter controller
 */
-bool incController(string strId, ref Parameter param, ImVec2 size) {
+bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSnap = false) {
     ImGuiWindow* window = igGetCurrentWindow();
     if (window.SkipItems) return false;
 
@@ -57,13 +57,12 @@ bool incController(string strId, ref Parameter param, ImVec2 size) {
             ImVec2 vSecurity = ImVec2(15, 15);
             ImRect frameBB = ImRect(ImVec2(oRect.Min.x - vSecurity.x, oRect.Min.y - vSecurity.y), ImVec2(oRect.Max.x + vSecurity.x, oRect.Max.y + vSecurity.y));
 
-            bool shouldSnap = io.KeyShift;
+            bool shouldSnap = forceSnap || io.KeyShift;
             bool hovered;
             bool held;
             bool pressed = igButtonBehavior(frameBB, igGetID("##Zone"), &hovered, &held);
             if (hovered && igIsMouseDown(ImGuiMouseButton.Right)) {
                 held = true;
-                shouldSnap = true;
             }
             if (hovered && held) {
                 igGetMousePos(&mPos);
@@ -221,13 +220,12 @@ bool incController(string strId, ref Parameter param, ImVec2 size) {
             ImVec2 vSecurity = ImVec2(15, 15);
             ImRect frameBB = ImRect(ImVec2(oRect.Min.x - vSecurity.x, oRect.Min.y - vSecurity.y), ImVec2(oRect.Max.x + vSecurity.x, oRect.Max.y + vSecurity.y));
 
-            bool shouldSnap = io.KeyShift;
+            bool shouldSnap = forceSnap || io.KeyShift;
             bool hovered;
             bool held;
             bool pressed = igButtonBehavior(frameBB, igGetID("##Zone"), &hovered, &held);
             if (hovered && igIsMouseDown(ImGuiMouseButton.Right)) {
                 held = true;
-                shouldSnap = true;
             }
             if (hovered && held) {
                 igGetMousePos(&mPos);
