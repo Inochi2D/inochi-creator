@@ -172,8 +172,8 @@ protected:
 
                             // Can't move offsets at the start and end.
                             if (ix < 2) continue;
-                            if (offset.isFinite) continue;
-                            if (ix >= param.axisPoints[i].length-1) break;
+                            if (ix >= param.axisPoints[i].length) break;
+                            if (!offset.isFinite) continue;
 
                             uint ridx = cast(uint)ix-1;
 
