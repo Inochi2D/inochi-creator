@@ -167,11 +167,12 @@ void incViewportModelDeformUpdate(ImGuiIO* io, Camera camera, Parameter param) {
             dragSelectedPoints(deltaMousePos);
             writeln("SET @ ", param.getClosestBreakpoint());
             if (deform) {
-                deform.getValue(param.getClosestBreakpoint()).update(deformOffsets);
+                deform.update(deformOffsets);
             } else {
                 deform = new DeformationParameterBinding(param, selectedDraw, "deform");
-                deform.getValue(param.getClosestBreakpoint()).update(deformOffsets);
+                deform.update(deformOffsets);
                 param.bindings ~= deform;
+
             }
         }
     }
