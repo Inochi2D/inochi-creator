@@ -99,7 +99,8 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
             ImS32 uDotColor = igGetColorU32(ImVec4(1f, 0f, 0f, 1f));
             ImS32 uLineColor = igGetColorU32(style.Colors[ImGuiCol.Text]);
             ImS32 uDotKeyColor = igGetColorU32(style.Colors[ImGuiCol.TextDisabled]);
-            ImS32 uDotKeyFilled = igGetColorU32(ImVec4(0f, 1f, 0f, 1f));
+            ImS32 uDotKeyPartial = igGetColorU32(ImVec4(1f, 1f, 0f, 1f));
+            ImS32 uDotKeyComplete = igGetColorU32(ImVec4(0f, 1f, 0f, 1f));
 
             // AXES LINES
             foreach(xIdx; 0..param.axisPoints[0].length) {
@@ -163,12 +164,21 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
                     );
 
                     ImDrawList_AddCircleFilled(drawList, vCursorPos, 6.0f, uDotKeyColor, 16);
+
+                    bool isPartial = false;
+                    bool isComplete = true;
                     foreach(binding; param.bindings) {
                         if (binding.getIsSet()[xIdx][yIdx]) {
-                            ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotKeyFilled, 16);
-                            break;
+                            isPartial = true;
+                        } else {
+                            isComplete = false;
                         }
                     }
+
+                    if (isComplete)
+                        ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotKeyComplete, 16);
+                    else if (isPartial)
+                        ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotKeyPartial, 16);
                 }
             }
 
