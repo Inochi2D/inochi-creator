@@ -131,6 +131,80 @@ private {
         refreshBindingList(param);
     }
 
+    void keypointActions(Parameter param, ParameterBinding[] bindings) {
+        if (igMenuItem(__("Unset"), "", false, true)) {
+            foreach(binding; bindings) {
+                binding.unset(cParamPoint);
+            }
+            incViewportNodeDeformNotifyParamValueChanged();
+        }
+        if (igMenuItem(__("Set to current"), "", false, true)) {
+            foreach(binding; bindings) {
+                binding.setCurrent(cParamPoint);
+            }
+            incViewportNodeDeformNotifyParamValueChanged();
+        }
+        if (igMenuItem(__("Set to 0"), "", false, true)) {
+            foreach(binding; bindings) {
+                binding.reset(cParamPoint);
+            }
+            incViewportNodeDeformNotifyParamValueChanged();
+        }
+        if (igMenuItem(__("Invert"), "", false, true)) {
+            foreach(binding; bindings) {
+                binding.scaleValueAt(cParamPoint, -1, -1);
+            }
+            incViewportNodeDeformNotifyParamValueChanged();
+        }
+        if (param.isVec2) {
+            if (igBeginMenu(__("Mirror"), true)) {
+                if (igMenuItem(__("Horizontally"), "", false, true)) {
+                    foreach(binding; bindings) {
+                        binding.scaleValueAt(cParamPoint, 0, -1);
+                    }
+                    incViewportNodeDeformNotifyParamValueChanged();
+                }
+                if (igMenuItem(__("Vertically"), "", false, true)) {
+                    foreach(binding; bindings) {
+                        binding.scaleValueAt(cParamPoint, 1, -1);
+                    }
+                    incViewportNodeDeformNotifyParamValueChanged();
+                }
+                igEndMenu();
+            }
+        }
+        if (param.isVec2) {
+            if (igBeginMenu(__("Auto Mirror"), true)) {
+                if (igMenuItem(__("Horizontally"), "", false, true)) {
+                    foreach(binding; bindings) {
+                        binding.extrapolateValueAt(cParamPoint, 0);
+                    }
+                    incViewportNodeDeformNotifyParamValueChanged();
+                }
+                if (igMenuItem(__("Vertically"), "", false, true)) {
+                    foreach(binding; bindings) {
+                        binding.extrapolateValueAt(cParamPoint, 1);
+                    }
+                    incViewportNodeDeformNotifyParamValueChanged();
+                }
+                if (igMenuItem(__("Diagonally"), "", false, true)) {
+                    foreach(binding; bindings) {
+                        binding.extrapolateValueAt(cParamPoint, -1);
+                    }
+                    incViewportNodeDeformNotifyParamValueChanged();
+                }
+                igEndMenu();
+            }
+        } else {
+            if (igMenuItem(__("Auto Mirror"), "", false, true)) {
+                foreach(binding; bindings) {
+                    binding.extrapolateValueAt(cParamPoint, 0);
+                }
+                incViewportNodeDeformNotifyParamValueChanged();
+            }
+        }
+    }
+
     void bindingList(Parameter param) {
         if (!igCollapsingHeader(__("Bindings"), ImGuiTreeNodeFlags.DefaultOpen)) return;
 
@@ -165,77 +239,15 @@ private {
                 if (igTreeNodeEx(cast(void*)node.uuid, flags, node.name.toStringz)) {
                     if (bindings is null) igPopStyleColor();
                     if (igBeginPopup("###BindingPopup")) {
-                        if (igMenuItem(__("Unset"), "", false, true)) {
+                        if (igMenuItem(__("Remove"), "", false, true)) {
                             foreach(binding; cSelectedBindings.byValue()) {
-                                binding.unset(cParamPoint);
+                                param.removeBinding(binding);
                             }
                             incViewportNodeDeformNotifyParamValueChanged();
                         }
-                        if (igMenuItem(__("Set to current"), "", false, true)) {
-                            foreach(binding; cSelectedBindings.byValue()) {
-                                binding.setCurrent(cParamPoint);
-                            }
-                            incViewportNodeDeformNotifyParamValueChanged();
-                        }
-                        if (igMenuItem(__("Set to 0"), "", false, true)) {
-                            foreach(binding; cSelectedBindings.byValue()) {
-                                binding.reset(cParamPoint);
-                            }
-                            incViewportNodeDeformNotifyParamValueChanged();
-                        }
-                        if (igMenuItem(__("Invert"), "", false, true)) {
-                            foreach(binding; cSelectedBindings.byValue()) {
-                                binding.scaleValueAt(cParamPoint, -1, -1);
-                            }
-                            incViewportNodeDeformNotifyParamValueChanged();
-                        }
-                        if (param.isVec2) {
-                            if (igBeginMenu(__("Mirror"), true)) {
-                                if (igMenuItem(__("Horizontally"), "", false, true)) {
-                                    foreach(binding; cSelectedBindings.byValue()) {
-                                        binding.scaleValueAt(cParamPoint, 0, -1);
-                                    }
-                                    incViewportNodeDeformNotifyParamValueChanged();
-                                }
-                                if (igMenuItem(__("Vertically"), "", false, true)) {
-                                    foreach(binding; cSelectedBindings.byValue()) {
-                                        binding.scaleValueAt(cParamPoint, 1, -1);
-                                    }
-                                    incViewportNodeDeformNotifyParamValueChanged();
-                                }
-                                igEndMenu();
-                            }
-                        }
-                        if (param.isVec2) {
-                            if (igBeginMenu(__("Auto Mirror"), true)) {
-                                if (igMenuItem(__("Horizontally"), "", false, true)) {
-                                    foreach(binding; cSelectedBindings.byValue()) {
-                                        binding.extrapolateValueAt(cParamPoint, 0);
-                                    }
-                                    incViewportNodeDeformNotifyParamValueChanged();
-                                }
-                                if (igMenuItem(__("Vertically"), "", false, true)) {
-                                    foreach(binding; cSelectedBindings.byValue()) {
-                                        binding.extrapolateValueAt(cParamPoint, 1);
-                                    }
-                                    incViewportNodeDeformNotifyParamValueChanged();
-                                }
-                                if (igMenuItem(__("Diagonally"), "", false, true)) {
-                                    foreach(binding; cSelectedBindings.byValue()) {
-                                        binding.extrapolateValueAt(cParamPoint, -1);
-                                    }
-                                    incViewportNodeDeformNotifyParamValueChanged();
-                                }
-                                igEndMenu();
-                            }
-                        } else {
-                            if (igMenuItem(__("Auto Mirror"), "", false, true)) {
-                                foreach(binding; cSelectedBindings.byValue()) {
-                                    binding.extrapolateValueAt(cParamPoint, 0);
-                                }
-                                incViewportNodeDeformNotifyParamValueChanged();
-                            }
-                        }
+
+                        keypointActions(param, cSelectedBindings.values);
+
                         bool haveCompatible = cCompatibleNodes.length > 0;
                         if (igBeginMenu(__("Copy to"), haveCompatible)) {
                             foreach(node; cCompatibleNodes) {
@@ -344,56 +356,8 @@ void incParameterView(Parameter param) {
                 // Popup for rightclicking the controller
                 if (igBeginPopup("###ControlPopup")) {
                     if (incArmedParameter() == param) {
-                        if (cParamBindingEntries.length > 0) {
-                            if (igBeginMenu(__("Unlink"), true)) {
-                                foreach(node, bindingList; cParamBindingEntries) {
-                                    if (igBeginMenu(node.name.toStringz, true)) {
-                                        foreach(ParameterBinding binding; bindingList) {
-                                            if (auto dparam = cast(DeformationParameterBinding)binding) {
-                                                if (igMenuItem(_("deform (%s)".format(node.name)).toStringz, "", false, true)) {
-                                                    dparam.unset(cParamPoint);
-                                                }
-                                            } else if (auto vparam = cast(ValueParameterBinding)binding) {
-                                                if (igMenuItem(vparam.getName().toStringz, "", false, true)) {
-                                                    vparam.unset(cParamPoint);
-                                                }
-                                            }
-                                            
-                                            // Remove unused bindings.
-                                            if (binding.getSetCount() == 0) {
-                                                param.removeBinding(binding);
-                                            }
-                                        }
-                                        igEndMenu();
-                                    }
-                                }
-                                igEndMenu();
-                            }
-                        }
-
-                        if (cParamBindingEntriesAll.length > 0) {
-                            if (igBeginMenu(__("Unlink All"), true)) {
-                                foreach(node, bindingList; cParamBindingEntriesAll) {
-                                    if (igBeginMenu(node.name.toStringz, true)) {
-                                        foreach(ParameterBinding binding; bindingList) {
-                                            if (auto dparam = cast(DeformationParameterBinding)binding) {
-                                                if (igMenuItem(_("deform (%s)".format(node.name)).toStringz, "", false, true)) {
-                                                    param.removeBinding(dparam);
-                                                }
-                                            } else if (auto vparam = cast(ValueParameterBinding)binding) {
-                                                if (igMenuItem(vparam.getName().toStringz, "", false, true)) {
-                                                    param.removeBinding(vparam);
-                                                }
-                                            }
-                                        }
-                                        igEndMenu();
-                                    }
-                                }
-                                igEndMenu();
-                            }
-                        }
+                        keypointActions(param, param.bindings);
                     }
-
                     igEndPopup();
                 }
 
