@@ -430,7 +430,7 @@ EditMode incEditMode() {
 */
 void incSetEditMode(EditMode editMode, bool unselect = true) {
     if (armedParam) {
-        armedParam.value = armedParam.getClosestBreakpointLocation();
+        armedParam.value = armedParam.getClosestKeypointValue(armedParam.value);
     }
     if (unselect) incSelectNode(null);
     if (editMode != EditMode.ModelEdit) {

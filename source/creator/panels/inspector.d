@@ -41,7 +41,7 @@ protected:
                     case EditMode.ModelEdit:
                         if (incArmedParameter()) {
                             Parameter param = incArmedParameter();
-                            vec2u cursor = param.getClosestBreakpoint();
+                            vec2u cursor = param.findClosestKeypoint();
                             incCommonNonEditHeader(node);
                             incInspectorDeformTRS(node, param, cursor);
 

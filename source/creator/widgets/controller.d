@@ -83,27 +83,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
                 );
 
                 // Snap to closest point mode
-                if (shouldSnap) {
-                    vec2 closestPoint = param.value;
-                    float closestDist = float.infinity;
-                    foreach(xIdx; 0..param.axisPoints[0].length) {
-                        foreach(yIdx; 0..param.axisPoints[1].length) {
-                            vec2 pos = vec2(
-                                (param.max.x - param.min.x) * param.axisPoints[0][xIdx] + param.min.x,
-                                (param.max.y - param.min.y) * param.axisPoints[1][yIdx] + param.min.y
-                            );
-
-                            float dist = param.value.distance(pos);
-                            if (dist < closestDist) {
-                                closestDist = dist;
-                                closestPoint = pos;
-                            }
-                        }
-                    }
-
-                    // clamp to closest point
-                    param.value = closestPoint;
-                }
+                if (shouldSnap) param.value = param.getClosestKeypointValue();
 
                 bModified = true;
             }

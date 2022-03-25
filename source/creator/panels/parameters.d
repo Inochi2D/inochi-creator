@@ -102,7 +102,7 @@ void incParameterView(Parameter param) {
                     cParamBindingEntries.clear();
                     cParamBindingEntriesAll.clear();
 
-                    cParamPoint = param.getClosestBreakpoint();
+                    cParamPoint = param.findClosestKeypoint();
                     foreach(ParameterBinding binding; param.bindings) {
                         cParamBindingEntriesAll[binding.getNode()] ~= binding;
                         if (binding.getIsSet()[cParamPoint.x][cParamPoint.y]) {

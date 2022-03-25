@@ -128,7 +128,7 @@ void incViewportNodeDeformNotifyParamValueChanged() {
         DeformationParameterBinding deform = cast(DeformationParameterBinding)param.getBinding(selected, "deform");
         if (deform) {
             writeln("RELOAD");
-            deformOffsets = deform.getValue(param.getClosestBreakpoint()).vertexOffsets;
+            deformOffsets = deform.getValue(param.findClosestKeypoint()).vertexOffsets;
         } else {
             writeln("RESET");
 
@@ -166,10 +166,10 @@ void incViewportModelDeformUpdate(ImGuiIO* io, Camera camera, Parameter param) {
             vec2 deltaMousePos = lastMousePos-currMousePos;
             dragSelectedPoints(deltaMousePos);
             if (deform) {
-                deform.update(param.getClosestBreakpoint(), deformOffsets);
+                deform.update(param.findClosestKeypoint(), deformOffsets);
             } else {
                 deform = new DeformationParameterBinding(param, selectedDraw, "deform");
-                deform.update(param.getClosestBreakpoint(), deformOffsets);
+                deform.update(param.findClosestKeypoint(), deformOffsets);
                 param.bindings ~= deform;
 
             }
