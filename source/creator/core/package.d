@@ -19,6 +19,8 @@ import inochi2d;
 import tinyfiledialogs;
 import std.string;
 import std.stdio;
+import std.conv;
+import std.range : repeat;
 
 public import bindbc.imgui;
 public import bindbc.imgui.ogl;
@@ -442,6 +444,37 @@ void incEndLoop() {
     }
 
     SDL_GL_SwapWindow(window);
+}
+
+/**
+    Prints ImGui debug info
+*/
+void incDebugImGuiState(string msg, int indent = 0) {
+    debug(imgui) {
+        static int currentIndent = 0;
+
+        string flag = "  ";
+        if (indent > 0) {
+            currentIndent += indent;
+            flag = ">>";
+        } else if (indent < 0) {
+            flag = "<<";
+        }
+
+        auto g = igGetCurrentContext();
+        auto win = igGetCurrentWindow();
+        writefln(
+            "%s%s%s [%s] CH=%d STK=0x%x", ' '.repeat(currentIndent * 2), flag, msg,
+            to!string(win.Name), g.WithinEndChild, win.IDStack.size());
+
+        if (indent < 0) {
+            currentIndent += indent;
+            if (currentIndent < 0) {
+                writeln("ERROR: dedented too far!");
+                currentIndent = 0;
+            }
+        }
+    }
 }
 
 /**

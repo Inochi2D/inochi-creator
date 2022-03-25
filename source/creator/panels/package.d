@@ -5,6 +5,7 @@
     Authors: Luna Nielsen
 */
 module creator.panels;
+import creator.core;
 import creator.core.settings;
 import bindbc.imgui;
 import std.string;
@@ -29,11 +30,13 @@ protected:
     ImGuiWindowFlags flags;
 
     void onBeginUpdate() {
+        incDebugImGuiState("Panel::onBeginUpdate", 1);
         igBegin(windowID, &visible, flags);
         igGetContentRegionAvail(&panelSpace);
     }
     
     void onEndUpdate() {
+        incDebugImGuiState("Panel::onEndUpdate", -1);
         igEnd();
     }
 

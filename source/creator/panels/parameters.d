@@ -9,6 +9,7 @@ import creator.viewport.model.deform;
 import creator.panels;
 import creator.widgets;
 import creator.windows;
+import creator.core;
 import creator;
 import std.string;
 import inochi2d;
