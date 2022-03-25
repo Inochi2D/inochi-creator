@@ -178,8 +178,7 @@ void incViewportModelDeformUpdate(ImGuiIO* io, Camera camera, Parameter param) {
         vec2 deltaMousePos = lastMousePos-currMousePos;
         dragSelectedPoints(deltaMousePos);
         if (!deform) {
-            deform = new DeformationParameterBinding(param, selected, "deform");
-            param.bindings ~= deform;
+            deform = cast(DeformationParameterBinding)param.getOrAddBinding(selected, "deform");
             writeln("NEW");
         }
         writefln("COMMIT %s", param.findClosestKeypoint());

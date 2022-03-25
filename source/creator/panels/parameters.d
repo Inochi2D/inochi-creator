@@ -144,7 +144,7 @@ private {
             }
             incViewportNodeDeformNotifyParamValueChanged();
         }
-        if (igMenuItem(__("Set to 0"), "", false, true)) {
+        if (igMenuItem(__("Reset"), "", false, true)) {
             foreach(binding; bindings) {
                 binding.reset(cParamPoint);
             }

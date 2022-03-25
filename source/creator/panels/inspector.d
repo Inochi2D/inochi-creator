@@ -741,37 +741,24 @@ void incInspectorModelPart(Part node) {
 //  MODEL MODE ARMED
 //
 void incInspectorDeformFloatDragVal(string name, string paramName, float adjustSpeed, Node node, Parameter param, vec2u cursor) {
-    float currFloat = 0;
+    float currFloat = node.getDefaultValue(paramName);
     if (ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName)) {
         currFloat = b.getValue(cursor);
-
-        if (incDragFloat(name, &currFloat, adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
-            b.setValue(cursor, currFloat);
-        }
-    } else {
-        currFloat = 0;
-        if (incDragFloat(name, &currFloat, adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
-            auto b = new ValueParameterBinding(param, node, paramName);
-            b.setValue(cursor, currFloat);
-            param.bindings ~= b;
-        }
+    }
+    if (incDragFloat(name, &currFloat, adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+        ValueParameterBinding b = cast(ValueParameterBinding)param.getOrAddBinding(node, paramName);
+        b.setValue(cursor, currFloat);
     }
 }
 
 void incInspectorDeformInputFloat(string name, string paramName, float step, float stepFast, Node node, Parameter param, vec2u cursor) {
-    float currFloat = 0;
+    float currFloat = node.getDefaultValue(paramName);
     if (ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName)) {
         currFloat = b.getValue(cursor);
-        if (igInputFloat(name.toStringz, &currFloat, step, stepFast, "%.2f")) {
-            b.setValue(cursor, currFloat);
-        }
-    } else {
-        currFloat = 0;
-        if (igInputFloat(name.toStringz, &currFloat, step, stepFast, "%.2f")) {
-            auto b = new ValueParameterBinding(param, node, paramName);
-            b.setValue(cursor, currFloat);
-            param.bindings ~= b;
-        }
+    }
+    if (igInputFloat(name.toStringz, &currFloat, step, stepFast, "%.2f")) {
+        ValueParameterBinding b = cast(ValueParameterBinding)param.getOrAddBinding(node, paramName);
+        b.setValue(cursor, currFloat);
     }
 }
 
@@ -802,49 +789,39 @@ void incInspectorDeformColorEdit3(string[3] paramNames, Node node, Parameter par
     if (igColorEdit3("", &rgbadj)) {
 
         // RED
-        if (!pbr && rgbadj[0] != 1) {
-            auto b = new ValueParameterBinding(param, node, paramNames[0]);
+        if (rgbadj[0] != 1) {
+            auto b = cast(ValueParameterBinding)param.getOrAddBinding(node, paramNames[0]);
             b.setValue(cursor, rgbadj[0]);
-            param.bindings ~= b;
-        } if (pbr && rgbadj[0] != rgb[0]) {
+        } else if (pbr) {
             pbr.setValue(cursor, rgbadj[0]);
         }
 
         // GREEN
-        if (!pbg && rgbadj[1] != 1) {
-            auto b = new ValueParameterBinding(param, node, paramNames[1]);
+        if (rgbadj[1] != 1) {
+            auto b = cast(ValueParameterBinding)param.getOrAddBinding(node, paramNames[1]);
             b.setValue(cursor, rgbadj[1]);
-            param.bindings ~= b;
-        } if (pbg && rgbadj[1] != rgb[1]) {
+        } else if (pbg) {
             pbg.setValue(cursor, rgbadj[1]);
         }
 
         // BLUE
-        if (!pbb && rgbadj[2] != 1) {
-            auto b = new ValueParameterBinding(param, node, paramNames[2]);
+        if (rgbadj[2] != 1) {
+            auto b = cast(ValueParameterBinding)param.getOrAddBinding(node, paramNames[2]);
             b.setValue(cursor, rgbadj[2]);
-            param.bindings ~= b;
-        } if (pbb && rgbadj[2] != rgb[2]) {
+        } else if (pbb) {
             pbb.setValue(cursor, rgbadj[2]);
         }
     }
 }
 
 void incInspectorDeformSliderFloat(string name, string paramName, float min, float max, Node node, Parameter param, vec2u cursor) {
-    float currFloat = 0;
+    float currFloat = node.getDefaultValue(paramName);
     if (ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName)) {
         currFloat = b.getValue(cursor);
-
-        if (igSliderFloat(name.toStringz, &currFloat, min, max, "%.2f")) {
-            b.setValue(cursor, currFloat);
-        }
-    } else {
-        currFloat = 0;
-        if (igSliderFloat(name.toStringz, &currFloat, min, max, "%.2f")) {
-            auto b = new ValueParameterBinding(param, node, paramName);
-            b.setValue(cursor, currFloat);
-            param.bindings ~= b;
-        }
+    }
+    if (igSliderFloat(name.toStringz, &currFloat, min, max, "%.2f")) {
+        ValueParameterBinding b = cast(ValueParameterBinding)param.getOrAddBinding(node, paramName);
+        b.setValue(cursor, currFloat);
     }
 }
 
