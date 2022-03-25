@@ -181,17 +181,55 @@ protected:
         auto parameters = incActivePuppet().parameters;
 
         if (igBeginPopup("###AddParameter")) {
-            if (igMenuItem(__("Add 1D Parameter"), "", false, true)) {
-                incActivePuppet().parameters ~= new Parameter(
+            if (igMenuItem(__("Add 1D Parameter (0..1)"), "", false, true)) {
+                Parameter param = new Parameter(
                     "Param #%d\0".format(parameters.length),
                     false
                 );
+                incActivePuppet().parameters ~= param;
             }
-            if (igMenuItem(__("Add 2D Parameter"), "", false, true)) {
-                incActivePuppet().parameters ~= new Parameter(
+            if (igMenuItem(__("Add 1D Parameter (-1..1)"), "", false, true)) {
+                Parameter param = new Parameter(
+                    "Param #%d\0".format(parameters.length),
+                    false
+                );
+                param.min.x = -1;
+                param.max.x = 1;
+                param.insertAxisPoint(0, 0.5);
+                incActivePuppet().parameters ~= param;
+            }
+            if (igMenuItem(__("Add 2D Parameter (0..1)"), "", false, true)) {
+                Parameter param = new Parameter(
                     "Param #%d\0".format(parameters.length),
                     true
                 );
+                incActivePuppet().parameters ~= param;
+            }
+            if (igMenuItem(__("Add 2D Parameter (-1..+1)"), "", false, true)) {
+                Parameter param = new Parameter(
+                    "Param #%d\0".format(parameters.length),
+                    true
+                );
+                param.min = vec2(-1, -1);
+                param.max = vec2(1, 1);
+                param.insertAxisPoint(0, 0.5);
+                param.insertAxisPoint(1, 0.5);
+                incActivePuppet().parameters ~= param;
+            }
+            if (igMenuItem(__("Add Mouth Shape"), "", false, true)) {
+                Parameter param = new Parameter(
+                    "Mouth #%d\0".format(parameters.length),
+                    true
+                );
+                param.min = vec2(-1, 0);
+                param.max = vec2(1, 1);
+                param.insertAxisPoint(0, 0.25);
+                param.insertAxisPoint(0, 0.5);
+                param.insertAxisPoint(0, 0.6);
+                param.insertAxisPoint(1, 0.3);
+                param.insertAxisPoint(1, 0.5);
+                param.insertAxisPoint(1, 0.6);
+                incActivePuppet().parameters ~= param;
             }
             igEndPopup();
         }
