@@ -30,8 +30,8 @@ protected:
     ImGuiWindowFlags flags;
 
     void onBeginUpdate() {
-        incDebugImGuiState("Panel::onBeginUpdate", 1);
         igBegin(windowID, &visible, flags);
+        incDebugImGuiState("Panel::onBeginUpdate", 1);
         igGetContentRegionAvail(&panelSpace);
     }
     

@@ -461,11 +461,12 @@ void incDebugImGuiState(string msg, int indent = 0) {
             flag = "<<";
         }
 
-        auto g = igGetCurrentContext();
+        //auto g = igGetCurrentContext();
         auto win = igGetCurrentWindow();
         writefln(
-            "%s%s%s [%s] CH=%d STK=0x%x", ' '.repeat(currentIndent * 2), flag, msg,
-            to!string(win.Name), g.WithinEndChild, win.IDStack.size());
+            "%s%s%s [%s]", ' '.repeat(currentIndent * 2), flag, msg,
+            to!string(win.Name)
+        );
 
         if (indent < 0) {
             currentIndent += indent;
