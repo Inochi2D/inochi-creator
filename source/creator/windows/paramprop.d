@@ -81,20 +81,22 @@ protected:
                         igUnindent();
                     }
                 igUnindent();
-            igEndChild();
-        }
-        if (igBeginChild("###SettingsBtns", ImVec2(0, 0))) {
-            incDummy(ImVec2(-64, 0));
-            igSameLine(0, 0);
-
-            // Settings are autosaved, but in case the user
-            // feels more safe with a save button then we have
-            // it here.
-            if (igButton(__("Save"), ImVec2(64, 24))) {
-                this.close();
             }
             igEndChild();
-        }
+
+            if (igBeginChild("###SettingsBtns", ImVec2(0, 0))) {
+                incDummy(ImVec2(-64, 0));
+                igSameLine(0, 0);
+
+                // Settings are autosaved, but in case the user
+                // feels more safe with a save button then we have
+                // it here.
+                if (igButton(__("Save"), ImVec2(64, 24))) {
+                    this.close();
+                }
+            }
+            igEndChild();
+
         igPopID();
     }
 

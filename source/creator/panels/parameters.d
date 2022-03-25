@@ -111,8 +111,8 @@ void incParameterView(Parameter param) {
                     }
                     igOpenPopup("###ControlPopup");
                 }
-                igEndChild();
             }
+            igEndChild();
 
             igSameLine(0, 0);
 
@@ -149,8 +149,8 @@ void incParameterView(Parameter param) {
 
                     // Arms the parameter for recording values.
                     incTooltip(_("Arm Parameter"));
-                    igEndChild();
                 }
+                igEndChild();
             }
         igPopID();
     igUnindent();
@@ -187,9 +187,8 @@ protected:
                 filter = filter.toLower;
             }
             incTooltip("Filter, search for specific parameters");
-            igEndChild();
         }
-
+        igEndChild();
 
         if (igBeginChild("ParametersList", ImVec2(0, -36))) {
             
@@ -206,8 +205,8 @@ protected:
                     incParameterView(param);
                 }
             }
-            igEndChild();
         }
+        igEndChild();
 
         // Right align add button
         ImVec2 avail = incAvailableSpace();

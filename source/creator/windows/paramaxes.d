@@ -70,9 +70,9 @@ protected:
                             }
                         igPopID();
                     }
-                    igEndChild();
                 }
-                
+                igEndChild();
+
                 incDummy(ImVec2(-24, 24));
                 igSameLine(0, 0);
                 if (igButton("", ImVec2(24, 24))) {
@@ -100,8 +100,8 @@ protected:
 
             if (igBeginChild("###ControllerView", ImVec2(192, reqSpace))) {
                 incControllerAxisDemo("###CONTROLLER", param, points, ImVec2(192, reqSpace));
-                igEndChild();
             }
+            igEndChild();
 
             igSameLine(0, 0);
 
@@ -122,8 +122,8 @@ protected:
                         igText("Breakpoints");
                         axisPointList(0, ImVec2(avail.x, avail.y-24));
                     }
-                    igEndChild();
                 }
+                igEndChild();
 
                 if (igBeginChild("###SettingsBtns", ImVec2(0, 0))) {
                     incDummy(ImVec2(-132, 0));
@@ -162,8 +162,8 @@ protected:
                         }
                         this.close();
                     }
-                    igEndChild();
                 }
+                igEndChild();
             igEndGroup();
         igPopID();
     }
