@@ -128,7 +128,7 @@ void incViewportNodeDeformNotifyParamValueChanged() {
         DeformationParameterBinding deform = cast(DeformationParameterBinding)param.getBinding(selected, "deform");
         if (deform) {
             writeln("RELOAD");
-            deformOffsets = deform.getValue(param.findClosestKeypoint()).vertexOffsets;
+            deformOffsets = deform.getValue(param.findClosestKeypoint()).vertexOffsets.dup;
         } else {
             writeln("RESET");
 
