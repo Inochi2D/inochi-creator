@@ -145,6 +145,9 @@ void incParameterView(Parameter param) {
                         igSeparator();
 
                         if (igMenuItem(__("Delete"), "", false, true)) {
+                            if (incArmedParameter() == param) {
+                                incDisarmParameter();
+                            }
                             incActivePuppet().removeParameter(param);
                         }
                         igEndPopup();
