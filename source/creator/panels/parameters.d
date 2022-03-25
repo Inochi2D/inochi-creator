@@ -64,6 +64,24 @@ private {
         }
     }
 
+    void mirroredAutofill(Parameter param, uint axis, float min, float max) {
+        foreach(ParameterBinding binding; param.bindings) {
+            uint xCount = param.axisPointCount(0);
+            uint yCount = param.axisPointCount(1);
+            foreach(x; 0..xCount) {
+                float offX = param.axisPoints[0][x];
+                if (axis == 0 && (offX < min || offX > max)) continue;
+                foreach(y; 0..yCount) {
+                    float offY = param.axisPoints[1][x];
+                    if (axis == 1 && (offY < min || offY > max)) continue;
+
+                    vec2u index = vec2u(x, y);
+                    if (!binding.isSet(index)) binding.extrapolateValueAt(index, axis);
+                }
+            }
+        }
+    }
+
     Node[] getCompatibleNodes() {
         Node thisNode = null;
 
@@ -430,6 +448,27 @@ void incParameterView(Parameter param) {
                             if (igMenuItem(__("Vertically"), "", false, true)) {
                                 mirrorAll(param, 1);
                                 incViewportNodeDeformNotifyParamValueChanged();
+                            }
+                            igEndMenu();
+                        }
+                        if (igBeginMenu(__("Mirrored Autofill"), true)) {
+                            if (igMenuItem(__(""), "", false, true)) {
+                                mirroredAutofill(param, 0, 0, 0.4999);
+                                incViewportNodeDeformNotifyParamValueChanged();
+                            }
+                            if (igMenuItem(__(""), "", false, true)) {
+                                mirroredAutofill(param, 0, 0.5001, 1);
+                                incViewportNodeDeformNotifyParamValueChanged();
+                            }
+                            if (param.isVec2) {
+                                if (igMenuItem(__(""), "", false, true)) {
+                                    mirroredAutofill(param, 1, 0, 0.4999);
+                                    incViewportNodeDeformNotifyParamValueChanged();
+                                }
+                                if (igMenuItem(__(""), "", false, true)) {
+                                    mirroredAutofill(param, 1, 0.5001, 1);
+                                    incViewportNodeDeformNotifyParamValueChanged();
+                                }
                             }
                             igEndMenu();
                         }
