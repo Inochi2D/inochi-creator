@@ -15,11 +15,214 @@ import std.string;
 import inochi2d;
 import i18n;
 import std.uni : toLower;
+import std.stdio;
 
 private {
     ParameterBinding[][Node] cParamBindingEntries;
     ParameterBinding[][Node] cParamBindingEntriesAll;
+    ParameterBinding[BindTarget] cSelectedBindings;
     vec2u cParamPoint;
+
+    void refreshBindingList(Parameter param) {
+        // Filter selection to remove anything that went away
+        ParameterBinding[BindTarget] newSelectedBindings;
+
+        cParamBindingEntriesAll.clear();
+        foreach(ParameterBinding binding; param.bindings) {
+            BindTarget target = binding.getTarget();
+            if (target in cSelectedBindings) newSelectedBindings[target] = binding;
+            cParamBindingEntriesAll[binding.getNode()] ~= binding;
+        }
+        cSelectedBindings = newSelectedBindings;
+        paramPointChanged(param);
+    }
+
+    void paramPointChanged(Parameter param) {
+        cParamBindingEntries.clear();
+
+        cParamPoint = param.findClosestKeypoint();
+        foreach(ParameterBinding binding; param.bindings) {
+            if (binding.isSet(cParamPoint)) {
+                cParamBindingEntries[binding.getNode()] ~= binding;
+            }
+        }
+    }
+
+    void bindingList(Parameter param) {
+        if (!igCollapsingHeader(__("Bindings"), ImGuiTreeNodeFlags.DefaultOpen)) return;
+
+        refreshBindingList(param);
+
+        auto io = igGetIO();
+        auto style = igGetStyle();
+        ImS32 inactiveColor = igGetColorU32(style.Colors[ImGuiCol.TextDisabled]);
+
+        igBeginChild("BindingList", ImVec2(0, 256), false);
+            igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 1));
+            igPushStyleVar(ImGuiStyleVar.IndentSpacing, 14);
+
+            foreach(node, allBindings; cParamBindingEntriesAll) {
+                ParameterBinding[] *bindings = (node in cParamBindingEntries);
+
+                // Figure out if node is selected ( == all bindings selected)
+                bool nodeSelected = true;
+                bool someSelected = false;
+                foreach(binding; allBindings) {
+                    if ((binding.getTarget() in cSelectedBindings) is null)
+                        nodeSelected = false;
+                    else
+                        someSelected = true;
+                }
+
+                ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.OpenOnArrow;
+                if (nodeSelected)
+                    flags |= ImGuiTreeNodeFlags.Selected;
+
+                if (bindings is null) igPushStyleColor(ImGuiCol.Text, inactiveColor);
+                if (igTreeNodeEx(cast(void*)node.uuid, flags, node.name.toStringz)) {
+                    if (bindings is null) igPopStyleColor();
+                    if (igBeginPopup("###BindingPopup")) {
+                        if (igMenuItem(__("Unset"), "", false, true)) {
+                            foreach(binding; cSelectedBindings.byValue()) {
+                                binding.unset(cParamPoint);
+                            }
+                            incViewportNodeDeformNotifyParamValueChanged();
+                        }
+                        if (igMenuItem(__("Set to current"), "", false, true)) {
+                            foreach(binding; cSelectedBindings.byValue()) {
+                                binding.setCurrent(cParamPoint);
+                            }
+                            incViewportNodeDeformNotifyParamValueChanged();
+                        }
+                        if (igMenuItem(__("Set to 0"), "", false, true)) {
+                            foreach(binding; cSelectedBindings.byValue()) {
+                                binding.reset(cParamPoint);
+                            }
+                            incViewportNodeDeformNotifyParamValueChanged();
+                        }
+                        if (igMenuItem(__("Invert"), "", false, true)) {
+                            foreach(binding; cSelectedBindings.byValue()) {
+                                binding.scaleValueAt(cParamPoint, -1, -1);
+                            }
+                            incViewportNodeDeformNotifyParamValueChanged();
+                        }
+                        if (param.isVec2) {
+                            if (igBeginMenu(__("Flip"), true)) {
+                                if (igMenuItem(__("X"), "", false, true)) {
+                                    foreach(binding; cSelectedBindings.byValue()) {
+                                        binding.scaleValueAt(cParamPoint, 0, -1);
+                                    }
+                                    incViewportNodeDeformNotifyParamValueChanged();
+                                }
+                                if (igMenuItem(__("Y"), "", false, true)) {
+                                    foreach(binding; cSelectedBindings.byValue()) {
+                                        binding.scaleValueAt(cParamPoint, 1, -1);
+                                    }
+                                    incViewportNodeDeformNotifyParamValueChanged();
+                                }
+                                igEndMenu();
+                            }
+                        }
+                        if (param.isVec2) {
+                            if (igBeginMenu(__("Auto Mirror"), true)) {
+                                if (igMenuItem(__("Horizontally"), "", false, true)) {
+                                    foreach(binding; cSelectedBindings.byValue()) {
+                                        binding.extrapolateValueAt(cParamPoint, 0);
+                                    }
+                                    incViewportNodeDeformNotifyParamValueChanged();
+                                }
+                                if (igMenuItem(__("Vertically"), "", false, true)) {
+                                    foreach(binding; cSelectedBindings.byValue()) {
+                                        binding.extrapolateValueAt(cParamPoint, 1);
+                                    }
+                                    incViewportNodeDeformNotifyParamValueChanged();
+                                }
+                                if (igMenuItem(__("Diagonally"), "", false, true)) {
+                                    foreach(binding; cSelectedBindings.byValue()) {
+                                        binding.extrapolateValueAt(cParamPoint, -1);
+                                    }
+                                    incViewportNodeDeformNotifyParamValueChanged();
+                                }
+                                igEndMenu();
+                            }
+                        } else {
+                            if (igMenuItem(__("Auto Mirror"), "", false, true)) {
+                                foreach(binding; cSelectedBindings.byValue()) {
+                                    binding.extrapolateValueAt(cParamPoint, 0);
+                                }
+                                incViewportNodeDeformNotifyParamValueChanged();
+                            }
+                        }
+                        igEndPopup();
+                    }
+                    if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                        if (!someSelected) {
+                            cSelectedBindings.clear();
+                            foreach(binding; allBindings) {
+                                cSelectedBindings[binding.getTarget()] = binding;
+                            }
+                        }
+                        igOpenPopup("###BindingPopup");
+                    }
+                    // Node selection logic
+                    if (igIsItemClicked(ImGuiMouseButton.Left) && !igIsItemToggledOpen()) {
+                        if (!io.KeyCtrl) {
+                            cSelectedBindings.clear();
+                            nodeSelected = false;
+                        }
+                        foreach(binding; allBindings) {
+                            if (nodeSelected) cSelectedBindings.remove(binding.getTarget());
+                            else cSelectedBindings[binding.getTarget()] = binding;
+                        }
+                    }
+                    foreach(binding; allBindings) {
+                        ImGuiTreeNodeFlags flags =
+                            ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.OpenOnArrow |
+                            ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.NoTreePushOnOpen;
+
+                        bool selected = cast(bool)(binding.getTarget() in cSelectedBindings);
+                        if (selected) flags |= ImGuiTreeNodeFlags.Selected;
+
+                        // Style as inactive if not set at this keypoint
+                        if (!binding.isSet(cParamPoint))
+                            igPushStyleColor(ImGuiCol.Text, inactiveColor);
+
+                        // Binding entry
+                        auto value = cast(ValueParameterBinding)binding;
+                        string label;
+                        if (value && binding.isSet(cParamPoint)) {
+                            label = format("%s (%.02f)", binding.getName(), value.getValue(cParamPoint));
+                        } else {
+                            label = binding.getName();
+                        }
+                        igTreeNodeEx("binding", flags, label.toStringz);
+                        if (!binding.isSet(cParamPoint)) igPopStyleColor();
+
+                        // Binding selection logic
+                        if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                            if (!selected) {
+                                cSelectedBindings.clear();
+                                cSelectedBindings[binding.getTarget()] = binding;
+                            }
+                            igOpenPopup("###BindingPopup");
+                        }
+                        if (igIsItemClicked(ImGuiMouseButton.Left)) {
+                            if (!io.KeyCtrl) {
+                                cSelectedBindings.clear();
+                                selected = false;
+                            }
+                            if (selected) cSelectedBindings.remove(binding.getTarget());
+                            else cSelectedBindings[binding.getTarget()] = binding;
+                        }
+                    }
+                    igTreePop();
+                } else if (bindings is null) igPopStyleColor();
+            }
+            igPopStyleVar();
+            igPopStyleVar();
+        igEndChild();
+    }
+
 }
 
 /**
@@ -95,20 +298,14 @@ void incParameterView(Parameter param) {
                 else igText("%.2f", param.value.x);
 
                 if (incController("###CONTROLLER", param, ImVec2(avail.x-18, reqSpace-24), incArmedParameter() == param)) {
-                    if (incArmedParameter() == param) incViewportNodeDeformNotifyParamValueChanged();
+                    if (incArmedParameter() == param) {
+                        incViewportNodeDeformNotifyParamValueChanged();
+                        paramPointChanged(param);
+                    }
                 }
                 if (igIsItemClicked(ImGuiMouseButton.Right)) {
                     if (incArmedParameter() == param) incViewportNodeDeformNotifyParamValueChanged();
-                    cParamBindingEntries.clear();
-                    cParamBindingEntriesAll.clear();
-
-                    cParamPoint = param.findClosestKeypoint();
-                    foreach(ParameterBinding binding; param.bindings) {
-                        cParamBindingEntriesAll[binding.getNode()] ~= binding;
-                        if (binding.getIsSet()[cParamPoint.x][cParamPoint.y]) {
-                            cParamBindingEntries[binding.getNode()] ~= binding;
-                        }
-                    }
+                    refreshBindingList(param);
                     igOpenPopup("###ControlPopup");
                 }
             }
@@ -163,6 +360,7 @@ void incParameterView(Parameter param) {
                             incDisarmParameter();
                         } else {
                             param.value = param.getClosestKeypointValue();
+                            paramPointChanged(param);
                             incArmParameter(param);
                         }
                     }
@@ -171,6 +369,9 @@ void incParameterView(Parameter param) {
                     incTooltip(_("Arm Parameter"));
                 }
                 igEndChild();
+            }
+            if (incArmedParameter() == param) {
+                bindingList(param);
             }
         igPopID();
     igUnindent();
