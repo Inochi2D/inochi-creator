@@ -114,9 +114,9 @@ void incParameterView(Parameter param) {
             }
             igEndChild();
 
-            igSameLine(0, 0);
 
             if (incEditMode == EditMode.ModelEdit) {
+                igSameLine(0, 0);
                 // Parameter Setting Buttons
                 if(igBeginChild("###SETTING", ImVec2(avail.x-24, reqSpace))) {
                     if (igBeginPopup("###EditParam")) {
