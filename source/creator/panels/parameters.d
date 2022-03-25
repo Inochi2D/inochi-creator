@@ -128,6 +128,19 @@ void incParameterView(Parameter param) {
                             incPushWindowList(new ParamAxesWindow(param));
                         }
 
+                        if (param.isVec2) {
+                            if (igMenuItem(__("Flip X"), "", false, true)) {
+                                param.reverseAxis(0);
+                            }
+                            if (igMenuItem(__("Flip Y"), "", false, true)) {
+                                param.reverseAxis(1);
+                            }
+                        } else {
+                            if (igMenuItem(__("Flip"), "", false, true)) {
+                                param.reverseAxis(0);
+                            }
+                        }
+
                         igNewLine();
                         igSeparator();
 
