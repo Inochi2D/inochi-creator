@@ -79,7 +79,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
 
                 param.value = vec2(
                     clamp(vCursorPos.x / (oRect.Max.x - oRect.Min.x) * sDeltaX + param.min.x, param.min.x, param.max.x),
-                    clamp(vCursorPos.y / (oRect.Max.y - oRect.Min.y) * sDeltaY + param.min.y, param.min.y, param.max.y)
+                    clamp(vCursorPos.y / (oRect.Max.y - oRect.Min.y) * -sDeltaY + param.max.y, param.min.y, param.max.y)
                 );
 
                 // Snap to closest point mode
@@ -145,7 +145,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
             }
 
             foreach(yIdx; 0..param.axisPoints[1].length) {
-                float yVal = param.axisPoints[1][yIdx];
+                float yVal = 1 - param.axisPoints[1][yIdx];
                 float yPos = (oRect.Max.y - oRect.Min.y) * yVal + oRect.Min.y;
                 
                 ImDrawList_AddLineDashed(
@@ -175,7 +175,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
             foreach(xIdx; 0..param.axisPoints[0].length) {
                 float xVal = param.axisPoints[0][xIdx];
                 foreach(yIdx; 0..param.axisPoints[1].length) {
-                    float yVal = param.axisPoints[1][yIdx];
+                    float yVal = 1 - param.axisPoints[1][yIdx];
 
                     vCursorPos = ImVec2(
                         (oRect.Max.x - oRect.Min.x) * xVal + oRect.Min.x, 
@@ -194,7 +194,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
 
             // PARAM VALUE
             fScaleX = (param.value.x - param.min.x) / sDeltaX;
-            fScaleY = (param.value.y - param.min.y) / sDeltaY;
+            fScaleY = 1 - (param.value.y - param.min.y) / sDeltaY;
             vCursorPos = ImVec2(
                 (oRect.Max.x - oRect.Min.x) * fScaleX + oRect.Min.x, 
                 (oRect.Max.y - oRect.Min.y) * fScaleY + oRect.Min.y
@@ -410,7 +410,7 @@ void incControllerAxisDemo(string strId, ref Parameter param, ref EditableAxisPo
             }
 
             foreach(yIdx; 0..axisPoints[1].length) {
-                float yVal = axisPoints[1][yIdx].normValue;
+                float yVal = 1 - axisPoints[1][yIdx].normValue;
                 float yPos = (oRect.Max.y - oRect.Min.y) * yVal + oRect.Min.y;
                 
                 ImDrawList_AddLineDashed(
@@ -440,7 +440,7 @@ void incControllerAxisDemo(string strId, ref Parameter param, ref EditableAxisPo
             foreach(xIdx; 0..axisPoints[0].length) {
                 float xVal = axisPoints[0][xIdx].normValue;
                 foreach(yIdx; 0..axisPoints[1].length) {
-                    float yVal = axisPoints[1][yIdx].normValue;
+                    float yVal = 1 - axisPoints[1][yIdx].normValue;
 
                     vCursorPos = ImVec2(
                         (oRect.Max.x - oRect.Min.x) * xVal + oRect.Min.x, 
