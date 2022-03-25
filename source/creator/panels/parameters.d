@@ -21,6 +21,7 @@ private {
     ParameterBinding[][Node] cParamBindingEntries;
     ParameterBinding[][Node] cParamBindingEntriesAll;
     ParameterBinding[BindTarget] cSelectedBindings;
+    Node[] cCompatibleNodes;
     vec2u cParamPoint;
 
     void refreshBindingList(Parameter param) {
@@ -46,6 +47,70 @@ private {
                 cParamBindingEntries[binding.getNode()] ~= binding;
             }
         }
+    }
+
+    void mirrorAll(Parameter param, uint axis) {
+        foreach(ParameterBinding binding; param.bindings) {
+            uint xCount = param.axisPointCount(0);
+            uint yCount = param.axisPointCount(1);
+            foreach(x; 0..xCount) {
+                foreach(y; 0..yCount) {
+                    vec2u index = vec2u(x, y);
+                    if (binding.isSet(index)) {
+                        binding.scaleValueAt(index, axis, -1);
+                    }
+                }
+            }
+        }
+    }
+
+    Node[] getCompatibleNodes() {
+        Node thisNode = null;
+
+        foreach(binding; cSelectedBindings.byValue()) {
+            if (thisNode is null) thisNode = binding.getNode();
+            else if (!(binding.getNode() is thisNode)) return null;
+        }
+        if (thisNode is null) return null;
+
+        Node[] compatible;
+        nodeLoop: foreach(otherNode; cParamBindingEntriesAll.byKey()) {
+            if (otherNode is thisNode) continue;
+
+            foreach(binding; cSelectedBindings.byValue()) {
+                if (!binding.isCompatibleWithNode(otherNode))
+                    continue nodeLoop;
+            }
+            compatible ~= otherNode;
+        }
+
+        return compatible;
+    }
+
+    void copySelectionToNode(Parameter param, Node target) {
+        Node src = cSelectedBindings.keys[0].node;
+
+        foreach(binding; cSelectedBindings.byValue()) {
+            assert(binding.getNode() is src, "selection mismatch");
+
+            ParameterBinding b = param.getOrAddBinding(target, binding.getName());
+            binding.copyKeypointToBinding(cParamPoint, b, cParamPoint);
+        }
+
+        refreshBindingList(param);
+    }
+
+    void swapSelectionWithNode(Parameter param, Node target) {
+        Node src = cSelectedBindings.keys[0].node;
+
+        foreach(binding; cSelectedBindings.byValue()) {
+            assert(binding.getNode() is src, "selection mismatch");
+
+            ParameterBinding b = param.getOrAddBinding(target, binding.getName());
+            binding.swapKeypointWithBinding(cParamPoint, b, cParamPoint);
+        }
+
+        refreshBindingList(param);
     }
 
     void bindingList(Parameter param) {
@@ -107,14 +172,14 @@ private {
                             incViewportNodeDeformNotifyParamValueChanged();
                         }
                         if (param.isVec2) {
-                            if (igBeginMenu(__("Flip"), true)) {
-                                if (igMenuItem(__("X"), "", false, true)) {
+                            if (igBeginMenu(__("Mirror"), true)) {
+                                if (igMenuItem(__("Horizontally"), "", false, true)) {
                                     foreach(binding; cSelectedBindings.byValue()) {
                                         binding.scaleValueAt(cParamPoint, 0, -1);
                                     }
                                     incViewportNodeDeformNotifyParamValueChanged();
                                 }
-                                if (igMenuItem(__("Y"), "", false, true)) {
+                                if (igMenuItem(__("Vertically"), "", false, true)) {
                                     foreach(binding; cSelectedBindings.byValue()) {
                                         binding.scaleValueAt(cParamPoint, 1, -1);
                                     }
@@ -153,6 +218,24 @@ private {
                                 incViewportNodeDeformNotifyParamValueChanged();
                             }
                         }
+                        bool haveCompatible = cCompatibleNodes.length > 0;
+                        if (igBeginMenu(__("Copy to"), haveCompatible)) {
+                            foreach(node; cCompatibleNodes) {
+                                if (igMenuItem(node.name.toStringz, "", false, true)) {
+                                    copySelectionToNode(param, node);
+                                }
+                            }
+                            igEndMenu();
+                        }
+                        if (igBeginMenu(__("Swap with"), haveCompatible)) {
+                            foreach(node; cCompatibleNodes) {
+                                if (igMenuItem(node.name.toStringz, "", false, true)) {
+                                    swapSelectionWithNode(param, node);
+                                }
+                            }
+                            igEndMenu();
+                        }
+
                         igEndPopup();
                     }
                     if (igIsItemClicked(ImGuiMouseButton.Right)) {
@@ -162,6 +245,7 @@ private {
                                 cSelectedBindings[binding.getTarget()] = binding;
                             }
                         }
+                        cCompatibleNodes = getCompatibleNodes();
                         igOpenPopup("###BindingPopup");
                     }
                     // Node selection logic
@@ -204,6 +288,7 @@ private {
                                 cSelectedBindings.clear();
                                 cSelectedBindings[binding.getTarget()] = binding;
                             }
+                            cCompatibleNodes = getCompatibleNodes();
                             igOpenPopup("###BindingPopup");
                         }
                         if (igIsItemClicked(ImGuiMouseButton.Left)) {
@@ -336,6 +421,17 @@ void incParameterView(Parameter param) {
                             if (igMenuItem(__("Flip"), "", false, true)) {
                                 param.reverseAxis(0);
                             }
+                        }
+                        if (igBeginMenu(__("Mirror"), true)) {
+                            if (igMenuItem(__("Horizontally"), "", false, true)) {
+                                mirrorAll(param, 0);
+                                incViewportNodeDeformNotifyParamValueChanged();
+                            }
+                            if (igMenuItem(__("Vertically"), "", false, true)) {
+                                mirrorAll(param, 1);
+                                incViewportNodeDeformNotifyParamValueChanged();
+                            }
+                            igEndMenu();
                         }
 
                         igNewLine();
