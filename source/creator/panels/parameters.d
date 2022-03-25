@@ -82,6 +82,30 @@ private {
         }
     }
 
+    void fixScales(Parameter param) {
+        foreach(ParameterBinding binding; param.bindings) {
+            switch(binding.getName()) {
+                case "transform.s.x":
+                case "transform.s.y":
+                if (ValueParameterBinding b = cast(ValueParameterBinding)binding) {
+                    uint xCount = param.axisPointCount(0);
+                    uint yCount = param.axisPointCount(1);
+                    foreach(x; 0..xCount) {
+                        foreach(y; 0..yCount) {
+                            vec2u index = vec2u(x, y);
+                            if (b.isSet(index)) {
+                                b.values[x][y] += 1;
+                            }
+                        }
+                    }
+                    b.reInterpolate();
+                }
+                break;
+                default: break;
+            }
+        }
+    }
+
     Node[] getCompatibleNodes() {
         Node thisNode = null;
 
@@ -445,6 +469,13 @@ void incParameterView(Parameter param) {
                                 incDisarmParameter();
                             }
                             incActivePuppet().removeParameter(param);
+                        }
+
+                        igNewLine();
+                        igSeparator();
+
+                        if (igMenuItem(__("Fix Scales"), "", false, true)) {
+                            fixScales(param);
                         }
                         igEndPopup();
                     }
