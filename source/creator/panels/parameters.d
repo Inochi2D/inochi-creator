@@ -159,8 +159,12 @@ void incParameterView(Parameter param) {
                     
                     
                     if (incButtonColored("", ImVec2(24, 24), incArmedParameter() == param ? ImVec4(1f, 0f, 0f, 1f) : *igGetStyleColorVec4(ImGuiCol.Text))) {
-                        if (incArmedParameter() == param) incDisarmParameter();
-                        else incArmParameter(param);
+                        if (incArmedParameter() == param) {
+                            incDisarmParameter();
+                        } else {
+                            param.value = param.getClosestKeypointValue();
+                            incArmParameter(param);
+                        }
                     }
 
                     // Arms the parameter for recording values.
