@@ -39,8 +39,8 @@ void incViewportModelOverlay() {
     incTooltip(_("Show/hide Orientation Gizmo"));
 }
 
-void incViewportModelNodeSelect(Node node) {
-    incViewportModelDeformNodeSelect(node);
+void incViewportModelNodeSelectionChanged() {
+    incViewportModelDeformNodeSelectionChanged();
 }
 
 void incViewportModelUpdate(ImGuiIO* io, Camera camera) {

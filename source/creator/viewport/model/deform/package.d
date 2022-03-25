@@ -18,7 +18,7 @@ import std.stdio;
 private {
     vec2 lastMousePos;
     vec2 currMousePos;
-    Drawable selected;
+    Drawable selected = null;
 
     ushort[] selectedIndices;
     vec2[] deformOffsets;
@@ -27,7 +27,7 @@ private {
         Draws the points of the mesh
     */
     void drawMeshPoints() {
-        if (deformOffsets.length == 0) return;
+        if (!selected) return;
 
         auto trans = selected.transform.matrix();
         vec3[] points;
@@ -121,13 +121,21 @@ private {
 }
 
 void incViewportNodeDeformNotifyParamValueChanged() {
-    deformOffsets.length = 0;
-    if (selected is null) return;
-
     if (Parameter param = incArmedParameter()) {
+        if (!selected) {
+            if (Drawable selectedDraw = cast(Drawable)incSelectedNode()) {
+                selected = selectedDraw;
+                import std.stdio : writeln;
+                writeln("CHANGE SELECT");
+                incViewportNodeDeformNotifyParamValueChanged();
+            } else {
+                return;
+            }
+        }
+
         DeformationParameterBinding deform = cast(DeformationParameterBinding)param.getBinding(selected, "deform");
         if (deform) {
-            writeln("RELOAD");
+            writefln("RELOAD %s", param.findClosestKeypoint());
             deformOffsets = deform.getValue(param.findClosestKeypoint()).vertexOffsets.dup;
         } else {
             writeln("RESET");
@@ -137,49 +145,51 @@ void incViewportNodeDeformNotifyParamValueChanged() {
                 deformOffsets[i] = vec2(0);
             }
         }
+    } else {
+        selectedIndices.length = 0;
+        deformOffsets.length = 0;
+        selected = null;
     }
 }
 
-void incViewportModelDeformNodeSelect(Node node) {
-    if (Drawable selectedDraw = cast(Drawable)incSelectedNode()) {
-        selectedIndices.length = 0;
-        selected = selectedDraw;
-        import std.stdio : writeln;
-        writeln("NEW SELECT");
-        incViewportNodeDeformNotifyParamValueChanged();
-    }
+void incViewportModelDeformNodeSelectionChanged() {
+    writeln("CLEAR SELECT");
+    selectedIndices.length = 0;
+    deformOffsets.length = 0;
+    selected = null;
+
+    incViewportNodeDeformNotifyParamValueChanged();
 }
 
 void incViewportModelDeformUpdate(ImGuiIO* io, Camera camera, Parameter param) {
-    if (Drawable selectedDraw = cast(Drawable)incSelectedNode()) {
-        DeformationParameterBinding deform = cast(DeformationParameterBinding)param.getBinding(selected, "deform");
-        lastMousePos = currMousePos;
-        currMousePos = incInputGetMousePosition();
-        if (incInputIsMouseClicked(ImGuiMouseButton.Left)) {
-            if (io.KeyCtrl) {
-                addSelectPoint(currMousePos);
-            } else {
-                selectPoint(currMousePos);
-            }
-        }
-        if (incInputIsDragRequested(ImGuiMouseButton.Left)) {
-            vec2 deltaMousePos = lastMousePos-currMousePos;
-            dragSelectedPoints(deltaMousePos);
-            if (deform) {
-                deform.update(param.findClosestKeypoint(), deformOffsets);
-            } else {
-                deform = new DeformationParameterBinding(param, selectedDraw, "deform");
-                deform.update(param.findClosestKeypoint(), deformOffsets);
-                param.bindings ~= deform;
+    if (!selected) return;
 
-            }
+    DeformationParameterBinding deform = cast(DeformationParameterBinding)param.getBinding(selected, "deform");
+    lastMousePos = currMousePos;
+    currMousePos = incInputGetMousePosition();
+    if (incInputIsMouseClicked(ImGuiMouseButton.Left)) {
+        if (io.KeyCtrl) {
+            addSelectPoint(currMousePos);
+        } else {
+            selectPoint(currMousePos);
         }
+    }
+    if (incInputIsDragRequested(ImGuiMouseButton.Left)) {
+        vec2 deltaMousePos = lastMousePos-currMousePos;
+        dragSelectedPoints(deltaMousePos);
+        if (!deform) {
+            deform = new DeformationParameterBinding(param, selected, "deform");
+            param.bindings ~= deform;
+            writeln("NEW");
+        }
+        writefln("COMMIT %s", param.findClosestKeypoint());
+        deform.update(param.findClosestKeypoint(), deformOffsets);
     }
 }
 
 void incViewportModelDeformDraw(Camera camera, Parameter param) {
-    if (Drawable selectedDraw = cast(Drawable)incSelectedNode()) {
-        selectedDraw.drawMeshLines();
+    if (selected) {
+        selected.drawMeshLines();
         drawMeshPoints();
     }
 }

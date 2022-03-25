@@ -8,6 +8,7 @@ module creator;
 import inochi2d;
 import inochi2d.core.dbg;
 import creator.viewport.model;
+import creator.viewport.model.deform;
 import creator.core;
 import creator.core.actionstack;
 import creator.windows;
@@ -306,6 +307,7 @@ ref Node incSelectedNode() {
 */
 void incArmParameter(ref Parameter param) {
     armedParam = param;
+    incViewportNodeDeformNotifyParamValueChanged();
 }
 
 /**
@@ -313,6 +315,7 @@ void incArmParameter(ref Parameter param) {
 */
 void incDisarmParameter() {
     armedParam = null;
+    incViewportNodeDeformNotifyParamValueChanged();
 }
 
 /**
@@ -321,7 +324,7 @@ void incDisarmParameter() {
 void incSelectNode(Node n = null) {
     if (n is null) selectedNodes.length = 0;
     else selectedNodes = [n];
-    if (incArmedParameter()) incViewportModelNodeSelect(selectedNodes[$-1]);
+    incViewportModelNodeSelectionChanged();
 }
 
 /**
