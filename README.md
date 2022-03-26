@@ -11,4 +11,4 @@ Inochi Creator is tool to create and edit [Inochi2D puppets](https://github.com/
 Inochi Creator is currently under construction and is not recommended for production use.
 
 ## Intel Integrated Graphics
-Inochi Creator currently crashes on Intel Integrated Graphics. I unfortunately do not currently have the means to debug and fix this issue.
+Inochi Creator currently crashes on Intel Integrated Graphics. I unfortunately do not have the means to debug and fix this issue right now, sorry.
