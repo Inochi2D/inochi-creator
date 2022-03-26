@@ -126,6 +126,7 @@ void incImportFolder(string folder) {
     puppet.rescanNodes();
     puppet.populateTextureSlots();
     incActiveProject().puppet = puppet;
+    incFocusCamera(incActivePuppet().root);
     incFreeMemory();
 }
 
@@ -216,6 +217,7 @@ void incImportPSD(string file) {
 
     puppet.populateTextureSlots();
     incActiveProject().puppet = puppet;
+    incFocusCamera(incActivePuppet().root);
     incFreeMemory();
 }
 
@@ -226,6 +228,7 @@ void incImportINP(string file) {
     incNewProject();
     Puppet puppet = inLoadPuppet(file);
     incActiveProject().puppet = puppet;
+    incFocusCamera(incActivePuppet().root);
     incFreeMemory();
 }
 
