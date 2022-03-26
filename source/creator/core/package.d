@@ -380,8 +380,10 @@ void incSetDefaultLayout() {
     dockIDLoggerAndTextureSlots = igDockBuilderSplitNode(dockMainID, ImGuiDir.Down, 0.10f, null, &dockMainID);
 
     igDockBuilderDockWindow("###Nodes", dockIDNodes);
+    igDockBuilderDockWindow("###Tool Settings", dockIDInspector);
     igDockBuilderDockWindow("###Inspector", dockIDInspector);
     igDockBuilderDockWindow("###History", dockIDHistory);
+    igDockBuilderDockWindow("###Tracking", dockIDHistory);
     igDockBuilderDockWindow("###Parameters", dockIDParams);
     igDockBuilderDockWindow("###Texture Slots", dockIDLoggerAndTextureSlots);
     igDockBuilderDockWindow("###Logger", dockIDLoggerAndTextureSlots);

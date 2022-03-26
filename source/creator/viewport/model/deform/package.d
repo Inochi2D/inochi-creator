@@ -1,10 +1,11 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2022, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
 */
 module creator.viewport.model.deform;
+import creator.viewport.model.deform.mesh;
 import creator.widgets.tooltip;
 import creator.core.input;
 import inochi2d.core.dbg;
@@ -125,8 +126,6 @@ void incViewportNodeDeformNotifyParamValueChanged() {
         if (!selected) {
             if (Drawable selectedDraw = cast(Drawable)incSelectedNode()) {
                 selected = selectedDraw;
-                import std.stdio : writeln;
-                writeln("CHANGE SELECT");
                 incViewportNodeDeformNotifyParamValueChanged();
             } else {
                 return;
@@ -135,10 +134,8 @@ void incViewportNodeDeformNotifyParamValueChanged() {
 
         DeformationParameterBinding deform = cast(DeformationParameterBinding)param.getBinding(selected, "deform");
         if (deform) {
-            writefln("RELOAD %s", param.findClosestKeypoint());
             deformOffsets = deform.getValue(param.findClosestKeypoint()).vertexOffsets.dup;
         } else {
-            writeln("RESET");
 
             deformOffsets.length = selected.vertices.length;
             foreach(i; 0..deformOffsets.length) {
@@ -153,7 +150,6 @@ void incViewportNodeDeformNotifyParamValueChanged() {
 }
 
 void incViewportModelDeformNodeSelectionChanged() {
-    writeln("CLEAR SELECT");
     selectedIndices.length = 0;
     deformOffsets.length = 0;
     selected = null;
@@ -179,9 +175,7 @@ void incViewportModelDeformUpdate(ImGuiIO* io, Camera camera, Parameter param) {
         dragSelectedPoints(deltaMousePos);
         if (!deform) {
             deform = cast(DeformationParameterBinding)param.getOrAddBinding(selected, "deform");
-            writeln("NEW");
         }
-        writefln("COMMIT %s", param.findClosestKeypoint());
         deform.update(param.findClosestKeypoint(), deformOffsets);
     }
 }
@@ -191,4 +185,7 @@ void incViewportModelDeformDraw(Camera camera, Parameter param) {
         selected.drawMeshLines();
         drawMeshPoints();
     }
+}
+void incViewportModelDeformToolSettings() {
+
 }

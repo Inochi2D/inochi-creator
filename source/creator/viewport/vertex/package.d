@@ -200,6 +200,10 @@ void incViewportVertexToolbar() {
     igPopStyleVar();
 }
 
+void incViewportVertexToolSettings() {
+
+}
+
 void incViewportVertexPresent() { }
 
 void incViewportVertexWithdraw() { }

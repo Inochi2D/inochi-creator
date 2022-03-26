@@ -122,6 +122,30 @@ void incViewportToolbar() {
 }
 
 
+/**
+    Updates the viewport tool settings
+*/
+void incViewportToolSettings() {
+    switch(incEditMode) {
+        case EditMode.ModelEdit:
+            incViewportModelToolSettings();
+            break;
+        case EditMode.VertexEdit:
+            incViewportVertexToolSettings();
+            break;
+        default: 
+            incViewportToolSettingsNoTool();
+            break;
+    }
+}
+
+/// For when there's no tools for that view
+void incViewportToolSettingsNoTool() {
+    import i18n : __;
+    igText(__("No tool selected..."));
+}
+
+
 
 
 //

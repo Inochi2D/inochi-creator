@@ -76,6 +76,10 @@ void incViewportModelDraw(Camera camera) {
     }
 }
 
+void incViewportModelToolSettings() {
+    incViewportModelDeformToolSettings();
+}
+
 void incViewportModelPresent() {
 
 }
