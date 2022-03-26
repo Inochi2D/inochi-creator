@@ -83,14 +83,14 @@ private {
 void incViewportVertexOverlay() {
     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
 
-        if (incButtonColored("", ImVec2(32, 32), incVertexToolMode == VertexToolMode.Points ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+        if (incButtonColored("", ImVec2(28, 28), incVertexToolMode == VertexToolMode.Points ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
             incVertexToolMode = VertexToolMode.Points;
             deselectAll();
         }
         incTooltip(_("Vertex Tool"));
 
         igSameLine(0, 0);
-        if (incButtonColored("", ImVec2(32, 32), incVertexToolMode == VertexToolMode.Connect ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+        if (incButtonColored("", ImVec2(28, 28), incVertexToolMode == VertexToolMode.Connect ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
             incVertexToolMode = VertexToolMode.Connect;
             deselectAll();
         }
