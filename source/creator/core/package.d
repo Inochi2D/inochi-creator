@@ -115,8 +115,9 @@ void incOpenWindow() {
     
     auto imSupport = loadImGui();
     enforce(imSupport != ImGuiSupport.noLibrary, "cimgui library not found!");
-    enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui library found!");
-
+    
+    // HACK: For some reason this check fails on some macOS and Linux installations
+    version(Windows) enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui library found!");
     SDL_Init(SDL_INIT_EVERYTHING);
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
