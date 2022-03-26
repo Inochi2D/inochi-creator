@@ -105,7 +105,7 @@ protected:
                 igSetItemAllowOverlap();
                 
                 igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
-                    igBeginChild("##ViewportMainControls", ImVec2(128, 28));
+                    igBeginChild("##ViewportMainControls", ImVec2(128, 28 * incGetUIScale()));
                         igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
                             incViewportDrawOverlay();
                         igPopStyleVar();

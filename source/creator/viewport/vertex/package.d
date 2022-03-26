@@ -80,7 +80,25 @@ private {
 
 
 // No overlay in vertex mode
-void incViewportVertexOverlay() { }
+void incViewportVertexOverlay() {
+    igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
+
+        if (incButtonColored("", ImVec2(32, 32), incVertexToolMode == VertexToolMode.Points ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+            incVertexToolMode = VertexToolMode.Points;
+            deselectAll();
+        }
+        incTooltip(_("Vertex Tool"));
+
+        igSameLine(0, 0);
+        if (incButtonColored("", ImVec2(32, 32), incVertexToolMode == VertexToolMode.Connect ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+            incVertexToolMode = VertexToolMode.Connect;
+            deselectAll();
+        }
+        incTooltip(_("Line Tool"));
+
+    igPopStyleVar();
+
+}
 
 
 void incViewportVertexUpdate(ImGuiIO* io, Camera camera) {
@@ -182,23 +200,7 @@ void incViewportVertexDraw(Camera camera) {
     incMeshEditDraw();
 }
 
-void incViewportVertexToolbar() {
-    igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
-
-        if (incButtonColored("", ImVec2(32, 32), incVertexToolMode == VertexToolMode.Points ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-            incVertexToolMode = VertexToolMode.Points;
-            deselectAll();
-        }
-        incTooltip(_("Vertex Tool"));
-
-        if (incButtonColored("", ImVec2(32, 32), incVertexToolMode == VertexToolMode.Connect ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-            incVertexToolMode = VertexToolMode.Connect;
-            deselectAll();
-        }
-        incTooltip(_("Line Tool"));
-
-    igPopStyleVar();
-}
+void incViewportVertexToolbar() { }
 
 void incViewportVertexToolSettings() {
 
