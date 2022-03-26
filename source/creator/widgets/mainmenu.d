@@ -184,16 +184,15 @@ void incMainMenu() {
 
             igSeparator();
             
-            if (igMenuItem_Bool(__("Save Screenshot"), "", incShowStatsForNerds, true)) {
+            if (igMenuItem(__("Save Screenshot"), "", false, true)) {
                 const TFD_Filter[] filters = [
-                    { ["*.png"], "PNG Image (*.png)" },
-                    { ["*.tga"], "TARGA Image (*.png)" }
+                    { ["*.png"], "PNG Image (*.png)" }
                 ];
 
                 import std.path : setExtension;
                 c_str filename = tinyfd_saveFileDialog(__("Export..."), "", filters);
                 if (filename !is null) {
-                    string file = cast(string)filename.fromStringz;
+                    string file = (cast(string)filename.fromStringz).setExtension("png");
 
                     // Dump viewport to RGBA byte array
                     int width, height;
