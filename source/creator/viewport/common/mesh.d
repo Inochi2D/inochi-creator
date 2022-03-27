@@ -1,15 +1,17 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2022, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
-    
-    Authors: Luna Nielsen
+
+    Authors:
+    - Luna Nielsen
+    - Asahi Lina
 */
-module creator.viewport.vertex.mesh.mesh;
+module creator.viewport.common.mesh;
 import creator.viewport;
 import inochi2d;
 import inochi2d.core.dbg;
 import bindbc.opengl;
-    
+
 struct MeshVertex {
     vec2 position;
     MeshVertex*[] connections;
