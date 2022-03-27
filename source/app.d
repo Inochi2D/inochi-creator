@@ -41,7 +41,7 @@ int main(string[] args)
         incActionInit();
 
         incOpenWindow();
-        if (args.length > 1) incOpenProject(args[2]);
+        if (args.length > 1) incOpenProject(args[1]);
         else incNewProject();
         if (incSettingsGet!bool("ShowWarning", true)) {
             incPushWindow(new NoticeWindow());
