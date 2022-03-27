@@ -26,7 +26,7 @@ private:
     VertexToolMode toolMode = VertexToolMode.Points;
     MeshVertex*[] selected;
     bool isDragging = false;
-    bool verticesOnly = false;
+    bool deformOnly = false;
     vec2 lastMousePos;
     vec2 mousePos;
 
@@ -80,8 +80,8 @@ private:
 public:
     IncMesh mesh;
 
-    this(bool verticesOnly) {
-        this.verticesOnly = verticesOnly;
+    this(bool deformOnly) {
+        this.deformOnly = deformOnly;
     }
 
     Drawable getTarget() {
@@ -102,9 +102,25 @@ public:
     }
 
     void setToolMode(VertexToolMode toolMode) {
-        assert(!verticesOnly || toolMode == VertexToolMode.Points);
+        assert(!deformOnly || toolMode == VertexToolMode.Points);
         this.toolMode = toolMode;
         deselectAll();
+    }
+
+    void resetMesh() {
+        mesh.reset();
+    }
+
+    void applyOffsets(vec2[] offsets) {
+        assert(deformOnly);
+
+        mesh.applyOffsets(offsets);
+    }
+
+    vec2[] getOffsets() {
+        assert(deformOnly);
+
+        return mesh.getOffsets();
     }
 
     void applyToTarget() {
@@ -130,9 +146,18 @@ public:
         target.rebuffer(data);
     }
 
-    void update(ImGuiIO* io, Camera camera) {
+    bool update(ImGuiIO* io, Camera camera) {
+        bool changed = false;
+
         lastMousePos = mousePos;
-        mousePos = -incInputGetMousePosition();
+
+        mousePos = incInputGetMousePosition();
+        if (deformOnly) {
+            mat4 tr = target.transform.matrix()*mat4.translation(mousePos.x, mousePos.y, 0);
+            mousePos = vec2(tr.matrix[0][3]*-1, tr.matrix[1][3]*-1);
+        } else {
+            mousePos = -mousePos;
+        }
 
         if (incInputIsMouseReleased(ImGuiMouseButton.Left)) isDragging = false;
 
@@ -148,7 +173,7 @@ public:
                 }
 
                 // Left double click action
-                if (igIsMouseDoubleClicked(ImGuiMouseButton.Left)) {
+                if (!deformOnly && igIsMouseDoubleClicked(ImGuiMouseButton.Left)) {
 
                     // Check if mouse is over a vertex
                     if (mesh.isPointOverVertex(mousePos)) {
@@ -156,9 +181,11 @@ public:
                         // In the case that it is, double clicking would remove an item
                         if (isSelected(mesh.getVertexFromPoint(mousePos))) {
                             mesh.removeVertexAt(mousePos);
+                            changed = true;
                         }
                     } else {
                         mesh.vertices ~= new MeshVertex(mousePos, [], false);
+                        changed = true;
                         selectOne(mesh.vertices[$-1]);
                     }
                     mesh.refresh();
@@ -173,12 +200,15 @@ public:
                     foreach(select; selected) {
                         select.position += mousePos-lastMousePos;
                     }
+                    changed = true;
                     mesh.refresh();
                 }
 
 
                 break;
             case VertexToolMode.Connect:
+                assert(!deformOnly);
+
                 if (igIsMouseClicked(ImGuiMouseButton.Left)) {
                     if (mesh.isPointOverVertex(mousePos)) {
                         auto prev = selectOne(mesh.getVertexFromPoint(mousePos));
@@ -188,8 +218,10 @@ public:
                                 // Connect or disconnect between previous and this node
                                 if (!prev.isConnectedTo(selected[$-1])) {
                                     prev.connect(selected[$-1]);
+                                    changed = true;
                                 } else {
                                     prev.disconnect(selected[$-1]);
+                                    changed = true;
                                 }
                                 if (!io.KeyShift) deselectAll();
                             } else {
@@ -202,29 +234,21 @@ public:
 
                         mesh.refresh();
                     } else {
-
-                            // Clicking outside a vert deselect verts
-                            deselectAll();
+                        // Clicking outside a vert deselect verts
+                        deselectAll();
                     }
                 }
                 break;
             default: assert(0);
         }
+        return changed;
     }
 
     void draw(Camera camera) {
-        vec2 mousePos = incInputGetMousePosition();
-
-        // Draw the part that is currently being edited
-        if (target !is null) {
-            if (Part part = cast(Part)target) {
-
-                // Draw albedo texture at 0, 0
-                inDrawTextureAtPosition(part.textures[0], vec2(0, 0));
-            }
+        if (deformOnly) {
+            mesh.draw(target.transform.matrix());
+        } else {
+            mesh.draw();
         }
-
-        // Draw the points being edited
-        mesh.draw();
     }
 }

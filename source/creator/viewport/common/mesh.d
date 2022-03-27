@@ -60,9 +60,11 @@ private:
 
         // Iterate over flat mesh and extract it in to
         // vertices and "connections"
-        MeshVertex*[ushort] iVertices;
-        foreach(indice; data.indices) {
-            if (indice !in iVertices) iVertices[indice] = new MeshVertex(data.vertices[indice], []);
+        MeshVertex*[] iVertices;
+
+        iVertices.length = data.vertices.length;
+        foreach(idx, vertex; data.vertices) {
+            iVertices[idx] = new MeshVertex(vertex, []);
         }
 
         foreach(i; 0..data.indices.length/3) {
@@ -75,14 +77,14 @@ private:
             if (!iVertices[nnindex].isConnectedTo(iVertices[index])) iVertices[nnindex].connect(iVertices[index]);
         }
         
-        void printConnections(ushort i, MeshVertex* v) {
+        void printConnections(MeshVertex* v) {
             import std.stdio;
             ushort[] conns;
             vec2[] coords;
             foreach(conn; v.connections) {
                 foreach(key, value; iVertices) {
                     if (value == conn) {
-                        conns ~= key;
+                        conns ~= cast(ushort)key;
                         coords ~= value.position;
                         break;
                     }
@@ -91,7 +93,7 @@ private:
         }
 
         foreach(i, vertex; iVertices) {
-            printConnections(i, vertex);
+            printConnections(vertex);
             vertices ~= vertex;
         }
 
@@ -316,31 +318,31 @@ public:
     /**
         Draws the mesh
     */
-    void draw() {
+    void draw(mat4 trans = mat4.identity) {
         if (lines.length > 0) {
             inDbgSetBuffer(lines);
-            inDbgDrawLines(vec4(0.7, 0.7, 0.7, 1));
+            inDbgDrawLines(vec4(0.7, 0.7, 0.7, 1), trans);
         }
 
         if (wlines.length > 0) {
             inDbgSetBuffer(lines);
-            inDbgDrawLines(vec4(0.7, 0.2, 0.2, 1));
+            inDbgDrawLines(vec4(0.7, 0.2, 0.2, 1), trans);
         }
 
         if (points.length > 0) {
             inDbgSetBuffer(points);
             inDbgPointsSize(10);
-            inDbgDrawPoints(vec4(0, 0, 0, 1));
+            inDbgDrawPoints(vec4(0, 0, 0, 1), trans);
             inDbgPointsSize(6);
-            inDbgDrawPoints(vec4(1, 1, 1, 1));
+            inDbgDrawPoints(vec4(1, 1, 1, 1), trans);
         }
 
         if (selpoints.length > 0) {
             inDbgSetBuffer(selpoints);
             inDbgPointsSize(10);
-            inDbgDrawPoints(vec4(0, 0, 0, 1));
+            inDbgDrawPoints(vec4(0, 0, 0, 1), trans);
             inDbgPointsSize(6);
-            inDbgDrawPoints(vec4(1, 0, 0, 1));
+            inDbgDrawPoints(vec4(1, 0, 0, 1), trans);
         }
     }
 
@@ -376,6 +378,24 @@ public:
             disconnectAll(vert);
             vertices = vertices.remove(idx);
         }
+    }
+
+    vec2[] getOffsets() {
+        vec2[] offsets;
+
+        offsets.length = vertices.length;
+        foreach(idx, vertex; vertices) {
+            offsets[idx] = vertex.position - data.vertices[idx];
+        }
+        return offsets;
+    }
+
+    void applyOffsets(vec2[] offsets) {
+        foreach(idx, vertex; vertices) {
+            vertex.position += offsets[idx];
+        }
+        regen();
+        regenConnections();
     }
 
     /**

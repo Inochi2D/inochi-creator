@@ -44,6 +44,16 @@ void incViewportVertexUpdate(ImGuiIO* io, Camera camera) {
 }
 
 void incViewportVertexDraw(Camera camera) {
+    // Draw the part that is currently being edited
+    auto target = editor.getTarget();
+    if (target !is null) {
+        if (Part part = cast(Part)target) {
+
+            // Draw albedo texture at 0, 0
+            inDrawTextureAtPosition(part.textures[0], vec2(0, 0));
+        }
+    }
+
     editor.draw(camera);
 }
 
