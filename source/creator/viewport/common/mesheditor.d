@@ -78,9 +78,48 @@ private:
         refreshMesh();
     }
 
+    vec2 mirrorH(vec2 point) {
+        return 2 * vec2(mirrorOrigin.x, 0) + vec2(-point.x, point.y);
+    }
+
+    vec2 mirrorV(vec2 point) {
+        return 2 * vec2(0, mirrorOrigin.x) + vec2(point.x, -point.y);
+    }
+
+    vec2 mirrorHV(vec2 point) {
+        return 2 * mirrorOrigin - point;
+    }
+
+    vec2 mirror(uint axis, vec2 point) {
+        switch (axis) {
+            case 0: return point;
+            case 1: return mirrorH(point);
+            case 2: return mirrorV(point);
+            case 3: return mirrorHV(point);
+            default: assert(false, "bad axis");
+        }
+    }
+
+    MeshVertex *mirrorVertex(uint axis, MeshVertex *vtx) {
+        if (axis == 0) return vtx;
+        MeshVertex *v = mesh.getVertexFromPoint(mirror(axis, vtx.position));
+        if (v is vtx) return null;
+        return v;
+    }
+
+    void foreachMirror(void delegate(uint axis) func) {
+        if (mirrorHoriz) func(1);
+        if (mirrorVert) func(2);
+        if (mirrorHoriz && mirrorVert) func(3);
+        func(0);
+    }
+
 public:
     IncMesh mesh;
     bool previewTriangulate = false;
+    bool mirrorHoriz = false;
+    bool mirrorVert = false;
+    vec2 mirrorOrigin = vec2(0, 0);
 
     this(bool deformOnly) {
         this.deformOnly = deformOnly;
@@ -203,13 +242,18 @@ public:
 
                         // In the case that it is, double clicking would remove an item
                         if (isSelected(mesh.getVertexFromPoint(mousePos))) {
-                            mesh.removeVertexAt(mousePos);
+                            foreachMirror((uint axis) {
+                                mesh.removeVertexAt(mirror(axis, mousePos));
+                            });
                             changed = true;
                         }
                     } else {
-                        mesh.vertices ~= new MeshVertex(mousePos, [], false);
+                        ulong off = mesh.vertices.length;
+                        foreachMirror((uint axis) {
+                            mesh.vertices ~= new MeshVertex(mirror(axis, mousePos), [], false);
+                        });
                         changed = true;
-                        selectOne(mesh.vertices[$-1]);
+                        selectOne(mesh.vertices[off]);
                     }
                 }
 
@@ -220,7 +264,11 @@ public:
 
                 if (isDragging) {
                     foreach(select; selected) {
-                        select.position += mousePos-lastMousePos;
+                        foreachMirror((uint axis) {
+                            MeshVertex *v = mirrorVertex(axis, select);
+                            if (v is null) return;
+                            v.position += mirror(axis, mousePos - lastMousePos);
+                        });
                     }
                     changed = true;
                     refreshMesh();
@@ -239,10 +287,18 @@ public:
 
                                 // Connect or disconnect between previous and this node
                                 if (!prev.isConnectedTo(selected[$-1])) {
-                                    prev.connect(selected[$-1]);
+                                    foreachMirror((uint axis) {
+                                        MeshVertex *mPrev = mirrorVertex(axis, prev);
+                                        MeshVertex *mSel = mirrorVertex(axis, selected[$-1]);
+                                        if (mPrev !is null && mSel !is null) mPrev.connect(mSel);
+                                    });
                                     changed = true;
                                 } else {
-                                    prev.disconnect(selected[$-1]);
+                                    foreachMirror((uint axis) {
+                                        MeshVertex *mPrev = mirrorVertex(axis, prev);
+                                        MeshVertex *mSel = mirrorVertex(axis, selected[$-1]);
+                                        if (mPrev !is null && mSel !is null) mPrev.disconnect(mSel);
+                                    });
                                     changed = true;
                                 }
                                 if (!io.KeyShift) deselectAll();
@@ -282,5 +338,23 @@ public:
         } else {
             mesh.draw();
         }
+
+        vec2 camSize = camera.getRealSize();
+        vec2 camPosition = camera.position;
+        vec3[] axisLines;
+        if (mirrorHoriz) {
+            axisLines ~= vec3(mirrorOrigin.x, -camSize.y - camPosition.y, 0);
+            axisLines ~= vec3(mirrorOrigin.x, camSize.y - camPosition.y, 0);
+        }
+        if (mirrorVert) {
+            axisLines ~= vec3(-camSize.x - camPosition.x, mirrorOrigin.y, 0);
+            axisLines ~= vec3(camSize.x - camPosition.x, mirrorOrigin.y, 0);
+        }
+
+        if (axisLines.length > 0) {
+            inDbgSetBuffer(axisLines);
+            inDbgDrawLines(vec4(0.8, 0, 0, 1));
+        }
+
     }
 }

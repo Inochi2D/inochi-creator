@@ -22,6 +22,49 @@ private {
     bool triangulate = false;
 }
 
+void incViewportVertexInspector(Drawable node) {
+
+    igBeginGroup();
+        if (igButton("")) incMeshFlipHorz();
+        incTooltip(_("Flip Horizontally"));
+
+        igSameLine(0, 4);
+
+        if (igButton("")) incMeshFlipVert();
+        incTooltip(_("Flip Vertically"));
+    igEndGroup();
+
+    igBeginGroup();
+        if (incButtonColored("", ImVec2(0, 0), editor.mirrorHoriz ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+            editor.mirrorHoriz = !editor.mirrorHoriz;
+            editor.refreshMesh();
+        }
+        incTooltip(_("Mirror Horizontally"));
+
+        igSameLine(0, 4);
+        if (incButtonColored("", ImVec2(0, 0), editor.mirrorVert ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+            editor.mirrorVert = !editor.mirrorVert;
+            editor.refreshMesh();
+        }
+        incTooltip(_("Mirror Vertically"));
+    igEndGroup();
+
+    igBeginGroup();
+        bool triangulate = incMeshEditGetTriangulate();
+        if (incButtonColored("", ImVec2(0, 0),
+            triangulate ? ImVec4(1, 1, 0, 1) : ImVec4.init)) {
+            incMeshEditSetTriangulate(!triangulate);
+        }
+        igSameLine(0, 4);
+        if (incButtonColored("", ImVec2(0, 0),
+            triangulate ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+            incMeshEditApplyTriangulate();
+        }
+        incTooltip(_("Automatically connects vertices"));
+    igEndGroup();
+
+}
+
 void incViewportVertexOverlay() {
     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
 

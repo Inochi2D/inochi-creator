@@ -976,29 +976,7 @@ void incInspectorMeshEditDrawable(Drawable node) {
         igSpacing();
         igSpacing();
 
-        igBeginGroup();
-            if (igButton("")) incMeshFlipHorz();
-            incTooltip(_("Flip Horizontally"));
-
-            igSameLine(0, 4);
-
-            if (igButton("")) incMeshFlipVert();
-            incTooltip(_("Flip Vertically"));
-        igEndGroup();
-
-        igBeginGroup();
-            bool triangulate = incMeshEditGetTriangulate();
-            if (incButtonColored("", ImVec2(0, 0),
-                triangulate ? ImVec4(1, 1, 0, 1) : ImVec4.init)) {
-                incMeshEditSetTriangulate(!triangulate);
-            }
-            igSameLine(0, 4);
-            if (incButtonColored("", ImVec2(0, 0),
-                triangulate ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-                incMeshEditApplyTriangulate();
-            }
-            incTooltip(_("Automatically connects vertices"));
-        igEndGroup();
+        incViewportVertexInspector(node);
 
         ImVec2 avail = incAvailableSpace();
         incDummy(ImVec2(avail.x, avail.y-38));
