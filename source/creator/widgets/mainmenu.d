@@ -65,6 +65,7 @@ void incMainMenu() {
                     if (igMenuItem(project.baseName.toStringz, "", false, true)) {
                         incOpenProject(project);
                     }
+                    incTooltip(project);
                 }
                 igEndMenu();
             }
