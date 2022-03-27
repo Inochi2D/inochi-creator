@@ -14,6 +14,10 @@ Inochi2D Logo
     James Daniel 
 
 
+=== Code Contributors ===
+    Asahi Lina
+
+
 === Mascot ==
 Mascot Design
     Kinu (@Kinugitsune)
