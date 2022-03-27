@@ -481,7 +481,7 @@ void incDebugImGuiState(string msg, int indent = 0) {
         if (indent < 0) {
             currentIndent += indent;
             if (currentIndent < 0) {
-                writeln("ERROR: dedented too far!");
+                debug writeln("ERROR: dedented too far!");
                 currentIndent = 0;
             }
         }
