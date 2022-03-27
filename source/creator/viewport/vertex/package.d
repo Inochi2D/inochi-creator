@@ -19,19 +19,24 @@ import bindbc.opengl;
 
 private {
     IncMeshEditor editor;
+    bool triangulate = false;
 }
 
 void incViewportVertexOverlay() {
     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
 
-        if (incButtonColored("", ImVec2(28, 28), editor.getToolMode() ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+        if (incButtonColored("", ImVec2(28, 28), editor.getToolMode() == VertexToolMode.Points ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
             editor.setToolMode(VertexToolMode.Points);
+            editor.previewTriangulate = triangulate;
+            editor.refreshMesh();
         }
         incTooltip(_("Vertex Tool"));
 
         igSameLine(0, 0);
         if (incButtonColored("", ImVec2(28, 28), editor.getToolMode() == VertexToolMode.Connect ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
             editor.setToolMode(VertexToolMode.Connect);
+            editor.previewTriangulate = false;
+            editor.refreshMesh();
         }
         incTooltip(_("Line Tool"));
 
@@ -78,7 +83,7 @@ void incVertexEditSetTarget(Drawable target) {
 }
 
 void incVertexEditCopyMeshDataToTarget(MeshData data) {
-    editor.mesh.import_(data);
+    editor.importMesh(data);
 }
 
 /**
@@ -104,15 +109,34 @@ void incMeshEditReset() {
 }
 
 /**
-    Resets the mesh edits
+    Flip vertically
 */
 void incMeshFlipVert() {
     editor.mesh.flipVert();
 }
 
 /**
-    Resets the mesh edits
+    Flip horizontally
 */
 void incMeshFlipHorz() {
     editor.mesh.flipHorz();
 }
+
+void incMeshEditSetTriangulate(bool triangulate_) {
+    triangulate = triangulate_;
+    if (editor.getToolMode() == VertexToolMode.Points)
+        editor.previewTriangulate = triangulate;
+    editor.refreshMesh();
+}
+
+bool incMeshEditGetTriangulate() {
+    return triangulate;
+}
+
+void incMeshEditApplyTriangulate() {
+    if (!triangulate) return;
+    triangulate = false;
+    editor.applyPreview();
+    editor.refreshMesh();
+}
+

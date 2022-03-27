@@ -29,6 +29,7 @@ private:
     bool deformOnly = false;
     vec2 lastMousePos;
     vec2 mousePos;
+    IncMesh previewMesh;
 
     bool isSelected(MeshVertex* vert) {
         import std.algorithm.searching : canFind;
@@ -47,7 +48,7 @@ private:
             selected ~= vert;
         }
 
-        mesh.refresh();
+        refreshMesh();
     }
 
     MeshVertex* selectOne(MeshVertex* vert) {
@@ -56,7 +57,7 @@ private:
         }
 
         vert.selected = true;
-        mesh.refresh();
+        refreshMesh();
 
         if (selected.length > 0) {
             auto lastSel = selected[$-1];
@@ -74,11 +75,12 @@ private:
             sel.selected = false;
         }
         selected.length = 0;
-        mesh.refresh();
+        refreshMesh();
     }
 
 public:
     IncMesh mesh;
+    bool previewTriangulate = false;
 
     this(bool deformOnly) {
         this.deformOnly = deformOnly;
@@ -91,6 +93,7 @@ public:
     void setTarget(Drawable target) {
         this.target = target;
         mesh = new IncMesh(target.getMesh());
+        refreshMesh();
     }
 
     ref IncMesh getMesh() {
@@ -109,6 +112,20 @@ public:
 
     void resetMesh() {
         mesh.reset();
+    }
+
+    void refreshMesh() {
+        mesh.refresh();
+        if (previewTriangulate) {
+            previewMesh = mesh.autoTriangulate();
+        } else {
+            previewMesh = null;
+        }
+    }
+
+    void importMesh(MeshData data) {
+        mesh.import_(data);
+        mesh.refresh();
     }
 
     void applyOffsets(vec2[] offsets) {
@@ -144,6 +161,12 @@ public:
 
         // Apply the model
         target.rebuffer(data);
+    }
+
+    void applyPreview() {
+        mesh = previewMesh;
+        previewMesh = null;
+        previewTriangulate = false;
     }
 
     bool update(ImGuiIO* io, Camera camera) {
@@ -188,7 +211,6 @@ public:
                         changed = true;
                         selectOne(mesh.vertices[$-1]);
                     }
-                    mesh.refresh();
                 }
 
                 // Dragging
@@ -201,7 +223,7 @@ public:
                         select.position += mousePos-lastMousePos;
                     }
                     changed = true;
-                    mesh.refresh();
+                    refreshMesh();
                 }
 
 
@@ -231,8 +253,7 @@ public:
                             }
                         }
 
-
-                        mesh.refresh();
+                        refreshMesh();
                     } else {
                         // Clicking outside a vert deselect verts
                         deselectAll();
@@ -241,12 +262,23 @@ public:
                 break;
             default: assert(0);
         }
+        if (changed)
+            mesh.changed = true;
+
+        if (mesh.changed) {
+            if (previewTriangulate)
+                previewMesh = mesh.autoTriangulate();
+            mesh.changed = false;
+        }
         return changed;
     }
 
     void draw(Camera camera) {
         if (deformOnly) {
             mesh.draw(target.transform.matrix());
+        } else if (previewMesh) {
+            previewMesh.drawLines(mat4.identity, vec4(0.7, 0.7, 0, 1));
+            mesh.drawPoints();
         } else {
             mesh.draw();
         }
