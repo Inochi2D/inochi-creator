@@ -304,6 +304,12 @@ private {
                     }
                     // Node selection logic
                     if (igIsItemClicked(ImGuiMouseButton.Left) && !igIsItemToggledOpen()) {
+                        
+                        // Select the node you've clicked in the bindings list
+                        if (incNodeInSelection(node)) {
+                            incFocusCamera(node);
+                        } else incSelectNode(node);
+                        
                         if (!io.KeyCtrl) {
                             cSelectedBindings.clear();
                             nodeSelected = false;
