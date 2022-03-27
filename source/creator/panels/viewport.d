@@ -145,7 +145,7 @@ protected:
 
                         foreach(Part part; incActivePuppet().getRootParts()) {
                             import std.stdio : writeln;
-                            writeln(part);
+                            debug writeln(part);
                         }
                         break;
 

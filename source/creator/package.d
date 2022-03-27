@@ -214,7 +214,7 @@ void incImportPSD(string file) {
 
     foreach_reverse(i, Layer layer; doc.layers) {
         import std.stdio : writeln;
-        writeln(layer.name, " ", layer.blendModeKey);
+        debug writeln(layer.name, " ", layer.blendModeKey);
 
         // Skip folders ( for now )
         if (layer.type != LayerType.Any) {
@@ -258,7 +258,7 @@ void incImportPSD(string file) {
             default:
                 part.blendingMode = BlendMode.Normal; break;
         }
-        writeln(part.name, ": ", part.blendingMode);
+        debug writeln(part.name, ": ", part.blendingMode);
 
         // Handle layer stack stuff
         if (layerGroupStack.length > 0) {
