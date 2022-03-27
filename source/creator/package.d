@@ -40,6 +40,8 @@ private {
     Node[] selectedNodes;
     Drawable[] drawables;
     Parameter armedParam;
+    string currProjectPath;
+    string[] prevProjects;
 }
 
 /**
@@ -78,9 +80,44 @@ EditMode editMode_;
 
 
 /**
+    Returns the current project path
+*/
+string incProjectPath() {
+    return currProjectPath;
+}
+
+/**
+    Return a list of prior projects
+*/
+string[] incGetPrevProjects() {
+    return incSettingsGet!(string[])("prev_projects");
+}
+
+void incAddPrevProject(string path) {
+    import std.algorithm.searching : countUntil;
+    import std.algorithm.mutation : remove;
+    string[] projects = incSettingsGet!(string[])("prev_projects");
+
+    ptrdiff_t idx = projects.countUntil(path);
+    if (idx >= 0) {
+        projects = projects.remove(idx);
+    }
+
+    // Put project to the start of the "previous" list and
+    // limit to 10 elements
+    projects = path ~ projects;
+    if(projects.length > 10) projects.length = 10;
+
+    // Then save.
+    incSettingsSet("prev_projects", projects);
+    incSettingsSave();
+}
+
+/**
     Creates a new project
 */
 void incNewProject() {
+    currProjectPath = "";
     editMode_ = EditMode.ModelEdit;
     import creator.viewport : incViewportReset;
     
@@ -98,6 +135,33 @@ void incNewProject() {
 
     incActionClearHistory();
     incFreeMemory();
+}
+
+void incOpenProject(string path) {
+    // Clear out stuff by creating a new project
+    incNewProject();
+
+    // Set the path
+    currProjectPath = path;
+    incAddPrevProject(path);
+
+    // Load the puppet from file
+    Puppet puppet = inLoadPuppet(path);
+    incActiveProject().puppet = puppet;
+    incFocusCamera(incActivePuppet().root);
+    incFreeMemory();
+}
+
+void incSaveProject(string path) {
+    import std.path : setExtension;
+    string finalPath = path.setExtension(".inx");
+    incAddPrevProject(finalPath);
+
+    // Remember to populate texture slots otherwise things will break real bad!
+    incActivePuppet().populateTextureSlots();
+
+    // Write the puppet to file
+    inWriteINPPuppet(incActivePuppet(), finalPath);
 }
 
 /**
@@ -222,7 +286,7 @@ void incImportPSD(string file) {
 }
 
 /**
-    Imports an INP puppet
+    Imports an Inochi2D puppet
 */
 void incImportINP(string file) {
     incNewProject();
@@ -230,6 +294,22 @@ void incImportINP(string file) {
     incActiveProject().puppet = puppet;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
+}
+
+/**
+    Exports an Inochi2D Puppet
+*/
+void incExportINP(string file) {
+    import std.path : setExtension;
+
+    // Remember to populate texture slots otherwise things will break real bad!
+    incActivePuppet().populateTextureSlots();
+
+    // TODO: Generate optimized puppet from this puppet.
+
+    // Write the puppet to file
+    inWriteINPPuppet(incActivePuppet(), file.setExtension(".inp"));
+
 }
 
 void incRegenerateMipmaps() {

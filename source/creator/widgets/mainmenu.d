@@ -46,20 +46,63 @@ void incMainMenu() {
                 incNewProject();
             }
 
-            igBeginDisabled();
-                if (igBeginMenu(__("Open"), true)) {
-                    igEndMenu();
+            if (igMenuItem(__("Open"), "Ctrl+O", false, true)) {
+                const TFD_Filter[] filters = [
+                    { ["*.inx"], "Inochi Creator Project (*.inx)" }
+                ];
+
+                c_str filename = tinyfd_openFileDialog(__("Open..."), "", filters, false);
+                if (filename !is null) {
+                    string file = cast(string)filename.fromStringz;
+                    incOpenProject(file);
                 }
+            }
+
+            string[] prevProjects = incGetPrevProjects();
+            if (igBeginMenu(__("Recent"), prevProjects.length > 0)) {
+                foreach(project; incGetPrevProjects) {
+                    import std.path : baseName;
+                    if (igMenuItem(project.baseName.toStringz, "", false, true)) {
+                        incOpenProject(project);
+                    }
+                }
+                igEndMenu();
+            }
+            
+            if(igMenuItem(__("Save"), "Ctrl+S", false, true)) {
                 
-                if(igMenuItem(__("Save"), "Ctrl+S", false, true)) {
+                // If a projeect path is set then the user has opened or saved
+                // an existing file, we should just override that
+                if (incProjectPath.length > 0) {
+                    // TODO: do backups on every save?
+                    
+                    incSaveProject(incProjectPath);
+                } else {
+                    const TFD_Filter[] filters = [
+                        { ["*.inx"], "Inochi Creator Project (*.inx)" }
+                    ];
+
+                    c_str filename = tinyfd_saveFileDialog(__("Save..."), "", filters);
+                    if (filename !is null) {
+                        string file = cast(string)filename.fromStringz;
+                        incSaveProject(file);
+                    }
                 }
-                
-                if(igMenuItem(__("Save As..."), "Ctrl+Shift+S", false, true)) {
+            }
+            
+            if(igMenuItem(__("Save As..."), "Ctrl+Shift+S", false, true)) {
+                const TFD_Filter[] filters = [
+                    { ["*.inx"], "Inochi Creator Project (*.inx)" }
+                ];
+
+                c_str filename = tinyfd_saveFileDialog(__("Save As..."), "", filters);
+                if (filename !is null) {
+                    string file = cast(string)filename.fromStringz;
+                    incSaveProject(file);
                 }
-            igEndDisabled();
+            }
 
             if (igBeginMenu(__("Import"), true)) {
-                incTooltip(_("Import photoshop document"));
                 if(igMenuItem_Bool(__("Photoshop Document"), "", false, true)) {
                     const TFD_Filter[] filters = [
                         { ["*.psd"], "Photoshop Document (*.psd)" }
@@ -73,8 +116,6 @@ void incMainMenu() {
                 }
                 incTooltip(_("Import a standard Photoshop PSD file."));
 
-                // This is only really useful for testing
-                // debug {
                 if (igMenuItem_Bool(__("Inochi2D Puppet"), "", false, true)) {
                     const TFD_Filter[] filters = [
                         { ["*.inp"], "Inochi2D Puppet (*.inp)" }
@@ -86,8 +127,7 @@ void incMainMenu() {
                         incImportINP(file);
                     }
                 }
-                incTooltip(_("Import existing puppet file"));
-                // }
+                incTooltip(_("Import existing puppet file, editing options limited"));
 
                 if (igMenuItem_Bool(__("Image Folder"))) {
                     c_str folder = tinyfd_selectFolderDialog(__("Select a Folder..."), null);
@@ -98,6 +138,7 @@ void incMainMenu() {
                 incTooltip(_("Supports PNGs, TGAs and JPEGs."));
                 igEndMenu();
             }
+
             if (igBeginMenu(__("Export"), true)) {
                 if(igMenuItem_Bool(__("Inochi Puppet"), "", false, true)) {
                     const TFD_Filter[] filters = [
@@ -110,11 +151,7 @@ void incMainMenu() {
                     if (filename !is null) {
                         string file = cast(string)filename.fromStringz;
 
-                        // Remember to populate texture slots otherwise things will break real bad!
-                        incActivePuppet().populateTextureSlots();
-
-                        // Write the puppet to file
-                        inWriteINPPuppet(incActivePuppet(), file.setExtension(".inp"));
+                        incExportINP(file);
                     }
                 }
                 igEndMenu();
@@ -190,7 +227,7 @@ void incMainMenu() {
                 ];
 
                 import std.path : setExtension;
-                c_str filename = tinyfd_saveFileDialog(__("Export..."), "", filters);
+                c_str filename = tinyfd_saveFileDialog(__("Save Screenshot..."), "", filters);
                 if (filename !is null) {
                     string file = (cast(string)filename.fromStringz).setExtension("png");
 

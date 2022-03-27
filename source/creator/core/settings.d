@@ -37,18 +37,43 @@ void incSettingsSave() {
 /**
     Sets a setting
 */
-void incSettingsSet(T)(string name, T value) {
+void incSettingsSet(T)(string name, T value) if (!is(T == string[]))  {
     settings[name] = value;
 }
 
 /**
     Gets a value from the settings store
 */
-T incSettingsGet(T)(string name) {
+T incSettingsGet(T)(string name) if (!is(T == string[])) {
     if (name in settings) {
         return settings[name].get!T;
     }
     return T.init;
+}
+
+/**
+    Gets a value from the settings store
+*/
+T incSettingsGet(T)(string name) if (is(T == string[])) {
+    if (name in settings) {
+        string[] values;
+        foreach(value; settings[name].array) {
+            values ~= value.get!string;
+        }
+        return values;
+    }
+    return T.init;
+}
+
+/**
+    Sets a setting
+*/
+void incSettingsSet(T)(string name, T value) if (is(T == string[]))  {
+    JSONValue[] data;
+    foreach(i; 0..value.length) {
+        data ~= JSONValue(value[i]);
+    }
+    settings[name] = JSONValue(data);
 }
 
 /**

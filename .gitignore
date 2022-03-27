@@ -19,6 +19,7 @@ inochi-creator-test-*
 dub.selections.json
 testing
 
+*.inx
 *.inp
 imgui.ini
 settings.json
