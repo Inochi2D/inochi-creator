@@ -121,6 +121,48 @@ void incViewportToolbar() {
     }
 }
 
+/**
+    Called on editing mode present
+*/
+void incViewportPresentMode(EditMode mode) {
+    switch(editMode_) {
+        case EditMode.ModelEdit:
+            incViewportModelPresent();
+            break;
+        case EditMode.VertexEdit:
+            incViewportVertexPresent();
+            break;
+        case EditMode.AnimEdit:
+            incViewportAnimPresent();
+            break;
+        case EditMode.ModelTest:
+            incViewportTestPresent();
+            break;
+        default: assert(0);
+    }
+}
+
+/**
+    Called on editing mode withdraw
+*/
+void incViewportWithdrawMode(EditMode mode) {
+    switch(editMode_) {
+        case EditMode.ModelEdit:
+            incViewportModelWithdraw();
+            break;
+        case EditMode.VertexEdit:
+            incViewportVertexWithdraw();
+            break;
+        case EditMode.AnimEdit:
+            incViewportAnimWithdraw();
+            break;
+        case EditMode.ModelTest:
+            incViewportTestWithdraw();
+            break;
+        default: assert(0);
+    }
+}
+
 
 /**
     Updates the viewport tool settings
@@ -176,42 +218,6 @@ float incViewportZoom = 1;
 void incViewportReset() {
     incViewportTargetPosition = vec2(0);
     incViewportTargetZoom = 1;
-}
-
-void incViewportPresentMode(EditMode mode) {
-    switch(editMode_) {
-        case EditMode.ModelEdit:
-            incViewportModelPresent();
-            break;
-        case EditMode.VertexEdit:
-            incViewportVertexPresent();
-            break;
-        case EditMode.AnimEdit:
-            incViewportAnimPresent();
-            break;
-        case EditMode.ModelTest:
-            incViewportTestPresent();
-            break;
-        default: assert(0);
-    }
-}
-
-void incViewportWithdrawMode(EditMode mode) {
-    switch(editMode_) {
-        case EditMode.ModelEdit:
-            incViewportModelWithdraw();
-            break;
-        case EditMode.VertexEdit:
-            incViewportVertexWithdraw();
-            break;
-        case EditMode.AnimEdit:
-            incViewportAnimWithdraw();
-            break;
-        case EditMode.ModelTest:
-            incViewportTestWithdraw();
-            break;
-        default: assert(0);
-    }
 }
 
 

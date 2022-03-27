@@ -18,6 +18,7 @@ public import creator.windows.texviewer;
 public import creator.windows.notice;
 public import creator.windows.paramprop;
 public import creator.windows.paramaxes;
+public import creator.windows.trkbind;
 
 private ImGuiWindowClass* windowClass;
 

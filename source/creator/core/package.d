@@ -54,6 +54,12 @@ bool incShowStatsForNerds;
     Finalizes everything by freeing imgui resources, etc.
 */
 void incFinalize() {
+
+    // This is important to prevent thread leakage
+    import creator.viewport.test : incViewportTestWithdraw;
+    incViewportTestWithdraw();
+
+    // Save settings
     igSaveIniSettingsToDisk(igGetIO().IniFilename);
 
     // Cleanup
