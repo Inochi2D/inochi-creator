@@ -273,6 +273,7 @@ private:
     }
 
 public:
+    float selectRadius = 16f;
     MeshVertex*[] vertices;
     bool changed;
 
@@ -362,14 +363,14 @@ public:
 
     bool isPointOverVertex(vec2 point) {
         foreach(vert; vertices) {
-            if (abs(vert.position.distance(point)) < 12f/incViewportZoom) return true;
+            if (abs(vert.position.distance(point)) < selectRadius/incViewportZoom) return true;
         }
         return false;
     }
 
     void removeVertexAt(vec2 point) {
         foreach(i; 0..vertices.length) {
-            if (abs(vertices[i].position.distance(point)) < 12f/incViewportZoom) {
+            if (abs(vertices[i].position.distance(point)) < selectRadius/incViewportZoom) {
                 this.remove(vertices[i]);
                 return;
             }
@@ -378,7 +379,7 @@ public:
 
     MeshVertex* getVertexFromPoint(vec2 point) {
         foreach(ref vert; vertices) {
-            if (abs(vert.position.distance(point)) < 12f/incViewportZoom) return vert;
+            if (abs(vert.position.distance(point)) < selectRadius/incViewportZoom) return vert;
         }
         return null;
     }
