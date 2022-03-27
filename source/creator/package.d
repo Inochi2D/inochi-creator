@@ -7,6 +7,7 @@
 module creator;
 import inochi2d;
 import inochi2d.core.dbg;
+import creator.viewport;
 import creator.viewport.model;
 import creator.viewport.model.deform;
 import creator.core;
@@ -135,6 +136,8 @@ void incNewProject() {
 
     incActionClearHistory();
     incFreeMemory();
+
+    incViewportPresentMode(editMode_);
 }
 
 void incOpenProject(string path) {
@@ -517,6 +520,8 @@ EditMode incEditMode() {
     Sets the current editing mode
 */
 void incSetEditMode(EditMode editMode, bool unselect = true) {
+    incViewportWithdrawMode(editMode_);
+
     if (armedParam) {
         armedParam.value = armedParam.getClosestKeypointValue(armedParam.value);
     }
@@ -525,4 +530,6 @@ void incSetEditMode(EditMode editMode, bool unselect = true) {
         drawables = activeProject.puppet.findNodesType!Drawable(activeProject.puppet.root);
     }
     editMode_ = editMode;
+
+    incViewportPresentMode(editMode_);
 }

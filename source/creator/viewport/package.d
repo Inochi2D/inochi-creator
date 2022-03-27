@@ -178,6 +178,41 @@ void incViewportReset() {
     incViewportTargetZoom = 1;
 }
 
+void incViewportPresentMode(EditMode mode) {
+    switch(editMode_) {
+        case EditMode.ModelEdit:
+            incViewportModelPresent();
+            break;
+        case EditMode.VertexEdit:
+            incViewportVertexPresent();
+            break;
+        case EditMode.AnimEdit:
+            incViewportAnimPresent();
+            break;
+        case EditMode.ModelTest:
+            incViewportTestPresent();
+            break;
+        default: assert(0);
+    }
+}
+
+void incViewportWithdrawMode(EditMode mode) {
+    switch(editMode_) {
+        case EditMode.ModelEdit:
+            incViewportModelWithdraw();
+            break;
+        case EditMode.VertexEdit:
+            incViewportVertexWithdraw();
+            break;
+        case EditMode.AnimEdit:
+            incViewportAnimWithdraw();
+            break;
+        case EditMode.ModelTest:
+            incViewportTestWithdraw();
+            break;
+        default: assert(0);
+    }
+}
 
 
 //
