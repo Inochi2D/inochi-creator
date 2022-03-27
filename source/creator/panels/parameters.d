@@ -16,6 +16,7 @@ import inochi2d;
 import i18n;
 import std.uni : toLower;
 import std.stdio;
+import creator.utils;
 
 private {
     ParameterBinding[][Node] cParamBindingEntries;
@@ -260,7 +261,8 @@ private {
                     flags |= ImGuiTreeNodeFlags.Selected;
 
                 if (bindings is null) igPushStyleColor(ImGuiCol.Text, inactiveColor);
-                if (igTreeNodeEx(cast(void*)node.uuid, flags, node.name.toStringz)) {
+                string nodeName = incTypeIdToIconConcat(node.typeId) ~ " " ~ node.name;
+                if (igTreeNodeEx(cast(void*)node.uuid, flags, nodeName.toStringz)) {
                     if (bindings is null) igPopStyleColor();
                     if (igBeginPopup("###BindingPopup")) {
                         if (igMenuItem(__("Remove"), "", false, true)) {
@@ -302,6 +304,7 @@ private {
                         cCompatibleNodes = getCompatibleNodes();
                         igOpenPopup("###BindingPopup");
                     }
+
                     // Node selection logic
                     if (igIsItemClicked(ImGuiMouseButton.Left) && !igIsItemToggledOpen()) {
                         
