@@ -81,7 +81,7 @@ void incViewportVertexOverlay() {
             editor.previewTriangulate = false;
             editor.refreshMesh();
         }
-        incTooltip(_("Line Tool"));
+        incTooltip(_("Edge Tool"));
 
     igPopStyleVar();
 
