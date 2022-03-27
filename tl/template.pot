@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-24 00:54+0100\n"
+"POT-Creation-Date: 2022-03-27 04:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: source/creator/actions/node.d:92
@@ -64,91 +64,91 @@ msgstr ""
 msgid "History"
 msgstr ""
 
-#: source/creator/panels/inspector.d:78
+#: source/creator/panels/inspector.d:97
 msgid "No nodes selected..."
 msgstr ""
 
-#: source/creator/panels/inspector.d:80
+#: source/creator/panels/inspector.d:99
 msgid "Can only inspect a single node..."
 msgstr ""
 
-#: source/creator/panels/inspector.d:86
+#: source/creator/panels/inspector.d:105
 msgid "Inspector"
 msgstr ""
 
-#: source/creator/panels/inspector.d:129 source/creator/panels/nodes.d:143
+#: source/creator/panels/inspector.d:148 source/creator/panels/nodes.d:143
 msgid "Puppet"
 msgstr ""
 
-#: source/creator/panels/inspector.d:142 source/creator/panels/inspector.d:147
+#: source/creator/panels/inspector.d:161 source/creator/panels/inspector.d:166
 msgid "Inochi2D Ver."
 msgstr ""
 
-#: source/creator/panels/inspector.d:153
+#: source/creator/panels/inspector.d:172
 msgid "General Info"
 msgstr ""
 
-#: source/creator/panels/inspector.d:155
+#: source/creator/panels/inspector.d:174
 msgid "Name"
 msgstr ""
 
-#: source/creator/panels/inspector.d:156
+#: source/creator/panels/inspector.d:175
 msgid "Name of the puppet"
 msgstr ""
 
-#: source/creator/panels/inspector.d:162
+#: source/creator/panels/inspector.d:181
 msgid "Artist(s)"
 msgstr ""
 
-#: source/creator/panels/inspector.d:163
+#: source/creator/panels/inspector.d:182
 msgid "Artists who've drawn the puppet, seperated by comma"
 msgstr ""
 
-#: source/creator/panels/inspector.d:169
+#: source/creator/panels/inspector.d:188
 msgid "Rigger(s)"
 msgstr ""
 
-#: source/creator/panels/inspector.d:170
+#: source/creator/panels/inspector.d:189
 msgid "Riggers who've rigged the puppet, seperated by comma"
 msgstr ""
 
-#: source/creator/panels/inspector.d:176
+#: source/creator/panels/inspector.d:195
 msgid "Contact"
 msgstr ""
 
-#: source/creator/panels/inspector.d:177
+#: source/creator/panels/inspector.d:196
 msgid "Where to contact the main author of the puppet"
 msgstr ""
 
-#: source/creator/panels/inspector.d:183
+#: source/creator/panels/inspector.d:202
 msgid "Licensing"
 msgstr ""
 
-#: source/creator/panels/inspector.d:185
+#: source/creator/panels/inspector.d:204
 msgid "License URL"
 msgstr ""
 
-#: source/creator/panels/inspector.d:186
+#: source/creator/panels/inspector.d:205
 msgid "Link/URL to license"
 msgstr ""
 
-#: source/creator/panels/inspector.d:192
+#: source/creator/panels/inspector.d:211
 msgid "Copyright"
 msgstr ""
 
-#: source/creator/panels/inspector.d:193
+#: source/creator/panels/inspector.d:212
 msgid "Copyright holder information of the puppet"
 msgstr ""
 
-#: source/creator/panels/inspector.d:199
+#: source/creator/panels/inspector.d:218
 msgid "Origin"
 msgstr ""
 
-#: source/creator/panels/inspector.d:200
+#: source/creator/panels/inspector.d:219
 msgid "Where the model comes from on the internet."
 msgstr ""
 
-#: source/creator/panels/inspector.d:221
+#: source/creator/panels/inspector.d:240 source/creator/panels/inspector.d:829
 msgid "Transform"
 msgstr ""
 
@@ -156,80 +156,80 @@ msgstr ""
 #. Translation
 #.
 #. Translation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:239
+#: source/creator/panels/inspector.d:258 source/creator/panels/inspector.d:846
 msgid "Translation"
 msgstr ""
 
 #. Button which locks all transformation to be based off the root node
 #. of the puppet, this more or less makes the item stay in place
 #. even if the parent moves.
-#: source/creator/panels/inspector.d:301 source/creator/panels/inspector.d:302
+#: source/creator/panels/inspector.d:320 source/creator/panels/inspector.d:321
 msgid "Lock to Root Node"
 msgstr ""
 
 #. Button which locks all transformation to be based off the root node
 #. of the puppet, this more or less makes the item stay in place
 #. even if the parent moves.
-#: source/creator/panels/inspector.d:316
+#: source/creator/panels/inspector.d:335
 msgid ""
 "Makes so that the translation of this node is based off the root node, "
 "making it stay in place even if its parent moves."
 msgstr ""
 
 #. Rotation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:331
+#: source/creator/panels/inspector.d:350 source/creator/panels/inspector.d:883
 msgid "Rotation"
 msgstr ""
 
-#: source/creator/panels/inspector.d:339
+#: source/creator/panels/inspector.d:358
 msgid "Rotation X"
 msgstr ""
 
-#: source/creator/panels/inspector.d:352
+#: source/creator/panels/inspector.d:371
 msgid "Lock Rotation X"
 msgstr ""
 
-#: source/creator/panels/inspector.d:368
+#: source/creator/panels/inspector.d:387
 msgid "Rotation Y"
 msgstr ""
 
-#: source/creator/panels/inspector.d:381
+#: source/creator/panels/inspector.d:400
 msgid "Lock Rotation Y"
 msgstr ""
 
-#: source/creator/panels/inspector.d:397
+#: source/creator/panels/inspector.d:416
 msgid "Rotation Z"
 msgstr ""
 
-#: source/creator/panels/inspector.d:410
+#: source/creator/panels/inspector.d:429
 msgid "Lock Rotation Z"
 msgstr ""
 
 #. Scaling portion of the transformation matrix.
-#: source/creator/panels/inspector.d:429
+#: source/creator/panels/inspector.d:448 source/creator/panels/inspector.d:915
 msgid "Scale"
 msgstr ""
 
-#: source/creator/panels/inspector.d:437
+#: source/creator/panels/inspector.d:456
 msgid "Scale X"
 msgstr ""
 
-#: source/creator/panels/inspector.d:449
+#: source/creator/panels/inspector.d:468
 msgid "Lock Scale X"
 msgstr ""
 
-#: source/creator/panels/inspector.d:465
+#: source/creator/panels/inspector.d:484
 msgid "Scale Y"
 msgstr ""
 
-#: source/creator/panels/inspector.d:477
+#: source/creator/panels/inspector.d:496
 msgid "Lock Scale Y"
 msgstr ""
 
 #. An option in which positions will be snapped to whole integer values.
 #. In other words texture will always be on a pixel.
-#: source/creator/panels/inspector.d:493 source/creator/panels/inspector.d:494
-#: source/creator/panels/inspector.d:499
+#: source/creator/panels/inspector.d:512 source/creator/panels/inspector.d:513
+#: source/creator/panels/inspector.d:518
 msgid "Snap to Pixel"
 msgstr ""
 
@@ -237,126 +237,126 @@ msgstr ""
 #. Parts to draw in the user specified order.
 #. negative values = closer to camera
 #. positive values = further away from camera
-#: source/creator/panels/inspector.d:516
+#: source/creator/panels/inspector.d:535 source/creator/panels/inspector.d:935
 msgid "Sorting"
 msgstr ""
 
 #. The main type of anything that can be drawn to the screen
 #. in Inochi2D.
-#: source/creator/panels/inspector.d:526
+#: source/creator/panels/inspector.d:545
 msgid "Drawable"
 msgstr ""
 
 #. Switches Inochi Creator over to Mesh Edit mode
 #. and selects the mesh that you had selected previously
 #. in Model Edit mode.
-#: source/creator/panels/inspector.d:562
+#: source/creator/panels/inspector.d:581
 msgid "Edit Mesh"
 msgstr ""
 
-#: source/creator/panels/inspector.d:571
+#: source/creator/panels/inspector.d:590 source/creator/panels/inspector.d:940
 msgid "Part"
 msgstr ""
 
-#: source/creator/panels/inspector.d:576
+#: source/creator/panels/inspector.d:595
 msgid "Cannot inspect an unmeshed part"
 msgstr ""
 
 #. Header for texture options
-#: source/creator/panels/inspector.d:588
+#: source/creator/panels/inspector.d:607 source/creator/panels/inspector.d:946
 msgid "Textures"
 msgstr ""
 
-#: source/creator/panels/inspector.d:595
+#: source/creator/panels/inspector.d:614 source/creator/panels/inspector.d:948
 msgid "Tint"
 msgstr ""
 
 #. Header for the Blending options for Parts
-#: source/creator/panels/inspector.d:607
+#: source/creator/panels/inspector.d:626
 msgid "Blending"
 msgstr ""
 
 #. Normal blending mode as used in Photoshop, generally
 #. the default blending mode photoshop starts a layer out as.
-#: source/creator/panels/inspector.d:612
+#: source/creator/panels/inspector.d:631
 msgid "Normal"
 msgstr ""
 
 #. Multiply blending mode, in which this texture's color data
 #. will be multiplied with the color data already in the framebuffer.
-#: source/creator/panels/inspector.d:616
+#: source/creator/panels/inspector.d:635
 msgid "Multiply"
 msgstr ""
 
 #. Color Dodge blending mode
-#: source/creator/panels/inspector.d:619
+#: source/creator/panels/inspector.d:638
 msgid "Color Dodge"
 msgstr ""
 
 #. Linear Dodge blending mode
-#: source/creator/panels/inspector.d:622
+#: source/creator/panels/inspector.d:641
 msgid "Linear Dodge"
 msgstr ""
 
 #. Screen blending mode
-#: source/creator/panels/inspector.d:625
+#: source/creator/panels/inspector.d:644
 msgid "Screen"
 msgstr ""
 
-#: source/creator/panels/inspector.d:632
+#: source/creator/panels/inspector.d:651 source/creator/panels/inspector.d:960
 msgid "Opacity"
 msgstr ""
 
-#: source/creator/panels/inspector.d:637
+#: source/creator/panels/inspector.d:656
 msgid "Masks"
 msgstr ""
 
 #. The masking mode to apply if there's any source specified.
-#: source/creator/panels/inspector.d:641
+#: source/creator/panels/inspector.d:660
 msgid "Mode"
 msgstr ""
 
 #. A masking mode where areas of this Part that overlap the other
 #. source drawables gets discarded
-#: source/creator/panels/inspector.d:642 source/creator/panels/inspector.d:652
+#: source/creator/panels/inspector.d:661 source/creator/panels/inspector.d:671
 msgid "Dodge"
 msgstr ""
 
 #. A masking mode where only areas of this Part that overlap the other
 #. source drawables gets drawn
-#: source/creator/panels/inspector.d:642 source/creator/panels/inspector.d:646
+#: source/creator/panels/inspector.d:661 source/creator/panels/inspector.d:665
 #: source/creator/panels/nodes.d:54
 msgid "Mask"
 msgstr ""
 
 #. Threshold slider name for adjusting how transparent a pixel can be
 #. before it gets discarded.
-#: source/creator/panels/inspector.d:662
+#: source/creator/panels/inspector.d:681 source/creator/panels/inspector.d:967
 msgid "Threshold"
 msgstr ""
 
 #. The sources that the part gets masked by. Depending on the masking mode
 #. either the sources will cut out things that don't overlap, or cut out
 #. things that do.
-#: source/creator/panels/inspector.d:670
+#: source/creator/panels/inspector.d:689
 msgid "Mask Sources"
 msgstr ""
 
-#: source/creator/panels/inspector.d:731
+#: source/creator/panels/inspector.d:981
 msgid "Flip Horizontally"
 msgstr ""
 
-#: source/creator/panels/inspector.d:736
+#: source/creator/panels/inspector.d:986
 msgid "Flip Vertically"
 msgstr ""
 
 #. Cancels the edited state for the axies points
-#: source/creator/panels/inspector.d:765
-#: source/creator/windows/paramaxies.d:146
+#: source/creator/panels/inspector.d:1015
+#: source/creator/windows/paramaxes.d:133
 msgid "Cancel"
 msgstr ""
 
-#: source/creator/panels/inspector.d:776
+#: source/creator/panels/inspector.d:1026
 msgid "Apply"
 msgstr ""
 
@@ -386,7 +386,7 @@ msgstr ""
 msgid "Show"
 msgstr ""
 
-#: source/creator/panels/nodes.d:73 source/creator/panels/parameters.d:56
+#: source/creator/panels/nodes.d:73 source/creator/panels/parameters.d:467
 msgid "Delete"
 msgstr ""
 
@@ -415,32 +415,147 @@ msgstr ""
 msgid "Nodes"
 msgstr ""
 
-#: source/creator/panels/parameters.d:45
+#: source/creator/panels/parameters.d:159
+msgid "Unset"
+msgstr ""
+
+#: source/creator/panels/parameters.d:165
+msgid "Set to current"
+msgstr ""
+
+#: source/creator/panels/parameters.d:171
+msgid "Reset"
+msgstr ""
+
+#: source/creator/panels/parameters.d:177
+msgid "Invert"
+msgstr ""
+
+#: source/creator/panels/parameters.d:184
+#: source/creator/panels/parameters.d:431
+msgid "Mirror"
+msgstr ""
+
+#: source/creator/panels/parameters.d:185
+#: source/creator/panels/parameters.d:202
+#: source/creator/panels/parameters.d:432
+msgid "Horizontally"
+msgstr ""
+
+#: source/creator/panels/parameters.d:191
+#: source/creator/panels/parameters.d:208
+#: source/creator/panels/parameters.d:436
+msgid "Vertically"
+msgstr ""
+
+#: source/creator/panels/parameters.d:201
+#: source/creator/panels/parameters.d:223
+msgid "Auto Mirror"
+msgstr ""
+
+#: source/creator/panels/parameters.d:214
+msgid "Diagonally"
+msgstr ""
+
+#: source/creator/panels/parameters.d:233
+msgid "Bindings"
+msgstr ""
+
+#: source/creator/panels/parameters.d:266
+msgid "Remove"
+msgstr ""
+
+#: source/creator/panels/parameters.d:276
+msgid "Copy to"
+msgstr ""
+
+#: source/creator/panels/parameters.d:284
+msgid "Swap with"
+msgstr ""
+
+#: source/creator/panels/parameters.d:411
 msgid "Edit Properties"
 msgstr ""
 
-#: source/creator/panels/parameters.d:49
-msgid "Edit Axies Points"
+#: source/creator/panels/parameters.d:415
+msgid "Edit Axes Points"
 msgstr ""
 
-#: source/creator/panels/parameters.d:83
-msgid "Add 1D Parameter"
+#: source/creator/panels/parameters.d:420
+msgid "Flip X"
 msgstr ""
 
-#: source/creator/panels/parameters.d:89
-msgid "Add 2D Parameter"
+#: source/creator/panels/parameters.d:423
+msgid "Flip Y"
 msgstr ""
 
-#: source/creator/panels/parameters.d:125
+#: source/creator/panels/parameters.d:427
+msgid "Flip"
+msgstr ""
+
+#: source/creator/panels/parameters.d:442
+msgid "Mirrored Autofill"
+msgstr ""
+
+#: source/creator/panels/parameters.d:443
+msgid ""
+msgstr ""
+
+#: source/creator/panels/parameters.d:447
+msgid ""
+msgstr ""
+
+#: source/creator/panels/parameters.d:452
+msgid ""
+msgstr ""
+
+#: source/creator/panels/parameters.d:456
+msgid ""
+msgstr ""
+
+#: source/creator/panels/parameters.d:477
+msgid "Fix Scales"
+msgstr ""
+
+#. Arms the parameter for recording values.
+#: source/creator/panels/parameters.d:499
+msgid "Arm Parameter"
+msgstr ""
+
+#: source/creator/panels/parameters.d:522
+msgid "Add 1D Parameter (0..1)"
+msgstr ""
+
+#: source/creator/panels/parameters.d:529
+msgid "Add 1D Parameter (-1..1)"
+msgstr ""
+
+#: source/creator/panels/parameters.d:539
+msgid "Add 2D Parameter (0..1)"
+msgstr ""
+
+#: source/creator/panels/parameters.d:546
+msgid "Add 2D Parameter (-1..+1)"
+msgstr ""
+
+#: source/creator/panels/parameters.d:557
+msgid "Add Mouth Shape"
+msgstr ""
+
+#: source/creator/panels/parameters.d:609
 msgid "Add Parameter"
 msgstr ""
 
-#: source/creator/panels/parameters.d:130
+#: source/creator/panels/parameters.d:614
 msgid "Parameters"
 msgstr ""
 
 #: source/creator/panels/textureslots.d:66
 msgid "Texture Slots"
+msgstr ""
+
+#: source/creator/panels/toolsettings.d:31
+msgid "Tool Settings"
 msgstr ""
 
 #. TODO: check if in model test mode
@@ -504,23 +619,27 @@ msgid ""
 "issues"
 msgstr ""
 
-#: source/creator/viewport/model/package.d:22
+#: source/creator/viewport/model/package.d:23
 msgid "Show/hide Vertices"
 msgstr ""
 
-#: source/creator/viewport/model/package.d:30
+#: source/creator/viewport/model/package.d:31
 msgid "Show/hide Bounds"
 msgstr ""
 
-#: source/creator/viewport/model/package.d:38
+#: source/creator/viewport/model/package.d:39
 msgid "Show/hide Orientation Gizmo"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:192
+#: source/creator/viewport/package.d:145
+msgid "No tool selected..."
+msgstr ""
+
+#: source/creator/viewport/vertex/package.d:90
 msgid "Vertex Tool"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:198
+#: source/creator/viewport/vertex/package.d:97
 msgid "Line Tool"
 msgstr ""
 
@@ -532,8 +651,16 @@ msgstr ""
 msgid "New"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:50
+#: source/creator/widgets/mainmenu.d:49
 msgid "Open"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:54
+msgid "Open..."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:62
+msgid "Recent"
 msgstr ""
 
 #. Actually saves the edited state for the axies points
@@ -541,157 +668,158 @@ msgstr ""
 #. feels more safe with a save button then we have
 #. it here.
 #. Save button
-#: source/creator/widgets/mainmenu.d:54 source/creator/windows/paramaxies.d:153
-#: source/creator/windows/paramprop.d:93 source/creator/windows/settings.d:121
+#: source/creator/widgets/mainmenu.d:73 source/creator/windows/paramaxes.d:140
+#: source/creator/windows/paramprop.d:94 source/creator/windows/settings.d:121
 msgid "Save"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:57
+#: source/creator/widgets/mainmenu.d:86
+msgid "Save..."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:94 source/creator/widgets/mainmenu.d:99
 msgid "Save As..."
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:61
+#: source/creator/widgets/mainmenu.d:106
 msgid "Import"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:62
-msgid "Import photoshop document"
-msgstr ""
-
-#: source/creator/widgets/mainmenu.d:63
+#: source/creator/widgets/mainmenu.d:107
 msgid "Photoshop Document"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:68 source/creator/widgets/mainmenu.d:83
+#: source/creator/widgets/mainmenu.d:112 source/creator/widgets/mainmenu.d:125
 msgid "Import..."
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:74
+#: source/creator/widgets/mainmenu.d:118
 msgid "Import a standard Photoshop PSD file."
 msgstr ""
 
-#. This is only really useful for testing
-#. debug {
-#: source/creator/widgets/mainmenu.d:78
+#: source/creator/widgets/mainmenu.d:120
 msgid "Inochi2D Puppet"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:89
-msgid "Import existing puppet file"
-msgstr ""
-
-#. }
-#: source/creator/widgets/mainmenu.d:92
-msgid "Image Folder"
-msgstr ""
-
-#: source/creator/widgets/mainmenu.d:93
-msgid "Select a Folder..."
-msgstr ""
-
-#: source/creator/widgets/mainmenu.d:98
-msgid "Supports PNGs, TGAs and JPEGs."
-msgstr ""
-
-#: source/creator/widgets/mainmenu.d:101
-msgid "Export"
-msgstr ""
-
-#: source/creator/widgets/mainmenu.d:102
-msgid "Inochi Puppet"
-msgstr ""
-
-#: source/creator/widgets/mainmenu.d:109 source/creator/widgets/mainmenu.d:194
-msgid "Export..."
-msgstr ""
-
-#: source/creator/widgets/mainmenu.d:123
-msgid "Quit"
-msgstr ""
-
-#: source/creator/widgets/mainmenu.d:127
-msgid "Edit"
-msgstr ""
-
-#: source/creator/widgets/mainmenu.d:128
-msgid "Undo"
-msgstr ""
-
-#: source/creator/widgets/mainmenu.d:129
-msgid "Redo"
-msgstr ""
-
-#: source/creator/widgets/mainmenu.d:132
-msgid "Cut"
+#: source/creator/widgets/mainmenu.d:131
+msgid "Import existing puppet file, editing options limited"
 msgstr ""
 
 #: source/creator/widgets/mainmenu.d:133
-msgid "Copy"
+msgid "Image Folder"
 msgstr ""
 
 #: source/creator/widgets/mainmenu.d:134
+msgid "Select a Folder..."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:139
+msgid "Supports PNGs, TGAs and JPEGs."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:143
+msgid "Export"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:144
+msgid "Inochi Puppet"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:151
+msgid "Export..."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:161
+msgid "Quit"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:165
+msgid "Edit"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:166
+msgid "Undo"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:167
+msgid "Redo"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:170
+msgid "Cut"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:171
+msgid "Copy"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:172
 msgid "Paste"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:137 source/creator/windows/settings.d:137
+#: source/creator/widgets/mainmenu.d:175 source/creator/windows/settings.d:137
 msgid "Settings"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:145
+#: source/creator/widgets/mainmenu.d:183
 msgid "ImGui Debugging"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:148
+#: source/creator/widgets/mainmenu.d:186
 msgid "Style Editor"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:149
+#: source/creator/widgets/mainmenu.d:187
 msgid "ImGui Debugger"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:154
+#: source/creator/widgets/mainmenu.d:192
 msgid "View"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:155
+#: source/creator/widgets/mainmenu.d:193
 msgid "Reset Layout"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:164
+#: source/creator/widgets/mainmenu.d:202
 msgid "Panels"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:183
+#: source/creator/widgets/mainmenu.d:221
 msgid "Extras"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:187
+#: source/creator/widgets/mainmenu.d:225
 msgid "Save Screenshot"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:219
+#: source/creator/widgets/mainmenu.d:231
+msgid "Save Screenshot..."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:256
 msgid "Saves screenshot as PNG of the editor framebuffer."
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:221
+#: source/creator/widgets/mainmenu.d:258
 msgid "Show Stats for Nerds"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:229
+#: source/creator/widgets/mainmenu.d:266
 msgid "Tools"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:232
+#: source/creator/widgets/mainmenu.d:269
 msgid "Puppet Texturing"
 msgstr ""
 
 #. Premultiply textures, causing every pixel value in every texture to
 #. be multiplied by their Alpha (transparency) component
-#: source/creator/widgets/mainmenu.d:237
+#: source/creator/widgets/mainmenu.d:274
 msgid "Premultiply textures"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:241
+#: source/creator/widgets/mainmenu.d:278
 msgid ""
 "Premultiplies textures by their alpha component.\n"
 "\n"
@@ -699,11 +827,11 @@ msgid ""
 "older version of Inochi Creator."
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:243
+#: source/creator/widgets/mainmenu.d:280
 msgid "Bleed textures..."
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:246
+#: source/creator/widgets/mainmenu.d:283
 msgid ""
 "Causes color to bleed out in to fully transparent pixels, this solves "
 "outlines on straight alpha compositing.\n"
@@ -711,74 +839,74 @@ msgid ""
 "Only use this if your game engine can't use premultiplied alpha."
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:248
+#: source/creator/widgets/mainmenu.d:285
 msgid "Generate Mipmaps..."
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:251
+#: source/creator/widgets/mainmenu.d:288
 msgid "Regenerates the puppet's mipmaps."
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:257
+#: source/creator/widgets/mainmenu.d:294
 msgid "Puppet Recovery"
 msgstr ""
 
 #. FULL REPAIR
-#: source/creator/widgets/mainmenu.d:261
+#: source/creator/widgets/mainmenu.d:298
 msgid "Attempt full repair..."
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:264
+#: source/creator/widgets/mainmenu.d:301
 msgid ""
 "Attempts all the recovery and repair methods below on the currently loaded "
 "model"
 msgstr ""
 
 #. REGEN NODE IDs
-#: source/creator/widgets/mainmenu.d:267
+#: source/creator/widgets/mainmenu.d:304
 msgid "Regenerate Node IDs"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:271
+#: source/creator/widgets/mainmenu.d:308
 msgid "Regenerates all the unique IDs for the model"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:277
+#: source/creator/widgets/mainmenu.d:314
 msgid "Verify INP File..."
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:280
+#: source/creator/widgets/mainmenu.d:317
 msgid "Attempts to verify and repair INP files"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:285
+#: source/creator/widgets/mainmenu.d:322
 msgid "Help"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:287
+#: source/creator/widgets/mainmenu.d:324
 msgid "Tutorial"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:290
+#: source/creator/widgets/mainmenu.d:327
 msgid "Online Documentation"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:294
+#: source/creator/widgets/mainmenu.d:331
 msgid "Inochi2D Documentation"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:299 source/creator/windows/about.d:122
+#: source/creator/widgets/mainmenu.d:336 source/creator/windows/about.d:122
 msgid "About"
 msgstr ""
 
 #. Donate button
 #. NOTE: Is this too obstructive in the UI?
-#: source/creator/widgets/mainmenu.d:309 source/creator/widgets/mainmenu.d:325
+#: source/creator/widgets/mainmenu.d:346 source/creator/widgets/mainmenu.d:362
 #: source/creator/windows/about.d:110
 msgid "Donate"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:328
+#: source/creator/widgets/mainmenu.d:365
 msgid "Support development via Patreon"
 msgstr ""
 
@@ -833,17 +961,12 @@ msgstr ""
 msgid "Under Construction"
 msgstr ""
 
-#. Points where the user can set parameter values
-#: source/creator/windows/paramaxies.d:90
-msgid "Breakpoints"
-msgstr ""
-
 #. Title for the parameter axis points window
 #. This window allows adjusting axies in the
 #. Parameter it's attached to.
 #. Keypoints show up on every intersecting axis line.
-#: source/creator/windows/paramaxies.d:195
-msgid "Parameter Axies Points"
+#: source/creator/windows/paramaxes.d:189
+msgid "Parameter Axes Points"
 msgstr ""
 
 #: source/creator/windows/paramprop.d:33
@@ -855,7 +978,7 @@ msgid "Parameter Constraints"
 msgstr ""
 
 #. Title for the parameter properties window.
-#: source/creator/windows/paramprop.d:106
+#: source/creator/windows/paramprop.d:108
 msgid "Parameter Properties"
 msgstr ""
 
