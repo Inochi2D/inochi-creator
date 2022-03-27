@@ -391,6 +391,7 @@ ref Node incSelectedNode() {
 void incArmParameter(ref Parameter param) {
     armedParam = param;
     incViewportNodeDeformNotifyParamValueChanged();
+    activeProject.puppet.renderParameters = false;
 }
 
 /**
@@ -399,6 +400,7 @@ void incArmParameter(ref Parameter param) {
 void incDisarmParameter() {
     armedParam = null;
     incViewportNodeDeformNotifyParamValueChanged();
+    activeProject.puppet.renderParameters = true;
 }
 
 /**
