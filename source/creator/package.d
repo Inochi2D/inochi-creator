@@ -19,6 +19,8 @@ public import creator.ver;
 public import creator.atlas;
 import creator.core.colorbleed;
 
+import std.file;
+
 /**
     A project
 */
@@ -141,6 +143,15 @@ void incNewProject() {
 }
 
 void incOpenProject(string path) {
+    Puppet puppet;
+
+    // Load the puppet from file
+    try {
+        puppet = inLoadPuppet(path);
+    } catch (std.file.FileException e) {
+        return;
+    }
+
     // Clear out stuff by creating a new project
     incNewProject();
 
@@ -148,8 +159,6 @@ void incOpenProject(string path) {
     currProjectPath = path;
     incAddPrevProject(path);
 
-    // Load the puppet from file
-    Puppet puppet = inLoadPuppet(path);
     incActiveProject().puppet = puppet;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();

@@ -9,6 +9,7 @@ import creator.windows;
 import creator.widgets;
 import creator.panels;
 import creator.core;
+import creator.core.input;
 import creator.utils.link;
 import creator;
 import inochi2d;
@@ -17,14 +18,68 @@ import tinyfiledialogs;
 import i18n;
 
 import std.string;
+import std.stdio;
 
 private {
     bool dbgShowStyleEditor;
     bool dbgShowDebugger;
+
+    void fileNew() {
+        incNewProject();
+    }
+
+    void fileOpen() {
+        const TFD_Filter[] filters = [
+            { ["*.inx"], "Inochi Creator Project (*.inx)" }
+        ];
+
+        c_str filename = tinyfd_openFileDialog(__("Open..."), "", filters, false);
+        if (filename !is null) {
+            string file = cast(string)filename.fromStringz;
+            incOpenProject(file);
+        }
+    }
+
+    void fileSave() {
+        // If a projeect path is set then the user has opened or saved
+        // an existing file, we should just override that
+        if (incProjectPath.length > 0) {
+            // TODO: do backups on every save?
+
+            incSaveProject(incProjectPath);
+        } else {
+            const TFD_Filter[] filters = [
+                { ["*.inx"], "Inochi Creator Project (*.inx)" }
+            ];
+
+            c_str filename = tinyfd_saveFileDialog(__("Save..."), "", filters);
+            if (filename !is null) {
+                string file = cast(string)filename.fromStringz;
+                incSaveProject(file);
+            }
+        }
+    }
+
+    void fileSaveAs() {
+        const TFD_Filter[] filters = [
+            { ["*.inx"], "Inochi Creator Project (*.inx)" }
+        ];
+
+        c_str filename = tinyfd_saveFileDialog(__("Save As..."), "", filters);
+        if (filename !is null) {
+            string file = cast(string)filename.fromStringz;
+            incSaveProject(file);
+        }
+    }
 }
 
 void incMainMenu() {
     auto io = igGetIO();
+
+    if (incShortcut("Ctrl+N")) fileNew();
+    if (incShortcut("Ctrl+O")) fileOpen();
+    if (incShortcut("Ctrl+S")) fileSave();
+    if (incShortcut("Ctrl+Shift+S")) fileSaveAs();
 
     if(igBeginMainMenuBar()) {
         ImVec2 avail;
@@ -43,19 +98,11 @@ void incMainMenu() {
 
         if (igBeginMenu(__("File"), true)) {
             if(igMenuItem(__("New"), "Ctrl+N", false, true)) {
-                incNewProject();
+                fileNew();
             }
 
             if (igMenuItem(__("Open"), "Ctrl+O", false, true)) {
-                const TFD_Filter[] filters = [
-                    { ["*.inx"], "Inochi Creator Project (*.inx)" }
-                ];
-
-                c_str filename = tinyfd_openFileDialog(__("Open..."), "", filters, false);
-                if (filename !is null) {
-                    string file = cast(string)filename.fromStringz;
-                    incOpenProject(file);
-                }
+                fileOpen();
             }
 
             string[] prevProjects = incGetPrevProjects();
@@ -71,36 +118,11 @@ void incMainMenu() {
             }
             
             if(igMenuItem(__("Save"), "Ctrl+S", false, true)) {
-                
-                // If a projeect path is set then the user has opened or saved
-                // an existing file, we should just override that
-                if (incProjectPath.length > 0) {
-                    // TODO: do backups on every save?
-                    
-                    incSaveProject(incProjectPath);
-                } else {
-                    const TFD_Filter[] filters = [
-                        { ["*.inx"], "Inochi Creator Project (*.inx)" }
-                    ];
-
-                    c_str filename = tinyfd_saveFileDialog(__("Save..."), "", filters);
-                    if (filename !is null) {
-                        string file = cast(string)filename.fromStringz;
-                        incSaveProject(file);
-                    }
-                }
+                fileSave();
             }
             
             if(igMenuItem(__("Save As..."), "Ctrl+Shift+S", false, true)) {
-                const TFD_Filter[] filters = [
-                    { ["*.inx"], "Inochi Creator Project (*.inx)" }
-                ];
-
-                c_str filename = tinyfd_saveFileDialog(__("Save As..."), "", filters);
-                if (filename !is null) {
-                    string file = cast(string)filename.fromStringz;
-                    incSaveProject(file);
-                }
+                fileSaveAs();
             }
 
             if (igBeginMenu(__("Import"), true)) {
