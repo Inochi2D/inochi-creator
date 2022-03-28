@@ -32,6 +32,7 @@ void incActionPush(Action action) {
     if (actionPointer+1 > incActionGetUndoHistoryLength()) {
         size_t toChop = (actionPointer+1)-incActionGetUndoHistoryLength();
         actions = actions[toChop..$];
+        actionPointer -= toChop;
     }
 
     if (incActionTop() !is null && incActionTop().canMerge(action)) {
