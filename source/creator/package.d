@@ -158,6 +158,7 @@ void incOpenProject(string path) {
 void incSaveProject(string path) {
     import std.path : setExtension;
     string finalPath = path.setExtension(".inx");
+    currProjectPath = path;
     incAddPrevProject(finalPath);
 
     // Remember to populate texture slots otherwise things will break real bad!
