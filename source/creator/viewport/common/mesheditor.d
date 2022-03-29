@@ -33,6 +33,7 @@ private:
     Drawable target;
     VertexToolMode toolMode = VertexToolMode.Points;
     MeshVertex*[] selected;
+    MeshVertex*[] mirrorSelected;
     MeshVertex*[] newSelected;
 
     vec2 lastMousePos;
@@ -61,6 +62,7 @@ private:
         } else {
             selected ~= vert;
         }
+        updateMirrorSelected();
     }
 
     MeshVertex* selectOne(MeshVertex* vert) {
@@ -72,11 +74,13 @@ private:
         }
 
         selected = [vert];
+        updateMirrorSelected();
         return null;
     }
 
     void deselectAll() {
         selected.length = 0;
+        updateMirrorSelected();
     }
 
     vec2 mirrorH(vec2 point) {
@@ -101,6 +105,16 @@ private:
         }
     }
 
+    vec2 mirrorDelta(uint axis, vec2 point) {
+        switch (axis) {
+            case 0: return point;
+            case 1: return vec2(-point.x, point.y);
+            case 2: return vec2(point.x, -point.y);
+            case 3: return vec2(-point.x, -point.y);
+            default: assert(false, "bad axis");
+        }
+    }
+
     MeshVertex *mirrorVertex(uint axis, MeshVertex *vtx) {
         if (axis == 0) return vtx;
         MeshVertex *v = mesh.getVertexFromPoint(mirror(axis, vtx.position));
@@ -114,6 +128,18 @@ private:
         if (mirrorHoriz && mirrorVert) func(3);
         func(0);
     }
+
+    void updateMirrorSelected() {
+        mirrorSelected.length = 0;
+        foreachMirror((uint axis) {
+            if (axis == 0) return;
+            foreach(v; selected) {
+                MeshVertex *v2 = mirrorVertex(axis, v);
+                if (v2 !is null) mirrorSelected ~= v2;
+            }
+        });
+    }
+
 
 public:
     IncMesh mesh;
@@ -165,6 +191,7 @@ public:
         } else {
             previewMesh = null;
         }
+        updateMirrorSelected();
     }
 
     void importMesh(MeshData data) {
@@ -258,10 +285,12 @@ public:
                             if (idx != -1) selected = selected.remove(idx);
                         }
                     }
+                    updateMirrorSelected();
                     newSelected.length = 0;
                 } else {
                     selected = newSelected;
                     newSelected = [];
+                    updateMirrorSelected();
                 }
 
                 isSelecting = false;
@@ -286,6 +315,7 @@ public:
                             vertexMapDirty = true;
                             changed = true;
                             selected.length = 0;
+                            updateMirrorSelected();
                             maybeSelectOne = null;
                             vtxAtMouse = null;
                         }
@@ -303,10 +333,14 @@ public:
 
                 // Key actions
                 if (!deformOnly && incInputIsKeyPressed(ImGuiKey.Delete)) {
-                    foreach(v; selected) {
-                        mesh.remove(v);
-                    }
+                    foreachMirror((uint axis) {
+                        foreach(v; selected) {
+                            MeshVertex *v2 = mirrorVertex(axis, v);
+                            if (v2 !is null) mesh.remove(v2);
+                        }
+                    });
                     selected = [];
+                    updateMirrorSelected();
                     refreshMesh();
                     vertexMapDirty = true;
                     changed = true;
@@ -317,9 +351,13 @@ public:
                     else if (io.KeyShift) magnitude = 100.0;
                     delta *= magnitude;
 
-                    foreach(v; selected) {
-                        v.position += delta;
-                    }
+                    foreachMirror((uint axis) {
+                        vec2 mDelta = mirrorDelta(axis, delta);
+                        foreach(v; selected) {
+                            MeshVertex *v2 = mirrorVertex(axis, v);
+                            if (v2 !is null) v2.position += mDelta;
+                        }
+                    });
                     refreshMesh();
                     changed = true;
                 }
@@ -462,6 +500,9 @@ public:
                 mesh.drawPointSubset(selected, vec4(1, 0, 0, 1), trans);
         }
 
+        if (mirrorSelected.length)
+            mesh.drawPointSubset(mirrorSelected, vec4(1, 0, 1, 1), trans);
+
         if (isSelecting) {
             vec3[] rectLines = [
                 vec3(selectOrigin.x, selectOrigin.y, 0),
@@ -500,9 +541,8 @@ public:
 
         if (axisLines.length > 0) {
             inDbgSetBuffer(axisLines);
-            inDbgDrawLines(vec4(0.8, 0, 0, 1), trans);
+            inDbgDrawLines(vec4(0.8, 0, 0.8, 1), trans);
         }
-
     }
 
     void viewportOverlay() {
