@@ -269,32 +269,12 @@ public:
 
         switch(toolMode) {
             case VertexToolMode.Points:
-
-                // Left click selection
-                if (igIsMouseClicked(ImGuiMouseButton.Left)) {
-                    if (mesh.isPointOverVertex(mousePos)) {
-                        auto vtx = mesh.getVertexFromPoint(mousePos);
-                        if (io.KeyShift) toggleSelect(vtx);
-                        else if (!isSelected(vtx)) selectOne(mesh.getVertexFromPoint(mousePos));
-                        else maybeSelectOne = vtx;
-                    } else {
-                        selectOrigin = mousePos;
-                        isSelecting = true;
-                    }
-                }
-                if (!isDragging && !isSelecting &&
-                    incInputIsMouseReleased(ImGuiMouseButton.Left) && maybeSelectOne !is null) {
-                    selectOne(maybeSelectOne);
-                }
-
-                // Left double click action
-                if (!deformOnly && igIsMouseDoubleClicked(ImGuiMouseButton.Left) && !io.KeyShift) {
-
+                void addOrRemoveVertex(bool selectedOnly) {
                     // Check if mouse is over a vertex
                     if (mesh.isPointOverVertex(mousePos)) {
 
                         // In the case that it is, double clicking would remove an item
-                        if (isSelected(mesh.getVertexFromPoint(mousePos))) {
+                        if (!selectedOnly || isSelected(mesh.getVertexFromPoint(mousePos))) {
                             foreachMirror((uint axis) {
                                 mesh.removeVertexAt(mirror(axis, mousePos));
                             });
@@ -302,6 +282,7 @@ public:
                             vertexMapDirty = true;
                             changed = true;
                             selected.length = 0;
+                            maybeSelectOne = null;
                         }
                     } else {
                         ulong off = mesh.vertices.length;
@@ -313,6 +294,34 @@ public:
                         changed = true;
                         selectOne(mesh.vertices[off]);
                     }
+                }
+
+                // Left click selection
+                if (igIsMouseClicked(ImGuiMouseButton.Left)) {
+                    if (!deformOnly && io.KeyCtrl && !io.KeyShift) {
+                        // Add/remove action
+                        addOrRemoveVertex(false);
+                    } else {
+                        // Select / drag start
+                        if (mesh.isPointOverVertex(mousePos)) {
+                            auto vtx = mesh.getVertexFromPoint(mousePos);
+                            if (io.KeyShift) toggleSelect(vtx);
+                            else if (!isSelected(vtx)) selectOne(mesh.getVertexFromPoint(mousePos));
+                            else maybeSelectOne = vtx;
+                        } else {
+                            selectOrigin = mousePos;
+                            isSelecting = true;
+                        }
+                    }
+                }
+                if (!isDragging && !isSelecting &&
+                    incInputIsMouseReleased(ImGuiMouseButton.Left) && maybeSelectOne !is null) {
+                    selectOne(maybeSelectOne);
+                }
+
+                // Left double click action
+                if (!deformOnly && igIsMouseDoubleClicked(ImGuiMouseButton.Left) && !io.KeyShift && !io.KeyCtrl) {
+                    addOrRemoveVertex(true);
                 }
 
                 // Dragging
