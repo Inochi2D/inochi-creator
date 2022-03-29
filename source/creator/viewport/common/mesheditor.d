@@ -9,6 +9,7 @@
 module creator.viewport.common.mesheditor;
 import i18n;
 import creator.viewport;
+import creator.viewport.common;
 import creator.viewport.common.mesh;
 import creator.core.input;
 import creator.widgets;
@@ -504,16 +505,7 @@ public:
             mesh.drawPointSubset(mirrorSelected, vec4(1, 0, 1, 1), trans);
 
         if (isSelecting) {
-            vec3[] rectLines = [
-                vec3(selectOrigin.x, selectOrigin.y, 0),
-                vec3(mousePos.x, selectOrigin.y, 0),
-                vec3(mousePos.x, selectOrigin.y, 0),
-                vec3(mousePos.x, mousePos.y, 0),
-                vec3(mousePos.x, mousePos.y, 0),
-                vec3(selectOrigin.x, mousePos.y, 0),
-                vec3(selectOrigin.x, mousePos.y, 0),
-                vec3(selectOrigin.x, selectOrigin.y, 0),
-            ];
+            vec3[] rectLines = incCreateRectBuffer(selectOrigin, mousePos);
             inDbgSetBuffer(rectLines);
             if (!mutateSelection) inDbgDrawLines(vec4(1, 0, 0, 1), trans);
             else if(invertSelection) inDbgDrawLines(vec4(0, 1, 1, 0.8), trans);
@@ -531,12 +523,16 @@ public:
         vec2 camPosition = camera.position;
         vec3[] axisLines;
         if (mirrorHoriz) {
-            axisLines ~= vec3(mirrorOrigin.x, -camSize.y - camPosition.y, 0);
-            axisLines ~= vec3(mirrorOrigin.x, camSize.y - camPosition.y, 0);
+            axisLines ~= incCreateLineBuffer(
+                vec2(mirrorOrigin.x, -camSize.y - camPosition.y),
+                vec2(mirrorOrigin.x, camSize.y - camPosition.y)
+            );
         }
         if (mirrorVert) {
-            axisLines ~= vec3(-camSize.x - camPosition.x, mirrorOrigin.y, 0);
-            axisLines ~= vec3(camSize.x - camPosition.x, mirrorOrigin.y, 0);
+            axisLines ~= incCreateLineBuffer(
+                vec2(-camSize.x - camPosition.x, mirrorOrigin.y),
+                vec2(camSize.x - camPosition.x, mirrorOrigin.y)
+            );
         }
 
         if (axisLines.length > 0) {
