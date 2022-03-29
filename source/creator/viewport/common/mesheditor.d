@@ -43,6 +43,7 @@ private:
     bool mutateSelection = false;
     bool invertSelection = false;
     MeshVertex* maybeSelectOne;
+    MeshVertex* vtxAtMouse;
     vec2 selectOrigin;
     IncMesh previewMesh;
 
@@ -240,6 +241,8 @@ public:
             mousePos = -mousePos;
         }
 
+        vtxAtMouse = mesh.getVertexFromPoint(mousePos);
+
         if (incInputIsMouseReleased(ImGuiMouseButton.Left)) {
             isDragging = false;
             if (isSelecting) {
@@ -271,10 +274,10 @@ public:
             case VertexToolMode.Points:
                 void addOrRemoveVertex(bool selectedOnly) {
                     // Check if mouse is over a vertex
-                    if (mesh.isPointOverVertex(mousePos)) {
+                    if (vtxAtMouse !is null) {
 
                         // In the case that it is, double clicking would remove an item
-                        if (!selectedOnly || isSelected(mesh.getVertexFromPoint(mousePos))) {
+                        if (!selectedOnly || isSelected(vtxAtMouse)) {
                             foreachMirror((uint axis) {
                                 mesh.removeVertexAt(mirror(axis, mousePos));
                             });
@@ -283,6 +286,7 @@ public:
                             changed = true;
                             selected.length = 0;
                             maybeSelectOne = null;
+                            vtxAtMouse = null;
                         }
                     } else {
                         ulong off = mesh.vertices.length;
@@ -304,10 +308,9 @@ public:
                     } else {
                         // Select / drag start
                         if (mesh.isPointOverVertex(mousePos)) {
-                            auto vtx = mesh.getVertexFromPoint(mousePos);
-                            if (io.KeyShift) toggleSelect(vtx);
-                            else if (!isSelected(vtx)) selectOne(mesh.getVertexFromPoint(mousePos));
-                            else maybeSelectOne = vtx;
+                            if (io.KeyShift) toggleSelect(vtxAtMouse);
+                            else if (!isSelected(vtxAtMouse)) selectOne(vtxAtMouse);
+                            else maybeSelectOne = vtxAtMouse;
                         } else {
                             selectOrigin = mousePos;
                             isSelecting = true;
@@ -346,8 +349,8 @@ public:
                 assert(!deformOnly);
 
                 if (igIsMouseClicked(ImGuiMouseButton.Left)) {
-                    if (mesh.isPointOverVertex(mousePos)) {
-                        auto prev = selectOne(mesh.getVertexFromPoint(mousePos));
+                    if (vtxAtMouse !is null) {
+                        auto prev = selectOne(vtxAtMouse);
                         if (prev !is null) {
                             if (prev != selected[$-1]) {
 
@@ -405,6 +408,11 @@ public:
     void draw(Camera camera) {
         mat4 trans = mat4.identity;
         if (deformOnly) trans = target.transform.matrix();
+
+        if (vtxAtMouse !is null && !isSelecting) {
+            MeshVertex*[] one = [vtxAtMouse];
+            mesh.drawPointSubset(one, vec4(1, 1, 1, 0.3), trans, 15);
+        }
 
         if (previewMesh) {
             previewMesh.drawLines(trans, vec4(0.7, 0.7, 0, 1));

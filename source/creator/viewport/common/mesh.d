@@ -346,7 +346,7 @@ public:
         }
     }
 
-    void drawPointSubset(MeshVertex*[] subset, vec4 color, mat4 trans = mat4.identity) {
+    void drawPointSubset(MeshVertex*[] subset, vec4 color, mat4 trans = mat4.identity, float size=6) {
         vec3[] subPoints;
 
         if (subset.length == 0) return;
@@ -356,7 +356,7 @@ public:
             subPoints ~= vec3(vtx.position, 0);
         }
         inDbgSetBuffer(subPoints);
-        inDbgPointsSize(6);
+        inDbgPointsSize(size);
         inDbgDrawPoints(color, trans);
     }
 
