@@ -24,6 +24,7 @@ import i18n;
 class ViewportPanel : Panel {
 private:
     ImVec2 lastSize;
+    bool actingInViewport;
 
 protected:
     override
@@ -75,7 +76,15 @@ protected:
             }
 
             incViewportPoll();
-            if (igIsWindowHovered(ImGuiHoveredFlags.ChildWindows)) {
+
+            // Ignore events within child windows *unless* drag started within
+            // viewport.
+            ImGuiHoveredFlags winFlags = ImGuiHoveredFlags.None;
+            if (actingInViewport) winFlags |= ImGuiHoveredFlags.ChildWindows | ImGuiHoveredFlags.AllowWhenBlockedByActiveItem;
+            if (igIsWindowHovered(winFlags)) {
+                actingInViewport = igIsMouseDown(ImGuiMouseButton.Left) ||
+                    igIsMouseDown(ImGuiMouseButton.Middle) ||
+                    igIsMouseDown(ImGuiMouseButton.Right);
                 incViewportUpdate();
             }
 
