@@ -132,13 +132,25 @@ private:
 
     void updateMirrorSelected() {
         mirrorSelected.length = 0;
-        foreachMirror((uint axis) {
-            if (axis == 0) return;
-            foreach(v; selected) {
+        if (!mirrorHoriz && !mirrorVert) return;
+
+        // Avoid duplicate selections...
+        MeshVertex*[] tmpSelected;
+        foreach(v; selected) {
+            if (mirrorSelected.canFind(v)) continue;
+            tmpSelected ~= v;
+
+            foreachMirror((uint axis) {
                 MeshVertex *v2 = mirrorVertex(axis, v);
-                if (v2 !is null) mirrorSelected ~= v2;
-            }
-        });
+                if (v2 is null) return;
+                if (axis != 0) {
+                    if (!tmpSelected.canFind(v2) && !mirrorSelected.canFind(v2))
+                        mirrorSelected ~= v2;
+                }
+            });
+        }
+
+        selected = tmpSelected;
     }
 
 
