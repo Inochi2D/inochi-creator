@@ -37,6 +37,10 @@ void incViewportModelOverlay() {
         }
     igPopFont();
     incTooltip(_("Show/hide Orientation Gizmo"));
+    if (incArmedParameter()) {
+        igSameLine(0, 0);
+        incViewportModelDeformOverlay();
+    }
 }
 
 void incViewportModelNodeSelectionChanged() {
