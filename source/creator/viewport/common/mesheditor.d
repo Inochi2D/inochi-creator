@@ -225,8 +225,10 @@ public:
 
         mousePos = incInputGetMousePosition();
         if (deformOnly) {
-            mat4 tr = target.transform.matrix()*mat4.translation(mousePos.x, mousePos.y, 0);
-            mousePos = vec2(tr.matrix[0][3]*-1, tr.matrix[1][3]*-1);
+            vec4 pIn = vec4(-mousePos.x, -mousePos.y, 0, 1);
+            mat4 tr = target.transform.matrix().inverse();
+            vec4 pOut = tr * pIn;
+            mousePos = vec2(pOut.x, pOut.y);
         } else {
             mousePos = -mousePos;
         }
@@ -406,9 +408,9 @@ public:
                 vec3(selectOrigin.x, selectOrigin.y, 0),
             ];
             inDbgSetBuffer(rectLines);
-            if (!mutateSelection) inDbgDrawLines(vec4(1, 0, 0, 1));
-            else if(invertSelection) inDbgDrawLines(vec4(0, 1, 1, 0.8));
-            else inDbgDrawLines(vec4(0, 1, 0, 0.8));
+            if (!mutateSelection) inDbgDrawLines(vec4(1, 0, 0, 1), trans);
+            else if(invertSelection) inDbgDrawLines(vec4(0, 1, 1, 0.8), trans);
+            else inDbgDrawLines(vec4(0, 1, 0, 0.8), trans);
 
             if (newSelected.length) {
                 if (mutateSelection && invertSelection)
@@ -432,7 +434,7 @@ public:
 
         if (axisLines.length > 0) {
             inDbgSetBuffer(axisLines);
-            inDbgDrawLines(vec4(0.8, 0, 0, 1));
+            inDbgDrawLines(vec4(0.8, 0, 0, 1), trans);
         }
 
     }
