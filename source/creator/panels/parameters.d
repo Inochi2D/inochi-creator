@@ -199,7 +199,7 @@ private {
             }
         }
         if (param.isVec2) {
-            if (igBeginMenu(__("Auto Mirror"), true)) {
+            if (igBeginMenu(__("Set from mirror"), true)) {
                 if (igMenuItem(__("Horizontally"), "", false, true)) {
                     foreach(binding; bindings) {
                         binding.extrapolateValueAt(cParamPoint, 0);
@@ -221,7 +221,7 @@ private {
                 igEndMenu();
             }
         } else {
-            if (igMenuItem(__("Auto Mirror"), "", false, true)) {
+            if (igMenuItem(__("Set from mirror"), "", false, true)) {
                 foreach(binding; bindings) {
                     binding.extrapolateValueAt(cParamPoint, 0);
                 }
