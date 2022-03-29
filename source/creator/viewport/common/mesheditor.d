@@ -7,9 +7,11 @@
     - Asahi Lina
 */
 module creator.viewport.common.mesheditor;
+import i18n;
 import creator.viewport;
 import creator.viewport.common.mesh;
 import creator.core.input;
+import creator.widgets;
 import creator;
 import inochi2d;
 import inochi2d.core.dbg;
@@ -451,4 +453,23 @@ public:
         }
 
     }
+
+    void viewportOverlay() {
+        igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
+            if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Points ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                setToolMode(VertexToolMode.Points);
+                refreshMesh();
+            }
+            incTooltip(_("Vertex Tool"));
+
+            if (!deformOnly) {
+                igSameLine(0, 0);
+                if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Connect ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                    setToolMode(VertexToolMode.Connect);
+                    refreshMesh();
+                }
+                incTooltip(_("Edge Tool"));
+            }
+        igPopStyleVar();
+   }
 }

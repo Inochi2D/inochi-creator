@@ -19,7 +19,6 @@ import bindbc.opengl;
 
 private {
     IncMeshEditor editor;
-    bool triangulate = false;
 }
 
 void incViewportVertexInspector(Drawable node) {
@@ -69,25 +68,7 @@ void incViewportVertexInspector(Drawable node) {
 }
 
 void incViewportVertexOverlay() {
-    igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
-
-        if (incButtonColored("", ImVec2(28, 28), editor.getToolMode() == VertexToolMode.Points ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-            editor.setToolMode(VertexToolMode.Points);
-            editor.previewTriangulate = triangulate;
-            editor.refreshMesh();
-        }
-        incTooltip(_("Vertex Tool"));
-
-        igSameLine(0, 0);
-        if (incButtonColored("", ImVec2(28, 28), editor.getToolMode() == VertexToolMode.Connect ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-            editor.setToolMode(VertexToolMode.Connect);
-            editor.previewTriangulate = false;
-            editor.refreshMesh();
-        }
-        incTooltip(_("Edge Tool"));
-
-    igPopStyleVar();
-
+    editor.viewportOverlay();
 }
 
 void incViewportVertexUpdate(ImGuiIO* io, Camera camera) {
