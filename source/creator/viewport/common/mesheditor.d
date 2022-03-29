@@ -15,6 +15,8 @@ import inochi2d;
 import inochi2d.core.dbg;
 import bindbc.opengl;
 import bindbc.imgui;
+import std.algorithm.mutation;
+import std.algorithm.searching;
 
 enum VertexToolMode {
     Points,
@@ -29,10 +31,16 @@ private:
     Drawable target;
     VertexToolMode toolMode = VertexToolMode.Points;
     MeshVertex*[] selected;
-    bool isDragging = false;
+    MeshVertex*[] newSelected;
 
     vec2 lastMousePos;
     vec2 mousePos;
+
+    bool isDragging = false;
+    bool isSelecting = false;
+    bool mutateSelection = false;
+    bool invertSelection = false;
+    vec2 selectOrigin;
     IncMesh previewMesh;
 
     bool isSelected(MeshVertex* vert) {
@@ -45,24 +53,13 @@ private:
         import std.algorithm.mutation : remove;
         auto idx = selected.countUntil(vert);
         if (isSelected(vert)) {
-            vert.selected = false;
             selected = selected.remove(idx);
         } else {
-            vert.selected = true;
             selected ~= vert;
         }
-
-        refreshMesh();
     }
 
     MeshVertex* selectOne(MeshVertex* vert) {
-        foreach(ref sel; selected) {
-            sel.selected = false;
-        }
-
-        vert.selected = true;
-        refreshMesh();
-
         if (selected.length > 0) {
             auto lastSel = selected[$-1];
 
@@ -75,11 +72,7 @@ private:
     }
 
     void deselectAll() {
-        foreach(ref sel; selected) {
-            sel.selected = false;
-        }
         selected.length = 0;
-        refreshMesh();
     }
 
     vec2 mirrorH(vec2 point) {
@@ -238,7 +231,30 @@ public:
             mousePos = -mousePos;
         }
 
-        if (incInputIsMouseReleased(ImGuiMouseButton.Left)) isDragging = false;
+        if (incInputIsMouseReleased(ImGuiMouseButton.Left)) {
+            isDragging = false;
+            if (isSelecting) {
+                if (mutateSelection) {
+                    if (!invertSelection) {
+                        foreach(v; newSelected) {
+                            auto idx = selected.countUntil(v);
+                            if (idx == -1) selected ~= v;
+                        }
+                    } else {
+                        foreach(v; newSelected) {
+                            auto idx = selected.countUntil(v);
+                            if (idx != -1) selected = selected.remove(idx);
+                        }
+                    }
+                    newSelected.length = 0;
+                } else {
+                    selected = newSelected;
+                    newSelected = [];
+                }
+
+                isSelecting = false;
+            }
+        }
 
         switch(toolMode) {
             case VertexToolMode.Points:
@@ -246,13 +262,16 @@ public:
                 // Left click selection
                 if (igIsMouseClicked(ImGuiMouseButton.Left)) {
                     if (mesh.isPointOverVertex(mousePos)) {
-                        if (io.KeyCtrl) toggleSelect(mesh.getVertexFromPoint(mousePos));
+                        if (io.KeyShift) toggleSelect(mesh.getVertexFromPoint(mousePos));
                         else selectOne(mesh.getVertexFromPoint(mousePos));
+                    } else {
+                        selectOrigin = mousePos;
+                        isSelecting = true;
                     }
                 }
 
                 // Left double click action
-                if (!deformOnly && igIsMouseDoubleClicked(ImGuiMouseButton.Left)) {
+                if (!deformOnly && igIsMouseDoubleClicked(ImGuiMouseButton.Left) && !io.KeyShift) {
 
                     // Check if mouse is over a vertex
                     if (mesh.isPointOverVertex(mousePos)) {
@@ -262,14 +281,17 @@ public:
                             foreachMirror((uint axis) {
                                 mesh.removeVertexAt(mirror(axis, mousePos));
                             });
+                            refreshMesh();
                             vertexMapDirty = true;
                             changed = true;
+                            selected.length = 0;
                         }
                     } else {
                         ulong off = mesh.vertices.length;
                         foreachMirror((uint axis) {
-                            mesh.vertices ~= new MeshVertex(mirror(axis, mousePos), [], false);
+                            mesh.vertices ~= new MeshVertex(mirror(axis, mousePos));
                         });
+                        refreshMesh();
                         vertexMapDirty = true;
                         changed = true;
                         selectOne(mesh.vertices[off]);
@@ -278,7 +300,7 @@ public:
 
                 // Dragging
                 if (igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
-                    isDragging = true;
+                    if (!isSelecting) isDragging = true;
                 }
 
                 if (isDragging) {
@@ -292,7 +314,6 @@ public:
                     changed = true;
                     refreshMesh();
                 }
-
 
                 break;
             case VertexToolMode.Connect:
@@ -337,6 +358,13 @@ public:
                 break;
             default: assert(0);
         }
+
+        if (isSelecting) {
+            newSelected = mesh.getInRect(selectOrigin, mousePos);
+            mutateSelection = io.KeyShift;
+            invertSelection = io.KeyCtrl;
+        }
+
         if (changed)
             mesh.changed = true;
 
@@ -349,13 +377,45 @@ public:
     }
 
     void draw(Camera camera) {
-        if (deformOnly) {
-            mesh.draw(target.transform.matrix());
-        } else if (previewMesh) {
-            previewMesh.drawLines(mat4.identity, vec4(0.7, 0.7, 0, 1));
-            mesh.drawPoints();
+        mat4 trans = mat4.identity;
+        if (deformOnly) trans = target.transform.matrix();
+
+        if (previewMesh) {
+            previewMesh.drawLines(trans, vec4(0.7, 0.7, 0, 1));
+            mesh.drawPoints(trans);
         } else {
-            mesh.draw();
+            mesh.draw(trans);
+        }
+
+        if (selected.length) {
+            if (isSelecting && !mutateSelection)
+                mesh.drawPointSubset(selected, vec4(0.6, 0, 0, 1), trans);
+            else
+                mesh.drawPointSubset(selected, vec4(1, 0, 0, 1), trans);
+        }
+
+        if (isSelecting) {
+            vec3[] rectLines = [
+                vec3(selectOrigin.x, selectOrigin.y, 0),
+                vec3(mousePos.x, selectOrigin.y, 0),
+                vec3(mousePos.x, selectOrigin.y, 0),
+                vec3(mousePos.x, mousePos.y, 0),
+                vec3(mousePos.x, mousePos.y, 0),
+                vec3(selectOrigin.x, mousePos.y, 0),
+                vec3(selectOrigin.x, mousePos.y, 0),
+                vec3(selectOrigin.x, selectOrigin.y, 0),
+            ];
+            inDbgSetBuffer(rectLines);
+            if (!mutateSelection) inDbgDrawLines(vec4(1, 0, 0, 1));
+            else if(invertSelection) inDbgDrawLines(vec4(0, 1, 1, 0.8));
+            else inDbgDrawLines(vec4(0, 1, 0, 0.8));
+
+            if (newSelected.length) {
+                if (mutateSelection && invertSelection)
+                    mesh.drawPointSubset(newSelected, vec4(1, 0, 1, 1), trans);
+                else
+                    mesh.drawPointSubset(newSelected, vec4(1, 0, 0, 1), trans);
+            }
         }
 
         vec2 camSize = camera.getRealSize();

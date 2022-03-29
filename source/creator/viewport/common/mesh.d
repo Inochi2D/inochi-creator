@@ -15,11 +15,11 @@ import creator.viewport;
 import inochi2d;
 import inochi2d.core.dbg;
 import bindbc.opengl;
+import std.algorithm.mutation;
 
 struct MeshVertex {
     vec2 position;
     MeshVertex*[] connections;
-    bool selected;
 }
 
 void connect(MeshVertex* self, MeshVertex* other) {
@@ -221,17 +221,14 @@ private:
     }
 
     vec3[] points;
-    vec3[] selpoints;
     vec3[] lines;
     vec3[] wlines;
     void regen() {
         points.length = 0;
-        selpoints.length = 0;
         
         // Updates all point positions
         foreach(i, vert; vertices) {
-            if (vert.selected) selpoints ~= vec3(vert.position, 0);
-            else points ~= vec3(vert.position, 0);
+            points ~= vec3(vert.position, 0);
         }
     }
 
@@ -334,7 +331,7 @@ public:
         }
 
         if (wlines.length > 0) {
-            inDbgSetBuffer(lines);
+            inDbgSetBuffer(wlines);
             inDbgDrawLines(vec4(0.7, 0.2, 0.2, 1), trans);
         }
     }
@@ -347,15 +344,22 @@ public:
             inDbgPointsSize(6);
             inDbgDrawPoints(vec4(1, 1, 1, 1), trans);
         }
-
-        if (selpoints.length > 0) {
-            inDbgSetBuffer(selpoints);
-            inDbgPointsSize(10);
-            inDbgDrawPoints(vec4(0, 0, 0, 1), trans);
-            inDbgPointsSize(6);
-            inDbgDrawPoints(vec4(1, 0, 0, 1), trans);
-        }
     }
+
+    void drawPointSubset(MeshVertex*[] subset, vec4 color, mat4 trans = mat4.identity) {
+        vec3[] subPoints;
+
+        if (subset.length == 0) return;
+
+        // Updates all point positions
+        foreach(vtx; subset) {
+            subPoints ~= vec3(vtx.position, 0);
+        }
+        inDbgSetBuffer(subPoints);
+        inDbgPointsSize(6);
+        inDbgDrawPoints(color, trans);
+    }
+
     void draw(mat4 trans = mat4.identity) {
         drawLines(trans);
         drawPoints(trans);
@@ -447,6 +451,22 @@ public:
             if (max.x < vertex.position.x) max.x = vertex.position.x;
             if (max.y < vertex.position.y) max.y = vertex.position.y;
         }
+    }
+
+    MeshVertex*[] getInRect(vec2 min, vec2 max) {
+        if (min.x > max.x) swap(min.x, max.x);
+        if (min.y > max.y) swap(min.y, max.y);
+
+        MeshVertex*[] matching;
+        foreach(idx, vertex; vertices) {
+            if (min.x > vertex.position.x) continue;
+            if (min.y > vertex.position.y) continue;
+            if (max.x < vertex.position.x) continue;
+            if (max.y < vertex.position.y) continue;
+            matching ~= vertex;
+        }
+
+        return matching;
     }
 
     IncMesh autoTriangulate() {
