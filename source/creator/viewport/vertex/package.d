@@ -25,12 +25,12 @@ private {
 void incViewportVertexInspector(Drawable node) {
 
     igBeginGroup();
-        if (igButton("")) incMeshFlipHorz();
+        if (igButton("")) editor.mesh.flipHorz();
         incTooltip(_("Flip Horizontally"));
 
         igSameLine(0, 4);
 
-        if (igButton("")) incMeshFlipVert();
+        if (igButton("")) editor.mesh.flipVert();
         incTooltip(_("Flip Vertically"));
     igEndGroup();
 
@@ -50,15 +50,18 @@ void incViewportVertexInspector(Drawable node) {
     igEndGroup();
 
     igBeginGroup();
-        bool triangulate = incMeshEditGetTriangulate();
         if (incButtonColored("", ImVec2(0, 0),
-            triangulate ? ImVec4(1, 1, 0, 1) : ImVec4.init)) {
-            incMeshEditSetTriangulate(!triangulate);
+            editor.previewTriangulate ? ImVec4(1, 1, 0, 1) : ImVec4.init)) {
+            editor.previewTriangulate = !editor.previewTriangulate;
+            editor.refreshMesh();
         }
         igSameLine(0, 4);
         if (incButtonColored("", ImVec2(0, 0),
-            triangulate ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-            incMeshEditApplyTriangulate();
+            editor.previewingTriangulation() ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+            if (editor.previewingTriangulation()) {
+                editor.applyPreview();
+                editor.refreshMesh();
+            }
         }
         incTooltip(_("Automatically connects vertices"));
     igEndGroup();
@@ -150,36 +153,3 @@ void incMeshEditClear() {
 void incMeshEditReset() {
     editor.mesh.reset();
 }
-
-/**
-    Flip vertically
-*/
-void incMeshFlipVert() {
-    editor.mesh.flipVert();
-}
-
-/**
-    Flip horizontally
-*/
-void incMeshFlipHorz() {
-    editor.mesh.flipHorz();
-}
-
-void incMeshEditSetTriangulate(bool triangulate_) {
-    triangulate = triangulate_;
-    if (editor.getToolMode() == VertexToolMode.Points)
-        editor.previewTriangulate = triangulate;
-    editor.refreshMesh();
-}
-
-bool incMeshEditGetTriangulate() {
-    return triangulate;
-}
-
-void incMeshEditApplyTriangulate() {
-    if (!triangulate) return;
-    triangulate = false;
-    editor.applyPreview();
-    editor.refreshMesh();
-}
-

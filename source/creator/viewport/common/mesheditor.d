@@ -147,13 +147,17 @@ public:
         deselectAll();
     }
 
+    bool previewingTriangulation() {
+         return previewTriangulate && toolMode == VertexToolMode.Points;
+    }
+
     void resetMesh() {
         mesh.reset();
     }
 
     void refreshMesh() {
         mesh.refresh();
-        if (previewTriangulate) {
+        if (previewingTriangulation()) {
             previewMesh = mesh.autoTriangulate();
         } else {
             previewMesh = null;
@@ -380,7 +384,7 @@ public:
             mesh.changed = true;
 
         if (mesh.changed) {
-            if (previewTriangulate)
+            if (previewingTriangulation())
                 previewMesh = mesh.autoTriangulate();
             mesh.changed = false;
         }
