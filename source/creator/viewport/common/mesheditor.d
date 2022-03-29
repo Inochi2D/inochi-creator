@@ -273,6 +273,7 @@ public:
         switch(toolMode) {
             case VertexToolMode.Points:
                 void addOrRemoveVertex(bool selectedOnly) {
+                    if (deformOnly) return;
                     // Check if mouse is over a vertex
                     if (vtxAtMouse !is null) {
 
@@ -298,6 +299,39 @@ public:
                         changed = true;
                         selectOne(mesh.vertices[off]);
                     }
+                }
+
+                // Key actions
+                if (!deformOnly && incInputIsKeyPressed(ImGuiKey.Delete)) {
+                    foreach(v; selected) {
+                        mesh.remove(v);
+                    }
+                    selected = [];
+                    refreshMesh();
+                    vertexMapDirty = true;
+                    changed = true;
+                }
+                void shiftSelection(vec2 delta) {
+                    float magnitude = 10.0;
+                    if (io.KeyAlt) magnitude = 1.0;
+                    else if (io.KeyShift) magnitude = 100.0;
+                    delta *= magnitude;
+
+                    foreach(v; selected) {
+                        v.position += delta;
+                    }
+                    refreshMesh();
+                    changed = true;
+                }
+
+                if (incInputIsKeyPressed(ImGuiKey.LeftArrow)) {
+                    shiftSelection(vec2(-1, 0));
+                } else if (incInputIsKeyPressed(ImGuiKey.RightArrow)) {
+                    shiftSelection(vec2(1, 0));
+                } else if (incInputIsKeyPressed(ImGuiKey.DownArrow)) {
+                    shiftSelection(vec2(0, 1));
+                } else if (incInputIsKeyPressed(ImGuiKey.UpArrow)) {
+                    shiftSelection(vec2(0, -1));
                 }
 
                 // Left click selection
