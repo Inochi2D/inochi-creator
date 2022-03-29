@@ -10,6 +10,7 @@ module creator.viewport.common.mesheditor;
 import creator.viewport;
 import creator.viewport.common.mesh;
 import creator.core.input;
+import creator;
 import inochi2d;
 import inochi2d.core.dbg;
 import bindbc.opengl;
@@ -22,11 +23,14 @@ enum VertexToolMode {
 
 class IncMeshEditor {
 private:
+    bool deformOnly = false;
+    bool vertexMapDirty = false;
+
     Drawable target;
     VertexToolMode toolMode = VertexToolMode.Points;
     MeshVertex*[] selected;
     bool isDragging = false;
-    bool deformOnly = false;
+
     vec2 lastMousePos;
     vec2 mousePos;
     IncMesh previewMesh;
@@ -198,6 +202,19 @@ public:
             }
         }
 
+        if (data.vertices.length != target.vertices.length)
+            vertexMapDirty = true;
+
+        if (vertexMapDirty) {
+            // Remove incompatible Deforms
+
+            foreach (param; incActivePuppet().parameters) {
+                ParameterBinding binding = param.getBinding(target, "deform");
+                if (binding) param.removeBinding(binding);
+            }
+            vertexMapDirty = false;
+        }
+
         // Apply the model
         target.rebuffer(data);
     }
@@ -245,6 +262,7 @@ public:
                             foreachMirror((uint axis) {
                                 mesh.removeVertexAt(mirror(axis, mousePos));
                             });
+                            vertexMapDirty = true;
                             changed = true;
                         }
                     } else {
@@ -252,6 +270,7 @@ public:
                         foreachMirror((uint axis) {
                             mesh.vertices ~= new MeshVertex(mirror(axis, mousePos), [], false);
                         });
+                        vertexMapDirty = true;
                         changed = true;
                         selectOne(mesh.vertices[off]);
                     }
