@@ -221,5 +221,7 @@ void incViewportTestPresent() {
 }
 
 void incViewportTestWithdraw() {
-    adaptor.stop();
+    if (adaptor) {
+        adaptor.stop();
+    }
 }
