@@ -480,10 +480,10 @@ public:
         vec2 min, max;
         getBounds(min, max);
 
-        // Pad
+        // Pad (fudge factors are a hack to work around contains() instability, TODO: fix)
         vec2 range = max - min;
-        min -= range / 2;
-        max += range / 2;
+        min -= range + vec2(range.y, range.x) + vec2(0.123, 0.125);
+        max += range + vec2(range.y, range.x) + vec2(0.127, 0.129);
 
         vec3u[] tris;
         vec3u[] tri2edge;
@@ -702,7 +702,10 @@ public:
                 found = true;
                 break;
             }
-            assert(found);
+            if (!found) {
+                debug(delaunay) writeln("FAILED!");
+                break;
+            }
 
             bool[] checked;
             checked.length = edge2tri.length;
