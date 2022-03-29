@@ -23,7 +23,7 @@ configuration "posix" {
 configuration "winapp" {
 	platforms "windows"
 	targetType "executable"
-	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup"
+	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="window-dmd"
 	sourceFiles "res\\inochi-creator.res"
 	preBuildCommands "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\Common7\\Tools\\VsDevCmd.bat\" & rc.exe /v res\\inochi-creator.rc"
 }
