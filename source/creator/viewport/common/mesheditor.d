@@ -40,6 +40,7 @@ private:
     bool isSelecting = false;
     bool mutateSelection = false;
     bool invertSelection = false;
+    MeshVertex* maybeSelectOne;
     vec2 selectOrigin;
     IncMesh previewMesh;
 
@@ -258,18 +259,26 @@ public:
             }
         }
 
+        if (igIsMouseClicked(ImGuiMouseButton.Left)) maybeSelectOne = null;
+
         switch(toolMode) {
             case VertexToolMode.Points:
 
                 // Left click selection
                 if (igIsMouseClicked(ImGuiMouseButton.Left)) {
                     if (mesh.isPointOverVertex(mousePos)) {
-                        if (io.KeyShift) toggleSelect(mesh.getVertexFromPoint(mousePos));
-                        else selectOne(mesh.getVertexFromPoint(mousePos));
+                        auto vtx = mesh.getVertexFromPoint(mousePos);
+                        if (io.KeyShift) toggleSelect(vtx);
+                        else if (!isSelected(vtx)) selectOne(mesh.getVertexFromPoint(mousePos));
+                        else maybeSelectOne = vtx;
                     } else {
                         selectOrigin = mousePos;
                         isSelecting = true;
                     }
+                }
+                if (!isDragging && !isSelecting &&
+                    incInputIsMouseReleased(ImGuiMouseButton.Left) && maybeSelectOne !is null) {
+                    selectOne(maybeSelectOne);
                 }
 
                 // Left double click action
