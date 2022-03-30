@@ -274,6 +274,22 @@ private {
 
                         keypointActions(param, cSelectedBindings.values);
 
+                        if (igBeginMenu(__("Interpolation Mode"), true)) {
+                            if (igMenuItem(__("Nearest"), "", false, true)) {
+                                foreach(binding; cSelectedBindings.values) {
+                                    binding.interpolateMode = InterpolateMode.Nearest;
+                                }
+                                incViewportNodeDeformNotifyParamValueChanged();
+                            }
+                            if (igMenuItem(__("Linear"), "", false, true)) {
+                                foreach(binding; cSelectedBindings.values) {
+                                    binding.interpolateMode = InterpolateMode.Linear;
+                                }
+                                incViewportNodeDeformNotifyParamValueChanged();
+                            }
+                            igEndMenu();
+                        }
+
                         bool haveCompatible = cCompatibleNodes.length > 0;
                         if (igBeginMenu(__("Copy to"), haveCompatible)) {
                             foreach(node; cCompatibleNodes) {
