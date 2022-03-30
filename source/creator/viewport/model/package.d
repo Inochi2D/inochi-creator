@@ -15,31 +15,32 @@ import bindbc.imgui;
 import i18n;
 
 void incViewportModelOverlay() {
-    igPushFont(incIconFont());
-        if (igButton("", ImVec2(0, 0))) {
-            incShowVertices = !incShowVertices;
-        }
-    igPopFont();
-    incTooltip(_("Show/hide Vertices"));
-        
-    igPushFont(incIconFont());
-        igSameLine(0, 0);
-        if (igButton("", ImVec2(0, 0))) {
-            incShowBounds = !incShowBounds;
-        }
-    igPopFont();
-    incTooltip(_("Show/hide Bounds"));
-
-    igPushFont(incIconFont());
-        igSameLine(0, 0);
-        if (igButton("", ImVec2(0, 0))) {
-            incShowOrientation = !incShowOrientation;
-        }
-    igPopFont();
-    incTooltip(_("Show/hide Orientation Gizmo"));
     if (incArmedParameter()) {
         igSameLine(0, 0);
         incViewportModelDeformOverlay();
+    } else {
+        igPushFont(incIconFont());
+            if (igButton("", ImVec2(0, 0))) {
+                incShowVertices = !incShowVertices;
+            }
+        igPopFont();
+        incTooltip(_("Show/hide Vertices"));
+            
+        igPushFont(incIconFont());
+            igSameLine(0, 0);
+            if (igButton("", ImVec2(0, 0))) {
+                incShowBounds = !incShowBounds;
+            }
+        igPopFont();
+        incTooltip(_("Show/hide Bounds"));
+
+        igPushFont(incIconFont());
+            igSameLine(0, 0);
+            if (igButton("", ImVec2(0, 0))) {
+                incShowOrientation = !incShowOrientation;
+            }
+        igPopFont();
+        incTooltip(_("Show/hide Orientation Gizmo"));
     }
 }
 
