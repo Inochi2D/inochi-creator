@@ -203,49 +203,21 @@ protected:
 
     }
 
-    void treeAddDrawable(ref Drawable n) {
-        igTextColored(ImVec4(0.6f, 0f, 0f, 0f), __("Node list is unavailable while editing meshes"));
-        // igTableNextRow();
-        // igTableSetColumnIndex(0);
-        
-        // ImGuiTreeNodeFlags flags;
-        // flags |= ImGuiTreeNodeFlags.Leaf;
-        // flags |= ImGuiTreeNodeFlags.DefaultOpen;
-        // flags |= ImGuiTreeNodeFlags.OpenOnArrow;
-
-        // igTreeNodeEx(cast(void*)n.uuid, flags, "");
-        //     // Show node entry stuff
-        //     igSameLine(0, 4);
-
-        //     igPushID(n.uuid);
-
-        //         bool selected = incNodeInSelection(n);
-
-        //         igPushFont(incIconFont());
-        //             igText(incTypeIdToIcon(n.typeId).ptr);
-        //         igPopFont();
-        //         igSameLine(0, 2);
-
-        //         if (igSelectable(n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
-        //             if (selected) {
-        //                 incFocusCamera(n, vec2(0, 0));
-        //             }
-        //             incSelectNode(n);
-        //             incVertexEditSetTarget(n);
-        //         }
-        //         // this.nodeActionsPopup(n);
-        //     igPopID();
-        // igTreePop();
-    }
-
     override
     void onUpdate() {
 
-        if (incEditMode == EditMode.ModelEdit){ 
-            auto io = igGetIO();
-            if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.A), false)) {
-                incSelectAll();
+        if (incEditMode == EditMode.ModelEdit) { 
+            if (!incArmedParameter) {
+                auto io = igGetIO();
+                if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.A), false)) {
+                    incSelectAll();
+                }
             }
+        }
+
+        if (incEditMode == EditMode.VertexEdit) {
+            igText(__("In vertex edit mode..."));
+            return;
         }
 
         igBeginChild_Str("NodesMain", ImVec2(0, -30), false);
@@ -258,10 +230,6 @@ protected:
                 
                 if (incEditMode == EditMode.ModelEdit) {
                     treeAddNode!true(incActivePuppet.root);
-                } else {
-                    foreach(drawable; incDrawables()) {
-                            treeAddDrawable(drawable);
-                    }
                 }
 
                 igEndTable();
