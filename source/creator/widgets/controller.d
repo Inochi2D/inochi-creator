@@ -175,7 +175,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
                         }
                     }
 
-                    if (isComplete)
+                    if (isComplete && isPartial)
                         ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotKeyComplete, 16);
                     else if (isPartial)
                         ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotKeyPartial, 16);
