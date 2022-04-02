@@ -163,6 +163,8 @@ public:
         interpolated.length = 0;
         drawLines.length = 0;
 
+        if (points.length == 0) return;
+
         vec2 last;
         foreach(pos; 0..(resolution * (points.length - 1) + 1)) {
             vec2 p = eval(pos / cast(float)(resolution));
