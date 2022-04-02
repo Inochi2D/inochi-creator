@@ -24,6 +24,8 @@ private {
     ParameterBinding[BindTarget] cSelectedBindings;
     Node[] cCompatibleNodes;
     vec2u cParamPoint;
+    vec2u cClipboardPoint;
+    ParameterBinding[BindTarget] cClipboardBindings;
 
     void refreshBindingList(Parameter param) {
         // Filter selection to remove anything that went away
@@ -228,6 +230,24 @@ private {
                 incViewportNodeDeformNotifyParamValueChanged();
             }
         }
+
+        if (igMenuItem(__("Copy"), "", false, true)) {
+            cClipboardPoint = cParamPoint;
+            cClipboardBindings.clear();
+            foreach(binding; bindings) {
+                cClipboardBindings[binding.getTarget()] = binding;
+            }
+        }
+
+        if (igMenuItem(__("Paste"), "", false,  true)) {
+            foreach(binding; bindings) {
+                if (binding.getTarget() in cClipboardBindings) {
+                    ParameterBinding origBinding = cClipboardBindings[binding.getTarget()];
+                    origBinding.copyKeypointToBinding(cClipboardPoint, binding, cParamPoint);
+                }
+            }
+        }
+
     }
 
     void bindingList(Parameter param) {
