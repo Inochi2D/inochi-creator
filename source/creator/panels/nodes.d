@@ -57,6 +57,14 @@ protected:
                 }
                 
                 igPushFont(incIconFont());
+                    igText(incTypeIdToIcon("Composite").ptr);
+                igPopFont();
+                igSameLine(0, 2);
+                if (igMenuItem(__("Composite"), "", false, true)) {
+                    incAddChildWithHistory(new Composite(n), n);
+                }
+                
+                igPushFont(incIconFont());
                     igText(incTypeIdToIcon("PathDeform").ptr);
                 igPopFont();
                 igSameLine(0, 2);

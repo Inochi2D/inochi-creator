@@ -7,6 +7,7 @@
 module creator;
 import inochi2d;
 import inochi2d.core.dbg;
+import inochi2d.core.nodes.common;
 import creator.viewport;
 import creator.viewport.model;
 import creator.viewport.model.deform;

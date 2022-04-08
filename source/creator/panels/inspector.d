@@ -13,6 +13,7 @@ import creator.utils;
 import creator.windows;
 import creator;
 import inochi2d;
+import inochi2d.core.nodes.common;
 import std.string;
 import std.algorithm.searching;
 import std.algorithm.mutation;
@@ -59,6 +60,18 @@ protected:
                         } else {
                             incModelModeHeader(node);
                             incInspectorModelTRS(node);
+
+                            // Node Drawable Section
+                            if (Composite composite = cast(Composite)node) {
+
+                                // Padding
+                                igSpacing();
+                                igSpacing();
+                                igSpacing();
+                                igSpacing();
+                                incInspectorModelComposite(composite);
+                            }
+
 
                             // Node Drawable Section
                             if (Drawable drawable = cast(Drawable)node) {
@@ -731,6 +744,67 @@ void incInspectorModelPart(Part node) {
         }
         igEndDragDropTarget();
     }
+
+    // Padding
+    igSpacing();
+    igSpacing();
+}
+
+void incInspectorModelComposite(Composite node) {
+    if (!igCollapsingHeader(__("Composite"), ImGuiTreeNodeFlags.DefaultOpen)) 
+        return;
+    
+
+    igSpacing();
+
+    // BLENDING MODE
+    import std.conv : text;
+    import std.string : toStringz;
+
+
+    igText(__("Tint"));
+    igColorEdit3("", cast(float[3]*)node.tint.value_ptr);
+
+    // Header for the Blending options for Parts
+    igText(__("Blending"));
+    if (igBeginCombo("###Blending", __(node.blendingMode.text))) {
+
+        // Normal blending mode as used in Photoshop, generally
+        // the default blending mode photoshop starts a layer out as.
+        if (igSelectable(__("Normal"), node.blendingMode == BlendMode.Normal)) node.blendingMode = BlendMode.Normal;
+        
+        // Multiply blending mode, in which this texture's color data
+        // will be multiplied with the color data already in the framebuffer.
+        if (igSelectable(__("Multiply"), node.blendingMode == BlendMode.Multiply)) node.blendingMode = BlendMode.Multiply;
+                
+        // Color Dodge blending mode
+        if (igSelectable(__("Color Dodge"), node.blendingMode == BlendMode.ColorDodge)) node.blendingMode = BlendMode.ColorDodge;
+                
+        // Linear Dodge blending mode
+        if (igSelectable(__("Linear Dodge"), node.blendingMode == BlendMode.LinearDodge)) node.blendingMode = BlendMode.LinearDodge;
+                        
+        // Screen blending mode
+        if (igSelectable(__("Screen"), node.blendingMode == BlendMode.Screen)) node.blendingMode = BlendMode.Screen;
+        
+        igEndCombo();
+    }
+
+    igSpacing();
+
+    igText(__("Opacity"));
+    igSliderFloat("###Opacity", &node.opacity, 0, 1f, "%0.2f");
+    igSpacing();
+    igSpacing();
+
+    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Masks"));
+    igSpacing();
+
+    // Threshold slider name for adjusting how transparent a pixel can be
+    // before it gets discarded.
+    igText(__("Threshold"));
+    igSliderFloat("###Threshold", &node.threshold, 0.0, 1.0, "%.2f");
+    
+    igSpacing();
 
     // Padding
     igSpacing();
