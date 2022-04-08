@@ -151,11 +151,6 @@ protected:
 
                         // We've added new stuff, rescan nodes
                         incActivePuppet().rescanNodes();
-
-                        foreach(Part part; incActivePuppet().getRootParts()) {
-                            import std.stdio : writeln;
-                            debug writeln(part);
-                        }
                         break;
 
                     // Allow dragging PSD in to main window
