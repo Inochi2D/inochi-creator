@@ -57,6 +57,16 @@ protected:
                                 incInspectorDeformPart(part, param, cursor);
                             }
 
+                            if (Composite composite = cast(Composite)node) {
+
+                                // Padding
+                                igSpacing();
+                                igSpacing();
+                                igSpacing();
+                                igSpacing();
+                                incInspectorDeformComposite(composite, param, cursor);
+                            }
+
                         } else {
                             incModelModeHeader(node);
                             incInspectorModelTRS(node);
@@ -1040,6 +1050,33 @@ void incInspectorDeformPart(Part node, Parameter param, vec2u cursor) {
     // before it gets discarded.
     igText(__("Threshold"));
     incInspectorDeformSliderFloat("###Threshold", "alphaThreshold", 0.0, 1.0, node, param, cursor);
+}
+
+void incInspectorDeformComposite(Composite node, Parameter param, vec2u cursor) {
+    if (!igCollapsingHeader(__("Composite"), ImGuiTreeNodeFlags.DefaultOpen)) 
+        return;
+
+    igBeginGroup();
+        igIndent(16);
+            // Header for texture options    
+            if (igCollapsingHeader(__("Textures")))  {
+
+                igText(__("Tint"));
+
+                incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
+
+                // Padding
+                igSeparator();
+                igSpacing();
+                igSpacing();
+            }
+        igUnindent();
+    igEndGroup();
+
+    igText(__("Opacity"));
+    incInspectorDeformSliderFloat("###Opacity", "opacity", 0, 1f, node, param, cursor);
+    igSpacing();
+    igSpacing();
 }
 
 //
