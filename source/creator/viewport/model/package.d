@@ -84,6 +84,9 @@ void incViewportModelDraw(Camera camera) {
                     }
                 }
                 
+                if (Driver selectedDriver = cast(Driver)selectedNode) {
+                    selectedDriver.drawDebug();
+                }
             }
         }
     }

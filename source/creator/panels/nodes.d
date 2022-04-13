@@ -65,11 +65,11 @@ protected:
                 }
                 
                 igPushFont(incIconFont());
-                    igText(incTypeIdToIcon("PathDeform").ptr);
+                    igText(incTypeIdToIcon("SimplePhysics").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItem(__("PathDeform"), "", false, true)) incAddChildWithHistory(new PathDeform(n), n);
-                
+                if (igMenuItem(__("Simple Physics"), "", false, true)) incAddChildWithHistory(new SimplePhysics(n), n);
+
                 igEndMenu();
             }
 

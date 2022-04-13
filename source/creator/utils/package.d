@@ -9,7 +9,7 @@ string incTypeIdToIcon(string typeId) {
         case "Part": return "\ue40a\0";
         case "Composite": return "\0";
         case "Mask": return "\ue14e\0";
-        case "PathDeform": return "\ue922\0";
+        case "SimplePhysics": return "\ue922\0";
         default: return "\ue97a\0"; 
     }
 }
@@ -22,7 +22,7 @@ string incTypeIdToIconConcat(string typeId) {
         case "Part": return "\ue40a";
         case "Composite": return "";
         case "Mask": return "\ue14e";
-        case "PathDeform": return "\ue922";
-        default: return "\ue97a"; 
+        case "SimplePhysics": return "\ue922";
+        default: return "\ue97a";
     }
 }

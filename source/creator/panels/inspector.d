@@ -104,6 +104,17 @@ protected:
                                 igSpacing();
                                 incInspectorModelPart(part);
                             }
+
+                            // Node SimplePhysics Section
+                            if (SimplePhysics part = cast(SimplePhysics)node) {
+
+                                // Padding
+                                igSpacing();
+                                igSpacing();
+                                igSpacing();
+                                igSpacing();
+                                incInspectorModelSimplePhysics(part);
+                            }
                         }
                     
                     break;
@@ -819,6 +830,87 @@ void incInspectorModelComposite(Composite node) {
     // Padding
     igSpacing();
     igSpacing();
+}
+
+void incInspectorModelSimplePhysics(SimplePhysics node) {
+    if (!igCollapsingHeader(__("SimplePhysics"), ImGuiTreeNodeFlags.DefaultOpen))
+        return;
+
+    float adjustSpeed = 1;
+
+    igSpacing();
+
+    // BLENDING MODE
+    import std.conv : text;
+    import std.string : toStringz;
+
+    igPushID("TargetParam");
+        igText(__("Parameter"));
+        string paramName = _("(unassigned)");
+        if (node.param !is null) paramName = node.param.name;
+        igInputText("", cast(char*)paramName.toStringz, paramName.length, ImGuiInputTextFlags.ReadOnly);
+
+        if(igBeginDragDropTarget()) {
+            ImGuiPayload* payload = igAcceptDragDropPayload("_PARAMETER");
+            if (payload !is null) {
+                Parameter payloadParam = *cast(Parameter*)payload.Data;
+                node.param = payloadParam;
+            }
+
+            igEndDragDropTarget();
+        }
+
+    igPopID();
+
+    igText(__("Type"));
+    if (igBeginCombo("###PhysType", __(node.modelType.text))) {
+
+        if (igSelectable(__("Pendulum"), node.modelType == PhysicsModel.Pendulum)) node.modelType = PhysicsModel.Pendulum;
+
+        igEndCombo();
+    }
+
+    igSpacing();
+
+    igPushID("SimplePhysics");
+
+    igPushID(0);
+    igText(__("Gravity scale"));
+    incDragFloat("gravity", &node.gravity, adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+    igSpacing();
+    igSpacing();
+    igPopID();
+
+    igPushID(1);
+    igText(__("Length"));
+    incDragFloat("length", &node.length, adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+    igSpacing();
+    igSpacing();
+    igPopID();
+
+    igPushID(2);
+    igText(__("Mass"));
+    incDragFloat("mass", &node.mass, adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+    igSpacing();
+    igSpacing();
+    igPopID();
+
+    igPushID(3);
+    igText(__("Damping"));
+    incDragFloat("damping_angle", &node.angleDamping, adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+    igPopID();
+
+    igPushID(4);
+    incDragFloat("damping_length", &node.lengthDamping, adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+    igSpacing();
+    igSpacing();
+    igPopID();
+
+    // Padding
+    igSpacing();
+    igSpacing();
+
+    igPopID();
 }
 
 //
