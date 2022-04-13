@@ -413,7 +413,14 @@ private {
     Generates a parameter view
 */
 void incParameterView(Parameter param, string* grab_param) {
-    if (!igCollapsingHeader(param.name.toStringz, ImGuiTreeNodeFlags.DefaultOpen)) return;
+    bool open = igCollapsingHeader(param.name.toStringz, ImGuiTreeNodeFlags.DefaultOpen);
+    if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
+        igSetDragDropPayload("_PARAMETER", cast(void*)&param, (&param).sizeof, ImGuiCond.Always);
+        igText(param.name.toStringz);
+        igEndDragDropSource();
+    }
+
+    if (!open) return;
     igIndent();
         igPushID(cast(void*)param);
 
