@@ -523,6 +523,11 @@ void incParameterView(Parameter param, string* grab_param) {
                         igNewLine();
                         igSeparator();
 
+                        if (igMenuItem(__("Duplicate"), "", false, true)) {
+                            Parameter newParam = param.dup;
+                            incActivePuppet().parameters ~= newParam;
+                        }
+
                         if (igMenuItem(__("Delete"), "", false, true)) {
                             if (incArmedParameter() == param) {
                                 incDisarmParameter();
