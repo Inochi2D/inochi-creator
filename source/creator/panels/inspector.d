@@ -676,6 +676,14 @@ void incInspectorModelPart(Part node) {
                         
         // Screen blending mode
         if (igSelectable(__("Screen"), node.blendingMode == BlendMode.Screen)) node.blendingMode = BlendMode.Screen;
+                        
+        // Clip to Lower blending mode
+        if (igSelectable(__("Clip to Lower"), node.blendingMode == BlendMode.ClipToLower)) node.blendingMode = BlendMode.ClipToLower;
+        incTooltip(_("Special blending mode that causes (while respecting transparency) the part to be clipped to everything underneath"));
+                        
+        // Slice from Lower blending mode
+        if (igSelectable(__("Slice from Lower"), node.blendingMode == BlendMode.SliceFromLower)) node.blendingMode = BlendMode.SliceFromLower;
+        incTooltip(_("Special blending mode that causes (while respecting transparency) the part to be slice by everything underneath.\nBasically reverse Clip to Lower."));
         
         igEndCombo();
     }
