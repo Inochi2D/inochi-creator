@@ -227,9 +227,9 @@ protected:
                         }
                         igEndDragDropTarget();
                     }
-
-                    treeAddNode(child);
                 igPopID();
+
+                treeAddNode(child);
             }
             igTreePop();
         }
