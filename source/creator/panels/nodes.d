@@ -80,8 +80,12 @@ protected:
                 
                 if (igMenuItem(__("Delete"), "", false, !isRoot)) {
 
-                    foreach(sn; selected) {
-                        incDeleteChildWithHistory(sn);
+                    if (selected.length > 1) {
+                        foreach(sn; selected) {
+                            incDeleteChildWithHistory(sn);
+                        }
+                    } else {
+                        incDeleteChildWithHistory(n);
                     }
 
                     // Make sure we don't keep selecting a node we've removed
