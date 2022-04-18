@@ -412,7 +412,7 @@ private {
 /**
     Generates a parameter view
 */
-void incParameterView(Parameter param, string* grab_param) {
+void incParameterView(Parameter param, string* grabParam) {
     bool open = igCollapsingHeader(param.name.toStringz, ImGuiTreeNodeFlags.DefaultOpen);
     if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
         igSetDragDropPayload("_PARAMETER", cast(void*)&param, (&param).sizeof, ImGuiCond.Always);
@@ -441,16 +441,16 @@ void incParameterView(Parameter param, string* grab_param) {
                 if (param.isVec2) igText("%.2f %.2f", param.value.x, param.value.y);
                 else igText("%.2f", param.value.x);
 
-                if (incController("###CONTROLLER", param, ImVec2(avail.x-18, reqSpace-24), incArmedParameter() == param, *grab_param)) {
+                if (incController("###CONTROLLER", param, ImVec2(avail.x-18, reqSpace-24), incArmedParameter() == param, *grabParam)) {
                     if (incArmedParameter() == param) {
                         incViewportNodeDeformNotifyParamValueChanged();
                         paramPointChanged(param);
                     }
                     if (igIsMouseDown(ImGuiMouseButton.Left)) {
-                        if (*grab_param == null)
-                            *grab_param = param.name;
+                        if (*grabParam == null)
+                            *grabParam = param.name;
                     } else {
-                        *grab_param = "";
+                        *grabParam = "";
                     }
                 }
                 if (igIsItemClicked(ImGuiMouseButton.Right)) {
@@ -577,7 +577,7 @@ void incParameterView(Parameter param, string* grab_param) {
 class ParametersPanel : Panel {
 private:
     string filter;
-    string grab_param = "";
+    string grabParam = "";
 protected:
     override
     void onUpdate() {
@@ -648,7 +648,7 @@ protected:
             
             // Always render the currently armed parameter on top
             if (incArmedParameter()) {
-                incParameterView(incArmedParameter(), &grab_param);
+                incParameterView(incArmedParameter(), &grabParam);
             }
 
             // Render other parameters
@@ -656,7 +656,7 @@ protected:
                 if (incArmedParameter() == param) continue;
                 import std.algorithm.searching : canFind;
                 if (filter.length == 0 || param.indexableName.canFind(filter)) {
-                    incParameterView(param, &grab_param);
+                    incParameterView(param, &grabParam);
                 }
             }
         }

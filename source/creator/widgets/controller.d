@@ -21,7 +21,7 @@ struct EditableAxisPoint {
 /**
     A Parameter controller
 */
-bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSnap = false, string grab_param = "") {
+bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSnap = false, string grabParam = "") {
     ImGuiWindow* window = igGetCurrentWindow();
     if (window.SkipItems) return false;
 
@@ -74,7 +74,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
             if (hovered && igIsMouseDown(ImGuiMouseButton.Right)) {
                 held = true;
             }
-            if ((grab_param == param.name) || (hovered && held)) {
+            if ((grabParam == param.name) || (hovered && held)) {
                 igGetMousePos(&mPos);
                 ImVec2 vCursorPos = ImVec2(mPos.x - oRect.Min.x, mPos.y - oRect.Min.y);
 
@@ -227,7 +227,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
             if (hovered && igIsMouseDown(ImGuiMouseButton.Right)) {
                 held = true;
             }
-            if ((grab_param == param.name) || (hovered && held)) {
+            if ((grabParam == param.name) || (hovered && held)) {
                 igGetMousePos(&mPos);
                 ImVec2 vCursorPos = ImVec2(mPos.x - oRect.Min.x, mPos.y - oRect.Min.y);
 
