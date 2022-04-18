@@ -538,10 +538,6 @@ void incParameterView(Parameter param, string* grabParam) {
                         igNewLine();
                         igSeparator();
 
-                        if (igMenuItem(__("Fix Scales"), "", false, true)) {
-                            fixScales(param);
-                        }
-
                         // Sets the default value of the param
                         if (igMenuItem(__("Set Starting Position"), "", false, true)) {
                             param.defaults = param.value;
