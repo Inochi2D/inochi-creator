@@ -226,6 +226,7 @@ protected:
                                 }
                             }
                             
+                            igPopID();
                             igTreePop();
                             return;
                         }
