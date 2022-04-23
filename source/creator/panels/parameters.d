@@ -244,10 +244,15 @@ private {
         }
 
         if (igMenuItem(__("Paste"), "", false,  true)) {
-            foreach(binding; bindings) {
-                if (binding.getTarget() in cClipboardBindings) {
-                    ParameterBinding origBinding = cClipboardBindings[binding.getTarget()];
-                    origBinding.copyKeypointToBinding(cClipboardPoint, binding, cParamPoint);
+            if (bindings.length == 1 && cClipboardBindings.length == 1 &&
+                bindings[0].isCompatibleWithNode(cClipboardBindings.values[0].getNode())) {
+                cClipboardBindings.values[0].copyKeypointToBinding(cClipboardPoint, bindings[0], cParamPoint);
+            } else {
+                foreach(binding; bindings) {
+                    if (binding.getTarget() in cClipboardBindings) {
+                        ParameterBinding origBinding = cClipboardBindings[binding.getTarget()];
+                        origBinding.copyKeypointToBinding(cClipboardPoint, binding, cParamPoint);
+                    }
                 }
             }
         }
