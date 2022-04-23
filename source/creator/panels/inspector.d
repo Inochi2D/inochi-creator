@@ -903,6 +903,20 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
 
         if (igSelectable(__("Pendulum"), node.modelType == PhysicsModel.Pendulum)) node.modelType = PhysicsModel.Pendulum;
 
+        if (igSelectable(__("SpringPendulum"), node.modelType == PhysicsModel.SpringPendulum)) node.modelType = PhysicsModel.SpringPendulum;
+
+        igEndCombo();
+    }
+
+    igSpacing();
+
+    igText(__("Mapping mode"));
+    if (igBeginCombo("###PhysMapMode", __(node.mapMode.text))) {
+
+        if (igSelectable(__("AngleLength"), node.mapMode == ParamMapMode.AngleLength)) node.mapMode = ParamMapMode.AngleLength;
+
+        if (igSelectable(__("XY"), node.mapMode == ParamMapMode.XY)) node.mapMode = ParamMapMode.XY;
+
         igEndCombo();
     }
 
@@ -925,19 +939,30 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
     igPopID();
 
     igPushID(2);
-    igText(__("Mass"));
-    incDragFloat("mass", &node.mass, adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+    igText(__("Resonant frequency"));
+    incDragFloat("frequency", &node.frequency, adjustSpeed/100, 0.01, 30, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
     igSpacing();
     igSpacing();
     igPopID();
 
     igPushID(3);
     igText(__("Damping"));
-    incDragFloat("damping_angle", &node.angleDamping, adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+    incDragFloat("damping_angle", &node.angleDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
     igPopID();
 
     igPushID(4);
-    incDragFloat("damping_length", &node.lengthDamping, adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+    incDragFloat("damping_length", &node.lengthDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+    igSpacing();
+    igSpacing();
+    igPopID();
+
+    igPushID(5);
+    igText(__("Output scale"));
+    incDragFloat("output_scale.x", &node.outputScale.vector[0], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+    igPopID();
+
+    igPushID(6);
+    incDragFloat("output_scale.y", &node.outputScale.vector[1], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
     igSpacing();
     igSpacing();
     igPopID();
