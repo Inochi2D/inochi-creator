@@ -16,11 +16,13 @@ import inochi2d;
 import i18n;
 import std.uni : toLower;
 import std.stdio;
+import std.algorithm;
 import creator.utils;
 
 private {
     ParameterBinding[][Node] cParamBindingEntries;
     ParameterBinding[][Node] cParamBindingEntriesAll;
+    Node[] cAllBoundNodes;
     ParameterBinding[BindTarget] cSelectedBindings;
     Node[] cCompatibleNodes;
     vec2u cParamPoint;
@@ -37,6 +39,8 @@ private {
             if (target in cSelectedBindings) newSelectedBindings[target] = binding;
             cParamBindingEntriesAll[binding.getNode()] ~= binding;
         }
+        cAllBoundNodes = cParamBindingEntriesAll.keys.dup;
+        cAllBoundNodes.sort!((x, y) => x.name < y.name);
         cSelectedBindings = newSelectedBindings;
         paramPointChanged(param);
     }
@@ -263,7 +267,8 @@ private {
             igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 1));
             igPushStyleVar(ImGuiStyleVar.IndentSpacing, 14);
 
-            foreach(node, allBindings; cParamBindingEntriesAll) {
+            foreach(node; cAllBoundNodes) {
+                ParameterBinding[] allBindings = cParamBindingEntriesAll[node];
                 ParameterBinding[] *bindings = (node in cParamBindingEntries);
 
                 // Figure out if node is selected ( == all bindings selected)
@@ -312,17 +317,17 @@ private {
 
                         bool haveCompatible = cCompatibleNodes.length > 0;
                         if (igBeginMenu(__("Copy to"), haveCompatible)) {
-                            foreach(node; cCompatibleNodes) {
-                                if (igMenuItem(node.name.toStringz, "", false, true)) {
-                                    copySelectionToNode(param, node);
+                            foreach(cNode; cCompatibleNodes) {
+                                if (igMenuItem(cNode.name.toStringz, "", false, true)) {
+                                    copySelectionToNode(param, cNode);
                                 }
                             }
                             igEndMenu();
                         }
                         if (igBeginMenu(__("Swap with"), haveCompatible)) {
-                            foreach(node; cCompatibleNodes) {
-                                if (igMenuItem(node.name.toStringz, "", false, true)) {
-                                    swapSelectionWithNode(param, node);
+                            foreach(cNode; cCompatibleNodes) {
+                                if (igMenuItem(cNode.name.toStringz, "", false, true)) {
+                                    swapSelectionWithNode(param, cNode);
                                 }
                             }
                             igEndMenu();
@@ -359,12 +364,12 @@ private {
                         }
                     }
                     foreach(binding; allBindings) {
-                        ImGuiTreeNodeFlags flags =
+                        ImGuiTreeNodeFlags flags2 =
                             ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.OpenOnArrow |
                             ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.NoTreePushOnOpen;
 
                         bool selected = cast(bool)(binding.getTarget() in cSelectedBindings);
-                        if (selected) flags |= ImGuiTreeNodeFlags.Selected;
+                        if (selected) flags2 |= ImGuiTreeNodeFlags.Selected;
 
                         // Style as inactive if not set at this keypoint
                         if (!binding.isSet(cParamPoint))
@@ -378,7 +383,7 @@ private {
                         } else {
                             label = binding.getName();
                         }
-                        igTreeNodeEx("binding", flags, label.toStringz);
+                        igTreeNodeEx("binding", flags2, label.toStringz);
                         if (!binding.isSet(cParamPoint)) igPopStyleColor();
 
                         // Binding selection logic
