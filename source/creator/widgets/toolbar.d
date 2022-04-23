@@ -29,6 +29,16 @@ void incToolbar() {
             igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
                 igPushFont(incIconFont());
 
+                    if (incButtonColored("", ImVec2(32, 32), incActivePuppet().enableDrivers ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
+                        incActivePuppet().enableDrivers = !incActivePuppet().enableDrivers;
+                    }
+                    incTooltip(_("Enable physics"));
+
+                    if (incButtonColored("", ImVec2(32, 32), ImVec4.init)) {
+                        incActivePuppet().resetDrivers();
+                    }
+                    incTooltip(_("Reset physics"));
+
                     // Draw the toolbar relevant for that viewport
                     incViewportToolbar();
                 igPopFont();
