@@ -106,7 +106,7 @@ public:
             vec2 pt = target.eval(off);
             vec2 pt2 = target.eval(off + epsilon);
             vec2 tangent = pt2 - pt;
-            tangent = tangent / abs(tangent.distance(vec2(0, 0)));
+            tangent.normalize();
 
             // FIXME: extrapolation...
             if (off <= 0 || off >= (points.length - 1)) {
