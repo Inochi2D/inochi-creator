@@ -193,6 +193,9 @@ public:
     void setToolMode(VertexToolMode toolMode) {
         assert(!deformOnly || toolMode != VertexToolMode.Connect);
         this.toolMode = toolMode;
+        isDragging = false;
+        isSelecting = false;
+        pathDragTarget = -1;
         deselectAll();
     }
 
