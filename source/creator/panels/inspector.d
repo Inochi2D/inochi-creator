@@ -254,6 +254,22 @@ void incInspectorModelInfo() {
             incInputText("", puppet.meta.reference);
         igPopID();
     }
+
+    if (igCollapsingHeader(__("Physics Globals"), ImGuiTreeNodeFlags.DefaultOpen)) {
+        igPushID("PixelsPerMeter");
+            igText(__("Pixels per meter"));
+            incTooltip(_("Number of pixels that correspond to 1 meter in the physics engine."));
+            incDragFloat("PixelsPerMeter", &puppet.physics.pixelsPerMeter, 1, 1, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+        igPopID();
+        igSpacing();
+
+        igPushID("Gravity");
+            igText(__("Gravity"));
+            incTooltip(_("Acceleration due to gravity, in m/s². Earth gravity is 9.8."));
+            incDragFloat("Gravity", &puppet.physics.gravity, 0.01, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+        igPopID();
+        igSpacing();
+    }
 }
 
 void incModelModeHeader(Node node) {
