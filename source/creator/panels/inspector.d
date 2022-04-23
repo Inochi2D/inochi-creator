@@ -698,26 +698,6 @@ void incInspectorModelPart(Part node) {
     igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Masks"));
     igSpacing();
 
-    // The masking mode to apply if there's any source specified.
-    igText(__("Mode"));
-    if (igBeginCombo("###Mode", node.maskingMode ? __("Dodge") : __("Mask"))) {
-
-        // A masking mode where only areas of this Part that overlap the other
-        // source drawables gets drawn
-        if (igSelectable(__("Mask"), node.maskingMode == MaskingMode.Mask)) {
-            node.maskingMode = MaskingMode.Mask;
-        }
-
-        // A masking mode where areas of this Part that overlap the other
-        // source drawables gets discarded
-        if (igSelectable(__("Dodge"), node.maskingMode == MaskingMode.DodgeMask)) {
-            node.maskingMode = MaskingMode.DodgeMask;
-        }
-        igEndCombo();
-    }
-
-    igSpacing();
-
     // Threshold slider name for adjusting how transparent a pixel can be
     // before it gets discarded.
     igText(__("Threshold"));
@@ -730,12 +710,60 @@ void incInspectorModelPart(Part node) {
     // things that do.
     igText(__("Mask Sources"));
     if (igBeginListBox("###MaskSources", ImVec2(0, 128))) {
-        foreach(i, masker; node.mask) {
+        foreach(i; 0..node.masks.length) {
+            MaskBinding* masker = &node.masks[i];
             igPushID(cast(int)i);
-                igText(masker.name.toStringz);
+                if (igBeginPopup("###MaskSettings")) {
+                    if (igBeginMenu(__("Mode"))) {
+                        if (igMenuItem(__("Mask"), null, masker.mode == MaskingMode.Mask)) masker.mode = MaskingMode.Mask;
+                        if (igMenuItem(__("Dodge"), null, masker.mode == MaskingMode.DodgeMask)) masker.mode = MaskingMode.DodgeMask;
+                        
+                        igEndMenu();
+                    }
+
+                    if (igMenuItem(__("Delete"))) {
+                        import std.algorithm.mutation : remove;
+                        node.masks = node.masks.remove(i);
+                        igEndPopup();
+                        igPopID();
+                        igEndListBox();
+                        return;
+                    }
+
+                    igEndPopup();
+                }
+
+                if (masker.mode == MaskingMode.Mask) igSelectable(_("%s (Mask)").format(masker.maskSrc.name).toStringz);
+                else igSelectable(_("%s (Dodge)").format(masker.maskSrc.name).toStringz);
+
+                
+                if(igBeginDragDropTarget()) {
+                    ImGuiPayload* payload = igAcceptDragDropPayload("_MASKITEM");
+                    if (payload !is null) {
+                        if (MaskBinding* binding = cast(MaskBinding*)payload.Data) {
+                            ptrdiff_t maskIdx = node.getMaskIdx(binding.maskSrcUUID);
+                            if (maskIdx >= 0) {
+                                import std.algorithm.mutation : remove;
+
+                                node.masks = node.masks.remove(maskIdx);
+                                if (i == 0) node.masks = *binding ~ node.masks;
+                                else if (i >= node.masks.length-1) node.masks ~= *binding;
+                                else node.masks = node.masks[0..i] ~ *binding ~ node.masks[i+1..$];
+                            }
+                        }
+                    }
+                    
+                    igEndDragDropTarget();
+                }
+
+                // TODO: We really should account for left vs. right handedness
+                if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                    igOpenPopup("###MaskSettings");
+                }
+
                 if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
-                    igSetDragDropPayload("_MASKITEM", cast(void*)&masker, (&masker).sizeof, ImGuiCond.Always);
-                    igText(masker.name.toStringz);
+                    igSetDragDropPayload("_MASKITEM", cast(void*)masker, MaskBinding.sizeof, ImGuiCond.Always);
+                    igText(masker.maskSrc.name.toStringz);
                     igEndDragDropSource();
                 }
             igPopID();
@@ -749,28 +777,12 @@ void incInspectorModelPart(Part node) {
             if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
 
                 // Make sure we don't mask against ourselves as well as don't double mask
-                if (payloadDrawable != node && !node.mask.canFind(payloadDrawable)) {
-                    node.mask ~= payloadDrawable;
+                if (payloadDrawable != node && !node.isMaskedBy(payloadDrawable)) {
+                    node.masks ~= MaskBinding(payloadDrawable.uuid, MaskingMode.Mask, payloadDrawable);
                 }
             }
         }
         
-        igEndDragDropTarget();
-    }
-
-    igButton("ー", ImVec2(0, 0));
-    if(igBeginDragDropTarget()) {
-        ImGuiPayload* payload = igAcceptDragDropPayload("_MASKITEM");
-        if (payload !is null) {
-            if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
-                foreach(i; 0..node.mask.length) {
-                    if (payloadDrawable.uuid == node.mask[i].uuid) {
-                        node.mask = node.mask.remove(i);
-                        break;
-                    }
-                }
-            }
-        }
         igEndDragDropTarget();
     }
 
