@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-04-27 01:04+0900\n"
-"PO-Revision-Date: 2022-04-27 04:02+0900\n"
+"PO-Revision-Date: 2022-04-27 04:30+0900\n"
 "Last-Translator: Sae Okuri <sae.okuri@gmail.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
@@ -33,7 +33,6 @@ msgid "Enabled"
 msgstr "有効"
 
 #: source/creator/actions/node.d:140 source/creator/actions/node.d:147
-#, fuzzy
 msgid "Disabled"
 msgstr "無効"
 
@@ -85,7 +84,6 @@ msgid "Texture Viewer"
 msgstr "テクスチャビューワー"
 
 #: source/creator/windows/trkbind.d:47 source/creator/panels/inspector.d:884
-#, fuzzy
 msgid "Parameter"
 msgstr "パラメータ"
 
@@ -98,39 +96,32 @@ msgid "Bone Input"
 msgstr "ボーン入力"
 
 #: source/creator/windows/trkbind.d:83
-#, fuzzy
 msgid "Position (X)"
-msgstr "X軸回転"
+msgstr "X軸座標"
 
 #: source/creator/windows/trkbind.d:84
-#, fuzzy
 msgid "Position (Y)"
-msgstr "Y軸回転"
+msgstr "Y軸座標"
 
 #: source/creator/windows/trkbind.d:85
-#, fuzzy
 msgid "Position (Z)"
-msgstr "Z軸回転"
+msgstr "Z軸座標"
 
 #: source/creator/windows/trkbind.d:86
-#, fuzzy
 msgid "Rotation (X)"
-msgstr "X軸回転"
+msgstr "X軸座標"
 
 #: source/creator/windows/trkbind.d:87
-#, fuzzy
 msgid "Rotation (Y)"
-msgstr "Y軸回転"
+msgstr "Y軸座標"
 
 #: source/creator/windows/trkbind.d:88
-#, fuzzy
 msgid "Rotation (Z)"
-msgstr "Z軸回転"
+msgstr "Z軸座標"
 
 #: source/creator/windows/trkbind.d:94
-#, fuzzy
 msgid "Binding Axis"
-msgstr "合成"
+msgstr "割り当て軸"
 
 #: source/creator/windows/trkbind.d:110 source/creator/panels/parameters.d:184
 msgid "Invert"
@@ -156,9 +147,8 @@ msgstr "キャンセル"
 #. Parameter it's attached to.
 #. Keypoints show up on every intersecting axis line.
 #: source/creator/windows/paramaxes.d:189
-#, fuzzy
 msgid "Parameter Axes Points"
-msgstr "パラメータ"
+msgstr "キー設定"
 
 #. Donate button
 #. NOTE: Is this too obstructive in the UI?
@@ -375,9 +365,8 @@ msgid "Paste"
 msgstr "貼り付け"
 
 #: source/creator/panels/parameters.d:263
-#, fuzzy
 msgid "Bindings"
-msgstr "合成"
+msgstr "割り当て"
 
 #: source/creator/panels/parameters.d:298
 msgid "Remove"
@@ -608,7 +597,6 @@ msgid "Where to contact the main author of the puppet"
 msgstr "パペットのメイン作者の連絡先"
 
 #: source/creator/panels/inspector.d:236
-#, fuzzy
 msgid "Licensing"
 msgstr "ライセンス"
 
@@ -748,9 +736,8 @@ msgstr "ピクセルにスナップ"
 #. negative values = closer to camera
 #. positive values = further away from camera
 #: source/creator/panels/inspector.d:585 source/creator/panels/inspector.d:1172
-#, fuzzy
 msgid "Sorting"
-msgstr "ソート"
+msgstr "ソート\t"
 
 #. The main type of anything that can be drawn to the screen
 #. in Inochi2D.
@@ -897,7 +884,7 @@ msgstr "(割当てなし)"
 
 #: source/creator/panels/inspector.d:901
 msgid "Type"
-msgstr "タイプ"
+msgstr "種別"
 
 #: source/creator/panels/inspector.d:904
 msgid "Pendulum"
@@ -1024,9 +1011,8 @@ msgid "Edit Animation"
 msgstr "アニメーション編集"
 
 #: source/creator/widgets/toolbar.d:70
-#, fuzzy
 msgid "Test Puppet"
-msgstr "パペット"
+msgstr "パペットをテスト"
 
 #: source/creator/widgets/mainmenu.d:36
 msgid "Open..."
@@ -1126,7 +1112,6 @@ msgid "Cut"
 msgstr "切り取り"
 
 #: source/creator/widgets/mainmenu.d:205
-#, fuzzy
 msgid "ImGui Debugging"
 msgstr "ImGuiデバッガー"
 
