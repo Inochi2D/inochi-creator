@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-04-27 01:04+0900\n"
-"PO-Revision-Date: 2022-04-27 02:03+0900\n"
+"PO-Revision-Date: 2022-04-27 04:02+0900\n"
 "Last-Translator: Sae Okuri <sae.okuri@gmail.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
@@ -330,11 +330,11 @@ msgstr "ノード"
 
 #: source/creator/panels/parameters.d:166
 msgid "Unset"
-msgstr "キーフレームを削除"
+msgstr "キーを削除"
 
 #: source/creator/panels/parameters.d:172
 msgid "Set to current"
-msgstr "キーフレームを追加"
+msgstr "キーを追加"
 
 #: source/creator/panels/parameters.d:178
 msgid "Reset"
@@ -410,23 +410,23 @@ msgstr "プロパティ..."
 
 #: source/creator/panels/parameters.d:484
 msgid "Edit Axes Points"
-msgstr "キーフレーム設定"
+msgstr "キー設定"
 
 #: source/creator/panels/parameters.d:489
 msgid "Flip X"
-msgstr "キーフレームの左右入れ替え"
+msgstr "キーの左右入れ替え"
 
 #: source/creator/panels/parameters.d:492
 msgid "Flip Y"
-msgstr "キーフレームの上下入れ替え"
+msgstr "キーの上下入れ替え"
 
 #: source/creator/panels/parameters.d:496
 msgid "Flip"
-msgstr "キーフレームの対称入れ替え"
+msgstr "キーの対称入れ替え"
 
 #: source/creator/panels/parameters.d:511
 msgid "Mirrored Autofill"
-msgstr "反転コピーしてキーフレームを設定"
+msgstr "反転コピーしてキーを設定"
 
 #: source/creator/panels/parameters.d:512
 msgid ""
