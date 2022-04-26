@@ -85,7 +85,7 @@ protected:
                             igSpacing();
                             igSpacing();
 
-                            igText("Undo/Redo History");
+                            igText(__("Undo/Redo History"));
                             igSeparator();
                             
                             int maxHistory = cast(int)incActionGetUndoHistoryLength();
