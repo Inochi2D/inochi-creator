@@ -17,24 +17,34 @@ lflags "-rpath=$$ORIGIN" platform="linux"
 versions "GL_32" "GL_KHR_debug" "GL_AllowDeprecated" "USE_SDL2" "USE_GL" "SDL_208" "USE_OpenGL3"
 stringImportPaths "res/" "./"
 preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\""
-configuration "posix" {
+
+// These configurations are meant for debug and unoffical builds of Inochi Creator
+// We will not provide support for barebones builds unless bugs/issues can be replicated
+// in official builds.
+
+configuration "barebones" {
 	targetType "executable"
 }
-configuration "winapp" {
+
+configuration "win32-barebones" {
+	platforms "windows"
+	targetType "executable"
+	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup"
+}
+
+// Official build configurations.
+// Do not package your compilation of Inochi Creator with these configurations
+// unless you have prior permission from the Inochi2D project.
+configuration "full" {
+	targetType "executable"
+	versions "InBranding"
+}
+
+configuration "win32-full" {
 	platforms "windows"
 	targetType "executable"
 	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="window-dmd"
 	sourceFiles "res\\inochi-creator.res"
 	preBuildCommands "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\Common7\\Tools\\VsDevCmd.bat\" & rc.exe /v res\\inochi-creator.rc"
-}
-configuration "winapp-noicon" {
-	platforms "windows"
-	targetType "executable"
-	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup"
-}
-configuration "winapp-debug" {
-	platforms "windows"
-	targetType "executable"
-	sourceFiles "res\\inochi-creator.res"
-	preBuildCommands "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\Common7\\Tools\\VsDevCmd.bat\" & rc.exe /v res\\inochi-creator.rc"
+	versions "InBranding"
 }
