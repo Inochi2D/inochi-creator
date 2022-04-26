@@ -191,7 +191,7 @@ void incOpenWindow() {
         );
 
         glEnable(GL_DEBUG_OUTPUT);
-        version(Posix) {
+        version(linux) {
             glDebugMessageCallback(&incDebugCallback, null);
         }
     }
