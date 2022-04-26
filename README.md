@@ -7,6 +7,20 @@
 
 Inochi Creator is tool to create and edit [Inochi2D puppets](https://github.com/Inochi2D/inochi2d).
 
+## For package maintainers
+We do not officially support packages that we don't officially build ourselves, we ask that you build using the barebones configurations, as the branding assets are copyright the Inochi2D Project.  
+You may request permission to use our branding assets in your package by submitting an issue.
+
+Barebones builds are more or less equivalent to official builds with the exception that branding is removed,  
+and that we don't accept support tickets unless a problem can be replicated on an official build.
+
+## What package formats are/will be officially supported?
+Anything we upload to the Releases page is officially supported, as well as anything that is linked to on our official website (TBA).  
+We currently plan to distribute Inochi Creator in the following formats:
+ - Windows MSI Installer
+ - Linux AppImage
+ - macOS DMG
+
 ## Under Construction
 Inochi Creator is currently under construction and is not recommended for production use.
 

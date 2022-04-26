@@ -95,18 +95,23 @@ void incTitlebar(string title) {
             if (igBeginMenuBar()) {
                 ImVec2 avail;
                 igGetContentRegionAvail(&avail);
-                igImage(
-                    cast(void*)incGetLogo(), 
-                    ImVec2(avail.y*2, avail.y*2), 
-                    ImVec2(0, 0), ImVec2(1, 1), 
-                    ImVec4(1, 1, 1, 1), 
-                    ImVec4(0, 0, 0, 0)
-                );
-                
-                debug {
-                    igText((title~_(" (Debug Mode)")).toStringz);
+
+                version (InBranding) {
+                    igImage(
+                        cast(void*)incGetLogo(), 
+                        ImVec2(avail.y*2, avail.y*2), 
+                        ImVec2(0, 0), ImVec2(1, 1), 
+                        ImVec4(1, 1, 1, 1), 
+                        ImVec4(0, 0, 0, 0)
+                    );
+
+                    debug {
+                        igText((title~_(" (Debug Mode)")).toStringz);
+                    } else {
+                        igText(title.toStringz);
+                    }
                 } else {
-                    igText(title.toStringz);
+                    igText((title~_(" (Unsupported)")).toStringz);
                 }
 
                 // :)

@@ -29,6 +29,7 @@ public import creator.core.actionstack;
 public import creator.core.taskstack;
 public import creator.core.path;
 public import creator.core.font;
+import i18n;
 
 private {
     SDL_GLContext gl_context;
@@ -37,7 +38,7 @@ private {
     bool done = false;
     ImGuiID viewportDock;
 
-    Texture inLogo;
+    version (InBranding) Texture inLogo;
 
     ImFont* mainFont;
     ImFont* iconFont;
@@ -155,8 +156,12 @@ void incOpenWindow() {
     // Don't make KDE freak out when Inochi Creator opens
     if (!incSettingsGet!bool("DisableCompositor")) SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
 
+    version(InBranding) {
+        debug string WIN_TITLE = "Inochi Creator "~_("(Debug Mode)");
+        else string WIN_TITLE = "Inochi Creator "~INC_VERSION;
+    } else string WIN_TITLE = "Inochi Creator "~_("(Unsupported)");
     window = SDL_CreateWindow(
-        "Inochi Creator", 
+        WIN_TITLE.toStringz, 
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         cast(uint)incSettingsGet!int("WinW", 1280), 
@@ -201,9 +206,10 @@ void incOpenWindow() {
 
     incCreateContext();
 
-
-    // Load image resources
-    inLogo = new Texture(ShallowTexture(cast(ubyte[])import("logo.png")));
+    version (InBranding) {
+        // Load image resources
+        inLogo = new Texture(ShallowTexture(cast(ubyte[])import("logo.png")));
+    }
 
     // Load Settings
     incShowStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
@@ -531,11 +537,14 @@ ImFont* incIconFont() {
     return iconFont;
 }
 
-/**
-    Gets the Inochi2D Logo
-*/
-GLuint incGetLogo() {
-    return inLogo.getTextureId;
+
+version (InBranding) {
+    /**
+        Gets the Inochi2D Logo
+    */
+    GLuint incGetLogo() {
+        return inLogo.getTextureId;
+    }
 }
 
 void incHandleShortcuts() {

@@ -18,11 +18,12 @@ import std.stdio;
 
 class AboutWindow : Window {
 private:
-    Texture ada;
-    enum ADA_SIZE = 373;
-    enum ADA_SIZE_PARTIAL = ADA_SIZE/6;
-
-    vec2 ada_float;
+    version (InBranding) {
+        Texture ada;
+        enum ADA_SIZE = 373;
+        enum ADA_SIZE_PARTIAL = ADA_SIZE/6;
+        vec2 ada_float;
+    }
 
 protected:
     override
@@ -39,30 +40,36 @@ protected:
         ImVec2 sPos;
         igGetCursorScreenPos(&sPos);
 
-        ImVec2 avail = incAvailableSpace();
-        igSetCursorScreenPos(ImVec2(
-            sPos.x+(avail.x-(ADA_SIZE-ADA_SIZE_PARTIAL)), 
-            sPos.y+(avail.y-(ADA_SIZE+28))+(sin(currentTime())*4)
-        ));
-        igImage(
-            cast(void*)ada.getTextureId(),
-            ImVec2(ADA_SIZE, ADA_SIZE),
-            ImVec2(0, 0),
-            ImVec2(1, 1), 
-            ImVec4(1, 1, 1, 0.4), ImVec4(0, 0, 0, 0)
-        );
+
+        version (InBranding) {
+            ImVec2 avail = incAvailableSpace();
+            igSetCursorScreenPos(ImVec2(
+                sPos.x+(avail.x-(ADA_SIZE-ADA_SIZE_PARTIAL)), 
+                sPos.y+(avail.y-(ADA_SIZE+28))+(sin(currentTime())*4)
+            ));
+            igImage(
+                cast(void*)ada.getTextureId(),
+                ImVec2(ADA_SIZE, ADA_SIZE),
+                ImVec2(0, 0),
+                ImVec2(1, 1), 
+                ImVec4(1, 1, 1, 0.4), ImVec4(0, 0, 0, 0)
+            );
+        }
 
         // Draw the actual about dialog
         igSetCursorScreenPos(sPos);
         igBeginChild("##LogoArea", ImVec2(0, 92*incGetUIScale()));
-            igImage(
-                cast(void*)incGetLogo(), 
-                ImVec2(64*incGetUIScale(), 64*incGetUIScale()), 
-                ImVec2(0, 0), 
-                ImVec2(1, 1), 
-                ImVec4(1, 1, 1, 1), 
-                ImVec4(0, 0, 0, 0)
-            );
+
+            version (InBranding) {
+                igImage(
+                    cast(void*)incGetLogo(), 
+                    ImVec2(64*incGetUIScale(), 64*incGetUIScale()), 
+                    ImVec2(0, 0), 
+                    ImVec2(1, 1), 
+                    ImVec4(1, 1, 1, 1), 
+                    ImVec4(0, 0, 0, 0)
+                );
+            }
             
             igSameLine(0, 8);
             igSeparatorEx(ImGuiSeparatorFlags.Vertical);
@@ -115,16 +122,19 @@ protected:
 
 public:
     ~this() {
-        destroy(ada);
+        version(InBranding) destroy(ada);
     }
 
     this() {
         super(_("About"));
         this.onlyOne = true;
-        ada_float = vec2(0);
 
-        auto adaData = ShallowTexture(cast(ubyte[])import("ada-tex.png"));
-        inTexPremultiply(adaData.data);
-        ada = new Texture(adaData);
+        // Only load Ada in official builds
+        version(InBranding) {
+            ada_float = vec2(0);
+            auto adaData = ShallowTexture(cast(ubyte[])import("ada-tex.png"));
+            inTexPremultiply(adaData.data);
+            ada = new Texture(adaData);
+        }
     }
 }

@@ -28,14 +28,17 @@ protected:
     void onUpdate() {
 
         igBeginChild("##LogoArea", ImVec2(0, 72));
-            igImage(
-                cast(void*)incGetLogo(), 
-                ImVec2(64, 64), 
-                ImVec2(0, 0), 
-                ImVec2(1, 1), 
-                ImVec4(1, 1, 1, 1), 
-                ImVec4(0, 0, 0, 0)
-            );
+
+            version (InBranding) {
+                igImage(
+                    cast(void*)incGetLogo(), 
+                    ImVec2(64, 64), 
+                    ImVec2(0, 0), 
+                    ImVec2(1, 1), 
+                    ImVec4(1, 1, 1, 1), 
+                    ImVec4(0, 0, 0, 0)
+                );
+            }
             
             igSameLine(0, 8);
             igSeparatorEx(ImGuiSeparatorFlags.Vertical);
