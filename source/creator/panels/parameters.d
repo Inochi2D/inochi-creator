@@ -651,7 +651,7 @@ protected:
             if (incInputText("Filter", filter)) {
                 filter = filter.toLower;
             }
-            incTooltip("Filter, search for specific parameters");
+            incTooltip(_("Filter, search for specific parameters"));
         }
         igEndChild();
 

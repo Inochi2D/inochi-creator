@@ -23,7 +23,7 @@ protected:
     override
     void onUpdate() {
 
-        igText("Undo History");
+        igText(__("Undo History"));
         igSeparator();
 
         ImVec2 avail;
@@ -51,7 +51,7 @@ protected:
 
         igSeparator();
         igSpacing();
-        if (igButton("Clear History", ImVec2(0, 0))) {
+        if (igButton(__("Clear History"), ImVec2(0, 0))) {
             incActionClearHistory();
         }
         igSameLine(0, 0);
