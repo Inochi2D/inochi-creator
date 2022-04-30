@@ -187,7 +187,7 @@ void incOpenWindow() {
             gl_context = SDL_GL_CreateContext(window);
             SDL_GL_SetSwapInterval(1);
             support = loadOpenGL();
-            return !(support == GLSupport.noLibrary || support == GLSupport.noContext);
+            return support != GLSupport.noLibrary && support != GLSupport.noContext;
         }
         
         if (!incInitGalliumCtx() && !incSettingsGet!bool("SoftwareRenderer")) {
@@ -195,6 +195,7 @@ void incOpenWindow() {
 
             environment["GALLIUM_DRIVER"] = "llvmpipe";
             if (!incInitGalliumCtx()) {
+                incSettingsSet("SoftwareRenderer", true);
                 throw new Exception("Could not create Gallium Zink nor llvmpipe GL 3.2 instance!");
             }
         }
