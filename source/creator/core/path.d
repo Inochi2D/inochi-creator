@@ -8,6 +8,7 @@ private {
     string cachedImguiFileDir;
     string cachedFontDir;
     string cachedLocaleDir;
+    string inForcedConfigDir;
 }
 
 /**
@@ -65,7 +66,7 @@ string incGetAppConfigPath() {
     }
 
     // Allow packagers, etc. to specify a forced config directory.
-    string inForcedConfigDir = environment.get(ENV_CONFIG_PATH);
+    inForcedConfigDir = environment.get(ENV_CONFIG_PATH);
     if (inForcedConfigDir) return inForcedConfigDir;
     
 
