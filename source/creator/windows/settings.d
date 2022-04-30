@@ -81,6 +81,13 @@ protected:
                                 }
                             }
 
+                            version(InGallium) {
+                                bool useSWRender = incSettingsGet!bool("SoftwareRenderer");
+                                if (igCheckbox(__("Use software rendering"), &useSWRender)) {
+                                    incSettingsSet("SoftwareRenderer", useSWRender);
+                                }
+                            }
+
 
                             igSpacing();
                             igSpacing();

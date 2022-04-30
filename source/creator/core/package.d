@@ -135,6 +135,10 @@ void incOpenWindow() {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
     SDL_WindowFlags flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
@@ -173,6 +177,7 @@ void incOpenWindow() {
         flags
     );
     
+    GLSupport support;
 
     // Gallium Support
     version(InGallium) {
@@ -195,12 +200,12 @@ void incOpenWindow() {
         }
 
     } else {
-        
+
         gl_context = SDL_GL_CreateContext(window);
         SDL_GL_SetSwapInterval(1);
 
         // Load GL 3
-        GLSupport support = loadOpenGL();
+        support = loadOpenGL();
         switch(support) {
             case GLSupport.noLibrary:
                 throw new Exception("OpenGL library could not be loaded!");
