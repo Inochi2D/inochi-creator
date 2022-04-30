@@ -25,6 +25,7 @@ enum ENV_CONFIG_PATH = "INOCHI_CONFIG_PATH";
 */
 string incGetAppConfigPath() {
     if (cachedConfigDir) return cachedConfigDir;
+    if (inForcedConfigDir) return inForcedConfigDir;
     string appDataDir;
 
     // Once this function has completed cache the result.
@@ -65,9 +66,8 @@ string incGetAppConfigPath() {
 
     // Allow packagers, etc. to specify a forced config directory.
     string inForcedConfigDir = environment.get(ENV_CONFIG_PATH);
-    if (inForcedConfigDir) {
-        return inForcedConfigDir;
-    }
+    if (inForcedConfigDir) return inForcedConfigDir;
+    
 
     if (!appDataDir) appDataDir = getcwd();
 
