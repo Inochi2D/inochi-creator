@@ -13,7 +13,7 @@ private {
 /**
     The name of the folder inochi creator config gets thrown in to.
 */
-enum APP_FOLDER_NAME = ".inochi-creator";
+enum APP_FOLDER_NAME = "inochi-creator";
 
 /**
     Name of environment variable to force a configuration path
@@ -70,8 +70,19 @@ string incGetAppConfigPath() {
     }
 
     if (!appDataDir) appDataDir = getcwd();
-    appDataDir = buildPath(appDataDir, APP_FOLDER_NAME);
-    return appDataDir;
+
+    version(linux) {
+
+        // On linux we're using standard XDG dirs, prior we
+        // used .inochi-creator there, but that's not correct
+        // This code will ensure we still use old config if it's there.
+        // Otherwise we create config for the *correct* path
+        string fdir = buildPath(appDataDir, "."~APP_FOLDER_NAME);
+        if (!exists(fdir)) fdir = buildPath(appDataDir, APP_FOLDER_NAME);
+        return fdir;
+    } else {
+        return buildPath(appDataDir, "."~APP_FOLDER_NAME);
+    }
 }
 
 /**
