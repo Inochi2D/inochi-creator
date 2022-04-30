@@ -31,11 +31,20 @@ string incGetAppConfigPath() {
 
     // Once this function has completed cache the result.
     scope(success) {
-        cachedConfigDir = appDataDir;
         
-        // Also make sure the folder exists
-        if (!exists(cachedConfigDir)) {
-            mkdirRecurse(cachedConfigDir);
+        if (inForcedConfigDir) {
+            
+            // Also make sure the folder exists
+            if (!exists(inForcedConfigDir)) {
+                mkdirRecurse(inForcedConfigDir);
+            }
+        } else {
+            cachedConfigDir = appDataDir;
+
+            // Also make sure the folder exists
+            if (!exists(cachedConfigDir)) {
+                mkdirRecurse(cachedConfigDir);
+            }
         }
     }
 
@@ -80,9 +89,13 @@ string incGetAppConfigPath() {
         // Otherwise we create config for the *correct* path
         string fdir = buildPath(appDataDir, "."~APP_FOLDER_NAME);
         if (!exists(fdir)) fdir = buildPath(appDataDir, APP_FOLDER_NAME);
-        return fdir;
+        appDataDir = fdir;
+        return appDataDir;
     } else {
-        return buildPath(appDataDir, "."~APP_FOLDER_NAME);
+
+        // On other platforms we go for .(app name)
+        appDataDir = buildPath(appDataDir, "."~APP_FOLDER_NAME);
+        return appDataDir;
     }
 }
 
