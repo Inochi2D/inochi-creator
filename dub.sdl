@@ -26,10 +26,22 @@ configuration "barebones" {
 	targetType "executable"
 }
 
+configuration "barebones-gallium" {
+	targetType "executable"
+	versions "InGallium"
+}
+
 configuration "win32-barebones" {
 	platforms "windows"
 	targetType "executable"
 	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup"
+}
+
+configuration "win32-barebones-gallium" {
+	platforms "windows"
+	targetType "executable"
+	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup"
+	versions "InGallium"
 }
 
 // Official build configurations.
@@ -40,6 +52,11 @@ configuration "full" {
 	versions "InBranding"
 }
 
+configuration "full-gallium" {
+	targetType "executable"
+	versions "InGallium" "InBranding"
+}
+
 configuration "win32-full" {
 	platforms "windows"
 	targetType "executable"
@@ -47,4 +64,13 @@ configuration "win32-full" {
 	sourceFiles "res\\inochi-creator.res"
 	preBuildCommands "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\Common7\\Tools\\VsDevCmd.bat\" & rc.exe /v res\\inochi-creator.rc"
 	versions "InBranding"
+}
+
+configuration "win32-full-gallium" {
+	platforms "windows"
+	targetType "executable"
+	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="window-dmd"
+	sourceFiles "res\\inochi-creator.res"
+	preBuildCommands "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\Common7\\Tools\\VsDevCmd.bat\" & rc.exe /v res\\inochi-creator.rc"
+	versions "InBranding" "InGallium"
 }

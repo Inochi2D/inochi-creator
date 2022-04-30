@@ -109,13 +109,11 @@ void incInitStyling() {
     style.ChildBorderSize = 1;
 }
 
+
 /**
     Opens Window
 */
 void incOpenWindow() {
-    
-    import core.stdc.stdlib : exit;
-
     auto sdlSupport = loadSDL();
     enforce(sdlSupport != SDLSupport.noLibrary, "SDL2 library not found!");
     enforce(sdlSupport != SDLSupport.badLibrary, "Bad SDL2 library found!");
@@ -127,24 +125,17 @@ void incOpenWindow() {
     version(Windows) enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui library found!");
     SDL_Init(SDL_INIT_EVERYTHING);
 
-    version(OSX) {
-		pragma(msg, "Building in macOS support mode...");
+    
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
-		// macOS only supports up to GL 4.1 with some extra stuff
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-	} else {
-
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-    }
     debug SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GLcontextFlag.SDL_GL_CONTEXT_DEBUG_FLAG | SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
     SDL_WindowFlags flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 
@@ -154,6 +145,20 @@ void incOpenWindow() {
 
     // Don't make KDE freak out when Inochi Creator opens
     if (!incSettingsGet!bool("DisableCompositor")) SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
+
+    version(InGallium) {
+        import std.process : environment;
+        if (incSettingsGet!bool("SoftwareRenderer")) {
+
+            // For Mesa builds, use llvmpipe gallium driver
+            environment["GALLIUM_DRIVER"] = "llvmpipe";
+        } else {
+
+            // For Mesa builds, use zink gallium driver
+            environment["GALLIUM_DRIVER"] = "zink";
+        }
+    }
+
 
     version(InBranding) {
         debug string WIN_TITLE = "Inochi Creator "~_("(Debug Mode)");
@@ -167,22 +172,46 @@ void incOpenWindow() {
         cast(uint)incSettingsGet!int("WinH", 800), 
         flags
     );
-
-    gl_context = SDL_GL_CreateContext(window);
-    SDL_GL_MakeCurrent(window, gl_context);
-    SDL_GL_SetSwapInterval(1);
     
-    // Load GL 3
-    GLSupport support = loadOpenGL();
-    switch(support) {
-        case GLSupport.noLibrary:
-            throw new Exception("OpenGL library could not be loaded!");
 
-        case GLSupport.noContext:
-            throw new Exception("No valid OpenGL 4.2 context was found!");
+    // Gallium Support
+    version(InGallium) {
 
-        default: break;
+        bool incInitGalliumCtx() {
+            if (gl_context !is null) SDL_GL_DeleteContext(gl_context);
+            gl_context = SDL_GL_CreateContext(window);
+            SDL_GL_SetSwapInterval(1);
+            support = loadOpenGL();
+            return !(support == GLSupport.noLibrary || support == GLSupport.noContext);
+        }
+        
+        if (!incInitGalliumCtx() && !incSettingsGet!bool("SoftwareRenderer")) {
+            debug writeln("Attempting Gallium software rendering...");
+
+            environment["GALLIUM_DRIVER"] = "llvmpipe";
+            if (!incInitGalliumCtx()) {
+                throw new Exception("Could not create Gallium Zink nor llvmpipe GL 3.2 instance!");
+            }
+        }
+
+    } else {
+        
+        gl_context = SDL_GL_CreateContext(window);
+        SDL_GL_SetSwapInterval(1);
+
+        // Load GL 3
+        GLSupport support = loadOpenGL();
+        switch(support) {
+            case GLSupport.noLibrary:
+                throw new Exception("OpenGL library could not be loaded!");
+
+            case GLSupport.noContext:
+                throw new Exception("No valid OpenGL 4.2 context was found!");
+
+            default: break;
+        }
     }
+
 
     import std.string : fromStringz;
     debug {
