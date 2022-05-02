@@ -69,7 +69,7 @@ private:
 
         iVertices.length = data.vertices.length;
         foreach(idx, vertex; data.vertices) {
-            iVertices[idx] = new MeshVertex(vertex, []);
+            iVertices[idx] = new MeshVertex(vertex+data.origin, []);
         }
 
         foreach(i; 0..data.indices.length/3) {
@@ -356,6 +356,12 @@ public:
             subPoints ~= vec3(vtx.position, 0);
         }
         inDbgSetBuffer(subPoints);
+        inDbgPointsSize(size);
+        inDbgDrawPoints(color, trans);
+    }
+
+    void drawPoint(vec2 point, vec4 color, mat4 trans = mat4.identity, float size=6) {
+        inDbgSetBuffer([vec3(point, 0)]);
         inDbgPointsSize(size);
         inDbgDrawPoints(color, trans);
     }

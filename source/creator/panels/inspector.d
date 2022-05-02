@@ -595,7 +595,44 @@ void incInspectorModelDrawable(Drawable node) {
     if (!igCollapsingHeader(__("Drawable"), ImGuiTreeNodeFlags.DefaultOpen)) 
         return;
 
+    float adjustSpeed = 1;
     ImVec2 avail = incAvailableSpace();
+
+    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Texture Offset"));
+    igPushItemWidth((avail.x-4f)/2f);
+
+        // Translation X
+        igPushID(24);
+        if (incDragFloat("offset_x", &node.getMesh().origin.vector[0], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+            incActionPush(
+                new NodeValueChangeAction!(Node, float)(
+                    "X",
+                    node, 
+                    incGetDragFloatInitialValue("offset_x"),
+                    node.getMesh().origin.vector[0],
+                    &node.getMesh().origin.vector[0]
+                )
+            );
+        }
+        igPopID();
+
+        igSameLine(0, 4);
+
+        // Translation Y
+        igPushID(25);
+            if (incDragFloat("offset_y", &node.getMesh().origin.vector[1], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                incActionPush(
+                    new NodeValueChangeAction!(Node, float)(
+                        "Y",
+                        node, 
+                        incGetDragFloatInitialValue("offset_y"),
+                        node.getMesh().origin.vector[1],
+                        &node.getMesh().origin.vector[1]
+                    )
+                );
+            }
+        igPopID();
+    igEndGroup();
 
     igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(8, 8));
         igSpacing();
