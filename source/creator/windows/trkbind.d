@@ -10,6 +10,8 @@ import creator.windows;
 import creator.widgets;
 import creator.core;
 import creator;
+import std.array;
+import std.algorithm;
 import std.string;
 import creator.utils.link;
 import i18n;
@@ -59,7 +61,11 @@ protected:
 
         if (binding.param) {
             if (igBeginCombo(__("Bind To"), trackingComboName)) {
-                foreach(name, mode; currBindable) {
+                auto sortedBindable = 
+                    currBindable.byPair.array
+                        .sort!((a, b) => a.key < b.key);
+
+                foreach(name, mode; sortedBindable) {
                     igPushID(name.ptr);
                         bool isSelected = binding.key == name;
                         if (igSelectable(name.toStringz, isSelected)) {
