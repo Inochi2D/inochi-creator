@@ -187,22 +187,20 @@ private {
             }
             incViewportNodeDeformNotifyParamValueChanged();
         }
-        if (param.isVec2) {
-            if (igBeginMenu(__("Mirror"), true)) {
-                if (igMenuItem(__("Horizontally"), "", false, true)) {
-                    foreach(binding; bindings) {
-                        binding.scaleValueAt(cParamPoint, 0, -1);
-                    }
-                    incViewportNodeDeformNotifyParamValueChanged();
+        if (igBeginMenu(__("Mirror"), true)) {
+            if (igMenuItem(__("Horizontally"), "", false, true)) {
+                foreach(binding; bindings) {
+                    binding.scaleValueAt(cParamPoint, 0, -1);
                 }
-                if (igMenuItem(__("Vertically"), "", false, true)) {
-                    foreach(binding; bindings) {
-                        binding.scaleValueAt(cParamPoint, 1, -1);
-                    }
-                    incViewportNodeDeformNotifyParamValueChanged();
-                }
-                igEndMenu();
+                incViewportNodeDeformNotifyParamValueChanged();
             }
+            if (igMenuItem(__("Vertically"), "", false, true)) {
+                foreach(binding; bindings) {
+                    binding.scaleValueAt(cParamPoint, 1, -1);
+                }
+                incViewportNodeDeformNotifyParamValueChanged();
+            }
+            igEndMenu();
         }
         if (param.isVec2) {
             if (igBeginMenu(__("Set from mirror"), true)) {
