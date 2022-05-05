@@ -632,7 +632,7 @@ void incInspectorModelDrawable(Drawable node) {
                 );
             }
         igPopID();
-    igEndGroup();
+    igPopItemWidth();
 
     igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(8, 8));
         igSpacing();
