@@ -39,6 +39,7 @@ Specification Documentation
 Dansk
     Luna the Foxgirl
 日本語
+    seagetch
     40Nix
     小栗さえ (@OkuriSae)
 
