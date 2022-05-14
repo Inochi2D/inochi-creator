@@ -414,18 +414,6 @@ void incInspectorModelTRS(Node node) {
                 );
             }
         igPopID();
-
-        if (incLockButton(&node.localTransform.lockRotationX, "rot_x")) {
-            incActionPush(
-                new NodeValueChangeAction!(Node, bool)(
-                    _("Lock Rotation X"),
-                    node, 
-                    !node.localTransform.lockRotationX,
-                    node.localTransform.lockRotationX,
-                    &node.localTransform.lockRotationX
-                )
-            );
-        }
         
         igSameLine(0, 4);
 
@@ -443,18 +431,6 @@ void incInspectorModelTRS(Node node) {
                 );
             }
         igPopID();
-        
-        if (incLockButton(&node.localTransform.lockRotationY, "rot_y")) {
-            incActionPush(
-                new NodeValueChangeAction!(Node, bool)(
-                    _("Lock Rotation Y"),
-                    node, 
-                    !node.localTransform.lockRotationY,
-                    node.localTransform.lockRotationY,
-                    &node.localTransform.lockRotationY
-                )
-            );
-        }
 
         igSameLine(0, 4);
 
@@ -472,18 +448,6 @@ void incInspectorModelTRS(Node node) {
                 );
             }
         igPopID();
-        
-        if (incLockButton(&node.localTransform.lockRotationZ, "rot_z")) {
-            incActionPush(
-                new NodeValueChangeAction!(Node, bool)(
-                    _("Lock Rotation Z"),
-                    node, 
-                    !node.localTransform.lockRotationZ,
-                    node.localTransform.lockRotationZ,
-                    &node.localTransform.lockRotationZ
-                )
-            );
-        }
 
     igPopItemWidth();
 
@@ -512,17 +476,6 @@ void incInspectorModelTRS(Node node) {
                 );
             }
         igPopID();
-        if (incLockButton(&node.localTransform.lockScaleX, "sca_x")) {
-            incActionPush(
-                new NodeValueChangeAction!(Node, bool)(
-                    _("Lock Scale X"),
-                    node, 
-                    !node.localTransform.lockScaleX,
-                    node.localTransform.lockScaleX,
-                    &node.localTransform.lockScaleX
-                )
-            );
-        }
 
         igSameLine(0, 4);
 
@@ -540,17 +493,6 @@ void incInspectorModelTRS(Node node) {
                 );
             }
         igPopID();
-        if (incLockButton(&node.localTransform.lockScaleY, "sca_y")) {
-            incActionPush(
-                new NodeValueChangeAction!(Node, bool)(
-                    _("Lock Scale Y"),
-                    node, 
-                    !node.localTransform.lockScaleY,
-                    node.localTransform.lockScaleY,
-                    &node.localTransform.lockScaleY
-                )
-            );
-        }
 
     igPopItemWidth();
 
@@ -598,41 +540,43 @@ void incInspectorModelDrawable(Drawable node) {
     float adjustSpeed = 1;
     ImVec2 avail = incAvailableSpace();
 
-    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Texture Offset"));
-    igPushItemWidth((avail.x-4f)/2f);
+    igBeginGroup();
+        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Texture Offset"));
+        igPushItemWidth((avail.x-4f)/2f);
 
-        // Translation X
-        igPushID(24);
-        if (incDragFloat("offset_x", &node.getMesh().origin.vector[0], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
-            incActionPush(
-                new NodeValueChangeAction!(Node, float)(
-                    "X",
-                    node, 
-                    incGetDragFloatInitialValue("offset_x"),
-                    node.getMesh().origin.vector[0],
-                    &node.getMesh().origin.vector[0]
-                )
-            );
-        }
-        igPopID();
-
-        igSameLine(0, 4);
-
-        // Translation Y
-        igPushID(25);
-            if (incDragFloat("offset_y", &node.getMesh().origin.vector[1], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+            // Translation X
+            igPushID(42);
+            if (incDragFloat("offset_x", &node.getMesh().origin.vector[0], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
                 incActionPush(
                     new NodeValueChangeAction!(Node, float)(
-                        "Y",
+                        "X",
                         node, 
-                        incGetDragFloatInitialValue("offset_y"),
-                        node.getMesh().origin.vector[1],
-                        &node.getMesh().origin.vector[1]
+                        incGetDragFloatInitialValue("offset_x"),
+                        node.getMesh().origin.vector[0],
+                        &node.getMesh().origin.vector[0]
                     )
                 );
             }
-        igPopID();
-    igPopItemWidth();
+            igPopID();
+
+            igSameLine(0, 4);
+
+            // Translation Y
+            igPushID(43);
+                if (incDragFloat("offset_y", &node.getMesh().origin.vector[1], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float)(
+                            "Y",
+                            node, 
+                            incGetDragFloatInitialValue("offset_y"),
+                            node.getMesh().origin.vector[1],
+                            &node.getMesh().origin.vector[1]
+                        )
+                    );
+                }
+            igPopID();
+        igPopItemWidth();
+    igEndGroup();
 
     igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(8, 8));
         igSpacing();
@@ -699,7 +643,7 @@ void incInspectorModelPart(Part node) {
                 igSpacing();
 
                 igText(__("Tint"));
-                igColorEdit3("", cast(float[3]*)node.tint.value_ptr);
+                igColorEdit3("", cast(float[3]*)node.tint.ptr);
 
                 // Padding
                 igSeparator();
@@ -857,7 +801,7 @@ void incInspectorModelComposite(Composite node) {
 
 
     igText(__("Tint"));
-    igColorEdit3("", cast(float[3]*)node.tint.value_ptr);
+    igColorEdit3("", cast(float[3]*)node.tint.ptr);
 
     // Header for the Blending options for Parts
     igText(__("Blending"));

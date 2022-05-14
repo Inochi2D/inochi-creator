@@ -5,8 +5,8 @@
     Authors: Luna Nielsen
 */
 module creator.atlas.packer;
-import gl3n.linalg;
-import gl3n.math;
+import inmath.linalg;
+import inmath.math;
 import std.exception;
 import std.format;
 import std.algorithm.mutation : remove;

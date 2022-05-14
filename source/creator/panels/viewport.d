@@ -213,7 +213,7 @@ protected:
         igEndChild();
 
         // Handle smooth move
-        incViewportZoom = dampen(incViewportZoom, incViewportTargetZoom, deltaTime, 1);
+        incViewportZoom = dampen(incViewportZoom, incViewportTargetZoom, deltaTime);
         camera.scale = vec2(incViewportZoom, incViewportZoom);
         camera.position = vec2(dampen(camera.position, incViewportTargetPosition, deltaTime, 1.5));
     }
