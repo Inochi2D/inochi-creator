@@ -117,8 +117,6 @@ protected:
 
                     if (bindingPort > 1 && bindingPort < ushort.max) {
                         incSettingsSave();
-                        import std.stdio;
-                        writeln("port=",bindingPort);
                         optionValues["osf_bind_port"] = bindingPort.text;
                         incTestRestartTracker();
                     }
