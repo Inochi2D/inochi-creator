@@ -99,6 +99,33 @@ protected:
                 incTooltip(_("The IP Address of your iPhone,\nYou can find it in the VSeeFace Config panel in VTube Studio"));
             }
 
+            if (trackingModeCheckbox("OpenSeeFace", _("A receiver which uses OpenSeeFace application"), TrackingMode.OSF)) {
+                string bindingIP = incSettingsGet("osf_bind_ip", "0.0.0.0");
+                if (incInputText(__("OSF Bind Address"), avail.x/2, bindingIP, ImGuiInputTextFlags.None)) {
+                    incSettingsSet("osf_bind_ip", bindingIP);
+
+                    if (this.canParseAddr(bindingIP)) {
+                        incSettingsSave();
+                        optionValues["osf_bind_ip"] = bindingIP;
+                        incTestRestartTracker();
+                    }
+                }
+
+                int bindingPort = incSettingsGet("osf_bind_port", 11573);
+                if (igInputInt(__("OSF Listen Port"), &bindingPort)) {
+                    incSettingsSet("osf_bind_port", bindingPort);
+
+                    if (bindingPort > 1 && bindingPort < ushort.max) {
+                        incSettingsSave();
+                        import std.stdio;
+                        writeln("port=",bindingPort);
+                        optionValues["osf_bind_port"] = bindingPort.text;
+                        incTestRestartTracker();
+                    }
+                }
+            }
+
+
             if (igCollapsingHeader(__("Tracking Bindings"), ImGuiTreeNodeFlags.DefaultOpen)) {
                 if (igBeginListBox("")) {
                     foreach(i, binding; incTestGetTrackingBindings()) {

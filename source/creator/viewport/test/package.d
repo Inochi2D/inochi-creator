@@ -121,6 +121,9 @@ void incTestSetTrackingMode(TrackingMode mode) {
         case TrackingMode.VTS:
             adaptor = new VTSAdaptor();
             break;
+        case TrackingMode.OSF:
+            adaptor = new OSFAdaptor();
+            break;
         default: 
             adaptor = null;
             break;
