@@ -14,7 +14,7 @@ dependency "inochi2d" version="~>0.7.2"
 targetPath "out/"
 dflags "-link-defaultlib-shared=false" platform="ldc"
 lflags "-rpath=$$ORIGIN" platform="linux"
-versions "GL_32" "GL_KHR_debug" "GL_AllowDeprecated" "USE_SDL2" "USE_GL" "SDL_208" "USE_OpenGL3"
+versions "GL_32" "USE_SDL2" "USE_GL" "SDL_208" "USE_OpenGL3"
 stringImportPaths "res/" "./"
 preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\""
 
