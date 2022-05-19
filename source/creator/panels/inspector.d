@@ -398,7 +398,7 @@ void incInspectorModelTRS(Node node) {
     
     // Rotation portion of the transformation matrix.
     igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Rotation"));
-    igPushItemWidth((avail.x-4f-(fontSize*3f))/3f);
+    igPushItemWidth((avail.x-4f)/3f);
 
         // Rotation X
         igPushID(3);
@@ -460,7 +460,7 @@ void incInspectorModelTRS(Node node) {
     
     // Scaling portion of the transformation matrix.
     igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Scale"));
-    igPushItemWidth((avail.x-14f-(fontSize*2f))/2f);
+    igPushItemWidth((avail.x-14f)/2f);
         
         // Scale X
         igPushID(6);
