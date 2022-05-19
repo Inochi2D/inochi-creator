@@ -23,12 +23,16 @@ version(D_X32) {
 }
 
 version(Windows) {
-    version (LDC) {
-        pragma(linkerDirective, "/SUBSYSTEM:WINDOWS");
-        static if (__VERSION__ >= 2091)
-            pragma(linkerDirective, "/ENTRY:wmainCRTStartup");
-        else
-            pragma(linkerDirective, "/ENTRY:mainCRTStartup");
+    debug {
+
+    } else {
+        version (LDC) {
+            pragma(linkerDirective, "/SUBSYSTEM:WINDOWS");
+            static if (__VERSION__ >= 2091)
+                pragma(linkerDirective, "/ENTRY:wmainCRTStartup");
+            else
+                pragma(linkerDirective, "/ENTRY:mainCRTStartup");
+        }
     }
 }
 
