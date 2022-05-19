@@ -125,10 +125,6 @@ void incOpenWindow() {
     version(Windows) enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui library found!");
     SDL_Init(SDL_INIT_EVERYTHING);
 
-    
-    debug SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GLcontextFlag.SDL_GL_CONTEXT_DEBUG_FLAG | SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-    else SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
@@ -229,11 +225,6 @@ void incOpenWindow() {
             glGetString(GL_SHADING_LANGUAGE_VERSION).fromStringz,
             support
         );
-
-        glEnable(GL_DEBUG_OUTPUT);
-        version(linux) {
-            glDebugMessageCallback(&incDebugCallback, null);
-        }
     }
 
     // Setup Inochi2D
@@ -589,24 +580,5 @@ void incHandleShortcuts() {
         incActionRedo();
     } else if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), true)) {
         incActionUndo();
-    }
-}
-
-
-debug {
-    extern(C)
-    void incDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const(char)* message, void* userParam) nothrow {
-        import core.stdc.stdio : fprintf, stderr;
-        if (type == 0x8251) return;
-
-        // HACK: I have no clue what causes this error
-        // but everything seems to work nontheless
-        // I'll just quietly ignore it.
-        if (type == 0x824c) return; 
-
-        fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-           ( type == GL_DEBUG_TYPE_ERROR ? cast(char*)"** GL ERROR **" : cast(char*)"" ),
-            type, severity, message );
-
     }
 }
