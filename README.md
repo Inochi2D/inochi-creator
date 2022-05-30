@@ -1,6 +1,9 @@
 # Inochi Creator
 ![image](https://user-images.githubusercontent.com/7032834/170948484-2f3a8175-9c45-4cf6-ae7e-0a6ee86bdc53.png)
+_Ada model by [ku-ini](https://twitter.com/duckmastah)_
 
+&nbsp;
+&nbsp;
 
 [![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dclipsey%26type%3Dpatrons&style=for-the-badge)](https://patreon.com/clipsey)
 [![Join the Discord](https://img.shields.io/discord/855173611409506334?label=Community&logo=discord&logoColor=FFFFFF&style=for-the-badge)](https://discord.com/invite/abnxwN6r9v)
