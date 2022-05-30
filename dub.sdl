@@ -3,14 +3,14 @@ description "Inochi2D rigging application"
 authors "Inochi2D Project"
 copyright "Copyright © 2020, Inochi2D Project"
 license "BSD 2-clause"
-dependency "inmath" version="~>1.0.1"
+dependency "inmath" version="~>1.0.0"
 dependency "tinyfiledialogs" version="~>0.10.1"
-dependency "facetrack-d" version="~>0.6.2"
+dependency "facetrack-d" version="~>1.0.0"
 dependency "bindbc-sdl" version="~>0.21.4"
 dependency "bindbc-imgui" version="~>1.0.0"
 dependency "i18n-d" version="~>1.0.1"
 dependency "psd-d" version="~>0.6.1"
-dependency "inochi2d" version="~>0.7.2"
+dependency "inochi2d" version="~>1.0.0"
 targetPath "out/"
 dflags "-link-defaultlib-shared=false" platform="ldc"
 lflags "-rpath=$$ORIGIN" platform="linux"
@@ -22,6 +22,12 @@ copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/Ope
 // These configurations are meant for debug and unoffical builds of Inochi Creator
 // We will not provide support for barebones builds unless bugs/issues can be replicated
 // in official builds.
+
+configuration "imgui-static" {
+    libs "cimgui" "freetype" "SDL2" "libucrt"
+    versions "BindImGui_Static"
+	targetType "executable"
+}
 
 configuration "barebones" {
 	targetType "executable"

@@ -189,7 +189,7 @@ protected:
             // Only allow reparenting one node
             if (selectedNodes.length < 2) {
                 if(igBeginDragDropTarget()) {
-                    ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+                    const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
                     if (payload !is null) {
                         Node payloadNode = *cast(Node*)payload.Data;
                         
@@ -213,7 +213,7 @@ protected:
                     igInvisibleButton("###TARGET", ImVec2(128, 4));
 
                     if(igBeginDragDropTarget()) {
-                        ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+                        const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
                         if (payload !is null) {
                             Node payloadNode = *cast(Node*)payload.Data;
                             
@@ -248,7 +248,7 @@ protected:
         if (incEditMode == EditMode.ModelEdit) { 
             if (!incArmedParameter) {
                 auto io = igGetIO();
-                if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.A), false)) {
+                if (io.KeyCtrl && igIsKeyPressed(ImGuiKey.A, false)) {
                     incSelectAll();
                 }
             }
@@ -291,7 +291,7 @@ protected:
                 }
 
                 if(igBeginDragDropTarget()) {
-                    ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+                    const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
                     if (payload !is null) {
                         Node payloadNode = *cast(Node*)payload.Data;
 

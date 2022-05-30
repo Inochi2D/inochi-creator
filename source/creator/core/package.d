@@ -118,11 +118,19 @@ void incOpenWindow() {
     enforce(sdlSupport != SDLSupport.noLibrary, "SDL2 library not found!");
     enforce(sdlSupport != SDLSupport.badLibrary, "Bad SDL2 library found!");
     
-    auto imSupport = loadImGui();
-    enforce(imSupport != ImGuiSupport.noLibrary, "cimgui library not found!");
+    // Luna please tell me how to make this elegant in the PR.
+    version(BindImGui_Static)
+    {
+    }
+    else 
+    {
+        auto imSupport = loadImGui();
+        enforce(imSupport != ImGuiSupport.noLibrary, "cimgui library not found!");
     
-    // HACK: For some reason this check fails on some macOS and Linux installations
-    version(Windows) enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui library found!");
+        // HACK: For some reason this check fails on some macOS and Linux installations
+        version(Windows) enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui library found!");
+    }
+
     SDL_Init(SDL_INIT_EVERYTHING);
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
@@ -570,9 +578,9 @@ version (InBranding) {
 void incHandleShortcuts() {
     auto io = igGetIO();
     
-    if (io.KeyCtrl && io.KeyShift && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), true)) {
+    if (io.KeyCtrl && io.KeyShift && igIsKeyPressed(ImGuiKey.Z, true)) {
         incActionRedo();
-    } else if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), true)) {
+    } else if (io.KeyCtrl && igIsKeyPressed(ImGuiKey.Z, true)) {
         incActionUndo();
     }
 }
