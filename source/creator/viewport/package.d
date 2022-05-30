@@ -75,12 +75,12 @@ void incViewportPoll() {
 /**
     Updates the viewport
 */
-void incViewportUpdate() {
+void incViewportUpdate(bool localOnly = false) {
     ImGuiIO* io = igGetIO();
     auto camera = inGetCamera();
 
     // First update viewport movement
-    incViewportMovement(io, camera);
+    if (!localOnly) incViewportMovement(io, camera);
 
     // Then update sub-stuff
     switch(incEditMode) {
@@ -181,6 +181,14 @@ void incViewportToolSettings() {
     }
 }
 
+bool incViewportAlwaysUpdate() {
+    switch(incEditMode) {
+        case EditMode.ModelTest:
+            return true;
+        default: return false;
+    }
+}
+
 /// For when there's no tools for that view
 void incViewportToolSettingsNoTool() {
     import i18n : __;
@@ -195,7 +203,7 @@ void incViewportToolSettingsNoTool() {
 //
 
 enum incVIEWPORT_ZOOM_MIN = 0.05;
-enum incVIEWPORT_ZOOM_MAX = 8.0;
+enum incVIEWPORT_ZOOM_MAX = 12.0;
 
 /**
     Target camera position in scene

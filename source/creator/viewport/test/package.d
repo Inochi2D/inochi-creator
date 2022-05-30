@@ -48,8 +48,8 @@ private {
     TrackingBinding[] bindings;
 
     void applyToAxis(Parameter param, int axis, float val, bool inverse) {
-        if (axis == 0) param.value.x = clamp(inverse ? val*-1 : val, 0, 1);
-        if (axis == 1) param.value.y = clamp(inverse ? val*-1 : val, 0, 1);
+        if (axis == 0) param.value.x = param.unmapAxis(0, clamp(inverse ? 1-val : val, 0, 1));
+        if (axis == 1) param.value.y = param.unmapAxis(1, clamp(inverse ? 1-val : val, 0, 1));
     }
 
     void applyBindings() {
@@ -80,19 +80,19 @@ private {
 
                 case TrackingBindingMode.BoneRotX:
                     if (binding.key in bones) {
-                        applyToAxis(binding.param, binding.axis, bones[binding.key].rotation.x, binding.inverse);
+                        applyToAxis(binding.param, binding.axis, bones[binding.key].rotation.yaw, binding.inverse);
                     }
                     break;
 
                 case TrackingBindingMode.BoneRotY:
                     if (binding.key in bones) {
-                        applyToAxis(binding.param, binding.axis, bones[binding.key].rotation.y, binding.inverse);
+                        applyToAxis(binding.param, binding.axis, bones[binding.key].rotation.pitch, binding.inverse);
                     }
                     break;
 
                 case TrackingBindingMode.BoneRotZ:
                     if (binding.key in bones) {
-                        applyToAxis(binding.param, binding.axis, bones[binding.key].rotation.z, binding.inverse);
+                        applyToAxis(binding.param, binding.axis, bones[binding.key].rotation.roll, binding.inverse);
                     }
                     break;
 

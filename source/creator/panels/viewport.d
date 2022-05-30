@@ -86,6 +86,8 @@ protected:
                     igIsMouseDown(ImGuiMouseButton.Middle) ||
                     igIsMouseDown(ImGuiMouseButton.Right);
                 incViewportUpdate();
+            } else if (incViewportAlwaysUpdate()) {
+                incViewportUpdate(true);
             }
 
             auto style = igGetStyle();
