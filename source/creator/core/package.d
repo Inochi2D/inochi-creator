@@ -118,7 +118,6 @@ void incOpenWindow() {
     enforce(sdlSupport != SDLSupport.noLibrary, "SDL2 library not found!");
     enforce(sdlSupport != SDLSupport.badLibrary, "Bad SDL2 library found!");
     
-    // Luna please tell me how to make this elegant in the PR.
     version(BindImGui_Dynamic)
     {
         auto imSupport = loadImGui();
