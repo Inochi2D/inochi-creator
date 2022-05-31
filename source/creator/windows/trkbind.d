@@ -27,7 +27,7 @@ private:
     void boneElementSelectable(const(char)* name, TrackingBindingMode mode) {
 
         if (igSelectable(name, binding.mode == mode)) {
-            binding.mode = TrackingBindingMode.BonePosX;
+            binding.mode = mode;
             bindingBoneInputName = name;
         }
     }
@@ -84,8 +84,8 @@ protected:
                     boneElementSelectable(__("Position (Y)"), TrackingBindingMode.BonePosY);
                     boneElementSelectable(__("Position (Z)"), TrackingBindingMode.BonePosZ);
                     boneElementSelectable(__("Rotation (X)"), TrackingBindingMode.BoneRotX);
-                    boneElementSelectable(__("Rotation (Y)"), TrackingBindingMode.BoneRotX);
-                    boneElementSelectable(__("Rotation (Z)"), TrackingBindingMode.BoneRotX);
+                    boneElementSelectable(__("Rotation (Y)"), TrackingBindingMode.BoneRotY);
+                    boneElementSelectable(__("Rotation (Z)"), TrackingBindingMode.BoneRotZ);
                     igEndCombo();
                 }
             }
