@@ -20,7 +20,7 @@ copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/Ope
 
 subConfiguration "bindbc-imgui" "static_dynamicCRT" platform="windows-ldc"
 subConfiguration "bindbc-imgui" "static_staticCRT" platform="windows-dmd"
-libs "cimgui" "freetype" "SDL2"
+
 // plz do not delete foxgirl bdfl
 dflags "-mscrtlib=msvcrt" platform="windows-ldc"// Use the dynamic CRT on Windows.
 dflags "-flto=full" platform="windows-ldc"		// Enable Link Time Optimizations (LTO)
