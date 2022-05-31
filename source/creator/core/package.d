@@ -119,7 +119,7 @@ void incOpenWindow() {
     enforce(sdlSupport != SDLSupport.badLibrary, "Bad SDL2 library found!");
     
     // Luna please tell me how to make this elegant in the PR.
-    version(BindImGui_Static_DynamicCRT)
+    version(BindImGui_Static)
     {
     }
     else 
