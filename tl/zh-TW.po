@@ -5,16 +5,17 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-04-27 01:04+0900\n"
-"PO-Revision-Date: 2022-05-09 15:27+0800\n"
+"PO-Revision-Date: 2022-05-24 02:43+0900\n"
 "Last-Translator: choushin <thect@protonmail.com>\n"
 "Language-Team: Language zh-tw\n"
-"Language: zh-tw\n"
+"Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.3\n"
 
 #: source/creator/actions/node.d:92
 #, c-format
@@ -235,8 +236,7 @@ msgstr ""
 "我們不建議在正式工作環境使用 Inochi Creator，它「會」毫無預警崩潰出錯\n"
 "，很多 Bug 目前正在進行修復。\n"
 "\n"
-"Inochi2D 專案不會對使用 Beta 版本造成的模型檔案損毀或是程式崩潰負責。"
-"\n"
+"Inochi2D 專案不會對使用 Beta 版本造成的模型檔案損毀或是程式崩潰負責。\n"
 "點選「關閉」以同意並且繼續使用"
 
 #: source/creator/windows/notice.d:58
@@ -516,8 +516,7 @@ msgid ""
 "The IP Address of your iPhone,\n"
 "You can find it in the VSeeFace Config panel in VTube Studio"
 msgstr ""
-"您的 iPhone 的 IP"
-"您可以在 VTube Studio 的 VSeeFace 設定頁面找到相關資訊。"
+"您的 iPhone 的 IP您可以在 VTube Studio 的 VSeeFace 設定頁面找到相關資訊。"
 
 #: source/creator/panels/tracking.d:102
 msgid "Tracking Bindings"
@@ -666,8 +665,7 @@ msgstr "鎖定根節點"
 msgid ""
 "Makes so that the translation of this node is based off the root node, "
 "making it stay in place even if its parent moves."
-msgstr ""
-"使此節點的移動會以跟節點為依據，使他在父節點移動時保持原位"
+msgstr "使此節點的移動會以跟節點為依據，使他在父節點移動時保持原位"
 
 #. Rotation portion of the transformation matrix.
 #: source/creator/panels/inspector.d:400 source/creator/panels/inspector.d:1120
@@ -808,8 +806,7 @@ msgstr "對齊下層"
 msgid ""
 "Special blending mode that causes (while respecting transparency) the part "
 "to be clipped to everything underneath"
-msgstr ""
-"特殊混和模式造成物件（在使用透明時）被掩蓋在下方"
+msgstr "特殊混和模式造成物件（在使用透明時）被掩蓋在下方"
 
 #. Slice from Lower blending mode
 #: source/creator/panels/inspector.d:701
@@ -821,8 +818,7 @@ msgid ""
 "Special blending mode that causes (while respecting transparency) the part "
 "to be slice by everything underneath.\n"
 "Basically reverse Clip to Lower."
-msgstr ""
-"特殊混和模式造成物件（在使用透明時）被下方的物件分割"
+msgstr "特殊混和模式造成物件（在使用透明時）被下方的物件分割"
 
 #: source/creator/panels/inspector.d:709 source/creator/panels/inspector.d:851
 #: source/creator/panels/inspector.d:1197
@@ -1167,7 +1163,7 @@ msgid ""
 msgstr ""
 "將材質像素乘上 Alpha 值\n"
 "\n"
-"僅用於解決字舊版 Inochi Creater 匯入檔案造成材質混亂的問題\n"
+"僅用於解決字舊版 Inochi Creater 匯入檔案造成材質混亂的問題"
 
 #: source/creator/widgets/mainmenu.d:302
 msgid "Bleed textures..."
@@ -1206,8 +1202,7 @@ msgstr "嘗試修復…"
 msgid ""
 "Attempts all the recovery and repair methods below on the currently loaded "
 "model"
-msgstr ""
-"對當前模型進行以下修復方式"
+msgstr "對當前模型進行以下修復方式"
 
 #. REGEN NODE IDs
 #: source/creator/widgets/mainmenu.d:326
