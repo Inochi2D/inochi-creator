@@ -11,7 +11,7 @@ private {
 
     string incGetCultureExpression(string langcode) {
         if (langcode.length >= 5) {
-            return format("%s(%s)", i18nGetCultureLanguage(langcode),
+            return format("%s (%s)", i18nGetCultureLanguage(langcode),
                 langcode == "zh-CN" ? "Simplified" : 
                 langcode == "zh-TW" ? "Traditional" :
                 i18nGetCultureCountry(langcode));
