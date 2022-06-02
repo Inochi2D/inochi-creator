@@ -20,8 +20,8 @@ private {
 
             // Add locale
             localeFiles ~= TLEntry(
-                i18nGetCultureLanguage(langcode),
-                i18nGetCultureLanguage(langcode).toStringz,
+                format("%s(%s)", i18nGetCultureLanguage(langcode), i18nGetCultureCountry(langcode)),
+                format("%s(%s)", i18nGetCultureLanguage(langcode), i18nGetCultureCountry(langcode)).toStringz,
                 langcode, 
                 entry.name
             );
@@ -54,7 +54,8 @@ void incLocaleInit() {
 */
 string incLocaleCurrentName() {
     string code = incSettingsGet("lang", "en");
-    return i18nGetCultureLanguage(code.length == 0 ? "en" : code);
+    string currCode = code.length == 0 ? "en": code;
+    return format("%s(%s)", i18nGetCultureLanguage(currCode), i18nGetCultureCountry(currCode));
 }
 
 /**
