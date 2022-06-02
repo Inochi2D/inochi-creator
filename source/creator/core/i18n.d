@@ -9,6 +9,16 @@ import std.string;
 private {
     TLEntry[] localeFiles;
 
+    string incGetCultureExpression(string langcode) {
+        if (langcode.length >= 5) {
+            return format("%s(%s)", i18nGetCultureLanguage(langcode),
+                langcode == "zh-CN" ? "Simplified" : 
+                langcode == "zh-TW" ? "Traditional" :
+                i18nGetCultureCountry(langcode));
+        }
+        return i18nGetCultureLanguage(langcode);
+    }
+
     void incLocaleScan(string path) {
         foreach(DirEntry entry; dirEntries(path, "*.mo", SpanMode.shallow)) {
             
@@ -20,8 +30,8 @@ private {
 
             // Add locale
             localeFiles ~= TLEntry(
-                format("%s(%s)", i18nGetCultureLanguage(langcode), i18nGetCultureCountry(langcode)),
-                format("%s(%s)", i18nGetCultureLanguage(langcode), i18nGetCultureCountry(langcode)).toStringz,
+                incGetCultureExpression(langcode),
+                incGetCultureExpression(langcode).toStringz,
                 langcode, 
                 entry.name
             );
@@ -55,7 +65,7 @@ void incLocaleInit() {
 string incLocaleCurrentName() {
     string code = incSettingsGet("lang", "en");
     string currCode = code.length == 0 ? "en": code;
-    return format("%s(%s)", i18nGetCultureLanguage(currCode), i18nGetCultureCountry(currCode));
+    return incGetCultureExpression(currCode);
 }
 
 /**
