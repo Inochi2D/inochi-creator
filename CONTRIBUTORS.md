@@ -61,6 +61,6 @@ Dansk
 
 
 === Fonts Used ===
- * Kosugi Maru     - by MATOYA
+ * Noto CJK        - by Google
  * OpenDyslexic    - by Abelardo Gonzalez
  * Material Icons  - by Google Design
