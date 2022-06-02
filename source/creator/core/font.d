@@ -59,7 +59,7 @@ private {
         ImFontAtlas_AddFontFromMemoryTTF(atlas, cast(void*)data.ptr, cast(int)data.length, size, cfg, ranges);
     }
 
-    ubyte[] KOSUGI_MARU = cast(ubyte[])import("KosugiMaru-Regular.ttf");
+    ubyte[] NOTO = cast(ubyte[])import("NotoSansCJK-Regular.ttc");
     ubyte[] ICONS = cast(ubyte[])import("MaterialIcons.ttf");
 }
 
@@ -89,7 +89,7 @@ struct FontEntry {
 void incInitFonts() {
     _incInitFontList();
     atlas = igGetIO().Fonts;
-        _incAddFontData("APP\0", KOSUGI_MARU, 28, ImFontAtlas_GetGlyphRangesJapanese(atlas));
+        _incAddFontData("APP\0", NOTO, 32, ImFontAtlas_GetGlyphRangesChineseFull(atlas));
         _incAddFontData("Icons\0", ICONS, 32, [cast(ImWchar)0xE000, cast(ImWchar)0xF23B].ptr, ImVec2(0, 4));
     ImFontAtlas_Build(atlas);
     incSetUIScale(incGetUIScale());
