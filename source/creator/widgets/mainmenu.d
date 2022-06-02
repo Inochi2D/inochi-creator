@@ -249,7 +249,6 @@ void incMainMenu() {
                 incOpenLink(incGetAppConfigPath());
             }
 
-            igSeparator();
             // Spacing
             igSpacing();
             igSpacing();
