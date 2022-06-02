@@ -2,14 +2,15 @@
 # Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # choushin <thect@protonmail.com>, 2022.
+# LovelyA72 <a72@luotianyi.pro>, 2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-04-27 01:04+0900\n"
-"PO-Revision-Date: 2022-05-24 02:43+0900\n"
-"Last-Translator: choushin <thect@protonmail.com>\n"
+"PO-Revision-Date: 2022-06-02 07:13-0600\n"
+"Last-Translator: LovelyA72 <a72@luotianyi.pro>\n"
 "Language-Team: Language zh-tw\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
@@ -128,12 +129,12 @@ msgstr "反轉"
 
 #: source/creator/windows/trkbind.d:114
 msgid "Refresh Bindable"
-msgstr ""
+msgstr "刷新可綁定參數"
 
 #. Title for the parameter properties window.
 #: source/creator/windows/trkbind.d:143
 msgid "Bind Tracking to Parameter"
-msgstr ""
+msgstr "綁定跟蹤到參數"
 
 #. Cancels the edited state for the axies points
 #: source/creator/windows/paramaxes.d:133
@@ -904,7 +905,7 @@ msgstr "長度"
 
 #: source/creator/panels/inspector.d:942
 msgid "Resonant frequency"
-msgstr "殘留頻率"
+msgstr "共振頻率"
 
 #: source/creator/panels/inspector.d:949
 msgid "Damping"
