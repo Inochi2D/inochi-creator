@@ -16,8 +16,13 @@ public import creator.windows.about;
 public import creator.windows.settings;
 public import creator.windows.texviewer;
 public import creator.windows.notice;
+public import creator.windows.paramprop;
+public import creator.windows.paramaxes;
+public import creator.windows.trkbind;
 
 private ImGuiWindowClass* windowClass;
+
+private uint spawnCount = 0;
 
 /**
     A Widget
@@ -27,6 +32,8 @@ private:
     string name_;
     bool visible = true;
     bool disabled;
+    int spawnedId;
+    const(char)* imName;
 
 protected:
     bool onlyOne;
@@ -34,10 +41,11 @@ protected:
 
     abstract void onUpdate();
 
-    void onBeginUpdate(int id) {
+    void onBeginUpdate() {
+        if (imName is null) this.setTitle(name);
         igSetNextWindowClass(windowClass);
         igBegin(
-            (name~"##"~id.text).toStringz,
+            imName,
             &visible, 
             flags | ImGuiWindowFlags.NoDecoration
         );
@@ -50,6 +58,7 @@ protected:
     void onClose() { }
 
 public:
+
 
     /**
         Constructs a frame
@@ -67,12 +76,17 @@ public:
         return name_;
     }
 
+    final void setTitle(string title) {
+        this.name_ = title;
+        imName = "%s###%s".format(name_, spawnedId).toStringz;
+    }
+
     /**
         Draws the frame
     */
-    final void update(int id) {
+    final void update() {
         igPushItemFlag(ImGuiItemFlags.Disabled, disabled);
-            this.onBeginUpdate(id);
+            this.onBeginUpdate();
                 this.onUpdate();
             this.onEndUpdate();
         igPopItemFlag();
@@ -115,6 +129,7 @@ private {
     Pushes window to stack
 */
 void incPushWindow(Window window) {
+    window.spawnedId = spawnCount++;
     
     // Only allow one instance of the window
     if (window.onlyOne) {
@@ -134,7 +149,8 @@ void incPushWindow(Window window) {
     Pushes window to stack
 */
 void incPushWindowList(Window window) {
-    
+    window.spawnedId = spawnCount++;
+
     // Only allow one instance of the window
     if (window.onlyOne) {
         foreach(win; windowList) {
@@ -160,6 +176,17 @@ void incPopWindowList(Window window) {
 }
 
 /**
+    Pop window from Window List
+*/
+void incPopWindowListAll() {
+    foreach(window; windowList) {
+        window.onClose();
+        window.visible = false;
+    }
+    windowList.length = 0;
+}
+
+/**
     Pops a window
 */
 void incPopWindow() {
@@ -174,18 +201,18 @@ void incPopWindow() {
 void incUpdateWindows() {
     int id = 0;
     foreach(window; windowStack) {
-        window.update(id++);
+        window.update();
         if (!window.visible) incPopWindow();
     }
     
     Window[] closedWindows;
     foreach(window; windowList) {
-        window.update(id++);
-        closedWindows ~= window;
+        window.update();
+        if (!window.visible) closedWindows ~= window;
     }
 
     foreach(window; closedWindows) {
-        if (!window.visible) incPopWindowList(window);
+        incPopWindowList(window);
     }
 }
 

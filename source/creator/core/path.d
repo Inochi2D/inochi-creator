@@ -8,12 +8,13 @@ private {
     string cachedImguiFileDir;
     string cachedFontDir;
     string cachedLocaleDir;
+    string inForcedConfigDir;
 }
 
 /**
     The name of the folder inochi creator config gets thrown in to.
 */
-enum APP_FOLDER_NAME = ".inochi-creator";
+enum APP_FOLDER_NAME = "inochi-creator";
 
 /**
     Name of environment variable to force a configuration path
@@ -25,15 +26,25 @@ enum ENV_CONFIG_PATH = "INOCHI_CONFIG_PATH";
 */
 string incGetAppConfigPath() {
     if (cachedConfigDir) return cachedConfigDir;
+    if (inForcedConfigDir) return inForcedConfigDir;
     string appDataDir;
 
     // Once this function has completed cache the result.
     scope(success) {
-        cachedConfigDir = appDataDir;
         
-        // Also make sure the folder exists
-        if (!exists(cachedConfigDir)) {
-            mkdirRecurse(cachedConfigDir);
+        if (inForcedConfigDir) {
+            
+            // Also make sure the folder exists
+            if (!exists(inForcedConfigDir)) {
+                mkdirRecurse(inForcedConfigDir);
+            }
+        } else {
+            cachedConfigDir = appDataDir;
+
+            // Also make sure the folder exists
+            if (!exists(cachedConfigDir)) {
+                mkdirRecurse(cachedConfigDir);
+            }
         }
     }
 
@@ -64,14 +75,28 @@ string incGetAppConfigPath() {
     }
 
     // Allow packagers, etc. to specify a forced config directory.
-    string inForcedConfigDir = environment.get(ENV_CONFIG_PATH);
-    if (inForcedConfigDir) {
-        return inForcedConfigDir;
-    }
+    inForcedConfigDir = environment.get(ENV_CONFIG_PATH);
+    if (inForcedConfigDir) return inForcedConfigDir;
+    
 
     if (!appDataDir) appDataDir = getcwd();
-    appDataDir = buildPath(appDataDir, APP_FOLDER_NAME);
-    return appDataDir;
+
+    version(linux) {
+
+        // On linux we're using standard XDG dirs, prior we
+        // used .inochi-creator there, but that's not correct
+        // This code will ensure we still use old config if it's there.
+        // Otherwise we create config for the *correct* path
+        string fdir = buildPath(appDataDir, "."~APP_FOLDER_NAME);
+        if (!exists(fdir)) fdir = buildPath(appDataDir, APP_FOLDER_NAME);
+        appDataDir = fdir;
+        return appDataDir;
+    } else {
+
+        // On other platforms we go for .(app name)
+        appDataDir = buildPath(appDataDir, "."~APP_FOLDER_NAME);
+        return appDataDir;
+    }
 }
 
 /**

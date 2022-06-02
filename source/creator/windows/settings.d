@@ -26,11 +26,11 @@ private:
 
 protected:
     override
-    void onBeginUpdate(int id) {
+    void onBeginUpdate() {
         flags |= ImGuiWindowFlags.NoResize;
         flags |= ImGuiWindowFlags.NoSavedSettings;
         incIsSettingsOpen = true;
-        super.onBeginUpdate(0);
+        super.onBeginUpdate();
     }
 
     override
@@ -74,11 +74,25 @@ protected:
                                 }
                             }
 
+                            version(linux) {
+                                bool disableCompositor = incSettingsGet!bool("DisableCompositor");
+                                if (igCheckbox(__("Disable Compositor"), &disableCompositor)) {
+                                    incSettingsSet("DisableCompositor", disableCompositor);
+                                }
+                            }
+
+                            version(InGallium) {
+                                bool useSWRender = incSettingsGet!bool("SoftwareRenderer");
+                                if (igCheckbox(__("Use software rendering"), &useSWRender)) {
+                                    incSettingsSet("SoftwareRenderer", useSWRender);
+                                }
+                            }
+
 
                             igSpacing();
                             igSpacing();
 
-                            igText("Undo/Redo History");
+                            igText(__("Undo/Redo History"));
                             igSeparator();
                             
                             int maxHistory = cast(int)incActionGetUndoHistoryLength();

@@ -20,9 +20,9 @@ private:
 protected:
 
     override
-    void onBeginUpdate(int id) {
+    void onBeginUpdate() {
         igSetNextWindowSize(ImVec2(512, 512), ImGuiCond.FirstUseEver);
-        super.onBeginUpdate(id);
+        super.onBeginUpdate();
     }
 
     override

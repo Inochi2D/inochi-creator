@@ -19,6 +19,8 @@ import inochi2d;
 import tinyfiledialogs;
 import std.string;
 import std.stdio;
+import std.conv;
+import std.range : repeat;
 
 public import bindbc.imgui;
 public import bindbc.imgui.ogl;
@@ -27,6 +29,7 @@ public import creator.core.actionstack;
 public import creator.core.taskstack;
 public import creator.core.path;
 public import creator.core.font;
+import i18n;
 
 private {
     SDL_GLContext gl_context;
@@ -35,7 +38,7 @@ private {
     bool done = false;
     ImGuiID viewportDock;
 
-    Texture inLogo;
+    version (InBranding) Texture inLogo;
 
     ImFont* mainFont;
     ImFont* iconFont;
@@ -52,6 +55,12 @@ bool incShowStatsForNerds;
     Finalizes everything by freeing imgui resources, etc.
 */
 void incFinalize() {
+
+    // This is important to prevent thread leakage
+    import creator.viewport.test : incViewportTestWithdraw;
+    incViewportTestWithdraw();
+
+    // Save settings
     igSaveIniSettingsToDisk(igGetIO().IniFilename);
 
     // Cleanup
@@ -100,42 +109,33 @@ void incInitStyling() {
     style.ChildBorderSize = 1;
 }
 
+
 /**
     Opens Window
 */
 void incOpenWindow() {
-    
-    import core.stdc.stdlib : exit;
-
     auto sdlSupport = loadSDL();
     enforce(sdlSupport != SDLSupport.noLibrary, "SDL2 library not found!");
     enforce(sdlSupport != SDLSupport.badLibrary, "Bad SDL2 library found!");
     
     auto imSupport = loadImGui();
     enforce(imSupport != ImGuiSupport.noLibrary, "cimgui library not found!");
-    enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui library found!");
-
+    
+    // HACK: For some reason this check fails on some macOS and Linux installations
+    version(Windows) enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui library found!");
     SDL_Init(SDL_INIT_EVERYTHING);
 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
-    version(OSX) {
-		pragma(msg, "Building in macOS support mode...");
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
-		// macOS only supports up to GL 4.1 with some extra stuff
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-	} else {
-
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-    }
-    debug SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLcontextFlag.SDL_GL_CONTEXT_DEBUG_FLAG | SDL_GLcontextFlag.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 
     SDL_WindowFlags flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 
@@ -143,30 +143,77 @@ void incOpenWindow() {
         flags |= SDL_WINDOW_MAXIMIZED;
     }
 
+    // Don't make KDE freak out when Inochi Creator opens
+    if (!incSettingsGet!bool("DisableCompositor")) SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
+
+    version(InGallium) {
+        import std.process : environment;
+        if (incSettingsGet!bool("SoftwareRenderer")) {
+
+            // For Mesa builds, use llvmpipe gallium driver
+            environment["GALLIUM_DRIVER"] = "llvmpipe";
+        } else {
+
+            // For Mesa builds, use zink gallium driver
+            environment["GALLIUM_DRIVER"] = "zink";
+        }
+    }
+
+
+    version(InBranding) {
+        debug string WIN_TITLE = "Inochi Creator "~_("(Debug Mode)");
+        else string WIN_TITLE = "Inochi Creator "~INC_VERSION;
+    } else string WIN_TITLE = "Inochi Creator "~_("(Unsupported)");
     window = SDL_CreateWindow(
-        "Inochi Creator", 
+        WIN_TITLE.toStringz, 
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         cast(uint)incSettingsGet!int("WinW", 1280), 
         cast(uint)incSettingsGet!int("WinH", 800), 
         flags
     );
-
-    gl_context = SDL_GL_CreateContext(window);
-    SDL_GL_MakeCurrent(window, gl_context);
-    SDL_GL_SetSwapInterval(1);
     
-    // Load GL 3
-    GLSupport support = loadOpenGL();
-    switch(support) {
-        case GLSupport.noLibrary:
-            throw new Exception("OpenGL library could not be loaded!");
+    GLSupport support;
 
-        case GLSupport.noContext:
-            throw new Exception("No valid OpenGL 4.2 context was found!");
+    // Gallium Support
+    version(InGallium) {
 
-        default: break;
+        bool incInitGalliumCtx() {
+            if (gl_context !is null) SDL_GL_DeleteContext(gl_context);
+            gl_context = SDL_GL_CreateContext(window);
+            SDL_GL_SetSwapInterval(1);
+            support = loadOpenGL();
+            return support != GLSupport.noLibrary && support != GLSupport.noContext;
+        }
+        
+        if (!incInitGalliumCtx() && !incSettingsGet!bool("SoftwareRenderer")) {
+            debug writeln("Attempting Gallium software rendering...");
+
+            environment["GALLIUM_DRIVER"] = "llvmpipe";
+            if (!incInitGalliumCtx()) {
+                incSettingsSet("SoftwareRenderer", true);
+                throw new Exception("Could not create Gallium Zink nor llvmpipe GL 3.2 instance!");
+            }
+        }
+
+    } else {
+
+        gl_context = SDL_GL_CreateContext(window);
+        SDL_GL_SetSwapInterval(1);
+
+        // Load GL 3
+        support = loadOpenGL();
+        switch(support) {
+            case GLSupport.noLibrary:
+                throw new Exception("OpenGL library could not be loaded!");
+
+            case GLSupport.noContext:
+                throw new Exception("No valid OpenGL 4.2 context was found!");
+
+            default: break;
+        }
     }
+
 
     import std.string : fromStringz;
     debug {
@@ -177,11 +224,6 @@ void incOpenWindow() {
             glGetString(GL_SHADING_LANGUAGE_VERSION).fromStringz,
             support
         );
-
-        glEnable(GL_DEBUG_OUTPUT);
-        version(Posix) {
-            glDebugMessageCallback(&incDebugCallback, null);
-        }
     }
 
     // Setup Inochi2D
@@ -189,9 +231,10 @@ void incOpenWindow() {
 
     incCreateContext();
 
-
-    // Load image resources
-    inLogo = new Texture(ShallowTexture(cast(ubyte[])import("logo.png")));
+    version (InBranding) {
+        // Load image resources
+        inLogo = new Texture(ShallowTexture(cast(ubyte[])import("logo.png")));
+    }
 
     // Load Settings
     incShowStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
@@ -298,8 +341,7 @@ void incSetDarkMode(bool darkMode) {
 
         style.FrameBorderSize = 1;
         style.TabBorderSize = 1;
-    }
-    else {
+    } else {
         igStyleColorsLight(null);
         style.Colors[ImGuiCol.Border] = ImVec4(0.8, 0.8, 0.8, 0.5);
         style.Colors[ImGuiCol.BorderShadow] = ImVec4(0, 0, 0, 0.05);
@@ -366,18 +408,21 @@ void incSetDefaultLayout() {
     igDockBuilderRemoveNodeChildNodes(viewportDock);
     ImGuiID 
         dockMainID, dockIDNodes, dockIDInspector, dockIDHistory, dockIDParams,
-        dockIDLoggerAndTextureSlots;
+        dockIDToolSettings, dockIDLoggerAndTextureSlots;
 
     dockMainID = viewportDock;
     dockIDNodes = igDockBuilderSplitNode(dockMainID, ImGuiDir.Left, 0.10f, null, &dockMainID);
     dockIDInspector = igDockBuilderSplitNode(dockIDNodes, ImGuiDir.Down, 0.60f, null, &dockIDNodes);
-    dockIDHistory = igDockBuilderSplitNode(dockMainID, ImGuiDir.Right, 0.10f, null, &dockMainID);
+    dockIDToolSettings = igDockBuilderSplitNode(dockMainID, ImGuiDir.Right, 0.10f, null, &dockMainID);
+    dockIDHistory = igDockBuilderSplitNode(dockIDToolSettings, ImGuiDir.Down, 0.50f, null, &dockIDToolSettings);
     dockIDParams = igDockBuilderSplitNode(dockMainID, ImGuiDir.Left, 0.15f, null, &dockMainID);
-    dockIDLoggerAndTextureSlots = igDockBuilderSplitNode(dockMainID, ImGuiDir.Down, 0.10f, null, &dockMainID);
+    dockIDLoggerAndTextureSlots = igDockBuilderSplitNode(dockMainID, ImGuiDir.Down, 0.15f, null, &dockMainID);
 
     igDockBuilderDockWindow("###Nodes", dockIDNodes);
     igDockBuilderDockWindow("###Inspector", dockIDInspector);
+    igDockBuilderDockWindow("###Tool Settings", dockIDToolSettings);
     igDockBuilderDockWindow("###History", dockIDHistory);
+    igDockBuilderDockWindow("###Tracking", dockIDHistory);
     igDockBuilderDockWindow("###Parameters", dockIDParams);
     igDockBuilderDockWindow("###Texture Slots", dockIDLoggerAndTextureSlots);
     igDockBuilderDockWindow("###Logger", dockIDLoggerAndTextureSlots);
@@ -443,6 +488,38 @@ void incEndLoop() {
 }
 
 /**
+    Prints ImGui debug info
+*/
+void incDebugImGuiState(string msg, int indent = 0) {
+    debug(imgui) {
+        static int currentIndent = 0;
+
+        string flag = "  ";
+        if (indent > 0) {
+            currentIndent += indent;
+            flag = ">>";
+        } else if (indent < 0) {
+            flag = "<<";
+        }
+
+        //auto g = igGetCurrentContext();
+        auto win = igGetCurrentWindow();
+        writefln(
+            "%s%s%s [%s]", ' '.repeat(currentIndent * 2), flag, msg,
+            to!string(win.Name)
+        );
+
+        if (indent < 0) {
+            currentIndent += indent;
+            if (currentIndent < 0) {
+                debug writeln("ERROR: dedented too far!");
+                currentIndent = 0;
+            }
+        }
+    }
+}
+
+/**
     Gets whether Inochi Creator has requested the app to close
 */
 bool incIsCloseRequested() {
@@ -485,11 +562,14 @@ ImFont* incIconFont() {
     return iconFont;
 }
 
-/**
-    Gets the Inochi2D Logo
-*/
-GLuint incGetLogo() {
-    return inLogo.getTextureId;
+
+version (InBranding) {
+    /**
+        Gets the Inochi2D Logo
+    */
+    GLuint incGetLogo() {
+        return inLogo.getTextureId;
+    }
 }
 
 void incHandleShortcuts() {
@@ -499,24 +579,5 @@ void incHandleShortcuts() {
         incActionRedo();
     } else if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), true)) {
         incActionUndo();
-    }
-}
-
-
-debug {
-    extern(C)
-    void incDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const(char)* message, void* userParam) nothrow {
-        import core.stdc.stdio : fprintf, stderr;
-        if (type == 0x8251) return;
-
-        // HACK: I have no clue what causes this error
-        // but everything seems to work nontheless
-        // I'll just quietly ignore it.
-        if (type == 0x824c) return; 
-
-        fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-           ( type == GL_DEBUG_TYPE_ERROR ? cast(char*)"** GL ERROR **" : cast(char*)"" ),
-            type, severity, message );
-
     }
 }

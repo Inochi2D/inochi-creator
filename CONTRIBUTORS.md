@@ -1,22 +1,52 @@
 === Project Managment ===
- * Luna the Foxgirl - Project Creator and BDFL
- * Joshua T. Fisher - ImGui Binding Maintainer
- * Nethyr_UX        - UX Designer
+Project Creator and BDFL
+    Luna the Foxgirl (@LunaFoxgirlVT)
+
+ImGui Binding Maintainer
+    Joshua T. Fisher
+
+UX Designer
+    Nethyr_UX
+
 
 === Designers ===
- * James Daniel - Inochi2D Logo
- * KinuGitsune  - Mascot Design
- * ku-ini       - Mascot Model Art
+Inochi2D Logo
+    James Daniel 
+
+
+=== Code Contributors ===
+    Asahi Lina
+    seagetch (GitHub)
+
+
+=== Mascot ==
+Mascot Design
+    Kinu (@Kinugitsune)
+
+Mascot Model Art
+    ku-ini (@duckmastah)
+
+Chibi UI Mascot
+    いろは (@iroha_matsurika)
+
 
 === Documentation ===
- * Luna the Foxgirl - Specification Documentation
+Specification Documentation
+    Luna the Foxgirl
+
 
 === Translators ===
 Dansk
- * Luna the Foxgirl
+    Luna the Foxgirl
 日本語
- * 40Nix
- * Sae Okuri
+    seagetch
+    40Nix
+    小栗さえ (@OkuriSae)
+中文
+    LovelyA72 (简体中文)
+    cheetosysst (繁體中文)
+
+
 
 === Technology Used ===
  * ImGui           - by Orconut
@@ -26,6 +56,9 @@ Dansk
  * bindbc          - by BindBC Maintainers
  * gl3n            - by Dav1dde
  * SDL2            - by SDL2 Maintainers
+ * LDC2            - by LDC2 Maintainers
+ * DLang           - by D Foundation & contributors
+
 
 === Fonts Used ===
  * Kosugi Maru     - by MATOYA

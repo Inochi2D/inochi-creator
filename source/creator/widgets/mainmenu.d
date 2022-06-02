@@ -9,6 +9,7 @@ import creator.windows;
 import creator.widgets;
 import creator.panels;
 import creator.core;
+import creator.core.input;
 import creator.utils.link;
 import creator;
 import inochi2d;
@@ -17,47 +18,116 @@ import tinyfiledialogs;
 import i18n;
 
 import std.string;
+import std.stdio;
 
 private {
     bool dbgShowStyleEditor;
     bool dbgShowDebugger;
+
+    void fileNew() {
+        incNewProject();
+    }
+
+    void fileOpen() {
+        const TFD_Filter[] filters = [
+            { ["*.inx"], "Inochi Creator Project (*.inx)" }
+        ];
+
+        c_str filename = tinyfd_openFileDialog(__("Open..."), "", filters, false);
+        if (filename !is null) {
+            string file = cast(string)filename.fromStringz;
+            incOpenProject(file);
+        }
+    }
+
+    void fileSave() {
+        // If a projeect path is set then the user has opened or saved
+        // an existing file, we should just override that
+        if (incProjectPath.length > 0) {
+            // TODO: do backups on every save?
+
+            incSaveProject(incProjectPath);
+        } else {
+            const TFD_Filter[] filters = [
+                { ["*.inx"], "Inochi Creator Project (*.inx)" }
+            ];
+
+            c_str filename = tinyfd_saveFileDialog(__("Save..."), "", filters);
+            if (filename !is null) {
+                string file = cast(string)filename.fromStringz;
+                incSaveProject(file);
+            }
+        }
+    }
+
+    void fileSaveAs() {
+        const TFD_Filter[] filters = [
+            { ["*.inx"], "Inochi Creator Project (*.inx)" }
+        ];
+
+        c_str filename = tinyfd_saveFileDialog(__("Save As..."), "", filters);
+        if (filename !is null) {
+            string file = cast(string)filename.fromStringz;
+            incSaveProject(file);
+        }
+    }
 }
 
 void incMainMenu() {
     auto io = igGetIO();
 
+    if (incShortcut("Ctrl+N")) fileNew();
+    if (incShortcut("Ctrl+O")) fileOpen();
+    if (incShortcut("Ctrl+S")) fileSave();
+    if (incShortcut("Ctrl+Shift+S")) fileSaveAs();
+
     if(igBeginMainMenuBar()) {
         ImVec2 avail;
         igGetContentRegionAvail(&avail);
-        if (incGetUseNativeTitlebar()) {
-            igImage(
-                cast(void*)incGetLogo(), 
-                ImVec2(avail.y*2, avail.y*2), 
-                ImVec2(0, 0), ImVec2(1, 1), 
-                ImVec4(1, 1, 1, 1), 
-                ImVec4(0, 0, 0, 0)
-            );
+        version (InBranding) {
+            if (incGetUseNativeTitlebar()) {
+                igImage(
+                    cast(void*)incGetLogo(), 
+                    ImVec2(avail.y*2, avail.y*2), 
+                    ImVec2(0, 0), ImVec2(1, 1), 
+                    ImVec4(1, 1, 1, 1), 
+                    ImVec4(0, 0, 0, 0)
+                );
 
-            igSeparator();
+                igSeparator();
+            }
         }
 
         if (igBeginMenu(__("File"), true)) {
             if(igMenuItem(__("New"), "Ctrl+N", false, true)) {
-                incNewProject();
+                fileNew();
             }
 
-            if (igBeginMenu(__("Open"), true)) {
+            if (igMenuItem(__("Open"), "Ctrl+O", false, true)) {
+                fileOpen();
+            }
+
+            string[] prevProjects = incGetPrevProjects();
+            if (igBeginMenu(__("Recent"), prevProjects.length > 0)) {
+                foreach(project; incGetPrevProjects) {
+                    import std.path : baseName;
+                    if (igMenuItem(project.baseName.toStringz, "", false, true)) {
+                        incOpenProject(project);
+                    }
+                    incTooltip(project);
+                }
                 igEndMenu();
             }
             
             if(igMenuItem(__("Save"), "Ctrl+S", false, true)) {
+                fileSave();
             }
             
             if(igMenuItem(__("Save As..."), "Ctrl+Shift+S", false, true)) {
+                fileSaveAs();
             }
 
             if (igBeginMenu(__("Import"), true)) {
-                incTooltip(_("Import photoshop document"));
                 if(igMenuItem_Bool(__("Photoshop Document"), "", false, true)) {
                     const TFD_Filter[] filters = [
                         { ["*.psd"], "Photoshop Document (*.psd)" }
@@ -71,8 +141,6 @@ void incMainMenu() {
                 }
                 incTooltip(_("Import a standard Photoshop PSD file."));
 
-                // This is only really useful for testing
-                // debug {
                 if (igMenuItem_Bool(__("Inochi2D Puppet"), "", false, true)) {
                     const TFD_Filter[] filters = [
                         { ["*.inp"], "Inochi2D Puppet (*.inp)" }
@@ -84,8 +152,7 @@ void incMainMenu() {
                         incImportINP(file);
                     }
                 }
-                incTooltip(_("Import existing puppet file"));
-                // }
+                incTooltip(_("Import existing puppet file, editing options limited"));
 
                 if (igMenuItem_Bool(__("Image Folder"))) {
                     c_str folder = tinyfd_selectFolderDialog(__("Select a Folder..."), null);
@@ -96,6 +163,7 @@ void incMainMenu() {
                 incTooltip(_("Supports PNGs, TGAs and JPEGs."));
                 igEndMenu();
             }
+
             if (igBeginMenu(__("Export"), true)) {
                 if(igMenuItem_Bool(__("Inochi Puppet"), "", false, true)) {
                     const TFD_Filter[] filters = [
@@ -108,11 +176,7 @@ void incMainMenu() {
                     if (filename !is null) {
                         string file = cast(string)filename.fromStringz;
 
-                        // Remember to populate texture slots otherwise things will break real bad!
-                        incActivePuppet().populateTextureSlots();
-
-                        // Write the puppet to file
-                        inWriteINPPuppet(incActivePuppet(), file.setExtension(".inp"));
+                        incExportINP(file);
                     }
                 }
                 igEndMenu();
@@ -182,16 +246,15 @@ void incMainMenu() {
 
             igSeparator();
             
-            if (igMenuItem_Bool(__("Save Screenshot"), "", incShowStatsForNerds, true)) {
+            if (igMenuItem(__("Save Screenshot"), "", false, true)) {
                 const TFD_Filter[] filters = [
-                    { ["*.png"], "PNG Image (*.png)" },
-                    { ["*.tga"], "TARGA Image (*.png)" }
+                    { ["*.png"], "PNG Image (*.png)" }
                 ];
 
                 import std.path : setExtension;
-                c_str filename = tinyfd_saveFileDialog(__("Export..."), "", filters);
+                c_str filename = tinyfd_saveFileDialog(__("Save Screenshot..."), "", filters);
                 if (filename !is null) {
-                    string file = cast(string)filename.fromStringz;
+                    string file = (cast(string)filename.fromStringz).setExtension("png");
 
                     // Dump viewport to RGBA byte array
                     int width, height;
@@ -229,15 +292,25 @@ void incMainMenu() {
 
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Puppet Texturing"));
             igSeparator();
-            if (igMenuItem(__("Rebleed textures..."), "", false)) {
+
+            // Premultiply textures, causing every pixel value in every texture to
+            // be multiplied by their Alpha (transparency) component
+            if (igMenuItem(__("Premultiply textures"), "", false)) {
+                import creator.utils.repair : incPremultTextures;
+                incPremultTextures(incActivePuppet());
+            }
+            incTooltip(_("Premultiplies textures by their alpha component.\n\nOnly use this if your textures look garbled after importing files from an older version of Inochi Creator."));
+            
+            if (igMenuItem(__("Bleed textures..."), "", false)) {
                 incRebleedTextures();
             }
+            incTooltip(_("Causes color to bleed out in to fully transparent pixels, this solves outlines on straight alpha compositing.\n\nOnly use this if your game engine can't use premultiplied alpha."));
 
             if (igMenuItem(__("Generate Mipmaps..."), "", false)) {
                 incRegenerateMipmaps();
             }
-            incTooltip(_("In some instances mipmaps may need to be re-generated.\nFor example PSD imports will need their mipmaps regenerated."));
-            
+            incTooltip(_("Regenerates the puppet's mipmaps."));
+
             // Spacing
             igSpacing();
             igSpacing();
@@ -257,13 +330,6 @@ void incMainMenu() {
                 incRegenerateNodeIDs(incActivePuppet().root);
             }
             incTooltip(_("Regenerates all the unique IDs for the model"));
-
-            // Premultiply textures
-            if (igMenuItem(__("Premultiply textures"), "", false)) {
-                import creator.utils.repair : incPremultTextures;
-                incPremultTextures(incActivePuppet());
-            }
-            incTooltip(_("Premultiplies textures"));
 
             // Spacing
             igSpacing();

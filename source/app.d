@@ -22,6 +22,20 @@ version(D_X32) {
     static assert(0, "😎👉👉 no");
 }
 
+version(Windows) {
+    debug {
+
+    } else {
+        version (LDC) {
+            pragma(linkerDirective, "/SUBSYSTEM:WINDOWS");
+            static if (__VERSION__ >= 2091)
+                pragma(linkerDirective, "/ENTRY:wmainCRTStartup");
+            else
+                pragma(linkerDirective, "/ENTRY:mainCRTStartup");
+        }
+    }
+}
+
 int main(string[] args)
 {
     try {
@@ -35,11 +49,14 @@ int main(string[] args)
             }
         }
 
+        inSetUpdateBounds(true);
+
         incInitPanels();
         incActionInit();
 
         incOpenWindow();
-        incNewProject();
+        if (args.length > 1) incOpenProject(args[1]);
+        else incNewProject();
         if (incSettingsGet!bool("ShowWarning", true)) {
             incPushWindow(new NoticeWindow());
         }

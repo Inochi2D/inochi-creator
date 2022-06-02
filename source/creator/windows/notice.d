@@ -17,25 +17,28 @@ private:
 
 protected:
     override
-    void onBeginUpdate(int id) {
+    void onBeginUpdate() {
         flags |= ImGuiWindowFlags.NoResize;
         igSetNextWindowSize(ImVec2(512, 384), ImGuiCond.Appearing);
         igSetNextWindowSizeConstraints(ImVec2(512, 384), ImVec2(float.max, float.max));
-        super.onBeginUpdate(0);
+        super.onBeginUpdate();
     }
 
     override
     void onUpdate() {
 
         igBeginChild("##LogoArea", ImVec2(0, 72));
-            igImage(
-                cast(void*)incGetLogo(), 
-                ImVec2(64, 64), 
-                ImVec2(0, 0), 
-                ImVec2(1, 1), 
-                ImVec4(1, 1, 1, 1), 
-                ImVec4(0, 0, 0, 0)
-            );
+
+            version (InBranding) {
+                igImage(
+                    cast(void*)incGetLogo(), 
+                    ImVec2(64, 64), 
+                    ImVec2(0, 0), 
+                    ImVec2(1, 1), 
+                    ImVec4(1, 1, 1, 1), 
+                    ImVec4(0, 0, 0, 0)
+                );
+            }
             
             igSameLine(0, 8);
             igSeparatorEx(ImGuiSeparatorFlags.Vertical);

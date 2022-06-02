@@ -5,6 +5,7 @@
     Authors: Luna Nielsen
 */
 module creator.panels.nodes;
+import creator.viewport.vertex;
 import creator.actions;
 import creator.panels;
 import creator;
@@ -56,11 +57,19 @@ protected:
                 }
                 
                 igPushFont(incIconFont());
-                    igText(incTypeIdToIcon("PathDeform").ptr);
+                    igText(incTypeIdToIcon("Composite").ptr);
                 igPopFont();
                 igSameLine(0, 2);
-                if (igMenuItem(__("PathDeform"), "", false, true)) incAddChildWithHistory(new PathDeform(n), n);
+                if (igMenuItem(__("Composite"), "", false, true)) {
+                    incAddChildWithHistory(new Composite(n), n);
+                }
                 
+                igPushFont(incIconFont());
+                    igText(incTypeIdToIcon("SimplePhysics").ptr);
+                igPopFont();
+                igSameLine(0, 2);
+                if (igMenuItem(__("Simple Physics"), "", false, true)) incAddChildWithHistory(new SimplePhysics(n), n);
+
                 igEndMenu();
             }
 
@@ -71,8 +80,12 @@ protected:
                 
                 if (igMenuItem(__("Delete"), "", false, !isRoot)) {
 
-                    foreach(sn; selected) {
-                        incDeleteChildWithHistory(sn);
+                    if (selected.length > 1) {
+                        foreach(sn; selected) {
+                            incDeleteChildWithHistory(sn);
+                        }
+                    } else {
+                        incDeleteChildWithHistory(n);
                     }
 
                     // Make sure we don't keep selecting a node we've removed
@@ -140,16 +153,20 @@ protected:
                     igSameLine(0, 2);
 
                     if (igSelectable(isRoot ? __("Puppet") : n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
-                        if (selected) {
-                            if (incSelectedNodes().length > 1) {
-                                if (io.KeyCtrl) incRemoveSelectNode(n);
-                                else incSelectNode(n);
-                            } else {
-                                incFocusCamera(n);
-                            }
-                        } else {
-                            if (io.KeyCtrl) incAddSelectNode(n);
-                            else incSelectNode(n);
+                        switch(incEditMode) {
+                            default:
+                                if (selected) {
+                                    if (incSelectedNodes().length > 1) {
+                                        if (io.KeyCtrl) incRemoveSelectNode(n);
+                                        else incSelectNode(n);
+                                    } else {
+                                        incFocusCamera(n);
+                                    }
+                                } else {
+                                    if (io.KeyCtrl) incAddSelectNode(n);
+                                    else incSelectNode(n);
+                                }
+                                break;
                         }
                     }
                     this.nodeActionsPopup!isRoot(n);
@@ -189,7 +206,34 @@ protected:
 
         if (open) {
             // Draw children
-            foreach(child; n.children) {
+            foreach(i, child; n.children) {
+                igPushID(cast(int)i);
+                    igTableNextRow();
+                    igTableSetColumnIndex(0);
+                    igInvisibleButton("###TARGET", ImVec2(128, 4));
+
+                    if(igBeginDragDropTarget()) {
+                        ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+                        if (payload !is null) {
+                            Node payloadNode = *cast(Node*)payload.Data;
+                            
+                            if (payloadNode.canReparent(n)) {
+                                auto idx = payloadNode.getIndexInNode(n);
+                                if (idx >= 0) {
+                                    payloadNode.insertInto(n, clamp(idx < i ? i-1 : i, 0, n.children.length));
+                                } else {
+                                    payloadNode.insertInto(n, clamp(cast(ptrdiff_t)i, 0, n.children.length));
+                                }
+                            }
+                            
+                            igPopID();
+                            igTreePop();
+                            return;
+                        }
+                        igEndDragDropTarget();
+                    }
+                igPopID();
+
                 treeAddNode(child);
             }
             igTreePop();
@@ -198,47 +242,21 @@ protected:
 
     }
 
-    void treeAddDrawable(ref Drawable n) {
-        igTableNextRow();
-        igTableSetColumnIndex(0);
-        
-        ImGuiTreeNodeFlags flags;
-        flags |= ImGuiTreeNodeFlags.Leaf;
-        flags |= ImGuiTreeNodeFlags.DefaultOpen;
-        flags |= ImGuiTreeNodeFlags.OpenOnArrow;
-
-        igTreeNodeEx(cast(void*)n.uuid, flags, "");
-            // Show node entry stuff
-            igSameLine(0, 4);
-
-            igPushID(n.uuid);
-
-                bool selected = incNodeInSelection(n);
-
-                igPushFont(incIconFont());
-                    igText(incTypeIdToIcon(n.typeId).ptr);
-                igPopFont();
-                igSameLine(0, 2);
-
-                if (igSelectable(n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
-                    if (selected) {
-                        incFocusCamera(n);
-                    }
-                    incSelectNode(n);
-                }
-                // this.nodeActionsPopup(n);
-            igPopID();
-        igTreePop();
-    }
-
     override
     void onUpdate() {
 
-        if (incEditMode == EditMode.ModelEdit){ 
-            auto io = igGetIO();
-            if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.A), false)) {
-                incSelectAll();
+        if (incEditMode == EditMode.ModelEdit) { 
+            if (!incArmedParameter) {
+                auto io = igGetIO();
+                if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.A), false)) {
+                    incSelectAll();
+                }
             }
+        }
+
+        if (incEditMode == EditMode.VertexEdit) {
+            igText(__("In vertex edit mode..."));
+            return;
         }
 
         igBeginChild_Str("NodesMain", ImVec2(0, -30), false);
@@ -251,10 +269,6 @@ protected:
                 
                 if (incEditMode == EditMode.ModelEdit) {
                     treeAddNode!true(incActivePuppet.root);
-                } else {
-                    foreach(drawable; incDrawables()) {
-                            treeAddDrawable(drawable);
-                    }
                 }
 
                 igEndTable();
@@ -272,7 +286,7 @@ protected:
         igPushFont(incIconFont());
             if (incEditMode() == EditMode.ModelEdit) {
                 auto selected = incSelectedNodes();
-                if (igButton("\ue92e", ImVec2(24, 24))) {
+                if (igButton("", ImVec2(24, 24))) {
                     foreach(payloadNode; selected) incDeleteChildWithHistory(payloadNode);
                 }
 
