@@ -241,11 +241,23 @@ void incMainMenu() {
             // Spacing
             igSpacing();
             igSpacing();
+
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Configuration"));
+
+            // Opens the directory where configuration resides in the user's file browser.
+            if (igMenuItem(__("Open Configuration Folder"), null, false, true)) {
+                incOpenLink(incGetAppConfigPath());
+            }
+
+            igSeparator();
+            // Spacing
+            igSpacing();
+            igSpacing();
+            
             
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Extras"));
 
             igSeparator();
-            
             if (igMenuItem(__("Save Screenshot"), "", false, true)) {
                 const TFD_Filter[] filters = [
                     { ["*.png"], "PNG Image (*.png)" }
@@ -283,6 +295,7 @@ void incMainMenu() {
                 incShowStatsForNerds = !incShowStatsForNerds;
                 incSettingsSet("NerdStats", incShowStatsForNerds);
             }
+
 
             igEndMenu();
         }
