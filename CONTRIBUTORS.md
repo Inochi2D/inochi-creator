@@ -17,6 +17,7 @@ Inochi2D Logo
 === Code Contributors ===
     Asahi Lina
     seagetch (GitHub)
+    carbotaniuman
 
 
 === Mascot ==
