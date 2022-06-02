@@ -66,14 +66,6 @@ protected:
                                 igEndCombo();
                             }
 
-                            if (incCanUseAppTitlebar) {
-                                bool useNative = incGetUseNativeTitlebar();
-                                if (igCheckbox(__("Use Native Titlebar"), &useNative)) {
-                                    incSettingsSet("UseNativeTitleBar", useNative);
-                                    incSetUseNativeTitlebar(useNative);
-                                }
-                            }
-
                             version(linux) {
                                 bool disableCompositor = incSettingsGet!bool("DisableCompositor");
                                 if (igCheckbox(__("Disable Compositor"), &disableCompositor)) {

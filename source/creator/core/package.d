@@ -238,11 +238,6 @@ void incOpenWindow() {
 
     // Load Settings
     incShowStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
-
-    import creator.widgets.titlebar : incSetUseNativeTitlebar, incGetUseNativeTitlebar, incCanUseAppTitlebar;
-    incCanUseAppTitlebar = SDL_SetWindowHitTest(incGetWindowPtr(), null, null) != -1;
-    incSetUseNativeTitlebar(incSettingsGet("UseNativeTitleBar", false));
-    
 }
 
 void incCreateContext() {

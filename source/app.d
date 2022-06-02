@@ -87,9 +87,6 @@ void incUpdate() {
     // Begin IMGUI loop
     incBeginLoop();
         if (incShouldProcess()) {
-            if (!incGetUseNativeTitlebar()) {
-                incTitlebar("Inochi Creator");
-            }
             incStatusbar();
 
             incHandleShortcuts();
@@ -113,9 +110,6 @@ void incUpdateNoEv() {
     // Begin IMGUI loop
     incBeginLoopNoEv();
         if (incShouldProcess()) {
-            if (!incGetUseNativeTitlebar()) {
-                incTitlebar("Inochi Creator");
-            }
             incStatusbar();
 
             incHandleShortcuts();

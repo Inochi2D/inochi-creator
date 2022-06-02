@@ -9,7 +9,6 @@ import creator.core;
 import bindbc.imgui;
 import std.string;
 import std.conv;
-import creator.widgets.titlebar;
 import i18n;
 
 public import creator.windows.about;
