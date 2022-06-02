@@ -42,6 +42,10 @@ Dansk
     seagetch
     40Nix
     小栗さえ (@OkuriSae)
+中文
+    LovelyA72 (简体中文)
+    cheetosysst (繁體中文)
+
 
 
 === Technology Used ===
