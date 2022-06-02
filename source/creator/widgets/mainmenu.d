@@ -85,17 +85,15 @@ void incMainMenu() {
         ImVec2 avail;
         igGetContentRegionAvail(&avail);
         version (InBranding) {
-            if (incGetUseNativeTitlebar()) {
-                igImage(
-                    cast(void*)incGetLogo(), 
-                    ImVec2(avail.y*2, avail.y*2), 
-                    ImVec2(0, 0), ImVec2(1, 1), 
-                    ImVec4(1, 1, 1, 1), 
-                    ImVec4(0, 0, 0, 0)
-                );
+            igImage(
+                cast(void*)incGetLogo(), 
+                ImVec2(avail.y*2, avail.y*2), 
+                ImVec2(0, 0), ImVec2(1, 1), 
+                ImVec4(1, 1, 1, 1), 
+                ImVec4(0, 0, 0, 0)
+            );
 
-                igSeparator();
-            }
+            igSeparator();
         }
 
         if (igBeginMenu(__("File"), true)) {
