@@ -73,6 +73,15 @@ string incLocaleCurrentName() {
 */
 void incLocaleSet(string code) {
     incSettingsSet("lang", code);
+    
+    // Builtin EN has no .po file
+    if (code.length == 0 || code == "en") {
+        i18nClearLanguage();
+        return;
+    }
+
+    // Other languages do, though.
+    i18nLoadLanguage(incLocaleGetEntryFor(code).file);
 }
 
 /**
