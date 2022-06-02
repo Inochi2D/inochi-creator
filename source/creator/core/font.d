@@ -49,6 +49,7 @@ private {
 
     void _incAddFontData(string name, ref ubyte[] data, float size = 14, const ImWchar* ranges = null, ImVec2 offset = ImVec2(0f, 0f)) {
         auto cfg = ImFontConfig_ImFontConfig();
+        cfg.FontBuilderFlags = 1 << 9;
         cfg.FontDataOwnedByAtlas = false;
         cfg.MergeMode = atlas.Fonts.empty() ? false : true;
         cfg.GlyphOffset = offset;
@@ -89,7 +90,7 @@ struct FontEntry {
 void incInitFonts() {
     _incInitFontList();
     atlas = igGetIO().Fonts;
-        _incAddFontData("APP\0", NOTO, 32, (cast(ImWchar[])[
+        _incAddFontData("APP\0", NOTO, 26, (cast(ImWchar[])[
             0x0020, 0x00FF, // Basic Latin + Latin Supplement
             0x2000, 0x206F, // General Punctuation
             0x3000, 0x30FF, // CJK Symbols and Punctuations, Hiragana, Katakana
@@ -97,9 +98,19 @@ void incInitFonts() {
             0xFF00, 0xFFEF, // Half-width characters
             0xFFFD, 0xFFFD, // Invalid
             0x4e00, 0x9FAF, // CJK Ideograms
-            0]).ptr
+            0]).ptr,
+            ImVec2(0, -6)
         );
-        _incAddFontData("Icons\0", ICONS, 32, [cast(ImWchar)0xE000, cast(ImWchar)0xF23B].ptr, ImVec2(0, 4));
+        _incAddFontData(
+            "Icons", 
+            ICONS, 
+            32, 
+            [
+                cast(ImWchar)0xE000, 
+                cast(ImWchar)0xF23B
+            ].ptr, 
+            ImVec2(0, -2)
+        );
     ImFontAtlas_Build(atlas);
     incSetUIScale(incGetUIScale());
 }
