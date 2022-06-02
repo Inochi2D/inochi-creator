@@ -89,7 +89,16 @@ struct FontEntry {
 void incInitFonts() {
     _incInitFontList();
     atlas = igGetIO().Fonts;
-        _incAddFontData("APP\0", NOTO, 32, ImFontAtlas_GetGlyphRangesChineseFull(atlas));
+        _incAddFontData("APP\0", NOTO, 32, (cast(ImWchar[])[
+            0x0020, 0x00FF, // Basic Latin + Latin Supplement
+            0x2000, 0x206F, // General Punctuation
+            0x3000, 0x30FF, // CJK Symbols and Punctuations, Hiragana, Katakana
+            0x31F0, 0x31FF, // Katakana Phonetic Extensions
+            0xFF00, 0xFFEF, // Half-width characters
+            0xFFFD, 0xFFFD, // Invalid
+            0x4e00, 0x9FAF, // CJK Ideograms
+            0]).ptr
+        );
         _incAddFontData("Icons\0", ICONS, 32, [cast(ImWchar)0xE000, cast(ImWchar)0xF23B].ptr, ImVec2(0, 4));
     ImFontAtlas_Build(atlas);
     incSetUIScale(incGetUIScale());
