@@ -152,8 +152,8 @@ protected:
                                 fname
                             );
                         } catch(Exception ex) {
-                            if (ex.msg[0..11] = "unsupported") {
-                                incDialog(__("Error"), _("%s is not supported").format(file));
+                            if (ex.msg[0..11] == "unsupported") {
+                                incDialog(__("Error"), _("%s is not supported").format(fname));
                             } else incDialog(__("Error"), ex.msg);
                         }
 
@@ -167,7 +167,7 @@ protected:
                         break mainLoop;
 
                     default:
-                        incDialog(__("Error"), _("%s is not supported").format(file)); 
+                        incDialog(__("Error"), _("%s is not supported").format(fname)); 
                         break;
                     }
                 }
