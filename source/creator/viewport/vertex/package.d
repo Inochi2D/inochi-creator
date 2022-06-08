@@ -117,6 +117,14 @@ void incVertexEditCopyMeshDataToTarget(MeshData data) {
     Applies the mesh edits
 */
 void incMeshEditApply() {
+    
+    // Automatically apply triangulation
+    if (editor.previewingTriangulation()) {
+        editor.applyPreview();
+        editor.refreshMesh();
+    }
+
+    // Apply to target
     editor.applyToTarget();
 }
 
