@@ -10,6 +10,7 @@ import creator.panels;
 import creator.windows;
 import creator.utils.link;
 import creator;
+import creator.widgets.dialog;
 
 import std.exception;
 
@@ -395,6 +396,8 @@ void incBeginLoopNoEv() {
         incSetDefaultLayout();
         incSettingsSet("firstrun_complete", true);
     }
+
+    incRenderDialogs();
 }
 
 void incSetDefaultLayout() {
@@ -463,6 +466,8 @@ void incBeginLoop() {
     Ends the Inochi Creator rendering loop
 */
 void incEndLoop() {
+
+    incCleanupDialogs();
 
     // Rendering
     igRender();
