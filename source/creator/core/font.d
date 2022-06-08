@@ -27,6 +27,8 @@ private {
         cfg.FontDataOwnedByAtlas = false;
         cfg.MergeMode = atlas.Fonts.empty() ? false : true;
         cfg.GlyphOffset = offset;
+        cfg.OversampleH = 3;
+        cfg.OversampleV = 2;
 
         char[40] nameDat;
         nameDat[0..name.length] = name[0..name.length];
