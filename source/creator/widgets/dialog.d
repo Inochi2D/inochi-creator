@@ -35,7 +35,11 @@ void incRenderDialogs() {
             igOpenPopup(entry.tag);
         }
 
-        if (igBeginPopupModal(entry.tag, null, ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.NoResize)) {
+        auto flags = 
+            ImGuiWindowFlags.NoSavedSettings | 
+            ImGuiWindowFlags.NoResize | 
+            ImGuiWindowFlags.AlwaysAutoResize;
+        if (igBeginPopupModal(entry.tag, null, flags)) {
             float uiScale = incGetUIScale();
             float errImgScale = 96*uiScale;
 
