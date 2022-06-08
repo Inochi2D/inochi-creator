@@ -142,14 +142,20 @@ protected:
                     switch(fname.extension.toLower) {
                     case ".png", ".tga", ".jpeg", ".jpg":
 
-                        auto tex = new ShallowTexture(file);
-                        incColorBleedPixels(tex);
-                        inTexPremultiply(tex.data);
-                        incAddChildWithHistory(
-                            inCreateSimplePart(*tex, null, fname), 
-                            incSelectedNode(), 
-                            fname
-                        );
+                        try {
+                            auto tex = new ShallowTexture(file);
+                            incColorBleedPixels(tex);
+                            inTexPremultiply(tex.data);
+                            incAddChildWithHistory(
+                                inCreateSimplePart(*tex, null, fname), 
+                                incSelectedNode(), 
+                                fname
+                            );
+                        } catch(Exception ex) {
+                            if (ex.msg[0..11] = "unsupported") {
+                                incDialog(__("Error"), _("%s is not supported").format(file));
+                            } else incDialog(__("Error"), ex.msg);
+                        }
 
                         // We've added new stuff, rescan nodes
                         incActivePuppet().rescanNodes();
@@ -160,7 +166,9 @@ protected:
                         incImportPSD(file);
                         break mainLoop;
 
-                    default: break;
+                    default:
+                        incDialog(__("Error"), _("%s is not supported").format(file)); 
+                        break;
                     }
                 }
 
