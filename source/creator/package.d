@@ -15,12 +15,15 @@ import creator.core;
 import creator.core.actionstack;
 import creator.windows;
 import creator.atlas;
+import creator.widgets.dialog;
 
 public import creator.ver;
 public import creator.atlas;
 import creator.core.colorbleed;
 
 import std.file;
+import std.format;
+import i18n;
 
 /**
     A project
@@ -149,7 +152,8 @@ void incOpenProject(string path) {
     // Load the puppet from file
     try {
         puppet = inLoadPuppet(path);
-    } catch (std.file.FileException e) {
+    } catch (Exception ex) {
+        incDialog(__("Error"), ex.msg);
         return;
     }
 
@@ -167,15 +171,19 @@ void incOpenProject(string path) {
 
 void incSaveProject(string path) {
     import std.path : setExtension;
-    string finalPath = path.setExtension(".inx");
-    currProjectPath = path;
-    incAddPrevProject(finalPath);
+    try {
+        string finalPath = path.setExtension(".inx");
+        currProjectPath = path;
+        incAddPrevProject(finalPath);
 
-    // Remember to populate texture slots otherwise things will break real bad!
-    incActivePuppet().populateTextureSlots();
+        // Remember to populate texture slots otherwise things will break real bad!
+        incActivePuppet().populateTextureSlots();
 
-    // Write the puppet to file
-    inWriteINPPuppet(incActivePuppet(), finalPath);
+        // Write the puppet to file
+        inWriteINPPuppet(incActivePuppet(), finalPath);
+    } catch(Exception ex) {
+        incDialog(__("Error"), ex.msg);
+    }
 }
 
 /**
@@ -187,20 +195,31 @@ void incImportFolder(string folder) {
     import std.file : dirEntries, SpanMode;
     import std.path : stripExtension, baseName;
 
+    string[] failedFiles;
     // For each file find PNG, TGA and JPEG files and import them
     Puppet puppet = new Puppet();
     size_t i;
     foreach(file; dirEntries(folder, SpanMode.shallow, false)) {
+        try {
 
-        // TODO: Check for position.ini
+            // TODO: Check for position.ini
 
-        auto tex = ShallowTexture(file);
-        inTexPremultiply(tex.data);
+            auto tex = ShallowTexture(file);
+            inTexPremultiply(tex.data);
 
-        Part part = inCreateSimplePart(new Texture(tex), null, file.baseName.stripExtension);
-        part.zSort = -((cast(float)i++)/100);
-        puppet.root.addChild(part);
+            Part part = inCreateSimplePart(new Texture(tex), null, file.baseName.stripExtension);
+            part.zSort = -((cast(float)i++)/100);
+            puppet.root.addChild(part);
+        } catch(Exception ex) {
+            failedFiles ~= ex.msg;
+        }
     }
+
+    if (failedFiles.length > 0) {
+        import std.array : join;
+        incDialog("ImgLoadError", format(_("The following errors occured during file loading\n%s"), failedFiles.join("\n")));
+    }
+    
     puppet.rescanNodes();
     puppet.populateTextureSlots();
     incActiveProject().puppet = puppet;
@@ -304,7 +323,13 @@ void incImportPSD(string file) {
 */
 void incImportINP(string file) {
     incNewProject();
-    Puppet puppet = inLoadPuppet(file);
+    Puppet puppet;
+    try {
+        puppet = inLoadPuppet(file);
+    } catch(Exception ex) {
+        incDialog(__("Error"), ex.msg);
+        return;
+    }
     incActiveProject().puppet = puppet;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
@@ -315,14 +340,19 @@ void incImportINP(string file) {
 */
 void incExportINP(string file) {
     import std.path : setExtension;
+    try {
 
-    // Remember to populate texture slots otherwise things will break real bad!
-    incActivePuppet().populateTextureSlots();
+        // Remember to populate texture slots otherwise things will break real bad!
+        incActivePuppet().populateTextureSlots();
 
-    // TODO: Generate optimized puppet from this puppet.
+        // TODO: Generate optimized puppet from this puppet.
 
-    // Write the puppet to file
-    inWriteINPPuppet(incActivePuppet(), file.setExtension(".inp"));
+        // Write the puppet to file
+        inWriteINPPuppet(incActivePuppet(), file.setExtension(".inp"));
+    } catch(Exception ex) {
+        incDialog(__("Error"), ex.msg);
+        return;
+    }
 
 }
 
