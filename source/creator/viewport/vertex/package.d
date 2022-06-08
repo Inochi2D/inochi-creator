@@ -124,6 +124,13 @@ void incMeshEditApply() {
         editor.refreshMesh();
     }
 
+    if (editor.mesh.vertices.length == 0) {
+        incDialog(__("Error"), _("Can't apply a mesh with 0 vertices"));
+        return;
+    }
+
+    // TODO: Also make sure that we check for edge count and show an error then too.
+
     // Apply to target
     editor.applyToTarget();
 }
