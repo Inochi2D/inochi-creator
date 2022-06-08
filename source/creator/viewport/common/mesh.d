@@ -295,6 +295,19 @@ public:
         return mExport();
     }
 
+    final
+    size_t getEdgeCount() {
+        if (lines.length == 0) {
+            regenConnections();
+        }
+        return lines.length;
+    }
+
+    final
+    size_t getVertexCount() {
+        return vertices.length;
+    }
+
     /**
         Resets mesh to prior state
     */

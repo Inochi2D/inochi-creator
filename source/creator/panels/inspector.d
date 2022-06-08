@@ -1247,10 +1247,6 @@ void incInspectorMeshEditDrawable(Drawable node) {
 
         if (igButton("", ImVec2(32, 32))) {
             incMeshEditApply();
-
-            incSetEditMode(EditMode.ModelEdit);
-            incSelectNode(node);
-            incFocusCamera(node);
         }
         incTooltip(_("Apply"));
     igPopStyleVar();

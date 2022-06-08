@@ -117,6 +117,7 @@ void incVertexEditCopyMeshDataToTarget(MeshData data) {
     Applies the mesh edits
 */
 void incMeshEditApply() {
+    Node target = editor.getTarget();
     
     // Automatically apply triangulation
     if (editor.previewingTriangulation()) {
@@ -124,8 +125,8 @@ void incMeshEditApply() {
         editor.refreshMesh();
     }
 
-    if (editor.mesh.vertices.length == 0) {
-        incDialog(__("Error"), _("Can't apply a mesh with 0 vertices"));
+    if (editor.mesh.getVertexCount() < 3 || editor.mesh.getEdgeCount() < 3) {
+        incDialog(__("Error"), _("Cannot apply invalid mesh\nAt least 3 vertices forming a triangle is needed."));
         return;
     }
 
@@ -133,6 +134,11 @@ void incMeshEditApply() {
 
     // Apply to target
     editor.applyToTarget();
+
+    // Switch mode
+    incSetEditMode(EditMode.ModelEdit);
+    incSelectNode(target);
+    incFocusCamera(target);
 }
 
 /**
