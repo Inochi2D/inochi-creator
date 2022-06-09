@@ -11,7 +11,7 @@ cp ../../res/inochi-creator.desktop inochi-creator.desktop
 cp ../../res/AppRun AppRun
 cp ../../res/NotoSansCJK-Regular-LICENSE usr/bin/NotoSansCJK-Regular-LICENSE
 cp ../../res/MaterialIcons-LICENSE usr/bin/MaterialIcons-LICENSE
-cp ../../res/OpenDyslexic-LICENSE usr/bin/AppRun
+cp ../../res/OpenDyslexic-LICENSE usr/bin/OpenDyslexic-LICENSE
 cp ../../LICENSE usr/bin/LICENSE
 
 cd ..
