@@ -266,7 +266,7 @@ void incInspectorModelInfo() {
         igPushID("Gravity");
             igText(__("Gravity"));
             incTooltip(_("Acceleration due to gravity, in m/s². Earth gravity is 9.8."));
-            incDragFloat("Gravity", &puppet.physics.gravity, 0.01, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            incDragFloat("Gravity", &puppet.physics.gravity, 0.01, 0, float.max, __("%.2f m/s"), ImGuiSliderFlags.NoRoundToFormat);
         igPopID();
         igSpacing();
     }

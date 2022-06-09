@@ -2,6 +2,7 @@ module creator.core.i18n;
 import creator.core;
 import i18n.culture;
 import i18n;
+import i18n.tr;
 import std.file;
 import std.path;
 import std.string;
