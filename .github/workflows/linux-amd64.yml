@@ -33,7 +33,7 @@ jobs:
     
     - name: "Get build dependencies"
       run: |
-        sudo apt install libsdl2-dev libfreetype-dev
+        sudo apt install libsdl2-dev libfreetype6-dev
       
     - name: "Clone dependencies & set versions"
       run: |
