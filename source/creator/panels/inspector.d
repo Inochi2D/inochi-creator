@@ -266,7 +266,7 @@ void incInspectorModelInfo() {
         igPushID("Gravity");
             igText(__("Gravity"));
             incTooltip(_("Acceleration due to gravity, in m/s². Earth gravity is 9.8."));
-            incDragFloat("Gravity", &puppet.physics.gravity, 0.01, 0, float.max, __("%.2f m/s"), ImGuiSliderFlags.NoRoundToFormat);
+            incDragFloat("Gravity", &puppet.physics.gravity, 0.01, 0, float.max, _("%.2f m/s"), ImGuiSliderFlags.NoRoundToFormat);
         igPopID();
         igSpacing();
     }
@@ -632,26 +632,18 @@ void incInspectorModelPart(Part node) {
     import std.conv : text;
     import std.string : toStringz;
 
-    igBeginGroup();
-        igIndent(16);
-            // Header for texture options    
-            if (igCollapsingHeader(__("Textures")))  {
+    igText("(TODO: Texture Select)");
+    
+    igSpacing();
+    igSpacing();
 
-                igText("(TODO: Texture Select)");
+    igText(__("Tint"));
+    igColorEdit3("", cast(float[3]*)node.tint.ptr);
 
-                igSpacing();
-                igSpacing();
-
-                igText(__("Tint"));
-                igColorEdit3("", cast(float[3]*)node.tint.ptr);
-
-                // Padding
-                igSeparator();
-                igSpacing();
-                igSpacing();
-            }
-        igUnindent();
-    igEndGroup();
+    // Padding
+    igSeparator();
+    igSpacing();
+    igSpacing();
 
     // Header for the Blending options for Parts
     igText(__("Blending"));
