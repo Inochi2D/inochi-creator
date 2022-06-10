@@ -278,8 +278,8 @@ protected:
             }
             igPopStyleVar();
             igPopStyleVar();
-            igEndChild();
         }
+        igEndChild();
 
         igSeparator();
         igSpacing();

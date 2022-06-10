@@ -120,8 +120,8 @@ protected:
                         igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
                             incViewportDrawOverlay();
                         igPopStyleVar();
-                        igEndChild();
                     }
+                    igEndChild();
                 igPopStyleVar();
 
             igSetCursorScreenPos(sPosA);
@@ -222,8 +222,8 @@ protected:
 
 
             igPopItemWidth();
-            igEndChild();
         }
+        igEndChild();
 
         // Handle smooth move
         incViewportZoom = dampen(incViewportZoom, incViewportTargetZoom, deltaTime);

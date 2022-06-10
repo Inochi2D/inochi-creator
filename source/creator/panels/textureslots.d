@@ -46,8 +46,8 @@ private:
                     igUnindent(fSizeF);
                 igEndGroup();
             igPopID();
-            igEndChild();
         }
+        igEndChild();
     }
 
 protected:
@@ -62,8 +62,8 @@ protected:
                 igSameLine(0, 4);
             }
 
-            igEndChild();
         }
+        igEndChild();
     }
 
 public:

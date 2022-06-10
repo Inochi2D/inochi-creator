@@ -37,8 +37,8 @@ protected:
                 ImVec4(1, 1, 1, 1), 
                 ImVec4(0, 0, 0, 0)
             );
-            igEndChild();
         }
+        igEndChild();
     }
 
 public:

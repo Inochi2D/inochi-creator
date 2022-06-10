@@ -57,59 +57,60 @@ protected:
                 igEndCombo();
             }
 
-        if (binding.param) {
-            if (igBeginCombo(__("Bind To"), trackingComboName)) {
-                foreach(name, mode; currBindable) {
-                    igPushID(name.ptr);
-                        bool isSelected = binding.key == name;
-                        if (igSelectable(name.toStringz, isSelected)) {
-                            binding.key = name;
-                            trackingComboName = name.toStringz;
+            if (binding.param) {
+                if (igBeginCombo(__("Bind To"), trackingComboName)) {
+                    foreach(name, mode; currBindable) {
+                        igPushID(name.ptr);
+                            bool isSelected = binding.key == name;
+                            if (igSelectable(name.toStringz, isSelected)) {
+                                binding.key = name;
+                                trackingComboName = name.toStringz;
 
-                            if (mode == TrackingBindingMode.Blendshape) {
-                                binding.mode = mode;
-                            } else {
-                                binding.mode = TrackingBindingMode.Bone;
+                                if (mode == TrackingBindingMode.Blendshape) {
+                                    binding.mode = mode;
+                                } else {
+                                    binding.mode = TrackingBindingMode.Bone;
+                                }
                             }
+                        igPopID();
+                    }
+                    igEndCombo();
+                }
+
+                if (binding.key in currBindable && currBindable[binding.key] == TrackingBindingMode.Bone) {
+                    
+                    if (igBeginCombo(__("Bone Input"), bindingBoneInputName)) {
+                        boneElementSelectable(__("Position (X)"), TrackingBindingMode.BonePosX);
+                        boneElementSelectable(__("Position (Y)"), TrackingBindingMode.BonePosY);
+                        boneElementSelectable(__("Position (Z)"), TrackingBindingMode.BonePosZ);
+                        boneElementSelectable(__("Rotation (X)"), TrackingBindingMode.BoneRotX);
+                        boneElementSelectable(__("Rotation (Y)"), TrackingBindingMode.BoneRotY);
+                        boneElementSelectable(__("Rotation (Z)"), TrackingBindingMode.BoneRotZ);
+                        igEndCombo();
+                    }
+                }
+
+                if (binding.param.isVec2) {
+                    if (igBeginCombo(__("Binding Axis"), bindingAxisName)) {
+                        if (igSelectable("X", binding.axis == 0)) {
+                            binding.axis = 0;
+                            bindingAxisName = "X";
                         }
-                    igPopID();
-                }
-                igEndCombo();
-            }
 
-            if (binding.key in currBindable && currBindable[binding.key] == TrackingBindingMode.Bone) {
-                
-                if (igBeginCombo(__("Bone Input"), bindingBoneInputName)) {
-                    boneElementSelectable(__("Position (X)"), TrackingBindingMode.BonePosX);
-                    boneElementSelectable(__("Position (Y)"), TrackingBindingMode.BonePosY);
-                    boneElementSelectable(__("Position (Z)"), TrackingBindingMode.BonePosZ);
-                    boneElementSelectable(__("Rotation (X)"), TrackingBindingMode.BoneRotX);
-                    boneElementSelectable(__("Rotation (Y)"), TrackingBindingMode.BoneRotY);
-                    boneElementSelectable(__("Rotation (Z)"), TrackingBindingMode.BoneRotZ);
-                    igEndCombo();
-                }
-            }
-
-            if (binding.param.isVec2) {
-                if (igBeginCombo(__("Binding Axis"), bindingAxisName)) {
-                    if (igSelectable("X", binding.axis == 0)) {
-                        binding.axis = 0;
-                        bindingAxisName = "X";
+                        if (igSelectable("Y", binding.axis == 1)) {
+                            binding.axis = 1;
+                            bindingAxisName = "Y";
+                        }
+                        igEndCombo();
                     }
-
-                    if (igSelectable("Y", binding.axis == 1)) {
-                        binding.axis = 1;
-                        bindingAxisName = "Y";
-                    }
-                    igEndCombo();
+                } else {
+                    binding.axis = 0;
                 }
-            } else {
-                binding.axis = 0;
-            }
 
-            igCheckbox(__("Invert"), &binding.inverse);
-        }
-        igEndChild();
+                igCheckbox(__("Invert"), &binding.inverse);
+            }
+            igEndChild();
+
             if (igBeginChild("###SettingsBtns", ImVec2(0, 0))) {
                 if (igButton(__("Refresh Bindable"), ImVec2(0, 24))) {
                     this.currBindable = incViewportTestGetCurrBindable();
@@ -131,8 +132,8 @@ protected:
                     }
                 if (!canSave) igEndDisabled();
             }
-            igEndChild();
         }
+        igEndChild();
     }
 
 public:

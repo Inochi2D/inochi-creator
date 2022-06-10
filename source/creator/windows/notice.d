@@ -47,8 +47,9 @@ protected:
             igPushFont(incBiggerFont());
                 igText("Inochi Creator");
             igPopFont();
-            igEndChild();
         }
+        igEndChild();
+
         if (igBeginChild("##CreditsArea", ImVec2(0, -48))) {
 
             igPushFont(incBiggerFont());
@@ -57,8 +58,8 @@ protected:
             igSpacing();
             igText(__("Inochi2D and Inochi Creator is currently under heavy development\nUsing Inochi Creator in production is not advised, it *will* crash\nout of nowhere and there's still plenty of bugs to fix.\n\nThe Inochi2D project is not to be held liable for broken\npuppet files or crashes resulting from using this beta \nsoftware.\n\nIf you accept this press the \"Close\" button to continue"));
 
-            igEndChild();
         }
+        igEndChild();
 
         if (igCheckbox(__("Don't show again"), &doNotShowAgain)) {
             incSettingsSet("ShowWarning", !doNotShowAgain);

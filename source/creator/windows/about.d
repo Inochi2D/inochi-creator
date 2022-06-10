@@ -81,19 +81,19 @@ protected:
                 igSeparator();
                 igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "I2D v. %s", (IN_VERSION~"\0").ptr);
                 igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "imgui v. %s", igGetVersion());
-                igEndChild();
             }
+            igEndChild();
             
             igSpacing();
             igText("Credits");
             igSeparator();
-            igEndChild();
         }
+        igEndChild();
 
         if (igBeginChild("##CreditsArea", ImVec2(0, -28*incGetUIScale()))) {
             igText(import("CONTRIBUTORS.md"));
-            igEndChild();
         }
+        igEndChild();
 
         if (igBeginChild("##ButtonArea", ImVec2(0, 0))) {
             ImVec2 space = incAvailableSpace();
@@ -118,8 +118,8 @@ protected:
             if (igButton(__("Donate"), ImVec2(spacing, 0))) {
                 incOpenLink("https://www.patreon.com/clipsey");
             }
-            igEndChild();
         }
+        igEndChild();
     }
 
 public:

@@ -52,7 +52,7 @@ protected:
     }
     
     void onEndUpdate() {
-        if (drewWindow) igEnd();
+        igEnd();
     }
 
     void onClose() { }

@@ -35,14 +35,12 @@ protected:
         drewContents = igBegin(windowID, &visible, flags);
         if (!drewContents) return;
 
-
         incDebugImGuiState("Panel::onBeginUpdate", 1);
         igGetContentRegionAvail(&panelSpace);
     }
     
     void onEndUpdate() {
-        if (!drewContents) return;
-        incDebugImGuiState("Panel::onEndUpdate", -1);
+        if (drewContents) incDebugImGuiState("Panel::onEndUpdate", -1);
         igEnd();
     }
 

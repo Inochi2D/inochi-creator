@@ -47,8 +47,8 @@ protected:
                 }
             }
 
-            igEndChild();
         }
+        igEndChild();
         
 
         igSeparator();

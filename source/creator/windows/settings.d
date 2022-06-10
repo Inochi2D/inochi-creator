@@ -92,8 +92,8 @@ protected:
                                 incActionSetUndoHistoryLength(maxHistory);
                             }
 
-                            igEndChild();
                         }
+                        igEndChild();
 
                         igEndTabItem();
                     }
@@ -101,16 +101,18 @@ protected:
                     if(igBeginTabItem(__("Accessibility"), &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
                         
                         if (igBeginChild("#GeneralTabItems", ImVec2(0, -26))) {
-                            igEndChild();
                         }
+                        igEndChild();
+                        
                         igEndTabItem();
                     }
 
                     if(igBeginTabItem(__("Other"), &otherTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
 
                         if (igBeginChild("#OtherTabItems", ImVec2(0, -26))) {
-                            igEndChild();
                         }
+                        igEndChild();
+
                         igEndTabItem();
                     }
 
