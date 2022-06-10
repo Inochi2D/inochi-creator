@@ -80,8 +80,18 @@ jobs:
 
     - name: 'Build Inochi Creator'
       run: |
-        # Build the project, with its main file included, without unittests
-        dub build --compiler=ldc2 --build=release --config=win32-full
+        function Invoke-VSDevEnvironment {
+        $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+              $installationPath = & $vswhere -prerelease -legacy -latest -property installationPath
+              $Command = Join-Path $installationPath "Common7\Tools\vsdevcmd.bat"
+            & "${env:COMSPEC}" /s /c "`"$Command`" -no_logo && set" | Foreach-Object {
+                  if ($_ -match '^([^=]+)=(.*)') {
+                      [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2])
+                  }
+              }
+          }
+          Invoke-VSDevEnvironment
+          dub build --compiler=ldc2 --build=release --config=win32-full
 
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
