@@ -98,10 +98,11 @@ jobs:
       with:
         type: 'zip'
         filename: 'inochi-creator-win32-x86-64.zip'
-        path: 'out/*'
+        directory: 'out/'
+        path: '*'
 
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-          files: inochi-creator-win32-x86-64.zip
+          files: out/inochi-creator-win32-x86-64.zip
