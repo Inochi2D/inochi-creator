@@ -5,7 +5,7 @@ mkdir inochi-creator.AppDir
 cd inochi-creator.AppDir
 mkdir usr
 mkdir usr/bin
-cp ../../out/inochi-creator usr/bin/inochi-creator
+cp ../../out/* usr/bin/
 cp ../../res/logo_256.png logo_256.png
 cp ../../res/inochi-creator.desktop inochi-creator.desktop
 cp ../../res/AppRun AppRun

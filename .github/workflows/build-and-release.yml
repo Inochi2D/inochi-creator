@@ -31,7 +31,7 @@ jobs:
     
     - name: "Get build dependencies"
       run: |
-        sudo apt install libsdl2-dev libfreetype6-dev
+        sudo apt install libsdl2-dev libfreetype6-dev gettext
       
     - name: "Clone dependencies & set versions"
       run: |
@@ -48,6 +48,11 @@ jobs:
       run: |
         # Build the project, with its main file included, without unittests
         dub build --compiler=ldc2 --build=release --config=full
+        
+        # Build translations
+        sudo chmod +x gentl.sh
+        ./gentl.sh
+
         # Build the AppImage
         sudo chmod +x BuildAppImage.sh
         ./BuildAppImage.sh
