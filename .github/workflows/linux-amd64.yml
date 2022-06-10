@@ -10,8 +10,9 @@ on:
       - '*'
 
 permissions:
-  contents: read
-  contents: write
+  contents: |
+    read
+    write
 
 jobs:
   linux-appimage:
