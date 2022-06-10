@@ -31,10 +31,14 @@ jobs:
         sudo wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O /usr/local/bin/appimagetool
         sudo chmod +x /usr/local/bin/appimagetool
 
-    - name: "Clone bindbc-imgui & set version"
+    - name: "Clone dependencies & set versions"
       run: |
         git clone https://github.com/Inochi2D/bindbc-imgui.git
         dub add-local bindbc-imgui/ "0.7.0"
+        git clone https://github.com/Inochi2D/inochi2d.git
+        dub add-local inochi2d/ "0.7.2"
+        git clone https://github.com/Inochi2D/facetrack-d.git
+        dub add-local facetrack-d/ "0.6.2"
 
     - name: 'Build AppImage'
       run: |
