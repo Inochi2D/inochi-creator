@@ -131,7 +131,7 @@ protected:
 
         // FILE DRAG & DROP
         if (igBeginDragDropTarget()) {
-            ImGuiPayload* payload = igAcceptDragDropPayload("__PARTS_DROP");
+            const(ImGuiPayload)* payload = igAcceptDragDropPayload("__PARTS_DROP");
             if (payload !is null) {
                 string[] files = *cast(string[]*)payload.Data;
                 import std.path : baseName, extension;

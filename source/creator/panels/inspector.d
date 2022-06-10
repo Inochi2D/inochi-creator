@@ -591,7 +591,7 @@ void incInspectorModelDrawable(Drawable node) {
 
         // Allow copying mesh data via drag n drop for now
         if(igBeginDragDropTarget()) {
-            ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+            const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
             if (payload !is null) {
                 if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
                     incSetEditMode(EditMode.VertexEdit);
@@ -735,7 +735,7 @@ void incInspectorModelPart(Part node) {
 
                 
                 if(igBeginDragDropTarget()) {
-                    ImGuiPayload* payload = igAcceptDragDropPayload("_MASKITEM");
+                    const(ImGuiPayload)* payload = igAcceptDragDropPayload("_MASKITEM");
                     if (payload !is null) {
                         if (MaskBinding* binding = cast(MaskBinding*)payload.Data) {
                             ptrdiff_t maskIdx = node.getMaskIdx(binding.maskSrcUUID);
@@ -769,7 +769,7 @@ void incInspectorModelPart(Part node) {
     }
 
     if(igBeginDragDropTarget()) {
-        ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+        const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
         if (payload !is null) {
             if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
 
@@ -868,7 +868,7 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
         igInputText("", cast(char*)paramName.toStringz, paramName.length, ImGuiInputTextFlags.ReadOnly);
 
         if(igBeginDragDropTarget()) {
-            ImGuiPayload* payload = igAcceptDragDropPayload("_PARAMETER");
+            const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PARAMETER");
             if (payload !is null) {
                 Parameter payloadParam = *cast(Parameter*)payload.Data;
                 node.param = payloadParam;

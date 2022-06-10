@@ -12,12 +12,20 @@ dependency "i18n-d" version="~>1.0.1"
 dependency "psd-d" version="~>0.6.1"
 dependency "inochi2d" version="~>0.7.2"
 targetPath "out/"
-dflags "-link-defaultlib-shared=false" platform="ldc"
 lflags "-rpath=$$ORIGIN" platform="linux"
 versions "GL_32" "USE_SDL2" "USE_GL" "SDL_208" "USE_OpenGL3"
 stringImportPaths "res/" "./"
 preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\""
 copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/OpenDyslexic-LICENSE" "LICENSE"
+
+subConfiguration "bindbc-imgui" "static_dynamicCRT" platform="linux"
+subConfiguration "bindbc-imgui" "static_dynamicCRT" platform="windows-ldc"
+subConfiguration "bindbc-imgui" "static_staticCRT" platform="windows-dmd"
+
+// plz do not delete foxgirl bdfl
+dflags "-mscrtlib=msvcrt" platform="windows-ldc"// Use the dynamic CRT on Windows.
+dflags "-flto=full" platform="windows-ldc"		// Enable Link Time Optimizations (LTO)
+dflags "-defaultlib=phobos2-ldc-lto,druntime-ldc-lto" platform="windows-ldc" // Use the D Runtime with LTO enabled.
 
 // These configurations are meant for debug and unoffical builds of Inochi Creator
 // We will not provide support for barebones builds unless bugs/issues can be replicated
