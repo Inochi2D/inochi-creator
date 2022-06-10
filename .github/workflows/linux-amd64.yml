@@ -51,6 +51,7 @@ jobs:
         # Build the project, with its main file included, without unittests
         dub build --compiler=ldc2 --build=release --config=full
         # Build the AppImage
+        sudo chmod +x BuildAppImage.sh
         ./BuildAppImage.sh
 
     - uses: actions/upload-artifact@v3
