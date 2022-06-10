@@ -20,37 +20,40 @@ class TextureSlotsPanel : Panel {
 private:
 
     void namedIcon(string name, Texture texture, ImVec2 size) {
-        igBeginChild(("tex_"~name~"\0").ptr, size);
-            if (igSelectable("", false, ImGuiSelectableFlags.None, size)) {
-                incPushWindowList(new TextureViewerWindow(texture));
-            }
-            igSameLine(0.1, 0);
-            igBeginGroup();
-                igImage(
-                    cast(void*)texture.getTextureId(), 
-                    ImVec2(size.x, size.y-18),
-                    ImVec2(0, 0),
-                    ImVec2(1, 1),
-                    ImVec4(1, 1, 1, 1),
-                    ImVec4(0, 0, 0, 0)
-                );
+        if (igBeginChild(("tex_"~name~"\0").ptr, size)) {
+            igPushID(name.ptr, name.ptr+name.length);
+                if (igSelectable("###TEXTURE", false, ImGuiSelectableFlags.None, size)) {
+                    incPushWindowList(new TextureViewerWindow(texture));
+                }
+                igSameLine(0.1, 0);
+                igBeginGroup();
+                    igImage(
+                        cast(void*)texture.getTextureId(), 
+                        ImVec2(size.x, size.y-18),
+                        ImVec2(0, 0),
+                        ImVec2(1, 1),
+                        ImVec4(1, 1, 1, 1),
+                        ImVec4(0, 0, 0, 0)
+                    );
 
-                ImVec2 winSize;
-                igGetWindowSize(&winSize);
+                    ImVec2 winSize;
+                    igGetWindowSize(&winSize);
 
-                float fSize = (igGetFontSize() * name.length) / 2;
-                float fSizeF = (winSize.x/2)+fSize;
-                igIndent(fSizeF);
-                    igText((name~"\0").ptr);
-                igUnindent(fSizeF);
-            igEndGroup();
-        igEndChild();
+                    float fSize = (igGetFontSize() * name.length) / 2;
+                    float fSizeF = (winSize.x/2)+fSize;
+                    igIndent(fSizeF);
+                        igText((name~"\0").ptr);
+                    igUnindent(fSizeF);
+                igEndGroup();
+            igPopID();
+            igEndChild();
+        }
     }
 
 protected:
     override
     void onUpdate() {
-        igBeginChild("TexturesList", ImVec2(0, 0), false, ImGuiWindowFlags.HorizontalScrollbar);
+        if (igBeginChild("TexturesList", ImVec2(0, 0), false, ImGuiWindowFlags.HorizontalScrollbar)) {
             ImVec2 avail;
             igGetContentRegionAvail(&avail);
 
@@ -58,7 +61,9 @@ protected:
                 namedIcon(i.text, texture, ImVec2(avail.y, avail.y));
                 igSameLine(0, 4);
             }
-        igEndChild();
+
+            igEndChild();
+        }
     }
 
 public:
