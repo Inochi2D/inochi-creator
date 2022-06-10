@@ -221,14 +221,19 @@ void incOpenWindow() {
 
 
     import std.string : fromStringz;
-    debug {
-        writefln("GLInfo:\n\t%s\n\t%s\n\t%s\n\t%s\n\tgls=%s",
-            glGetString(GL_VERSION).fromStringz,
-            glGetString(GL_VENDOR).fromStringz,
-            glGetString(GL_RENDERER).fromStringz,
-            glGetString(GL_SHADING_LANGUAGE_VERSION).fromStringz,
-            support
-        );
+    version(Windows) {
+        
+        // Windows is heck when it comes to /SUBSYSTEM:windows
+    } else {
+        debug {
+            writefln("GLInfo:\n\t%s\n\t%s\n\t%s\n\t%s\n\tgls=%s",
+                glGetString(GL_VERSION).fromStringz,
+                glGetString(GL_VENDOR).fromStringz,
+                glGetString(GL_RENDERER).fromStringz,
+                glGetString(GL_SHADING_LANGUAGE_VERSION).fromStringz,
+                support
+            );
+        }
     }
 
     // Setup Inochi2D
