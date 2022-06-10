@@ -34,11 +34,13 @@ jobs:
     - name: "Clone dependencies & set versions"
       run: |
         git clone https://github.com/Inochi2D/bindbc-imgui.git
-        dub add-local bindbc-imgui/ "0.7.0"
         git clone https://github.com/Inochi2D/inochi2d.git
-        dub add-local inochi2d/ "0.7.2"
         git clone https://github.com/Inochi2D/facetrack-d.git
+        git clone https://github.com/KitsunebiGames/i18n.git
+        dub add-local bindbc-imgui/ "0.7.0"
+        dub add-local inochi2d/ "0.7.2"
         dub add-local facetrack-d/ "0.6.2"
+        dub add-local i18n/ "1.0.1"
 
     - name: 'Build AppImage'
       run: |
