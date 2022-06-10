@@ -1,0 +1,48 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+name: Inochi Creator (Linux AMD64)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dlang-community/setup-dlang@4c99aa991ce7d19dd3064de0a4f2f6b2f152e2d7
+  
+    - name: "Prepare for AppImage packing"
+      run: |
+        sudo apt update
+        sudo apt install -y python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
+        sudo wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O /usr/local/bin/appimagetool
+        sudo chmod +x /usr/local/bin/appimagetool
+
+    - name: "Clone bindbc-imgui & set version"
+      run: |
+        git clone https://github.com/Inochi2D/bindbc-imgui.git
+        dub add-local bindbc-imgui/ "0.7.0"
+
+    - name: 'Build AppImage'
+      run: |
+        # Build the project, with its main file included, without unittests
+        dub build --compiler=ldc2 --build=release --config=full
+        # Build the AppImage
+        ./BuildAppImage.sh
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: inochi-creator
+        path: build/inochi-creator-x86_64.AppImage
+        
