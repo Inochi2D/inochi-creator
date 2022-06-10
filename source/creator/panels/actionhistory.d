@@ -29,7 +29,7 @@ protected:
         ImVec2 avail;
         igGetContentRegionAvail(&avail);
 
-        igBeginChild("##ActionList", ImVec2(0, avail.y-30));
+        if (igBeginChild("##ActionList", ImVec2(0, avail.y-30))) {
             if (incActionHistory().length > 0) {
                 foreach(i, action; incActionHistory()) {
                     igPushID(cast(int)i);
@@ -46,7 +46,9 @@ protected:
                     igPopID();
                 }
             }
-        igEndChild();
+
+            igEndChild();
+        }
         
 
         igSeparator();

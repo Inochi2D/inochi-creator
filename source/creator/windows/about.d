@@ -58,7 +58,7 @@ protected:
 
         // Draw the actual about dialog
         igSetCursorScreenPos(sPos);
-        igBeginChild("##LogoArea", ImVec2(0, 92*incGetUIScale()));
+        if (igBeginChild("##LogoArea", ImVec2(0, 92*incGetUIScale()))) {
 
             version (InBranding) {
                 igImage(
@@ -74,27 +74,28 @@ protected:
             igSameLine(0, 8);
             igSeparatorEx(ImGuiSeparatorFlags.Vertical);
             igSameLine(0, 8);
-            igBeginChild("##LogoTextArea", ImVec2(0, -24));
+            if (igBeginChild("##LogoTextArea", ImVec2(0, -24))) {
 
                 igText("Inochi Creator");
                 igText("%s", (INC_VERSION~"\0").ptr);
                 igSeparator();
                 igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "I2D v. %s", (IN_VERSION~"\0").ptr);
                 igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "imgui v. %s", igGetVersion());
-            igEndChild();
+                igEndChild();
+            }
             
             igSpacing();
             igText("Credits");
             igSeparator();
-        igEndChild();
+            igEndChild();
+        }
 
-        igBeginChild("##CreditsArea", ImVec2(0, -28*incGetUIScale()));
-
+        if (igBeginChild("##CreditsArea", ImVec2(0, -28*incGetUIScale()))) {
             igText(import("CONTRIBUTORS.md"));
+            igEndChild();
+        }
 
-        igEndChild();
-
-        igBeginChild("##ButtonArea", ImVec2(0, 0));
+        if (igBeginChild("##ButtonArea", ImVec2(0, 0))) {
             ImVec2 space = incAvailableSpace();
             incDummy(ImVec2(space.x/2, space.y));
             igSameLine(0, 0);
@@ -117,7 +118,8 @@ protected:
             if (igButton(__("Donate"), ImVec2(spacing, 0))) {
                 incOpenLink("https://www.patreon.com/clipsey");
             }
-        igEndChild();
+            igEndChild();
+        }
     }
 
 public:

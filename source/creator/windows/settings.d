@@ -36,10 +36,10 @@ protected:
     override
     void onUpdate() {
         igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(4, 4));
-            igBeginChild("SettingsWindowChild", ImVec2(512*incGetUIScale(), 512*incGetUIScale()));
+            if (igBeginChild("SettingsWindowChild", ImVec2(512*incGetUIScale(), 512*incGetUIScale()))) {
                 if (igBeginTabBar("SettingsWindowTabs", ImGuiTabBarFlags.NoCloseWithMiddleMouseButton)) {
                     if(igBeginTabItem(__("General"), &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
-                        igBeginChild("#GeneralTabItems", ImVec2(0, -26));
+                        if (igBeginChild("#GeneralTabItems", ImVec2(0, -26))) {
                             igText(__("Look and Feel"));
                             igSeparator();
                             if(igBeginCombo(__("Color Theme"), incGetDarkMode() ? __("Dark") : __("Light"))) {
@@ -92,24 +92,25 @@ protected:
                                 incActionSetUndoHistoryLength(maxHistory);
                             }
 
-                        igEndChild();
+                            igEndChild();
+                        }
 
                         igEndTabItem();
                     }
 
                     if(igBeginTabItem(__("Accessibility"), &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
                         
-                        igBeginChild("#GeneralTabItems", ImVec2(0, -26));
-
-                        igEndChild();
+                        if (igBeginChild("#GeneralTabItems", ImVec2(0, -26))) {
+                            igEndChild();
+                        }
                         igEndTabItem();
                     }
 
                     if(igBeginTabItem(__("Other"), &otherTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
 
-                        igBeginChild("#OtherTabItems", ImVec2(0, -26));
-
-                        igEndChild();
+                        if (igBeginChild("#OtherTabItems", ImVec2(0, -26))) {
+                            igEndChild();
+                        }
                         igEndTabItem();
                     }
 
@@ -121,7 +122,8 @@ protected:
                     this.close();
                 }
 
-            igEndChild();
+                igEndChild();
+            }
         igPopStyleVar();
     }
 

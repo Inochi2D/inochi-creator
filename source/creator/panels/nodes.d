@@ -259,7 +259,7 @@ protected:
             return;
         }
 
-        igBeginChild_Str("NodesMain", ImVec2(0, -30), false);
+        if (igBeginChild("NodesMain", ImVec2(0, -30), false)) {
             igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 1));
             igPushStyleVar(ImGuiStyleVar.IndentSpacing, 14);
 
@@ -278,7 +278,8 @@ protected:
             }
             igPopStyleVar();
             igPopStyleVar();
-        igEndChild();
+            igEndChild();
+        }
 
         igSeparator();
         igSpacing();

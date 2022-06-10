@@ -266,7 +266,7 @@ private {
         auto style = igGetStyle();
         ImS32 inactiveColor = igGetColorU32(style.Colors[ImGuiCol.TextDisabled]);
 
-        igBeginChild("BindingList", ImVec2(0, 256), false);
+        if (igBeginChild("BindingList", ImVec2(0, 256), false)) {
             igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 1));
             igPushStyleVar(ImGuiStyleVar.IndentSpacing, 14);
 
@@ -412,7 +412,8 @@ private {
             }
             igPopStyleVar();
             igPopStyleVar();
-        igEndChild();
+            igEndChild();
+        }
     }
 
 }
@@ -473,7 +474,7 @@ void incParameterView(Parameter param, string* grabParam) {
             if (incEditMode == EditMode.ModelEdit) {
                 igSameLine(0, 0);
                 // Parameter Setting Buttons
-                if(igBeginChild("###SETTING", ImVec2(avail.x-24, reqSpace))) {
+                if (igBeginChild("###SETTING", ImVec2(avail.x-24, reqSpace))) {
                     if (igBeginPopup("###EditParam")) {
                         if (igMenuItem(__("Edit Properties"), "", false, true)) {
                             incPushWindowList(new ParamPropWindow(param));

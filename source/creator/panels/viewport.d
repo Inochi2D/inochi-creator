@@ -64,7 +64,7 @@ protected:
         currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
         
 
-        igBeginChild("##ViewportView", ImVec2(0, -30));
+        if (igBeginChild("##ViewportView", ImVec2(0, -30))) {
             igGetContentRegionAvail(&currSize);
             currSize = ImVec2(
                 clamp(currSize.x, 128, float.max), 
@@ -116,17 +116,19 @@ protected:
                 igSetItemAllowOverlap();
                 
                 igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
-                    igBeginChild("##ViewportMainControls", ImVec2(200, 28 * incGetUIScale()));
+                    if (igBeginChild("##ViewportMainControls", ImVec2(200, 28 * incGetUIScale()))) {
                         igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
                             incViewportDrawOverlay();
                         igPopStyleVar();
-                    igEndChild();
+                        igEndChild();
+                    }
                 igPopStyleVar();
 
             igSetCursorScreenPos(sPosA);
 
             lastSize = currSize;
-        igEndChild();
+            igEndChild();
+        }
 
 
         // FILE DRAG & DROP
@@ -181,7 +183,7 @@ protected:
 
         // BOTTOM VIEWPORT CONTROLS
         igGetContentRegionAvail(&currSize);
-        igBeginChild("##ViewportControls", ImVec2(0, currSize.y), false, flags.NoScrollbar);
+        if (igBeginChild("##ViewportControls", ImVec2(0, currSize.y), false, flags.NoScrollbar)) {
             igPushItemWidth(72);
                 igSpacing();
                 igSameLine(0, 8);
@@ -220,7 +222,8 @@ protected:
 
 
             igPopItemWidth();
-        igEndChild();
+            igEndChild();
+        }
 
         // Handle smooth move
         incViewportZoom = dampen(incViewportZoom, incViewportTargetZoom, deltaTime);
