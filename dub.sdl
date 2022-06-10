@@ -6,8 +6,8 @@ license "BSD 2-clause"
 dependency "inmath" version="~>1.0.1"
 dependency "tinyfiledialogs" version="~>0.10.1"
 dependency "facetrack-d" version="~>0.6.2"
-dependency "bindbc-sdl" version="~>0.21.4"
-dependency "bindbc-imgui" version="~>1.0.0"
+dependency "bindbc-sdl" version="~>1.1.2"
+dependency "bindbc-imgui" version="~>0.7.0"
 dependency "i18n-d" version="~>1.0.1"
 dependency "psd-d" version="~>0.6.1"
 dependency "inochi2d" version="~>0.7.2"
@@ -17,10 +17,6 @@ versions "GL_32" "USE_SDL2" "USE_GL" "SDL_208" "USE_OpenGL3"
 stringImportPaths "res/" "./"
 preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\""
 copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/OpenDyslexic-LICENSE" "LICENSE"
-
-subConfiguration "bindbc-imgui" "static_dynamicCRT" platform="linux"
-subConfiguration "bindbc-imgui" "static_dynamicCRT" platform="windows-ldc"
-subConfiguration "bindbc-imgui" "static_staticCRT" platform="windows-dmd"
 
 // plz do not delete foxgirl bdfl
 dflags "-mscrtlib=msvcrt" platform="windows-ldc"// Use the dynamic CRT on Windows.
@@ -32,54 +28,32 @@ dflags "-defaultlib=phobos2-ldc-lto,druntime-ldc-lto" platform="windows-ldc" // 
 // in official builds.
 
 configuration "barebones" {
+	subConfiguration "bindbc-imgui" "static_dynamicCRT"
 	targetType "executable"
-}
-
-configuration "barebones-gallium" {
-	targetType "executable"
-	versions "InGallium"
 }
 
 configuration "win32-barebones" {
+	subConfiguration "bindbc-imgui" "static_staticCRT"
 	platforms "windows"
 	targetType "executable"
 	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup"
-}
-
-configuration "win32-barebones-gallium" {
-	platforms "windows"
-	targetType "executable"
-	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup"
-	versions "InGallium"
 }
 
 // Official build configurations.
 // Do not package your compilation of Inochi Creator with these configurations
 // unless you have prior permission from the Inochi2D project.
 configuration "full" {
+	subConfiguration "bindbc-imgui" "static_dynamicCRT"
 	targetType "executable"
 	versions "InBranding"
-}
-
-configuration "full-gallium" {
-	targetType "executable"
-	versions "InGallium" "InBranding"
 }
 
 configuration "win32-full" {
+	subConfiguration "bindbc-imgui" "static_staticCRT"
 	platforms "windows"
 	targetType "executable"
 	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="window-dmd"
 	sourceFiles "res\\inochi-creator.res"
 	preBuildCommands "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\Common7\\Tools\\VsDevCmd.bat\" & rc.exe /v res\\inochi-creator.rc"
 	versions "InBranding"
-}
-
-configuration "win32-full-gallium" {
-	platforms "windows"
-	targetType "executable"
-	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="window-dmd"
-	sourceFiles "res\\inochi-creator.res"
-	preBuildCommands "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\Common7\\Tools\\VsDevCmd.bat\" & rc.exe /v res\\inochi-creator.rc"
-	versions "InBranding" "InGallium"
 }
