@@ -36,6 +36,7 @@ private:
 
 protected:
     bool onlyOne;
+    bool drewWindow;
     ImGuiWindowFlags flags;
 
     abstract void onUpdate();
@@ -43,7 +44,7 @@ protected:
     void onBeginUpdate() {
         if (imName is null) this.setTitle(name);
         igSetNextWindowClass(windowClass);
-        igBegin(
+        drewWindow = igBegin(
             imName,
             &visible, 
             flags | ImGuiWindowFlags.NoDecoration
@@ -51,7 +52,7 @@ protected:
     }
     
     void onEndUpdate() {
-        igEnd();
+        if (drewWindow) igEnd();
     }
 
     void onClose() { }
