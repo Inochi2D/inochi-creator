@@ -207,28 +207,28 @@ void incInspectorModelInfo() {
         igPushID("Name");
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Name"));
             incTooltip(_("Name of the puppet"));
-            incInputText("", puppet.meta.name);
+            incInputText("###META_NAME", puppet.meta.name);
         igPopID();
         igSpacing();
 
         igPushID("Artists");
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Artist(s)"));
             incTooltip(_("Artists who've drawn the puppet, seperated by comma"));
-            incInputText("", puppet.meta.artist);
+            incInputText("###META_ARTISTS", puppet.meta.artist);
         igPopID();
         igSpacing();
 
         igPushID("Riggers");
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Rigger(s)"));
             incTooltip(_("Riggers who've rigged the puppet, seperated by comma"));
-            incInputText("", puppet.meta.rigger);
+            incInputText("###META_RIGGERS", puppet.meta.rigger);
         igPopID();
         igSpacing();
 
         igPushID("Contact");
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Contact"));
             incTooltip(_("Where to contact the main author of the puppet"));
-            incInputText("", puppet.meta.contact);
+            incInputText("###META_CONTACT", puppet.meta.contact);
         igPopID();
         igSpacing();
     }
@@ -237,21 +237,21 @@ void incInspectorModelInfo() {
         igPushID("LicenseURL");
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("License URL"));
             incTooltip(_("Link/URL to license"));
-            incInputText("", puppet.meta.licenseURL);
+            incInputText("###META_LICENSEURL", puppet.meta.licenseURL);
         igPopID();
         igSpacing();
 
         igPushID("Copyright");
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Copyright"));
             incTooltip(_("Copyright holder information of the puppet"));
-            incInputText("", puppet.meta.copyright);
+            incInputText("###META_COPYRIGHT", puppet.meta.copyright);
         igPopID();
         igSpacing();
 
         igPushID("Origin");
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Origin"));
             incTooltip(_("Where the model comes from on the internet."));
-            incInputText("", puppet.meta.reference);
+            incInputText("###META_ORIGIN", puppet.meta.reference);
         igPopID();
     }
 
@@ -277,7 +277,7 @@ void incModelModeHeader(Node node) {
     igPushID(node.uuid);
         string typeString = "%s\0".format(incTypeIdToIcon(node.typeId()));
         auto len = incMeasureString(typeString);
-        incInputText("", incAvailableSpace().x-24, node.name);
+        incInputText("###MODEL_NODE_HEADER", incAvailableSpace().x-24, node.name);
         igSameLine(0, 0);
         incDummy(ImVec2(-(len.x-14), len.y));
         igSameLine(0, 0);
@@ -638,7 +638,7 @@ void incInspectorModelPart(Part node) {
     igSpacing();
 
     incText(_("Tint"));
-    igColorEdit3("", cast(float[3]*)node.tint.ptr);
+    igColorEdit3("###TINT", cast(float[3]*)node.tint.ptr);
 
     // Padding
     igSeparator();
@@ -793,7 +793,7 @@ void incInspectorModelComposite(Composite node) {
 
 
     incText(_("Tint"));
-    igColorEdit3("", cast(float[3]*)node.tint.ptr);
+    igColorEdit3("###TINT", cast(float[3]*)node.tint.ptr);
 
     // Header for the Blending options for Parts
     incText(_("Blending"));
@@ -857,7 +857,7 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
         incText(_("Parameter"));
         string paramName = _("(unassigned)");
         if (node.param !is null) paramName = node.param.name;
-        igInputText("", cast(char*)paramName.toStringz, paramName.length, ImGuiInputTextFlags.ReadOnly);
+        igInputText("###TARGET_PARAM", cast(char*)paramName.toStringz, paramName.length, ImGuiInputTextFlags.ReadOnly);
 
         if(igBeginDragDropTarget()) {
             const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PARAMETER");
@@ -996,7 +996,7 @@ void incInspectorDeformColorEdit3(string[3] paramNames, Node node, Parameter par
         rgbadj[2] = rgb[2];
     }
 
-    if (igColorEdit3("", &rgbadj)) {
+    if (igColorEdit3("###COLORADJ", &rgbadj)) {
 
         // RED
         if (rgbadj[0] != 1) {

@@ -39,7 +39,7 @@ bool incDragFloat(string id, float* value, float adjustSpeed, float minValue, fl
         ImGuiStorage_SetVoidPtr(storage, igID, dragState);
     }
 
-    if (igDragFloat("", value, adjustSpeed, minValue, maxValue, fmt.ptr, flags)) {
+    if (igDragFloat("###DRAG", value, adjustSpeed, minValue, maxValue, fmt.ptr, flags)) {
         if (!dragState.isActive) {
             dragState.initialState = inState;
             dragState.isActive = true;
