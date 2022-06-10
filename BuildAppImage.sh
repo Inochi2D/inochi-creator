@@ -14,6 +14,10 @@ cp ../../res/MaterialIcons-LICENSE usr/bin/MaterialIcons-LICENSE
 cp ../../res/OpenDyslexic-LICENSE usr/bin/OpenDyslexic-LICENSE
 cp ../../LICENSE usr/bin/LICENSE
 
+# Make sure to chmod stuff
+chmod a+x AppRun
+chmod a+x usr/bin/inochi-creator
+
 cd ..
 
 ARCH=x86_64 appimagetool.AppImage inochi-creator.AppDir
