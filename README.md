@@ -28,7 +28,7 @@ We currently plan to distribute Inochi Creator in the following formats:
 Inochi Creator is currently under construction and is not recommended for production use.
 
 ## Intel Integrated Graphics
-Inochi Creator currently crashes on Intel Integrated Graphics. I unfortunately do not have the means to debug and fix this issue right now, sorry.
+Inochi Creator versions below 0.7.3 do not support Intel iGPUs. 0.7.3 and newer supports Intel iGPUs.
 
 ## Building
 It's occasionally the case that our dependencies are out of sync with dub, so it's somewhat recommended if you're building from source to clone the tip of `main` and `dub add-local . "<version matching inochi-creator dep>"` any of our forked dependencies (i18n-d, psd-d, bindbc-imgui, facetrack-d, inmath, inochi2d). This will generally keep you up to date with what we're doing, and it's how the primary contributors work. Ideally we'd have a script to help set this up, but currently we do it manually, PRs welcome :)
