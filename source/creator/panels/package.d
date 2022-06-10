@@ -24,18 +24,24 @@ private:
     const(char)* windowID;
     const(char)* displayNamePtr;
 
+    bool drewContents;
+
 protected:
     ImVec2 panelSpace;
     abstract void onUpdate();
     ImGuiWindowFlags flags;
 
     void onBeginUpdate() {
-        igBegin(windowID, &visible, flags);
+        drewContents = igBegin(windowID, &visible, flags);
+        if (!drewContents) return;
+
+
         incDebugImGuiState("Panel::onBeginUpdate", 1);
         igGetContentRegionAvail(&panelSpace);
     }
     
     void onEndUpdate() {
+        if (!drewContents) return;
         incDebugImGuiState("Panel::onEndUpdate", -1);
         igEnd();
     }
