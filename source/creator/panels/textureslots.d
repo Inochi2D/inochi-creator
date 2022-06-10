@@ -5,6 +5,7 @@
     Authors: Luna Nielsen
 */
 module creator.panels.textureslots;
+import creator.widgets.label;
 import creator.panels;
 import creator.windows;
 import creator : incActivePuppet;
@@ -42,7 +43,7 @@ private:
                     float fSize = (igGetFontSize() * name.length) / 2;
                     float fSizeF = (winSize.x/2)+fSize;
                     igIndent(fSizeF);
-                        igText((name~"\0").ptr);
+                        incText(name);
                     igUnindent(fSizeF);
                 igEndGroup();
             igPopID();

@@ -32,7 +32,7 @@ void incStatusbar() {
                     igProgressBar(incTaskGetProgress(), ImVec2(128, 0));
                 }
 
-                igText(incTaskGetStatus().toStringz);
+                incText(incTaskGetStatus());
             }
             
             igEndMenuBar();

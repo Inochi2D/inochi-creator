@@ -125,7 +125,7 @@ protected:
 
 
             if (igCollapsingHeader(__("Tracking Bindings"), ImGuiTreeNodeFlags.DefaultOpen)) {
-                if (igBeginListBox("")) {
+                if (igBeginListBox("###BINDINGS")) {
                     foreach(i, binding; incTestGetTrackingBindings()) {
                         igPushID(cast(int)i);
 
@@ -144,7 +144,7 @@ protected:
                 }
             }
         } else {
-            igText(__("Not in Test Mode..."));
+            incText(_("Not in Test Mode..."));
         }
     }
 

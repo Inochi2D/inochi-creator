@@ -40,7 +40,7 @@ protected:
                 if (igBeginTabBar("SettingsWindowTabs", ImGuiTabBarFlags.NoCloseWithMiddleMouseButton)) {
                     if(igBeginTabItem(__("General"), &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
                         if (igBeginChild("#GeneralTabItems", ImVec2(0, -26))) {
-                            igText(__("Look and Feel"));
+                            incText(_("Look and Feel"));
                             igSeparator();
                             if(igBeginCombo(__("Color Theme"), incGetDarkMode() ? __("Dark") : __("Light"))) {
                                 if (igSelectable(__("Dark"), incGetDarkMode())) incSetDarkMode(true);
@@ -84,7 +84,7 @@ protected:
                             igSpacing();
                             igSpacing();
 
-                            igText(__("Undo/Redo History"));
+                            incText(_("Undo/Redo History"));
                             igSeparator();
                             
                             int maxHistory = cast(int)incActionGetUndoHistoryLength();
@@ -103,7 +103,7 @@ protected:
                         if (igBeginChild("#GeneralTabItems", ImVec2(0, -26))) {
                         }
                         igEndChild();
-                        
+
                         igEndTabItem();
                     }
 

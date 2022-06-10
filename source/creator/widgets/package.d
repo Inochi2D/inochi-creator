@@ -20,3 +20,4 @@ public import creator.widgets.drag;
 public import creator.widgets.lockbutton;
 public import creator.widgets.colorbutton;
 public import creator.widgets.dialog;
+public import creator.widgets.label;

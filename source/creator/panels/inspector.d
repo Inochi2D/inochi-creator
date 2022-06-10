@@ -128,9 +128,9 @@ protected:
                 }
             } else incInspectorModelInfo();
         } else if (nodes.length == 0) {
-            igText(__("No nodes selected..."));
+            incText(_("No nodes selected..."));
         } else {
-            igText(__("Can only inspect a single node..."));
+            incText(_("Can only inspect a single node..."));
         }
     }
 
@@ -158,11 +158,11 @@ void incCommonNonEditHeader(Node node) {
     igPushID(node.uuid);
         string typeString = "%s\0".format(incTypeIdToIcon(node.typeId()));
         auto len = incMeasureString(typeString);
-        igText(node.name.toStringz);
+        incText(node.name);
         igSameLine(0, 0);
         incDummy(ImVec2(-(len.x-14), len.y));
         igSameLine(0, 0);
-        igText(typeString.ptr);
+        incText(typeString);
     igPopID();
     igSeparator();
 }
@@ -179,11 +179,11 @@ void incInspectorModelInfo() {
     igPushID(rootNode.uuid);
         string typeString = "\0";
         auto len = incMeasureString(typeString);
-        igText(__("Puppet"));
+        incText(_("Puppet"));
         igSameLine(0, 0);
         incDummy(ImVec2(-(len.x-14), len.y));
         igSameLine(0, 0);
-        igText(typeString.ptr);
+        incText(typeString);
     igPopID();
     igSeparator();
     
@@ -193,11 +193,11 @@ void incInspectorModelInfo() {
     // Version info
     {
         len = incMeasureString(_("Inochi2D Ver."));
-        igText(puppet.meta.version_.toStringz);
+        incText(puppet.meta.version_);
         igSameLine(0, 0);
         incDummy(ImVec2(-(len.x), len.y));
         igSameLine(0, 0);
-        igText(__("Inochi2D Ver."));
+        incText(_("Inochi2D Ver."));
     }
     
     igSpacing();
@@ -257,14 +257,14 @@ void incInspectorModelInfo() {
 
     if (igCollapsingHeader(__("Physics Globals"), ImGuiTreeNodeFlags.DefaultOpen)) {
         igPushID("PixelsPerMeter");
-            igText(__("Pixels per meter"));
+            incText(_("Pixels per meter"));
             incTooltip(_("Number of pixels that correspond to 1 meter in the physics engine."));
             incDragFloat("PixelsPerMeter", &puppet.physics.pixelsPerMeter, 1, 1, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
         igPopID();
         igSpacing();
 
         igPushID("Gravity");
-            igText(__("Gravity"));
+            incText(_("Gravity"));
             incTooltip(_("Acceleration due to gravity, in m/s². Earth gravity is 9.8."));
             incDragFloat("Gravity", &puppet.physics.gravity, 0.01, 0, float.max, _("%.2f m/s"), ImGuiSliderFlags.NoRoundToFormat);
         igPopID();
@@ -281,7 +281,7 @@ void incModelModeHeader(Node node) {
         igSameLine(0, 0);
         incDummy(ImVec2(-(len.x-14), len.y));
         igSameLine(0, 0);
-        igText(typeString.ptr);
+        incText(typeString);
     igPopID();
     igSeparator();
 }
@@ -632,12 +632,12 @@ void incInspectorModelPart(Part node) {
     import std.conv : text;
     import std.string : toStringz;
 
-    igText("(TODO: Texture Select)");
+    incText("(TODO: Texture Select)");
     
     igSpacing();
     igSpacing();
 
-    igText(__("Tint"));
+    incText(_("Tint"));
     igColorEdit3("", cast(float[3]*)node.tint.ptr);
 
     // Padding
@@ -646,7 +646,7 @@ void incInspectorModelPart(Part node) {
     igSpacing();
 
     // Header for the Blending options for Parts
-    igText(__("Blending"));
+    incText(_("Blending"));
     if (igBeginCombo("###Blending", __(node.blendingMode.text))) {
 
         // Normal blending mode as used in Photoshop, generally
@@ -679,7 +679,7 @@ void incInspectorModelPart(Part node) {
 
     igSpacing();
 
-    igText(__("Opacity"));
+    incText(_("Opacity"));
     igSliderFloat("###Opacity", &node.opacity, 0, 1f, "%0.2f");
     igSpacing();
     igSpacing();
@@ -689,7 +689,7 @@ void incInspectorModelPart(Part node) {
 
     // Threshold slider name for adjusting how transparent a pixel can be
     // before it gets discarded.
-    igText(__("Threshold"));
+    incText(_("Threshold"));
     igSliderFloat("###Threshold", &node.maskAlphaThreshold, 0.0, 1.0, "%.2f");
     
     igSpacing();
@@ -697,7 +697,7 @@ void incInspectorModelPart(Part node) {
     // The sources that the part gets masked by. Depending on the masking mode
     // either the sources will cut out things that don't overlap, or cut out
     // things that do.
-    igText(__("Mask Sources"));
+    incText(_("Mask Sources"));
     if (igBeginListBox("###MaskSources", ImVec2(0, 128))) {
         foreach(i; 0..node.masks.length) {
             MaskBinding* masker = &node.masks[i];
@@ -752,7 +752,7 @@ void incInspectorModelPart(Part node) {
 
                 if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
                     igSetDragDropPayload("_MASKITEM", cast(void*)masker, MaskBinding.sizeof, ImGuiCond.Always);
-                    igText(masker.maskSrc.name.toStringz);
+                    incText(masker.maskSrc.name);
                     igEndDragDropSource();
                 }
             igPopID();
@@ -792,11 +792,11 @@ void incInspectorModelComposite(Composite node) {
     import std.string : toStringz;
 
 
-    igText(__("Tint"));
+    incText(_("Tint"));
     igColorEdit3("", cast(float[3]*)node.tint.ptr);
 
     // Header for the Blending options for Parts
-    igText(__("Blending"));
+    incText(_("Blending"));
     if (igBeginCombo("###Blending", __(node.blendingMode.text))) {
 
         // Normal blending mode as used in Photoshop, generally
@@ -821,7 +821,7 @@ void incInspectorModelComposite(Composite node) {
 
     igSpacing();
 
-    igText(__("Opacity"));
+    incText(_("Opacity"));
     igSliderFloat("###Opacity", &node.opacity, 0, 1f, "%0.2f");
     igSpacing();
     igSpacing();
@@ -831,7 +831,7 @@ void incInspectorModelComposite(Composite node) {
 
     // Threshold slider name for adjusting how transparent a pixel can be
     // before it gets discarded.
-    igText(__("Threshold"));
+    incText(_("Threshold"));
     igSliderFloat("###Threshold", &node.threshold, 0.0, 1.0, "%.2f");
     
     igSpacing();
@@ -854,7 +854,7 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
     import std.string : toStringz;
 
     igPushID("TargetParam");
-        igText(__("Parameter"));
+        incText(_("Parameter"));
         string paramName = _("(unassigned)");
         if (node.param !is null) paramName = node.param.name;
         igInputText("", cast(char*)paramName.toStringz, paramName.length, ImGuiInputTextFlags.ReadOnly);
@@ -871,7 +871,7 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
 
     igPopID();
 
-    igText(__("Type"));
+    incText(_("Type"));
     if (igBeginCombo("###PhysType", __(node.modelType.text))) {
 
         if (igSelectable(__("Pendulum"), node.modelType == PhysicsModel.Pendulum)) node.modelType = PhysicsModel.Pendulum;
@@ -883,7 +883,7 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
 
     igSpacing();
 
-    igText(__("Mapping mode"));
+    incText(_("Mapping mode"));
     if (igBeginCombo("###PhysMapMode", __(node.mapMode.text))) {
 
         if (igSelectable(__("AngleLength"), node.mapMode == ParamMapMode.AngleLength)) node.mapMode = ParamMapMode.AngleLength;
@@ -898,28 +898,28 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
     igPushID("SimplePhysics");
 
     igPushID(0);
-    igText(__("Gravity scale"));
+    incText(_("Gravity scale"));
     incDragFloat("gravity", &node.gravity, adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
     igSpacing();
     igSpacing();
     igPopID();
 
     igPushID(1);
-    igText(__("Length"));
+    incText(_("Length"));
     incDragFloat("length", &node.length, adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
     igSpacing();
     igSpacing();
     igPopID();
 
     igPushID(2);
-    igText(__("Resonant frequency"));
+    incText(_("Resonant frequency"));
     incDragFloat("frequency", &node.frequency, adjustSpeed/100, 0.01, 30, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
     igSpacing();
     igSpacing();
     igPopID();
 
     igPushID(3);
-    igText(__("Damping"));
+    incText(_("Damping"));
     incDragFloat("damping_angle", &node.angleDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
     igPopID();
 
@@ -930,7 +930,7 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
     igPopID();
 
     igPushID(5);
-    igText(__("Output scale"));
+    incText(_("Output scale"));
     incDragFloat("output_scale.x", &node.outputScale.vector[0], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
     igPopID();
 
@@ -1155,7 +1155,7 @@ void incInspectorDeformPart(Part node, Parameter param, vec2u cursor) {
             // Header for texture options    
             if (igCollapsingHeader(__("Textures")))  {
 
-                igText(__("Tint"));
+                incText(_("Tint"));
 
                 incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
 
@@ -1167,14 +1167,14 @@ void incInspectorDeformPart(Part node, Parameter param, vec2u cursor) {
         igUnindent();
     igEndGroup();
 
-    igText(__("Opacity"));
+    incText(_("Opacity"));
     incInspectorDeformSliderFloat("###Opacity", "opacity", 0, 1f, node, param, cursor);
     igSpacing();
     igSpacing();
 
     // Threshold slider name for adjusting how transparent a pixel can be
     // before it gets discarded.
-    igText(__("Threshold"));
+    incText(_("Threshold"));
     incInspectorDeformSliderFloat("###Threshold", "alphaThreshold", 0.0, 1.0, node, param, cursor);
 }
 
@@ -1187,7 +1187,7 @@ void incInspectorDeformComposite(Composite node, Parameter param, vec2u cursor) 
             // Header for texture options    
             if (igCollapsingHeader(__("Textures")))  {
 
-                igText(__("Tint"));
+                incText(_("Tint"));
 
                 incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
 
@@ -1199,7 +1199,7 @@ void incInspectorDeformComposite(Composite node, Parameter param, vec2u cursor) 
         igUnindent();
     igEndGroup();
 
-    igText(__("Opacity"));
+    incText(_("Opacity"));
     incInspectorDeformSliderFloat("###Opacity", "opacity", 0, 1f, node, param, cursor);
     igSpacing();
     igSpacing();

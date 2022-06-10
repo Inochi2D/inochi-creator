@@ -382,12 +382,14 @@ void incBeginLoopNoEv() {
     ImGui_ImplSDL2_NewFrame();
     igNewFrame();
 
+
     if (files.length > 0) {
         if (igBeginDragDropSource(ImGuiDragDropFlags.SourceExtern)) {
             igSetDragDropPayload("__PARTS_DROP", &files, files.sizeof);
             igBeginTooltip();
             foreach(file; files) {
-                igText(file.toStringz);
+                import creator.widgets.label : incText;
+                incText(file);
             }
             igEndTooltip();
             igEndDragDropSource();

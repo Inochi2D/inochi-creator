@@ -289,7 +289,7 @@ private {
                     flags |= ImGuiTreeNodeFlags.Selected;
 
                 if (bindings is null) igPushStyleColor(ImGuiCol.Text, inactiveColor);
-                string nodeName = incTypeIdToIconConcat(node.typeId) ~ " " ~ node.name;
+                string nodeName = incTypeIdToIcon(node.typeId) ~ " " ~ node.name;
                 if (igTreeNodeEx(cast(void*)node.uuid, flags, nodeName.toStringz)) {
                     if (bindings is null) igPopStyleColor();
                     if (igBeginPopup("###BindingPopup")) {
@@ -425,7 +425,7 @@ void incParameterView(Parameter param, string* grabParam) {
     bool open = igCollapsingHeader(param.name.toStringz, ImGuiTreeNodeFlags.DefaultOpen);
     if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
         igSetDragDropPayload("_PARAMETER", cast(void*)&param, (&param).sizeof, ImGuiCond.Always);
-        igText(param.name.toStringz);
+        incText(param.name);
         igEndDragDropSource();
     }
 
@@ -447,8 +447,8 @@ void incParameterView(Parameter param, string* grabParam) {
                     igEndPopup();
                 }
 
-                if (param.isVec2) igText("%.2f %.2f", param.value.x, param.value.y);
-                else igText("%.2f", param.value.x);
+                if (param.isVec2) incText("%.2f %.2f".format(param.value.x, param.value.y));
+                else incText("%.2f".format(param.value.x));
 
                 if (incController("###CONTROLLER", param, ImVec2(avail.x-18, reqSpace-24), incArmedParameter() == param, *grabParam)) {
                     if (incArmedParameter() == param) {

@@ -7,6 +7,7 @@
 module creator.windows.about;
 import creator.widgets.dummy;
 import creator.widgets.tooltip;
+import creator.widgets.label;
 import creator.windows;
 import creator.core;
 import creator;
@@ -76,8 +77,8 @@ protected:
             igSameLine(0, 8);
             if (igBeginChild("##LogoTextArea", ImVec2(0, -24))) {
 
-                igText("Inochi Creator");
-                igText("%s", (INC_VERSION~"\0").ptr);
+                incText("Inochi Creator");
+                incText(INC_VERSION);
                 igSeparator();
                 igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "I2D v. %s", (IN_VERSION~"\0").ptr);
                 igTextColored(ImVec4(0.5, 0.5, 0.5, 1), "imgui v. %s", igGetVersion());
@@ -85,13 +86,13 @@ protected:
             igEndChild();
             
             igSpacing();
-            igText("Credits");
+            incText("Credits");
             igSeparator();
         }
         igEndChild();
 
         if (igBeginChild("##CreditsArea", ImVec2(0, -28*incGetUIScale()))) {
-            igText(import("CONTRIBUTORS.md"));
+            incText(import("CONTRIBUTORS.md"));
         }
         igEndChild();
 

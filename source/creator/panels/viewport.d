@@ -210,7 +210,7 @@ protected:
                 igSeparatorEx(ImGuiSeparatorFlags.Vertical);
 
                 igSameLine(0, 8);
-                igText("x = %.2f y = %.2f", incViewportTargetPosition.x, incViewportTargetPosition.y);
+                incText("x = %.2f y = %.2f".format(incViewportTargetPosition.x, incViewportTargetPosition.y));
                 if (incViewportTargetPosition != vec2(0)) {
                     igSameLine(0, 8);
                     igPushFont(incIconFont());

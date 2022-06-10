@@ -42,13 +42,13 @@ protected:
             if (igBeginMenu(__("Add"), true)) {
 
                 igPushFont(incIconFont());
-                    igText(incTypeIdToIcon("Node").ptr);
+                    incText(incTypeIdToIcon("Node"));
                 igPopFont();
                 igSameLine(0, 2);
                 if (igMenuItem(__("Node"), "", false, true)) incAddChildWithHistory(new Node(n), n);
                 
                 igPushFont(incIconFont());
-                    igText(incTypeIdToIcon("Mask").ptr);
+                    incText(incTypeIdToIcon("Mask"));
                 igPopFont();
                 igSameLine(0, 2);
                 if (igMenuItem(__("Mask"), "", false, true)) {
@@ -57,7 +57,7 @@ protected:
                 }
                 
                 igPushFont(incIconFont());
-                    igText(incTypeIdToIcon("Composite").ptr);
+                    incText(incTypeIdToIcon("Composite"));
                 igPopFont();
                 igSameLine(0, 2);
                 if (igMenuItem(__("Composite"), "", false, true)) {
@@ -65,7 +65,7 @@ protected:
                 }
                 
                 igPushFont(incIconFont());
-                    igText(incTypeIdToIcon("SimplePhysics").ptr);
+                    incText(incTypeIdToIcon("SimplePhysics"));
                 igPopFont();
                 igSameLine(0, 2);
                 if (igMenuItem(__("Simple Physics"), "", false, true)) incAddChildWithHistory(new SimplePhysics(n), n);
@@ -99,11 +99,11 @@ protected:
                             
                             // %s is the name of the node in the More Info menu
                             // %lu is the UUID of the node in the More Info menu
-                            igText(__("%s ID: %lu"), sn.name.ptr, sn.uuid);
+                            incText(_("%s ID: %lu").format(sn.name.ptr, sn.uuid));
                         }
                     } else {
                         // %lu is the UUID of the node in the More Info menu
-                        igText(__("ID: %lu"), n.uuid);
+                        incText(_("ID: %lu").format(n.uuid));
                     }
 
                     igEndMenu();
@@ -121,7 +121,7 @@ protected:
         // // Draw Enabler for this node first
         // igTableSetColumnIndex(1);
         // igPushFont(incIconFont());
-        //     igText(n.enabled ? "\ue8f4" : "\ue8f5");
+        //     incText(n.enabled ? "\ue8f4" : "\ue8f5");
         // igPopFont();
 
 
@@ -144,10 +144,10 @@ protected:
 
                     igPushFont(incIconFont());
                         static if (!isRoot) {
-                            if (n.enabled) igText(incTypeIdToIcon(n.typeId).ptr);
-                            else igTextDisabled(incTypeIdToIcon(n.typeId).ptr);
+                            if (n.enabled) incText(incTypeIdToIcon(n.typeId));
+                            else incTextDisabled(incTypeIdToIcon(n.typeId));
                         } else {
-                            igText("");
+                            incText("");
                         }
                     igPopFont();
                     igSameLine(0, 2);
@@ -176,10 +176,10 @@ protected:
                             igSetDragDropPayload("_PUPPETNTREE", cast(void*)&n, (&n).sizeof, ImGuiCond.Always);
                             if (selectedNodes.length > 1) {
                                 foreach(node; selectedNodes) {
-                                    igText(node.name.toStringz);
+                                    incText(node.name);
                                 }
                             } else {
-                                igText(n.name.toStringz);
+                                incText(n.name);
                             }
                             igEndDragDropSource();
                         }
@@ -255,7 +255,7 @@ protected:
         }
 
         if (incEditMode == EditMode.VertexEdit) {
-            igText(__("In vertex edit mode..."));
+            incText(_("In vertex edit mode..."));
             return;
         }
 

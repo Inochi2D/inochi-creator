@@ -23,7 +23,7 @@ protected:
     override
     void onUpdate() {
 
-        igText(__("Undo History"));
+        incText(_("Undo History"));
         igSeparator();
 
         ImVec2 avail;
@@ -63,7 +63,7 @@ protected:
         ImVec2 len = incMeasureString(count);
         incDummy(ImVec2(-(len.x-8), 1));
         igSameLine(0, 0);
-        igText(count.ptr);
+        incText(count);
     }
 
 public:

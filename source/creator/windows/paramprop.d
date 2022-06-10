@@ -30,18 +30,18 @@ protected:
     void onUpdate() {
         igPushID(cast(void*)param);
             if (igBeginChild("###MainSettings", ImVec2(0, -28))) {
-                igText(__("Parameter Name"));
+                incText(_("Parameter Name"));
                 igIndent();
                     if (incInputText("Name", param.name)) {
                         param.makeIndexable();
                     }
                 igUnindent();
 
-                igText(__("Parameter Constraints"));
+                incText(_("Parameter Constraints"));
                 igIndent();
                     igSetNextItemWidth(256);
 
-                    if (param.isVec2) igText("X");
+                    if (param.isVec2) incText("X");
                     if (param.isVec2) igIndent();
                         
                         // X MINIMUM
@@ -61,7 +61,7 @@ protected:
                         
                     if (param.isVec2) {
 
-                        igText("Y");
+                        incText("Y");
 
                         igIndent();
 

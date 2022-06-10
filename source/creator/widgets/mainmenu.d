@@ -385,10 +385,10 @@ void incMainMenu() {
         incDummy(ImVec2(-secondSectionLength.x, 0));
 
         if (incShowStatsForNerds) {
-            string fpsText = "%.0fms\0".format(1000f/io.Framerate);
+            string fpsText = "%.0fms".format(1000f/io.Framerate);
             float textAreaDummyWidth = incMeasureString("1000ms").x-incMeasureString(fpsText).x;
             incDummy(ImVec2(textAreaDummyWidth, 0));
-            igText(fpsText.ptr);
+            incText(fpsText);
         }
         
         // Donate button

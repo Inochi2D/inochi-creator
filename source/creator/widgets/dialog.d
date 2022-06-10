@@ -6,6 +6,7 @@
 */
 module creator.widgets.dialog;
 import creator.widgets.dummy;
+import creator.widgets.label;
 import creator.core.font;
 import bindbc.imgui;
 import i18n;
@@ -53,7 +54,7 @@ void incRenderDialogs() {
                     igEndChild();
                 }
                 igSameLine(0, 8);
-                igText(entry.text);
+                incText(entry.text);
             igEndGroup();
 
 
@@ -120,7 +121,7 @@ void incDialog(const(char)* title, string body_, DialogLevel level = DialogLevel
 
     entries ~= DialogEntry(
         title,
-        body_.toStringz,
+        body_,
         level,
         btns,
         DialogButtons.NONE,
@@ -150,7 +151,7 @@ private {
 
     struct DialogEntry {
         const(char)* tag;
-        const(char)* text;
+        string text;
         DialogLevel level;
         DialogButtons btns;
         DialogButtons selected;
