@@ -58,6 +58,11 @@ void incLocaleInit() {
     incLocaleScan(incGetAppLocalePath());
     incLocaleScan(getcwd());
     incLocaleScan(thisExePath().rootName);
+    
+    // Some distribution platforms like AppImage has its own locale path
+    // this is here to detect it and add it in to the scan area.
+    auto extraLocalePath = incGetAppLocalePathExtra();
+    if (extraLocalePath) incLocaleScan(extraLocalePath);
 }
 
 /**
