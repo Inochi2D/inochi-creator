@@ -62,7 +62,6 @@ configuration "win32-lite" {
 	subConfiguration "bindbc-imgui" "static_staticCRT"
 	platforms "windows"
 	targetType "executable"
-	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="window-dmd"
 	sourceFiles "res\\inochi-creator.res"
-	versions "InBranding"
+	versions "InBranding" "InLite"
 }
