@@ -180,7 +180,7 @@ msgstr "Informazioni Generali"
 
 #: source/creator/windows/settings.d:43
 msgid "Look and Feel"
-msgstr ""
+msgstr "Aspetto e Percezione"
 
 #: source/creator/windows/settings.d:45
 msgid "Color Theme"
@@ -406,7 +406,7 @@ msgstr "Lineare"
 #: source/creator/panels/parameters.d:324
 #, fuzzy
 msgid "Copy to"
-msgstr "Copia"
+msgstr "Copia in"
 
 #: source/creator/panels/parameters.d:332
 msgid "Swap with"
@@ -526,11 +526,11 @@ msgstr "Porta"
 
 #: source/creator/panels/tracking.d:84
 msgid "The port that the VMC binding server should listen on, default 39540"
-msgstr ""
+msgstr "La porta su cui il server VMC deve ascoltare, predefinita 39540"
 
 #: source/creator/panels/tracking.d:87
 msgid "A reciever which uses the VTubeStudio iOS app"
-msgstr ""
+msgstr "Un rivevitore che usa l' iOS app VTubeStudio"
 
 #: source/creator/panels/tracking.d:90
 msgid "iPhone IP"
@@ -541,6 +541,8 @@ msgid ""
 "The IP Address of your iPhone,\n"
 "You can find it in the VSeeFace Config panel in VTube Studio"
 msgstr ""
+"L' indirizzo IP del tuo iPhone,\n"
+"Lo puoi trovare nel pannello di configurazione VSeeFace in VTube Studio"
 
 #: source/creator/panels/tracking.d:102
 #, fuzzy
@@ -554,7 +556,7 @@ msgstr "%s->%s è cambiato a %s"
 
 #: source/creator/panels/tracking.d:122
 msgid "Not in Test Mode..."
-msgstr ""
+msgstr "Non in Modalità Test..."
 
 #: source/creator/panels/tracking.d:128
 msgid "Tracking"
