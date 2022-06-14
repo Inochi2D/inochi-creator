@@ -29,7 +29,7 @@ private:
 
         // Appended to the name of a face tracking receiver
         // in the Tracking settings panel
-        const(char)* recvName = (receiverName~_(" Receiver")).toStringz;
+        const(char)* recvName = _("%s Receiver").format(receiverName).toStringz;
 
         if (igCheckbox(recvName, &track)) {
             incTestSetTrackingMode(track ? mode : TrackingMode.None);
