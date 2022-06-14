@@ -126,7 +126,7 @@ void incMainMenu() {
             }
 
             if (igBeginMenu(__("Import"), true)) {
-                if(igMenuItem_Bool(__("Photoshop Document"), "", false, true)) {
+                if(igMenuItem(__("Photoshop Document"), "", false, true)) {
                     const TFD_Filter[] filters = [
                         { ["*.psd"], "Photoshop Document (*.psd)" }
                     ];
@@ -139,7 +139,7 @@ void incMainMenu() {
                 }
                 incTooltip(_("Import a standard Photoshop PSD file."));
 
-                if (igMenuItem_Bool(__("Inochi2D Puppet"), "", false, true)) {
+                if (igMenuItem(__("Inochi2D Puppet"), "", false, true)) {
                     const TFD_Filter[] filters = [
                         { ["*.inp"], "Inochi2D Puppet (*.inp)" }
                     ];
@@ -152,7 +152,7 @@ void incMainMenu() {
                 }
                 incTooltip(_("Import existing puppet file, editing options limited"));
 
-                if (igMenuItem_Bool(__("Image Folder"))) {
+                if (igMenuItem(__("Image Folder"))) {
                     c_str folder = tinyfd_selectFolderDialog(__("Select a Folder..."), null);
                     if (folder !is null) {
                         incImportFolder(cast(string)folder.fromStringz);
@@ -161,9 +161,37 @@ void incMainMenu() {
                 incTooltip(_("Supports PNGs, TGAs and JPEGs."));
                 igEndMenu();
             }
+            if (igBeginMenu(__("Merge"), true)) {
+                if(igMenuItem(__("Photoshop Document"), "", false, true)) {
+                    const TFD_Filter[] filters = [
+                        { ["*.psd"], "Photoshop Document (*.psd)" }
+                    ];
+
+                    c_str filename = tinyfd_openFileDialog(__("Import..."), "", filters, false);
+                    if (filename !is null) {
+                        string file = cast(string)filename.fromStringz;
+                        incPushWindow(new PSDMergeWindow(file));
+                    }
+                }
+                incTooltip(_("Merge layers from Photoshop document"));
+
+                if (igMenuItem(__("Inochi Creator Project"), "", false, true)) {
+                    // const TFD_Filter[] filters = [
+                    //     { ["*.inp"], "Inochi2D Puppet (*.inp)" }
+                    // ];
+
+                    // c_str filename = tinyfd_openFileDialog(__("Import..."), "", filters, false);
+                    // if (filename !is null) {
+                    //     string file = cast(string)filename.fromStringz;
+                    // }
+                }
+                incTooltip(_("Merge another Inochi Creator project in to this one"));
+                
+                igEndMenu();
+            }
 
             if (igBeginMenu(__("Export"), true)) {
-                if(igMenuItem_Bool(__("Inochi Puppet"), "", false, true)) {
+                if(igMenuItem(__("Inochi Puppet"), "", false, true)) {
                     const TFD_Filter[] filters = [
                         { ["*.inp"], "Inochi2D Puppet (*.inp)" }
                     ];
@@ -180,21 +208,21 @@ void incMainMenu() {
                 igEndMenu();
             }
 
-            if(igMenuItem_Bool(__("Quit"), "Alt+F4", false, true)) incExit();
+            if(igMenuItem(__("Quit"), "Alt+F4", false, true)) incExit();
             igEndMenu();
         }
         
         if (igBeginMenu(__("Edit"), true)) {
-            if(igMenuItem_Bool(__("Undo"), "Ctrl+Z", false, incActionCanUndo())) incActionUndo();
-            if(igMenuItem_Bool(__("Redo"), "Ctrl+Shift+Z", false, incActionCanRedo())) incActionRedo();
+            if(igMenuItem(__("Undo"), "Ctrl+Z", false, incActionCanUndo())) incActionUndo();
+            if(igMenuItem(__("Redo"), "Ctrl+Shift+Z", false, incActionCanRedo())) incActionRedo();
             
             igSeparator();
-            if(igMenuItem_Bool(__("Cut"), "Ctrl+X", false, false)) {}
-            if(igMenuItem_Bool(__("Copy"), "Ctrl+C", false, false)) {}
-            if(igMenuItem_Bool(__("Paste"), "Ctrl+V", false, false)) {}
+            if(igMenuItem(__("Cut"), "Ctrl+X", false, false)) {}
+            if(igMenuItem(__("Copy"), "Ctrl+C", false, false)) {}
+            if(igMenuItem(__("Paste"), "Ctrl+V", false, false)) {}
 
             igSeparator();
-            if(igMenuItem_Bool(__("Settings"), "", false, true)) {
+            if(igMenuItem(__("Settings"), "", false, true)) {
                 if (!incIsSettingsOpen) incPushWindow(new SettingsWindow);
             }
             
@@ -205,8 +233,8 @@ void incMainMenu() {
                 igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("ImGui Debugging"));
 
                 igSeparator();
-                if(igMenuItem_Bool(__("Style Editor"), "", false, true)) dbgShowStyleEditor = !dbgShowStyleEditor;
-                if(igMenuItem_Bool(__("ImGui Debugger"), "", false, true)) dbgShowDebugger = !dbgShowDebugger;
+                if(igMenuItem(__("Style Editor"), "", false, true)) dbgShowStyleEditor = !dbgShowStyleEditor;
+                if(igMenuItem(__("ImGui Debugger"), "", false, true)) dbgShowDebugger = !dbgShowDebugger;
             }
             igEndMenu();
         }
@@ -230,7 +258,7 @@ void incMainMenu() {
                 if (panel.alwaysVisible) continue;
 
                 // Show menu item for panel
-                if(igMenuItem_Bool(panel.displayNameC, null, panel.visible, true)) {
+                if(igMenuItem(panel.displayNameC, null, panel.visible, true)) {
                     panel.visible = !panel.visible;
                     incSettingsSet(panel.name~".visible", panel.visible);
                 }
@@ -288,7 +316,7 @@ void incMainMenu() {
             }
             incTooltip(_("Saves screenshot as PNG of the editor framebuffer."));
 
-            if (igMenuItem_Bool(__("Show Stats for Nerds"), "", incShowStatsForNerds, true)) {
+            if (igMenuItem(__("Show Stats for Nerds"), "", incShowStatsForNerds, true)) {
                 incShowStatsForNerds = !incShowStatsForNerds;
                 incSettingsSet("NerdStats", incShowStatsForNerds);
             }
@@ -355,19 +383,19 @@ void incMainMenu() {
 
         if (igBeginMenu(__("Help"), true)) {
 
-            if(igMenuItem_Bool(__("Tutorial"), "(TODO)", false, false)) { }
+            if(igMenuItem(__("Tutorial"), "(TODO)", false, false)) { }
             igSeparator();
             
-            if(igMenuItem_Bool(__("Online Documentation"), "", false, true)) {
+            if(igMenuItem(__("Online Documentation"), "", false, true)) {
                 incOpenLink("https://github.com/Inochi2D/inochi-creator/wiki");
             }
             
-            if(igMenuItem_Bool(__("Inochi2D Documentation"), "", false, true)) {
+            if(igMenuItem(__("Inochi2D Documentation"), "", false, true)) {
                 incOpenLink("https://github.com/Inochi2D/inochi2d/wiki");
             }
             igSeparator();
 
-            if(igMenuItem_Bool(__("About"), "", false, true)) {
+            if(igMenuItem(__("About"), "", false, true)) {
                 incPushWindow(new AboutWindow);
             }
             igEndMenu();
