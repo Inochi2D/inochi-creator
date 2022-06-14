@@ -662,7 +662,7 @@ msgstr "Pixel per metro"
 
 #: source/creator/panels/inspector.d:261
 msgid "Number of pixels that correspond to 1 meter in the physics engine."
-msgstr ""
+msgstr "Numero di pixel che corrispondono ad 1 metro nel motore di fisica."
 
 #: source/creator/panels/inspector.d:267
 msgid "Gravity"
@@ -675,7 +675,7 @@ msgstr "Accelerazione di gravità, in m/s². La gravità della Terra è 9.8."
 #: source/creator/panels/inspector.d:290 source/creator/panels/inspector.d:1066
 #, fuzzy
 msgid "Transform"
-msgstr "Traslazione"
+msgstr "Trasformazione"
 
 #.
 #. Translation
@@ -695,11 +695,14 @@ msgstr "Blocca al Nodo Radice"
 #. Button which locks all transformation to be based off the root node
 #. of the puppet, this more or less makes the item stay in place
 #. even if the parent moves.
+# "Parent node" => "Nodo padre" (dad node). The neutral "Nodo genitore" is very weird in italian, and never used.
 #: source/creator/panels/inspector.d:385
 msgid ""
 "Makes so that the translation of this node is based off the root node, "
 "making it stay in place even if its parent moves."
 msgstr ""
+"Fa si che la traslazione di questo nodo si basi sul nodo radice, "
+"così che rimane fermo anche se il nodo padre si muove."
 
 #. Rotation portion of the transformation matrix.
 #: source/creator/panels/inspector.d:400 source/creator/panels/inspector.d:1120
