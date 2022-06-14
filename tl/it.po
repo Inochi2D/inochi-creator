@@ -1229,7 +1229,7 @@ msgstr ""
 
 #: source/creator/widgets/mainmenu.d:302
 msgid "Bleed textures..."
-msgstr ""
+msgstr "Disciogli colore delle texture..."
 
 #: source/creator/widgets/mainmenu.d:305
 msgid ""
