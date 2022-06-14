@@ -15,6 +15,7 @@ import creator.core;
 import creator.core.actionstack;
 import creator.windows;
 import creator.atlas;
+import creator.ext;
 import creator.widgets.dialog;
 
 public import creator.ver;
@@ -234,6 +235,7 @@ void incImportPSD(string file) {
     incNewProject();
     try {
         import psd : PSD, Layer, LayerType, LayerFlags, parseDocument, BlendingMode;
+        import std.array : join;
         PSD doc = parseDocument(file);
         vec2i docCenter = vec2i(doc.width/2, doc.height/2);
         Puppet puppet = new Puppet();
@@ -241,6 +243,18 @@ void incImportPSD(string file) {
         Layer[] layerGroupStack;
         bool isLastStackItemHidden() {
             return layerGroupStack.length > 0 ? (layerGroupStack[$-1].flags & LayerFlags.Visible) != 0 : false;
+        }
+
+        string[] path;
+        string calcPath;
+        void pushGroupStackName(string layerName) {
+            path ~= layerName;
+            calcPath = "/"~path.join("/");
+        }
+
+        void popGroupStackName() {
+            path.length--;
+            calcPath = "/"~path.join("/");
         }
 
         foreach_reverse(i, Layer layer; doc.layers) {
@@ -251,15 +265,20 @@ void incImportPSD(string file) {
             if (layer.type != LayerType.Any) {
                 if (layer.name != "</Layer set>") {
                     layerGroupStack ~= layer;
-                } else layerGroupStack.length--;
+                    pushGroupStackName(layer.name);
+                } else {
+                    layerGroupStack.length--;
+                    popGroupStackName();
+                }
 
                 continue;
-            }
+            } else pushGroupStackName(layer.name);
 
             layer.extractLayerImage();
             inTexPremultiply(layer.data);
             auto tex = new Texture(layer.data, layer.width, layer.height);
-            Part part = inCreateSimplePart(tex, puppet.root, layer.name);
+            ExPart part = incCreateExPart(tex, puppet.root, layer.name);
+            part.layerPath = calcPath;
 
             auto layerSize = cast(int[2])layer.size();
             vec2i layerPosition = vec2i(
@@ -311,6 +330,8 @@ void incImportPSD(string file) {
             }
 
             puppet.root.addChild(part);
+
+            if (layer.type == LayerType.Any) popGroupStackName();
         }
 
         puppet.populateTextureSlots();
