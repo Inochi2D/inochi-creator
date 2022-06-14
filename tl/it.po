@@ -97,7 +97,7 @@ msgstr ""
 
 #: source/creator/windows/trkbind.d:82
 msgid "Bone Input"
-msgstr ""
+msgstr "Input ossa"
 
 #: source/creator/windows/trkbind.d:83
 #, fuzzy
@@ -136,7 +136,7 @@ msgstr ""
 
 #: source/creator/windows/trkbind.d:110 source/creator/panels/parameters.d:184
 msgid "Invert"
-msgstr ""
+msgstr "Inverti"
 
 #: source/creator/windows/trkbind.d:114
 msgid "Refresh Bindable"
@@ -145,7 +145,7 @@ msgstr ""
 #. Title for the parameter properties window.
 #: source/creator/windows/trkbind.d:143
 msgid "Bind Tracking to Parameter"
-msgstr ""
+msgstr "Lega Tracciamento al Parametro"
 
 #. Cancels the edited state for the axies points
 #: source/creator/windows/paramaxes.d:133
@@ -286,11 +286,11 @@ msgstr "Maschera"
 #: source/creator/panels/nodes.d:63 source/creator/panels/inspector.d:811
 #: source/creator/panels/inspector.d:1209
 msgid "Composite"
-msgstr ""
+msgstr "Composito"
 
 #: source/creator/panels/nodes.d:71
 msgid "Simple Physics"
-msgstr ""
+msgstr "Fisica Semplice"
 
 #. Option to hide the node (and subnodes)
 #: source/creator/panels/nodes.d:77
@@ -330,7 +330,7 @@ msgstr "Pupazzo"
 
 #: source/creator/panels/nodes.d:258
 msgid "In vertex edit mode..."
-msgstr ""
+msgstr "In modalità modifica vertici..."
 
 #: source/creator/panels/nodes.d:324
 msgid "Nodes"
@@ -338,41 +338,41 @@ msgstr "Nodi"
 
 #: source/creator/panels/parameters.d:166
 msgid "Unset"
-msgstr ""
+msgstr "Dis-imposta"
 
 #: source/creator/panels/parameters.d:172
-msgid "Set to current"
-msgstr ""
+msgid "Set su corrente"
+msgstr "Imposta ne"
 
 #: source/creator/panels/parameters.d:178
 msgid "Reset"
-msgstr ""
+msgstr "Reset"
 
 #: source/creator/panels/parameters.d:191
 #: source/creator/panels/parameters.d:500
 msgid "Mirror"
-msgstr ""
+msgstr "Specchia"
 
 #: source/creator/panels/parameters.d:192
 #: source/creator/panels/parameters.d:209
 #: source/creator/panels/parameters.d:501
 msgid "Horizontally"
-msgstr ""
+msgstr "Orizontalmente"
 
 #: source/creator/panels/parameters.d:198
 #: source/creator/panels/parameters.d:215
 #: source/creator/panels/parameters.d:505
 msgid "Vertically"
-msgstr ""
+msgstr "Verticalmente"
 
 #: source/creator/panels/parameters.d:208
 #: source/creator/panels/parameters.d:230
 msgid "Set from mirror"
-msgstr ""
+msgstr "Imposta da specchio"
 
 #: source/creator/panels/parameters.d:221
 msgid "Diagonally"
-msgstr ""
+msgstr "Diagonalmente"
 
 #: source/creator/panels/parameters.d:238 source/creator/widgets/mainmenu.d:193
 msgid "Copy"
@@ -389,19 +389,20 @@ msgstr "Sfumatura"
 
 #: source/creator/panels/parameters.d:298
 msgid "Remove"
-msgstr ""
+msgstr "Rimuovi"
 
 #: source/creator/panels/parameters.d:307
 msgid "Interpolation Mode"
-msgstr ""
+msgstr "Modalità Interpolazione"
 
 #: source/creator/panels/parameters.d:308
+# This is kinda of a mess, as in italian you can't say "Nearest <x>", but "Il <x> più vicino"
 msgid "Nearest"
-msgstr ""
+msgstr "Il più vicino"
 
 #: source/creator/panels/parameters.d:314
 msgid "Linear"
-msgstr ""
+msgstr "Lineare"
 
 #: source/creator/panels/parameters.d:324
 #, fuzzy
@@ -410,11 +411,11 @@ msgstr "Copia"
 
 #: source/creator/panels/parameters.d:332
 msgid "Swap with"
-msgstr ""
+msgstr "Scambia con"
 
 #: source/creator/panels/parameters.d:480
 msgid "Edit Properties"
-msgstr ""
+msgstr "Modifica Proprietà"
 
 #: source/creator/panels/parameters.d:484
 msgid "Edit Axes Points"
@@ -422,15 +423,15 @@ msgstr ""
 
 #: source/creator/panels/parameters.d:489
 msgid "Flip X"
-msgstr ""
+msgstr "Capovolgi X"
 
 #: source/creator/panels/parameters.d:492
 msgid "Flip Y"
-msgstr ""
+msgstr "Capovolgi Y"
 
 #: source/creator/panels/parameters.d:496
 msgid "Flip"
-msgstr ""
+msgstr "Capovolgi"
 
 #: source/creator/panels/parameters.d:511
 msgid "Mirrored Autofill"
@@ -454,12 +455,12 @@ msgstr ""
 
 #: source/creator/panels/parameters.d:536
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplica"
 
 #. Sets the default value of the param
 #: source/creator/panels/parameters.d:552
 msgid "Set Starting Position"
-msgstr ""
+msgstr "Imposta Posizione Iniziale"
 
 #. Arms the parameter for recording values.
 #: source/creator/panels/parameters.d:574
@@ -469,32 +470,32 @@ msgstr "Parametro braccio"
 
 #: source/creator/panels/parameters.d:598
 msgid "Add 1D Parameter (0..1)"
-msgstr ""
+msgstr "Aggiungi Parametro 1D (0..1)"
 
 #: source/creator/panels/parameters.d:605
 msgid "Add 1D Parameter (-1..1)"
-msgstr ""
+msgstr "Aggiungi Parametro 1D (-1..1)"
 
 #: source/creator/panels/parameters.d:615
 msgid "Add 2D Parameter (0..1)"
-msgstr ""
+msgstr "Aggiungi Parametro 2D (0..1)"
 
 #: source/creator/panels/parameters.d:622
 msgid "Add 2D Parameter (-1..+1)"
-msgstr ""
+msgstr "Aggiungi Parametro 2D (-1..+1)"
 
 #: source/creator/panels/parameters.d:633
 msgid "Add Mouth Shape"
-msgstr ""
+msgstr "Aggiungi forma della bocca"
 
 #: source/creator/panels/parameters.d:654
 msgid "Filter, search for specific parameters"
-msgstr ""
+msgstr "Filtra, cerca per parametri specifici"
 
 #: source/creator/panels/parameters.d:685
 #, fuzzy
 msgid "Add Parameter"
-msgstr "Parametri"
+msgstr "Aggiungi Parametro"
 
 #: source/creator/panels/parameters.d:690
 msgid "Parameters"
@@ -504,8 +505,9 @@ msgstr "Parametri"
 #. in the Tracking settings panel
 #: source/creator/panels/tracking.d:32
 #, fuzzy
+# In italian the order is reversed, so "<x> Receiver" becomes "Ricevitore <x>". Not translatable at the moment.
 msgid " Receiver"
-msgstr "Ricevitore "
+msgstr ""
 
 #: source/creator/panels/tracking.d:59
 msgid "A reciever which uses your phone and associated app to track your body"
@@ -534,7 +536,7 @@ msgstr ""
 
 #: source/creator/panels/tracking.d:90
 msgid "iPhone IP"
-msgstr ""
+msgstr "IP iPhone"
 
 #: source/creator/panels/tracking.d:99
 msgid ""
@@ -647,11 +649,11 @@ msgstr "Da dove proviene il modello da internet."
 
 #: source/creator/panels/inspector.d:258
 msgid "Physics Globals"
-msgstr ""
+msgstr "Fisica Globale"
 
 #: source/creator/panels/inspector.d:260
 msgid "Pixels per meter"
-msgstr ""
+msgstr "Pixel per metro"
 
 #: source/creator/panels/inspector.d:261
 msgid "Number of pixels that correspond to 1 meter in the physics engine."
@@ -659,11 +661,11 @@ msgstr ""
 
 #: source/creator/panels/inspector.d:267
 msgid "Gravity"
-msgstr ""
+msgstr "Gravità"
 
 #: source/creator/panels/inspector.d:268
 msgid "Acceleration due to gravity, in m/s². Earth gravity is 9.8."
-msgstr ""
+msgstr "Accelerazione di gravità, in m/s². La gravità della Terra è 9.8."
 
 #: source/creator/panels/inspector.d:290 source/creator/panels/inspector.d:1066
 #, fuzzy
@@ -683,7 +685,7 @@ msgstr "Traslazione"
 #. even if the parent moves.
 #: source/creator/panels/inspector.d:370 source/creator/panels/inspector.d:371
 msgid "Lock to Root Node"
-msgstr ""
+msgstr "Blocca al Nodo Radice"
 
 #. Button which locks all transformation to be based off the root node
 #. of the puppet, this more or less makes the item stay in place
@@ -792,7 +794,7 @@ msgstr "Slot Texture"
 #: source/creator/panels/inspector.d:1185
 #: source/creator/panels/inspector.d:1217
 msgid "Tint"
-msgstr ""
+msgstr "Tinta"
 
 #. Header for the Blending options for Parts
 #: source/creator/panels/inspector.d:676 source/creator/panels/inspector.d:826
@@ -825,7 +827,7 @@ msgstr ""
 #. Screen blending mode
 #: source/creator/panels/inspector.d:694 source/creator/panels/inspector.d:844
 msgid "Screen"
-msgstr ""
+msgstr "Schermo"
 
 #. Clip to Lower blending mode
 #: source/creator/panels/inspector.d:697
@@ -902,11 +904,11 @@ msgstr ""
 
 #: source/creator/panels/inspector.d:901
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: source/creator/panels/inspector.d:904
 msgid "Pendulum"
-msgstr ""
+msgstr "Pendolo"
 
 #: source/creator/panels/inspector.d:906
 msgid "SpringPendulum"
@@ -926,15 +928,15 @@ msgstr ""
 
 #: source/creator/panels/inspector.d:928
 msgid "Gravity scale"
-msgstr ""
+msgstr "Scala Gravità"
 
 #: source/creator/panels/inspector.d:935
 msgid "Length"
-msgstr ""
+msgstr "Lunghezza"
 
 #: source/creator/panels/inspector.d:942
 msgid "Resonant frequency"
-msgstr ""
+msgstr "Frequenza di risonanza"
 
 #: source/creator/panels/inspector.d:949
 msgid "Damping"
@@ -1031,7 +1033,7 @@ msgstr "Pupazzo"
 
 #: source/creator/widgets/toolbar.d:65
 msgid "Edit Animation"
-msgstr ""
+msgstr "Modifica Animazione"
 
 #: source/creator/widgets/toolbar.d:70
 #, fuzzy
@@ -1160,11 +1162,11 @@ msgstr "Ripristina la disposizione"
 
 #: source/creator/widgets/mainmenu.d:224
 msgid "Panels"
-msgstr ""
+msgstr "Pannelli"
 
 #: source/creator/widgets/mainmenu.d:243
 msgid "Extras"
-msgstr ""
+msgstr "Extra"
 
 #: source/creator/widgets/mainmenu.d:247
 msgid "Save Screenshot"
@@ -1189,7 +1191,7 @@ msgstr "Strumenti"
 
 #: source/creator/widgets/mainmenu.d:291
 msgid "Puppet Texturing"
-msgstr ""
+msgstr "Texturing Pupazzo"
 
 #. Premultiply textures, causing every pixel value in every texture to
 #. be multiplied by their Alpha (transparency) component
@@ -1227,7 +1229,7 @@ msgstr ""
 
 #: source/creator/widgets/mainmenu.d:316
 msgid "Puppet Recovery"
-msgstr ""
+msgstr "Recupera Pupazzo"
 
 #. FULL REPAIR
 #: source/creator/widgets/mainmenu.d:320
@@ -1294,19 +1296,19 @@ msgstr "Nessun nodo selezionato..."
 
 #: source/creator/viewport/vertex/package.d:28
 msgid "Flip Horizontally"
-msgstr ""
+msgstr "Capovolgi Orizontalmente"
 
 #: source/creator/viewport/vertex/package.d:33
 msgid "Flip Vertically"
-msgstr ""
+msgstr "Capovolgi Verticalmente"
 
 #: source/creator/viewport/vertex/package.d:41
 msgid "Mirror Horizontally"
-msgstr ""
+msgstr "Specchia Orizontalmente"
 
 #: source/creator/viewport/vertex/package.d:48
 msgid "Mirror Vertically"
-msgstr ""
+msgstr "Specchia Verticalmente"
 
 #: source/creator/viewport/vertex/package.d:65
 msgid "Automatically connects vertices"
@@ -1326,11 +1328,11 @@ msgstr "Mostra/nascondi Gizmo orientamento"
 
 #: source/creator/viewport/common/mesheditor.d:623
 msgid "Vertex Tool"
-msgstr ""
+msgstr "Strumento Vertici"
 
 #: source/creator/viewport/common/mesheditor.d:632
 msgid "Edge Tool"
-msgstr ""
+msgstr "Strumento Angoli"
 
 #: source/creator/viewport/common/mesheditor.d:642
 #, fuzzy
