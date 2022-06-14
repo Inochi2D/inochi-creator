@@ -396,9 +396,8 @@ msgid "Interpolation Mode"
 msgstr "Modalità Interpolazione"
 
 #: source/creator/panels/parameters.d:308
-# This is kinda of a mess, as in italian you can't say "Nearest <x>", but "Il <x> più vicino"
 msgid "Nearest"
-msgstr "Il più vicino"
+msgstr "Campionamento a punti"
 
 #: source/creator/panels/parameters.d:314
 msgid "Linear"
@@ -958,7 +957,7 @@ msgstr "Dimensione cronologia passaggi"
 #: source/creator/panels/actionhistory.d:54
 #, fuzzy
 msgid "Clear History"
-msgstr "Cronologia"
+msgstr "Cancella Cronologia"
 
 #. Ugly hack to please imgui
 #: source/creator/panels/actionhistory.d:60
