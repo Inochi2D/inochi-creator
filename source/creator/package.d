@@ -233,6 +233,7 @@ void incImportFolder(string folder) {
 */
 void incImportPSD(string file) {
     incNewProject();
+    // TODO: Split this up to a seperate file and make it cleaner
     try {
         import psd : PSD, Layer, LayerType, LayerFlags, parseDocument, BlendingMode;
         import std.array : join;
