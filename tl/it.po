@@ -1,0 +1,779 @@
+# Italian translations for PACKAGE package.
+# Copyright (C) 2022 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# adryzz <adryzz@vignetteapp.org>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-02-23 22:55+0100\n"
+"PO-Revision-Date: 2022-02-23 15:55+0100\n"
+"Last-Translator: adryzz <adryzz@vignetteapp.org>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: source/creator/actions/node.d:92
+#, c-format
+msgid "Moved %s to %s"
+msgstr "Spostato %s a %s"
+
+#: source/creator/actions/node.d:100
+#, c-format
+msgid "Moved %s from %s"
+msgstr "Spostato %s da %s"
+
+#: source/creator/actions/node.d:140 source/creator/actions/node.d:147
+msgid "Enabled"
+msgstr "Attivato"
+
+#: source/creator/actions/node.d:140 source/creator/actions/node.d:147
+#, fuzzy
+msgid "Disabled"
+msgstr "Disattivato"
+
+#: source/creator/actions/node.d:147
+#, c-format
+msgid "%s was %s"
+msgstr "%s era %s"
+
+#: source/creator/actions/node.d:201
+msgid "Unnamed "
+msgstr "Senza nome "
+
+#: source/creator/actions/node.d:259
+#, c-format
+msgid "%s->%s changed to %s"
+msgstr "%s->%s è cambiato a %s"
+
+#: source/creator/actions/node.d:266
+#, c-format
+msgid "%s->%s changed from %s"
+msgstr "%s-> è cambiato da %s"
+
+#. Ugly hack to please imgui
+#: source/creator/panels/actionhistory.d:60
+#, c-format
+msgid "%d of %d"
+msgstr "%d di %d"
+
+#: source/creator/panels/actionhistory.d:69
+msgid "History"
+msgstr "Cronologia"
+
+#. The sorting order ID, which Inochi2D uses to sort
+#. Parts to draw in the user specified order.
+#. negative values = closer to camera
+#. positive values = further away from camera
+#: source/creator/panels/inspector.d:49
+#, fuzzy
+msgid "Sorting"
+msgstr "Ordine"
+
+#: source/creator/panels/inspector.d:89
+msgid "No nodes selected..."
+msgstr "Nessun nodo selezionato..."
+
+#: source/creator/panels/inspector.d:91
+msgid "Can only inspect a single node..."
+msgstr "Puoi ispezionare un nodo singolo..."
+
+#: source/creator/panels/inspector.d:97
+msgid "Inspector"
+msgstr "Ispettore"
+
+#: source/creator/panels/inspector.d:140 source/creator/panels/nodes.d:142
+msgid "Puppet"
+msgstr "Pupazzo"
+
+#: source/creator/panels/inspector.d:153 source/creator/panels/inspector.d:158
+msgid "Inochi2D Ver."
+msgstr "Inochi2D Ver."
+
+#: source/creator/panels/inspector.d:164
+msgid "General Info"
+msgstr "Informazioni Generali"
+
+#: source/creator/panels/inspector.d:168
+msgid "Name"
+msgstr "Nome"
+
+#: source/creator/panels/inspector.d:169
+msgid "Name of the puppet"
+msgstr "Nome del pupazzo"
+
+#: source/creator/panels/inspector.d:175
+msgid "Artist(s)"
+msgstr "Artista/i"
+
+#: source/creator/panels/inspector.d:176
+msgid "Artists who've drawn the puppet, seperated by comma"
+msgstr "Artisti che hanno disegnato il pupazzo, separati con una virgola"
+
+#: source/creator/panels/inspector.d:182
+msgid "Rigger(s)"
+msgstr "Rigger(s)"
+
+#: source/creator/panels/inspector.d:183
+msgid "Riggers who've rigged the puppet, seperated by comma"
+msgstr ""
+
+#: source/creator/panels/inspector.d:189
+msgid "Contact"
+msgstr "Contatta"
+
+#: source/creator/panels/inspector.d:190
+msgid "Where to contact the main author of the puppet"
+msgstr "Dove contattare l' autore principale del pupazzo"
+
+#: source/creator/panels/inspector.d:195
+msgid "License Info"
+msgstr "Informazioni licenza"
+
+#: source/creator/panels/inspector.d:199
+msgid "License URL"
+msgstr "URL licenza"
+
+#: source/creator/panels/inspector.d:200
+msgid "Link/URL to license"
+msgstr "Link/URL licenza"
+
+#: source/creator/panels/inspector.d:206
+msgid "Copyright"
+msgstr "Copyright"
+
+#: source/creator/panels/inspector.d:207
+msgid "Copyright holder information of the puppet"
+msgstr "Informazioni del Copyright del pupazzo"
+
+#: source/creator/panels/inspector.d:213
+msgid "Origin"
+msgstr "Origine"
+
+#: source/creator/panels/inspector.d:214
+msgid "Where the model comes from on the internet."
+msgstr "Da dove proviene il modello da internet."
+
+#.
+#. Translation
+#.
+#. Translation portion of the transformation matrix.
+#: source/creator/panels/inspector.d:249
+msgid "Translation"
+msgstr "Traslazione"
+
+#: source/creator/panels/inspector.d:270
+msgid "Lock Translate X"
+msgstr "Blocca traslazione asse X"
+
+#: source/creator/panels/inspector.d:299
+msgid "Lock Translate Y"
+msgstr "Blocca traslazione asse Y"
+
+#: source/creator/panels/inspector.d:328
+msgid "Lock Translate Z"
+msgstr "Blocca traslazione asse Z"
+
+#. Rotation portion of the transformation matrix.
+#: source/creator/panels/inspector.d:346
+msgid "Rotation"
+msgstr "Rotazione"
+
+#: source/creator/panels/inspector.d:354
+msgid "Rotation X"
+msgstr "Rotazione asse X"
+
+#: source/creator/panels/inspector.d:367
+msgid "Lock Rotation X"
+msgstr "Blocca rotazione asse X"
+
+#: source/creator/panels/inspector.d:383
+msgid "Rotation Y"
+msgstr "Rotazione asse Y"
+
+#: source/creator/panels/inspector.d:396
+msgid "Lock Rotation Y"
+msgstr "Blocca rotazione asse Y"
+
+#: source/creator/panels/inspector.d:412
+msgid "Rotation Z"
+msgstr "Rotazione asse Z"
+
+#: source/creator/panels/inspector.d:425
+msgid "Lock Rotation Z"
+msgstr "Blocca rotazione asse Z"
+
+#. Scaling portion of the transformation matrix.
+#: source/creator/panels/inspector.d:444
+msgid "Scale"
+msgstr "Scala"
+
+#: source/creator/panels/inspector.d:452
+msgid "Scale X"
+msgstr "Scala asse X"
+
+#: source/creator/panels/inspector.d:464
+msgid "Lock Scale X"
+msgstr "Blocca scala asse X"
+
+#: source/creator/panels/inspector.d:480
+msgid "Scale Y"
+msgstr "Scala asse Y"
+
+#: source/creator/panels/inspector.d:492
+msgid "Lock Scale Y"
+msgstr "Blocca scala asse Y"
+
+#. An option in which positions will be snapped to whole integer values.
+#. In other words texture will always be on a pixel.
+#: source/creator/panels/inspector.d:508 source/creator/panels/inspector.d:509
+#: source/creator/panels/inspector.d:514
+msgid "Snap to Pixel"
+msgstr "Aggancia al pixel"
+
+#. The main type of anything that can be drawn to the screen
+#. in Inochi2D.
+#: source/creator/panels/inspector.d:531 source/creator/panels/inspector.d:680
+msgid "Drawable"
+msgstr "Disegnabile"
+
+#. Switches Inochi Creator over to Mesh Edit mode
+#. and selects the mesh that you had selected previously
+#. in Model Edit mode.
+#: source/creator/panels/inspector.d:548
+msgid "Edit Mesh"
+msgstr "Modifica griglia"
+
+#: source/creator/panels/inspector.d:557 source/creator/panels/inspector.d:563
+msgid "Part"
+msgstr "Parte"
+
+#: source/creator/panels/inspector.d:559
+msgid "Cannot inspect an unmeshed part"
+msgstr "Impossibile ispezionare una parte senza griglia"
+
+#. Header for the Blending options for Parts
+#: source/creator/panels/inspector.d:571
+msgid "Blending"
+msgstr "Sfumatura"
+
+#. Normal blending mode as used in Photoshop, generally
+#. the default blending mode photoshop starts a layer out as.
+#: source/creator/panels/inspector.d:576
+msgid "Normal"
+msgstr "Normale"
+
+#. Multiply blending mode, in which this texture's color data
+#. will be multiplied with the color data already in the framebuffer.
+#: source/creator/panels/inspector.d:580
+msgid "Multiply"
+msgstr "Moltiplica"
+
+#: source/creator/panels/inspector.d:587
+msgid "Opacity"
+msgstr "Opacità"
+
+#: source/creator/panels/inspector.d:592
+msgid "Masks"
+msgstr "Maschere"
+
+#. The masking mode to apply if there's any source specified.
+#: source/creator/panels/inspector.d:596
+msgid "Mode"
+msgstr "Modalità"
+
+#. A masking mode where areas of this Part that overlap the other
+#. source drawables gets discarded
+#: source/creator/panels/inspector.d:597 source/creator/panels/inspector.d:607
+msgid "Dodge"
+msgstr ""
+
+#. A masking mode where only areas of this Part that overlap the other
+#. source drawables gets drawn
+#: source/creator/panels/inspector.d:597 source/creator/panels/inspector.d:601
+#: source/creator/panels/nodes.d:53
+msgid "Mask"
+msgstr "Maschera"
+
+#. Threshold slider name for adjusting how transparent a pixel can be
+#. before it gets discarded.
+#: source/creator/panels/inspector.d:617
+msgid "Threshold"
+msgstr "Soglia"
+
+#. The sources that the part gets masked by. Depending on the masking mode
+#. either the sources will cut out things that don't overlap, or cut out
+#. things that do.
+#: source/creator/panels/inspector.d:625
+msgid "Mask Sources"
+msgstr "Fonti maschera"
+
+#: source/creator/panels/inspector.d:688
+msgid "Triangulate"
+msgstr "Triangola"
+
+#: source/creator/panels/inspector.d:692
+msgid "Automatically connects vertices"
+msgstr "Connetti vertici automaticamente"
+
+#: source/creator/panels/inspector.d:703
+msgid "Apply"
+msgstr "Applica"
+
+#: source/creator/panels/inspector.d:714
+msgid "Cancel"
+msgstr "Annulla"
+
+#: source/creator/panels/logger.d:25
+msgid "Logger"
+msgstr "Log"
+
+#: source/creator/panels/nodes.d:41
+msgid "Add"
+msgstr "Aggiungi"
+
+#: source/creator/panels/nodes.d:47
+#, fuzzy
+msgid "Node"
+msgstr "Nodi"
+
+#: source/creator/panels/nodes.d:62
+msgid "PathDeform"
+msgstr "Deforma percorso"
+
+#. Option to hide the node (and subnodes)
+#: source/creator/panels/nodes.d:68
+msgid "Hide"
+msgstr "Nascondi"
+
+#. Option to show the node (and subnodes)
+#: source/creator/panels/nodes.d:68
+msgid "Show"
+msgstr "Mostra"
+
+#: source/creator/panels/nodes.d:72
+msgid "Delete"
+msgstr "Cancella"
+
+#: source/creator/panels/nodes.d:83
+msgid "More Info"
+msgstr "Più info"
+
+#. %s is the name of the node in the More Info menu
+#. %lu is the UUID of the node in the More Info menu
+#: source/creator/panels/nodes.d:89
+#, c-format
+msgid "%s ID: %lu"
+msgstr "%s ID: %lu"
+
+#. %lu is the UUID of the node in the More Info menu
+#: source/creator/panels/nodes.d:93
+#, c-format
+msgid "ID: %lu"
+msgstr "ID: %lu"
+
+#: source/creator/panels/nodes.d:310
+msgid "Nodes"
+msgstr "Nodi"
+
+#: source/creator/panels/parameters.d:63
+msgid "Parameters"
+msgstr "Parametri"
+
+#: source/creator/panels/textureslots.d:66
+msgid "Texture Slots"
+msgstr "Slot Texture"
+
+#. TODO: check if in model test mode
+#: source/creator/panels/tracking.d:31
+msgid "VMC Receiver"
+msgstr "Ricevitore VMC"
+
+#: source/creator/panels/tracking.d:33
+msgid "Port"
+msgstr "Porta"
+
+#: source/creator/panels/tracking.d:38
+msgid "OpenSeeFace Receiver"
+msgstr "Ricevitore OpenSeeFace"
+
+#: source/creator/panels/tracking.d:46
+msgid "Tracking"
+msgstr "Tracciamento"
+
+#: source/creator/panels/viewport.d:216
+msgid "Show/hide Vertices"
+msgstr "Mostra/nascondi vertici"
+
+#: source/creator/panels/viewport.d:224
+msgid "Show/hide Bounds"
+msgstr "Mostra/nascondi bordi"
+
+#: source/creator/panels/viewport.d:232
+msgid "Show/hide Orientation Gizmo"
+msgstr "Mostra/nascondi Gizmo orientamento"
+
+#: source/creator/panels/viewport.d:339
+msgid "Viewport"
+msgstr "Punto di vista"
+
+#: source/creator/utils/crashdump.d:51
+msgid ""
+"The application has unexpectedly crashed\n"
+"Please send the developers the inochi-creator-crashdump.txt which has been "
+"put on your desktop\n"
+"Via https://github.com/Inochi2D/inochi-creator/issues"
+msgstr ""
+"L' applicazione si è chiusa inaspettatamente\n"
+"Per favore, invia agli sviluppatori il file inochi-creator-crashdump.txt che "
+"è stato salvato sul desktop\n"
+"Attraverso https://github.com/Inochi2D/inochi-creator/issues"
+
+#: source/creator/utils/crashdump.d:52
+msgid "Inochi Creator Crashdump"
+msgstr "Crashdump di Inochi Creator"
+
+#: source/creator/utils/crashdump.d:60
+msgid ""
+"\n"
+"\n"
+"\n"
+"===   Inochi Creator has crashed   ===\n"
+"Please send us the inochi-creator-crashdump.txt file in your home folder\n"
+"Attach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/"
+"issues"
+msgstr ""
+"\n"
+"\n"
+"\n"
+"===   Inochi Creator si è chiuso inaspettatamente   ===\n"
+"Per favore, invia agli sviluppatori il file inochi-creator-crashdump.txt che "
+"è stato salvato nella cartella home\n"
+"Allega il file come un problema git @ https://github.com/Inochi2D/inochi-"
+"creator/issues"
+
+#: source/creator/widgets/mainmenu.d:44
+msgid "File"
+msgstr "File"
+
+#: source/creator/widgets/mainmenu.d:45
+msgid "New"
+msgstr "Nuovo"
+
+#: source/creator/widgets/mainmenu.d:49
+msgid "Open"
+msgstr "Apri"
+
+#. Save button
+#: source/creator/widgets/mainmenu.d:53 source/creator/windows/settings.d:114
+msgid "Save"
+msgstr "Salva"
+
+#: source/creator/widgets/mainmenu.d:56
+msgid "Save As..."
+msgstr "Salva come..."
+
+#: source/creator/widgets/mainmenu.d:59
+msgid "Import"
+msgstr "Importa"
+
+#: source/creator/widgets/mainmenu.d:60
+msgid "Import photoshop document"
+msgstr "Importa documento Photoshop"
+
+#: source/creator/widgets/mainmenu.d:61
+msgid "Photoshop Document"
+msgstr "Documento Photoshop"
+
+#: source/creator/widgets/mainmenu.d:66 source/creator/widgets/mainmenu.d:81
+msgid "Import..."
+msgstr "Importa..."
+
+#: source/creator/widgets/mainmenu.d:72
+msgid "Import a standard Photoshop PSD file."
+msgstr "Importa uno standard file PSD di Photoshop."
+
+#. This is only really useful for testing
+#. debug {
+#: source/creator/widgets/mainmenu.d:76
+msgid "Inochi2D Puppet"
+msgstr "Pupazzo Inochi2D"
+
+#: source/creator/widgets/mainmenu.d:87
+msgid "Import existing puppet file"
+msgstr "Importa file pupazzo esistente"
+
+#. }
+#: source/creator/widgets/mainmenu.d:90
+msgid "Image Folder"
+msgstr "Cartella immagine"
+
+#: source/creator/widgets/mainmenu.d:91
+msgid "Select a Folder..."
+msgstr "Seleziona una cartella..."
+
+#: source/creator/widgets/mainmenu.d:96
+msgid "Supports PNGs, TGAs and JPEGs."
+msgstr "Supporta file PNG, TGA e JPEG."
+
+#: source/creator/widgets/mainmenu.d:99
+msgid "Export"
+msgstr "Esporta"
+
+#: source/creator/widgets/mainmenu.d:100
+msgid "Inochi Puppet"
+msgstr "Pupazzo Inochi"
+
+#: source/creator/widgets/mainmenu.d:107 source/creator/widgets/mainmenu.d:192
+msgid "Export..."
+msgstr "Esporta..."
+
+#: source/creator/widgets/mainmenu.d:121
+msgid "Quit"
+msgstr "Esci"
+
+#: source/creator/widgets/mainmenu.d:125
+msgid "Edit"
+msgstr "Modifica"
+
+#: source/creator/widgets/mainmenu.d:126
+msgid "Undo"
+msgstr "Annulla"
+
+#: source/creator/widgets/mainmenu.d:127
+msgid "Redo"
+msgstr "Rifai"
+
+#: source/creator/widgets/mainmenu.d:130
+msgid "Cut"
+msgstr "Taglia"
+
+#: source/creator/widgets/mainmenu.d:131
+msgid "Copy"
+msgstr "Copia"
+
+#: source/creator/widgets/mainmenu.d:132
+msgid "Paste"
+msgstr "Incolla"
+
+#: source/creator/widgets/mainmenu.d:135 source/creator/windows/settings.d:130
+msgid "Settings"
+msgstr "Impostazioni"
+
+#: source/creator/widgets/mainmenu.d:146
+msgid "Style Editor"
+msgstr "Editore stile"
+
+#: source/creator/widgets/mainmenu.d:147
+msgid "ImGui Debugger"
+msgstr "Debugger ImGui"
+
+#: source/creator/widgets/mainmenu.d:152
+msgid "View"
+msgstr "Visualizza"
+
+#: source/creator/widgets/mainmenu.d:153
+msgid "Reset Layout"
+msgstr "Ripristina la disposizione"
+
+#: source/creator/widgets/mainmenu.d:185
+msgid "Save Screenshot"
+msgstr "Salva screenshot"
+
+#: source/creator/widgets/mainmenu.d:217
+msgid "Saves screenshot as PNG of the editor framebuffer."
+msgstr "Salva screenshot in formato PNG del framebuffer dell' editor."
+
+#: source/creator/widgets/mainmenu.d:219
+msgid "Show Stats for Nerds"
+msgstr "Mostra statistiche per Nerd"
+
+#: source/creator/widgets/mainmenu.d:227
+msgid "Tools"
+msgstr "Strumenti"
+
+#: source/creator/widgets/mainmenu.d:232
+msgid "Rebleed textures..."
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:236
+msgid "Generate Mipmaps..."
+msgstr "Genera minimappe..."
+
+#: source/creator/widgets/mainmenu.d:239
+msgid ""
+"In some instances mipmaps may need to be re-generated.\n"
+"For example PSD imports will need their mipmaps regenerated."
+msgstr ""
+"In alcune istanze le minimappe devono essere rigenerate\n"
+"Per esempio gli l' importo di file PSD ha bisogno di rigenerare le minimappe."
+
+#. FULL REPAIR
+#: source/creator/widgets/mainmenu.d:249
+msgid "Attempt full repair..."
+msgstr "Prova riparazione completa..."
+
+#: source/creator/widgets/mainmenu.d:252
+msgid ""
+"Attempts all the recovery and repair methods below on the currently loaded "
+"model"
+msgstr ""
+"Prova tutti i metodi di recupero e riparazione sul modello corrente"
+
+#. REGEN NODE IDs
+#: source/creator/widgets/mainmenu.d:255
+msgid "Regenerate Node IDs"
+msgstr "Rigenera ID nodi"
+
+#: source/creator/widgets/mainmenu.d:259
+msgid "Regenerates all the unique IDs for the model"
+msgstr "Rigenera tutti gli ID unici per il modello"
+
+#. Premultiply textures
+#: source/creator/widgets/mainmenu.d:262
+msgid "Premultiply textures"
+msgstr "Pre-moltiplica le texture"
+
+#: source/creator/widgets/mainmenu.d:266
+msgid "Premultiplies textures"
+msgstr "Pre-moltiplica "
+
+#: source/creator/widgets/mainmenu.d:272
+msgid "Verify INP File..."
+msgstr "Verifica file INP..."
+
+#: source/creator/widgets/mainmenu.d:275
+msgid "Attempts to verify and repair INP files"
+msgstr "Prova a verificare e riparare file IMP"
+
+#: source/creator/widgets/mainmenu.d:280
+msgid "Help"
+msgstr "Aiuto"
+
+#: source/creator/widgets/mainmenu.d:282
+msgid "Tutorial"
+msgstr "Guida"
+
+#: source/creator/widgets/mainmenu.d:285
+msgid "Online Documentation"
+msgstr "Documentazione online"
+
+#: source/creator/widgets/mainmenu.d:289
+msgid "Inochi2D Documentation"
+msgstr "Documentazione Inochi2D"
+
+#: source/creator/widgets/mainmenu.d:294 source/creator/windows/about.d:91
+msgid "About"
+msgstr "Informazioni su"
+
+#. Donate button
+#. NOTE: Is this too obstructive in the UI?
+#: source/creator/widgets/mainmenu.d:304 source/creator/widgets/mainmenu.d:320
+msgid "Donate"
+msgstr "Dona"
+
+#: source/creator/widgets/mainmenu.d:323
+msgid "Support development via Patreon"
+msgstr "Supporta lo sviluppo via Patreon"
+
+#: source/creator/widgets/titlebar.d:107
+msgid " (Debug Mode)"
+msgstr " (Modalità Debug)"
+
+#. A call for the human rights of transgender people to be respected
+#. it is shown in the custom titlebar every transgender awareness month.
+#: source/creator/widgets/titlebar.d:124
+msgid "Trans Rights!"
+msgstr "Diritti Trans!"
+
+#: source/creator/windows/notice.d:51
+msgid "THIS IS BETA SOFTWARE!"
+msgstr "QUESTO E SOFTWARE BETA!"
+
+#: source/creator/windows/notice.d:54
+msgid ""
+"Inochi2D and Inochi Creator is currently under heavy development\n"
+"Using Inochi Creator in production is not advised, it *will* crash\n"
+"out of nowhere and there's still plenty of bugs to fix.\n"
+"\n"
+"The Inochi2D project is not to be held liable for broken\n"
+"puppet files or crashes resulting from using this beta \n"
+"software.\n"
+"\n"
+"If you accept this press the \"Close\" button to continue"
+msgstr ""
+"Inochi2D e Inochi Creator sono sotto pesante sviluppo\n"
+"Usare Inochi Creator in produzione non è consigliato, *si chiuderà\n"
+"inaspettatamente e ci sono un sacco di problemi da risolvere.\n"
+"\n"
+"Il progetto Inochi2D non è responsabile per file\n"
+"pupazzo rotti o chiusure inaspettate risultate dall' utilizzo di questo "
+"software \n"
+"beta.\n"
+"\n"
+"Se accetti premi il tasto\"Chiudi\" per continuare"
+
+#: source/creator/windows/notice.d:58
+msgid "Don't show again"
+msgstr "Non mostrare di nuovo"
+
+#: source/creator/windows/notice.d:62
+msgid "Close"
+msgstr "Chiudi"
+
+#: source/creator/windows/notice.d:70
+msgid "Under Construction"
+msgstr "In costruzione"
+
+#: source/creator/windows/settings.d:41
+#, fuzzy
+msgid "General"
+msgstr "Informazioni Generali"
+
+#: source/creator/windows/settings.d:43
+msgid "Look and Feel"
+msgstr ""
+
+#: source/creator/windows/settings.d:45
+msgid "Color Theme"
+msgstr "Tema"
+
+#: source/creator/windows/settings.d:45 source/creator/windows/settings.d:46
+msgid "Dark"
+msgstr "Scuro"
+
+#: source/creator/windows/settings.d:45 source/creator/windows/settings.d:47
+msgid "Light"
+msgstr "Chiaro"
+
+#: source/creator/windows/settings.d:53
+msgid "Language"
+msgstr "Lingua"
+
+#: source/creator/windows/settings.d:61
+msgid "UI Scale (EXPERIMENTAL)"
+msgstr "Scala interfaccia utente (SPERIMENTALE)"
+
+#: source/creator/windows/settings.d:71
+msgid "Use Native Titlebar"
+msgstr "Usa barra del titolo nativa"
+
+#: source/creator/windows/settings.d:85
+msgid "Max Undo History"
+msgstr "Dimensione cronologia passaggi"
+
+#: source/creator/windows/settings.d:94
+msgid "Accessibility"
+msgstr "Accessibilità"
+
+#: source/creator/windows/settings.d:102
+msgid "Other"
+msgstr "Altro"
+
+#: source/creator/windows/texviewer.d:46
+msgid "Texture Viewer"
+msgstr "Visualizzatore texture"
