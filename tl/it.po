@@ -504,9 +504,8 @@ msgstr "Parametri"
 #. in the Tracking settings panel
 #: source/creator/panels/tracking.d:32
 #, fuzzy
-# In italian the order is reversed, so "<x> Receiver" becomes "Ricevitore <x>". Not translatable at the moment.
-msgid " Receiver"
-msgstr ""
+msgid "%s Receiver"
+msgstr "Ricevitore %s"
 
 #: source/creator/panels/tracking.d:59
 msgid "A reciever which uses your phone and associated app to track your body"
