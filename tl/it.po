@@ -93,7 +93,7 @@ msgstr "Parametro"
 
 #: source/creator/windows/trkbind.d:61
 msgid "Bind To"
-msgstr ""
+msgstr "Lega a"
 
 #: source/creator/windows/trkbind.d:82
 msgid "Bone Input"
@@ -132,15 +132,16 @@ msgstr "Rotazione asse Z"
 #: source/creator/windows/trkbind.d:94
 #, fuzzy
 msgid "Binding Axis"
-msgstr ""
+msgstr "Asse di Legamento"
 
 #: source/creator/windows/trkbind.d:110 source/creator/panels/parameters.d:184
 msgid "Invert"
 msgstr "Inverti"
 
 #: source/creator/windows/trkbind.d:114
+# This is not really a good way to do this but i couldn't find any better ones
 msgid "Refresh Bindable"
-msgstr ""
+msgstr "Ricarica Legabile"
 
 #. Title for the parameter properties window.
 #: source/creator/windows/trkbind.d:143
@@ -159,8 +160,9 @@ msgstr "Annulla"
 #. Keypoints show up on every intersecting axis line.
 #: source/creator/windows/paramaxes.d:189
 #, fuzzy
+# This is really unclear in italian, but i couldn't find a better way to translate it
 msgid "Parameter Axes Points"
-msgstr ""
+msgstr "Parametro Punti Assi"
 
 #. Donate button
 #. NOTE: Is this too obstructive in the UI?
@@ -208,7 +210,7 @@ msgstr "Usa barra del titolo nativa"
 
 #: source/creator/windows/settings.d:79
 msgid "Disable Compositor"
-msgstr ""
+msgstr "Disattiva Compositor"
 
 #: source/creator/windows/settings.d:88
 #, fuzzy
@@ -433,8 +435,9 @@ msgid "Flip"
 msgstr "Capovolgi"
 
 #: source/creator/panels/parameters.d:511
+# Could also translate to "Ricarica Automatica a Specchio", but the english word "Autofill" is also very used and a better fit here.
 msgid "Mirrored Autofill"
-msgstr ""
+msgstr "Autofill a Specchio"
 
 #: source/creator/panels/parameters.d:512
 msgid ""
@@ -509,16 +512,17 @@ msgstr "Ricevitore %s"
 
 #: source/creator/panels/tracking.d:59
 msgid "A reciever which uses your phone and associated app to track your body"
-msgstr ""
+msgstr "Un ricevitore che usa il tuo telefono e app associata per tracciare il tuo corpo"
 
 #: source/creator/panels/tracking.d:63
 msgid "Bind Address"
-msgstr ""
+msgstr "Lega Indirizzo"
 
 #: source/creator/panels/tracking.d:72
 msgid ""
 "The IP address that the VMC binding server should listen on, default 0.0.0.0"
 msgstr ""
+"L' indirizzo IP dove server VMC deve ascoltare, predefinito 0.0.0.0"
 
 #: source/creator/panels/tracking.d:75
 msgid "Port"
@@ -526,11 +530,11 @@ msgstr "Porta"
 
 #: source/creator/panels/tracking.d:84
 msgid "The port that the VMC binding server should listen on, default 39540"
-msgstr "La porta su cui il server VMC deve ascoltare, predefinita 39540"
+msgstr "La porta dove il server VMC deve ascoltare, predefinita 39540"
 
 #: source/creator/panels/tracking.d:87
 msgid "A reciever which uses the VTubeStudio iOS app"
-msgstr "Un rivevitore che usa l' iOS app VTubeStudio"
+msgstr "Un ricevitore che usa l' iOS app VTubeStudio"
 
 #: source/creator/panels/tracking.d:90
 msgid "iPhone IP"
@@ -603,6 +607,7 @@ msgid "Artists who've drawn the puppet, seperated by comma"
 msgstr "Artisti che hanno disegnato il pupazzo, separati con una virgola"
 
 #: source/creator/panels/inspector.d:222
+# In italian, "Rigger" => "Rigattiere", but that word isn't used and more people use the english word instead.
 msgid "Rigger(s)"
 msgstr "Rigger(s)"
 
@@ -943,8 +948,9 @@ msgid "Damping"
 msgstr ""
 
 #: source/creator/panels/inspector.d:960
+# Could also be "Scala di Uscita", but as i said many times here, in italian lots of english words are used, and this is a better fit.
 msgid "Output scale"
-msgstr ""
+msgstr "Scala di Output"
 
 #: source/creator/panels/inspector.d:1274
 msgid "Apply"
@@ -973,7 +979,7 @@ msgstr "Cronologia"
 #: source/creator/panels/toolsettings.d:31
 #, fuzzy
 msgid "Tool Settings"
-msgstr "Impostazioni"
+msgstr "Impostazioni Strumento"
 
 #: source/creator/panels/textureslots.d:66
 msgid "Texture Slots"
@@ -1020,11 +1026,11 @@ msgstr ""
 
 #: source/creator/widgets/toolbar.d:35
 msgid "Enable physics"
-msgstr ""
+msgstr "Attiva Fisica"
 
 #: source/creator/widgets/toolbar.d:40
 msgid "Reset physics"
-msgstr ""
+msgstr "Ripristina Fisica"
 
 #: source/creator/widgets/toolbar.d:60
 #, fuzzy
@@ -1043,7 +1049,7 @@ msgstr "Pupazzo"
 #: source/creator/widgets/mainmenu.d:36
 #, fuzzy
 msgid "Open..."
-msgstr "Apri"
+msgstr "Apri..."
 
 #: source/creator/widgets/mainmenu.d:55
 #, fuzzy
@@ -1068,7 +1074,7 @@ msgstr "Apri"
 
 #: source/creator/widgets/mainmenu.d:109
 msgid "Recent"
-msgstr ""
+msgstr "Recenti"
 
 #: source/creator/widgets/mainmenu.d:128
 msgid "Import"
@@ -1225,7 +1231,7 @@ msgstr "Genera minimappe..."
 
 #: source/creator/widgets/mainmenu.d:310
 msgid "Regenerates the puppet's mipmaps."
-msgstr ""
+msgstr "Rigenera le mipmap del pupazzo."
 
 #: source/creator/widgets/mainmenu.d:316
 msgid "Puppet Recovery"
