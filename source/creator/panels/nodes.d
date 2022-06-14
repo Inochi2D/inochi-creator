@@ -98,12 +98,12 @@ protected:
                         foreach(sn; selected) {
                             
                             // %s is the name of the node in the More Info menu
-                            // %lu is the UUID of the node in the More Info menu
-                            incText(_("%s ID: %lu").format(sn.name.ptr, sn.uuid));
+                            // %u is the UUID of the node in the More Info menu
+                            incText(_("%s ID: %u").format(sn.name.ptr, sn.uuid));
                         }
                     } else {
                         // %lu is the UUID of the node in the More Info menu
-                        incText(_("ID: %lu").format(n.uuid));
+                        incText(_("ID: %u").format(n.uuid));
                     }
 
                     igEndMenu();
