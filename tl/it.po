@@ -420,7 +420,7 @@ msgstr "Modifica Proprietà"
 
 #: source/creator/panels/parameters.d:484
 msgid "Edit Axes Points"
-msgstr ""
+msgstr "Modifica punti degli assi"
 
 #: source/creator/panels/parameters.d:489
 msgid "Flip X"
@@ -613,7 +613,7 @@ msgstr "Rigger(s)"
 
 #: source/creator/panels/inspector.d:223
 msgid "Riggers who've rigged the puppet, seperated by comma"
-msgstr ""
+msgstr "Riggers che hanno truccato il pupazzo, separati da virgola"
 
 #: source/creator/panels/inspector.d:229
 msgid "Contact"
@@ -824,13 +824,14 @@ msgstr "Moltiplica"
 #. Color Dodge blending mode
 #: source/creator/panels/inspector.d:688 source/creator/panels/inspector.d:838
 #, fuzzy
+# Sounds weird but there's no other way
 msgid "Color Dodge"
-msgstr "Tema"
+msgstr "Fuga Colore"
 
 #. Linear Dodge blending mode
 #: source/creator/panels/inspector.d:691 source/creator/panels/inspector.d:841
 msgid "Linear Dodge"
-msgstr ""
+msgstr "Fuga Lineare"
 
 #. Screen blending mode
 #: source/creator/panels/inspector.d:694 source/creator/panels/inspector.d:844
@@ -839,19 +840,22 @@ msgstr "Schermo"
 
 #. Clip to Lower blending mode
 #: source/creator/panels/inspector.d:697
+# Also sounds very weird, but there's no other way i found
 msgid "Clip to Lower"
-msgstr ""
+msgstr "Clip per Abbassare"
 
 #: source/creator/panels/inspector.d:698
 msgid ""
 "Special blending mode that causes (while respecting transparency) the part "
 "to be clipped to everything underneath"
 msgstr ""
+"Modalità di sfumatura speciale che fa sì che (rispettando la trasparenza) la parte"
+"venga ritagliata su tutto ciò che sta sotto."
 
 #. Slice from Lower blending mode
 #: source/creator/panels/inspector.d:701
 msgid "Slice from Lower"
-msgstr ""
+msgstr "Ritaglia dal basso"
 
 #: source/creator/panels/inspector.d:702
 msgid ""
@@ -859,6 +863,9 @@ msgid ""
 "to be slice by everything underneath.\n"
 "Basically reverse Clip to Lower."
 msgstr ""
+"Modalità di sfumatura speciale che fa sì che (rispettando la trasparenza) la parte"
+"venga ritagliata da tutto ciò che sta sotto\n"
+"Essenzialmente l' opposto di Clip per Abbassare"
 
 #: source/creator/panels/inspector.d:709 source/creator/panels/inspector.d:851
 #: source/creator/panels/inspector.d:1197
@@ -890,25 +897,25 @@ msgstr "Modalità"
 
 #: source/creator/panels/inspector.d:735
 msgid "Dodge"
-msgstr ""
+msgstr "Fuga"
 
 #: source/creator/panels/inspector.d:752
 #, fuzzy, c-format
 msgid "%s (Mask)"
-msgstr "Maschera"
+msgstr "%s (Maschera)"
 
 #: source/creator/panels/inspector.d:753
 #, c-format
 msgid "%s (Dodge)"
-msgstr ""
+msgstr "%s (Fuga)"
 
 #: source/creator/panels/inspector.d:872
 msgid "SimplePhysics"
-msgstr ""
+msgstr "Fisica Semplice"
 
 #: source/creator/panels/inspector.d:885
 msgid "(unassigned)"
-msgstr ""
+msgstr "(non assegnato)"
 
 #: source/creator/panels/inspector.d:901
 msgid "Type"
@@ -920,19 +927,19 @@ msgstr "Pendolo"
 
 #: source/creator/panels/inspector.d:906
 msgid "SpringPendulum"
-msgstr ""
+msgstr "Pendolo a molla"
 
 #: source/creator/panels/inspector.d:913
 msgid "Mapping mode"
-msgstr ""
+msgstr "Modalità di mappatura"
 
 #: source/creator/panels/inspector.d:916
 msgid "AngleLength"
-msgstr ""
+msgstr "Lunghezza Angolo"
 
 #: source/creator/panels/inspector.d:918
 msgid "XY"
-msgstr ""
+msgstr "XY"
 
 #: source/creator/panels/inspector.d:928
 msgid "Gravity scale"
@@ -948,7 +955,7 @@ msgstr "Frequenza di risonanza"
 
 #: source/creator/panels/inspector.d:949
 msgid "Damping"
-msgstr ""
+msgstr "Ammortizzazione"
 
 #: source/creator/panels/inspector.d:960
 # Could also be "Scala di Uscita", but as i said many times here, in italian lots of english words are used, and this is a better fit.
@@ -1215,6 +1222,10 @@ msgid ""
 "Only use this if your textures look garbled after importing files from an "
 "older version of Inochi Creator."
 msgstr ""
+"Premoltiplica le texture per la loro componente alfa.\n"
+"\n"
+"Da usare solo se le texture appaiono confuse dopo l'importazione di file da una "
+"vecchia versione di Inochi Creator".
 
 #: source/creator/widgets/mainmenu.d:302
 msgid "Bleed textures..."
@@ -1227,10 +1238,14 @@ msgid ""
 "\n"
 "Only use this if your game engine can't use premultiplied alpha."
 msgstr ""
+"Provoca la fuoriuscita del colore in pixel completamente trasparenti, questo risolve "
+"i contorni del compositing alfa diretto.\n"
+"\n"
+"Da usare solo se il motore di gioco non può usare la componente alfa premoltiplicata".
 
 #: source/creator/widgets/mainmenu.d:307
 msgid "Generate Mipmaps..."
-msgstr "Genera minimappe..."
+msgstr "Genera Mipmap..."
 
 #: source/creator/widgets/mainmenu.d:310
 msgid "Regenerates the puppet's mipmaps."
@@ -1249,8 +1264,9 @@ msgstr "Prova riparazione completa..."
 msgid ""
 "Attempts all the recovery and repair methods below on the currently loaded "
 "model"
-msgstr "Prova tutti i metodi di recupero e riparazione sul modello corrente"
-
+msgstr ""
+"Prova tutti i metodi di recupero e riparazione indicati sotto sul modello "
+"corrente"
 #. REGEN NODE IDs
 #: source/creator/widgets/mainmenu.d:326
 msgid "Regenerate Node IDs"
