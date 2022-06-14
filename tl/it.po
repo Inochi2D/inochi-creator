@@ -1225,7 +1225,7 @@ msgstr ""
 "Premoltiplica le texture per la loro componente alfa.\n"
 "\n"
 "Da usare solo se le texture appaiono confuse dopo l'importazione di file da una "
-"vecchia versione di Inochi Creator".
+"vecchia versione di Inochi Creator."
 
 #: source/creator/widgets/mainmenu.d:302
 msgid "Bleed textures..."
@@ -1241,7 +1241,7 @@ msgstr ""
 "Provoca la fuoriuscita del colore in pixel completamente trasparenti, questo risolve "
 "i contorni del compositing alfa diretto.\n"
 "\n"
-"Da usare solo se il motore di gioco non può usare la componente alfa premoltiplicata".
+"Da usare solo se il motore di gioco non può usare la componente alfa premoltiplicata."
 
 #: source/creator/widgets/mainmenu.d:307
 msgid "Generate Mipmaps..."
