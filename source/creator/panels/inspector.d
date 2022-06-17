@@ -699,6 +699,10 @@ void incInspectorModelPart(Part node) {
     // things that do.
     incText(_("Mask Sources"));
     if (igBeginListBox("###MaskSources", ImVec2(0, 128))) {
+        if (node.masks.length == 0) {
+            incText(_("(Drag a Part or Mask Here)"));
+        }
+
         foreach(i; 0..node.masks.length) {
             MaskBinding* masker = &node.masks[i];
             igPushID(cast(int)i);
