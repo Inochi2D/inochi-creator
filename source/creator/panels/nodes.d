@@ -131,8 +131,10 @@ protected:
         flags |= ImGuiTreeNodeFlags.DefaultOpen;
         flags |= ImGuiTreeNodeFlags.OpenOnArrow;
 
+
         // Then draw the node tree index
         igTableSetColumnIndex(0);
+        igSetNextItemWidth(8);
         bool open = igTreeNodeEx(cast(void*)n.uuid, flags, "");
 
             // Show node entry stuff
@@ -142,34 +144,41 @@ protected:
             igPushID(n.uuid);
                     bool selected = incNodeInSelection(n);
 
-                    igPushFont(incIconFont());
+                    igBeginGroup();
+                        igIndent(4);
+
+                        // Type Icon
                         static if (!isRoot) {
                             if (n.enabled) incText(incTypeIdToIcon(n.typeId));
                             else incTextDisabled(incTypeIdToIcon(n.typeId));
+                            if (igIsItemClicked()) {
+                                n.enabled = !n.enabled;
+                            }
                         } else {
                             incText("");
                         }
-                    igPopFont();
-                    igSameLine(0, 2);
+                        igSameLine(0, 2);
 
-                    if (igSelectable(isRoot ? __("Puppet") : n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
-                        switch(incEditMode) {
-                            default:
-                                if (selected) {
-                                    if (incSelectedNodes().length > 1) {
-                                        if (io.KeyCtrl) incRemoveSelectNode(n);
-                                        else incSelectNode(n);
+                        // Selectable
+                        if (igSelectable(isRoot ? __("Puppet") : n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
+                            switch(incEditMode) {
+                                default:
+                                    if (selected) {
+                                        if (incSelectedNodes().length > 1) {
+                                            if (io.KeyCtrl) incRemoveSelectNode(n);
+                                            else incSelectNode(n);
+                                        } else {
+                                            incFocusCamera(n);
+                                        }
                                     } else {
-                                        incFocusCamera(n);
+                                        if (io.KeyCtrl) incAddSelectNode(n);
+                                        else incSelectNode(n);
                                     }
-                                } else {
-                                    if (io.KeyCtrl) incAddSelectNode(n);
-                                    else incSelectNode(n);
-                                }
-                                break;
+                                    break;
+                            }
                         }
-                    }
-                    this.nodeActionsPopup!isRoot(n);
+                        this.nodeActionsPopup!isRoot(n);
+                    igEndGroup();
 
                     static if (!isRoot) {
                         if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
@@ -268,7 +277,9 @@ protected:
                 //igTableSetupColumn("Visibility", ImGuiTableColumnFlags_WidthFixed, 32, 1);
                 
                 if (incEditMode == EditMode.ModelEdit) {
-                    treeAddNode!true(incActivePuppet.root);
+                    igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(4, 4));
+                        treeAddNode!true(incActivePuppet.root);
+                    igPopStyleVar();
                 }
 
                 igEndTable();
