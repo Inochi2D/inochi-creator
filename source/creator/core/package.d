@@ -27,7 +27,7 @@ public import bindbc.imgui;
 public import bindbc.imgui.ogl;
 public import creator.core.settings;
 public import creator.core.actionstack;
-public import creator.core.taskstack;
+public import creator.core.tasks;
 public import creator.core.path;
 public import creator.core.font;
 import i18n;
@@ -409,6 +409,7 @@ void incBeginLoopNoEv() {
     }
 
     incRenderDialogs();
+    incStatusUpdate();
 }
 
 void incSetDefaultLayout() {
