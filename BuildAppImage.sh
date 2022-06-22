@@ -3,8 +3,7 @@ cd build
 
 mkdir inochi-creator.AppDir
 cd inochi-creator.AppDir
-mkdir usr
-mkdir usr/bin
+mkdir -p usr/bin
 cp ../../out/inochi-creator usr/bin/inochi-creator
 cp ../../out/*.mo ./
 cp ../../res/logo_256.png logo_256.png
