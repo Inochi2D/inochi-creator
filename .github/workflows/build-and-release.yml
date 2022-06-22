@@ -68,6 +68,11 @@ jobs:
     - name: "Get build dependencies"
       run: |
         sudo apt install libsdl2-dev libfreetype6-dev gettext
+
+    - name: 'Generate i18n'
+      run: |
+        sudo chmod +x gentl.sh
+        ./gentl.sh
       
     - name: "Clone dependencies & set versions"
       run: |
