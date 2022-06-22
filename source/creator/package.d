@@ -168,6 +168,8 @@ void incOpenProject(string path) {
     incActiveProject().puppet = puppet;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
+
+    incSetStatus(_("%s opened successfully.").format(currProjectPath));
 }
 
 void incSaveProject(string path) {
@@ -182,7 +184,10 @@ void incSaveProject(string path) {
 
         // Write the puppet to file
         inWriteINPPuppet(incActivePuppet(), finalPath);
+
+        incSetStatus(_("%s saved successfully.").format(currProjectPath));
     } catch(Exception ex) {
+        incSetStatus(_("Failed to save %s").format(currProjectPath));
         incDialog(__("Error"), ex.msg);
     }
 }
@@ -226,6 +231,10 @@ void incImportFolder(string folder) {
     incActiveProject().puppet = puppet;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
+
+    if (failedFiles.length > 0) incSetStatus(_("Folder import completed with errors..."));
+    else incSetStatus(_("Folder import completed..."));
+    
 }
 
 /**
@@ -338,7 +347,11 @@ void incImportPSD(string file) {
         puppet.populateTextureSlots();
         incActiveProject().puppet = puppet;
         incFocusCamera(incActivePuppet().root);
+
+        incSetStatus(_("%s was imported...".format(file)));
     } catch (Exception ex) {
+
+        incSetStatus(_("Import failed..."));
         incDialog(__("Error"), _("An error occured during PSD import:\n%s").format(ex.msg));
     }
     incFreeMemory();
@@ -351,9 +364,13 @@ void incImportINP(string file) {
     incNewProject();
     Puppet puppet;
     try {
+
         puppet = inLoadPuppet(file);
+        incSetStatus(_("%s was imported...".format(file)));
     } catch(Exception ex) {
+        
         incDialog(__("Error"), ex.msg);
+        incSetStatus(_("Import failed..."));
         return;
     }
     incActiveProject().puppet = puppet;
@@ -368,15 +385,18 @@ void incExportINP(string file) {
     import std.path : setExtension;
     try {
 
+        string oFile = file.setExtension(".inp");
         // Remember to populate texture slots otherwise things will break real bad!
         incActivePuppet().populateTextureSlots();
 
         // TODO: Generate optimized puppet from this puppet.
 
         // Write the puppet to file
-        inWriteINPPuppet(incActivePuppet(), file.setExtension(".inp"));
+        inWriteINPPuppet(incActivePuppet(), oFile);
+        incSetStatus(_("%s was exported...".format(oFile)));
     } catch(Exception ex) {
         incDialog(__("Error"), ex.msg);
+        incSetStatus(_("Export failed..."));
         return;
     }
 
@@ -389,6 +409,7 @@ void incRegenerateMipmaps() {
         texture.genMipmap();
         texture.setFiltering(Filtering.Linear);
     }
+    incSetStatus(_("Mipmap generation completed."));
 }
 
 /**
@@ -403,6 +424,7 @@ void incRebleedTextures() {
             incColorBleedPixels(texture);
         }
     });
+    incSetStatus(_("Texture bleeding completed."));
 }
 
 /**
