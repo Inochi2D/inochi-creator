@@ -33,7 +33,15 @@ void incStatusbar() {
                 }
 
                 incText(incTaskGetStatus());
+
+                if (incGetStatus().length > 0) {
+                    igSpacing();
+                    igSeparator();
+                    igSpacing();
+                }
             }
+            
+            incText(incGetStatus());
             
             igEndMenuBar();
         }
