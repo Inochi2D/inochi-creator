@@ -12,8 +12,7 @@ cp ../../LICENSE usr/bin/LICENSE
 
 
 # Make sure to chmod stuff
-chmod a+x AppRun
-chmod a+x usr/bin/inochi-creator
+chmod a+x AppRun usr/bin/inochi-creator
 
 cd ..
 
