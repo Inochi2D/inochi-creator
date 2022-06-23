@@ -9,7 +9,6 @@
 ### UX Designer
   [Nethyr_UX](https://twitter.com/Nethyr_UX)
 
-
 ## Designers
 ### Inochi2D Logo
   [James Daniel](https://twitter.com/rakujira) 
@@ -18,6 +17,8 @@
   [Asahi Lina](https://twitter.com/LinaAsahi)
   [seagetch](https://twitter.com/seagetch)
   [carbotaniuman](https://github.com/carbotaniuman)
+  [Grillo](https://github.com/grillo-delmal)
+  [Aki-nyan](https://twitter.com/lethalbit)
 
 ## Mascot
 ### Mascot Design
