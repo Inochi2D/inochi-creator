@@ -8,6 +8,7 @@ module creator.windows.about;
 import creator.widgets.dummy;
 import creator.widgets.tooltip;
 import creator.widgets.label;
+import creator.widgets.markdown;
 import creator.windows;
 import creator.core;
 import creator;
@@ -25,6 +26,7 @@ private:
         enum ADA_SIZE_PARTIAL = ADA_SIZE/6;
         vec2 ada_float;
     }
+    MarkdownConfig cfg;
 
 protected:
     override
@@ -91,9 +93,13 @@ protected:
         }
         igEndChild();
 
-        if (igBeginChild("##CreditsArea", ImVec2(0, -28*incGetUIScale()))) {
-            incText(import("CONTRIBUTORS.md"));
-        }
+        igPushStyleColor(ImGuiCol.Button, ImVec4(0.984, 0.752, 0.576, 1));
+        igPushStyleColor(ImGuiCol.ButtonHovered, ImVec4(1, 0.852, 0.676, 1));
+            if (igBeginChild("##CreditsArea", ImVec2(0, -28*incGetUIScale()))) {
+                incMarkdown(import("CONTRIBUTORS.md"), cfg);
+            }
+        igPopStyleColor();
+        igPopStyleColor();
         igEndChild();
 
         if (igBeginChild("##ButtonArea", ImVec2(0, 0))) {
@@ -131,6 +137,13 @@ public:
     this() {
         super(_("About"));
         this.onlyOne = true;
+
+        cfg.headingFormats[0] = MarkdownHeadingFormat(2, true);
+        cfg.headingFormats[1] = MarkdownHeadingFormat(1.5, false);
+        cfg.headingFormats[2] = MarkdownHeadingFormat(1.2, false);
+        cfg.linkCallback = (MarkdownLinkCallbackData data) {
+            incOpenLink(data.link);
+        };
 
         // Only load Ada in official builds
         version(InBranding) {
