@@ -637,8 +637,11 @@ void incInspectorModelPart(Part node) {
     igSpacing();
     igSpacing();
 
-    incText(_("Tint"));
+    incText(_("Tint (Multiply)"));
     igColorEdit3("###TINT", cast(float[3]*)node.tint.ptr);
+
+    incText(_("Tint (Screen)"));
+    igColorEdit3("###S_TINT", cast(float[3]*)node.screenTint.ptr);
 
     // Padding
     igSeparator();
@@ -796,8 +799,11 @@ void incInspectorModelComposite(Composite node) {
     import std.string : toStringz;
 
 
-    incText(_("Tint"));
+    incText(_("Tint (Multiply)"));
     igColorEdit3("###TINT", cast(float[3]*)node.tint.ptr);
+
+    incText(_("Tint (Screen)"));
+    igColorEdit3("###S_TINT", cast(float[3]*)node.screenTint.ptr);
 
     // Header for the Blending options for Parts
     incText(_("Blending"));
@@ -1159,9 +1165,12 @@ void incInspectorDeformPart(Part node, Parameter param, vec2u cursor) {
             // Header for texture options    
             if (igCollapsingHeader(__("Textures")))  {
 
-                incText(_("Tint"));
+                incText(_("Tint (Multiply)"));
 
                 incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
+
+                incText(_("Tint (Screen)"));
+                incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
 
                 // Padding
                 igSeparator();
@@ -1191,9 +1200,13 @@ void incInspectorDeformComposite(Composite node, Parameter param, vec2u cursor) 
             // Header for texture options    
             if (igCollapsingHeader(__("Textures")))  {
 
-                incText(_("Tint"));
+                incText(_("Tint (Multiply)"));
 
                 incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
+
+                incText(_("Tint (Screen)"));
+
+                incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
 
                 // Padding
                 igSeparator();
