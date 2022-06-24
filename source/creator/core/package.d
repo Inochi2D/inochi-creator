@@ -48,12 +48,16 @@ private {
     bool isDarkMode = true;
     string[] files;
     bool isWayland;
+    bool isTilingWM;
 }
 
 bool incShowStatsForNerds;
 
 bool incIsWayland() {
     return isWayland;
+}
+bool incIsTilingWM() {
+    return isTilingWM;
 }
 
 /**
@@ -121,6 +125,36 @@ void incInitStyling() {
 void incOpenWindow() {
     import std.process : environment;
     isWayland = environment.get("XDG_SESSION_TYPE") == "wayland";
+    switch(environment.get("XDG_SESSION_DESKTOP")) {
+        case "i3":
+
+        // Items beyond this point are just guesstimations.
+        case "awesome":
+        case "bspwm":
+        case "dwm":
+        case "echinus":
+        case "euclid-wm":
+        case "herbstluftwm":
+        case "leftwm":
+        case "notion":
+        case "qtile":
+        case "ratpoison":
+        case "snapwm":
+        case "stumpwm":
+        case "subtle":
+        case "wingo":
+        case "wmfs":
+        case "xmonad":
+        case "wayfire":
+        case "river":
+        case "labwc":
+            isTilingWM = true;
+            break;
+        
+        default:
+            isTilingWM = false;
+            break;
+    }
 
     auto sdlSupport = loadSDL();
     enforce(sdlSupport != SDLSupport.noLibrary, "SDL2 library not found!");
@@ -281,10 +315,10 @@ void incCreateContext() {
 
     incSetDarkMode(incSettingsGet!bool("DarkMode", true));
 
-    io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;           // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;         // Enable Viewports (causes freezes)
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Navigation
-    io.ConfigWindowsResizeFromEdges = true;                     // Enable Edge resizing
+    io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;                               // Enable Docking
+    if (!incIsTilingWM) io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;         // Enable Viewports (causes freezes)
+    io.ConfigWindowsResizeFromEdges = true;                                         // Enable Edge resizing
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;                         // Enable Keyboard Navigation
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGuiOpenGLBackend.init(null);
 
