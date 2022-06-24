@@ -47,10 +47,14 @@ private {
 
     bool isDarkMode = true;
     string[] files;
+    bool isWayland;
 }
 
 bool incShowStatsForNerds;
 
+bool incIsWayland() {
+    return isWayland;
+}
 
 /**
     Finalizes everything by freeing imgui resources, etc.
@@ -115,6 +119,9 @@ void incInitStyling() {
     Opens Window
 */
 void incOpenWindow() {
+    import std.process : environment;
+    isWayland = environment.get("XDG_SESSION_TYPE") == "wayland";
+
     auto sdlSupport = loadSDL();
     enforce(sdlSupport != SDLSupport.noLibrary, "SDL2 library not found!");
     enforce(sdlSupport != SDLSupport.badLibrary, "Bad SDL2 library found!");

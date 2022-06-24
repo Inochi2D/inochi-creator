@@ -48,7 +48,7 @@ protected:
         drewWindow = igBegin(
             imName,
             &visible, 
-            flags | ImGuiWindowFlags.NoDecoration
+            incIsWayland() ? flags : flags | ImGuiWindowFlags.NoDecoration
         );
     }
     
