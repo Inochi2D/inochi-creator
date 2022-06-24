@@ -203,7 +203,8 @@ protected:
                         Node payloadNode = *cast(Node*)payload.Data;
                         
                         if (payloadNode.canReparent(n)) {
-                            incMoveChildWithHistory(payloadNode, n);
+                            payloadNode.setRelativeTo(n);
+                            payloadNode.parent = n;
                         }
                         
                         igTreePop();
@@ -229,8 +230,10 @@ protected:
                             if (payloadNode.canReparent(n)) {
                                 auto idx = payloadNode.getIndexInNode(n);
                                 if (idx >= 0) {
+                                    payloadNode.setRelativeTo(n);
                                     payloadNode.insertInto(n, clamp(idx < i ? i-1 : i, 0, n.children.length));
                                 } else {
+                                    payloadNode.setRelativeTo(n);
                                     payloadNode.insertInto(n, clamp(cast(ptrdiff_t)i, 0, n.children.length));
                                 }
                             }

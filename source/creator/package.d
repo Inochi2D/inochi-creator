@@ -305,7 +305,7 @@ void incImportPSD(string file) {
 
             part.enabled = (layer.flags & LayerFlags.Visible) == 0;
             part.opacity = (cast(float)layer.opacity)/255;
-            part.zSort = -(cast(float)i)/100;
+            part.zSort = -(cast(float)i)/10;
             switch(layer.blendModeKey) {
                 case BlendingMode.Multiply: 
                     part.blendingMode = BlendMode.Multiply; break;

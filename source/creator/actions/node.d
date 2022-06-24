@@ -164,24 +164,15 @@ public:
 void incMoveChildWithHistory(Node n, Node to) {
 
     // Calculate transforms
-    Transform currentLocal = n.localTransform;
-
-    vec3 worldPosition = n.transform.translation;
-    vec3 newParentWorldPosition = to.transform.translation;
-    vec3 newPosition = worldPosition-newParentWorldPosition;
-
-    // Push action to stack
-    incActionPush(new NodeChangeAction(
-        n.parent,
-        n,
-        to,
-        currentLocal,
-        Transform(newPosition)
-    ));
-
-    n.localTransform.translation = newPosition;
-    n.parent = to;
-    incActivePuppet().rescanNodes();
+    // Transform currentLocal = n.localTransform;
+    // // Push action to stack
+    // incActionPush(new NodeChangeAction(
+    //     n.parent,
+    //     n,
+    //     to,
+    //     currentLocal,
+    //     Transform(newPosition)
+    // ));
 }
 
 /**
