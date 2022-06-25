@@ -45,12 +45,15 @@ private:
         }
 
         string[] layerPathSegments;
+        string calcSegment;
         foreach_reverse(layer; document.layers) {
 
             // Build layer path segments
             if (layer.type != LayerType.Any) {
                 if (layer.name != "</Layer set>") layerPathSegments ~= layer.name; 
                 else layerPathSegments.length--;
+
+                calcSegment = layerPathSegments.length > 0 ? "/"~layerPathSegments.join("/") : "";
                 continue;
             }
 
@@ -60,7 +63,7 @@ private:
             auto layerTexture = new Texture(layer.data, layer.width, layer.height);
 
             // See if any matching segments can be found
-            string currSegment = "/"~layerPathSegments.join("/");
+            string currSegment = "%s/%s".format(calcSegment, layer.name);
             ExPart seg = findPartForSegment(currSegment);
             if (seg) {
 
