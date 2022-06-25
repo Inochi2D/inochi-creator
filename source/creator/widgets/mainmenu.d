@@ -41,6 +41,7 @@ private {
     }
 
     void fileSave() {
+
         // If a projeect path is set then the user has opened or saved
         // an existing file, we should just override that
         if (incProjectPath.length > 0) {
