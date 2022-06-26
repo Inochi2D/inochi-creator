@@ -127,19 +127,13 @@ private {
             case MarkdownFormatType.Link:
                 if(start)
                 {
-                    igPushStyleColor(ImGuiCol.Text, igGetStyle().Colors[ImGuiCol.ButtonHovered]);
+                    igPushStyleColor(ImGuiCol.Text, igGetStyle().Colors[ImGuiCol.Button]);
                 }
                 else
                 {
                     igPopStyleColor();
-                    if(info.itemHovered)
-                    {
-                        incUnderLine(igGetStyle().Colors[ImGuiCol.ButtonHovered]);
-                    }
-                    else
-                    {
-                        incUnderLine(igGetStyle().Colors[ImGuiCol.Button]);
-                    }
+                    if(info.itemHovered) incUnderLine(igGetStyle().Colors[ImGuiCol.ButtonHovered]);
+                    else incUnderLine(igGetStyle().Colors[ImGuiCol.Button]);   
                 }
                 break;
             default:

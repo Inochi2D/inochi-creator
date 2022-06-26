@@ -93,8 +93,8 @@ protected:
         }
         igEndChild();
 
-        igPushStyleColor(ImGuiCol.Button, ImVec4(0.984, 0.752, 0.576, 1));
-        igPushStyleColor(ImGuiCol.ButtonHovered, ImVec4(1, 0.852, 0.676, 1));
+        igPushStyleColor(ImGuiCol.Button, ImVec4(0.176, 0.447, 0.698, 1));
+        igPushStyleColor(ImGuiCol.ButtonHovered, ImVec4(0.313, 0.521, 0.737, 1));
             if (igBeginChild("##CreditsArea", ImVec2(0, -28*incGetUIScale()))) {
                 incMarkdown(import("CONTRIBUTORS.md"), cfg);
             }
