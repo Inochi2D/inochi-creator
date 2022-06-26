@@ -87,16 +87,18 @@ void incRenderDialogs() {
             //
             auto avail = incAvailableSpace();
             float btnHeight = 24*uiScale;
-            float btnSize = (avail.x/2)/entry.btncount;
-            igDummy(ImVec2(avail.x/2, btnHeight));
-            igSameLine(0, 0);
+            float btnSize = 80*uiScale;
+            if (avail.x > (btnSize*entry.btncount)) {
+                igDummy(ImVec2(avail.x-((btnSize*entry.btncount)+1), btnHeight));
+                igSameLine(0, 0);
+            }
 
             if ((entry.btns & DialogButtons.OK) == 1) {
                 if (igButton(__("OK"), ImVec2(btnSize, btnHeight))) {
                     entry.selected = DialogButtons.OK;
                     igCloseCurrentPopup();
                 }
-                igSameLine();
+                igSameLine(0, 0);
             }
             
             if ((entry.btns & DialogButtons.Cancel) == 2) {
@@ -104,7 +106,7 @@ void incRenderDialogs() {
                     entry.selected = DialogButtons.Cancel;
                     igCloseCurrentPopup();
                 }
-                igSameLine();
+                igSameLine(0, 0);
             }
             
             if ((entry.btns & DialogButtons.Yes) == 4) {
@@ -112,7 +114,7 @@ void incRenderDialogs() {
                     entry.selected = DialogButtons.Yes;
                     igCloseCurrentPopup();
                 }
-                igSameLine();
+                igSameLine(0, 0);
             }
             
             if ((entry.btns & DialogButtons.No) == 8) {
