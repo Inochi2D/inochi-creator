@@ -9,6 +9,7 @@ import creator.widgets.dummy;
 import creator.widgets.label;
 import creator.core.font;
 import bindbc.imgui;
+import inochi2d;
 import i18n;
 
 enum DialogLevel : size_t {
@@ -23,6 +24,24 @@ enum DialogButtons {
     Cancel = 2,
     Yes = 4,
     No = 8
+}
+
+void incInitDialogs() {
+    // Only load Ada in official builds
+    version(InBranding) {
+        auto infoTex = ShallowTexture(cast(ubyte[])import("ui/ui-info.png"));
+        inTexPremultiply(infoTex.data);
+        auto warnTex = ShallowTexture(cast(ubyte[])import("ui/ui-warning.png"));
+        inTexPremultiply(warnTex.data);
+        auto errTex = ShallowTexture(cast(ubyte[])import("ui/ui-error.png"));
+        inTexPremultiply(errTex.data);
+
+        adaTextures = [
+            new Texture(infoTex),
+            new Texture(warnTex),
+            new Texture(errTex),
+        ];
+    }
 }
 
 /**
@@ -42,19 +61,24 @@ void incRenderDialogs() {
             ImGuiWindowFlags.AlwaysAutoResize;
         if (igBeginPopupModal(entry.tag, null, flags)) {
             float uiScale = incGetUIScale();
-            float errImgScale = 96*uiScale;
+            float errImgScale = 112*uiScale;
+
 
             igBeginGroup();
-                // TODO: Render image of Ada depending on the DialogLevel
+
                 if (igBeginChild("ErrorMainBoxLogo", ImVec2(errImgScale, errImgScale))) {
                     version (InBranding) {
                         import creator.core : incGetLogo;
-                        igImage(cast(void*)incGetLogo(), ImVec2(errImgScale, errImgScale));
+                        igImage(cast(void*)adaTextures[cast(size_t)entry.level].getTextureId(), ImVec2(errImgScale, errImgScale));
                     }
-                    igEndChild();
                 }
-                igSameLine(0, 8);
+                igEndChild();
+
+                igSameLine(0, 0);
                 incText(entry.text);
+
+                igSameLine(0, 0);
+                incDummy(ImVec2(4*uiScale, 1));
             igEndGroup();
 
 
@@ -140,6 +164,8 @@ DialogButtons incDialogButtonSelected(const(char)* tag) {
 }
 
 private {
+    Texture[] adaTextures;
+
     DialogEntry[] entries;
 
     DialogEntry* findDialogEntry(const(char)* tag) {

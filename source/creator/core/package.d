@@ -323,6 +323,7 @@ void incCreateContext() {
     ImGuiOpenGLBackend.init(null);
 
     incInitStyling();
+    incInitDialogs();
 }
 
 void incSetDarkMode(bool darkMode) {
