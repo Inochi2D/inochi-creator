@@ -62,6 +62,7 @@ void incRenderDialogs() {
         if (igBeginPopupModal(entry.tag, null, flags)) {
             float uiScale = incGetUIScale();
             float errImgScale = 112*uiScale;
+            float msgEndPadding = 4*uiScale;
 
 
             igBeginGroup();
@@ -78,7 +79,7 @@ void incRenderDialogs() {
                 incText(entry.text);
 
                 igSameLine(0, 0);
-                incDummy(ImVec2(4*uiScale, 1));
+                incDummy(ImVec2(msgEndPadding, 1));
             igEndGroup();
 
 
@@ -88,8 +89,19 @@ void incRenderDialogs() {
             auto avail = incAvailableSpace();
             float btnHeight = 24*uiScale;
             float btnSize = 80*uiScale;
-            if (avail.x > (btnSize*entry.btncount)) {
-                igDummy(ImVec2(avail.x-((btnSize*entry.btncount)+1), btnHeight));
+            float totalBtnSize = btnSize*entry.btncount;
+            float msgAreaWidth = errImgScale+incMeasureString(entry.text).x+msgEndPadding;
+            float requestedMinimumSize = 256*uiScale;
+
+            if ((msgAreaWidth < requestedMinimumSize) && totalBtnSize < requestedMinimumSize) {
+
+                // Handle very short dialog messages.
+                igDummy(ImVec2(requestedMinimumSize-(totalBtnSize+1), btnHeight));
+                igSameLine(0, 0);
+            } else if (avail.x > totalBtnSize) {
+                
+                // Add pre-padding to buttons
+                igDummy(ImVec2(avail.x-(totalBtnSize+1), btnHeight));
                 igSameLine(0, 0);
             }
 
