@@ -157,14 +157,14 @@ void incCleanupDialogs() {
 
     Only use this if you don't need to query the exit state of the dialog
 */
-void incDialog(const(char)* title, string body_, DialogLevel level = DialogLevel.Error, DialogButtons btns = DialogButtons.OK) {
-    incDialog(title, title, body_, level, btns);
+void incDialog(const(char)* title, string body_, DialogLevel level = DialogLevel.Error, DialogButtons btns = DialogButtons.OK, void* userData = null) {
+    incDialog(title, title, body_, level, btns, userData);
 }
 
 /**
     Creates a dialog
 */
-void incDialog(const(char)* tag, const(char)* title, string body_, DialogLevel level = DialogLevel.Error, DialogButtons btns = DialogButtons.OK) {
+void incDialog(const(char)* tag, const(char)* title, string body_, DialogLevel level = DialogLevel.Error, DialogButtons btns = DialogButtons.OK, void* userData = null) {
     import std.string : toStringz;
     int btncount = 0;
     if ((btns & DialogButtons.OK) == 1) btncount++;
@@ -179,7 +179,8 @@ void incDialog(const(char)* tag, const(char)* title, string body_, DialogLevel l
         level,
         btns,
         DialogButtons.NONE,
-        btncount
+        btncount,
+        userData
     );
 }
 
@@ -191,6 +192,15 @@ DialogButtons incDialogButtonSelected(const(char)* tag) {
     if (entries.length == 0) return DialogButtons.NONE;
     if (entries[0].tag != tag) return DialogButtons.NONE;
     return entries[0].selected;
+}
+
+/**
+    Returns the user data bound to the dialog
+*/
+void* incDialogButtonUserData(const(char)* tag) {
+    if (entries.length == 0) return null;
+    if (entries[0].tag != tag) return null;
+    return entries[0].userData;
 }
 
 private {
@@ -213,5 +223,6 @@ private {
         DialogButtons btns;
         DialogButtons selected;
         int btncount;
+        void* userData;
     }
 }
