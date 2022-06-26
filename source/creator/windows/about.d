@@ -148,7 +148,7 @@ public:
         // Only load Ada in official builds
         version(InBranding) {
             ada_float = vec2(0);
-            auto adaData = ShallowTexture(cast(ubyte[])import("ada-tex.png"));
+            auto adaData = ShallowTexture(cast(ubyte[])import("ui/ui-ada.png"));
             inTexPremultiply(adaData.data);
             ada = new Texture(adaData);
         }
