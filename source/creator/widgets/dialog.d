@@ -51,15 +51,15 @@ void incRenderDialogs() {
     if (entries.length > 0) {
         auto entry = &entries[0];
 
-        if (!igIsPopupOpen(entry.tag)) {
-            igOpenPopup(entry.tag);
+        if (!igIsPopupOpen(entry.title)) {
+            igOpenPopup(entry.title);
         }
 
         auto flags = 
             ImGuiWindowFlags.NoSavedSettings | 
             ImGuiWindowFlags.NoResize | 
             ImGuiWindowFlags.AlwaysAutoResize;
-        if (igBeginPopupModal(entry.tag, null, flags)) {
+        if (igBeginPopupModal(entry.title, null, flags)) {
             float uiScale = incGetUIScale();
             float errImgScale = 112*uiScale;
             float msgEndPadding = 4*uiScale;
@@ -76,7 +76,9 @@ void incRenderDialogs() {
                 igEndChild();
 
                 igSameLine(0, 0);
-                incText(entry.text);
+                igPushTextWrapPos(512*uiScale);
+                    incText(entry.text);
+                igPopTextWrapPos();
 
                 igSameLine(0, 0);
                 incDummy(ImVec2(msgEndPadding, 1));
@@ -104,14 +106,6 @@ void incRenderDialogs() {
                 igDummy(ImVec2(avail.x-(totalBtnSize+1), btnHeight));
                 igSameLine(0, 0);
             }
-
-            if ((entry.btns & DialogButtons.OK) == 1) {
-                if (igButton(__("OK"), ImVec2(btnSize, btnHeight))) {
-                    entry.selected = DialogButtons.OK;
-                    igCloseCurrentPopup();
-                }
-                igSameLine(0, 0);
-            }
             
             if ((entry.btns & DialogButtons.Cancel) == 2) {
                 if (igButton(__("Cancel"), ImVec2(btnSize, btnHeight))) {
@@ -120,10 +114,10 @@ void incRenderDialogs() {
                 }
                 igSameLine(0, 0);
             }
-            
-            if ((entry.btns & DialogButtons.Yes) == 4) {
-                if (igButton(__("Yes"), ImVec2(btnSize, btnHeight))) {
-                    entry.selected = DialogButtons.Yes;
+
+            if ((entry.btns & DialogButtons.OK) == 1) {
+                if (igButton(__("OK"), ImVec2(btnSize, btnHeight))) {
+                    entry.selected = DialogButtons.OK;
                     igCloseCurrentPopup();
                 }
                 igSameLine(0, 0);
@@ -134,7 +128,16 @@ void incRenderDialogs() {
                     entry.selected = DialogButtons.No;
                     igCloseCurrentPopup();
                 }
+                igSameLine(0, 0);
             }
+            
+            if ((entry.btns & DialogButtons.Yes) == 4) {
+                if (igButton(__("Yes"), ImVec2(btnSize, btnHeight))) {
+                    entry.selected = DialogButtons.Yes;
+                    igCloseCurrentPopup();
+                }
+            }
+
             igEndPopup();
         }
     }
@@ -149,7 +152,19 @@ void incCleanupDialogs() {
     }
 }
 
+/**
+    Creates a dialog with the tag set to the title
+
+    Only use this if you don't need to query the exit state of the dialog
+*/
 void incDialog(const(char)* title, string body_, DialogLevel level = DialogLevel.Error, DialogButtons btns = DialogButtons.OK) {
+    incDialog(title, title, body_, level, btns);
+}
+
+/**
+    Creates a dialog
+*/
+void incDialog(const(char)* tag, const(char)* title, string body_, DialogLevel level = DialogLevel.Error, DialogButtons btns = DialogButtons.OK) {
     import std.string : toStringz;
     int btncount = 0;
     if ((btns & DialogButtons.OK) == 1) btncount++;
@@ -158,6 +173,7 @@ void incDialog(const(char)* title, string body_, DialogLevel level = DialogLevel
     if ((btns & DialogButtons.No) == 8) btncount++;
 
     entries ~= DialogEntry(
+        tag,
         title,
         body_,
         level,
@@ -191,6 +207,7 @@ private {
 
     struct DialogEntry {
         const(char)* tag;
+        const(char)* title;
         string text;
         DialogLevel level;
         DialogButtons btns;
