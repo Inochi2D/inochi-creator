@@ -113,6 +113,14 @@ void incVertexEditCopyMeshDataToTarget(MeshData data) {
     editor.importMesh(data);
 }
 
+bool incMeshEditGetIsApplySafe() {
+    Drawable target = cast(Drawable)editor.getTarget();
+    return !(
+        editor.mesh.getVertexCount() != target.getMesh().vertices.length &&
+        incActivePuppet().getIsNodeBound(target)
+    );
+}
+
 /**
     Applies the mesh edits
 */
@@ -129,8 +137,6 @@ void incMeshEditApply() {
         incDialog(__("Error"), _("Cannot apply invalid mesh\nAt least 3 vertices forming a triangle is needed."));
         return;
     }
-
-    // TODO: Also make sure that we check for edge count and show an error then too.
 
     // Apply to target
     editor.applyToTarget();

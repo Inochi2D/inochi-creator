@@ -1255,6 +1255,21 @@ void incInspectorMeshEditDrawable(Drawable node) {
         igSameLine(0, 8);
 
         if (igButton("", ImVec2(32, 32))) {
+            if (incMeshEditGetIsApplySafe()) {
+                incMeshEditApply();
+            } else {
+                incDialog(
+                    "CONFIRM_VERTEX_APPLY", 
+                    __("Are you sure?"), 
+                    _("The layout of the mesh has changed, all deformations to this mesh will be deleted if you continue."),
+                    DialogLevel.Warning,
+                    DialogButtons.Yes | DialogButtons.No
+                );
+            }
+        }
+
+        // In case of a warning popup preventing application.
+        if (incDialogButtonSelected("CONFIRM_VERTEX_APPLY") == DialogButtons.Yes) {
             incMeshEditApply();
         }
         incTooltip(_("Apply"));
