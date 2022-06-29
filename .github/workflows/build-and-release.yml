@@ -164,3 +164,31 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       with:
           files: out/inochi-creator-win32-x86_64.zip
+
+  barebones-source:
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: 'Remove restricted assets'
+      run: |
+        rm res/logo.png
+        rm res/logo_256.png
+        rm -rf res/ui/
+        rm res/inochi-creator.ico
+        rm res/inochi-creator.rc
+
+    - name: 'Archive barebones source'
+      uses: thedoctor0/zip-release@main
+      with:
+        type: 'tar'
+        filename: 'inochi-creator-barebones-src.tar.gz'
+        directory: './'
+        path: '*'
+
+    - name: 'Release barebones source'
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+          files: 'inochi-creator-barebones-src.tar.gz'
