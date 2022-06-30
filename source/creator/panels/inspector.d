@@ -270,6 +270,16 @@ void incInspectorModelInfo() {
         igPopID();
         igSpacing();
     }
+
+    if (igCollapsingHeader(__("Rendering Settings"), ImGuiTreeNodeFlags.DefaultOpen)) {
+        igPushID("Filtering");
+            if (igCheckbox(__("Use Point Filtering"), &incActivePuppet().meta.preservePixels)) {
+                incActivePuppet().populateTextureSlots();
+                incActivePuppet().updateTextureState();
+            }
+            incTooltip(_("Makes Inochi2D model use point filtering, causing models to be smooth."));
+        igPopID();
+    }
 }
 
 void incModelModeHeader(Node node) {
