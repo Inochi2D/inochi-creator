@@ -87,6 +87,19 @@ bool incShowOrientation = true; /// Show orientation gizmo of selected parts
 */
 EditMode editMode_;
 
+/**
+    Clears the imgui data
+*/
+void incClearImguiData() {
+    auto ctx = igGetCurrentContext();
+    if (ctx) {
+        foreach(ImGuiWindow* window; ctx.Windows.Data[0..ctx.Windows.Size]) {
+            if (window) {
+                ImGuiStorage_Clear(&window.StateStorage);
+            }
+        }
+    }
+}
 
 /**
     Returns the current project path
@@ -126,6 +139,8 @@ void incAddPrevProject(string path) {
     Creates a new project
 */
 void incNewProject() {
+    incClearImguiData();
+
     currProjectPath = "";
     editMode_ = EditMode.ModelEdit;
     import creator.viewport : incViewportReset;
@@ -149,6 +164,8 @@ void incNewProject() {
 }
 
 void incOpenProject(string path) {
+    incClearImguiData();
+    
     Puppet puppet;
 
     // Load the puppet from file
