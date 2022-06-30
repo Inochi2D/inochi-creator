@@ -84,8 +84,10 @@ private:
         foreach(binding; bindings) {
             if (binding.replaceTexture) {
                 (cast(ExPart)binding.node).textures[0] = binding.layerTexture;
+                (cast(ExPart)binding.node).layerPath = binding.layerPath;
             } else {
-                incCreateExPart(binding.layerTexture, binding.node, binding.layer.name);
+                auto part = incCreateExPart(binding.layerTexture, binding.node, binding.layer.name);
+                part.layerPath = binding.layerPath;
             }
         }
         
