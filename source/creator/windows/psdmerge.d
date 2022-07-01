@@ -65,7 +65,7 @@ private:
 
             // Build layer path segments
             if (layer.type != LayerType.Any) {
-                if (layer.name != "</Layer set>") layerPathSegments ~= layer.name; 
+                if (layer.name != "</Layer set>" && layer.name != "</Layer group>") layerPathSegments ~= layer.name; 
                 else layerPathSegments.length--;
 
                 calcSegment = layerPathSegments.length > 0 ? "/"~layerPathSegments.join("/") : "";

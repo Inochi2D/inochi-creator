@@ -55,7 +55,7 @@ void incImportPSD(string file) {
 
             // Skip folders ( for now )
             if (layer.type != LayerType.Any) {
-                if (layer.name != "</Layer set>") {
+                if (layer.name != "</Layer set>" && layer.name != "</Layer group>") {
                     layerGroupStack ~= layer;
                     pushGroupStackName(layer.name);
                 } else {
