@@ -183,6 +183,8 @@ protected:
             if (igButton(__("Merge"), ImVec2(64*scale, 24*scale))) {
                 apply();
                 this.close();
+                
+                igEndGroup();
                 return;
             }
         igEndGroup();
