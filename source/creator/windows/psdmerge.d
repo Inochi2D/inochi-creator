@@ -51,6 +51,14 @@ private:
             return null;
         }
 
+        ExPart findPartForName(string segment) {
+            import std.path : baseName;
+            foreach(ref ExPart part; parts) {
+                if (baseName(part.layerPath) == baseName(segment)) return part;
+            }
+            return null;
+        }
+
         string[] layerPathSegments;
         string calcSegment;
         foreach_reverse(layer; document.layers) {
@@ -77,6 +85,14 @@ private:
                 // If so, default to replace
                 bindings ~= NodeLayerBinding(layer, layerTexture, seg, true, currSegment);
             } else {
+
+                // Try to match name only if path match fails
+                seg = findPartForName(currSegment);
+                if (seg) {
+
+                    // If so, default to replace
+                    bindings ~= NodeLayerBinding(layer, layerTexture, seg, true, currSegment);
+                }
 
                 // Otherwise, default to add
                 bindings ~= NodeLayerBinding(layer, layerTexture, puppet.root, false, currSegment);
