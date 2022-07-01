@@ -6,6 +6,7 @@
 */
 module creator.windows.notice;
 import creator.widgets.label;
+import creator.widgets.dummy;
 import creator.windows;
 import creator.core;
 import std.string;
@@ -57,8 +58,12 @@ protected:
                 igTextColored(ImVec4(1, 0, 0, 1), _("THIS IS BETA SOFTWARE!").toStringz);
             igPopFont();
             igSpacing();
-            incText(_("Inochi2D and Inochi Creator is currently under heavy development\nUsing Inochi Creator in production is not advised, it *will* crash\nout of nowhere and there's still plenty of bugs to fix.\n\nThe Inochi2D project is not to be held liable for broken\npuppet files or crashes resulting from using this beta \nsoftware.\n\nIf you accept this press the \"Close\" button to continue"));
-
+            
+            ImVec2 avail = incAvailableSpace();
+            igPushTextWrapPos(avail.x);
+                incText(_("Inochi2D and Inochi Creator is currently under heavy development\nUsing Inochi Creator in production is not advised, it *will* crash\nout of nowhere and there's still plenty of bugs to fix.\n\nThe Inochi2D project is not to be held liable for broken\npuppet files or crashes resulting from using this beta \nsoftware.\n\nIf you accept this press the \"Close\" button to continue"));
+                incText(_("\n\nNOTE: The undo/redo system is currently barely functional, remember to SAVE OFTEN."));
+            igPopTextWrapPos();
         }
         igEndChild();
 
