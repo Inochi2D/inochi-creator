@@ -196,22 +196,30 @@ protected:
             igPopID();
 
             // Only allow reparenting one node
-            if (selectedNodes.length < 2) {
-                if(igBeginDragDropTarget()) {
-                    const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
-                    if (payload !is null) {
-                        Node payloadNode = *cast(Node*)payload.Data;
-                        
+            if(igBeginDragDropTarget()) {
+                const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+                if (payload !is null) {
+                    Node payloadNode = *cast(Node*)payload.Data;
+                    
+                    if (selectedNodes.length > 1) {
+                        foreach(sn; selectedNodes) {
+                            if (sn.canReparent(n)) {
+                                sn.setRelativeTo(n);
+                                sn.parent = n;
+                            }
+                        }
+                    } else {
                         if (payloadNode.canReparent(n)) {
                             payloadNode.setRelativeTo(n);
                             payloadNode.parent = n;
                         }
-                        
-                        igTreePop();
-                        return;
                     }
+                    
+                    igTreePop();
                     igEndDragDropTarget();
+                    return;
                 }
+                igEndDragDropTarget();
             }
 
         if (open) {
@@ -240,6 +248,7 @@ protected:
                             
                             igPopID();
                             igTreePop();
+                            igEndDragDropTarget();
                             return;
                         }
                         igEndDragDropTarget();
