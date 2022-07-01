@@ -10,6 +10,7 @@ import creator.actions;
 import creator.panels;
 import creator;
 import creator.widgets;
+import creator.ext;
 import creator.core;
 import creator.utils;
 import inochi2d;
@@ -99,11 +100,19 @@ protected:
                             
                             // %s is the name of the node in the More Info menu
                             // %u is the UUID of the node in the More Info menu
-                            incText(_("%s ID: %u").format(sn.name.ptr, sn.uuid));
+                            incText(_("%s ID: %u").format(sn.name, sn.uuid));
+
+                            if (ExPart exp = cast(ExPart)sn) {
+                                incText(_("%s Layer: %s").format(exp.name, exp.layerPath));
+                            }
                         }
                     } else {
                         // %u is the UUID of the node in the More Info menu
                         incText(_("ID: %u").format(n.uuid));
+
+                        if (ExPart exp = cast(ExPart)n) {
+                            incText(_("Layer: %s").format(exp.layerPath));
+                        }
                     }
 
                     igEndMenu();
