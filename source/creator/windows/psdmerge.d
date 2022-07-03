@@ -97,7 +97,7 @@ private:
             
             vec4 bounds = vec4(0, 0, layer.width*scale, layer.height*scale);
             if (widthScale > heightScale) bounds.x = (PreviewSize-bounds.z)/2;
-            else if (widthScale < heightScale) bounds.y = (PreviewSize-bounds.w);
+            else if (widthScale < heightScale) bounds.y = (PreviewSize-bounds.w)/2;
 
             // See if any matching segments can be found
             string currSegment = "%s/%s".format(calcSegment, layer.name);
@@ -252,7 +252,7 @@ private:
                         igItemSize(ImVec2(PreviewSize*scale, PreviewSize*scale));
 
                         igSetCursorPos(
-                            ImVec2(layer.texturePreviewBounds.x, layer.texturePreviewBounds.y)
+                            ImVec2(tl.x+layer.texturePreviewBounds.x, tl.y+layer.texturePreviewBounds.y)
                         );
 
                         igImage(
