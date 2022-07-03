@@ -15,6 +15,7 @@ import creator.utils.link;
 import inochi2d;
 import i18n;
 import psd;
+import std.uni : toLower;
 
 /**
     Binding between layer and node
@@ -22,10 +23,13 @@ import psd;
 struct NodeLayerBinding {
     Layer layer;
     Texture layerTexture;
+    vec4 texturePreviewBounds;
 
     Node node;
     bool replaceTexture;
     string layerPath;
+    const(char)* layerName;
+    string indexableName;
     int depth() {
         return replaceTexture ? node.depth-1 : node.depth;
     }
@@ -38,11 +42,18 @@ private:
     bool renameMapped;
     bool retranslateMapped;
     bool resortModel;
+    ExPart[] parts;
+
+    string layerFilter;
+    string nodeFilter;
+
+    enum PreviewSize = 128f;
 
     void populateBindings() {
         import std.array : join;
         auto puppet = incActivePuppet();
-        auto parts = puppet.findNodesType!ExPart(puppet.root);
+        parts = puppet.findNodesType!ExPart(puppet.root);
+
 
         ExPart findPartForSegment(string segment) {
             foreach(ref ExPart part; parts) {
@@ -77,13 +88,22 @@ private:
             inTexPremultiply(layer.data);
             auto layerTexture = new Texture(layer.data, layer.width, layer.height);
 
+            // Calculate render size
+            float widthScale = PreviewSize / cast(float)layer.width;
+            float heightScale = PreviewSize / cast(float)layer.height;
+            float scale = min(widthScale, heightScale);
+            
+            vec4 bounds = vec4(0, 0, layer.width*scale, layer.height*scale);
+            if (widthScale > heightScale) bounds.x = (PreviewSize-bounds.z)/2;
+            else if (widthScale < heightScale) bounds.y = (PreviewSize-bounds.w);
+
             // See if any matching segments can be found
             string currSegment = "%s/%s".format(calcSegment, layer.name);
             ExPart seg = findPartForSegment(currSegment);
             if (seg) {
 
                 // If so, default to replace
-                bindings ~= NodeLayerBinding(layer, layerTexture, seg, true, currSegment);
+                bindings ~= NodeLayerBinding(layer, layerTexture, bounds, seg, true, currSegment, layer.name.toStringz, layer.name.toLower);
             } else {
 
                 // Try to match name only if path match fails
@@ -91,11 +111,11 @@ private:
                 if (seg) {
 
                     // If so, default to replace
-                    bindings ~= NodeLayerBinding(layer, layerTexture, seg, true, currSegment);
+                    bindings ~= NodeLayerBinding(layer, layerTexture, bounds, seg, true, currSegment, layer.name.toStringz, layer.name.toLower);
                 }
 
                 // Otherwise, default to add
-                bindings ~= NodeLayerBinding(layer, layerTexture, puppet.root, false, currSegment);
+                bindings ~= NodeLayerBinding(layer, layerTexture, bounds, puppet.root, false, currSegment, layer.name.toStringz, layer.name.toLower);
             }
         }
     }
@@ -162,21 +182,150 @@ private:
     }
 
     void layerView() {
+        float scale = incGetUIScale();
 
+        import std.algorithm.searching : canFind;
+        foreach(i; 0..bindings.length) {
+            auto layer = &bindings[i];
+
+            if (layerFilter.length > 0 && !layer.indexableName.canFind(layerFilter.toLower)) continue;
+            igPushID(cast(int)i);
+
+                igSelectable(layer.layerName, false, ImGuiSelectableFlagsI.SpanAvailWidth);
+                if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
+                    igSetDragDropPayload("__REMAP", cast(void*)&layer, (&layer).sizeof, ImGuiCond.Always);
+                    igText(layer.layerName);
+                    igEndDragDropSource();
+                }
+
+                if (igIsItemHovered()) {
+                    igBeginTooltip();
+                        ImVec2 tl;
+                        igGetCursorPos(&tl);
+
+                        igItemSize(ImVec2(PreviewSize*scale, PreviewSize*scale));
+
+                        igSetCursorPos(
+                            ImVec2(layer.texturePreviewBounds.x, layer.texturePreviewBounds.y)
+                        );
+
+                        igImage(
+                            cast(void*)layer.layerTexture.getTextureId(), 
+                            ImVec2(layer.texturePreviewBounds.z*scale, layer.texturePreviewBounds.w*scale)
+                        );
+                    igEndTooltip();
+                }
+                igOpenPopupOnItemClick("LAYER_POPUP");
+
+                if (igBeginPopup("LAYER_POPUP")) {
+                    if (igMenuItem(__("Unmap"))) {
+                        layer.replaceTexture = false;
+                        layer.node = incActivePuppet.root;
+                    }
+                    igEndPopup();
+                }
+            igPopID();
+        }
     }
 
     void treeView() {
+        float scale = incGetUIScale();
+
+        import std.algorithm.searching : canFind;
+        foreach(ref ExPart part; parts) {
+            if (nodeFilter.length > 0 && !part.name.toLower.canFind(nodeFilter.toLower)) continue;
+
+            igSelectable(part.cName, false, ImGuiSelectableFlagsI.SpanAvailWidth);
+
+            // Only allow reparenting one node
+            if(igBeginDragDropTarget()) {
+                const(ImGuiPayload)* payload = igAcceptDragDropPayload("__REMAP");
+                if (payload !is null) {
+                    NodeLayerBinding* payloadNode = *cast(NodeLayerBinding**)payload.Data;
+                    
+                    payloadNode.node = part;
+                    payloadNode.replaceTexture = true;
+
+                    igEndDragDropTarget();
+                    return;
+                }
+                igEndDragDropTarget();
+            }
+
+            // Incredibly cursed preview image
+            if (igIsItemHovered()) {
+                igBeginTooltip();
+                    // Calculate render size
+                    float widthScale = PreviewSize / cast(float)part.textures[0].width;
+                    float heightScale = PreviewSize / cast(float)part.textures[0].height;
+                    float fscale = min(widthScale, heightScale);
+                    
+                    vec4 bounds = vec4(0, 0, part.textures[0].width*fscale, part.textures[0].height*fscale);
+                    if (widthScale > heightScale) bounds.x = (PreviewSize-bounds.z)/2;
+                    else if (widthScale < heightScale) bounds.y = (PreviewSize-bounds.w);
+
+                    ImVec2 tl;
+                    igGetCursorPos(&tl);
+
+                    igItemSize(ImVec2(PreviewSize*fscale, PreviewSize*fscale));
+
+                    igSetCursorPos(
+                        ImVec2(bounds.x, bounds.y)
+                    );
+
+                    igImage(
+                        cast(void*)part.textures[0].getTextureId(), 
+                        ImVec2(bounds.z*scale, bounds.w*scale)
+                    );
+                igEndTooltip();
+            }
+        }
 
     }
 
 protected:
 
     override
+    void onBeginUpdate() {
+        float scale = incGetUIScale();
+        igSetNextWindowSizeConstraints(ImVec2(640*scale, 480*scale), ImVec2(float.max, float.max));
+        super.onBeginUpdate();
+    }
+
+    override
     void onUpdate() {
         float scale = incGetUIScale();
-        ImVec2 space;
+        ImVec2 space = incAvailableSpace();
+        float gapspace = 8*scale;
+        float childWidth = (space.x/2);
+        float childHeight = space.y-(24*scale);
+        float filterWidgetHeight = 24*scale;
 
         igBeginGroup();
+            if (igBeginChild("###Layers", ImVec2(childWidth, childHeight))) {
+                incInputText("", childWidth-gapspace, layerFilter);
+
+                igBeginListBox("###LayerList", ImVec2(childWidth-gapspace, childHeight-filterWidgetHeight));
+                    layerView();
+                igEndListBox();
+            }
+            igEndChild();
+
+            igSameLine(0, gapspace);
+
+            if (igBeginChild("###Nodes", ImVec2(childWidth, childHeight))) {
+                incInputText("", childWidth, nodeFilter);
+
+                igBeginListBox("###NodeList", ImVec2(childWidth, childHeight-filterWidgetHeight));
+                    treeView();
+                igEndListBox();
+            }
+            igEndChild();
+        igEndGroup();
+
+
+        igBeginGroup();
+
             // Auto-rename
             igCheckbox(__("Auto-rename"), &renameMapped);
             incTooltip(_("Renames all mapped nodes to match the names of the PSD layer that was merged in to them."));
