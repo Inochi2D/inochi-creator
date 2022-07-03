@@ -293,6 +293,14 @@ private:
                 if (payload !is null) {
                     NodeLayerBinding* payloadNode = *cast(NodeLayerBinding**)payload.Data;
                     
+                    // Don't allow multiple bindings to a single part.
+                    foreach(ref expn; bindings) {
+                        if (expn.node == part) {
+                            expn.node = null;
+                            expn.replaceTexture = false;
+                        }
+                    }
+
                     payloadNode.node = part;
                     payloadNode.replaceTexture = true;
 
