@@ -42,6 +42,7 @@ private:
     bool renameMapped;
     bool retranslateMapped;
     bool resortModel;
+    bool onlyUnmapped;
     ExPart[] parts;
 
     string layerFilter;
@@ -188,9 +189,10 @@ private:
         foreach(i; 0..bindings.length) {
             auto layer = &bindings[i];
 
+            if (onlyUnmapped && layer.replaceTexture) continue;
             if (layerFilter.length > 0 && !layer.indexableName.canFind(layerFilter.toLower)) continue;
-            igPushID(cast(int)i);
 
+            igPushID(cast(int)i);
                 const(char)* displayName = layer.layerName;
                 if (layer.replaceTexture) {
                     displayName = _("%s  %s").format(layer.layer.name, layer.node.name).toStringz;
@@ -305,14 +307,17 @@ protected:
         float childWidth = (space.x/2);
         float childHeight = space.y-(24*scale);
         float filterWidgetHeight = 24*scale;
+        float optionsListHeight = 24*scale;
 
         igBeginGroup();
             if (igBeginChild("###Layers", ImVec2(childWidth, childHeight))) {
                 incInputText("", childWidth-gapspace, layerFilter);
 
-                igBeginListBox("###LayerList", ImVec2(childWidth-gapspace, childHeight-filterWidgetHeight));
+                igBeginListBox("###LayerList", ImVec2(childWidth-gapspace, childHeight-filterWidgetHeight-optionsListHeight));
                     layerView();
                 igEndListBox();
+                
+                igCheckbox(__("Only show unmapped"), &onlyUnmapped);
             }
             igEndChild();
 
