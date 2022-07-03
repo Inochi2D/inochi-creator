@@ -123,6 +123,32 @@ private:
         }
     }
 
+    // rebuffer Part to update shape correctly. (code copied from mesheditor.d)
+    void updatePart(Node node) {
+        import creator.viewport.common.mesh;
+        Part part = cast(Part)node;
+        if (part !is null) {
+            auto mesh = new IncMesh(part.getMesh());
+            MeshData data = mesh.export_();
+            data.fixWinding();
+
+            // Fix UVs
+            foreach(i; 0..data.uvs.length) {
+                // Texture 0 is always albedo texture
+                auto tex = part.textures[0];
+
+                // By dividing by width and height we should get the values in UV coordinate space.
+                data.uvs[i].x /= cast(float)tex.width;
+                data.uvs[i].y /= cast(float)tex.height;
+                data.uvs[i] += vec2(0.5, 0.5);
+            }
+            part.rebuffer(data);
+        }
+        foreach (Node child; node.children) {
+            updatePart(child);
+        }
+    }
+
     void apply() {
         import std.algorithm.sorting : sort;
         bindings.sort!((a, b) => a.depth < b.depth)();
@@ -181,7 +207,8 @@ private:
         
         // Unload PSD, we're done with it
         destroy(document);
-
+        puppet.root.transformChanged();
+        updatePart(puppet.root);
         // Repopulate texture slots, removing unused textures
         puppet.populateTextureSlots();
     }
@@ -327,7 +354,7 @@ protected:
 
         igBeginGroup();
             if (igBeginChild("###Layers", ImVec2(childWidth, childHeight))) {
-                incInputText("", childWidth-gapspace, layerFilter);
+                incInputText("##", childWidth-gapspace, layerFilter);
 
                 igBeginListBox("###LayerList", ImVec2(childWidth-gapspace, childHeight-filterWidgetHeight-optionsListHeight));
                     layerView();
@@ -340,7 +367,7 @@ protected:
             igSameLine(0, gapspace);
 
             if (igBeginChild("###Nodes", ImVec2(childWidth, childHeight))) {
-                incInputText("", childWidth, nodeFilter);
+                incInputText("##", childWidth, nodeFilter);
 
                 igBeginListBox("###NodeList", ImVec2(childWidth, childHeight-filterWidgetHeight-optionsListHeight));
                     treeView();
