@@ -191,7 +191,12 @@ private:
             if (layerFilter.length > 0 && !layer.indexableName.canFind(layerFilter.toLower)) continue;
             igPushID(cast(int)i);
 
-                igSelectable(layer.layerName, false, ImGuiSelectableFlagsI.SpanAvailWidth);
+                const(char)* displayName = layer.layerName;
+                if (layer.replaceTexture) {
+                    displayName = _("%s  %s").format(layer.layer.name, layer.node.name).toStringz;
+                }
+
+                igSelectable(displayName, false, ImGuiSelectableFlagsI.SpanAvailWidth);
                 if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
                     igSetDragDropPayload("__REMAP", cast(void*)&layer, (&layer).sizeof, ImGuiCond.Always);
                     igText(layer.layerName);
