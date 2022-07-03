@@ -49,6 +49,7 @@ private {
     Node[] selectedNodes;
     Drawable[] drawables;
     Parameter armedParam;
+    size_t armedParamIdx;
     string currProjectPath;
     string[] prevProjects;
 }
@@ -355,6 +356,13 @@ Parameter incArmedParameter() {
 }
 
 /**
+    Gets the currently armed parameter index
+*/
+size_t incArmedParameterIdx() {
+    return editMode_ == EditMode.ModelEdit ? armedParamIdx : 0;
+}
+
+/**
     Gets the currently selected node
 */
 ref Node[] incSelectedNodes() {
@@ -378,8 +386,9 @@ ref Node incSelectedNode() {
 /**
     Arms a parameter
 */
-void incArmParameter(ref Parameter param) {
+void incArmParameter(size_t i, ref Parameter param) {
     armedParam = param;
+    armedParamIdx = i;
     incViewportNodeDeformNotifyParamValueChanged();
     activeProject.puppet.renderParameters = false;
 }
@@ -389,6 +398,7 @@ void incArmParameter(ref Parameter param) {
 */
 void incDisarmParameter() {
     armedParam = null;
+    armedParamIdx = 0;
     incViewportNodeDeformNotifyParamValueChanged();
     activeProject.puppet.renderParameters = true;
 }

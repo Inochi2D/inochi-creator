@@ -421,7 +421,7 @@ private {
 /**
     Generates a parameter view
 */
-void incParameterView(Parameter param, string* grabParam) {
+void incParameterView(size_t idx, Parameter param, string* grabParam) {
     bool open = igCollapsingHeader(param.name.toStringz, ImGuiTreeNodeFlags.DefaultOpen);
     if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
         igSetDragDropPayload("_PARAMETER", cast(void*)&param, (&param).sizeof, ImGuiCond.Always);
@@ -482,6 +482,10 @@ void incParameterView(Parameter param, string* grabParam) {
                         
                         if (igMenuItem(__("Edit Axes Points"), "", false, true)) {
                             incPushWindowList(new ParamAxesWindow(param));
+                        }
+                        
+                        if (igMenuItem(__("Split"), "", false, true)) {
+                            incPushWindowList(new ParamSplitWindow(idx, param));
                         }
 
                         if (param.isVec2) {
@@ -565,7 +569,7 @@ void incParameterView(Parameter param, string* grabParam) {
                         } else {
                             param.value = param.getClosestKeypointValue();
                             paramPointChanged(param);
-                            incArmParameter(param);
+                            incArmParameter(idx, param);
                         }
                     }
 
@@ -658,15 +662,15 @@ protected:
             
             // Always render the currently armed parameter on top
             if (incArmedParameter()) {
-                incParameterView(incArmedParameter(), &grabParam);
+                incParameterView(incArmedParameterIdx(), incArmedParameter(), &grabParam);
             }
 
             // Render other parameters
-            foreach(ref param; parameters) {
+            foreach(i, ref param; parameters) {
                 if (incArmedParameter() == param) continue;
                 import std.algorithm.searching : canFind;
                 if (filter.length == 0 || param.indexableName.canFind(filter)) {
-                    incParameterView(param, &grabParam);
+                    incParameterView(i, param, &grabParam);
                 }
             }
         }
