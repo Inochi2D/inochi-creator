@@ -30,6 +30,7 @@ struct NodeLayerBinding {
     string layerPath;
     const(char)* layerName;
     string indexableName;
+    bool ignore;
     int depth() {
         return replaceTexture ? node.depth-1 : node.depth;
     }
@@ -113,6 +114,7 @@ private:
 
                     // If so, default to replace
                     bindings ~= NodeLayerBinding(layer, layerTexture, bounds, seg, true, currSegment, layer.name.toStringz, layer.name.toLower);
+                    continue;
                 }
 
                 // Otherwise, default to add
@@ -130,6 +132,8 @@ private:
 
         // Apply all the bindings to the node tree.
         foreach(binding; bindings) {
+            if (binding.ignore) continue;
+
             auto layerSize = cast(int[2])binding.layer.size();
             vec2i layerPosition = vec2i(
                 binding.layer.left,
@@ -198,7 +202,15 @@ private:
                     displayName = _("%s  %s").format(layer.layer.name, layer.node.name).toStringz;
                 }
 
+                if (layer.ignore) incTextDisabled("");
+                else incText("");
+                if (igIsItemClicked()) {
+                    layer.ignore = !layer.ignore;
+                }
+                igSameLine(0, 8*scale);
+
                 igSelectable(displayName, false, ImGuiSelectableFlagsI.SpanAvailWidth);
+
                 if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
                     igSetDragDropPayload("__REMAP", cast(void*)&layer, (&layer).sizeof, ImGuiCond.Always);
                     igText(layer.layerName);
@@ -228,6 +240,10 @@ private:
                     if (igMenuItem(__("Unmap"))) {
                         layer.replaceTexture = false;
                         layer.node = incActivePuppet.root;
+                    }
+
+                    if (igMenuItem(!layer.ignore ? __("Ignore") : __("Use"))) {
+                        layer.ignore = !layer.ignore;
                     }
                     igEndPopup();
                 }
