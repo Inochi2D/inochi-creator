@@ -350,6 +350,18 @@ void incMainMenu() {
             }
             incTooltip(_("Regenerates the puppet's mipmaps."));
 
+            if (igMenuItem(__("Generate fake layer name info..."), "", false)) {
+                import creator.ext;
+                auto parts = incActivePuppet().getAllParts();
+                foreach(ref part; parts) {
+                    auto expart = cast(ExPart)part;
+                    if (expart) {
+                        expart.layerPath = "/"~part.name;
+                    }
+                }
+            }
+            incTooltip(_("Generates fake layer info based on node names"));
+
             // Spacing
             igSpacing();
             igSpacing();
