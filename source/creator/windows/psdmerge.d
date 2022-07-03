@@ -342,7 +342,7 @@ protected:
             if (igBeginChild("###Nodes", ImVec2(childWidth, childHeight))) {
                 incInputText("", childWidth, nodeFilter);
 
-                igBeginListBox("###NodeList", ImVec2(childWidth, childHeight-filterWidgetHeight));
+                igBeginListBox("###NodeList", ImVec2(childWidth, childHeight-filterWidgetHeight-optionsListHeight));
                     treeView();
                 igEndListBox();
             }
@@ -360,9 +360,9 @@ protected:
             igCheckbox(__("Re-translate"), &retranslateMapped);
             incTooltip(_("Moves all nodes so that they visually match their position in the canvas."));
 
-            igSameLine(0, 8*scale);
-            igCheckbox(__("Re-sort"), &resortModel);
-            incTooltip(_("[NOT IMPLEMENTED] Sorts all nodes zSorting position to match the sorting in the PSD."));
+            // igSameLine(0, 8*scale);
+            // igCheckbox(__("Re-sort"), &resortModel);
+            // incTooltip(_("[NOT IMPLEMENTED] Sorts all nodes zSorting position to match the sorting in the PSD."));
 
 
             // Spacer
