@@ -305,6 +305,7 @@ private:
             // Incredibly cursed preview image
             if (igIsItemHovered()) {
                 igBeginTooltip();
+                    incText(part.getNodePath());
                     // Calculate render size
                     float widthScale = PreviewSize / cast(float)part.textures[0].width;
                     float heightScale = PreviewSize / cast(float)part.textures[0].height;
@@ -312,15 +313,15 @@ private:
                     
                     vec4 bounds = vec4(0, 0, part.textures[0].width*fscale, part.textures[0].height*fscale);
                     if (widthScale > heightScale) bounds.x = (PreviewSize-bounds.z)/2;
-                    else if (widthScale < heightScale) bounds.y = (PreviewSize-bounds.w);
+                    else if (widthScale < heightScale) bounds.y = (PreviewSize-bounds.w)/2;
 
                     ImVec2 tl;
                     igGetCursorPos(&tl);
 
-                    igItemSize(ImVec2(PreviewSize*fscale, PreviewSize*fscale));
+                    igItemSize(ImVec2(PreviewSize*scale, PreviewSize*scale));
 
                     igSetCursorPos(
-                        ImVec2(bounds.x, bounds.y)
+                        ImVec2(tl.x+bounds.x, tl.y+bounds.y)
                     );
 
                     igImage(
