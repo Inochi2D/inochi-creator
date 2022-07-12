@@ -291,6 +291,7 @@ private {
                 if (bindings is null) igPushStyleColor(ImGuiCol.Text, inactiveColor);
                 string nodeName = incTypeIdToIcon(node.typeId) ~ " " ~ node.name;
                 if (igTreeNodeEx(cast(void*)node.uuid, flags, nodeName.toStringz)) {
+
                     if (bindings is null) igPopStyleColor();
                     if (igBeginPopup("###BindingPopup")) {
                         if (igMenuItem(__("Remove"), "", false, true)) {
@@ -366,6 +367,8 @@ private {
                             else cSelectedBindings[binding.getTarget()] = binding;
                         }
                     }
+
+                    // Iterate over bindings
                     foreach(binding; allBindings) {
                         ImGuiTreeNodeFlags flags2 =
                             ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.OpenOnArrow |
@@ -378,6 +381,7 @@ private {
                         if (!binding.isSet(cParamPoint))
                             igPushStyleColor(ImGuiCol.Text, inactiveColor);
 
+
                         // Binding entry
                         auto value = cast(ValueParameterBinding)binding;
                         string label;
@@ -386,36 +390,37 @@ private {
                         } else {
                             label = binding.getName();
                         }
-                        if (igTreeNodeEx("binding", flags2, label.toStringz)) {
-                            if (!binding.isSet(cParamPoint)) igPopStyleColor();
 
-                            // Binding selection logic
-                            if (igIsItemClicked(ImGuiMouseButton.Right)) {
-                                if (!selected) {
-                                    cSelectedBindings.clear();
-                                    cSelectedBindings[binding.getTarget()] = binding;
-                                }
-                                cCompatibleNodes = getCompatibleNodes();
-                                igOpenPopup("###BindingPopup");
+                        const(char)* bid = binding.getName().toStringz;
+                        igTreeNodeEx(bid, flags2, label.toStringz);
+                        if (!binding.isSet(cParamPoint)) igPopStyleColor();
+
+                        // Binding selection logic
+                        if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                            if (!selected) {
+                                cSelectedBindings.clear();
+                                cSelectedBindings[binding.getTarget()] = binding;
                             }
-                            if (igIsItemClicked(ImGuiMouseButton.Left)) {
-                                if (!io.KeyCtrl) {
-                                    cSelectedBindings.clear();
-                                    selected = false;
-                                }
-                                if (selected) cSelectedBindings.remove(binding.getTarget());
-                                else cSelectedBindings[binding.getTarget()] = binding;
+                            cCompatibleNodes = getCompatibleNodes();
+                            igOpenPopup("###BindingPopup");
+                        }
+                        if (igIsItemClicked(ImGuiMouseButton.Left)) {
+                            if (!io.KeyCtrl) {
+                                cSelectedBindings.clear();
+                                selected = false;
                             }
-                            igTreePop();
+                            if (selected) cSelectedBindings.remove(binding.getTarget());
+                            else cSelectedBindings[binding.getTarget()] = binding;
                         }
                     }
+                    
                     igTreePop();
                 } else if (bindings is null) igPopStyleColor();
-            
-                igPopStyleVar();
-                igPopStyleVar();
-            igEndChild();
-        }
+            }
+
+            igPopStyleVar();
+            igPopStyleVar();
+        igEndChild();
     }
 }
 
