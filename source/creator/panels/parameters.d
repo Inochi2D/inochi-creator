@@ -266,7 +266,7 @@ private {
         auto style = igGetStyle();
         ImS32 inactiveColor = igGetColorU32(style.Colors[ImGuiCol.TextDisabled]);
 
-        if (igBeginChild("BindingList", ImVec2(0, 256), false)) {
+        igBeginChild("BindingList", ImVec2(0, 256), false);
             igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 1));
             igPushStyleVar(ImGuiStyleVar.IndentSpacing, 14);
 
@@ -409,19 +409,18 @@ private {
                     }
                     igTreePop();
                 } else if (bindings is null) igPopStyleColor();
-            }
-            igPopStyleVar();
-            igPopStyleVar();
+            
+                igPopStyleVar();
+                igPopStyleVar();
             igEndChild();
         }
     }
-
 }
 
 /**
     Generates a parameter view
 */
-void incParameterView(size_t idx, Parameter param, string* grabParam) {
+void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string* grabParam) {
     bool open = igCollapsingHeader(param.name.toStringz, ImGuiTreeNodeFlags.DefaultOpen);
     if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
         igSetDragDropPayload("_PARAMETER", cast(void*)&param, (&param).sizeof, ImGuiCond.Always);
@@ -438,7 +437,10 @@ void incParameterView(size_t idx, Parameter param, string* grabParam) {
             // Parameter Control
             ImVec2 avail = incAvailableSpace();
 
-            if (igBeginChild("###PARAM", ImVec2(avail.x-24, reqSpace))) {
+            // We want to always show armed parameters but also make sure the child is begun.
+            bool childVisible = igBeginChild("###PARAM", ImVec2(avail.x-24, reqSpace));
+            if (childVisible || armedParam) {
+
                 // Popup for rightclicking the controller
                 if (igBeginPopup("###ControlPopup")) {
                     if (incArmedParameter() == param) {
@@ -473,8 +475,10 @@ void incParameterView(size_t idx, Parameter param, string* grabParam) {
 
             if (incEditMode == EditMode.ModelEdit) {
                 igSameLine(0, 0);
+
                 // Parameter Setting Buttons
-                if (igBeginChild("###SETTING", ImVec2(avail.x-24, reqSpace))) {
+                childVisible = igBeginChild("###SETTING", ImVec2(avail.x-24, reqSpace), false);
+                if (childVisible || armedParam) {
                     if (igBeginPopup("###EditParam")) {
                         if (igMenuItem(__("Edit Properties"), "", false, true)) {
                             incPushWindowList(new ParamPropWindow(param));
@@ -662,7 +666,7 @@ protected:
             
             // Always render the currently armed parameter on top
             if (incArmedParameter()) {
-                incParameterView(incArmedParameterIdx(), incArmedParameter(), &grabParam);
+                incParameterView!true(incArmedParameterIdx(), incArmedParameter(), &grabParam);
             }
 
             // Render other parameters
@@ -698,5 +702,3 @@ public:
     Generate logger frame
 */
 mixin incPanel!ParametersPanel;
-
-
