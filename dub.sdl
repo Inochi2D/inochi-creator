@@ -30,7 +30,7 @@ dflags "-defaultlib=phobos2-ldc-lto,druntime-ldc-lto" platform="windows-ldc" // 
 // in official builds.
 
 configuration "barebones" {
-	subConfiguration "bindbc-imgui" "static_dynamicCRT"
+	subConfiguration "bindbc-imgui" "static_staticCRT"
 	platforms "linux"
 	targetType "executable"
 }
@@ -52,7 +52,7 @@ configuration "win32-barebones" {
 // Do not package your compilation of Inochi Creator with these configurations
 // unless you have prior permission from the Inochi2D project.
 configuration "full" {
-	subConfiguration "bindbc-imgui" "static_dynamicCRT"
+	subConfiguration "bindbc-imgui" "static_staticCRT"
 	platforms "linux"
 	targetType "executable"
 	versions "InBranding"
