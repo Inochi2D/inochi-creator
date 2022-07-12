@@ -391,27 +391,28 @@ private {
                             label = binding.getName();
                         }
 
+                        // NOTE: This is a leaf node so it should NOT be popped.
                         const(char)* bid = binding.getName().toStringz;
                         igTreeNodeEx(bid, flags2, label.toStringz);
-                        if (!binding.isSet(cParamPoint)) igPopStyleColor();
+                            if (!binding.isSet(cParamPoint)) igPopStyleColor();
 
-                        // Binding selection logic
-                        if (igIsItemClicked(ImGuiMouseButton.Right)) {
-                            if (!selected) {
-                                cSelectedBindings.clear();
-                                cSelectedBindings[binding.getTarget()] = binding;
+                            // Binding selection logic
+                            if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                                if (!selected) {
+                                    cSelectedBindings.clear();
+                                    cSelectedBindings[binding.getTarget()] = binding;
+                                }
+                                cCompatibleNodes = getCompatibleNodes();
+                                igOpenPopup("###BindingPopup");
                             }
-                            cCompatibleNodes = getCompatibleNodes();
-                            igOpenPopup("###BindingPopup");
-                        }
-                        if (igIsItemClicked(ImGuiMouseButton.Left)) {
-                            if (!io.KeyCtrl) {
-                                cSelectedBindings.clear();
-                                selected = false;
+                            if (igIsItemClicked(ImGuiMouseButton.Left)) {
+                                if (!io.KeyCtrl) {
+                                    cSelectedBindings.clear();
+                                    selected = false;
+                                }
+                                if (selected) cSelectedBindings.remove(binding.getTarget());
+                                else cSelectedBindings[binding.getTarget()] = binding;
                             }
-                            if (selected) cSelectedBindings.remove(binding.getTarget());
-                            else cSelectedBindings[binding.getTarget()] = binding;
-                        }
                     }
                     
                     igTreePop();
