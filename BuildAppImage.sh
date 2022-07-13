@@ -3,12 +3,13 @@ cd build
 
 mkdir inochi-creator.AppDir
 cd inochi-creator.AppDir
-mkdir usr
-mkdir usr/bin
+mkdir -p usr/bin
+mkdir -p usr/share/metainfo
 cp ../../out/inochi-creator usr/bin/inochi-creator
 cp ../../out/*.mo ./
 cp ../../res/logo_256.png logo_256.png
 cp ../../res/inochi-creator.desktop inochi-creator.desktop
+cp ../../res/inochi-creator.appdata.xml usr/share/metainfo/inochi-creator.appdata.xml
 cp ../../res/AppRun AppRun
 cp ../../res/NotoSansCJK-Regular-LICENSE usr/bin/NotoSansCJK-Regular-LICENSE
 cp ../../res/MaterialIcons-LICENSE usr/bin/MaterialIcons-LICENSE
