@@ -128,7 +128,7 @@ void incAddPrevProject(string path) {
 
     // Put project to the start of the "previous" list and
     // limit to 10 elements
-    projects = path ~ projects;
+    projects = path.dup ~ projects;
     if(projects.length > 10) projects.length = 10;
 
     // Then save.
@@ -150,6 +150,7 @@ void incNewProject() {
 
     activeProject = new Project;
     activeProject.puppet = new Puppet;
+    incFocusCamera(activeProject.puppet.root);
     incSelectNode(null);
 
     inDbgDrawMeshVertexPoints = true;
@@ -332,6 +333,7 @@ void incRebleedTextures() {
 void incFreeMemory() {
     import core.memory : GC;
     GC.collect();
+    GC.minimize();
 }
 
 /**
