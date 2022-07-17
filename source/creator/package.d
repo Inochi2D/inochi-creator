@@ -119,7 +119,7 @@ string[] incGetPrevProjects() {
 void incAddPrevProject(string path) {
     import std.algorithm.searching : countUntil;
     import std.algorithm.mutation : remove;
-    string[] projects = incSettingsGet!(string[])("prev_projects");
+    string[] projects = incGetPrevProjects();
 
     ptrdiff_t idx = projects.countUntil(path);
     if (idx >= 0) {
