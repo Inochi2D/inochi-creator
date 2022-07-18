@@ -392,7 +392,6 @@ void incArmParameter(size_t i, ref Parameter param) {
     armedParam = param;
     armedParamIdx = i;
     incViewportNodeDeformNotifyParamValueChanged();
-    activeProject.puppet.renderParameters = false;
 }
 
 /**
@@ -402,7 +401,6 @@ void incDisarmParameter() {
     armedParam = null;
     armedParamIdx = 0;
     incViewportNodeDeformNotifyParamValueChanged();
-    activeProject.puppet.renderParameters = true;
 }
 
 /**
