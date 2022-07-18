@@ -544,7 +544,7 @@ public:
 
     void draw(Camera camera) {
         mat4 trans = mat4.identity;
-        if (deformOnly) trans = target.transform.matrix();
+        if (deformOnly) trans = target.transform.matrix().translation;
 
         if (vtxAtMouse !is null && !isSelecting) {
             MeshVertex*[] one = [vtxAtMouse];
