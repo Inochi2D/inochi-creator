@@ -174,16 +174,22 @@ ImGuiKey incKeyScancode(string c) {
 bool incShortcut(string s, bool repeat=false) {
     auto io = igGetIO();
 
+    if(io.KeyCtrl && io.KeyAlt) return false;
+
+    if (startsWith(s, "Ctrl+Shift+")) {
+        if (!(io.KeyCtrl && !io.KeyAlt && io.KeyShift)) return false;
+        s = s[11..$];
+    }
     if (startsWith(s, "Ctrl+")) {
-        if (!io.KeyCtrl) return false;
+        if (!(io.KeyCtrl && !io.KeyAlt && !io.KeyShift)) return false;
         s = s[5..$];
     }
     if (startsWith(s, "Alt+")) {
-        if (!io.KeyAlt) return false;
+        if (!(!io.KeyCtrl && io.KeyAlt && !io.KeyShift)) return false;
         s = s[4..$];
     }
     if (startsWith(s, "Shift+")) {
-        if (!io.KeyShift) return false;
+        if (!(!io.KeyCtrl && !io.KeyAlt && io.KeyShift)) return false;
         s = s[6..$];
     }
 

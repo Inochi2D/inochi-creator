@@ -12,6 +12,7 @@ import creator;
 import creator.widgets;
 import creator.ext;
 import creator.core;
+import creator.core.input;
 import creator.utils;
 import inochi2d;
 import std.string;
@@ -277,8 +278,7 @@ protected:
 
         if (incEditMode == EditMode.ModelEdit) { 
             if (!incArmedParameter) {
-                auto io = igGetIO();
-                if (io.KeyCtrl && igIsKeyPressed(ImGuiKey.A, false)) {
+                if (incShortcut("Ctrl+A")) {
                     incSelectAll();
                 }
             }
