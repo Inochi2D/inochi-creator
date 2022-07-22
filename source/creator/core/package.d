@@ -6,6 +6,7 @@
 */
 module creator.core;
 import creator.core.font;
+import creator.core.input;
 import creator.panels;
 import creator.windows;
 import creator.utils.link;
@@ -629,9 +630,9 @@ version (InBranding) {
 void incHandleShortcuts() {
     auto io = igGetIO();
     
-    if (io.KeyCtrl && io.KeyShift && igIsKeyPressed(ImGuiKey.Z, true)) {
+    if (incShortcut("Ctrl+Shift+Z", true)) {
         incActionRedo();
-    } else if (io.KeyCtrl && igIsKeyPressed(ImGuiKey.Z, true)) {
+    } else if (incShortcut("Ctrl+Z", true)) {
         incActionUndo();
     }
 }

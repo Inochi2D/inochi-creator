@@ -58,6 +58,7 @@
   DLang
 
 ## Fonts Used
+  Noto
   Noto CJK
   OpenDyslexic
   Material Icons
