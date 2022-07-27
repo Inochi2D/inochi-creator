@@ -60,7 +60,7 @@ protected:
                 auto adaptorOptions = incTestGetAdaptorOptions();
 
                 string bindingIP = incSettingsGet("vmc_bind_ip", "0.0.0.0");
-                if (incInputText(__("Bind Address"), avail.x/2, bindingIP, ImGuiInputTextFlags.None)) {
+                if (incInputText(_("Bind Address"), avail.x/2, bindingIP, ImGuiInputTextFlags.None)) {
                     incSettingsSet("vmc_bind_ip", bindingIP);
 
                     if (this.canParseAddr(bindingIP)) {
@@ -87,7 +87,7 @@ protected:
             if (trackingModeCheckbox("VTube Studio", _("A reciever which uses the VTubeStudio iOS app"), TrackingMode.VTS)) {
                 
                 string bindingIP = incSettingsGet!string("vts_phone_ip");
-                if (incInputText(__("iPhone IP"), avail.x/2, bindingIP, ImGuiInputTextFlags.None)) {
+                if (incInputText("iPhoneIP", _("iPhone IP"), avail.x/2, bindingIP, ImGuiInputTextFlags.None)) {
                     incSettingsSet("vts_phone_ip", bindingIP);
 
                     if (this.canParseAddr(bindingIP)) {
@@ -101,7 +101,7 @@ protected:
 
             if (trackingModeCheckbox("OpenSeeFace", _("A receiver which uses OpenSeeFace application"), TrackingMode.OSF)) {
                 string bindingIP = incSettingsGet("osf_bind_ip", "0.0.0.0");
-                if (incInputText(__("OSF Bind Address"), avail.x/2, bindingIP, ImGuiInputTextFlags.None)) {
+                if (incInputText("osfBindAddress", _("OSF Bind Address"), avail.x/2, bindingIP, ImGuiInputTextFlags.None)) {
                     incSettingsSet("osf_bind_ip", bindingIP);
 
                     if (this.canParseAddr(bindingIP)) {
