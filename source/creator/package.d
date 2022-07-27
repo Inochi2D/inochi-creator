@@ -392,6 +392,8 @@ void incArmParameter(size_t i, ref Parameter param) {
     armedParam = param;
     armedParamIdx = i;
     incViewportNodeDeformNotifyParamValueChanged();
+    incActivePuppet.enableDrivers = false;
+    incActivePuppet.resetDrivers();
 }
 
 /**
@@ -401,6 +403,8 @@ void incDisarmParameter() {
     armedParam = null;
     armedParamIdx = 0;
     incViewportNodeDeformNotifyParamValueChanged();
+    incActivePuppet.enableDrivers = true;
+    incActivePuppet.resetDrivers();
 }
 
 /**
