@@ -59,7 +59,7 @@ protected:
         igSameLine(0, 0);
 
         // Ugly hack to please imgui
-        string count = (_("%d of %d")~"\0").format(incActionHistory().length, incActionGetUndoHistoryLength());
+        string count = _("%d of %d").format(incActionHistory().length, incActionGetUndoHistoryLength());
         ImVec2 len = incMeasureString(count);
         incDummy(ImVec2(-(len.x-8), 1));
         igSameLine(0, 0);
