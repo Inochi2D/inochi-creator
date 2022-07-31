@@ -429,6 +429,9 @@ private {
     Generates a parameter view
 */
 void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string* grabParam) {
+    igPushID(cast(void*)param);
+    scope(exit) igPopID();
+
     bool open = igCollapsingHeader(param.name.toStringz, ImGuiTreeNodeFlags.DefaultOpen);
     if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
         igSetDragDropPayload("_PARAMETER", cast(void*)&param, (&param).sizeof, ImGuiCond.Always);
@@ -438,7 +441,6 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
 
     if (!open) return;
     igIndent();
-        igPushID(cast(void*)param);
 
             float reqSpace = param.isVec2 ? 144 : 52;
 
@@ -593,7 +595,6 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
             if (incArmedParameter() == param) {
                 bindingList(param);
             }
-        igPopID();
     igUnindent();
 }
 
