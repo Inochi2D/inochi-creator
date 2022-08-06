@@ -179,11 +179,11 @@ public:
     string name;
     Parameter self;
 
-    this(string name, Parameter self, Action function(ParameterBinding, VarArg) bindingActionMapper, VarArg args) {
+    this(string name, Parameter self, ParameterBinding[] bindings, Action function(ParameterBinding, VarArg) bindingActionMapper, VarArg args) {
         super([]);
         this.name     = name;
         this.self     = self;
-        foreach (binding; self.bindings) {
+        foreach (binding; (bindings !is null)? bindings: self.bindings) {
             Action action = bindingActionMapper(binding, args);
             if (action !is null) 
                 addAction(action);
@@ -233,8 +233,8 @@ Action BindingAddMapper(ParameterBinding binding, Parameter parent) {
     return new ParameterBindingAddAction(parent, binding);
 }
 class ParameterAddBindingsAction : AbstractParameterChangeBindingsAction!(Parameter) {
-    this(string name, Parameter self) {
-        super(name, self, &BindingAddMapper, self);
+    this(string name, Parameter self, ParameterBinding[] bindings) {
+        super(name, self, bindings, &BindingAddMapper, self);
     }
 }
 
@@ -247,8 +247,8 @@ Action BindingRemoveMapper(ParameterBinding binding, Parameter parent) {
     return new ParameterBindingRemoveAction(parent, binding);
 }
 class ParameterRemoveBindingsAction : AbstractParameterChangeBindingsAction!(Parameter) {
-    this(string name, Parameter self) {
-        super(name, self, &BindingRemoveMapper, self);
+    this(string name, Parameter self, ParameterBinding[] bindings) {
+        super(name, self, bindings, &BindingRemoveMapper, self);
     }
 }
 
@@ -267,8 +267,8 @@ Action BindingChangeMapper(ParameterBinding binding) {
     }
 }
 class ParameterChangeBindingsAction : AbstractParameterChangeBindingsAction!() {
-    this(string name, Parameter self) {
-        super(name, self, &BindingChangeMapper);
+    this(string name, Parameter self, ParameterBinding[] bindings) {
+        super(name, self, bindings, &BindingChangeMapper);
     }
 }
 
@@ -287,7 +287,7 @@ Action BindingValueChangeMapper(ParameterBinding binding, int pointx, int pointy
     }
 }
 class ParameterChangeBindingsValueAction : AbstractParameterChangeBindingsAction!(int, int) {
-    this(string name, Parameter self, int pointx, int pointy) {
-        super(name, self, &BindingValueChangeMapper, pointx, pointy);
+    this(string name, Parameter self, ParameterBinding[] bindings, int pointx, int pointy) {
+        super(name, self, bindings, &BindingValueChangeMapper, pointx, pointy);
     }
 }

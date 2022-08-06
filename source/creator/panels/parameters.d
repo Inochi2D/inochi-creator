@@ -58,7 +58,7 @@ private {
     }
 
     void mirrorAll(Parameter param, uint axis) {
-        auto action = new ParameterChangeBindingsAction("Mirror All", param);
+        auto action = new ParameterChangeBindingsAction("Mirror All", param, null);
         foreach(ParameterBinding binding; param.bindings) {
             uint xCount = param.axisPointCount(0);
             uint yCount = param.axisPointCount(1);
@@ -76,7 +76,7 @@ private {
     }
 
     void mirroredAutofill(Parameter param, uint axis, float min, float max) {
-        auto action = new ParameterChangeBindingsAction("Mirror Auto Fill", param);
+        auto action = new ParameterChangeBindingsAction("Mirror Auto Fill", param, null);
         foreach(ParameterBinding binding; param.bindings) {
             uint xCount = param.axisPointCount(0);
             uint yCount = param.axisPointCount(1);
@@ -97,7 +97,7 @@ private {
     }
 
     void fixScales(Parameter param) {
-        auto action = new ParameterChangeBindingsAction("Fix Scale", param);
+        auto action = new ParameterChangeBindingsAction("Fix Scale", param, null);
         foreach(ParameterBinding binding; param.bindings) {
             switch(binding.getName()) {
                 case "transform.s.x":
@@ -174,7 +174,7 @@ private {
 
     void keypointActions(Parameter param, ParameterBinding[] bindings) {
         if (igMenuItem(__("Unset"), "", false, true)) {
-            auto action = new ParameterChangeBindingsValueAction("unset", param, cParamPoint.x, cParamPoint.y);
+            auto action = new ParameterChangeBindingsValueAction("unset", param, bindings, cParamPoint.x, cParamPoint.y);
             foreach(binding; bindings) {
                 binding.unset(cParamPoint);
             }
@@ -183,7 +183,7 @@ private {
             incViewportNodeDeformNotifyParamValueChanged();
         }
         if (igMenuItem(__("Set to current"), "", false, true)) {
-            auto action = new ParameterChangeBindingsValueAction("setCurrent", param, cParamPoint.x, cParamPoint.y);
+            auto action = new ParameterChangeBindingsValueAction("setCurrent", param, bindings, cParamPoint.x, cParamPoint.y);
             foreach(binding; bindings) {
                 binding.setCurrent(cParamPoint);
             }
@@ -192,7 +192,7 @@ private {
             incViewportNodeDeformNotifyParamValueChanged();
         }
         if (igMenuItem(__("Reset"), "", false, true)) {
-            auto action = new ParameterChangeBindingsValueAction("reset", param, cParamPoint.x, cParamPoint.y);
+            auto action = new ParameterChangeBindingsValueAction("reset", param, bindings, cParamPoint.x, cParamPoint.y);
             foreach(binding; bindings) {
                 binding.reset(cParamPoint);
             }
@@ -201,7 +201,7 @@ private {
             incViewportNodeDeformNotifyParamValueChanged();
         }
         if (igMenuItem(__("Invert"), "", false, true)) {
-            auto action = new ParameterChangeBindingsValueAction("invert", param, cParamPoint.x, cParamPoint.y);
+            auto action = new ParameterChangeBindingsValueAction("invert", param, bindings, cParamPoint.x, cParamPoint.y);
             foreach(binding; bindings) {
                 binding.scaleValueAt(cParamPoint, -1, -1);
             }
@@ -211,7 +211,7 @@ private {
         }
         if (igBeginMenu(__("Mirror"), true)) {
             if (igMenuItem(__("Horizontally"), "", false, true)) {
-                auto action = new ParameterChangeBindingsValueAction("mirror Horizontally", param, cParamPoint.x, cParamPoint.y);
+                auto action = new ParameterChangeBindingsValueAction("mirror Horizontally", param, bindings, cParamPoint.x, cParamPoint.y);
                 foreach(binding; bindings) {
                     binding.scaleValueAt(cParamPoint, 0, -1);
                 }
@@ -220,7 +220,7 @@ private {
                 incViewportNodeDeformNotifyParamValueChanged();
             }
             if (igMenuItem(__("Vertically"), "", false, true)) {
-                auto action = new ParameterChangeBindingsValueAction("mirror Vertically", param, cParamPoint.x, cParamPoint.y);
+                auto action = new ParameterChangeBindingsValueAction("mirror Vertically", param, bindings, cParamPoint.x, cParamPoint.y);
                 foreach(binding; bindings) {
                     binding.scaleValueAt(cParamPoint, 1, -1);
                 }
@@ -233,7 +233,7 @@ private {
         if (param.isVec2) {
             if (igBeginMenu(__("Set from mirror"), true)) {
                 if (igMenuItem(__("Horizontally"), "", false, true)) {
-                    auto action = new ParameterChangeBindingsValueAction("set From Mirror (Horizontally)", param, cParamPoint.x, cParamPoint.y);
+                    auto action = new ParameterChangeBindingsValueAction("set From Mirror (Horizontally)", param, bindings, cParamPoint.x, cParamPoint.y);
                     foreach(binding; bindings) {
                         binding.extrapolateValueAt(cParamPoint, 0);
                     }
@@ -242,7 +242,7 @@ private {
                     incViewportNodeDeformNotifyParamValueChanged();
                 }
                 if (igMenuItem(__("Vertically"), "", false, true)) {
-                    auto action = new ParameterChangeBindingsValueAction("set From Mirror (Vertically)", param, cParamPoint.x, cParamPoint.y);
+                    auto action = new ParameterChangeBindingsValueAction("set From Mirror (Vertically)", param, bindings, cParamPoint.x, cParamPoint.y);
                     foreach(binding; bindings) {
                         binding.extrapolateValueAt(cParamPoint, 1);
                     }
@@ -251,7 +251,7 @@ private {
                     incViewportNodeDeformNotifyParamValueChanged();
                 }
                 if (igMenuItem(__("Diagonally"), "", false, true)) {
-                    auto action = new ParameterChangeBindingsValueAction("set From Mirror (Diagonally)", param, cParamPoint.x, cParamPoint.y);
+                    auto action = new ParameterChangeBindingsValueAction("set From Mirror (Diagonally)", param, bindings, cParamPoint.x, cParamPoint.y);
                     foreach(binding; bindings) {
                         binding.extrapolateValueAt(cParamPoint, -1);
                     }
@@ -263,7 +263,7 @@ private {
             }
         } else {
             if (igMenuItem(__("Set from mirror"), "", false, true)) {
-                auto action = new ParameterChangeBindingsValueAction("set From Mirror", param, cParamPoint.x, cParamPoint.y);
+                auto action = new ParameterChangeBindingsValueAction("set From Mirror", param, bindings, cParamPoint.x, cParamPoint.y);
                 foreach(binding; bindings) {
                     binding.extrapolateValueAt(cParamPoint, 0);
                 }
@@ -284,14 +284,14 @@ private {
         if (igMenuItem(__("Paste"), "", false,  true)) {
             if (bindings.length == 1 && cClipboardBindings.length == 1 &&
                 bindings[0].isCompatibleWithNode(cClipboardBindings.values[0].getNode())) {
-                auto action = new ParameterChangeBindingsValueAction("set From Mirror", param, cParamPoint.x, cParamPoint.y);
+                auto action = new ParameterChangeBindingsValueAction("set From Mirror", param, bindings,cParamPoint.x, cParamPoint.y);
                 cClipboardBindings.values[0].copyKeypointToBinding(cClipboardPoint, bindings[0], cParamPoint);
                 action.updateNewState();
                 incActionPush(action);
             } else {
                 foreach(binding; bindings) {
                     if (binding.getTarget() in cClipboardBindings) {
-                        auto action = new ParameterChangeBindingsValueAction("set From Mirror", param, cParamPoint.x, cParamPoint.y);
+                        auto action = new ParameterChangeBindingsValueAction("set From Mirror", param, bindings, cParamPoint.x, cParamPoint.y);
                         ParameterBinding origBinding = cClipboardBindings[binding.getTarget()];
                         origBinding.copyKeypointToBinding(cClipboardPoint, binding, cParamPoint);
                     }
@@ -551,20 +551,20 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
 
                         if (param.isVec2) {
                             if (igMenuItem(__("Flip X"), "", false, true)) {
-                                auto action = new ParameterChangeBindingsAction("Flip X", param);
+                                auto action = new ParameterChangeBindingsAction("Flip X", param, null);
                                 param.reverseAxis(0);
                                 action.updateNewState();
                                 incActionPush(action);
                             }
                             if (igMenuItem(__("Flip Y"), "", false, true)) {
-                                auto action = new ParameterChangeBindingsAction("Flip Y", param);
+                                auto action = new ParameterChangeBindingsAction("Flip Y", param, null);
                                 param.reverseAxis(1);
                                 action.updateNewState();
                                 incActionPush(action);
                             }
                         } else {
                             if (igMenuItem(__("Flip"), "", false, true)) {
-                                auto action = new ParameterChangeBindingsAction("Flip", param);
+                                auto action = new ParameterChangeBindingsAction("Flip", param, null);
                                 param.reverseAxis(0);
                                 action.updateNewState();
                                 incActionPush(action);
