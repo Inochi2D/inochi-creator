@@ -11,6 +11,7 @@ import creator.panels;
 import creator.widgets;
 import creator.utils;
 import creator.windows;
+import creator.actions;
 import creator;
 import inochi2d;
 import inochi2d.core.nodes.common;
@@ -976,8 +977,24 @@ void incInspectorDeformFloatDragVal(string name, string paramName, float adjustS
         currFloat = b.getValue(cursor);
     }
     if (incDragFloat(name, &currFloat, adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
-        ValueParameterBinding b = cast(ValueParameterBinding)param.getOrAddBinding(node, paramName);
+        GroupAction groupAction = null;
+        ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
+        if (b is null) {
+            b = cast(ValueParameterBinding)param.createBinding(node, paramName);
+            param.addBinding(b);
+            groupAction = new GroupAction();
+            auto addAction = new ParameterBindingAddAction(param, b);
+            groupAction.addAction(addAction);
+        }
+        auto action = new ParameterBindingValueChangeAction!(float)(b.getName(), b, cursor.x, cursor.y);
         b.setValue(cursor, currFloat);
+        action.updateNewState();
+        if (groupAction) {
+            groupAction.addAction(action);
+            incActionPush(groupAction);
+        } else {
+            incActionPush(action);
+        }
     }
 }
 
@@ -987,8 +1004,24 @@ void incInspectorDeformInputFloat(string name, string paramName, float step, flo
         currFloat = b.getValue(cursor);
     }
     if (igInputFloat(name.toStringz, &currFloat, step, stepFast, "%.2f")) {
-        ValueParameterBinding b = cast(ValueParameterBinding)param.getOrAddBinding(node, paramName);
+        GroupAction groupAction = null;
+        ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
+        if (b is null) {
+            b = cast(ValueParameterBinding)param.createBinding(node, paramName);
+            param.addBinding(b);
+            groupAction = new GroupAction();
+            auto addAction = new ParameterBindingAddAction(param, b);
+            groupAction.addAction(addAction);
+        }
+        auto action = new ParameterBindingValueChangeAction!(float)(b.getName(), b, cursor.x, cursor.y);
         b.setValue(cursor, currFloat);
+        action.updateNewState();
+        if (groupAction) {
+            groupAction.addAction(action);
+            incActionPush(groupAction);
+        } else {
+            incActionPush(action);
+        }
     }
 }
 
@@ -1050,8 +1083,24 @@ void incInspectorDeformSliderFloat(string name, string paramName, float min, flo
         currFloat = b.getValue(cursor);
     }
     if (igSliderFloat(name.toStringz, &currFloat, min, max, "%.2f")) {
-        ValueParameterBinding b = cast(ValueParameterBinding)param.getOrAddBinding(node, paramName);
+        GroupAction groupAction = null;
+        ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
+        if (b is null) {
+            b = cast(ValueParameterBinding)param.createBinding(node, paramName);
+            param.addBinding(b);
+            groupAction = new GroupAction();
+            auto addAction = new ParameterBindingAddAction(param, b);
+            groupAction.addAction(addAction);
+        }
+        auto action = new ParameterBindingValueChangeAction!(float)(b.getName(), b, cursor.x, cursor.y);
         b.setValue(cursor, currFloat);
+        action.updateNewState();
+        if (groupAction) {
+            groupAction.addAction(action);
+            incActionPush(groupAction);
+        } else {
+            incActionPush(action);
+        }
     }
 }
 

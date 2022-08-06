@@ -10,6 +10,7 @@ import creator.panels;
 import creator.widgets;
 import creator.windows;
 import creator.core;
+import creator.actions;
 import creator;
 import std.string;
 import inochi2d;
@@ -57,6 +58,7 @@ private {
     }
 
     void mirrorAll(Parameter param, uint axis) {
+        auto action = new ParameterChangeBindingsAction("Mirror All", param);
         foreach(ParameterBinding binding; param.bindings) {
             uint xCount = param.axisPointCount(0);
             uint yCount = param.axisPointCount(1);
@@ -69,9 +71,12 @@ private {
                 }
             }
         }
+        action.updateNewState();
+        incActionPush(action);
     }
 
     void mirroredAutofill(Parameter param, uint axis, float min, float max) {
+        auto action = new ParameterChangeBindingsAction("Mirror Auto Fill", param);
         foreach(ParameterBinding binding; param.bindings) {
             uint xCount = param.axisPointCount(0);
             uint yCount = param.axisPointCount(1);
@@ -87,9 +92,12 @@ private {
                 }
             }
         }
+        action.updateNewState();
+        incActionPush(action);
     }
 
     void fixScales(Parameter param) {
+        auto action = new ParameterChangeBindingsAction("Fix Scale", param);
         foreach(ParameterBinding binding; param.bindings) {
             switch(binding.getName()) {
                 case "transform.s.x":
@@ -111,6 +119,8 @@ private {
                 default: break;
             }
         }
+        action.updateNewState();
+        incActionPush(action);
     }
 
     Node[] getCompatibleNodes() {
@@ -164,40 +174,58 @@ private {
 
     void keypointActions(Parameter param, ParameterBinding[] bindings) {
         if (igMenuItem(__("Unset"), "", false, true)) {
+            auto action = new ParameterChangeBindingsValueAction("unset", param, cParamPoint.x, cParamPoint.y);
             foreach(binding; bindings) {
                 binding.unset(cParamPoint);
             }
+            action.updateNewState();
+            incActionPush(action);
             incViewportNodeDeformNotifyParamValueChanged();
         }
         if (igMenuItem(__("Set to current"), "", false, true)) {
+            auto action = new ParameterChangeBindingsValueAction("setCurrent", param, cParamPoint.x, cParamPoint.y);
             foreach(binding; bindings) {
                 binding.setCurrent(cParamPoint);
             }
+            action.updateNewState();
+            incActionPush(action);
             incViewportNodeDeformNotifyParamValueChanged();
         }
         if (igMenuItem(__("Reset"), "", false, true)) {
+            auto action = new ParameterChangeBindingsValueAction("reset", param, cParamPoint.x, cParamPoint.y);
             foreach(binding; bindings) {
                 binding.reset(cParamPoint);
             }
+            action.updateNewState();
+            incActionPush(action);
             incViewportNodeDeformNotifyParamValueChanged();
         }
         if (igMenuItem(__("Invert"), "", false, true)) {
+            auto action = new ParameterChangeBindingsValueAction("invert", param, cParamPoint.x, cParamPoint.y);
             foreach(binding; bindings) {
                 binding.scaleValueAt(cParamPoint, -1, -1);
             }
+            action.updateNewState();
+            incActionPush(action);
             incViewportNodeDeformNotifyParamValueChanged();
         }
         if (igBeginMenu(__("Mirror"), true)) {
             if (igMenuItem(__("Horizontally"), "", false, true)) {
+                auto action = new ParameterChangeBindingsValueAction("mirror Horizontally", param, cParamPoint.x, cParamPoint.y);
                 foreach(binding; bindings) {
                     binding.scaleValueAt(cParamPoint, 0, -1);
                 }
+                action.updateNewState();
+                incActionPush(action);
                 incViewportNodeDeformNotifyParamValueChanged();
             }
             if (igMenuItem(__("Vertically"), "", false, true)) {
+                auto action = new ParameterChangeBindingsValueAction("mirror Vertically", param, cParamPoint.x, cParamPoint.y);
                 foreach(binding; bindings) {
                     binding.scaleValueAt(cParamPoint, 1, -1);
                 }
+                action.updateNewState();
+                incActionPush(action);
                 incViewportNodeDeformNotifyParamValueChanged();
             }
             igEndMenu();
@@ -205,30 +233,42 @@ private {
         if (param.isVec2) {
             if (igBeginMenu(__("Set from mirror"), true)) {
                 if (igMenuItem(__("Horizontally"), "", false, true)) {
+                    auto action = new ParameterChangeBindingsValueAction("set From Mirror (Horizontally)", param, cParamPoint.x, cParamPoint.y);
                     foreach(binding; bindings) {
                         binding.extrapolateValueAt(cParamPoint, 0);
                     }
+                    action.updateNewState();
+                    incActionPush(action);
                     incViewportNodeDeformNotifyParamValueChanged();
                 }
                 if (igMenuItem(__("Vertically"), "", false, true)) {
+                    auto action = new ParameterChangeBindingsValueAction("set From Mirror (Vertically)", param, cParamPoint.x, cParamPoint.y);
                     foreach(binding; bindings) {
                         binding.extrapolateValueAt(cParamPoint, 1);
                     }
+                    action.updateNewState();
+                    incActionPush(action);
                     incViewportNodeDeformNotifyParamValueChanged();
                 }
                 if (igMenuItem(__("Diagonally"), "", false, true)) {
+                    auto action = new ParameterChangeBindingsValueAction("set From Mirror (Diagonally)", param, cParamPoint.x, cParamPoint.y);
                     foreach(binding; bindings) {
                         binding.extrapolateValueAt(cParamPoint, -1);
                     }
+                    action.updateNewState();
+                    incActionPush(action);
                     incViewportNodeDeformNotifyParamValueChanged();
                 }
                 igEndMenu();
             }
         } else {
             if (igMenuItem(__("Set from mirror"), "", false, true)) {
+                auto action = new ParameterChangeBindingsValueAction("set From Mirror", param, cParamPoint.x, cParamPoint.y);
                 foreach(binding; bindings) {
                     binding.extrapolateValueAt(cParamPoint, 0);
                 }
+                action.updateNewState();
+                incActionPush(action);
                 incViewportNodeDeformNotifyParamValueChanged();
             }
         }
@@ -244,10 +284,14 @@ private {
         if (igMenuItem(__("Paste"), "", false,  true)) {
             if (bindings.length == 1 && cClipboardBindings.length == 1 &&
                 bindings[0].isCompatibleWithNode(cClipboardBindings.values[0].getNode())) {
+                auto action = new ParameterChangeBindingsValueAction("set From Mirror", param, cParamPoint.x, cParamPoint.y);
                 cClipboardBindings.values[0].copyKeypointToBinding(cClipboardPoint, bindings[0], cParamPoint);
+                action.updateNewState();
+                incActionPush(action);
             } else {
                 foreach(binding; bindings) {
                     if (binding.getTarget() in cClipboardBindings) {
+                        auto action = new ParameterChangeBindingsValueAction("set From Mirror", param, cParamPoint.x, cParamPoint.y);
                         ParameterBinding origBinding = cClipboardBindings[binding.getTarget()];
                         origBinding.copyKeypointToBinding(cClipboardPoint, binding, cParamPoint);
                     }
@@ -295,9 +339,12 @@ private {
                     if (bindings is null) igPopStyleColor();
                     if (igBeginPopup("###BindingPopup")) {
                         if (igMenuItem(__("Remove"), "", false, true)) {
+                            auto action = new GroupAction();
                             foreach(binding; cSelectedBindings.byValue()) {
+                                action.addAction(new ParameterBindingRemoveAction(param, binding));
                                 param.removeBinding(binding);
                             }
+                            incActionPush(action);
                             incViewportNodeDeformNotifyParamValueChanged();
                         }
 
@@ -504,14 +551,23 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
 
                         if (param.isVec2) {
                             if (igMenuItem(__("Flip X"), "", false, true)) {
+                                auto action = new ParameterChangeBindingsAction("Flip X", param);
                                 param.reverseAxis(0);
+                                action.updateNewState();
+                                incActionPush(action);
                             }
                             if (igMenuItem(__("Flip Y"), "", false, true)) {
+                                auto action = new ParameterChangeBindingsAction("Flip Y", param);
                                 param.reverseAxis(1);
+                                action.updateNewState();
+                                incActionPush(action);
                             }
                         } else {
                             if (igMenuItem(__("Flip"), "", false, true)) {
+                                auto action = new ParameterChangeBindingsAction("Flip", param);
                                 param.reverseAxis(0);
+                                action.updateNewState();
+                                incActionPush(action);
                             }
                         }
                         if (igBeginMenu(__("Mirror"), true)) {
@@ -553,6 +609,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                         if (igMenuItem(__("Duplicate"), "", false, true)) {
                             Parameter newParam = param.dup;
                             incActivePuppet().parameters ~= newParam;
+                            incActionPush(new ParameterAddAction(newParam));
                         }
 
                         if (igMenuItem(__("Delete"), "", false, true)) {
@@ -560,6 +617,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                                 incDisarmParameter();
                             }
                             incActivePuppet().removeParameter(param);
+                            incActionPush(new ParameterRemoveAction(param));
                         }
 
                         igNewLine();
@@ -567,7 +625,10 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
 
                         // Sets the default value of the param
                         if (igMenuItem(__("Set Starting Position"), "", false, true)) {
+                            auto action = new ParameterValueChangeAction!vec2("axis points", param, &param.defaults);
                             param.defaults = param.value;
+                            action.updateNewState();
+                            incActionPush(action);
                         }
                         igEndPopup();
                     }
@@ -617,6 +678,7 @@ protected:
                     false
                 );
                 incActivePuppet().parameters ~= param;
+                incActionPush(new ParameterAddAction(param));
             }
             if (igMenuItem(__("Add 1D Parameter (-1..1)"), "", false, true)) {
                 Parameter param = new Parameter(
@@ -627,6 +689,7 @@ protected:
                 param.max.x = 1;
                 param.insertAxisPoint(0, 0.5);
                 incActivePuppet().parameters ~= param;
+                incActionPush(new ParameterAddAction(param));
             }
             if (igMenuItem(__("Add 2D Parameter (0..1)"), "", false, true)) {
                 Parameter param = new Parameter(
@@ -634,6 +697,7 @@ protected:
                     true
                 );
                 incActivePuppet().parameters ~= param;
+                incActionPush(new ParameterAddAction(param));
             }
             if (igMenuItem(__("Add 2D Parameter (-1..+1)"), "", false, true)) {
                 Parameter param = new Parameter(
@@ -645,6 +709,7 @@ protected:
                 param.insertAxisPoint(0, 0.5);
                 param.insertAxisPoint(1, 0.5);
                 incActivePuppet().parameters ~= param;
+                incActionPush(new ParameterAddAction(param));
             }
             if (igMenuItem(__("Add Mouth Shape"), "", false, true)) {
                 Parameter param = new Parameter(
@@ -660,6 +725,7 @@ protected:
                 param.insertAxisPoint(1, 0.5);
                 param.insertAxisPoint(1, 0.6);
                 incActivePuppet().parameters ~= param;
+                incActionPush(new ParameterAddAction(param));
             }
             igEndPopup();
         }
