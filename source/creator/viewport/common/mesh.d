@@ -429,6 +429,15 @@ public:
         return offsets;
     }
 
+    void setBackOffsets(vec2[] offsets) {
+        foreach(idx, vertex; offsets) {
+            vertices[idx].position = offsets[idx] + data.vertices[idx];
+        }
+        regen();
+        regenConnections();
+        changed = true;
+    }
+
     void applyOffsets(vec2[] offsets) {
         foreach(idx, vertex; vertices) {
             vertex.position += offsets[idx];

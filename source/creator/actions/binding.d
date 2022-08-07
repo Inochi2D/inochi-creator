@@ -113,8 +113,8 @@ class ParameterBindingAllValueChangeAction(T)  : LazyBoundAction {
         oldIsSet  = duplicate!bool(self.isSet_);
         if (update !is null) {
             update();
+            updateNewState();
         }
-        updateNewState();
     }
 
     void updateNewState() {
