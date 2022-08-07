@@ -1,3 +1,7 @@
+/*
+    Copyright © 2020,2022 Inochi2D Project
+    Distributed under the 2-Clause BSD License, see LICENSE file.
+*/
 module creator.actions.parameter;
 
 import creator.core.actionstack;
