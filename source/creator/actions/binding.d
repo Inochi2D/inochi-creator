@@ -1,3 +1,7 @@
+/*
+    Copyright © 2020,2022 Inochi2D Project
+    Distributed under the 2-Clause BSD License, see LICENSE file.
+*/
 module creator.actions.binding;
 
 import creator.core.actionstack;
@@ -9,6 +13,24 @@ import std.stdio;
 import std.range;
 import i18n;
 
+private {
+    T[][] duplicate(T)(ref T[][] source) {
+        T[][] target = source.dup;
+        foreach (i, s; source) {
+            target[i] = s.dup;
+        }
+        return target;
+    }
+
+    void copy(T)(ref T[][] source, ref T[][] target) {
+        foreach (sarray, tarray; zip(source, target)) {
+            foreach (i, s; sarray) {
+                tarray[i] = s;
+            }
+        }
+    }
+
+}
 
 /**
     Action for add / remove of binding
@@ -77,24 +99,8 @@ public:
 alias ParameterBindingAddAction    = ParameterBindingAddRemoveAction!true;
 alias ParameterBindingRemoveAction = ParameterBindingAddRemoveAction!false;
 
-T[][] duplicate(T)(ref T[][] source) {
-    T[][] target = source.dup;
-    foreach (i, s; source) {
-        target[i] = s.dup;
-    }
-    return target;
-}
-
-void copy(T)(ref T[][] source, ref T[][] target) {
-    foreach (sarray, tarray; zip(source, target)) {
-        foreach (i, s; sarray) {
-            tarray[i] = s;
-        }
-    }
-}
-
 /**
-    Action for change of binding values at once
+    Action for change of all of binding values (and isSet value) at once
 */
 class ParameterBindingAllValueChangeAction(T)  : LazyBoundAction {
     alias TSelf    = typeof(this);
@@ -181,7 +187,7 @@ class ParameterBindingAllValueChangeAction(T)  : LazyBoundAction {
 
 
 /**
-    Action for change of binding values at specified position
+    Action to change binding value (and isSet) of specified keypoint.
 */
 class ParameterBindingValueChangeAction(T)  : LazyBoundAction {
     alias TSelf    = typeof(this);

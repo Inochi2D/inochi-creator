@@ -68,7 +68,7 @@ interface LazyBoundAction : Action {
 
 
 /**
-    Grouping several actions into one step.
+    Grouping several actions into one undo/redo action.
 */
 class GroupAction : Action {
 public:
@@ -80,10 +80,6 @@ public:
 
     void addAction(Action action) {
         this.actions ~= action;
-    }
-
-    void removeAction(Action action) {
-        // TBD
     }
 
     /**

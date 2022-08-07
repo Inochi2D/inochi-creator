@@ -9,7 +9,7 @@ import std.format;
 import i18n;
 
 /**
-    Action for whether a parameter is created
+    Action to add parameter to active puppet.
 */
 class ParameterAddRemoveAction(bool added = true) : Action {
 public:
@@ -75,7 +75,7 @@ alias ParameterRemoveAction = ParameterAddRemoveAction!false;
 
 
 /**
-    Parameter value changed action
+    Action to remove parameter from active puppet.
 */
 class ParameterValueChangeAction(T) : LazyBoundAction {
 public:
@@ -171,7 +171,7 @@ public:
 }
 
 /**
-    Base class for actions to change bindings at once.
+    Base class for actions to change multiple bindings of the same parameter at once.
 */
 class AbstractParameterChangeBindingsAction(VarArg...) : GroupAction, LazyBoundAction {
 public:
@@ -226,7 +226,7 @@ public:
 
 
 /**
-    Actions to add bindings at once.
+    Actions to add bindings to parameter at once.
 */
 
 Action BindingAddMapper(ParameterBinding binding, Parameter parent) {
@@ -240,7 +240,7 @@ class ParameterAddBindingsAction : AbstractParameterChangeBindingsAction!(Parame
 
 
 /**
-    Actions to remove bindings at once.
+    Actions to remove bindings from parameter at once.
 */
 
 Action BindingRemoveMapper(ParameterBinding binding, Parameter parent) {
@@ -254,7 +254,7 @@ class ParameterRemoveBindingsAction : AbstractParameterChangeBindingsAction!(Par
 
 
 /**
-    Actions to change value array of bindings at once.
+    Actions to change all binding values at once.
 */
 
 Action BindingChangeMapper(ParameterBinding binding) {
@@ -274,7 +274,7 @@ class ParameterChangeBindingsAction : AbstractParameterChangeBindingsAction!() {
 
 
 /**
-    Actions to change value array of bindings at once.
+    Actions to change binding value of specified keypoints at once.
 */
 
 Action BindingValueChangeMapper(ParameterBinding binding, int pointx, int pointy) {

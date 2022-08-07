@@ -112,7 +112,6 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     */
     bool merge(Action other) {
         if (this.canMerge(other)) {
-//            this.newValues = (cast(TSelf)other).newValues;
             return true;
         }
         return false;
@@ -122,8 +121,6 @@ class MeshEditorDeformationAction  : LazyBoundAction {
         Gets whether this node can merge with an other
     */
     bool canMerge(Action other) {
-//        TSelf otherChange = cast(TSelf) other;
-//        return (otherChange !is null && this.name == otherChange.name);
         return false;
     }
 };
