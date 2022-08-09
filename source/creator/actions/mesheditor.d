@@ -2,7 +2,7 @@
     Copyright © 2020,2022 Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
 */
-module creator.actions.mesh;
+module creator.actions.mesheditor;
 
 import creator.core.actionstack;
 import creator.viewport.common.mesheditor;
@@ -73,6 +73,7 @@ class MeshEditorDeformationAction  : LazyBoundAction {
 
             self.mesh.setBackOffsets(oldVertices);
         }
+        self.getCleanDeformAction();
     }
 
     /**
@@ -87,6 +88,7 @@ class MeshEditorDeformationAction  : LazyBoundAction {
 
                 self.mesh.setBackOffsets(newVertices);
             }
+            self.getCleanDeformAction();
         }
     }
 
@@ -128,3 +130,82 @@ class MeshEditorDeformationAction  : LazyBoundAction {
         return false;
     }
 };
+
+class MeshEditorPathDeformAction : MeshEditorDeformationAction {
+public:
+    CatmullSpline path;
+    SplinePoint[] oldPathPoints;
+    SplinePoint[] oldTargetPathPoints;
+    SplinePoint[] newPathPoints;
+    SplinePoint[] newTargetPathPoints;
+
+    this(string name, IncMeshEditor self, CatmullSpline path, void delegate() update = null) {
+        this.path = path;
+        super(name, self, update);
+        oldPathPoints = this.path.points.dup;
+        if (this.path.target !is null)
+            oldTargetPathPoints = this.path.target.points.dup;
+    }
+
+    override
+    void updateNewState() {
+        super.updateNewState();
+        newPathPoints = this.path.points.dup;
+        if (this.path.target !is null) 
+            newTargetPathPoints = this.path.target.points.dup;
+    }
+
+    override
+    void clear() {
+        super.clear();
+        oldPathPoints = this.path.points.dup;
+        if (this.path.target !is null)
+            oldTargetPathPoints = this.path.target.points.dup;
+        newPathPoints = null;
+        newTargetPathPoints = null;
+    }
+
+    import std.stdio;
+    /**
+        Rollback
+    */
+    override
+    void rollback() {
+        if (self.getTarget() == this.target && incArmedParameter() == this.param &&
+            incArmedParameter().findClosestKeypoint() == this.keypoint) {
+            if (oldPathPoints !is null && oldPathPoints.length > 0) {
+                this.path.points = oldPathPoints.dup;
+                this.path.update();
+                writefln("Undo: path: %s", oldPathPoints);
+            }
+            if (oldTargetPathPoints !is null && oldTargetPathPoints.length > 0) {
+                this.path.target.points = oldTargetPathPoints.dup;
+                this.path.target.update();
+                this.path.target.updateTarget(self.mesh);
+            }
+            this.self.refreshMesh();
+        }
+        super.rollback();
+    }
+
+    /**
+        Redo
+    */
+    override
+    void redo() {
+         if (self.getTarget() == this.target && incArmedParameter() == this.param &&
+            incArmedParameter().findClosestKeypoint() == this.keypoint) {
+            if (newPathPoints !is null && newPathPoints.length > 0) {
+                this.path.points = newPathPoints.dup;
+                this.path.update();
+            }
+            if (newTargetPathPoints !is null && newTargetPathPoints.length > 0) {
+                this.path.target.points = newTargetPathPoints.dup;
+                this.path.target.update();
+                this.path.updateTarget(self.mesh);
+            }
+            this.self.refreshMesh();
+        }
+        super.redo();
+   }
+}

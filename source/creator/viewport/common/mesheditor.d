@@ -55,7 +55,6 @@ private:
 
     bool deforming = false;
     CatmullSpline path;
-    CatmullSpline targetPath;
     uint pathDragTarget;
 
     MeshEditorDeformationAction deformAction = null;
@@ -270,18 +269,25 @@ public:
         if (data.vertices.length != target.vertices.length)
             vertexMapDirty = true;
 
+        // Apply the model
+        auto action = new DrawableChangeAction(target.name, target);
+        target.rebuffer(data);
+
         if (vertexMapDirty) {
             // Remove incompatible Deforms
 
             foreach (param; incActivePuppet().parameters) {
                 ParameterBinding binding = param.getBinding(target, "deform");
-                if (binding) param.removeBinding(binding);
+                if (binding) {
+                    param.removeBinding(binding);
+                    action.addBinding(param, binding);
+                }
             }
             vertexMapDirty = false;
         }
 
-        // Apply the model
-        target.rebuffer(data);
+        action.updateNewState();
+        incActionPush(action);
     }
 
     void applyPreview() {
@@ -301,7 +307,15 @@ public:
     MeshEditorDeformationAction getCleanDeformAction() {
         pushDeformAction();
         if (!deformAction) {
-            deformAction = new MeshEditorDeformationAction("test", this);
+            switch (toolMode) {
+            case VertexToolMode.Points:
+                deformAction = new MeshEditorDeformationAction("test", this);
+                break;
+            case VertexToolMode.PathDeform:
+                deformAction = new MeshEditorPathDeformAction("test", this, path);
+                break;
+            default:
+            }
         } else {
             deformAction.clear();
         }
@@ -338,11 +352,6 @@ public:
                         foreach(v; newSelected) {
                             auto idx = selected.countUntil(v);
                             if (idx != -1) selected = selected.remove(idx);
-                        }
-                    }
-                    if (deformAction !is null) {
-                        foreach (v; selected) {
-                            deformAction.addVertex(v);
                         }
                     }
                     updateMirrorSelected();
@@ -532,8 +541,8 @@ public:
 
                 if (incInputIsKeyPressed(ImGuiKey.Tab)) {
                     if (path.target is null) {
-                        getCleanDeformAction();
                         path.createTarget(mesh);
+                        getCleanDeformAction();
                     } else {
                         if (deformAction !is null) {
                             pushDeformAction();
@@ -706,5 +715,14 @@ public:
             incTooltip(_("Path Deform Tool"));
 
         igPopStyleVar();
-   }
+    }
+
+
+    CatmullSpline getPath() {
+        return path;
+    }
+    void setPath(CatmullSpline path) {
+        this.path = path;
+
+    }
 }
