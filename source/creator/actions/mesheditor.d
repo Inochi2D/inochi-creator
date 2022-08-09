@@ -28,6 +28,8 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     Parameter      param;
     Drawable       target;
     DeformationParameterBinding    deform;
+    bool oldIsSet;
+    bool newIsSet;
     vec2[] oldVertices;
     vec2[] newVertices;
     vec2u  keypoint;
@@ -50,6 +52,7 @@ class MeshEditorDeformationAction  : LazyBoundAction {
 
     void updateNewState() {
         newVertices = self.getOffsets();
+        this.newIsSet    = deform.isSet_[keypoint.x][keypoint.y];
     }
 
     void clear() {
@@ -59,7 +62,13 @@ class MeshEditorDeformationAction  : LazyBoundAction {
         this.oldVertices = self.getOffsets();
         this.newVertices = null;
         this.deform      = cast(DeformationParameterBinding)param.getOrAddBinding(this.target, "deform");
+        this.oldIsSet    = deform.isSet_[keypoint.x][keypoint.y];
         this.dirty       = false;
+    }
+
+    bool isApplyable() {
+        return self.getTarget() == this.target && incArmedParameter() == this.param &&
+               incArmedParameter().findClosestKeypoint() == this.keypoint;
     }
 
     /**
@@ -67,10 +76,9 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     */
     void rollback() {
         deform.update(this.keypoint, oldVertices);
-        if (self.getTarget() == this.target && incArmedParameter() == this.param &&
-            incArmedParameter().findClosestKeypoint() == this.keypoint &&
-            self.getOffsets().length == this.oldVertices.length) {
-
+        deform.isSet_[keypoint.x][keypoint.y] = oldIsSet;
+        deform.reInterpolate();
+        if (isApplyable() && self.getOffsets().length == this.oldVertices.length) {
             self.mesh.setBackOffsets(oldVertices);
         }
         self.getCleanDeformAction();
@@ -82,10 +90,9 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     void redo() {
         if (newVertices) {
             deform.update(this.keypoint, newVertices);
-            if (self.getTarget() == this.target && incArmedParameter() == this.param &&
-                incArmedParameter().findClosestKeypoint() == this.keypoint &&
-                self.getOffsets().length == this.newVertices.length) {
-
+            deform.isSet_[keypoint.x][keypoint.y] = newIsSet;
+            deform.reInterpolate();
+            if (isApplyable() && self.getOffsets().length == this.newVertices.length) {
                 self.mesh.setBackOffsets(newVertices);
             }
             self.getCleanDeformAction();
@@ -165,7 +172,6 @@ public:
         newTargetPathPoints = null;
     }
 
-    import std.stdio;
     /**
         Rollback
     */
@@ -176,7 +182,6 @@ public:
             if (oldPathPoints !is null && oldPathPoints.length > 0) {
                 this.path.points = oldPathPoints.dup;
                 this.path.update();
-                writefln("Undo: path: %s", oldPathPoints);
             }
             if (oldTargetPathPoints !is null && oldTargetPathPoints.length > 0) {
                 this.path.target.points = oldTargetPathPoints.dup;

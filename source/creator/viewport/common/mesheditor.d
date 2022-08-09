@@ -304,9 +304,10 @@ public:
         }        
     }
 
-    MeshEditorDeformationAction getCleanDeformAction() {
-        pushDeformAction();
-        if (!deformAction) {
+    MeshEditorDeformationAction getDeformAction(bool reset = false)() {
+        if (reset)
+            pushDeformAction();
+        if (deformAction is null || !deformAction.isApplyable()) {
             switch (toolMode) {
             case VertexToolMode.Points:
                 deformAction = new MeshEditorDeformationAction("test", this);
@@ -317,10 +318,12 @@ public:
             default:
             }
         } else {
-            deformAction.clear();
+            if (reset)
+                deformAction.clear();
         }
         return deformAction;
     }
+    alias getCleanDeformAction = getDeformAction!true;
 
     bool update(ImGuiIO* io, Camera camera) {
         bool changed = false;
@@ -476,7 +479,10 @@ public:
 
                 // Dragging
                 if (igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
-                    if (!isSelecting) isDragging = true;
+                    if (!isSelecting) {
+                        isDragging = true;
+                        getDeformAction();
+                    }
                 }
 
                 if (isDragging) {
@@ -576,7 +582,10 @@ public:
                 }
 
                 if (igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
-                    if (pathDragTarget != -1) isDragging = true;
+                    if (pathDragTarget != -1)  {
+                        isDragging = true;
+                        getDeformAction();
+                    }
                 }
 
                 if (isDragging && pathDragTarget != -1) {
