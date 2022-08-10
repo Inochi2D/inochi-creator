@@ -35,7 +35,7 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     vec2u  keypoint;
     bool bindingAdded;
 
-    this(string name, IncMeshEditor self, void delegate() update = null) {
+    this(string name, void delegate() update = null) {
         this.name   = name;
         this.bindingAdded = false;
         this.clear();
@@ -44,6 +44,10 @@ class MeshEditorDeformationAction  : LazyBoundAction {
             update();
             this.updateNewState();
         }
+    }
+
+    auto self() {
+        return incViewportModelDeformGetEditor();
     }
 
     void addVertex(MeshVertex* vertex) {
@@ -63,7 +67,6 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     }
 
     void clear() {
-        auto self = incViewportModelDeformGetEditor();
         if (self is null) {
             target       = null;
             param        = null;
@@ -86,7 +89,6 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     }
 
     bool isApplyable() {
-        auto self = incViewportModelDeformGetEditor();
         return self !is null && self.getTarget() == this.target && incArmedParameter() == this.param &&
                incArmedParameter().findClosestKeypoint() == this.keypoint;
     }
@@ -103,7 +105,6 @@ class MeshEditorDeformationAction  : LazyBoundAction {
         if (bindingAdded) {
             param.removeBinding(deform);
         }
-        auto self = incViewportModelDeformGetEditor();
         if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
             self.resetMesh();
             if (deform !is null) {
@@ -126,7 +127,6 @@ class MeshEditorDeformationAction  : LazyBoundAction {
             if (bindingAdded) {
                 param.addBinding(deform);
             }
-            auto self = incViewportModelDeformGetEditor();
             if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
                 self.resetMesh();
                 if (deform !is null) {
@@ -178,34 +178,48 @@ class MeshEditorDeformationAction  : LazyBoundAction {
 
 class MeshEditorPathDeformAction : MeshEditorDeformationAction {
 public:
-    CatmullSpline path;
+//    CatmullSpline path;
     SplinePoint[] oldPathPoints;
     SplinePoint[] oldTargetPathPoints;
     SplinePoint[] newPathPoints;
     SplinePoint[] newTargetPathPoints;
 
-    this(string name, IncMeshEditor self, CatmullSpline path, void delegate() update = null) {
-        this.path = path;
-        super(name, self, update);
-        oldPathPoints = this.path.points.dup;
+    auto path() {
+        return self.getPath();
+    }
+
+    this(string name, void delegate() update = null) {
+        super(name, update);
+        if (path !is null)
+            oldPathPoints = path.points.dup;
+        else
+            oldPathPoints = null;
         if (this.path.target !is null)
             oldTargetPathPoints = this.path.target.points.dup;
+        else
+            oldTargetPathPoints = null;
     }
 
     override
     void updateNewState() {
         super.updateNewState();
-        newPathPoints = this.path.points.dup;
-        if (this.path.target !is null) 
-            newTargetPathPoints = this.path.target.points.dup;
+        if (path !is null)
+        newPathPoints = path.points.dup;
+        if (path !is null && path.target !is null) 
+            newTargetPathPoints = path.target.points.dup;
     }
 
     override
     void clear() {
         super.clear();
-        oldPathPoints = this.path.points.dup;
-        if (this.path.target !is null)
-            oldTargetPathPoints = this.path.target.points.dup;
+        if (path !is null)
+            oldPathPoints = path.points.dup;
+        else
+            oldPathPoints = null;
+        if (path !is null && path.target !is null)
+            oldTargetPathPoints = path.target.points.dup;
+        else
+            oldTargetPathPoints = null;
         newPathPoints = null;
         newTargetPathPoints = null;
     }
@@ -216,16 +230,14 @@ public:
     override
     void rollback() {
         if (isApplyable()) {
-            if (oldPathPoints !is null && oldPathPoints.length > 0) {
-                this.path.points = oldPathPoints.dup;
-                this.path.update();
+            if (oldPathPoints !is null && oldPathPoints.length > 0 && path !is null) {
+                path.points = oldPathPoints.dup;
+                path.update();
             }
-            if (oldTargetPathPoints !is null && oldTargetPathPoints.length > 0) {
-                this.path.target.points = oldTargetPathPoints.dup;
-                this.path.target.update();
-                this.path.target.updateTarget(incViewportModelDeformGetEditor().mesh);
+            if (oldTargetPathPoints !is null && oldTargetPathPoints.length > 0 && path !is null && path.target !is null) {
+                path.target.points = oldTargetPathPoints.dup;
+                path.target.update();
             }
-            incViewportModelDeformGetEditor().refreshMesh();
         }
         super.rollback();
     }
@@ -243,9 +255,7 @@ public:
             if (newTargetPathPoints !is null && newTargetPathPoints.length > 0) {
                 this.path.target.points = newTargetPathPoints.dup;
                 this.path.target.update();
-                this.path.updateTarget(incViewportModelDeformGetEditor().mesh);
             }
-            incViewportModelDeformGetEditor().refreshMesh();
         }
         super.redo();
    }

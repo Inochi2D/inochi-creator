@@ -310,10 +310,10 @@ public:
         if (deformAction is null || !deformAction.isApplyable()) {
             switch (toolMode) {
             case VertexToolMode.Points:
-                deformAction = new MeshEditorDeformationAction("test", this);
+                deformAction = new MeshEditorDeformationAction(target.name);
                 break;
             case VertexToolMode.PathDeform:
-                deformAction = new MeshEditorPathDeformAction("test", this, path);
+                deformAction = new MeshEditorPathDeformAction(target.name);
                 break;
             default:
             }
