@@ -33,10 +33,12 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     vec2[] oldVertices;
     vec2[] newVertices;
     vec2u  keypoint;
+    bool bindingAdded;
 
     this(string name, IncMeshEditor self, void delegate() update = null) {
         this.name   = name;
         this.self   = self;
+        this.bindingAdded = false;
         this.clear();
 
         if (update !is null) {
@@ -53,6 +55,10 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     void updateNewState() {
         newVertices = self.getOffsets();
         this.newIsSet    = deform.isSet_[keypoint.x][keypoint.y];
+        auto newDeform      = cast(DeformationParameterBinding)param.getBinding(this.target, "deform");
+        if (deform is null && newDeform !is null)
+            this.bindingAdded = true;
+        deform = newDeform;
     }
 
     void clear() {
@@ -61,8 +67,11 @@ class MeshEditorDeformationAction  : LazyBoundAction {
         this.keypoint    = param.findClosestKeypoint();
         this.oldVertices = self.getOffsets();
         this.newVertices = null;
-        this.deform      = cast(DeformationParameterBinding)param.getOrAddBinding(this.target, "deform");
-        this.oldIsSet    = deform.isSet_[keypoint.x][keypoint.y];
+        this.deform      = cast(DeformationParameterBinding)param.getBinding(this.target, "deform");
+        this.bindingAdded = false;
+        if (deform !is null) {
+            this.oldIsSet    = deform.isSet_[keypoint.x][keypoint.y];
+        }
         this.dirty       = false;
     }
 
@@ -75,11 +84,19 @@ class MeshEditorDeformationAction  : LazyBoundAction {
         Rollback
     */
     void rollback() {
-        deform.update(this.keypoint, oldVertices);
-        deform.isSet_[keypoint.x][keypoint.y] = oldIsSet;
-        deform.reInterpolate();
-        if (isApplyable() && self.getOffsets().length == this.oldVertices.length) {
-            self.mesh.setBackOffsets(oldVertices);
+        if (deform !is null) {
+            deform.update(this.keypoint, oldVertices);
+            deform.isSet_[keypoint.x][keypoint.y] = oldIsSet;
+            deform.reInterpolate();
+        }
+        if (bindingAdded) {
+            param.removeBinding(deform);
+        }
+        if (self.getTarget() == this.target && incArmedParameter() == this.param) {
+            self.resetMesh();
+            if (deform !is null) {
+                self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);            
+            }
         }
         self.getCleanDeformAction();
     }
@@ -89,11 +106,19 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     */
     void redo() {
         if (newVertices) {
-            deform.update(this.keypoint, newVertices);
-            deform.isSet_[keypoint.x][keypoint.y] = newIsSet;
-            deform.reInterpolate();
-            if (isApplyable() && self.getOffsets().length == this.newVertices.length) {
-                self.mesh.setBackOffsets(newVertices);
+            if (deform !is null) {
+                deform.update(this.keypoint, newVertices);
+                deform.isSet_[keypoint.x][keypoint.y] = newIsSet;
+                deform.reInterpolate();
+            }
+            if (bindingAdded) {
+                param.addBinding(deform);
+            }
+            if (self.getTarget() == this.target && incArmedParameter() == this.param) {
+                self.resetMesh();
+                if (deform !is null) {
+                    self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);
+                }
             }
             self.getCleanDeformAction();
         }
