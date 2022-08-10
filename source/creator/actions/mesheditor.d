@@ -7,8 +7,9 @@ module creator.actions.mesheditor;
 import creator.core.actionstack;
 import creator.viewport.common.mesheditor;
 import creator.viewport.common.mesh;
-import creator.viewport.vertex;
 import creator.viewport.common.spline;
+import creator.viewport.model.deform;
+import creator.viewport.vertex;
 import creator.viewport;
 import creator.actions;
 import creator;
@@ -24,7 +25,6 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     alias  TSelf    = typeof(this);
     string name;
     bool dirty;
-    IncMeshEditor  self;
     Parameter      param;
     Drawable       target;
     DeformationParameterBinding    deform;
@@ -37,7 +37,6 @@ class MeshEditorDeformationAction  : LazyBoundAction {
 
     this(string name, IncMeshEditor self, void delegate() update = null) {
         this.name   = name;
-        this.self   = self;
         this.bindingAdded = false;
         this.clear();
 
@@ -53,22 +52,33 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     void markAsDirty() { dirty = true; }
 
     void updateNewState() {
+        auto self = incViewportModelDeformGetEditor();
         newVertices = self.getOffsets();
-        this.newIsSet    = deform.isSet_[keypoint.x][keypoint.y];
         auto newDeform      = cast(DeformationParameterBinding)param.getBinding(this.target, "deform");
         if (deform is null && newDeform !is null)
-            this.bindingAdded = true;
+            bindingAdded = true;
         deform = newDeform;
+        if (deform !is null)
+            newIsSet    = deform.isSet_[keypoint.x][keypoint.y];
     }
 
     void clear() {
-        this.target      = self.getTarget();
-        this.param       = incArmedParameter();
-        this.keypoint    = param.findClosestKeypoint();
-        this.oldVertices = self.getOffsets();
-        this.newVertices = null;
-        this.deform      = cast(DeformationParameterBinding)param.getBinding(this.target, "deform");
-        this.bindingAdded = false;
+        auto self = incViewportModelDeformGetEditor();
+        if (self is null) {
+            target       = null;
+            param        = null;
+            deform       = null;
+            bindingAdded = false;
+            dirty        = false;
+        } else {
+            target       = self.getTarget();
+            param        = incArmedParameter();
+            keypoint     = param.findClosestKeypoint();
+            oldVertices  = self.getOffsets();
+            newVertices  = null;
+            deform       = cast(DeformationParameterBinding)param.getBinding(this.target, "deform");
+            bindingAdded = false;
+        }
         if (deform !is null) {
             this.oldIsSet    = deform.isSet_[keypoint.x][keypoint.y];
         }
@@ -76,7 +86,8 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     }
 
     bool isApplyable() {
-        return self.getTarget() == this.target && incArmedParameter() == this.param &&
+        auto self = incViewportModelDeformGetEditor();
+        return self !is null && self.getTarget() == this.target && incArmedParameter() == this.param &&
                incArmedParameter().findClosestKeypoint() == this.keypoint;
     }
 
@@ -92,7 +103,8 @@ class MeshEditorDeformationAction  : LazyBoundAction {
         if (bindingAdded) {
             param.removeBinding(deform);
         }
-        if (self.getTarget() == this.target && incArmedParameter() == this.param) {
+        auto self = incViewportModelDeformGetEditor();
+        if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
             self.resetMesh();
             if (deform !is null) {
                 self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);            
@@ -114,7 +126,8 @@ class MeshEditorDeformationAction  : LazyBoundAction {
             if (bindingAdded) {
                 param.addBinding(deform);
             }
-            if (self.getTarget() == this.target && incArmedParameter() == this.param) {
+            auto self = incViewportModelDeformGetEditor();
+            if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
                 self.resetMesh();
                 if (deform !is null) {
                     self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);
@@ -202,8 +215,7 @@ public:
     */
     override
     void rollback() {
-        if (self.getTarget() == this.target && incArmedParameter() == this.param &&
-            incArmedParameter().findClosestKeypoint() == this.keypoint) {
+        if (isApplyable()) {
             if (oldPathPoints !is null && oldPathPoints.length > 0) {
                 this.path.points = oldPathPoints.dup;
                 this.path.update();
@@ -211,9 +223,9 @@ public:
             if (oldTargetPathPoints !is null && oldTargetPathPoints.length > 0) {
                 this.path.target.points = oldTargetPathPoints.dup;
                 this.path.target.update();
-                this.path.target.updateTarget(self.mesh);
+                this.path.target.updateTarget(incViewportModelDeformGetEditor().mesh);
             }
-            this.self.refreshMesh();
+            incViewportModelDeformGetEditor().refreshMesh();
         }
         super.rollback();
     }
@@ -223,8 +235,7 @@ public:
     */
     override
     void redo() {
-         if (self.getTarget() == this.target && incArmedParameter() == this.param &&
-            incArmedParameter().findClosestKeypoint() == this.keypoint) {
+         if (isApplyable()) {
             if (newPathPoints !is null && newPathPoints.length > 0) {
                 this.path.points = newPathPoints.dup;
                 this.path.update();
@@ -232,9 +243,9 @@ public:
             if (newTargetPathPoints !is null && newTargetPathPoints.length > 0) {
                 this.path.target.points = newTargetPathPoints.dup;
                 this.path.target.update();
-                this.path.updateTarget(self.mesh);
+                this.path.updateTarget(incViewportModelDeformGetEditor().mesh);
             }
-            this.self.refreshMesh();
+            incViewportModelDeformGetEditor().refreshMesh();
         }
         super.redo();
    }
