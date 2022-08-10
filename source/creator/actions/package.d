@@ -8,7 +8,8 @@ module creator.actions;
 public import creator.actions.node;
 public import creator.actions.parameter;
 public import creator.actions.binding;
-public import creator.actions.mesh;
+public import creator.actions.mesheditor;
+public import creator.actions.drawable;
 
 /**
     An undo/redo-able action
