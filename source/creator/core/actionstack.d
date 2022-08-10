@@ -62,7 +62,7 @@ void incActionUndo() {
 */
 void incActionRedo() {
     if (actionPointer >= actions.length) {
-        actionPointer = actions.length-1;
+        actionPointer = actions.length;
         return;
     }
     actions[actionPointer].redo();
