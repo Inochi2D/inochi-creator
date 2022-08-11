@@ -113,7 +113,8 @@ class MeshEditorDeformationAction  : LazyBoundAction {
                         self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);            
                     }
                 }
-                self.getCleanDeformAction();
+                if (self !is null)
+                    self.getCleanDeformAction();
             }
             undoable = false;
         }
@@ -143,7 +144,8 @@ class MeshEditorDeformationAction  : LazyBoundAction {
                         self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);
                     }
                 }
-                self.getCleanDeformAction();
+                if (self !is null)
+                    self.getCleanDeformAction();
             }
             undoable = true;
         }
@@ -260,11 +262,11 @@ public:
     override
     void redo() {
          if (isApplyable()) {
-            if (newPathPoints !is null && newPathPoints.length > 0) {
+            if (newPathPoints !is null && newPathPoints.length > 0 && path !is null) {
                 this.path.points = newPathPoints.dup;
                 this.path.update();
             }
-            if (newTargetPathPoints !is null && newTargetPathPoints.length > 0) {
+            if (newTargetPathPoints !is null && newTargetPathPoints.length > 0 && path !is null && path.target !is null) {
                 this.path.target.points = newTargetPathPoints.dup;
                 this.path.target.update();
             }
