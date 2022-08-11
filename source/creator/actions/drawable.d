@@ -25,19 +25,19 @@ public:
     Drawable self;
     string name;
 
-    MeshData oldMesh;
-    MeshData newMesh;
+    MeshData mesh;
+    bool     undoable;
 
     this(string name, Drawable self) {
         super();
         this.name = name;
         this.self = self;
-        copy(self.getMesh(), oldMesh);
+        this.undoable = true;
+        copy(self.getMesh(), mesh);
     }
 
     override
     void updateNewState() {
-        copy(self.getMesh(), newMesh);
     }
 
     void addBinding(Parameter param, ParameterBinding binding) {
@@ -49,7 +49,13 @@ public:
     */
     override
     void rollback() {
-        self.rebuffer(oldMesh);
+        if (undoable) {
+            MeshData tmpMesh;
+            copy(self.getMesh(), tmpMesh);
+            self.rebuffer(mesh);
+            mesh = tmpMesh;
+            undoable = false;
+        }
         super.rollback();
     }
 
@@ -58,7 +64,13 @@ public:
     */
     override
     void redo() {
-        self.rebuffer(newMesh);
+        if (!undoable) {
+            MeshData tmpMesh;
+            copy(self.getMesh(), tmpMesh);
+            self.rebuffer(mesh);
+            mesh = tmpMesh;
+            undoable = true;
+        }
         super.redo();
     }
 

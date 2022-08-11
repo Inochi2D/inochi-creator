@@ -7,8 +7,9 @@ module creator.actions.mesheditor;
 import creator.core.actionstack;
 import creator.viewport.common.mesheditor;
 import creator.viewport.common.mesh;
-import creator.viewport.vertex;
 import creator.viewport.common.spline;
+import creator.viewport.model.deform;
+import creator.viewport.vertex;
 import creator.viewport;
 import creator.actions;
 import creator;
@@ -24,19 +25,18 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     alias  TSelf    = typeof(this);
     string name;
     bool dirty;
-    IncMeshEditor  self;
     Parameter      param;
     Drawable       target;
     DeformationParameterBinding    deform;
-    bool oldIsSet;
-    bool newIsSet;
-    vec2[] oldVertices;
-    vec2[] newVertices;
+    bool isSet;
+    vec2[] vertices;
     vec2u  keypoint;
+    bool bindingAdded;
+    bool undoable = true;
 
-    this(string name, IncMeshEditor self, void delegate() update = null) {
+    this(string name, void delegate() update = null) {
         this.name   = name;
-        this.self   = self;
+        this.bindingAdded = false;
         this.clear();
 
         if (update !is null) {
@@ -45,29 +45,47 @@ class MeshEditorDeformationAction  : LazyBoundAction {
         }
     }
 
+    auto self() {
+        return incViewportModelDeformGetEditor();
+    }
+
     void addVertex(MeshVertex* vertex) {
     }
 
     void markAsDirty() { dirty = true; }
 
     void updateNewState() {
-        newVertices = self.getOffsets();
-        this.newIsSet    = deform.isSet_[keypoint.x][keypoint.y];
+        auto newDeform      = cast(DeformationParameterBinding)param.getBinding(this.target, "deform");
+        if (deform is null && newDeform !is null)
+            bindingAdded = true;
+        deform = newDeform;
     }
 
     void clear() {
-        this.target      = self.getTarget();
-        this.param       = incArmedParameter();
-        this.keypoint    = param.findClosestKeypoint();
-        this.oldVertices = self.getOffsets();
-        this.newVertices = null;
-        this.deform      = cast(DeformationParameterBinding)param.getOrAddBinding(this.target, "deform");
-        this.oldIsSet    = deform.isSet_[keypoint.x][keypoint.y];
+        if (self is null) {
+            target       = null;
+            param        = null;
+            deform       = null;
+            bindingAdded = false;
+            dirty        = false;
+            vertices     = null;
+            isSet        = false;
+        } else {
+            target       = self.getTarget();
+            param        = incArmedParameter();
+            keypoint     = param.findClosestKeypoint();
+            vertices     = self.getOffsets();
+            deform       = cast(DeformationParameterBinding)param.getBinding(this.target, "deform");
+            bindingAdded = false;
+        }
+        if (deform !is null) {
+            isSet    = deform.isSet_[keypoint.x][keypoint.y];
+        }
         this.dirty       = false;
     }
 
     bool isApplyable() {
-        return self.getTarget() == this.target && incArmedParameter() == this.param &&
+        return self !is null && self.getTarget() == this.target && incArmedParameter() == this.param &&
                incArmedParameter().findClosestKeypoint() == this.keypoint;
     }
 
@@ -75,27 +93,61 @@ class MeshEditorDeformationAction  : LazyBoundAction {
         Rollback
     */
     void rollback() {
-        deform.update(this.keypoint, oldVertices);
-        deform.isSet_[keypoint.x][keypoint.y] = oldIsSet;
-        deform.reInterpolate();
-        if (isApplyable() && self.getOffsets().length == this.oldVertices.length) {
-            self.mesh.setBackOffsets(oldVertices);
+        if (undoable) {
+            if (vertices) {
+                if (deform !is null) {
+                    vec2[] tmpVertices = vertices;
+                    bool   tmpIsSet    = isSet;
+                    vertices = deform.values[keypoint.x][keypoint.y].vertexOffsets.dup;
+                    isSet    = deform.isSet_[keypoint.x][keypoint.y];
+                    deform.update(this.keypoint, tmpVertices);
+                    deform.isSet_[keypoint.x][keypoint.y] = tmpIsSet;
+                    deform.reInterpolate();
+                    if (bindingAdded) {
+                        param.removeBinding(deform);
+                    }
+                }
+                if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
+                    self.resetMesh();
+                    if (deform !is null) {
+                        self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);            
+                    }
+                }
+                if (self !is null)
+                    self.getCleanDeformAction();
+            }
+            undoable = false;
         }
-        self.getCleanDeformAction();
     }
 
     /**
         Redo
     */
     void redo() {
-        if (newVertices) {
-            deform.update(this.keypoint, newVertices);
-            deform.isSet_[keypoint.x][keypoint.y] = newIsSet;
-            deform.reInterpolate();
-            if (isApplyable() && self.getOffsets().length == this.newVertices.length) {
-                self.mesh.setBackOffsets(newVertices);
+        if (!undoable) {
+            if (vertices) {
+                if (deform !is null) {
+                    vec2[] tmpVertices = vertices;
+                    bool   tmpIsSet    = isSet;
+                    vertices = deform.values[keypoint.x][keypoint.y].vertexOffsets.dup;
+                    isSet    = deform.isSet_[keypoint.x][keypoint.y];
+                    deform.update(this.keypoint, tmpVertices);
+                    deform.isSet_[keypoint.x][keypoint.y] = tmpIsSet;
+                    deform.reInterpolate();
+                    if (bindingAdded) {
+                        param.addBinding(deform);
+                    }
+                }
+                if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
+                    self.resetMesh();
+                    if (deform !is null) {
+                        self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);
+                    }
+                }
+                if (self !is null)
+                    self.getCleanDeformAction();
             }
-            self.getCleanDeformAction();
+            undoable = true;
         }
     }
 
@@ -140,34 +192,48 @@ class MeshEditorDeformationAction  : LazyBoundAction {
 
 class MeshEditorPathDeformAction : MeshEditorDeformationAction {
 public:
-    CatmullSpline path;
+//    CatmullSpline path;
     SplinePoint[] oldPathPoints;
     SplinePoint[] oldTargetPathPoints;
     SplinePoint[] newPathPoints;
     SplinePoint[] newTargetPathPoints;
 
-    this(string name, IncMeshEditor self, CatmullSpline path, void delegate() update = null) {
-        this.path = path;
-        super(name, self, update);
-        oldPathPoints = this.path.points.dup;
+    auto path() {
+        return self.getPath();
+    }
+
+    this(string name, void delegate() update = null) {
+        super(name, update);
+        if (path !is null)
+            oldPathPoints = path.points.dup;
+        else
+            oldPathPoints = null;
         if (this.path.target !is null)
             oldTargetPathPoints = this.path.target.points.dup;
+        else
+            oldTargetPathPoints = null;
     }
 
     override
     void updateNewState() {
         super.updateNewState();
-        newPathPoints = this.path.points.dup;
-        if (this.path.target !is null) 
-            newTargetPathPoints = this.path.target.points.dup;
+        if (path !is null)
+        newPathPoints = path.points.dup;
+        if (path !is null && path.target !is null) 
+            newTargetPathPoints = path.target.points.dup;
     }
 
     override
     void clear() {
         super.clear();
-        oldPathPoints = this.path.points.dup;
-        if (this.path.target !is null)
-            oldTargetPathPoints = this.path.target.points.dup;
+        if (path !is null)
+            oldPathPoints = path.points.dup;
+        else
+            oldPathPoints = null;
+        if (path !is null && path.target !is null)
+            oldTargetPathPoints = path.target.points.dup;
+        else
+            oldTargetPathPoints = null;
         newPathPoints = null;
         newTargetPathPoints = null;
     }
@@ -177,18 +243,15 @@ public:
     */
     override
     void rollback() {
-        if (self.getTarget() == this.target && incArmedParameter() == this.param &&
-            incArmedParameter().findClosestKeypoint() == this.keypoint) {
-            if (oldPathPoints !is null && oldPathPoints.length > 0) {
-                this.path.points = oldPathPoints.dup;
-                this.path.update();
+        if (isApplyable()) {
+            if (oldPathPoints !is null && oldPathPoints.length > 0 && path !is null) {
+                path.points = oldPathPoints.dup;
+                path.update();
             }
-            if (oldTargetPathPoints !is null && oldTargetPathPoints.length > 0) {
-                this.path.target.points = oldTargetPathPoints.dup;
-                this.path.target.update();
-                this.path.target.updateTarget(self.mesh);
+            if (oldTargetPathPoints !is null && oldTargetPathPoints.length > 0 && path !is null && path.target !is null) {
+                path.target.points = oldTargetPathPoints.dup;
+                path.target.update();
             }
-            this.self.refreshMesh();
         }
         super.rollback();
     }
@@ -198,18 +261,15 @@ public:
     */
     override
     void redo() {
-         if (self.getTarget() == this.target && incArmedParameter() == this.param &&
-            incArmedParameter().findClosestKeypoint() == this.keypoint) {
-            if (newPathPoints !is null && newPathPoints.length > 0) {
+         if (isApplyable()) {
+            if (newPathPoints !is null && newPathPoints.length > 0 && path !is null) {
                 this.path.points = newPathPoints.dup;
                 this.path.update();
             }
-            if (newTargetPathPoints !is null && newTargetPathPoints.length > 0) {
+            if (newTargetPathPoints !is null && newTargetPathPoints.length > 0 && path !is null && path.target !is null) {
                 this.path.target.points = newTargetPathPoints.dup;
                 this.path.target.update();
-                this.path.updateTarget(self.mesh);
             }
-            this.self.refreshMesh();
         }
         super.redo();
    }

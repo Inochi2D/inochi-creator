@@ -11,6 +11,7 @@ import inochi2d;
 import std.format;
 import std.stdio;
 import std.range;
+import std.algorithm.mutation;
 import i18n;
 
 private {
@@ -107,16 +108,15 @@ class ParameterBindingAllValueChangeAction(T)  : LazyBoundAction {
     alias TBinding = ParameterBindingImpl!(T);
     string   name;
     TBinding self;
-    T[][]    oldValues;
-    bool[][] oldIsSet;
-    T[][]    newValues;
-    bool[][] newIsSet;
+    T[][] values;
+    bool[][] isSet;
+    bool undoable = true;
 
     this(string name, TBinding self, void delegate() update = null) {
         this.name = name;
         this.self = self;
-        oldValues = duplicate!T(self.values);
-        oldIsSet  = duplicate!bool(self.isSet_);
+        values = duplicate!T(self.values);
+        isSet  = duplicate!bool(self.isSet_);
         if (update !is null) {
             update();
             updateNewState();
@@ -124,24 +124,28 @@ class ParameterBindingAllValueChangeAction(T)  : LazyBoundAction {
     }
 
     void updateNewState() {
-        newValues = duplicate!T(self.values);
-        newIsSet  = duplicate!bool(self.isSet_);
     }
 
     /**
         Rollback
     */
     void rollback() {
-        copy(oldValues, self.values);
-        copy(oldIsSet, self.isSet_);
+        if (undoable) {
+            swap(values, self.values);
+            swap(isSet, self.isSet_);
+            undoable = false;
+        }
     }
 
     /**
         Redo
     */
     void redo() {
-        copy(newValues, self.values);
-        copy(newIsSet, self.isSet_);
+        if (!undoable) {
+            swap(values, self.values);
+            swap(isSet, self.isSet_);
+            undoable = true;
+        }
     }
 
     /**
@@ -170,7 +174,6 @@ class ParameterBindingAllValueChangeAction(T)  : LazyBoundAction {
     */
     bool merge(Action other) {
         if (this.canMerge(other)) {
-            this.newValues = (cast(TSelf)other).newValues;
             return true;
         }
         return false;
@@ -196,18 +199,18 @@ class ParameterBindingValueChangeAction(T)  : LazyBoundAction {
     TBinding self;
     int  pointx;
     int  pointy;
-    T    oldValue;
-    bool oldIsSet;
-    T    newValue;
-    bool newIsSet;
+    T    value;
+    bool isSet;
+    bool undoable;
 
     this(string name, TBinding self, int pointx, int pointy, void delegate() update = null) {
         this.name  = name;
         this.self  = self;
         this.pointx = pointx;
         this.pointy = pointy;
-        oldValue  = self.values[pointx][pointy];
-        oldIsSet  = self.isSet_[pointx][pointy];
+        this.value  = self.values[pointx][pointy];
+        this.isSet  = self.isSet_[pointx][pointy];
+        this.undoable = true;
         if (update !is null) {
             update();
             updateNewState();
@@ -215,26 +218,31 @@ class ParameterBindingValueChangeAction(T)  : LazyBoundAction {
     }
 
     void updateNewState() {
-        newValue = self.values[pointx][pointy];
-        newIsSet = self.isSet_[pointx][pointy];
     }
 
     /**
         Rollback
     */
     void rollback() {
-        self.values[pointx][pointy] = oldValue;
-        self.isSet_[pointx][pointy] = oldIsSet;
-        self.reInterpolate();
+        if (undoable) {
+            swap(self.values[pointx][pointy], value);
+            swap(self.isSet_[pointx][pointy], isSet);
+            import std.stdio;
+            self.reInterpolate();
+            undoable = false;
+        }
     }
 
     /**
         Redo
     */
     void redo() {
-        self.values[pointx][pointy] = newValue;
-        self.isSet_[pointx][pointy] = newIsSet;
-        self.reInterpolate();
+        if (!undoable) {
+            swap(self.values[pointx][pointy], value);
+            swap(self.isSet_[pointx][pointy], isSet);
+            self.reInterpolate();
+            undoable = true;
+        }
     }
 
     /**
@@ -263,7 +271,6 @@ class ParameterBindingValueChangeAction(T)  : LazyBoundAction {
     */
     bool merge(Action other) {
         if (this.canMerge(other)) {
-            this.newValue = (cast(TSelf)other).newValue;
             return true;
         }
         return false;
