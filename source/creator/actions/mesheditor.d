@@ -28,12 +28,11 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     Parameter      param;
     Drawable       target;
     DeformationParameterBinding    deform;
-    bool oldIsSet;
-    bool newIsSet;
-    vec2[] oldVertices;
-    vec2[] newVertices;
+    bool isSet;
+    vec2[] vertices;
     vec2u  keypoint;
     bool bindingAdded;
+    bool undoable = true;
 
     this(string name, void delegate() update = null) {
         this.name   = name;
@@ -56,14 +55,10 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     void markAsDirty() { dirty = true; }
 
     void updateNewState() {
-        auto self = incViewportModelDeformGetEditor();
-        newVertices = self.getOffsets();
         auto newDeform      = cast(DeformationParameterBinding)param.getBinding(this.target, "deform");
         if (deform is null && newDeform !is null)
             bindingAdded = true;
         deform = newDeform;
-        if (deform !is null)
-            newIsSet    = deform.isSet_[keypoint.x][keypoint.y];
     }
 
     void clear() {
@@ -73,17 +68,18 @@ class MeshEditorDeformationAction  : LazyBoundAction {
             deform       = null;
             bindingAdded = false;
             dirty        = false;
+            vertices     = null;
+            isSet        = false;
         } else {
             target       = self.getTarget();
             param        = incArmedParameter();
             keypoint     = param.findClosestKeypoint();
-            oldVertices  = self.getOffsets();
-            newVertices  = null;
+            vertices     = self.getOffsets();
             deform       = cast(DeformationParameterBinding)param.getBinding(this.target, "deform");
             bindingAdded = false;
         }
         if (deform !is null) {
-            this.oldIsSet    = deform.isSet_[keypoint.x][keypoint.y];
+            isSet    = deform.isSet_[keypoint.x][keypoint.y];
         }
         this.dirty       = false;
     }
@@ -97,43 +93,59 @@ class MeshEditorDeformationAction  : LazyBoundAction {
         Rollback
     */
     void rollback() {
-        if (deform !is null) {
-            deform.update(this.keypoint, oldVertices);
-            deform.isSet_[keypoint.x][keypoint.y] = oldIsSet;
-            deform.reInterpolate();
-        }
-        if (bindingAdded) {
-            param.removeBinding(deform);
-        }
-        if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
-            self.resetMesh();
-            if (deform !is null) {
-                self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);            
+        if (undoable) {
+            if (vertices) {
+                if (deform !is null) {
+                    vec2[] tmpVertices = vertices;
+                    bool   tmpIsSet    = isSet;
+                    vertices = deform.values[keypoint.x][keypoint.y].vertexOffsets.dup;
+                    isSet    = deform.isSet_[keypoint.x][keypoint.y];
+                    deform.update(this.keypoint, tmpVertices);
+                    deform.isSet_[keypoint.x][keypoint.y] = tmpIsSet;
+                    deform.reInterpolate();
+                    if (bindingAdded) {
+                        param.removeBinding(deform);
+                    }
+                }
+                if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
+                    self.resetMesh();
+                    if (deform !is null) {
+                        self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);            
+                    }
+                }
+                self.getCleanDeformAction();
             }
+            undoable = false;
         }
-        self.getCleanDeformAction();
     }
 
     /**
         Redo
     */
     void redo() {
-        if (newVertices) {
-            if (deform !is null) {
-                deform.update(this.keypoint, newVertices);
-                deform.isSet_[keypoint.x][keypoint.y] = newIsSet;
-                deform.reInterpolate();
-            }
-            if (bindingAdded) {
-                param.addBinding(deform);
-            }
-            if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
-                self.resetMesh();
+        if (!undoable) {
+            if (vertices) {
                 if (deform !is null) {
-                    self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);
+                    vec2[] tmpVertices = vertices;
+                    bool   tmpIsSet    = isSet;
+                    vertices = deform.values[keypoint.x][keypoint.y].vertexOffsets.dup;
+                    isSet    = deform.isSet_[keypoint.x][keypoint.y];
+                    deform.update(this.keypoint, tmpVertices);
+                    deform.isSet_[keypoint.x][keypoint.y] = tmpIsSet;
+                    deform.reInterpolate();
+                    if (bindingAdded) {
+                        param.addBinding(deform);
+                    }
                 }
+                if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
+                    self.resetMesh();
+                    if (deform !is null) {
+                        self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);
+                    }
+                }
+                self.getCleanDeformAction();
             }
-            self.getCleanDeformAction();
+            undoable = true;
         }
     }
 
