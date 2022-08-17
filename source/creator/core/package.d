@@ -219,6 +219,7 @@ void incOpenWindow() {
         cast(uint)incSettingsGet!int("WinH", 800), 
         flags
     );
+    SDL_SetWindowMinimumSize(window, 1280, 800);
     
     GLSupport support;
 

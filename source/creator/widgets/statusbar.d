@@ -24,7 +24,7 @@ void incStatusbar() {
     
     if (incGetDarkMode()) igPushStyleColor(ImGuiCol.MenuBarBg, ImVec4(0.1, 0.1, 0.1, 1));
     else igPushStyleColor(ImGuiCol.MenuBarBg, ImVec4(0.9, 0.9, 0.9, 1));
-    if (igBeginViewportSideBar("##Statusbar", igGetMainViewport(), ImGuiDir.Down, 24, flags)) {
+    if (igBeginViewportSideBar("##Statusbar", igGetMainViewport(), ImGuiDir.Down, 22, flags)) {
         if (igBeginMenuBar()) {
 
             if (incTaskLength() > 0) {
