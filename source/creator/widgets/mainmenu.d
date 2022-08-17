@@ -25,15 +25,18 @@ private {
     bool dbgShowDebugger;
 
     void fileNew() {
+        incPopWelcomeWindow();
         incNewProject();
     }
 
     void fileOpen() {
+        incPopWelcomeWindow();
         string file = incShowOpenDialog();
         if (file) incOpenProject(file);
     }
 
     void fileSave() {
+        incPopWelcomeWindow();
 
         // If a projeect path is set then the user has opened or saved
         // an existing file, we should just override that
@@ -55,6 +58,7 @@ private {
     }
 
     void fileSaveAs() {
+        incPopWelcomeWindow();
         const TFD_Filter[] filters = [
             { ["*.inx"], "Inochi Creator Project (*.inx)" }
         ];
@@ -75,6 +79,8 @@ void incMainMenu() {
     if (incShortcut("Ctrl+S")) fileSave();
     if (incShortcut("Ctrl+Shift+S")) fileSaveAs();
 
+    if (!incSettingsGet("hasDoneQuickSetup", false)) igBeginDisabled();
+
     if(igBeginMainMenuBar()) {
         ImVec2 avail;
         igGetContentRegionAvail(&avail);
@@ -91,6 +97,7 @@ void incMainMenu() {
         }
 
         if (igBeginMenu(__("File"), true)) {
+
             if(igMenuItem(__("New"), "Ctrl+N", false, true)) {
                 fileNew();
             }
@@ -104,6 +111,7 @@ void incMainMenu() {
                 foreach(project; incGetPrevProjects) {
                     import std.path : baseName;
                     if (igMenuItem(project.baseName.toStringz, "", false, true)) {
+                        incPopWelcomeWindow();
                         incOpenProject(project);
                     }
                     incTooltip(project);
@@ -121,6 +129,7 @@ void incMainMenu() {
 
             if (igBeginMenu(__("Import"), true)) {
                 if(igMenuItem(__("Photoshop Document"), "", false, true)) {
+                    incPopWelcomeWindow();
                     incImportShowPSDDialog();
                 }
                 incTooltip(_("Import a standard Photoshop PSD file."));
@@ -133,6 +142,7 @@ void incMainMenu() {
                     c_str filename = tinyfd_openFileDialog(__("Import..."), "", filters, false);
                     if (filename !is null) {
                         string file = cast(string)filename.fromStringz;
+                        incPopWelcomeWindow();
                         incImportINP(file);
                     }
                 }
@@ -141,6 +151,7 @@ void incMainMenu() {
                 if (igMenuItem(__("Image Folder"))) {
                     c_str folder = tinyfd_selectFolderDialog(__("Select a Folder..."), null);
                     if (folder !is null) {
+                        incPopWelcomeWindow();
                         incImportFolder(cast(string)folder.fromStringz);
                     }
                 }
@@ -156,12 +167,14 @@ void incMainMenu() {
                     c_str filename = tinyfd_openFileDialog(__("Import..."), "", filters, false);
                     if (filename !is null) {
                         string file = cast(string)filename.fromStringz;
+                        incPopWelcomeWindow();
                         incPushWindow(new PSDMergeWindow(file));
                     }
                 }
                 incTooltip(_("Merge layers from Photoshop document"));
 
                 if (igMenuItem(__("Inochi Creator Project"), "", false, true)) {
+                    incPopWelcomeWindow();
                     // const TFD_Filter[] filters = [
                     //     { ["*.inp"], "Inochi2D Puppet (*.inp)" }
                     // ];
@@ -423,10 +436,13 @@ void incMainMenu() {
             incOpenLink("https://www.patreon.com/clipsey");
         }
         incTooltip(_("Support development via Patreon"));
-
-        igEndMainMenuBar();
-
-        if (dbgShowStyleEditor) igShowStyleEditor(igGetStyle());
-        if (dbgShowDebugger) igShowAboutWindow(&dbgShowDebugger);
     }
+    igEndMainMenuBar();
+
+    // For quick-setup stuff
+    if (!incSettingsGet("hasDoneQuickSetup", false)) igEndDisabled();
+
+    // ImGui Debug Stuff
+    if (dbgShowStyleEditor) igShowStyleEditor(igGetStyle());
+    if (dbgShowDebugger) igShowAboutWindow(&dbgShowDebugger);
 }

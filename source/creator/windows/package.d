@@ -224,3 +224,16 @@ void incUpdateWindows() {
 Window incGetTopWindow() {
     return windowStack.length > 0 ? windowStack[$-1] : null;
 }
+
+/**
+    Pops the welcome window.
+*/
+void incPopWelcomeWindow() {
+    import std.algorithm.mutation : remove;
+    foreach(i; 0..windowStack.length) {
+        if (auto ww = cast(WelcomeWindow)windowStack[i]) {
+            windowStack = windowStack.remove(i);
+            return;
+        }
+    }
+}
