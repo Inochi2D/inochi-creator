@@ -163,7 +163,7 @@ protected:
                             igUnindent();
 
                             incDummy(ImVec2(0, 6));
-                            incTextShadowed(_("Recent Projects..."));
+                            incTextShadowed(_("Recent Projects"));
                             incDummy(ImVec2(0, 2));
                             igIndent();
                                 if (incGetPrevProjects().length > 0) {
