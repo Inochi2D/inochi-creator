@@ -14,9 +14,21 @@ import inochi2d;
 import psd;
 import i18n;
 import std.format;
+import creator.io;
 
 private {
 
+}
+
+bool incImportShowPSDDialog() {
+    TFD_Filter[] filters = [{ ["*.psd"], "Photoshop Document (*.psd)" }];
+    string file = incShowImportDialog(filters);
+
+    if (file) {
+        incImportPSD(file);
+        return true;
+    }
+    return false;
 }
 
 /**

@@ -128,15 +128,7 @@ void incMainMenu() {
 
             if (igBeginMenu(__("Import"), true)) {
                 if(igMenuItem(__("Photoshop Document"), "", false, true)) {
-                    const TFD_Filter[] filters = [
-                        { ["*.psd"], "Photoshop Document (*.psd)" }
-                    ];
-
-                    c_str filename = tinyfd_openFileDialog(__("Import..."), "", filters, false);
-                    if (filename !is null) {
-                        string file = cast(string)filename.fromStringz;
-                        incImportPSD(file);
-                    }
+                    incImportShowPSDDialog();
                 }
                 incTooltip(_("Import a standard Photoshop PSD file."));
 
