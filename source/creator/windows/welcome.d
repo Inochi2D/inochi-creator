@@ -22,6 +22,7 @@ class WelcomeWindow : Window {
 private:
     int step = 1;
     Texture banner;
+    Texture bannerLogo;
     ImVec2 origWindowPadding;
     bool firstFrame = true;
 
@@ -67,16 +68,25 @@ protected:
         version(InBranding) {
 
             if (igBeginChild("##BANNER", ImVec2(0, 200))) {
+                igPushStyleColor(ImGuiCol.Text, 0xFFFFFFFF);
+                    // Banner Image
+                    igImage(cast(void*)banner.getTextureId(), ImVec2(512, 200));
 
-                // Banner Image
-                igImage(cast(void*)banner.getTextureId(), ImVec2(512, 200));
-                
-                // Version String
-                ImVec2 vsSize = incMeasureString(INC_VERSION);
-                igSetCursorPos(ImVec2(512-(vsSize.x+8), 8));
-                incTextShadowed(INC_VERSION);
+                    //Logo
+                    igSetCursorPos(origin);
+                    igImage(cast(void*)bannerLogo.getTextureId(), ImVec2(bannerLogo.width, bannerLogo.height));
+                    
+                    // Version String
+                    ImVec2 vsSize = incMeasureString(INC_VERSION);
+                    igSetCursorPos(ImVec2(512-(vsSize.x+8), 8));
+                    incTextShadowed(INC_VERSION);
+                igPopStyleColor();
             }
             igEndChild();
+        } else {
+            igSetWindowFontScale(3);
+                igText("Inochi Creator (Unsupported)");
+            igSetWindowFontScale(1);
         }
         igSetCursorPos(ImVec2(origin.x, origin.y+192));
 
@@ -234,8 +244,12 @@ public:
 
         version(InBranding) {
             auto bannerTex = ShallowTexture(cast(ubyte[])import("ui/banner.png"));
+            auto bannerLogoTex = ShallowTexture(cast(ubyte[])import("ui/banner-logo.png"));
+
             //inTexPremultiply(bannerTex.data);
+            
             banner = new Texture(bannerTex);
+            bannerLogo = new Texture(bannerLogoTex);
         }
         if (!incSettingsGet!bool("hasDoneQuickSetup", false)) step = 0;
     }
