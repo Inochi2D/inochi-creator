@@ -93,7 +93,7 @@ void incInitFonts() {
                 cast(ImWchar)0xE000, 
                 cast(ImWchar)0xF23B
             ].ptr, 
-            ImVec2(0, -2)
+            ImVec2(0, 2)
         );
     ImFontAtlas_Build(atlas);
     incSetUIScale(incGetUIScale());
