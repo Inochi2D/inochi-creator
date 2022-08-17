@@ -38,11 +38,11 @@ void incTextShadowed(string text) {
     
     // Shadow
     igSetCursorPos(ImVec2(origin.x+1, origin.y+1));
-    incTextColored(ImVec4(0, 0, 0, 0.5), text);
+    incTextColored(ImVec4(0.25, 0.25, 0.25, 0.5), text);
 
     // Version String
     igSetCursorPos(origin);
-    incTextColored(ImVec4(1, 1, 1, 1), text);
+    incText(text);
 }
 
 /**
