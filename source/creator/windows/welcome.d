@@ -92,6 +92,7 @@ protected:
 
                     // SETUP PAGE
                     case 0:
+                        incDummy(ImVec2(0, 4));
 
                         igText(__("Quick Setup"));
                         igNewLine();
