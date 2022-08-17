@@ -61,27 +61,24 @@ protected:
         windowViewport.Flags |= ImGuiViewportFlags.NoTaskBarIcon;
         
 
+        ImVec2 origin;
+        igGetCursorStartPos(&origin);
+
         version(InBranding) {
 
-            if (igBeginChild("##BANNER", ImVec2(0, 192))) {
-                ImVec2 origin;
-                igGetCursorStartPos(&origin);
+            if (igBeginChild("##BANNER", ImVec2(0, 200))) {
 
-                igImage(cast(void*)banner.getTextureId(), ImVec2(512, 192));
-
-                ImVec2 vsSize = incMeasureString(INC_VERSION);
+                // Banner Image
+                igImage(cast(void*)banner.getTextureId(), ImVec2(512, 200));
                 
-                // Shadow
-                igSetCursorPos(ImVec2(512-(vsSize.x+8)+1, 8+1));
-                incTextColored(ImVec4(0, 0, 0, 0.5), INC_VERSION);
-
                 // Version String
+                ImVec2 vsSize = incMeasureString(INC_VERSION);
                 igSetCursorPos(ImVec2(512-(vsSize.x+8), 8));
-                incTextColored(ImVec4(1, 1, 1, 1), INC_VERSION);
-                igSetCursorPos(origin);
+                incTextShadowed(INC_VERSION);
             }
             igEndChild();
         }
+        igSetCursorPos(ImVec2(origin.x, origin.y+192));
 
         
         igIndent();
@@ -94,7 +91,7 @@ protected:
                     case 0:
                         incDummy(ImVec2(0, 4));
 
-                        igText(__("Quick Setup"));
+                        incTextShadowed(_("Quick Setup"));
                         igNewLine();
 
                         incDummy(ImVec2(avail.x/6, 64));
@@ -140,7 +137,7 @@ protected:
 
                         // Left hand side
                         if (igBeginChild("##LHS", ImVec2((avail.x-8)/2, 0), false, ImGuiWindowFlags.NoScrollbar)) {
-                            incText(_("Create Project"));
+                            incTextShadowed(_("Create Project"));
                             incDummy(ImVec2(0, 2));
                             igIndent();
                                 if (incTextLinkWithIcon("", _("New..."))) {
@@ -166,7 +163,7 @@ protected:
                             igUnindent();
 
                             incDummy(ImVec2(0, 6));
-                            incText(_("Recent Projects..."));
+                            incTextShadowed(_("Recent Projects..."));
                             incDummy(ImVec2(0, 2));
                             igIndent();
                                 if (incGetPrevProjects().length > 0) {
@@ -180,7 +177,7 @@ protected:
                                         }
                                     }
                                 } else {
-                                    incText("No recent projects...");
+                                    incTextShadowed("No recent projects...");
                                 }
                             igUnindent();
                         }
@@ -190,7 +187,7 @@ protected:
 
                         // Right hand side
                         if (igBeginChild("##RHS", ImVec2((avail.x-8)/2, 0), false, ImGuiWindowFlags.NoScrollbar)) {
-                            incText(_("On the Web"));
+                            incTextShadowed(_("On the Web"));
                             incDummy(ImVec2(0, 2));
                             igIndent();
 
@@ -235,7 +232,11 @@ public:
     this() {
         super(_("Inochi Creator Start"));
 
-        version(InBranding) banner = new Texture(ShallowTexture(cast(ubyte[])import("ui/banner.png")));
+        version(InBranding) {
+            auto bannerTex = ShallowTexture(cast(ubyte[])import("ui/banner.png"));
+            //inTexPremultiply(bannerTex.data);
+            banner = new Texture(bannerTex);
+        }
         if (!incSettingsGet!bool("hasDoneQuickSetup", false)) step = 0;
     }
 }
