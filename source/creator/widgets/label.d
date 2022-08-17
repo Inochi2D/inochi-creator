@@ -29,6 +29,23 @@ void incTextDisabled(string text) {
 }
 
 /**
+    Renders text with a slight dropshadow
+*/
+void incTextShadowed(string text) {
+    
+    ImVec2 origin;
+    igGetCursorPos(&origin);
+    
+    // Shadow
+    igSetCursorPos(ImVec2(origin.x+1, origin.y+1));
+    incTextColored(ImVec4(0, 0, 0, 0.5), text);
+
+    // Version String
+    igSetCursorPos(origin);
+    incTextColored(ImVec4(1, 1, 1, 1), text);
+}
+
+/**
     Render wrapped
 */
 void incTextWrapped(string text) {
