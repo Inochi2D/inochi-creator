@@ -141,14 +141,23 @@ protected:
                         // Left hand side
                         if (igBeginChild("##LHS", ImVec2((avail.x-8)/2, 0), false, ImGuiWindowFlags.NoScrollbar)) {
                             incText(_("Create Project"));
-                            incDummy(ImVec2(0, 4));
+                            incDummy(ImVec2(0, 2));
                             igIndent();
                                 if (incTextLinkWithIcon("", _("New..."))) {
                                     incNewProject();
                                     this.close();
                                 }
 
-                                if (incTextLinkWithIcon("", _("Import PSD..."))) {
+                                if (incTextLinkWithIcon("", _("Open..."))) {
+                                    string file = incShowOpenDialog();
+                                    if (file) {
+                                        incOpenProject(file);
+                                        this.close();
+                                    }
+                                }
+
+
+                                if (incTextLinkWithIcon("", _("Import PSD..."))) {
                                     if (incImportShowPSDDialog()) {
                                         this.close();
                                     }
@@ -156,19 +165,22 @@ protected:
 
                             igUnindent();
 
-                            igNewLine();
-
+                            incDummy(ImVec2(0, 6));
                             incText(_("Recent Projects..."));
-                            incDummy(ImVec2(0, 4));
+                            incDummy(ImVec2(0, 2));
                             igIndent();
-                                foreach(i, recent; incGetPrevProjects()) {
-                                    if (i > 4) break;
+                                if (incGetPrevProjects().length > 0) {
+                                    foreach(i, recent; incGetPrevProjects()) {
+                                        if (i >= 4) break;
 
-                                    import std.path : baseName;
-                                    if (incTextLinkWithIcon("", recent.baseName)) {
-                                        incOpenProject(recent);
-                                        this.close();
+                                        import std.path : baseName;
+                                        if (incTextLinkWithIcon("", recent.baseName)) {
+                                            incOpenProject(recent);
+                                            this.close();
+                                        }
                                     }
+                                } else {
+                                    incText("No recent projects...");
                                 }
                             igUnindent();
                         }
@@ -179,7 +191,7 @@ protected:
                         // Right hand side
                         if (igBeginChild("##RHS", ImVec2((avail.x-8)/2, 0), false, ImGuiWindowFlags.NoScrollbar)) {
                             incText(_("On the Web"));
-                            incDummy(ImVec2(0, 4));
+                            incDummy(ImVec2(0, 2));
                             igIndent();
 
                                 if (incTextLinkWithIcon("", _("Website"))) {

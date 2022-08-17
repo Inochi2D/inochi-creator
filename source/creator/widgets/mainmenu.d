@@ -29,15 +29,8 @@ private {
     }
 
     void fileOpen() {
-        const TFD_Filter[] filters = [
-            { ["*.inx"], "Inochi Creator Project (*.inx)" }
-        ];
-
-        c_str filename = tinyfd_openFileDialog(__("Open..."), "", filters, false);
-        if (filename !is null) {
-            string file = cast(string)filename.fromStringz;
-            incOpenProject(file);
-        }
+        string file = incShowOpenDialog();
+        if (file) incOpenProject(file);
     }
 
     void fileSave() {
