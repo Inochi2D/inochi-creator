@@ -71,9 +71,7 @@ int main(string[] args)
         else incNewProject();
 
         // TODO: Replace with first-time welcome screen
-        if (incSettingsGet!bool("ShowWarning", true)) {
-            incPushWindow(new NoticeWindow());
-        }
+        incPushWindow(new WelcomeWindow());
 
         // Update loop
         while(!incIsCloseRequested()) {
