@@ -74,7 +74,7 @@ protected:
 
                     //Logo
                     igSetCursorPos(origin);
-                    igImage(cast(void*)bannerLogo.getTextureId(), ImVec2(bannerLogo.width, bannerLogo.height));
+                    igImage(cast(void*)bannerLogo.getTextureId(), ImVec2(296, 100));
                     
                     // Version String
                     ImVec2 vsSize = incMeasureString(INC_VERSION);
