@@ -60,9 +60,8 @@ void incRenderDialogs() {
             ImGuiWindowFlags.NoResize | 
             ImGuiWindowFlags.AlwaysAutoResize;
         if (igBeginPopupModal(entry.title, null, flags)) {
-            float uiScale = incGetUIScale();
-            float errImgScale = 112*uiScale;
-            float msgEndPadding = 4*uiScale;
+            float errImgScale = 112;
+            float msgEndPadding = 4;
 
 
             igBeginGroup();
@@ -76,7 +75,7 @@ void incRenderDialogs() {
                 igEndChild();
 
                 igSameLine(0, 0);
-                igPushTextWrapPos(512*uiScale);
+                igPushTextWrapPos(512);
                     incText(entry.text);
                 igPopTextWrapPos();
 
@@ -89,11 +88,11 @@ void incRenderDialogs() {
             // BUTTONS
             //
             auto avail = incAvailableSpace();
-            float btnHeight = 24*uiScale;
-            float btnSize = 80*uiScale;
+            float btnHeight = 24;
+            float btnSize = 80;
             float totalBtnSize = btnSize*entry.btncount;
             float msgAreaWidth = errImgScale+incMeasureString(entry.text).x+msgEndPadding;
-            float requestedMinimumSize = 256*uiScale;
+            float requestedMinimumSize = 256;
 
             if ((msgAreaWidth < requestedMinimumSize) && totalBtnSize < requestedMinimumSize) {
 

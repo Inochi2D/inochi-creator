@@ -105,18 +105,16 @@ protected:
 
     override
     void onBeginUpdate() {
-        float scale = incGetUIScale();
-        igSetNextWindowSizeConstraints(ImVec2(640*scale, 480*scale), ImVec2(float.max, float.max));
+        igSetNextWindowSizeConstraints(ImVec2(640, 480), ImVec2(float.max, float.max));
         super.onBeginUpdate();
     }
 
     override
     void onUpdate() {
-        float scale = incGetUIScale();
         ImVec2 space = incAvailableSpace();
-        float gapspace = 8*scale;
+        float gapspace = 8;
         float childWidth = (space.x/2);
-        float childHeight = space.y-(24*scale);
+        float childHeight = space.y-(24);
 
         igBeginGroup();
             if (igBeginChild("###OldParam", ImVec2(childWidth, childHeight))) {
@@ -165,9 +163,9 @@ protected:
         igEndGroup();
 
         igBeginGroup();
-            incDummy(ImVec2(-64*scale, 24*scale));
+            incDummy(ImVec2(-64, 24));
             igSameLine(0, 0);
-            if (igButton(__("Apply"), ImVec2(64*scale, 24*scale))) {
+            if (igButton(__("Apply"), ImVec2(64, 24))) {
                 this.apply();
             }
         igEndGroup();

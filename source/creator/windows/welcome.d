@@ -32,14 +32,21 @@ protected:
         flags |= ImGuiWindowFlags.NoResize;
         flags |= ImGuiWindowFlags.NoDecoration;
 
+        float uiScale = incGetUIScale();
+
         ImVec2 wpos = ImVec2(
-            igGetMainViewport().Pos.x+(igGetMainViewport().Size.x/2),
-            igGetMainViewport().Pos.y+(igGetMainViewport().Size.y/2),
+            igGetMainViewport().Pos.x+((igGetMainViewport().Size.x*uiScale)/2),
+            igGetMainViewport().Pos.y+((igGetMainViewport().Size.y*uiScale)/2),
+        );
+
+        ImVec2 uiSize = ImVec2(
+            512*incGetUIScale(), 
+            384*incGetUIScale()
         );
 
         igSetNextWindowPos(wpos, ImGuiCond.Always, ImVec2(0.5, 0.5));
-        igSetNextWindowSize(ImVec2(512, 384), ImGuiCond.Appearing);
-        igSetNextWindowSizeConstraints(ImVec2(512, 384), ImVec2(float.max, float.max));
+        igSetNextWindowSize(uiSize, ImGuiCond.Appearing);
+        igSetNextWindowSizeConstraints(uiSize, uiSize);
         origWindowPadding = igGetStyle().WindowPadding;
         igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(0, 0));
         super.onBeginUpdate();

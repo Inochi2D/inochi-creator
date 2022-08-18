@@ -36,7 +36,7 @@ protected:
     override
     void onUpdate() {
         igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(4, 4));
-            if (igBeginChild("SettingsWindowChild", ImVec2(512*incGetUIScale(), 512*incGetUIScale()))) {
+            if (igBeginChild("SettingsWindowChild", ImVec2(512, 512))) {
                 if (igBeginTabBar("SettingsWindowTabs", ImGuiTabBarFlags.NoCloseWithMiddleMouseButton)) {
                     if(igBeginTabItem(__("General"), &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
                         if (igBeginChild("#GeneralTabItems", ImVec2(0, -26))) {

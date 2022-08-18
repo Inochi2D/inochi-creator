@@ -61,12 +61,12 @@ protected:
 
         // Draw the actual about dialog
         igSetCursorScreenPos(sPos);
-        if (igBeginChild("##LogoArea", ImVec2(0, 92*incGetUIScale()))) {
+        if (igBeginChild("##LogoArea", ImVec2(0, 92))) {
 
             version (InBranding) {
                 igImage(
                     cast(void*)incGetLogo(), 
-                    ImVec2(64*incGetUIScale(), 64*incGetUIScale()), 
+                    ImVec2(64, 64), 
                     ImVec2(0, 0), 
                     ImVec2(1, 1), 
                     ImVec4(1, 1, 1, 1), 
@@ -95,7 +95,7 @@ protected:
 
         igPushStyleColor(ImGuiCol.Button, ImVec4(0.176, 0.447, 0.698, 1));
         igPushStyleColor(ImGuiCol.ButtonHovered, ImVec4(0.313, 0.521, 0.737, 1));
-            if (igBeginChild("##CreditsArea", ImVec2(0, -28*incGetUIScale()))) {
+            if (igBeginChild("##CreditsArea", ImVec2(0, -28))) {
                 incMarkdown(import("CONTRIBUTORS.md"), cfg);
             }
         igPopStyleColor();

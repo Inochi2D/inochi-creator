@@ -72,7 +72,7 @@ protected:
             );
 
             if (currSize != lastSize) {
-                inSetViewport(cast(int)currSize.x, cast(int)currSize.y);
+                inSetViewport(cast(int)(currSize.x*incGetUIScale()), cast(int)(currSize.y*incGetUIScale()));
             }
 
             incViewportPoll();
@@ -104,7 +104,7 @@ protected:
             
             igImage(
                 cast(void*)inGetRenderImage(), 
-                ImVec2(width, height), 
+                ImVec2(width/incGetUIScale(), height/incGetUIScale()), 
                 ImVec2(0, 1), 
                 ImVec2(1, 0), 
                 ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0)
@@ -116,7 +116,7 @@ protected:
                 igSetItemAllowOverlap();
                 
                 igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
-                    if (igBeginChild("##ViewportMainControls", ImVec2(200, 28 * incGetUIScale()))) {
+                    if (igBeginChild("##ViewportMainControls", ImVec2(200, 28))) {
                         igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
                             incViewportDrawOverlay();
                         igPopStyleVar();

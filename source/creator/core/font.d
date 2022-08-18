@@ -14,6 +14,7 @@ import std.array;
 
 private {
     ImFontAtlas* atlas;
+    float uiScale;
 
     FontEntry[] families;
     void _incInitFontList() {
@@ -96,7 +97,12 @@ void incInitFonts() {
             ImVec2(0, 2)
         );
     ImFontAtlas_Build(atlas);
-    incSetUIScale(incGetUIScale());
+
+    // Half size because the extra size is for scaling
+    igGetIO().FontGlobalScale = 0.5;
+
+    // Load UI scale
+    uiScale = incSettingsGet!float("UIScale", 1.0);
 }
 
 /**
@@ -104,7 +110,7 @@ void incInitFonts() {
 */
 void incSetUIScale(float scale) {
     incSettingsSet("UIScale", scale);
-    igGetIO().FontGlobalScale = incGetUIScaleFont();
+    uiScale = scale;
 }
 
 /**
@@ -118,7 +124,7 @@ float incGetUIScaleFont() {
     Returns the UI Scale
 */
 float incGetUIScale() {
-    return incSettingsGet!float("UIScale", 1.0);
+    return uiScale;
 }
 
 /**

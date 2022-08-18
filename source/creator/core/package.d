@@ -12,6 +12,7 @@ import creator.windows;
 import creator.utils.link;
 import creator;
 import creator.widgets.dialog;
+import creator.backend.gl;
 
 import std.exception;
 
@@ -74,7 +75,7 @@ void incFinalize() {
     igSaveIniSettingsToDisk(igGetIO().IniFilename);
 
     // Cleanup
-    ImGuiOpenGLBackend.shutdown();
+    incGLBackendShutdown();
     ImGui_ImplSDL2_Shutdown();
     igDestroyContext(null);
 
@@ -322,7 +323,7 @@ void incCreateContext() {
     io.ConfigWindowsResizeFromEdges = true;                                         // Enable Edge resizing
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;                         // Enable Keyboard Navigation
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-    ImGuiOpenGLBackend.init(null);
+    incGLBackendInit(null);
 
     incInitStyling();
     incInitDialogs();
@@ -427,9 +428,10 @@ void incFinishFileDrag() {
 
 void incBeginLoopNoEv() {
     // Start the Dear ImGui frame
-    ImGuiOpenGLBackend.new_frame();
+    incGLBackendNewFrame();
     ImGui_ImplSDL2_NewFrame();
     igNewFrame();
+    incGLBackendBeginRender();
 
 
     if (files.length > 0) {
@@ -522,15 +524,16 @@ void incBeginLoop() {
     Ends the Inochi Creator rendering loop
 */
 void incEndLoop() {
+    // incGLBackendEndRender();
 
     incCleanupDialogs();
 
     // Rendering
     igRender();
-    glViewport(0, 0, cast(int)io.DisplaySize.x, cast(int)io.DisplaySize.y);
+    glViewport(0, 0, cast(int)(io.DisplaySize.x*incGetUIScale), cast(int)(io.DisplaySize.y*incGetUIScale));
     glClearColor(0.5, 0.5, 0.5, 1);
     glClear(GL_COLOR_BUFFER_BIT);
-    ImGuiOpenGLBackend.render_draw_data(igGetDrawData());
+    incGLBackendRenderDrawData(igGetDrawData());
 
     if (io.ConfigFlags & ImGuiConfigFlags.ViewportsEnable) {
         SDL_Window* currentWindow = SDL_GL_GetCurrentWindow();
