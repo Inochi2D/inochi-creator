@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-20 07:54+0200\n"
+"POT-Creation-Date: 2022-08-20 08:19+0200\n"
 "PO-Revision-Date: 2022-05-12 02:47+0200\n"
 "Last-Translator: Luna <cli-luna@protonmail.com>\n"
 "Language-Team: Danish\n"
@@ -20,54 +20,49 @@ msgstr ""
 #: source/creator/actions/binding.d:74
 #, c-format
 msgid "Added binding %s"
-msgstr ""
+msgstr "Tilføjede binding %s"
 
 #: source/creator/actions/binding.d:76
 #, c-format
 msgid "Removed binding %s"
-msgstr ""
+msgstr "Fjernede binding %s"
 
 #: source/creator/actions/binding.d:84
 #, c-format
 msgid "Binding %s was removed"
-msgstr ""
+msgstr "Binding %s var fjernet"
 
 #: source/creator/actions/binding.d:86
 #, c-format
 msgid "Binding %s was added"
-msgstr ""
+msgstr "Binding %s var tilføjet"
 
 #: source/creator/actions/binding.d:155 source/creator/actions/binding.d:252
 #: source/creator/actions/parameter.d:135
 #: source/creator/actions/parameter.d:211
-#, fuzzy, c-format
+#, c-format
 msgid "%s->%s changed"
-msgstr "%s->%s skiftet til %s"
-
-#: source/creator/actions/binding.d:162 source/creator/actions/binding.d:259
-#, fuzzy, c-format
-msgid "%s->%s chang cancelled"
 msgstr "%s->%s skiftet til %s"
 
 #: source/creator/actions/drawable.d:82
 #, c-format
 msgid "Changed drawable mesh of %s"
-msgstr ""
+msgstr "Ændrede %s's tegnbare mesh"
 
 #: source/creator/actions/drawable.d:90
 #, c-format
 msgid "Drawable %s was changed"
-msgstr ""
+msgstr "Tegnbar %s var ændret"
 
 #: source/creator/actions/mesheditor.d:158
 #, c-format
 msgid "%s->Edited deformation of %s."
-msgstr ""
+msgstr "%s->Ændrede deformering af %s."
 
 #: source/creator/actions/mesheditor.d:165
 #, c-format
 msgid "%s->deformation of %s was edited."
-msgstr ""
+msgstr "%s->Deformering af %s var ændret."
 
 #: source/creator/actions/node.d:92
 #, c-format
@@ -99,42 +94,42 @@ msgstr "Unavngiven "
 #: source/creator/actions/node.d:250 source/creator/actions/parameter.d:137
 #, c-format
 msgid "%s->%s changed to %s"
-msgstr "%s->%s skiftet til %s"
+msgstr "%s->%s ændret til %s"
 
 #: source/creator/actions/node.d:257 source/creator/actions/parameter.d:147
 #, c-format
 msgid "%s->%s changed from %s"
-msgstr "%s->%s skiftet fra %s"
+msgstr "%s->%s ændret fra %s"
 
 #: source/creator/actions/parameter.d:51
-#, fuzzy, c-format
+#c-format
 msgid "Added parameter %s"
-msgstr "Tilføj Parameter"
+msgstr "Tilføjede parameter %s"
 
 #: source/creator/actions/parameter.d:53
-#, fuzzy, c-format
+#c-format
 msgid "Removed parameter %s"
-msgstr "Armér Parameter"
+msgstr "Fjernede parameter %s"
 
 #: source/creator/actions/parameter.d:61
-#, fuzzy, c-format
+#c-format
 msgid "Parameter %s was removed"
-msgstr "Parameter Navn"
+msgstr "Parameter %s var fjernet"
 
 #: source/creator/actions/parameter.d:63
-#, fuzzy, c-format
+#c-format
 msgid "Parameter %s was added"
-msgstr "Parameter Navn"
+msgstr "Parameter %s var tilføjet"
 
 #: source/creator/actions/parameter.d:145
 #: source/creator/actions/parameter.d:219
-#, fuzzy, c-format
+#c-format
 msgid "%s->%s change cancelled"
-msgstr "%s->%s skiftet til %s"
+msgstr "%s->%s ændring annulleret"
 
 #: source/creator/core/dpi.d:51 source/creator/core/dpi.d:55
 msgid "100% (Locked)"
-msgstr ""
+msgstr "100% (Låst)"
 
 #. The name of the language this translation is a translation to
 #. in the native script of the language (for the region)
@@ -144,41 +139,38 @@ msgid "LANG_NAME"
 msgstr "Dansk"
 
 #: source/creator/core/package.d:213
-#, fuzzy
 msgid "(Debug Mode)"
-msgstr " (Udviklingstilstand)"
+msgstr "(Udviklingstilstand)"
 
 #: source/creator/core/package.d:215
 msgid "(Unsupported)"
-msgstr ""
+msgstr "(Ikke understøttet)"
 
 #: source/creator/io/package.d:16 source/creator/widgets/mainmenu.d:142
 #: source/creator/widgets/mainmenu.d:167
 msgid "Import..."
 msgstr "Importér..."
 
-#: source/creator/io/package.d:29 source/creator/windows/welcome.d:173
+#: source/creator/io/package.d:29 source/creator/windows/welcome.d:190
 msgid "Open..."
 msgstr "Åben..."
 
 #: source/creator/io/psd.d:145 source/creator/package.d:269
 #, c-format
 msgid "%s was imported..."
-msgstr ""
+msgstr "%s var importeret..."
 
 #: source/creator/io/psd.d:148 source/creator/package.d:273
-#, fuzzy
 msgid "Import failed..."
-msgstr "Importér..."
+msgstr "Importering fejlet..."
 
 #: source/creator/io/psd.d:149 source/creator/package.d:177
 #: source/creator/package.d:211 source/creator/package.d:272
 #: source/creator/package.d:298 source/creator/panels/viewport.d:158
 #: source/creator/panels/viewport.d:159 source/creator/panels/viewport.d:172
 #: source/creator/viewport/vertex/package.d:137
-#, fuzzy
 msgid "Error"
-msgstr "Spejlvend"
+msgstr "Fejl"
 
 #: source/creator/io/psd.d:149
 #, c-format
@@ -186,21 +178,23 @@ msgid ""
 "An error occured during PSD import:\n"
 "%s"
 msgstr ""
+"En fejl opstod under PSD import:\n"
+"%s"
 
 #: source/creator/package.d:192
 #, c-format
 msgid "%s opened successfully."
-msgstr ""
+msgstr "%s åbnet successfuldt."
 
 #: source/creator/package.d:208
 #, c-format
 msgid "%s saved successfully."
-msgstr ""
+msgstr "%s gemt successfuldt."
 
 #: source/creator/package.d:210
 #, c-format
 msgid "Failed to save %s"
-msgstr ""
+msgstr "Kunne ikke gemme %s"
 
 #: source/creator/package.d:246
 #, c-format
@@ -208,32 +202,33 @@ msgid ""
 "The following errors occured during file loading\n"
 "%s"
 msgstr ""
+"De følgende fejl opstod under indlæsning af filerne\n"
+"%s"
 
 #: source/creator/package.d:255
 msgid "Folder import completed with errors..."
-msgstr ""
+msgstr "Mappeimportering fuldført med fejl..."
 
 #: source/creator/package.d:256
 msgid "Folder import completed..."
-msgstr ""
+msgstr "Mappeimportering fulført..."
 
 #: source/creator/package.d:296
 #, c-format
 msgid "%s was exported..."
-msgstr ""
+msgstr "%s var eksporteret..."
 
 #: source/creator/package.d:299
-#, fuzzy
 msgid "Export failed..."
-msgstr "Exportér..."
+msgstr "Exportering fejlet..."
 
 #: source/creator/package.d:312
 msgid "Mipmap generation completed."
-msgstr ""
+msgstr "Mipmap-generation fuldført."
 
 #: source/creator/package.d:327
 msgid "Texture bleeding completed."
-msgstr ""
+msgstr "Teksturblødning fuldført."
 
 #: source/creator/panels/actionhistory.d:26
 msgid "Undo History"
@@ -364,19 +359,20 @@ msgid "%.2f m/s"
 msgstr ""
 
 #: source/creator/panels/inspector.d:275
-#, fuzzy
 msgid "Rendering Settings"
-msgstr "Indstillinger"
+msgstr "Rendering Indstillinger"
 
 #: source/creator/panels/inspector.d:277
 msgid "Use Point Filtering"
-msgstr ""
+msgstr "Brug Punktfiltrering"
 
 #: source/creator/panels/inspector.d:281
 msgid ""
-"Makes Inochi2D model use point filtering, removing blur for low-resoltion "
+"Makes Inochi2D model use point filtering, removing blur for low-resolution "
 "models."
 msgstr ""
+"Får Inochi2D modellen til at bruge punktfiltering, som fjerner bløde kanter "
+"for modeller med lav opløsning"
 
 #: source/creator/panels/inspector.d:301 source/creator/panels/inspector.d:1108
 msgid "Transform"
@@ -460,9 +456,8 @@ msgid "Drawable"
 msgstr "Tegnebar"
 
 #: source/creator/panels/inspector.d:555
-#, fuzzy
 msgid "Texture Offset"
-msgstr "Teksturer"
+msgstr "Tekstur Forskydning"
 
 #. Switches Inochi Creator over to Mesh Edit mode
 #. and selects the mesh that you had selected previously
@@ -482,16 +477,14 @@ msgstr "Kan ikke inspicere en ikke-meshed del"
 #: source/creator/panels/inspector.d:651 source/creator/panels/inspector.d:813
 #: source/creator/panels/inspector.d:1227
 #: source/creator/panels/inspector.d:1262
-#, fuzzy
 msgid "Tint (Multiply)"
-msgstr "Multiplicér"
+msgstr "Omfarv (Multiplicér)"
 
 #: source/creator/panels/inspector.d:654 source/creator/panels/inspector.d:816
 #: source/creator/panels/inspector.d:1231
 #: source/creator/panels/inspector.d:1266
-#, fuzzy
 msgid "Tint (Screen)"
-msgstr "Skærm"
+msgstr "Omfarv (Skærm)"
 
 #. Header for the Blending options for Parts
 #: source/creator/panels/inspector.d:663 source/creator/panels/inspector.d:820
@@ -576,7 +569,7 @@ msgstr "Maskekilder"
 
 #: source/creator/panels/inspector.d:717
 msgid "(Drag a Part or Mask Here)"
-msgstr ""
+msgstr "(Træk en Del eller Maske her)"
 
 #: source/creator/panels/inspector.d:724
 msgid "Mode"
@@ -680,13 +673,15 @@ msgstr "Annuller"
 
 #: source/creator/panels/inspector.d:1322
 msgid "Are you sure?"
-msgstr ""
+msgstr "Er du sikker?"
 
 #: source/creator/panels/inspector.d:1323
 msgid ""
 "The layout of the mesh has changed, all deformations to this mesh will be "
 "deleted if you continue."
 msgstr ""
+"Layoutet af meshen er ændret, alle deformeringer vil blive slettet hvis "
+"du fortsætter."
 
 #: source/creator/panels/inspector.d:1334
 #: source/creator/windows/paramsplit.d:168
@@ -726,25 +721,25 @@ msgstr "Mere info"
 #. %s is the name of the node in the More Info menu
 #. %u is the UUID of the node in the More Info menu
 #: source/creator/panels/nodes.d:104
-#, fuzzy, c-format
+#c-format
 msgid "%s ID: %u"
-msgstr "%s ID: %lu"
+msgstr "%s ID: %u"
 
 #: source/creator/panels/nodes.d:107
 #, c-format
 msgid "%s Layer: %s"
-msgstr ""
+msgstr "%s Lag: %s"
 
 #. %u is the UUID of the node in the More Info menu
 #: source/creator/panels/nodes.d:112
-#, fuzzy, c-format
+#c-format
 msgid "ID: %u"
-msgstr "ID: %lu"
+msgstr "ID: %u"
 
 #: source/creator/panels/nodes.d:115
 #, c-format
 msgid "Layer: %s"
-msgstr ""
+msgstr "Lag: %s"
 
 #: source/creator/panels/nodes.d:288
 msgid "In vertex edit mode..."
@@ -842,7 +837,7 @@ msgstr "Redigér aksepunkter"
 
 #: source/creator/panels/parameters.d:548
 msgid "Split"
-msgstr ""
+msgstr "Split"
 
 #: source/creator/panels/parameters.d:553
 msgid "Flip X"
@@ -929,9 +924,9 @@ msgstr "Værktøjsegenskaber"
 #. Appended to the name of a face tracking receiver
 #. in the Tracking settings panel
 #: source/creator/panels/tracking.d:32
-#, fuzzy, c-format
+#c-format
 msgid "%s Receiver"
-msgstr " Modtager"
+msgstr "%s Modtager"
 
 #: source/creator/panels/tracking.d:59
 msgid "A reciever which uses your phone and associated app to track your body"
@@ -971,18 +966,16 @@ msgstr ""
 "Du kan finde den i VSeeFace konfigurationspanelet i VTubeStudio"
 
 #: source/creator/panels/tracking.d:102
-#, fuzzy
 msgid "A receiver which uses OpenSeeFace application"
-msgstr "En modtager som bruger VTubeStudio iOS appen."
+msgstr "En modtager som bruger OpenSeeFace programmet."
 
 #: source/creator/panels/tracking.d:104
-#, fuzzy
 msgid "OSF Bind Address"
 msgstr "Bindingsaddresse"
 
 #: source/creator/panels/tracking.d:115
 msgid "OSF Listen Port"
-msgstr ""
+msgstr "OSF Lytteport"
 
 #: source/creator/panels/tracking.d:127
 msgid "Tracking Bindings"
@@ -1004,7 +997,7 @@ msgstr "Tracking"
 #: source/creator/panels/viewport.d:158 source/creator/panels/viewport.d:172
 #, c-format
 msgid "%s is not supported"
-msgstr ""
+msgstr "%s er ikke understøttet"
 
 #: source/creator/panels/viewport.d:236
 msgid "Viewport"
@@ -1097,19 +1090,20 @@ msgid ""
 "Cannot apply invalid mesh\n"
 "At least 3 vertices forming a triangle is needed."
 msgstr ""
+"Kan ikke anvende invalid mesh\n"
+"Der skal i det mindste være 3 punkter som skaber en trækant."
 
 #: source/creator/widgets/dialog.d:124
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: source/creator/widgets/dialog.d:132
-#, fuzzy
 msgid "No"
-msgstr "Node"
+msgstr "Nej"
 
 #: source/creator/widgets/dialog.d:140
 msgid "Yes"
-msgstr ""
+msgstr "Ja"
 
 #: source/creator/widgets/mainmenu.d:52
 msgid "Save..."
@@ -1144,7 +1138,7 @@ msgstr "Seneste"
 #. feels more safe with a save button then we have
 #. it here.
 #: source/creator/widgets/mainmenu.d:122 source/creator/windows/paramaxes.d:140
-#: source/creator/windows/paramprop.d:103 source/creator/windows/settings.d:126
+#: source/creator/windows/paramprop.d:103 source/creator/windows/settings.d:127
 #: source/creator/windows/trkbind.d:129
 msgid "Save"
 msgstr "Gem"
@@ -1183,21 +1177,19 @@ msgstr "Understøtter PNG, TGA og JPEG."
 
 #: source/creator/widgets/mainmenu.d:161 source/creator/windows/psdmerge.d:412
 msgid "Merge"
-msgstr ""
+msgstr "Sammenflet"
 
 #: source/creator/widgets/mainmenu.d:174
-#, fuzzy
 msgid "Merge layers from Photoshop document"
-msgstr "Photoshop Dokument"
+msgstr "Sammenflet lag fra Photoshop dokument"
 
 #: source/creator/widgets/mainmenu.d:176
-#, fuzzy
 msgid "Inochi Creator Project"
-msgstr "Inochi Creator Crashdump"
+msgstr "Inochi Creator Projekt"
 
 #: source/creator/widgets/mainmenu.d:187
 msgid "Merge another Inochi Creator project in to this one"
-msgstr ""
+msgstr "Sammenflet et andet Inochi Creator projekt med dette projekt"
 
 #: source/creator/widgets/mainmenu.d:192
 msgid "Export"
@@ -1231,7 +1223,7 @@ msgstr "Gendan"
 msgid "Cut"
 msgstr "Klip"
 
-#: source/creator/widgets/mainmenu.d:224 source/creator/windows/settings.d:143
+#: source/creator/widgets/mainmenu.d:224 source/creator/windows/settings.d:144
 msgid "Settings"
 msgstr "Indstillinger"
 
@@ -1261,12 +1253,12 @@ msgstr "Paneler"
 
 #: source/creator/widgets/mainmenu.d:270
 msgid "Configuration"
-msgstr ""
+msgstr "Konfigurering"
 
 #. Opens the directory where configuration resides in the user's file browser.
 #: source/creator/widgets/mainmenu.d:273
 msgid "Open Configuration Folder"
-msgstr ""
+msgstr "Åben Konfigurationsmappe"
 
 #: source/creator/widgets/mainmenu.d:282
 msgid "Extras"
@@ -1338,11 +1330,11 @@ msgstr "Omgenererer puppetens mipmaps."
 
 #: source/creator/widgets/mainmenu.d:351
 msgid "Generate fake layer name info..."
-msgstr ""
+msgstr "Genererer falske lag navne..."
 
 #: source/creator/widgets/mainmenu.d:361
 msgid "Generates fake layer info based on node names"
-msgstr ""
+msgstr "Genererer falske lag navne baseret på node navne"
 
 #: source/creator/widgets/mainmenu.d:367
 msgid "Puppet Recovery"
@@ -1450,12 +1442,11 @@ msgstr "Parameter Indstillinger"
 
 #: source/creator/windows/paramsplit.d:48
 msgid " (Split)"
-msgstr ""
+msgstr " (Split)"
 
 #: source/creator/windows/paramsplit.d:179
-#, fuzzy
 msgid "Split Parameter"
-msgstr "Parameter"
+msgstr "Split Parametre"
 
 #: source/creator/windows/psdmerge.d:234
 #, c-format
@@ -1464,98 +1455,98 @@ msgstr ""
 
 #: source/creator/windows/psdmerge.d:272
 msgid "Unmap"
-msgstr ""
+msgstr "Afmap"
 
 #: source/creator/windows/psdmerge.d:277
 msgid "Ignore"
-msgstr ""
+msgstr "Ignorér"
 
 #: source/creator/windows/psdmerge.d:277
-#, fuzzy
 msgid "Use"
-msgstr "Afsæt"
+msgstr "Brug"
 
 #: source/creator/windows/psdmerge.d:374
 msgid "Only show unmapped"
-msgstr ""
+msgstr "Vis kun afmappede"
 
 #. Auto-rename
 #: source/creator/windows/psdmerge.d:394
 msgid "Auto-rename"
-msgstr ""
+msgstr "Auto omnavngiv"
 
 #: source/creator/windows/psdmerge.d:395
 msgid ""
 "Renames all mapped nodes to match the names of the PSD layer that was merged "
 "in to them."
 msgstr ""
+"Omnavngiver alle mappede noder så at de matcher navnene på PSD lagene som var "
+"flettet sammen med dem."
 
 #: source/creator/windows/psdmerge.d:398
-#, fuzzy
 msgid "Re-translate"
-msgstr "Position"
+msgstr "Omregn positioner"
 
 #: source/creator/windows/psdmerge.d:399
 msgid ""
 "Moves all nodes so that they visually match their position in the canvas."
 msgstr ""
+"Flytter alle noder så at de visuelt matcher deres position i kanvasset."
 
 #: source/creator/windows/psdmerge.d:447
 msgid "PSD Merging"
-msgstr ""
+msgstr "PSD Sammenflætning"
 
-#: source/creator/windows/settings.d:45
+#: source/creator/windows/settings.d:46
 msgid "General"
 msgstr "Generelt"
 
-#: source/creator/windows/settings.d:47
+#: source/creator/windows/settings.d:48
 msgid "Look and Feel"
 msgstr "Udseende"
 
-#: source/creator/windows/settings.d:49 source/creator/windows/welcome.d:131
+#: source/creator/windows/settings.d:50 source/creator/windows/welcome.d:138
 msgid "Color Theme"
 msgstr "Farvetema"
 
-#: source/creator/windows/settings.d:49 source/creator/windows/settings.d:50
-#: source/creator/windows/welcome.d:131 source/creator/windows/welcome.d:132
+#: source/creator/windows/settings.d:50 source/creator/windows/settings.d:51
+#: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:139
 msgid "Dark"
 msgstr "Mørk"
 
-#: source/creator/windows/settings.d:49 source/creator/windows/settings.d:51
-#: source/creator/windows/welcome.d:131 source/creator/windows/welcome.d:133
+#: source/creator/windows/settings.d:50 source/creator/windows/settings.d:52
+#: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:140
 msgid "Light"
 msgstr "Lys"
 
-#: source/creator/windows/settings.d:57 source/creator/windows/welcome.d:123
+#: source/creator/windows/settings.d:58 source/creator/windows/welcome.d:124
 msgid "Language"
 msgstr "Sprog"
 
-#: source/creator/windows/settings.d:66 source/creator/windows/welcome.d:139
-#, fuzzy
+#: source/creator/windows/settings.d:67 source/creator/windows/welcome.d:146
 msgid "UI Scale"
-msgstr "Skalering"
+msgstr "Brugerflade Skalering"
 
-#: source/creator/windows/settings.d:74
+#: source/creator/windows/settings.d:75
 msgid "Disable Compositor"
 msgstr "Slå compositor fra"
 
-#: source/creator/windows/settings.d:81
+#: source/creator/windows/settings.d:82
 msgid "Use software rendering"
-msgstr ""
+msgstr "Brug softwarerendering"
 
-#: source/creator/windows/settings.d:90
+#: source/creator/windows/settings.d:91
 msgid "Undo/Redo History"
 msgstr "Fortryd/Gendan Historik"
 
-#: source/creator/windows/settings.d:94
+#: source/creator/windows/settings.d:95
 msgid "Max Undo History"
 msgstr "Maks fortrydningshistorik"
 
-#: source/creator/windows/settings.d:104
+#: source/creator/windows/settings.d:105
 msgid "Accessibility"
 msgstr "Tilgænglighed"
 
-#: source/creator/windows/settings.d:113
+#: source/creator/windows/settings.d:114
 msgid "Other"
 msgstr "Andet"
 
@@ -1608,95 +1599,54 @@ msgstr "Genopfrisk Bindebare"
 msgid "Bind Tracking to Parameter"
 msgstr "Bind Tracking til Parameter"
 
-#: source/creator/windows/welcome.d:112
+#: source/creator/windows/welcome.d:113
 msgid "Quick Setup"
-msgstr ""
+msgstr "Hurtigopsætning"
 
-#: source/creator/windows/welcome.d:153
+#: source/creator/windows/welcome.d:157
+msgid "Inochi Creator needs to be restarted for some changes to take effect."
+msgstr "Inochi Creator bør genstartes før at alle ændringer kan træde i kræft."
+
+#: source/creator/windows/welcome.d:170
 msgid "Next"
-msgstr ""
-
-#: source/creator/windows/welcome.d:165
-msgid "Create Project"
-msgstr ""
-
-#: source/creator/windows/welcome.d:168
-msgid "New..."
-msgstr ""
+msgstr "Næste"
 
 #: source/creator/windows/welcome.d:182
-#, fuzzy
+msgid "Create Project"
+msgstr "Skab Projekt"
+
+#: source/creator/windows/welcome.d:185
+msgid "New..."
+msgstr "Ny..."
+
+#: source/creator/windows/welcome.d:199
 msgid "Import PSD..."
-msgstr "Importér..."
+msgstr "Importér PSD..."
 
-#: source/creator/windows/welcome.d:191
+#: source/creator/windows/welcome.d:208
 msgid "Recent Projects"
-msgstr ""
+msgstr "Seneste Projekter"
 
-#: source/creator/windows/welcome.d:215
+#: source/creator/windows/welcome.d:232
 msgid "On the Web"
-msgstr ""
+msgstr "På nettet"
 
-#: source/creator/windows/welcome.d:219
+#: source/creator/windows/welcome.d:236
 msgid "Website"
-msgstr ""
+msgstr "Hjemmeside"
 
-#: source/creator/windows/welcome.d:223
-#, fuzzy
+#: source/creator/windows/welcome.d:240
 msgid "Documentation"
-msgstr "Online Dokumentation"
+msgstr "Dokumentation"
 
-#: source/creator/windows/welcome.d:229
+#: source/creator/windows/welcome.d:246
 msgid "Patreon"
 msgstr ""
 
-#: source/creator/windows/welcome.d:232
+#: source/creator/windows/welcome.d:249
 msgid "Github Sponsors"
 msgstr ""
 
-#: source/creator/windows/welcome.d:258
-#, fuzzy
+#: source/creator/windows/welcome.d:275
 msgid "Inochi Creator Start"
-msgstr "Inochi Creator Crashdump"
-
-#~ msgid "UI Scale (EXPERIMENTAL)"
-#~ msgstr "UI Skala (Eksperimentel)"
-
-#~ msgid "Use Native Titlebar"
-#~ msgstr "Brug systemtitelbar"
-
-#~ msgid "THIS IS BETA SOFTWARE!"
-#~ msgstr "DETTE ER BETA SOFTWARE!"
-
-#~ msgid "Don't show again"
-#~ msgstr "Vis ikke igen"
-
-#~ msgid "Close"
-#~ msgstr "Luk"
-
-#~ msgid "Under Construction"
-#~ msgstr "Under Konstruktion"
-
-#~ msgid "Lock Rotation X"
-#~ msgstr "Lås X Rotation"
-
-#~ msgid "Lock Rotation Y"
-#~ msgstr "Lås Y Rotation"
-
-#~ msgid "Lock Rotation Z"
-#~ msgstr "Lås Z Rotation"
-
-#~ msgid "Lock Scale X"
-#~ msgstr "Lås X Skalering"
-
-#~ msgid "Lock Scale Y"
-#~ msgstr "Lås Y Skalering"
-
-#~ msgid "Tint"
-#~ msgstr "Farvetone"
-
-#~ msgid "Texture Slots"
-#~ msgstr "Teksturfelter"
-
-#~ msgid "Trans Rights!"
-#~ msgstr "Trans Rettigheder!"
+msgstr "Inochi Creator Start"
