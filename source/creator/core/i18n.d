@@ -7,10 +7,28 @@ import std.file;
 import std.path;
 import std.string;
 
+/+
+    HACK: This little comment tricks genpot to generate our LANG_NAME entry.
+
+    // The name of the language this translation is a translation to
+    // in the native script of the language (for the region)
+    // Eg. this would be "Dansk" for Danish and "日本語" for Japanese.
+    _("LANG_NAME")
++/
+
 private {
     TLEntry[] localeFiles;
 
     string incGetCultureExpression(string langcode) {
+
+        // Most cases
+        foreach(locale; localeFiles) {
+            if (locale.code == langcode) {
+                return locale.humanName;
+            }
+        }
+
+        // Fallback
         if (langcode.length >= 5) {
             return format("%s (%s)", i18nGetCultureLanguage(langcode),
                 langcode == "zh-CN" ? "Simplified" : 
@@ -29,10 +47,13 @@ private {
             // Skip langcodes we don't know
             if (!i18nValidateCultureCode(langcode)) continue;
 
+            string langName = i18nGetLanguageName(entry.name);
+            if (langName == "<UNKNOWN LANGUAGE>") langName = incGetCultureExpression(langcode);
+
             // Add locale
             localeFiles ~= TLEntry(
-                incGetCultureExpression(langcode),
-                incGetCultureExpression(langcode).toStringz,
+                langName,
+                langName.toStringz,
                 langcode, 
                 entry.name
             );
