@@ -278,7 +278,7 @@ void incInspectorModelInfo() {
                 incActivePuppet().populateTextureSlots();
                 incActivePuppet().updateTextureState();
             }
-            incTooltip(_("Makes Inochi2D model use point filtering, removing blur for low-resoltion models."));
+            incTooltip(_("Makes Inochi2D model use point filtering, removing blur for low-resolution models."));
         igPopID();
     }
 }
