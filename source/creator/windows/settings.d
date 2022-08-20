@@ -63,13 +63,9 @@ protected:
                             }
 
                             version (UseUIScaling) {
-                                if (igInputInt(__("UI Scale"), &tmpUIScale, 25, 50)) {
+                                if (igInputInt(__("UI Scale"), &tmpUIScale, 25, 50, ImGuiInputTextFlags.EnterReturnsTrue)) {
                                     tmpUIScale = clamp(tmpUIScale, 100, 200);
-                                    targetUIScale = cast(float)tmpUIScale/100.0;
-                                }
-
-                                if (!igIsMouseDown(ImGuiMouseButton.Left) && targetUIScale != incGetUIScale()) {
-                                    incSetUIScale(targetUIScale);
+                                    incSetUIScale(cast(float)tmpUIScale/100.0);
                                 }
                             }
 
