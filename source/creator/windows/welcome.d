@@ -25,6 +25,7 @@ private:
     Texture bannerLogo;
     ImVec2 origWindowPadding;
     bool firstFrame = true;
+    bool changesRequiresRestart;
     
     // Temporary variables for setup
     int tmpUIScale;
@@ -121,9 +122,15 @@ protected:
                                     ImGuiComboFlags.HeightLargest;
                                 
                                 if(igBeginCombo(__("Language"), incLocaleCurrentName().toStringz, comboFlags)) {
-                                    if (igSelectable("English")) incLocaleSet(null);
+                                    if (igSelectable("English")) {
+                                        incLocaleSet(null);
+                                        changesRequiresRestart = true;
+                                    }
                                     foreach(entry; incLocaleGetEntries()) {
-                                        if (igSelectable(entry.humanNameC)) incLocaleSet(entry.code);
+                                        if (igSelectable(entry.humanNameC)) {
+                                            incLocaleSet(entry.code);
+                                            changesRequiresRestart = true;
+                                        }
                                     }
                                     igEndCombo();
                                 }
@@ -140,6 +147,16 @@ protected:
                                         tmpUIScale = clamp(tmpUIScale, 100, 200);
                                         incSetUIScale(cast(float)tmpUIScale/100.0);
                                     }
+                                }
+
+                                if (changesRequiresRestart) {
+                                    igNewLine();
+                                    igPushTextWrapPos(avail.x/1.15);
+                                        incTextColored(
+                                            ImVec4(0.8, 0.2, 0.2, 1), 
+                                            _("Inochi Creator needs to be restarted for some changes to take effect.")
+                                        );
+                                    igPopTextWrapPos();
                                 }
                             igPopItemWidth();
                         igEndGroup();

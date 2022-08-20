@@ -24,6 +24,7 @@ private:
     bool generalTabOpen = true;
     bool otherTabOpen = true;
     bool useOpenDyslexic;
+    bool changesRequiresRestart;
 
     int tmpUIScale;
     float targetUIScale;
