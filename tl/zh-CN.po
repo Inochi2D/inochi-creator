@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-20 07:54+0200\n"
+"POT-Creation-Date: 2022-08-20 08:19+0200\n"
 "PO-Revision-Date: 2022-08-20 09:09-0600\n"
 "Last-Translator: LovelyA72 <a72@luotianyi.pro>\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -158,7 +158,7 @@ msgstr "（不支持）"
 msgid "Import..."
 msgstr "导入..."
 
-#: source/creator/io/package.d:29 source/creator/windows/welcome.d:173
+#: source/creator/io/package.d:29 source/creator/windows/welcome.d:190
 #, fuzzy
 msgid "Open..."
 msgstr "打开"
@@ -187,9 +187,7 @@ msgstr "错误"
 msgid ""
 "An error occured during PSD import:\n"
 "%s"
-msgstr ""
-"导入PSD时发生了错误："
-"%s"
+msgstr "导入PSD时发生了错误：%s"
 
 #: source/creator/package.d:192
 #, c-format
@@ -211,8 +209,7 @@ msgstr "%s保存失败"
 msgid ""
 "The following errors occured during file loading\n"
 "%s"
-msgstr "加载文件时发生了以下错误"
-"%s"
+msgstr "加载文件时发生了以下错误%s"
 
 #: source/creator/package.d:255
 msgid "Folder import completed with errors..."
@@ -697,7 +694,7 @@ msgstr "你确认吗？"
 msgid ""
 "The layout of the mesh has changed, all deformations to this mesh will be "
 "deleted if you continue."
-msgstr ""
+msgstr "网格的布局已更改，如果你继续，此网格的所有变形都将会被删除"
 
 #: source/creator/panels/inspector.d:1334
 #: source/creator/windows/paramsplit.d:168
@@ -1158,7 +1155,7 @@ msgstr "近期打开的文件"
 #. feels more safe with a save button then we have
 #. it here.
 #: source/creator/widgets/mainmenu.d:122 source/creator/windows/paramaxes.d:140
-#: source/creator/windows/paramprop.d:103 source/creator/windows/settings.d:126
+#: source/creator/windows/paramprop.d:103 source/creator/windows/settings.d:127
 #: source/creator/windows/trkbind.d:129
 msgid "Save"
 msgstr "保存"
@@ -1246,7 +1243,7 @@ msgstr "恢复"
 msgid "Cut"
 msgstr "剪切"
 
-#: source/creator/widgets/mainmenu.d:224 source/creator/windows/settings.d:143
+#: source/creator/widgets/mainmenu.d:224 source/creator/windows/settings.d:144
 msgid "Settings"
 msgstr "设置"
 
@@ -1511,8 +1508,7 @@ msgstr "自动重命名"
 msgid ""
 "Renames all mapped nodes to match the names of the PSD layer that was merged "
 "in to them."
-msgstr ""
-"重命名所有映射了的节点来匹配合并到它们的PSD图层的名称"
+msgstr "重命名所有映射了的节点来匹配合并到它们的PSD图层的名称"
 
 #: source/creator/windows/psdmerge.d:398
 #, fuzzy
@@ -1522,66 +1518,65 @@ msgstr "位移"
 #: source/creator/windows/psdmerge.d:399
 msgid ""
 "Moves all nodes so that they visually match their position in the canvas."
-msgstr ""
-"移动所有节点，使它们在视觉上匹配它们在画布中的位置"
+msgstr "移动所有节点，使它们在视觉上匹配它们在画布中的位置"
 
 #: source/creator/windows/psdmerge.d:447
 msgid "PSD Merging"
 msgstr "PSD合并"
 
-#: source/creator/windows/settings.d:45
+#: source/creator/windows/settings.d:46
 msgid "General"
 msgstr "通用"
 
-#: source/creator/windows/settings.d:47
+#: source/creator/windows/settings.d:48
 msgid "Look and Feel"
 msgstr "外观"
 
-#: source/creator/windows/settings.d:49 source/creator/windows/welcome.d:131
+#: source/creator/windows/settings.d:50 source/creator/windows/welcome.d:138
 msgid "Color Theme"
 msgstr "主题"
 
-#: source/creator/windows/settings.d:49 source/creator/windows/settings.d:50
-#: source/creator/windows/welcome.d:131 source/creator/windows/welcome.d:132
+#: source/creator/windows/settings.d:50 source/creator/windows/settings.d:51
+#: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:139
 msgid "Dark"
 msgstr "暗色"
 
-#: source/creator/windows/settings.d:49 source/creator/windows/settings.d:51
-#: source/creator/windows/welcome.d:131 source/creator/windows/welcome.d:133
+#: source/creator/windows/settings.d:50 source/creator/windows/settings.d:52
+#: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:140
 msgid "Light"
 msgstr "亮色"
 
-#: source/creator/windows/settings.d:57 source/creator/windows/welcome.d:123
+#: source/creator/windows/settings.d:58 source/creator/windows/welcome.d:124
 msgid "Language"
 msgstr "语言"
 
-#: source/creator/windows/settings.d:66 source/creator/windows/welcome.d:139
+#: source/creator/windows/settings.d:67 source/creator/windows/welcome.d:146
 #, fuzzy
 msgid "UI Scale"
 msgstr "缩放"
 
-#: source/creator/windows/settings.d:74
+#: source/creator/windows/settings.d:75
 msgid "Disable Compositor"
 msgstr "停用合成器"
 
-#: source/creator/windows/settings.d:81
+#: source/creator/windows/settings.d:82
 msgid "Use software rendering"
 msgstr "使用软件渲染器"
 
-#: source/creator/windows/settings.d:90
+#: source/creator/windows/settings.d:91
 #, fuzzy
 msgid "Undo/Redo History"
 msgstr "撤销/恢复历史"
 
-#: source/creator/windows/settings.d:94
+#: source/creator/windows/settings.d:95
 msgid "Max Undo History"
 msgstr "最大撤销历史"
 
-#: source/creator/windows/settings.d:104
+#: source/creator/windows/settings.d:105
 msgid "Accessibility"
 msgstr "可访问性"
 
-#: source/creator/windows/settings.d:113
+#: source/creator/windows/settings.d:114
 msgid "Other"
 msgstr "其他"
 
@@ -1641,53 +1636,57 @@ msgstr "刷新可绑定参数"
 msgid "Bind Tracking to Parameter"
 msgstr "绑定跟踪到参数"
 
-#: source/creator/windows/welcome.d:112
+#: source/creator/windows/welcome.d:113
 msgid "Quick Setup"
 msgstr "快捷配置助手"
 
-#: source/creator/windows/welcome.d:153
+#: source/creator/windows/welcome.d:157
+msgid "Inochi Creator needs to be restarted for some changes to take effect."
+msgstr ""
+
+#: source/creator/windows/welcome.d:170
 msgid "Next"
 msgstr "下一步"
 
-#: source/creator/windows/welcome.d:165
+#: source/creator/windows/welcome.d:182
 msgid "Create Project"
 msgstr "创建项目"
 
-#: source/creator/windows/welcome.d:168
+#: source/creator/windows/welcome.d:185
 msgid "New..."
 msgstr "新建..."
 
-#: source/creator/windows/welcome.d:182
+#: source/creator/windows/welcome.d:199
 #, fuzzy
 msgid "Import PSD..."
 msgstr "导入PSD..."
 
-#: source/creator/windows/welcome.d:191
+#: source/creator/windows/welcome.d:208
 msgid "Recent Projects"
 msgstr "最近打开的项目"
 
-#: source/creator/windows/welcome.d:215
+#: source/creator/windows/welcome.d:232
 msgid "On the Web"
 msgstr "在线信息"
 
-#: source/creator/windows/welcome.d:219
+#: source/creator/windows/welcome.d:236
 msgid "Website"
 msgstr "网站"
 
-#: source/creator/windows/welcome.d:223
+#: source/creator/windows/welcome.d:240
 #, fuzzy
 msgid "Documentation"
 msgstr "在线文档"
 
-#: source/creator/windows/welcome.d:229
+#: source/creator/windows/welcome.d:246
 msgid "Patreon"
 msgstr "Patreon 赞助"
 
-#: source/creator/windows/welcome.d:232
+#: source/creator/windows/welcome.d:249
 msgid "Github Sponsors"
 msgstr "Github Sponsors 赞助"
 
-#: source/creator/windows/welcome.d:258
+#: source/creator/windows/welcome.d:275
 #, fuzzy
 msgid "Inochi Creator Start"
 msgstr "Inochi Creator 崩溃日志"
