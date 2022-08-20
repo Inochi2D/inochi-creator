@@ -59,6 +59,12 @@ void incRenderDialogs() {
             ImGuiWindowFlags.NoSavedSettings | 
             ImGuiWindowFlags.NoResize | 
             ImGuiWindowFlags.AlwaysAutoResize;
+            
+        ImVec2 wpos = ImVec2(
+            igGetMainViewport().Pos.x+(igGetMainViewport().Size.x/2),
+            igGetMainViewport().Pos.y+(igGetMainViewport().Size.y/2),
+        );
+        igSetNextWindowPos(wpos, ImGuiCond.Appearing, ImVec2(0.5, 0.5));
         if (igBeginPopupModal(entry.title, null, flags)) {
             float errImgScale = 112;
             float msgEndPadding = 4;
