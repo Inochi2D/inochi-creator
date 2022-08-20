@@ -14,7 +14,8 @@ import std.array;
 
 private {
     ImFontAtlas* atlas;
-    float uiScale;
+
+    version (NoUIScaling) { } else { float uiScale; }
 
     FontEntry[] families;
     void _incInitFontList() {
@@ -100,53 +101,6 @@ void incInitFonts() {
 
     // Half size because the extra size is for scaling
     igGetIO().FontGlobalScale = 0.5;
-
-    // Load UI scale
-    uiScale = incSettingsGet!float("UIScale", 1.0);
-}
-
-/**
-    Sets the UI scale for fonts
-*/
-void incSetUIScale(float scale) {
-    incSettingsSet("UIScale", scale);
-    uiScale = scale;
-}
-
-/**
-    Get the UI scale in terms of font size
-*/
-float incGetUIScaleFont() {
-    return incGetUIScale()/2;
-}
-
-/**
-    Returns the UI Scale
-*/
-float incGetUIScale() {
-    return uiScale;
-}
-
-/**
-    Gets the UI scale in text form
-*/
-string incGetUIScaleText() {
-    import std.format : format;
-    return "%s%%".format(cast(int)(incGetUIScale()*100));
-}
-
-/**
-    Begins a section where text is double size
-*/
-void incFontsBeginLarge() {
-    igGetIO().FontGlobalScale = incGetUIScaleFont()*2;
-}
-
-/**
-    Ends a section where text is double size
-*/
-void incFontsEndLarge() {
-    igGetIO().FontGlobalScale = incGetUIScaleFont();
 }
 
 /**
@@ -155,7 +109,3 @@ void incFontsEndLarge() {
 FontEntry[] incFontsGet() {
     return families;
 }
-
-// void incFontSet(string file) {
-
-// }

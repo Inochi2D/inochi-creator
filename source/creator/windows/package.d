@@ -7,6 +7,7 @@
 module creator.windows;
 import creator.core;
 import bindbc.imgui;
+import creator.widgets;
 import std.string;
 import std.conv;
 import i18n;
@@ -21,7 +22,7 @@ public import creator.windows.trkbind;
 public import creator.windows.psdmerge;
 public import creator.windows.welcome;
 
-private ImGuiWindowClass* windowClass;
+version(NoUIScaling) private ImGuiWindowClass* windowClass;
 
 private uint spawnCount = 0;
 
@@ -45,16 +46,24 @@ protected:
 
     void onBeginUpdate() {
         if (imName is null) this.setTitle(name);
-        igSetNextWindowClass(windowClass);
-        drewWindow = igBegin(
-            imName,
-            &visible, 
-            incIsWayland() ? flags : flags | ImGuiWindowFlags.NoDecoration
-        );
+        version(NoUIScaling) {
+            igSetNextWindowClass(windowClass);
+            drewWindow = incBegin(
+                imName,
+                &visible, 
+                incIsWayland() ? flags : flags | ImGuiWindowFlags.NoDecoration
+            );
+        } else version(UseUIScaling) {
+            drewWindow = incBegin(
+                imName,
+                &visible, 
+                flags
+            );
+        }
     }
     
     void onEndUpdate() {
-        igEnd();
+        incEnd();
     }
 
     void onClose() { }
@@ -116,9 +125,11 @@ public:
         disabled = false;
         this.flags = ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoSavedSettings;
 
-        windowClass = ImGuiWindowClass_ImGuiWindowClass();
-        windowClass.ViewportFlagsOverrideClear = ImGuiViewportFlags.NoDecoration | ImGuiViewportFlags.NoTaskBarIcon;
-        windowClass.ViewportFlagsOverrideSet = ImGuiViewportFlags.NoAutoMerge;
+        version(NoUIScaling) {
+            windowClass = ImGuiWindowClass_ImGuiWindowClass();
+            windowClass.ViewportFlagsOverrideClear = ImGuiViewportFlags.NoDecoration | ImGuiViewportFlags.NoTaskBarIcon;
+            windowClass.ViewportFlagsOverrideSet = ImGuiViewportFlags.NoAutoMerge;
+        }
     }
 }
 

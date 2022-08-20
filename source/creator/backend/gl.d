@@ -5,11 +5,12 @@
     Authors: Luna Nielsen
 */
 module creator.backend.gl;
-import creator.core.font;
+import creator.core.dpi;
 import bindbc.opengl;
 import bindbc.imgui;
 import core.stdc.stdio;
 import inmath;
+import bindbc.sdl;
 
 private {
     // OpenGL Data
@@ -63,23 +64,55 @@ void incGLBackendNewFrame() {
 }
 
 void incGLBackendBeginRender() {
-    float uiScale = incGetUIScale();
-    auto io = igGetIO();
-    auto vp = igGetMainViewport();
-    vp.DpiScale = uiScale;
-    vp.WorkSize.x /= uiScale;
-    vp.WorkSize.y /= uiScale;
-    vp.Size.x /= uiScale;
-    vp.Size.y /= uiScale;
-    // vp.DrawData.DisplaySize.x /= uiScale;
-    // vp.DrawData.DisplaySize.y /= uiScale;
-    io.DisplaySize.x /= uiScale;
-    io.DisplaySize.y /= uiScale;
+    version (UseUIScaling) {
+        float uiScale = incGetUIScale();
+        auto io = igGetIO();
+        auto vp = igGetMainViewport();
 
-    // io.MousePos.x = vp.Pos.x+((io.MousePos.x-vp.Pos.x)/uiScale);
-    // io.MousePos.y = vp.Pos.y+((io.MousePos.y-vp.Pos.y)/uiScale);
+        vp.WorkSize.x = ceil(cast(double)vp.WorkSize.x/cast(double)uiScale);
+        vp.WorkSize.y = ceil(cast(double)vp.WorkSize.y/cast(double)uiScale);
+        vp.Size.x = ceil(cast(double)vp.Size.x/cast(double)uiScale);
+        vp.Size.y = ceil(cast(double)vp.Size.y/cast(double)uiScale);
 
-    // vp.
+        // NOTE:
+        // For some reason there's this weird offset added during scaling
+        // This magic number SOMEHOW works, and I don't know why
+        // I hate computers
+        //
+        // This only works with scaling up to 200%, after which it breaks
+        vp.WorkSize.y -= (26+10)*(uiScale-1);
+        
+        int mx, my;
+        int wx, wy;
+        SDL_GetGlobalMouseState(&mx, &my);
+        SDL_GetWindowPosition(cast(SDL_Window*)vp.PlatformHandle, &wx, &wy);
+        io.MousePos.x = cast(float)(mx-wx)/uiScale;
+        io.MousePos.y = cast(float)(my-wy)/uiScale;
+    }
+}
+
+bool incGLBackendProcessEvent(const(SDL_Event)* event) {
+    version (UseUIScaling) {
+        switch(event.type) {
+
+            // For UI Scaling we want to send in our own scaled UI inputs
+            case SDL_EventType.SDL_MOUSEMOTION:
+                float uiScale = incGetUIScale();
+                ImGuiIO_AddMousePosEvent(
+                    igGetIO(), 
+                    cast(float)event.motion.x/uiScale, 
+                    cast(float)event.motion.y/uiScale
+                );
+                return true;
+            
+            default:
+                return ImGui_ImplSDL2_ProcessEvent(event);
+        }
+
+    } else {
+        return ImGui_ImplSDL2_ProcessEvent(event);
+    }
+
 }
 
 static void incGLBackendSetupRenderState(ImDrawData* draw_data, float fb_width, float fb_height, GLuint vertex_array_object) {
@@ -174,8 +207,8 @@ void incGLBackendRenderDrawData(ImDrawData* draw_data) {
     ); // (0,0) unless using multi-viewports
 
     ImVec2 clip_scale = ImVec2(
-        draw_data.FramebufferScale.x*uiScale, 
-        draw_data.FramebufferScale.y*uiScale
+        draw_data.FramebufferScale.x * uiScale, 
+        draw_data.FramebufferScale.y * uiScale
     ); // (1,1) unless using retina display which are often (2,2)
     
 
@@ -512,37 +545,23 @@ void incGLBackendDestroyDeviceObjects() {
 //--------------------------------------------------------------------------------------------------------
 extern (C)
 {
-    void incGLBackendPlatformRenderWindow(ImGuiViewport* viewport, void*) {
-        if (!(viewport.Flags & ImGuiViewportFlags.NoRendererClear)) {
-            ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-            glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-            glClear(GL_COLOR_BUFFER_BIT);
+    version (NoUIScaling) {
+        void incGLBackendPlatformRenderWindow(ImGuiViewport* viewport, void*) {
+            if (!(viewport.Flags & ImGuiViewportFlags.NoRendererClear)) {
+                ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+                glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+                glClear(GL_COLOR_BUFFER_BIT);
+            }
+            incGLBackendRenderDrawData(viewport.DrawData);
         }
-        incGLBackendRenderDrawData(viewport.DrawData);
-    }
-
-    void incGLBackendPlatformUpdateWindow(ImGuiViewport* viewport) {
-        float uiScale = incGetUIScale();
-        auto io = igGetIO();
-        // viewport.DpiScale = uiScale;
-        // viewport.WorkSize.x /= uiScale;
-        // viewport.WorkSize.y /= uiScale;
-        // viewport.Size.x /= uiScale;
-        // viewport.Size.y /= uiScale;
-        // io.DisplaySize.x /= uiScale;
-        // io.DisplaySize.y /= uiScale;
-        viewport.DrawData.DisplaySize.x /= uiScale;
-        viewport.DrawData.DisplaySize.y /= uiScale;
-
-        // io.MousePos.x = viewport.Pos.x+((io.MousePos.x-viewport.Pos.x)/uiScale);
-        // io.MousePos.y = viewport.Pos.y+((io.MousePos.y-viewport.Pos.y)/uiScale);
     }
 }
 
 void incGLBackendPlatformInterfaceInit() {
-    ImGuiPlatformIO* platform_io = igGetPlatformIO();
-    platform_io.Renderer_RenderWindow = &incGLBackendPlatformRenderWindow;
-    platform_io.Platform_UpdateWindow = &incGLBackendPlatformUpdateWindow;
+    version (NoUIScaling) {
+        ImGuiPlatformIO* platform_io = igGetPlatformIO();
+        platform_io.Renderer_RenderWindow = &incGLBackendPlatformRenderWindow;
+    }
 }
 
 void incGLBackendPlatformInterfaceShutdown() {

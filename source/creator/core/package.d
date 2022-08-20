@@ -5,7 +5,7 @@
     Authors: Luna Nielsen
 */
 module creator.core;
-import creator.core.font;
+import creator.core.dpi;
 import creator.core.input;
 import creator.panels;
 import creator.windows;
@@ -32,6 +32,7 @@ public import creator.core.actionstack;
 public import creator.core.tasks;
 public import creator.core.path;
 public import creator.core.font;
+public import creator.core.dpi;
 import i18n;
 
 private {
@@ -319,8 +320,16 @@ void incCreateContext() {
     incSetDarkMode(incSettingsGet!bool("DarkMode", true));
 
     io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;                               // Enable Docking
-    if (!incIsTilingWM) io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;         // Enable Viewports (causes freezes)
     io.ConfigWindowsResizeFromEdges = true;                                         // Enable Edge resizing
+
+    // NOTE: Viewports break DPI scaling system, as such if Viewports is enabled
+    // we will be disable DPI scaling.
+    version(NoUIScaling) {
+        if (!incIsTilingWM) io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;         // Enable Viewports (causes freezes)
+    } else {
+        incInitDPIScaling();
+    }
+
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;                         // Enable Keyboard Navigation
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     incGLBackendInit(null);
@@ -430,8 +439,11 @@ void incBeginLoopNoEv() {
     // Start the Dear ImGui frame
     incGLBackendNewFrame();
     ImGui_ImplSDL2_NewFrame();
+
+    // Do our DPI pre-processing
     igNewFrame();
     incGLBackendBeginRender();
+
 
 
     if (files.length > 0) {
@@ -504,7 +516,7 @@ void incBeginLoop() {
                 break;
             
             default: 
-                ImGui_ImplSDL2_ProcessEvent(&event);
+                incGLBackendProcessEvent(&event);
                 if (
                     event.type == SDL_WINDOWEVENT && 
                     event.window.event == SDL_WINDOWEVENT_CLOSE && 

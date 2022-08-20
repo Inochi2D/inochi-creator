@@ -45,7 +45,7 @@ void incStatusbar() {
             
             igEndMenuBar();
         }
-        igEnd();
+        incEnd();
     }
     igPopStyleColor();
 }

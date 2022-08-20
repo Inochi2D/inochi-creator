@@ -7,6 +7,7 @@
 module creator.panels;
 import creator.core;
 import creator.core.settings;
+import creator.widgets;
 import bindbc.imgui;
 import std.string;
 import i18n;
@@ -36,7 +37,7 @@ protected:
 
         // Try to begin panel
         flags |= ImGuiWindowFlags.NoCollapse;
-        drewContents = igBegin(windowID, &visible, flags);
+        drewContents = incBegin(windowID, &visible, flags);
 
         // Handle panel visibility settings save for closing tabs
         // and skipping content draw
@@ -50,7 +51,7 @@ protected:
     
     void onEndUpdate() {
         debug if (drewContents) incDebugImGuiState("Panel::onEndUpdate", -1);
-        igEnd();
+        incEnd();
 
         wasVisible = visible;
     }

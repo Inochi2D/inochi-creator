@@ -12,6 +12,7 @@ import creator.core.i18n;
 import std.string;
 import creator.utils.link;
 import i18n;
+import inmath;
 
 bool incIsSettingsOpen;
 
@@ -23,6 +24,9 @@ private:
     bool generalTabOpen = true;
     bool otherTabOpen = true;
     bool useOpenDyslexic;
+
+    int tmpUIScale;
+    float targetUIScale;
 
 protected:
     override
@@ -58,12 +62,15 @@ protected:
                                 igEndCombo();
                             }
 
-                            if(igBeginCombo(__("UI Scale (EXPERIMENTAL)"), incGetUIScaleText().toStringz)) {
-                                if (igSelectable("100%")) incSetUIScale(1.0);
-                                if (igSelectable("150%")) incSetUIScale(1.5);
-                                if (igSelectable("200%")) incSetUIScale(2.0);
+                            version (UseUIScaling) {
+                                if (igInputInt(__("UI Scale"), &tmpUIScale, 25, 50)) {
+                                    tmpUIScale = clamp(tmpUIScale, 100, 200);
+                                    targetUIScale = cast(float)tmpUIScale/100.0;
+                                }
 
-                                igEndCombo();
+                                if (!igIsMouseDown(ImGuiMouseButton.Left) && targetUIScale != incGetUIScale()) {
+                                    incSetUIScale(targetUIScale);
+                                }
                             }
 
                             version(linux) {
@@ -138,5 +145,7 @@ protected:
 public:
     this() {
         super(_("Settings"));
+        targetUIScale = incGetUIScale();
+        tmpUIScale = cast(int)(incGetUIScale()*100);
     }
 }
