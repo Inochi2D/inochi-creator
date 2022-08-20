@@ -1642,7 +1642,7 @@ msgstr "快捷配置助手"
 
 #: source/creator/windows/welcome.d:157
 msgid "Inochi Creator needs to be restarted for some changes to take effect."
-msgstr ""
+msgstr "Inochi Creator 需要重新启动才能使某些更改生效"
 
 #: source/creator/windows/welcome.d:170
 msgid "Next"
