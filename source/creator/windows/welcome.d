@@ -25,14 +25,15 @@ private:
     Texture bannerLogo;
     ImVec2 origWindowPadding;
     bool firstFrame = true;
+    
+    // Temporary variables for setup
+    int tmpUIScale;
 
 protected:
     override
     void onBeginUpdate() {
         flags |= ImGuiWindowFlags.NoResize;
         flags |= ImGuiWindowFlags.NoDecoration;
-
-        float uiScale = incGetUIScale();
 
         ImVec2 wpos = ImVec2(
             igGetMainViewport().Pos.x+(igGetMainViewport().Size.x/2),
@@ -132,6 +133,13 @@ protected:
                                     if (igSelectable(__("Light"), !incGetDarkMode())) incSetDarkMode(false);
 
                                     igEndCombo();
+                                }
+
+                                version (UseUIScaling) {
+                                    if (igInputInt(__("UI Scale"), &tmpUIScale, 25, 50, ImGuiInputTextFlags.EnterReturnsTrue)) {
+                                        tmpUIScale = clamp(tmpUIScale, 100, 200);
+                                        incSetUIScale(cast(float)tmpUIScale/100.0);
+                                    }
                                 }
                             igPopItemWidth();
                         igEndGroup();
@@ -259,5 +267,8 @@ public:
             bannerLogo = new Texture(bannerLogoTex);
         }
         if (!incSettingsGet!bool("hasDoneQuickSetup", false)) step = 0;
+
+        // Load UI scale
+        tmpUIScale = cast(int)(incGetUIScale()*100);
     }
 }
