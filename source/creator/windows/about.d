@@ -22,7 +22,7 @@ class AboutWindow : Window {
 private:
     version (InBranding) {
         Texture ada;
-        enum ADA_SIZE = 373;
+        enum ADA_SIZE = 332;
         enum ADA_SIZE_PARTIAL = ADA_SIZE/6;
         vec2 ada_float;
     }
