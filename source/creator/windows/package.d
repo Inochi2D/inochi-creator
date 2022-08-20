@@ -7,20 +7,22 @@
 module creator.windows;
 import creator.core;
 import bindbc.imgui;
+import creator.widgets;
 import std.string;
 import std.conv;
-import creator.widgets.titlebar;
 import i18n;
 
 public import creator.windows.about;
 public import creator.windows.settings;
 public import creator.windows.texviewer;
-public import creator.windows.notice;
 public import creator.windows.paramprop;
 public import creator.windows.paramaxes;
+public import creator.windows.paramsplit;
 public import creator.windows.trkbind;
+public import creator.windows.psdmerge;
+public import creator.windows.welcome;
 
-private ImGuiWindowClass* windowClass;
+version(NoUIScaling) private ImGuiWindowClass* windowClass;
 
 private uint spawnCount = 0;
 
@@ -37,22 +39,31 @@ private:
 
 protected:
     bool onlyOne;
+    bool drewWindow;
     ImGuiWindowFlags flags;
 
     abstract void onUpdate();
 
     void onBeginUpdate() {
         if (imName is null) this.setTitle(name);
-        igSetNextWindowClass(windowClass);
-        igBegin(
-            imName,
-            &visible, 
-            flags | ImGuiWindowFlags.NoDecoration
-        );
+        version(NoUIScaling) {
+            igSetNextWindowClass(windowClass);
+            drewWindow = incBegin(
+                imName,
+                &visible, 
+                incIsWayland() ? flags : flags | ImGuiWindowFlags.NoDecoration
+            );
+        } else version(UseUIScaling) {
+            drewWindow = incBegin(
+                imName,
+                &visible, 
+                flags
+            );
+        }
     }
     
     void onEndUpdate() {
-        igEnd();
+        incEnd();
     }
 
     void onClose() { }
@@ -114,9 +125,11 @@ public:
         disabled = false;
         this.flags = ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoSavedSettings;
 
-        windowClass = ImGuiWindowClass_ImGuiWindowClass();
-        windowClass.ViewportFlagsOverrideClear = ImGuiViewportFlags.NoDecoration | ImGuiViewportFlags.NoTaskBarIcon;
-        windowClass.ViewportFlagsOverrideSet = ImGuiViewportFlags.NoAutoMerge;
+        version(NoUIScaling) {
+            windowClass = ImGuiWindowClass_ImGuiWindowClass();
+            windowClass.ViewportFlagsOverrideClear = ImGuiViewportFlags.NoDecoration | ImGuiViewportFlags.NoTaskBarIcon;
+            windowClass.ViewportFlagsOverrideSet = ImGuiViewportFlags.NoAutoMerge;
+        }
     }
 }
 
@@ -221,4 +234,17 @@ void incUpdateWindows() {
 */
 Window incGetTopWindow() {
     return windowStack.length > 0 ? windowStack[$-1] : null;
+}
+
+/**
+    Pops the welcome window.
+*/
+void incPopWelcomeWindow() {
+    import std.algorithm.mutation : remove;
+    foreach(i; 0..windowStack.length) {
+        if (auto ww = cast(WelcomeWindow)windowStack[i]) {
+            windowStack = windowStack.remove(i);
+            return;
+        }
+    }
 }

@@ -7,6 +7,7 @@
 module creator.panels;
 import creator.core;
 import creator.core.settings;
+import creator.widgets;
 import bindbc.imgui;
 import std.string;
 import i18n;
@@ -24,20 +25,35 @@ private:
     const(char)* windowID;
     const(char)* displayNamePtr;
 
+    bool drewContents;
+    bool wasVisible;
+
 protected:
     ImVec2 panelSpace;
     abstract void onUpdate();
     ImGuiWindowFlags flags;
 
     void onBeginUpdate() {
-        igBegin(windowID, &visible, flags);
-        incDebugImGuiState("Panel::onBeginUpdate", 1);
+
+        // Try to begin panel
+        flags |= ImGuiWindowFlags.NoCollapse;
+        drewContents = incBegin(windowID, &visible, flags);
+
+        // Handle panel visibility settings save for closing tabs
+        // and skipping content draw
+        if (wasVisible != visible) incSettingsSet(name~".visible", visible);
+        if (!drewContents) return;
+
+        // Setup debug state and such.
+        debug incDebugImGuiState("Panel::onBeginUpdate", 1);
         igGetContentRegionAvail(&panelSpace);
     }
     
     void onEndUpdate() {
-        incDebugImGuiState("Panel::onEndUpdate", -1);
-        igEnd();
+        debug if (drewContents) incDebugImGuiState("Panel::onEndUpdate", -1);
+        incEnd();
+
+        wasVisible = visible;
     }
 
     void onInit() { }
@@ -74,6 +90,7 @@ public:
         this.displayName_ = _(this.displayName_);
         if (incSettingsCanGet(this.name_~".visible")) {
             visible = incSettingsGet!bool(this.name_~".visible");
+            wasVisible = visible;
         }
 
         windowID = "%s###%s".format(displayName_, name_).toStringz;
@@ -97,7 +114,7 @@ public:
     */
     final void update() {
         this.onBeginUpdate();
-            this.onUpdate();
+            if (drewContents) this.onUpdate();
         this.onEndUpdate();
     }
 

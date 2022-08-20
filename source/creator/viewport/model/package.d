@@ -56,15 +56,8 @@ void incViewportModelUpdate(ImGuiIO* io, Camera camera) {
 
 void incViewportModelDraw(Camera camera) {
     Parameter param = incArmedParameter();
-    if (param) {
-        incActivePuppet().root.beginUpdate();
-        incArmedParameter().update();
-        incActivePuppet().root.update();
-        incActivePuppet.draw();
-    } else {
-        incActivePuppet.update();
-        incActivePuppet.draw();
-    }
+    incActivePuppet.update();
+    incActivePuppet.draw();
 
     if (param) {
         incViewportModelDeformDraw(camera, param);

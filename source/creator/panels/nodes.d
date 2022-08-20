@@ -10,7 +10,9 @@ import creator.actions;
 import creator.panels;
 import creator;
 import creator.widgets;
+import creator.ext;
 import creator.core;
+import creator.core.input;
 import creator.utils;
 import inochi2d;
 import std.string;
@@ -42,13 +44,13 @@ protected:
             if (igBeginMenu(__("Add"), true)) {
 
                 igPushFont(incIconFont());
-                    igText(incTypeIdToIcon("Node").ptr);
+                    incText(incTypeIdToIcon("Node"));
                 igPopFont();
                 igSameLine(0, 2);
                 if (igMenuItem(__("Node"), "", false, true)) incAddChildWithHistory(new Node(n), n);
                 
                 igPushFont(incIconFont());
-                    igText(incTypeIdToIcon("Mask").ptr);
+                    incText(incTypeIdToIcon("Mask"));
                 igPopFont();
                 igSameLine(0, 2);
                 if (igMenuItem(__("Mask"), "", false, true)) {
@@ -57,7 +59,7 @@ protected:
                 }
                 
                 igPushFont(incIconFont());
-                    igText(incTypeIdToIcon("Composite").ptr);
+                    incText(incTypeIdToIcon("Composite"));
                 igPopFont();
                 igSameLine(0, 2);
                 if (igMenuItem(__("Composite"), "", false, true)) {
@@ -65,7 +67,7 @@ protected:
                 }
                 
                 igPushFont(incIconFont());
-                    igText(incTypeIdToIcon("SimplePhysics").ptr);
+                    incText(incTypeIdToIcon("SimplePhysics"));
                 igPopFont();
                 igSameLine(0, 2);
                 if (igMenuItem(__("Simple Physics"), "", false, true)) incAddChildWithHistory(new SimplePhysics(n), n);
@@ -98,12 +100,20 @@ protected:
                         foreach(sn; selected) {
                             
                             // %s is the name of the node in the More Info menu
-                            // %lu is the UUID of the node in the More Info menu
-                            igText(__("%s ID: %lu"), sn.name.ptr, sn.uuid);
+                            // %u is the UUID of the node in the More Info menu
+                            incText(_("%s ID: %u").format(sn.name, sn.uuid));
+
+                            if (ExPart exp = cast(ExPart)sn) {
+                                incText(_("%s Layer: %s").format(exp.name, exp.layerPath));
+                            }
                         }
                     } else {
-                        // %lu is the UUID of the node in the More Info menu
-                        igText(__("ID: %lu"), n.uuid);
+                        // %u is the UUID of the node in the More Info menu
+                        incText(_("ID: %u").format(n.uuid));
+
+                        if (ExPart exp = cast(ExPart)n) {
+                            incText(_("Layer: %s").format(exp.layerPath));
+                        }
                     }
 
                     igEndMenu();
@@ -121,7 +131,7 @@ protected:
         // // Draw Enabler for this node first
         // igTableSetColumnIndex(1);
         // igPushFont(incIconFont());
-        //     igText(n.enabled ? "\ue8f4" : "\ue8f5");
+        //     incText(n.enabled ? "\ue8f4" : "\ue8f5");
         // igPopFont();
 
 
@@ -131,8 +141,10 @@ protected:
         flags |= ImGuiTreeNodeFlags.DefaultOpen;
         flags |= ImGuiTreeNodeFlags.OpenOnArrow;
 
+
         // Then draw the node tree index
         igTableSetColumnIndex(0);
+        igSetNextItemWidth(8);
         bool open = igTreeNodeEx(cast(void*)n.uuid, flags, "");
 
             // Show node entry stuff
@@ -142,44 +154,51 @@ protected:
             igPushID(n.uuid);
                     bool selected = incNodeInSelection(n);
 
-                    igPushFont(incIconFont());
-                        static if (!isRoot) {
-                            if (n.enabled) igText(incTypeIdToIcon(n.typeId).ptr);
-                            else igTextDisabled(incTypeIdToIcon(n.typeId).ptr);
-                        } else {
-                            igText("");
-                        }
-                    igPopFont();
-                    igSameLine(0, 2);
+                    igBeginGroup();
+                        igIndent(4);
 
-                    if (igSelectable(isRoot ? __("Puppet") : n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
-                        switch(incEditMode) {
-                            default:
-                                if (selected) {
-                                    if (incSelectedNodes().length > 1) {
-                                        if (io.KeyCtrl) incRemoveSelectNode(n);
-                                        else incSelectNode(n);
-                                    } else {
-                                        incFocusCamera(n);
-                                    }
-                                } else {
-                                    if (io.KeyCtrl) incAddSelectNode(n);
-                                    else incSelectNode(n);
-                                }
-                                break;
+                        // Type Icon
+                        static if (!isRoot) {
+                            if (n.enabled) incText(incTypeIdToIcon(n.typeId));
+                            else incTextDisabled(incTypeIdToIcon(n.typeId));
+                            if (igIsItemClicked()) {
+                                n.enabled = !n.enabled;
+                            }
+                        } else {
+                            incText("");
                         }
-                    }
-                    this.nodeActionsPopup!isRoot(n);
+                        igSameLine(0, 2);
+
+                        // Selectable
+                        if (igSelectable(isRoot ? __("Puppet") : n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
+                            switch(incEditMode) {
+                                default:
+                                    if (selected) {
+                                        if (incSelectedNodes().length > 1) {
+                                            if (io.KeyCtrl) incRemoveSelectNode(n);
+                                            else incSelectNode(n);
+                                        } else {
+                                            incFocusCamera(n);
+                                        }
+                                    } else {
+                                        if (io.KeyCtrl) incAddSelectNode(n);
+                                        else incSelectNode(n);
+                                    }
+                                    break;
+                            }
+                        }
+                        this.nodeActionsPopup!isRoot(n);
+                    igEndGroup();
 
                     static if (!isRoot) {
                         if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
                             igSetDragDropPayload("_PUPPETNTREE", cast(void*)&n, (&n).sizeof, ImGuiCond.Always);
                             if (selectedNodes.length > 1) {
                                 foreach(node; selectedNodes) {
-                                    igText(node.name.toStringz);
+                                    incText(node.name);
                                 }
                             } else {
-                                igText(n.name.toStringz);
+                                incText(n.name);
                             }
                             igEndDragDropSource();
                         }
@@ -187,21 +206,30 @@ protected:
             igPopID();
 
             // Only allow reparenting one node
-            if (selectedNodes.length < 2) {
-                if(igBeginDragDropTarget()) {
-                    ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
-                    if (payload !is null) {
-                        Node payloadNode = *cast(Node*)payload.Data;
-                        
-                        if (payloadNode.canReparent(n)) {
-                            incMoveChildWithHistory(payloadNode, n);
+            if(igBeginDragDropTarget()) {
+                const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+                if (payload !is null) {
+                    Node payloadNode = *cast(Node*)payload.Data;
+                    
+                    if (selectedNodes.length > 1) {
+                        foreach(sn; selectedNodes) {
+                            if (sn.canReparent(n)) {
+                                sn.setRelativeTo(n);
+                                sn.parent = n;
+                            }
                         }
-                        
-                        igTreePop();
-                        return;
+                    } else {
+                        if (payloadNode.canReparent(n)) {
+                            payloadNode.setRelativeTo(n);
+                            payloadNode.parent = n;
+                        }
                     }
+                    
+                    igTreePop();
                     igEndDragDropTarget();
+                    return;
                 }
+                igEndDragDropTarget();
             }
 
         if (open) {
@@ -213,21 +241,24 @@ protected:
                     igInvisibleButton("###TARGET", ImVec2(128, 4));
 
                     if(igBeginDragDropTarget()) {
-                        ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+                        const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
                         if (payload !is null) {
                             Node payloadNode = *cast(Node*)payload.Data;
                             
                             if (payloadNode.canReparent(n)) {
                                 auto idx = payloadNode.getIndexInNode(n);
                                 if (idx >= 0) {
+                                    payloadNode.setRelativeTo(n);
                                     payloadNode.insertInto(n, clamp(idx < i ? i-1 : i, 0, n.children.length));
                                 } else {
+                                    payloadNode.setRelativeTo(n);
                                     payloadNode.insertInto(n, clamp(cast(ptrdiff_t)i, 0, n.children.length));
                                 }
                             }
                             
                             igPopID();
                             igTreePop();
+                            igEndDragDropTarget();
                             return;
                         }
                         igEndDragDropTarget();
@@ -247,19 +278,18 @@ protected:
 
         if (incEditMode == EditMode.ModelEdit) { 
             if (!incArmedParameter) {
-                auto io = igGetIO();
-                if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.A), false)) {
+                if (incShortcut("Ctrl+A")) {
                     incSelectAll();
                 }
             }
         }
 
         if (incEditMode == EditMode.VertexEdit) {
-            igText(__("In vertex edit mode..."));
+            incText(_("In vertex edit mode..."));
             return;
         }
 
-        igBeginChild_Str("NodesMain", ImVec2(0, -30), false);
+        if (igBeginChild("NodesMain", ImVec2(0, -30), false)) {
             igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 1));
             igPushStyleVar(ImGuiStyleVar.IndentSpacing, 14);
 
@@ -268,7 +298,9 @@ protected:
                 //igTableSetupColumn("Visibility", ImGuiTableColumnFlags_WidthFixed, 32, 1);
                 
                 if (incEditMode == EditMode.ModelEdit) {
-                    treeAddNode!true(incActivePuppet.root);
+                    igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(4, 4));
+                        treeAddNode!true(incActivePuppet.root);
+                    igPopStyleVar();
                 }
 
                 igEndTable();
@@ -278,6 +310,7 @@ protected:
             }
             igPopStyleVar();
             igPopStyleVar();
+        }
         igEndChild();
 
         igSeparator();
@@ -291,7 +324,7 @@ protected:
                 }
 
                 if(igBeginDragDropTarget()) {
-                    ImGuiPayload* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+                    const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
                     if (payload !is null) {
                         Node payloadNode = *cast(Node*)payload.Data;
 

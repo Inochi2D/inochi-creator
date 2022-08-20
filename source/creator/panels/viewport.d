@@ -64,7 +64,7 @@ protected:
         currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
         
 
-        igBeginChild("##ViewportView", ImVec2(0, -30));
+        if (igBeginChild("##ViewportView", ImVec2(0, -30))) {
             igGetContentRegionAvail(&currSize);
             currSize = ImVec2(
                 clamp(currSize.x, 128, float.max), 
@@ -72,7 +72,7 @@ protected:
             );
 
             if (currSize != lastSize) {
-                inSetViewport(cast(int)currSize.x, cast(int)currSize.y);
+                inSetViewport(cast(int)(currSize.x*incGetUIScale()), cast(int)(currSize.y*incGetUIScale()));
             }
 
             incViewportPoll();
@@ -104,7 +104,7 @@ protected:
             
             igImage(
                 cast(void*)inGetRenderImage(), 
-                ImVec2(width, height), 
+                ImVec2(width/incGetUIScale(), height/incGetUIScale()), 
                 ImVec2(0, 1), 
                 ImVec2(1, 0), 
                 ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0)
@@ -116,22 +116,24 @@ protected:
                 igSetItemAllowOverlap();
                 
                 igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
-                    igBeginChild("##ViewportMainControls", ImVec2(200, 28 * incGetUIScale()));
+                    if (igBeginChild("##ViewportMainControls", ImVec2(200, 28))) {
                         igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
                             incViewportDrawOverlay();
                         igPopStyleVar();
+                    }
                     igEndChild();
                 igPopStyleVar();
 
             igSetCursorScreenPos(sPosA);
 
             lastSize = currSize;
-        igEndChild();
+            igEndChild();
+        }
 
 
         // FILE DRAG & DROP
         if (igBeginDragDropTarget()) {
-            ImGuiPayload* payload = igAcceptDragDropPayload("__PARTS_DROP");
+            const(ImGuiPayload)* payload = igAcceptDragDropPayload("__PARTS_DROP");
             if (payload !is null) {
                 string[] files = *cast(string[]*)payload.Data;
                 import std.path : baseName, extension;
@@ -142,14 +144,20 @@ protected:
                     switch(fname.extension.toLower) {
                     case ".png", ".tga", ".jpeg", ".jpg":
 
-                        auto tex = new ShallowTexture(file);
-                        incColorBleedPixels(tex);
-                        inTexPremultiply(tex.data);
-                        incAddChildWithHistory(
-                            inCreateSimplePart(*tex, null, fname), 
-                            incSelectedNode(), 
-                            fname
-                        );
+                        try {
+                            auto tex = new ShallowTexture(file);
+                            incColorBleedPixels(tex);
+                            inTexPremultiply(tex.data);
+                            incAddChildWithHistory(
+                                inCreateSimplePart(*tex, null, fname), 
+                                incSelectedNode(), 
+                                fname
+                            );
+                        } catch(Exception ex) {
+                            if (ex.msg[0..11] == "unsupported") {
+                                incDialog(__("Error"), _("%s is not supported").format(fname));
+                            } else incDialog(__("Error"), ex.msg);
+                        }
 
                         // We've added new stuff, rescan nodes
                         incActivePuppet().rescanNodes();
@@ -160,7 +168,9 @@ protected:
                         incImportPSD(file);
                         break mainLoop;
 
-                    default: break;
+                    default:
+                        incDialog(__("Error"), _("%s is not supported").format(fname)); 
+                        break;
                     }
                 }
 
@@ -173,7 +183,7 @@ protected:
 
         // BOTTOM VIEWPORT CONTROLS
         igGetContentRegionAvail(&currSize);
-        igBeginChild("##ViewportControls", ImVec2(0, currSize.y), false, flags.NoScrollbar);
+        if (igBeginChild("##ViewportControls", ImVec2(0, currSize.y), false, flags.NoScrollbar)) {
             igPushItemWidth(72);
                 igSpacing();
                 igSameLine(0, 8);
@@ -200,7 +210,7 @@ protected:
                 igSeparatorEx(ImGuiSeparatorFlags.Vertical);
 
                 igSameLine(0, 8);
-                igText("x = %.2f y = %.2f", incViewportTargetPosition.x, incViewportTargetPosition.y);
+                incText("x = %.2f y = %.2f".format(incViewportTargetPosition.x, incViewportTargetPosition.y));
                 if (incViewportTargetPosition != vec2(0)) {
                     igSameLine(0, 8);
                     igPushFont(incIconFont());
@@ -212,6 +222,7 @@ protected:
 
 
             igPopItemWidth();
+        }
         igEndChild();
 
         // Handle smooth move

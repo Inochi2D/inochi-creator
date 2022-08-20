@@ -23,13 +23,13 @@ protected:
     override
     void onUpdate() {
 
-        igText(__("Undo History"));
+        incText(_("Undo History"));
         igSeparator();
 
         ImVec2 avail;
         igGetContentRegionAvail(&avail);
 
-        igBeginChild("##ActionList", ImVec2(0, avail.y-30));
+        if (igBeginChild("##ActionList", ImVec2(0, avail.y-30))) {
             if (incActionHistory().length > 0) {
                 foreach(i, action; incActionHistory()) {
                     igPushID(cast(int)i);
@@ -46,6 +46,8 @@ protected:
                     igPopID();
                 }
             }
+
+        }
         igEndChild();
         
 
@@ -57,11 +59,11 @@ protected:
         igSameLine(0, 0);
 
         // Ugly hack to please imgui
-        string count = (_("%d of %d")~"\0").format(incActionHistory().length, incActionGetUndoHistoryLength());
+        string count = _("%d of %d").format(incActionHistory().length, incActionGetUndoHistoryLength());
         ImVec2 len = incMeasureString(count);
-        incDummy(ImVec2(-(len.x-8), 1));
+        incDummy(ImVec2(-len.x, 1));
         igSameLine(0, 0);
-        igText(count.ptr);
+        incText(count);
     }
 
 public:

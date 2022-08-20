@@ -1,66 +1,64 @@
-=== Project Managment ===
-Project Creator and BDFL
-    Luna the Foxgirl (@LunaFoxgirlVT)
+## Project Managment
 
-ImGui Binding Maintainer
-    Joshua T. Fisher
+### Project Creator and BDFL
+  [Luna the Foxgirl](https://twitter.com/LunaFoxgirlVT)
 
-UX Designer
-    Nethyr_UX
+### ImGui Binding Maintainer
+  [Joshua T. Fisher](https://twitter.com/Timewatcher)
 
+### UX Designer
+  [Nethyr_UX](https://twitter.com/Nethyr_UX)
 
-=== Designers ===
-Inochi2D Logo
-    James Daniel 
+## Designers
+### Inochi2D Logo
+  [James Daniel](https://twitter.com/rakujira) 
 
+## Code Contributors
+  [Asahi Lina](https://twitter.com/LinaAsahi)
+  [seagetch](https://twitter.com/seagetch)
+  [carbotaniuman](https://github.com/carbotaniuman)
+  [Grillo](https://twitter.com/Grillo_delmal)
+  [Aki-nyan](https://twitter.com/lethalbit)
 
-=== Code Contributors ===
-    Asahi Lina
-    seagetch (GitHub)
+## Mascot
+### Mascot Design
+  [Kinu](https://twitter.com/Kinugitsune)
 
+### Mascot Model Art
+  [ku-ini](https://twitter.com/duckmastah)
 
-=== Mascot ==
-Mascot Design
-    Kinu (@Kinugitsune)
+### Chibi UI Mascot
+  [いろは](https://twitter.com/iroha_matsurika)
 
-Mascot Model Art
-    ku-ini (@duckmastah)
+## Documentation
+  [Luna the Foxgirl](https://twitter.com/LunaFoxgirlVT)
 
-Chibi UI Mascot
-    いろは (@iroha_matsurika)
+## Translators
+### Dansk
+  [Luna the Foxgirl](https://twitter.com/LunaFoxgirlVT)
+### Italiano
+  [Adryzz](https://twitter.com/Adryzz6)
+### 日本語
+  [seagetch](https://twitter.com/seagetch)
+  [40Nix](https://twitter.com/40Nix)
+  [小栗さえ](https://twitter.com/OkuriSae)
+### 中文
+  [LovelyA72](https://twitter.com/LovelyA72) (简体中文)
+  [cheetosysst](https://twitter.com/Thect_36) (繁體中文)
 
+## Technology Used
+  ImGui
+  OpenGL
+  TinyFileDialogs
+  PSD-D
+  bindbc
+  gl3n
+  SDL2
+  LDC2
+  DLang
 
-=== Documentation ===
-Specification Documentation
-    Luna the Foxgirl
-
-
-=== Translators ===
-Dansk
-    Luna the Foxgirl
-日本語
-    seagetch
-    40Nix
-    小栗さえ (@OkuriSae)
-中文
-    LovelyA72 (简体中文)
-    cheetosysst (繁體中文)
-
-
-
-=== Technology Used ===
- * ImGui           - by Orconut
- * OpenGL          - by Khronos Group
- * TinyFileDialogs - by vareille, ported by dayllenger
- * PSD-D           - by Inochi2D project, based of psd-sdk
- * bindbc          - by BindBC Maintainers
- * gl3n            - by Dav1dde
- * SDL2            - by SDL2 Maintainers
- * LDC2            - by LDC2 Maintainers
- * DLang           - by D Foundation & contributors
-
-
-=== Fonts Used ===
- * Kosugi Maru     - by MATOYA
- * OpenDyslexic    - by Abelardo Gonzalez
- * Material Icons  - by Google Design
+## Fonts Used
+  Noto
+  Noto CJK
+  OpenDyslexic
+  Material Icons

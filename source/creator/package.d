@@ -15,12 +15,17 @@ import creator.core;
 import creator.core.actionstack;
 import creator.windows;
 import creator.atlas;
+import creator.ext;
+import creator.widgets.dialog;
 
 public import creator.ver;
 public import creator.atlas;
+public import creator.io;
 import creator.core.colorbleed;
 
 import std.file;
+import std.format;
+import i18n;
 
 /**
     A project
@@ -44,6 +49,7 @@ private {
     Node[] selectedNodes;
     Drawable[] drawables;
     Parameter armedParam;
+    size_t armedParamIdx;
     string currProjectPath;
     string[] prevProjects;
 }
@@ -82,6 +88,19 @@ bool incShowOrientation = true; /// Show orientation gizmo of selected parts
 */
 EditMode editMode_;
 
+/**
+    Clears the imgui data
+*/
+void incClearImguiData() {
+    auto ctx = igGetCurrentContext();
+    if (ctx) {
+        foreach(ImGuiWindow* window; ctx.Windows.Data[0..ctx.Windows.Size]) {
+            if (window) {
+                ImGuiStorage_Clear(&window.StateStorage);
+            }
+        }
+    }
+}
 
 /**
     Returns the current project path
@@ -100,7 +119,7 @@ string[] incGetPrevProjects() {
 void incAddPrevProject(string path) {
     import std.algorithm.searching : countUntil;
     import std.algorithm.mutation : remove;
-    string[] projects = incSettingsGet!(string[])("prev_projects");
+    string[] projects = incGetPrevProjects();
 
     ptrdiff_t idx = projects.countUntil(path);
     if (idx >= 0) {
@@ -109,7 +128,7 @@ void incAddPrevProject(string path) {
 
     // Put project to the start of the "previous" list and
     // limit to 10 elements
-    projects = path ~ projects;
+    projects = path.dup ~ projects;
     if(projects.length > 10) projects.length = 10;
 
     // Then save.
@@ -121,6 +140,8 @@ void incAddPrevProject(string path) {
     Creates a new project
 */
 void incNewProject() {
+    incClearImguiData();
+
     currProjectPath = "";
     editMode_ = EditMode.ModelEdit;
     import creator.viewport : incViewportReset;
@@ -129,6 +150,7 @@ void incNewProject() {
 
     activeProject = new Project;
     activeProject.puppet = new Puppet;
+    incFocusCamera(activeProject.puppet.root);
     incSelectNode(null);
 
     inDbgDrawMeshVertexPoints = true;
@@ -144,12 +166,15 @@ void incNewProject() {
 }
 
 void incOpenProject(string path) {
+    incClearImguiData();
+    
     Puppet puppet;
 
     // Load the puppet from file
     try {
         puppet = inLoadPuppet(path);
-    } catch (std.file.FileException e) {
+    } catch (Exception ex) {
+        incDialog(__("Error"), ex.msg);
         return;
     }
 
@@ -163,19 +188,28 @@ void incOpenProject(string path) {
     incActiveProject().puppet = puppet;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
+
+    incSetStatus(_("%s opened successfully.").format(currProjectPath));
 }
 
 void incSaveProject(string path) {
     import std.path : setExtension;
-    string finalPath = path.setExtension(".inx");
-    currProjectPath = path;
-    incAddPrevProject(finalPath);
+    try {
+        string finalPath = path.setExtension(".inx");
+        currProjectPath = path;
+        incAddPrevProject(finalPath);
 
-    // Remember to populate texture slots otherwise things will break real bad!
-    incActivePuppet().populateTextureSlots();
+        // Remember to populate texture slots otherwise things will break real bad!
+        incActivePuppet().populateTextureSlots();
 
-    // Write the puppet to file
-    inWriteINPPuppet(incActivePuppet(), finalPath);
+        // Write the puppet to file
+        inWriteINPPuppet(incActivePuppet(), finalPath);
+
+        incSetStatus(_("%s saved successfully.").format(currProjectPath));
+    } catch(Exception ex) {
+        incSetStatus(_("Failed to save %s").format(currProjectPath));
+        incDialog(__("Error"), ex.msg);
+    }
 }
 
 /**
@@ -187,116 +221,40 @@ void incImportFolder(string folder) {
     import std.file : dirEntries, SpanMode;
     import std.path : stripExtension, baseName;
 
+    string[] failedFiles;
     // For each file find PNG, TGA and JPEG files and import them
     Puppet puppet = new Puppet();
     size_t i;
     foreach(file; dirEntries(folder, SpanMode.shallow, false)) {
+        try {
 
-        // TODO: Check for position.ini
+            // TODO: Check for position.ini
 
-        auto tex = ShallowTexture(file);
-        inTexPremultiply(tex.data);
+            auto tex = ShallowTexture(file);
+            inTexPremultiply(tex.data);
 
-        Part part = inCreateSimplePart(new Texture(tex), null, file.baseName.stripExtension);
-        part.zSort = -((cast(float)i++)/100);
-        puppet.root.addChild(part);
+            Part part = inCreateSimplePart(new Texture(tex), null, file.baseName.stripExtension);
+            part.zSort = -((cast(float)i++)/100);
+            puppet.root.addChild(part);
+        } catch(Exception ex) {
+            failedFiles ~= ex.msg;
+        }
     }
+
+    if (failedFiles.length > 0) {
+        import std.array : join;
+        incDialog("ImgLoadError", format(_("The following errors occured during file loading\n%s"), failedFiles.join("\n")));
+    }
+    
     puppet.rescanNodes();
     puppet.populateTextureSlots();
     incActiveProject().puppet = puppet;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
-}
 
-/**
-    Imports a PSD file.
-*/
-void incImportPSD(string file) {
-    incNewProject();
-    import psd : PSD, Layer, LayerType, LayerFlags, parseDocument, BlendingMode;
-    PSD doc = parseDocument(file);
-    vec2i docCenter = vec2i(doc.width/2, doc.height/2);
-    Puppet puppet = new Puppet();
-
-    Layer[] layerGroupStack;
-    bool isLastStackItemHidden() {
-        return layerGroupStack.length > 0 ? (layerGroupStack[$-1].flags & LayerFlags.Visible) != 0 : false;
-    }
-
-    foreach_reverse(i, Layer layer; doc.layers) {
-        import std.stdio : writeln;
-        debug writeln(layer.name, " ", layer.blendModeKey);
-
-        // Skip folders ( for now )
-        if (layer.type != LayerType.Any) {
-            if (layer.name != "</Layer set>") {
-                layerGroupStack ~= layer;
-            } else layerGroupStack.length--;
-
-            continue;
-        }
-
-        layer.extractLayerImage();
-        inTexPremultiply(layer.data);
-        auto tex = new Texture(layer.data, layer.width, layer.height);
-        Part part = inCreateSimplePart(tex, puppet.root, layer.name);
-
-        auto layerSize = cast(int[2])layer.size();
-        vec2i layerPosition = vec2i(
-            layer.left,
-            layer.top
-        );
-
-        part.localTransform.translation = vec3(
-            (layerPosition.x+(layerSize[0]/2))-docCenter.x,
-            (layerPosition.y+(layerSize[1]/2))-docCenter.y,
-            0
-        );
-
-
-        part.enabled = (layer.flags & LayerFlags.Visible) == 0;
-        part.opacity = (cast(float)layer.opacity)/255;
-        part.zSort = -(cast(float)i)/100;
-        switch(layer.blendModeKey) {
-            case BlendingMode.Multiply: 
-                part.blendingMode = BlendMode.Multiply; break;
-            case BlendingMode.LinearDodge: 
-                part.blendingMode = BlendMode.LinearDodge; break;
-            case BlendingMode.ColorDodge: 
-                part.blendingMode = BlendMode.ColorDodge; break;
-            case BlendingMode.Screen: 
-                part.blendingMode = BlendMode.Screen; break;
-            default:
-                part.blendingMode = BlendMode.Normal; break;
-        }
-        debug writeln(part.name, ": ", part.blendingMode);
-
-        // Handle layer stack stuff
-        if (layerGroupStack.length > 0) {
-            if (isLastStackItemHidden()) part.enabled = false;
-            if (layerGroupStack[$-1].blendModeKey != BlendingMode.PassThrough) {
-                switch(layerGroupStack[$-1].blendModeKey) {
-                    case BlendingMode.Multiply: 
-                        part.blendingMode = BlendMode.Multiply; break;
-                    case BlendingMode.LinearDodge: 
-                        part.blendingMode = BlendMode.LinearDodge; break;
-                    case BlendingMode.ColorDodge: 
-                        part.blendingMode = BlendMode.ColorDodge; break;
-                    case BlendingMode.Screen: 
-                        part.blendingMode = BlendMode.Screen; break;
-                    default:
-                        part.blendingMode = BlendMode.Normal; break;
-                }
-            }
-        }
-
-        puppet.root.addChild(part);
-    }
-
-    puppet.populateTextureSlots();
-    incActiveProject().puppet = puppet;
-    incFocusCamera(incActivePuppet().root);
-    incFreeMemory();
+    if (failedFiles.length > 0) incSetStatus(_("Folder import completed with errors..."));
+    else incSetStatus(_("Folder import completed..."));
+    
 }
 
 /**
@@ -304,7 +262,17 @@ void incImportPSD(string file) {
 */
 void incImportINP(string file) {
     incNewProject();
-    Puppet puppet = inLoadPuppet(file);
+    Puppet puppet;
+    try {
+
+        puppet = inLoadPuppet(file);
+        incSetStatus(_("%s was imported...".format(file)));
+    } catch(Exception ex) {
+        
+        incDialog(__("Error"), ex.msg);
+        incSetStatus(_("Import failed..."));
+        return;
+    }
     incActiveProject().puppet = puppet;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
@@ -315,14 +283,22 @@ void incImportINP(string file) {
 */
 void incExportINP(string file) {
     import std.path : setExtension;
+    try {
 
-    // Remember to populate texture slots otherwise things will break real bad!
-    incActivePuppet().populateTextureSlots();
+        string oFile = file.setExtension(".inp");
+        // Remember to populate texture slots otherwise things will break real bad!
+        incActivePuppet().populateTextureSlots();
 
-    // TODO: Generate optimized puppet from this puppet.
+        // TODO: Generate optimized puppet from this puppet.
 
-    // Write the puppet to file
-    inWriteINPPuppet(incActivePuppet(), file.setExtension(".inp"));
+        // Write the puppet to file
+        inWriteINPPuppet(incActivePuppet(), oFile);
+        incSetStatus(_("%s was exported...".format(oFile)));
+    } catch(Exception ex) {
+        incDialog(__("Error"), ex.msg);
+        incSetStatus(_("Export failed..."));
+        return;
+    }
 
 }
 
@@ -333,6 +309,7 @@ void incRegenerateMipmaps() {
         texture.genMipmap();
         texture.setFiltering(Filtering.Linear);
     }
+    incSetStatus(_("Mipmap generation completed."));
 }
 
 /**
@@ -347,6 +324,7 @@ void incRebleedTextures() {
             incColorBleedPixels(texture);
         }
     });
+    incSetStatus(_("Texture bleeding completed."));
 }
 
 /**
@@ -355,6 +333,7 @@ void incRebleedTextures() {
 void incFreeMemory() {
     import core.memory : GC;
     GC.collect();
+    GC.minimize();
 }
 
 /**
@@ -376,6 +355,13 @@ ref Project incActiveProject() {
 */
 Parameter incArmedParameter() {
     return editMode_ == EditMode.ModelEdit ? armedParam : null;
+}
+
+/**
+    Gets the currently armed parameter index
+*/
+size_t incArmedParameterIdx() {
+    return editMode_ == EditMode.ModelEdit ? armedParamIdx : 0;
 }
 
 /**
@@ -402,10 +388,12 @@ ref Node incSelectedNode() {
 /**
     Arms a parameter
 */
-void incArmParameter(ref Parameter param) {
+void incArmParameter(size_t i, ref Parameter param) {
     armedParam = param;
+    armedParamIdx = i;
     incViewportNodeDeformNotifyParamValueChanged();
-    activeProject.puppet.renderParameters = false;
+    incActivePuppet.enableDrivers = false;
+    incActivePuppet.resetDrivers();
 }
 
 /**
@@ -413,8 +401,10 @@ void incArmParameter(ref Parameter param) {
 */
 void incDisarmParameter() {
     armedParam = null;
+    armedParamIdx = 0;
     incViewportNodeDeformNotifyParamValueChanged();
-    activeProject.puppet.renderParameters = true;
+    incActivePuppet.enableDrivers = true;
+    incActivePuppet.resetDrivers();
 }
 
 /**

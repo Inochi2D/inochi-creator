@@ -5,11 +5,14 @@
     Authors: Luna Nielsen
 */
 module creator.core;
-import creator.core.font;
+import creator.core.dpi;
+import creator.core.input;
 import creator.panels;
 import creator.windows;
 import creator.utils.link;
 import creator;
+import creator.widgets.dialog;
+import creator.backend.gl;
 
 import std.exception;
 
@@ -26,9 +29,10 @@ public import bindbc.imgui;
 public import bindbc.imgui.ogl;
 public import creator.core.settings;
 public import creator.core.actionstack;
-public import creator.core.taskstack;
+public import creator.core.tasks;
 public import creator.core.path;
 public import creator.core.font;
+public import creator.core.dpi;
 import i18n;
 
 private {
@@ -46,10 +50,18 @@ private {
 
     bool isDarkMode = true;
     string[] files;
+    bool isWayland;
+    bool isTilingWM;
 }
 
 bool incShowStatsForNerds;
 
+bool incIsWayland() {
+    return isWayland;
+}
+bool incIsTilingWM() {
+    return isTilingWM;
+}
 
 /**
     Finalizes everything by freeing imgui resources, etc.
@@ -64,7 +76,7 @@ void incFinalize() {
     igSaveIniSettingsToDisk(igGetIO().IniFilename);
 
     // Cleanup
-    ImGuiOpenGLBackend.shutdown();
+    incGLBackendShutdown();
     ImGui_ImplSDL2_Shutdown();
     igDestroyContext(null);
 
@@ -114,15 +126,52 @@ void incInitStyling() {
     Opens Window
 */
 void incOpenWindow() {
+    import std.process : environment;
+    isWayland = environment.get("XDG_SESSION_TYPE") == "wayland";
+    switch(environment.get("XDG_SESSION_DESKTOP")) {
+        case "i3":
+
+        // Items beyond this point are just guesstimations.
+        case "awesome":
+        case "bspwm":
+        case "dwm":
+        case "echinus":
+        case "euclid-wm":
+        case "herbstluftwm":
+        case "leftwm":
+        case "notion":
+        case "qtile":
+        case "ratpoison":
+        case "snapwm":
+        case "stumpwm":
+        case "subtle":
+        case "wingo":
+        case "wmfs":
+        case "xmonad":
+        case "wayfire":
+        case "river":
+        case "labwc":
+            isTilingWM = true;
+            break;
+        
+        default:
+            isTilingWM = false;
+            break;
+    }
+
     auto sdlSupport = loadSDL();
     enforce(sdlSupport != SDLSupport.noLibrary, "SDL2 library not found!");
     enforce(sdlSupport != SDLSupport.badLibrary, "Bad SDL2 library found!");
     
-    auto imSupport = loadImGui();
-    enforce(imSupport != ImGuiSupport.noLibrary, "cimgui library not found!");
+    version(BindImGui_Dynamic)
+    {
+        auto imSupport = loadImGui();
+        enforce(imSupport != ImGuiSupport.noLibrary, "cimgui library not found!");
     
-    // HACK: For some reason this check fails on some macOS and Linux installations
-    version(Windows) enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui library found!");
+        // HACK: For some reason this check fails on some macOS and Linux installations
+        version(Windows) enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui library found!");
+    }
+
     SDL_Init(SDL_INIT_EVERYTHING);
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
@@ -172,6 +221,7 @@ void incOpenWindow() {
         cast(uint)incSettingsGet!int("WinH", 800), 
         flags
     );
+    SDL_SetWindowMinimumSize(window, 960, 720);
     
     GLSupport support;
 
@@ -216,14 +266,19 @@ void incOpenWindow() {
 
 
     import std.string : fromStringz;
-    debug {
-        writefln("GLInfo:\n\t%s\n\t%s\n\t%s\n\t%s\n\tgls=%s",
-            glGetString(GL_VERSION).fromStringz,
-            glGetString(GL_VENDOR).fromStringz,
-            glGetString(GL_RENDERER).fromStringz,
-            glGetString(GL_SHADING_LANGUAGE_VERSION).fromStringz,
-            support
-        );
+    version(Windows) {
+        
+        // Windows is heck when it comes to /SUBSYSTEM:windows
+    } else {
+        debug {
+            writefln("GLInfo:\n\t%s\n\t%s\n\t%s\n\t%s\n\tgls=%s",
+                glGetString(GL_VERSION).fromStringz,
+                glGetString(GL_VENDOR).fromStringz,
+                glGetString(GL_RENDERER).fromStringz,
+                glGetString(GL_SHADING_LANGUAGE_VERSION).fromStringz,
+                support
+            );
+        }
     }
 
     // Setup Inochi2D
@@ -238,11 +293,6 @@ void incOpenWindow() {
 
     // Load Settings
     incShowStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
-
-    import creator.widgets.titlebar : incSetUseNativeTitlebar, incGetUseNativeTitlebar, incCanUseAppTitlebar;
-    incCanUseAppTitlebar = SDL_SetWindowHitTest(incGetWindowPtr(), null, null) != -1;
-    incSetUseNativeTitlebar(incSettingsGet("UseNativeTitleBar", false));
-    
 }
 
 void incCreateContext() {
@@ -269,14 +319,23 @@ void incCreateContext() {
 
     incSetDarkMode(incSettingsGet!bool("DarkMode", true));
 
-    io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;           // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;         // Enable Viewports (causes freezes)
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Navigation
-    io.ConfigWindowsResizeFromEdges = true;                     // Enable Edge resizing
+    io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;                               // Enable Docking
+    io.ConfigWindowsResizeFromEdges = true;                                         // Enable Edge resizing
+
+    // NOTE: Viewports break DPI scaling system, as such if Viewports is enabled
+    // we will be disable DPI scaling.
+    version(NoUIScaling) {
+        if (!incIsTilingWM) io.ConfigFlags |= ImGuiConfigFlags.ViewportsEnable;         // Enable Viewports (causes freezes)
+    } else {
+        incInitDPIScaling();
+    }
+
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;                         // Enable Keyboard Navigation
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-    ImGuiOpenGLBackend.init(null);
+    incGLBackendInit(null);
 
     incInitStyling();
+    incInitDialogs();
 }
 
 void incSetDarkMode(bool darkMode) {
@@ -378,16 +437,22 @@ void incFinishFileDrag() {
 
 void incBeginLoopNoEv() {
     // Start the Dear ImGui frame
-    ImGuiOpenGLBackend.new_frame();
+    incGLBackendNewFrame();
     ImGui_ImplSDL2_NewFrame();
+
+    // Do our DPI pre-processing
     igNewFrame();
+    incGLBackendBeginRender();
+
+
 
     if (files.length > 0) {
         if (igBeginDragDropSource(ImGuiDragDropFlags.SourceExtern)) {
             igSetDragDropPayload("__PARTS_DROP", &files, files.sizeof);
             igBeginTooltip();
             foreach(file; files) {
-                igText(file.toStringz);
+                import creator.widgets.label : incText;
+                incText(file);
             }
             igEndTooltip();
             igEndDragDropSource();
@@ -400,6 +465,9 @@ void incBeginLoopNoEv() {
         incSetDefaultLayout();
         incSettingsSet("firstrun_complete", true);
     }
+
+    incRenderDialogs();
+    incStatusUpdate();
 }
 
 void incSetDefaultLayout() {
@@ -448,7 +516,7 @@ void incBeginLoop() {
                 break;
             
             default: 
-                ImGui_ImplSDL2_ProcessEvent(&event);
+                incGLBackendProcessEvent(&event);
                 if (
                     event.type == SDL_WINDOWEVENT && 
                     event.window.event == SDL_WINDOWEVENT_CLOSE && 
@@ -468,13 +536,16 @@ void incBeginLoop() {
     Ends the Inochi Creator rendering loop
 */
 void incEndLoop() {
+    // incGLBackendEndRender();
+
+    incCleanupDialogs();
 
     // Rendering
     igRender();
-    glViewport(0, 0, cast(int)io.DisplaySize.x, cast(int)io.DisplaySize.y);
+    glViewport(0, 0, cast(int)(io.DisplaySize.x*incGetUIScale), cast(int)(io.DisplaySize.y*incGetUIScale));
     glClearColor(0.5, 0.5, 0.5, 1);
     glClear(GL_COLOR_BUFFER_BIT);
-    ImGuiOpenGLBackend.render_draw_data(igGetDrawData());
+    incGLBackendRenderDrawData(igGetDrawData());
 
     if (io.ConfigFlags & ImGuiConfigFlags.ViewportsEnable) {
         SDL_Window* currentWindow = SDL_GL_GetCurrentWindow();
@@ -575,9 +646,9 @@ version (InBranding) {
 void incHandleShortcuts() {
     auto io = igGetIO();
     
-    if (io.KeyCtrl && io.KeyShift && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), true)) {
+    if (incShortcut("Ctrl+Shift+Z", true)) {
         incActionRedo();
-    } else if (io.KeyCtrl && igIsKeyPressed(igGetKeyIndex(ImGuiKey.Z), true)) {
+    } else if (incShortcut("Ctrl+Z", true)) {
         incActionUndo();
     }
 }

@@ -1,14 +1,20 @@
-module creator.core.taskstack;
+module creator.core.tasks;
 import core.thread.fiber;
+import bindbc.imgui;
 
 private {
 __gshared:
     Task[] tasks;
     string status_ = "No pending tasks...";
     float progress_ = -1;
+
+    string status;
+    float statusTime = 0;
+    enum STATUS_TIME_SET = 5.0;
 }
 
 public:
+
 /**
     A task
 */
@@ -87,6 +93,41 @@ void incTaskUpdate() {
 
         if (tasks.length == 0) {
             incTaskStatus("No pending tasks...");
+        }
+    }
+}
+
+/**
+    Sets status in status area if previous item is hovered
+*/
+void incHoverStatus(string status_) {
+    if (igIsItemHovered()) incSetStatus(status_);
+}
+
+/**
+    Sets status in status area
+*/
+void incSetStatus(string status_) {
+    status = status_;
+    statusTime = STATUS_TIME_SET;
+}
+
+/**
+    Gets status in status area
+*/
+string incGetStatus() {
+    return status;
+}
+
+/**
+    Updates the status system
+*/
+void incStatusUpdate() {
+    if (statusTime > 0) {
+        statusTime -= igGetIO().DeltaTime;
+
+        if (statusTime <= 0) {
+            status = null;
         }
     }
 }

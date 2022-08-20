@@ -295,6 +295,19 @@ public:
         return mExport();
     }
 
+    final
+    size_t getEdgeCount() {
+        if (lines.length == 0) {
+            regenConnections();
+        }
+        return lines.length;
+    }
+
+    final
+    size_t getVertexCount() {
+        return vertices.length;
+    }
+
     /**
         Resets mesh to prior state
     */
@@ -414,6 +427,15 @@ public:
             offsets[idx] = vertex.position - data.vertices[idx];
         }
         return offsets;
+    }
+
+    void setBackOffsets(vec2[] offsets) {
+        foreach(idx, vertex; offsets) {
+            vertices[idx].position = offsets[idx] + data.vertices[idx];
+        }
+        regen();
+        regenConnections();
+        changed = true;
     }
 
     void applyOffsets(vec2[] offsets) {

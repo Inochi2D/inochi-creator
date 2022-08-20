@@ -8,6 +8,7 @@ module creator.windows.paramprop;
 import creator.windows;
 import creator.widgets;
 import creator.core;
+import creator.actions;
 import std.string;
 import creator.utils.link;
 import i18n;
@@ -30,24 +31,26 @@ protected:
     void onUpdate() {
         igPushID(cast(void*)param);
             if (igBeginChild("###MainSettings", ImVec2(0, -28))) {
-                igText(__("Parameter Name"));
+                incText(_("Parameter Name"));
                 igIndent();
                     if (incInputText("Name", param.name)) {
                         param.makeIndexable();
                     }
                 igUnindent();
 
-                igText(__("Parameter Constraints"));
+                incText(_("Parameter Constraints"));
                 igIndent();
                     igSetNextItemWidth(256);
 
-                    if (param.isVec2) igText("X");
+                    if (param.isVec2) incText("X");
                     if (param.isVec2) igIndent();
                         
                         // X MINIMUM
                         igSetNextItemWidth(64);
                         igPushID(0);
-                                incDragFloat("adj_x_min", &param.min.vector[0], 1, -float.max, param.max.x-1, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                                if (incDragFloat("adj_x_min", &param.min.vector[0], 1, -float.max, param.max.x-1, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                                    incActionPush(new ParameterValueChangeAction!float("min X", param, incGetDragFloatInitialValue("adj_x_min"), param.min.vector[0], &param.min.vector[0]));
+                                }
                         igPopID();
 
                         igSameLine(0, 4);
@@ -55,20 +58,24 @@ protected:
                         // X MAXIUMUM
                         igSetNextItemWidth(64);
                         igPushID(1);
-                            incDragFloat("adj_x_max", &param.max.vector[0], 1, param.min.x+1, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                            if (incDragFloat("adj_x_max", &param.max.vector[0], 1, param.min.x+1, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                                incActionPush(new ParameterValueChangeAction!float("max X", param, incGetDragFloatInitialValue("adj_x_max"), param.max.vector[0], &param.max.vector[0]));
+                            }
                         igPopID();
                     if (param.isVec2) igUnindent();
                         
                     if (param.isVec2) {
 
-                        igText("Y");
+                        incText("Y");
 
                         igIndent();
 
                             // Y MINIMUM
                             igSetNextItemWidth(64);
                             igPushID(2);
-                                incDragFloat("adj_y_min", &param.min.vector[1], 1, -float.max, param.min.y-1, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                                if (incDragFloat("adj_y_min", &param.min.vector[1], 1, -float.max, param.min.y-1, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                                    incActionPush(new ParameterValueChangeAction!float("min Y", param, incGetDragFloatInitialValue("adj_y_min"), param.min.vector[1], &param.min.vector[1]));
+                                }
                             igPopID();
 
                             igSameLine(0, 4);
@@ -76,7 +83,9 @@ protected:
                             // Y Maximum
                             igSetNextItemWidth(64);
                             igPushID(3);
-                                incDragFloat("adj_y_max", &param.max.vector[1], 1, param.min.y+1, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                                if (incDragFloat("adj_y_max", &param.max.vector[1], 1, param.min.y+1, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                                    incActionPush(new ParameterValueChangeAction!float("max Y", param, incGetDragFloatInitialValue("adj_y_max"), param.max.vector[1], &param.max.vector[1]));
+                                }
                             igPopID();
                         igUnindent();
                     }

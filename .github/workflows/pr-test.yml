@@ -1,0 +1,50 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+name: Pull Request test
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dlang-community/setup-dlang@4c99aa991ce7d19dd3064de0a4f2f6b2f152e2d7
+      with:
+        compiler: ldc-latest
+  
+    - name: "Get build dependencies"
+      run: |
+        sudo apt install libsdl2-dev libfreetype6-dev
+      
+    - name: "Clone dependencies & set versions"
+      run: |
+        git clone https://github.com/Inochi2D/bindbc-imgui.git --recurse-submodules
+        git clone https://github.com/Inochi2D/inochi2d.git
+        git clone https://github.com/Inochi2D/facetrack-d.git
+        git clone https://github.com/KitsunebiGames/i18n.git
+        dub add-local bindbc-imgui/ "0.7.0"
+        dub add-local inochi2d/ "0.7.2"
+        dub add-local facetrack-d/ "0.6.2"
+        dub add-local i18n/ "1.0.1"
+
+    - name: 'Build and Test'
+      run: |
+        # Build the project, with its main file included, without unittests
+        dub build --compiler=ldc2 --build=release --config=full
+
+    - name: "Upload Artifacts"  
+      if: success()
+      uses: actions/upload-artifact@v3
+      with:
+        name: inochi-creator
+        path: out/inochi-creator

@@ -12,6 +12,7 @@ import creator.core.i18n;
 import std.string;
 import creator.utils.link;
 import i18n;
+import inmath;
 
 bool incIsSettingsOpen;
 
@@ -23,6 +24,10 @@ private:
     bool generalTabOpen = true;
     bool otherTabOpen = true;
     bool useOpenDyslexic;
+    bool changesRequiresRestart;
+
+    int tmpUIScale;
+    float targetUIScale;
 
 protected:
     override
@@ -36,11 +41,11 @@ protected:
     override
     void onUpdate() {
         igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(4, 4));
-            igBeginChild("SettingsWindowChild", ImVec2(512*incGetUIScale(), 512*incGetUIScale()));
+            if (igBeginChild("SettingsWindowChild", ImVec2(512, 512))) {
                 if (igBeginTabBar("SettingsWindowTabs", ImGuiTabBarFlags.NoCloseWithMiddleMouseButton)) {
                     if(igBeginTabItem(__("General"), &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
-                        igBeginChild("#GeneralTabItems", ImVec2(0, -26));
-                            igText(__("Look and Feel"));
+                        if (igBeginChild("#GeneralTabItems", ImVec2(0, -26))) {
+                            incText(_("Look and Feel"));
                             igSeparator();
                             if(igBeginCombo(__("Color Theme"), incGetDarkMode() ? __("Dark") : __("Light"))) {
                                 if (igSelectable(__("Dark"), incGetDarkMode())) incSetDarkMode(true);
@@ -58,19 +63,10 @@ protected:
                                 igEndCombo();
                             }
 
-                            if(igBeginCombo(__("UI Scale (EXPERIMENTAL)"), incGetUIScaleText().toStringz)) {
-                                if (igSelectable("100%")) incSetUIScale(1.0);
-                                if (igSelectable("150%")) incSetUIScale(1.5);
-                                if (igSelectable("200%")) incSetUIScale(2.0);
-
-                                igEndCombo();
-                            }
-
-                            if (incCanUseAppTitlebar) {
-                                bool useNative = incGetUseNativeTitlebar();
-                                if (igCheckbox(__("Use Native Titlebar"), &useNative)) {
-                                    incSettingsSet("UseNativeTitleBar", useNative);
-                                    incSetUseNativeTitlebar(useNative);
+                            version (UseUIScaling) {
+                                if (igInputInt(__("UI Scale"), &tmpUIScale, 25, 50, ImGuiInputTextFlags.EnterReturnsTrue)) {
+                                    tmpUIScale = clamp(tmpUIScale, 100, 200);
+                                    incSetUIScale(cast(float)tmpUIScale/100.0);
                                 }
                             }
 
@@ -92,7 +88,7 @@ protected:
                             igSpacing();
                             igSpacing();
 
-                            igText(__("Undo/Redo History"));
+                            incText(_("Undo/Redo History"));
                             igSeparator();
                             
                             int maxHistory = cast(int)incActionGetUndoHistoryLength();
@@ -100,6 +96,7 @@ protected:
                                 incActionSetUndoHistoryLength(maxHistory);
                             }
 
+                        }
                         igEndChild();
 
                         igEndTabItem();
@@ -107,17 +104,19 @@ protected:
 
                     if(igBeginTabItem(__("Accessibility"), &generalTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
                         
-                        igBeginChild("#GeneralTabItems", ImVec2(0, -26));
-
+                        if (igBeginChild("#GeneralTabItems", ImVec2(0, -26))) {
+                        }
                         igEndChild();
+
                         igEndTabItem();
                     }
 
                     if(igBeginTabItem(__("Other"), &otherTabOpen, ImGuiTabItemFlagsI.NoCloseButton | ImGuiTabItemFlags.NoCloseWithMiddleMouseButton)) {
 
-                        igBeginChild("#OtherTabItems", ImVec2(0, -26));
-
+                        if (igBeginChild("#OtherTabItems", ImVec2(0, -26))) {
+                        }
                         igEndChild();
+
                         igEndTabItem();
                     }
 
@@ -129,7 +128,8 @@ protected:
                     this.close();
                 }
 
-            igEndChild();
+                igEndChild();
+            }
         igPopStyleVar();
     }
 
@@ -142,5 +142,7 @@ protected:
 public:
     this() {
         super(_("Settings"));
+        targetUIScale = incGetUIScale();
+        tmpUIScale = cast(int)(incGetUIScale()*100);
     }
 }

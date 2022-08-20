@@ -111,15 +111,15 @@ protected:
                     if (param.isVec2) {
 
                         // Skip start and end point
-                        igText("X");
+                        incText("X");
                         axisPointList(0, ImVec2(avail.x, (avail.y/2)-24));
 
-                        igText("Y");
+                        incText("Y");
                         axisPointList(1, ImVec2(avail.x, (avail.y/2)-24));
                     } else {
 
                         // Points where the user can set parameter values
-                        igText("Breakpoints");
+                        incText("Breakpoints");
                         axisPointList(0, ImVec2(avail.x, avail.y-24));
                     }
                 }

@@ -73,3 +73,7 @@ void incViewportModelDeformOverlay() {
 void incViewportModelDeformToolSettings() {
 
 }
+
+IncMeshEditor incViewportModelDeformGetEditor() {
+    return editor;
+}

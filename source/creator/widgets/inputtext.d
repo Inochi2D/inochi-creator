@@ -13,112 +13,63 @@ import std.stdio;
 import core.memory : GC;
 
 private {
-    struct Str {
-        string str;
+
+    struct TextCallbackUserData {
+        string* str;
     }
 }
 
 /**
     D compatible text input
 */
-bool incInputText(const(char)* label, ref string buffer, ImGuiInputTextFlags flags = ImGuiInputTextFlags.None) {
-    auto id = igGetID(label);
-    auto storage = igGetStateStorage();
+bool incInputText(string wId, ref string buffer, ImGuiInputTextFlags flags = ImGuiInputTextFlags.None) {
     auto available = incAvailableSpace();
-
-    // We put a new string container on the heap and make sure the GC doesn't yeet it.
-    if (ImGuiStorage_GetVoidPtr(storage, id) is null) {
-        Str* cursedString = new Str(buffer~"\0");
-        GC.addRoot(cursedString);
-        ImGuiStorage_SetVoidPtr(storage, id, cursedString);
-    }
-
-    // We get it
-    Str* str = cast(Str*)ImGuiStorage_GetVoidPtr(storage, id);
-
-    igPushItemWidth(available.x);
-    if (igInputText(
-        label,
-        cast(char*)str.str.ptr, 
-        str.str.length,
-        flags | 
-            ImGuiInputTextFlags.CallbackResize,
-        cast(ImGuiInputTextCallback)(ImGuiInputTextCallbackData* data) {
-
-            // Allow resizing strings on GC heap
-            if (data.EventFlag == ImGuiInputTextFlags.CallbackResize) {
-                Str* str = (cast(Str*)data.UserData);
-                str.str ~= "\0";
-                str.str.length = data.BufTextLen;
-            }
-            return 1;
-        },
-        str
-    )) {
-
-        // Apply string, without null terminator
-        buffer = str.str;
-        GC.removeRoot(ImGuiStorage_GetVoidPtr(storage, id));
-        ImGuiStorage_SetVoidPtr(storage, id, null);
-        return true;
-    }
-
-    ImVec2 min, max;
-    igGetItemRectMin(&min);
-    igGetItemRectMax(&max);
-
-    auto rect = SDL_Rect(
-        cast(int)min.x+32, 
-        cast(int)min.y, 
-        cast(int)max.x, 
-        32
-    );
-
-    SDL_SetTextInputRect(&rect);
-    return false;
+    return incInputText(wId, available.x, buffer, flags);
 }
 
 /**
     D compatible text input
 */
-bool incInputText(const(char)* label, float width, ref string buffer, ImGuiInputTextFlags flags = ImGuiInputTextFlags.None) {
-    auto id = igGetID(label);
-    auto storage = igGetStateStorage();
+bool incInputText(string wId, float width, ref string buffer, ImGuiInputTextFlags flags = ImGuiInputTextFlags.None) {
 
-    // We put a new string container on the heap and make sure the GC doesn't yeet it.
-    if (ImGuiStorage_GetVoidPtr(storage, id) is null) {
-        Str* cursedString = new Str(buffer~"\0");
-        GC.addRoot(cursedString);
-        ImGuiStorage_SetVoidPtr(storage, id, cursedString);
+    // NOTE: null strings would result in segfault, make sure it's at least just empty.
+    if (buffer.ptr is null) {
+        buffer = "";
     }
 
-    // We get it
-    Str* str = cast(Str*)ImGuiStorage_GetVoidPtr(storage, id);
+    // Push ID
+    auto id = igGetID(wId.ptr, wId.ptr+wId.length);
+    igPushID(id);
+    scope(exit) igPopID();
 
+    // Set desired width
     igPushItemWidth(width);
+    scope(success) igPopItemWidth();
+
+    // Create callback data
+    TextCallbackUserData cb;
+    cb.str = &buffer;
+
+    // Call ImGui's input handling
     if (igInputText(
-        label,
-        cast(char*)str.str.ptr, 
-        str.str.length,
-        flags | 
-            ImGuiInputTextFlags.CallbackResize,
+        "###INPUT",
+        cast(char*)buffer.ptr, 
+        buffer.length+1,
+        flags | ImGuiInputTextFlags.CallbackResize,
         cast(ImGuiInputTextCallback)(ImGuiInputTextCallbackData* data) {
+            TextCallbackUserData* udata = cast(TextCallbackUserData*)data.UserData;
 
             // Allow resizing strings on GC heap
             if (data.EventFlag == ImGuiInputTextFlags.CallbackResize) {
-                Str* str = (cast(Str*)data.UserData);
-                str.str ~= "\0";
-                str.str.length = data.BufTextLen;
+            
+                // Resize and pass buffer ptr in
+                (*udata.str).length = data.BufTextLen;
+                data.Buf = cast(char*)(*udata.str).ptr;
             }
-            return 1;
+            return 0;
         },
-        str
+        &cb
     )) {
-
-        // Apply string, without null terminator
-        buffer = str.str;
-        GC.removeRoot(ImGuiStorage_GetVoidPtr(storage, id));
-        ImGuiStorage_SetVoidPtr(storage, id, null);
         return true;
     }
 
@@ -136,30 +87,77 @@ bool incInputText(const(char)* label, float width, ref string buffer, ImGuiInput
     SDL_SetTextInputRect(&rect);
     return false;
 }
+/**
+    D compatible text input
+*/
+bool incInputText(string wId, string label, ref string buffer, ImGuiInputTextFlags flags = ImGuiInputTextFlags.None) {
+    auto available = incAvailableSpace();
+    return incInputText(wId, label, available.x, buffer, flags);
+}
 
-// /**
-//     D compatible text input
-// */
-// bool incInputTextEx(const(char)* label, ref string buffer, ImGuiInputTextFlags flags, uint limit) {
-//     limit = clamp(limit, 1, uint.max);
-//     return igInputText(
-//         label, 
-//         cast(char*)(buffer).ptr, 
-//         clamp(buffer.length, 0, limit),
-//         flags | 
-//             ImGuiInputTextFlags.CallbackResize |
-//             ImGuiInputTextFlags.EnterReturnsTrue,
-//         cast(ImGuiInputTextCallback)(ImGuiInputTextCallbackData* data) {
-//             if (data.EventFlag == ImGuiInputTextFlags.CallbackCompletion) {
+/**
+    D compatible text input
+*/
+bool incInputText(string wId, string label, float width, ref string buffer, ImGuiInputTextFlags flags = ImGuiInputTextFlags.None) {
 
-//             }
-//             if (data.EventFlag == ImGuiInputTextFlags.CallbackResize) {
-//                 string* str = (cast(string*)data.UserData);
-//                 str.length = data.BufTextLen;
-//                 (*str) ~= "\0";
-//             }
-//             return 1;
-//         },
-//         &buffer
-//     );
-// }
+    // NOTE: null strings would result in segfault, make sure it's at least just empty.
+    if (buffer.ptr is null) {
+        buffer = "";
+    }
+
+    // Push ID
+    auto id = igGetID(wId.ptr, wId.ptr+wId.length);
+    igPushID(id);
+    scope(exit) igPopID();
+
+    // Set desired width
+    igPushItemWidth(width);
+    scope(success) igPopItemWidth();
+
+    // Render label
+    scope(success) {
+        igSameLine(0, igGetStyle().ItemSpacing.x);
+        igTextEx(label.ptr, label.ptr+label.length);
+    }
+
+    // Create callback data
+    TextCallbackUserData cb;
+    cb.str = &buffer;
+
+    // Call ImGui's input handling
+    if (igInputText(
+        "###INPUT",
+        cast(char*)buffer.ptr, 
+        buffer.length+1,
+        flags | ImGuiInputTextFlags.CallbackResize,
+        cast(ImGuiInputTextCallback)(ImGuiInputTextCallbackData* data) {
+            TextCallbackUserData* udata = cast(TextCallbackUserData*)data.UserData;
+
+            // Allow resizing strings on GC heap
+            if (data.EventFlag == ImGuiInputTextFlags.CallbackResize) {
+            
+                // Resize and pass buffer ptr in
+                (*udata.str).length = data.BufTextLen;
+                data.Buf = cast(char*)(*udata.str).ptr;
+            }
+            return 0;
+        },
+        &cb
+    )) {
+        return true;
+    }
+
+    ImVec2 min, max;
+    igGetItemRectMin(&min);
+    igGetItemRectMax(&max);
+
+    auto rect = SDL_Rect(
+        cast(int)min.x+32, 
+        cast(int)min.y, 
+        cast(int)max.x, 
+        32
+    );
+
+    SDL_SetTextInputRect(&rect);
+    return false;
+}

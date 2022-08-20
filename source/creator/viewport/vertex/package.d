@@ -113,11 +113,38 @@ void incVertexEditCopyMeshDataToTarget(MeshData data) {
     editor.importMesh(data);
 }
 
+bool incMeshEditGetIsApplySafe() {
+    Drawable target = cast(Drawable)editor.getTarget();
+    return !(
+        editor.mesh.getVertexCount() != target.getMesh().vertices.length &&
+        incActivePuppet().getIsNodeBound(target)
+    );
+}
+
 /**
     Applies the mesh edits
 */
 void incMeshEditApply() {
+    Node target = editor.getTarget();
+    
+    // Automatically apply triangulation
+    if (editor.previewingTriangulation()) {
+        editor.applyPreview();
+        editor.refreshMesh();
+    }
+
+    if (editor.mesh.getVertexCount() < 3 || editor.mesh.getEdgeCount() < 3) {
+        incDialog(__("Error"), _("Cannot apply invalid mesh\nAt least 3 vertices forming a triangle is needed."));
+        return;
+    }
+
+    // Apply to target
     editor.applyToTarget();
+
+    // Switch mode
+    incSetEditMode(EditMode.ModelEdit);
+    incSelectNode(target);
+    incFocusCamera(target);
 }
 
 /**

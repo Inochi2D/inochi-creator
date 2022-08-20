@@ -1,0 +1,166 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-resources:
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: 'Install dependencies'
+      run: |
+        sudo apt-get update
+        sudo apt-get install gettext
+        mkdir out/
+
+    - name: 'Generate i18n'
+      run: |
+        # Build translations
+        mkdir otl/
+        
+        sudo chmod +x gentl.sh
+        ./gentl.sh
+
+        cp out/* otl/
+          
+    - name: 'Archive i18n'
+      uses: thedoctor0/zip-release@main
+      with:
+        type: 'zip'
+        filename: 'inochi-creator-i18n.zip'
+        directory: 'otl/'
+        path: '*'
+
+    - name: 'Release i18n'
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+          files: 'otl/inochi-creator-i18n.zip'
+
+  linux-appimage:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dlang-community/setup-dlang@4c99aa991ce7d19dd3064de0a4f2f6b2f152e2d7
+      with:
+        compiler: ldc-latest
+  
+    - name: "Prepare for AppImage packing"
+      run: |
+        sudo apt update
+        sudo apt install -y python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
+        sudo wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O /usr/local/bin/appimagetool.AppImage
+        sudo chmod +x /usr/local/bin/appimagetool.AppImage
+    
+    - name: "Get build dependencies"
+      run: |
+        sudo apt install libsdl2-dev libfreetype6-dev gettext
+
+    - name: 'Generate i18n'
+      run: |
+        sudo chmod +x gentl.sh
+        ./gentl.sh
+      
+    - name: "Clone dependencies & set versions"
+      run: |
+        git clone https://github.com/Inochi2D/bindbc-imgui.git --recurse-submodules
+        git clone https://github.com/Inochi2D/inochi2d.git
+        git clone https://github.com/Inochi2D/facetrack-d.git
+        git clone https://github.com/KitsunebiGames/i18n.git
+        dub add-local bindbc-imgui/ "0.7.0"
+        dub add-local inochi2d/ "0.7.2"
+        dub add-local facetrack-d/ "0.6.2"
+        dub add-local i18n/ "1.0.1"
+
+    - name: 'Build Inochi Creator'
+      run: |
+        # Build the project, with its main file included, without unittests
+        dub build --compiler=ldc2 --build=release --config=full
+
+    - name: 'Build AppImage'
+      run: |
+        # Build the AppImage
+        sudo chmod +x BuildAppImage.sh
+        ./BuildAppImage.sh
+          
+    - name: Archive Zip
+      uses: thedoctor0/zip-release@main
+      with:
+        type: 'zip'
+        filename: 'inochi-creator-linux-x86_64.zip'
+        directory: 'out/'
+        path: '*'
+
+    - name: 'Release AppImage'
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+          files: 'build/inochi-creator-x86_64.AppImage'
+
+    - name: 'Release ZIP'
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+          files: 'out/inochi-creator-linux-x86_64.zip'
+
+  windows-zip:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dlang-community/setup-dlang@4c99aa991ce7d19dd3064de0a4f2f6b2f152e2d7
+      with:
+        compiler: ldc-latest
+      
+    - name: "Clone dependencies & set versions"
+      run: |
+        git clone https://github.com/Inochi2D/bindbc-imgui.git --recurse-submodules
+        git clone https://github.com/Inochi2D/inochi2d.git
+        git clone https://github.com/Inochi2D/facetrack-d.git
+        git clone https://github.com/KitsunebiGames/i18n.git
+        dub add-local bindbc-imgui/ "0.7.0"
+        dub add-local inochi2d/ "0.7.2"
+        dub add-local facetrack-d/ "0.6.2"
+        dub add-local i18n/ "1.0.1"
+
+    - name: 'Build Inochi Creator'
+      run: |
+        function Invoke-VSDevEnvironment {
+        $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+              $installationPath = & $vswhere -prerelease -legacy -latest -property installationPath
+              $Command = Join-Path $installationPath "Common7\Tools\vsdevcmd.bat"
+            & "${env:COMSPEC}" /s /c "`"$Command`" -no_logo && set" | Foreach-Object {
+                  if ($_ -match '^([^=]+)=(.*)') {
+                      [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2])
+                  }
+              }
+          }
+          Invoke-VSDevEnvironment
+          dub build --compiler=ldc2 --build=release --config=win32-full
+
+    - name: Archive Zip
+      uses: thedoctor0/zip-release@main
+      with:
+        type: 'zip'
+        filename: 'inochi-creator-win32-x86_64.zip'
+        directory: 'out/'
+        path: '*'
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+          files: out/inochi-creator-win32-x86_64.zip

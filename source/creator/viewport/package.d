@@ -191,8 +191,9 @@ bool incViewportAlwaysUpdate() {
 
 /// For when there's no tools for that view
 void incViewportToolSettingsNoTool() {
-    import i18n : __;
-    igText(__("No tool selected..."));
+    import i18n : _;
+    import creator.widgets.label;
+    incText(_("No tool selected..."));
 }
 
 

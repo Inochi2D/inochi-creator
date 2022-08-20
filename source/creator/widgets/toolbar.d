@@ -79,7 +79,7 @@ void incToolbar() {
             igPopStyleVar();
         }
 
-        igEnd();
+        incEnd();
     } else {
         igPopStyleVar();
     }
