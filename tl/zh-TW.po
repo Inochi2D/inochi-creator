@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-20 07:54+0200\n"
+"POT-Creation-Date: 2022-08-21 03:22+0200\n"
 "PO-Revision-Date: 2022-06-02 07:13-0600\n"
 "Last-Translator: LovelyA72 <a72@luotianyi.pro>\n"
 "Language-Team: Language zh-tw\n"
@@ -46,8 +46,10 @@ msgid "%s->%s changed"
 msgstr "%s->%s 變更為 %s"
 
 #: source/creator/actions/binding.d:162 source/creator/actions/binding.d:259
+#: source/creator/actions/parameter.d:145
+#: source/creator/actions/parameter.d:219
 #, fuzzy, c-format
-msgid "%s->%s chang cancelled"
+msgid "%s->%s change cancelled"
 msgstr "%s->%s 變更為 %s"
 
 #: source/creator/actions/drawable.d:82
@@ -127,12 +129,6 @@ msgstr "參數名稱"
 msgid "Parameter %s was added"
 msgstr "參數名稱"
 
-#: source/creator/actions/parameter.d:145
-#: source/creator/actions/parameter.d:219
-#, fuzzy, c-format
-msgid "%s->%s change cancelled"
-msgstr "%s->%s 變更為 %s"
-
 #: source/creator/core/dpi.d:51 source/creator/core/dpi.d:55
 msgid "100% (Locked)"
 msgstr ""
@@ -158,7 +154,7 @@ msgstr "(不支援)"
 msgid "Import..."
 msgstr "匯入…"
 
-#: source/creator/io/package.d:29 source/creator/windows/welcome.d:173
+#: source/creator/io/package.d:29 source/creator/windows/welcome.d:190
 msgid "Open..."
 msgstr "開啟…"
 
@@ -239,6 +235,7 @@ msgid "Texture bleeding completed."
 msgstr ""
 
 #: source/creator/panels/actionhistory.d:26
+#: source/creator/windows/settings.d:135
 msgid "Undo History"
 msgstr "復原歷史"
 
@@ -377,7 +374,7 @@ msgstr ""
 
 #: source/creator/panels/inspector.d:281
 msgid ""
-"Makes Inochi2D model use point filtering, removing blur for low-resoltion "
+"Makes Inochi2D model use point filtering, removing blur for low-resolution "
 "models."
 msgstr ""
 
@@ -1004,7 +1001,7 @@ msgstr "追蹤"
 msgid "%s is not supported"
 msgstr "不支援 %s"
 
-#: source/creator/panels/viewport.d:236
+#: source/creator/panels/viewport.d:236 source/creator/windows/settings.d:81
 msgid "Viewport"
 msgstr "視圖"
 
@@ -1137,13 +1134,8 @@ msgstr "最近開啟"
 #. Settings are autosaved, but in case the user
 #. feels more safe with a save button then we have
 #. it here.
-#. Save button
-#. Settings are autosaved, but in case the user
-#. feels more safe with a save button then we have
-#. it here.
 #: source/creator/widgets/mainmenu.d:122 source/creator/windows/paramaxes.d:140
-#: source/creator/windows/paramprop.d:103 source/creator/windows/settings.d:126
-#: source/creator/windows/trkbind.d:129
+#: source/creator/windows/paramprop.d:103 source/creator/windows/trkbind.d:129
 msgid "Save"
 msgstr "儲存"
 
@@ -1229,7 +1221,7 @@ msgstr "取消復原"
 msgid "Cut"
 msgstr "剪下"
 
-#: source/creator/widgets/mainmenu.d:224 source/creator/windows/settings.d:143
+#: source/creator/widgets/mainmenu.d:224 source/creator/windows/settings.d:281
 msgid "Settings"
 msgstr "設定"
 
@@ -1503,60 +1495,60 @@ msgstr ""
 msgid "PSD Merging"
 msgstr "PSD 合併"
 
-#: source/creator/windows/settings.d:45
-msgid "General"
-msgstr "一般"
-
-#: source/creator/windows/settings.d:47
+#: source/creator/windows/settings.d:77
 msgid "Look and Feel"
 msgstr "外觀設定"
 
-#: source/creator/windows/settings.d:49 source/creator/windows/welcome.d:131
+#: source/creator/windows/settings.d:85
+#, fuzzy
+msgid "Accessbility"
+msgstr "協助工具"
+
+#: source/creator/windows/settings.d:105 source/creator/windows/welcome.d:138
 msgid "Color Theme"
 msgstr "主題色彩"
 
-#: source/creator/windows/settings.d:49 source/creator/windows/settings.d:50
-#: source/creator/windows/welcome.d:131 source/creator/windows/welcome.d:132
+#: source/creator/windows/settings.d:105 source/creator/windows/settings.d:106
+#: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:139
 msgid "Dark"
 msgstr "暗色主題"
 
-#: source/creator/windows/settings.d:49 source/creator/windows/settings.d:51
-#: source/creator/windows/welcome.d:131 source/creator/windows/welcome.d:133
+#: source/creator/windows/settings.d:105 source/creator/windows/settings.d:107
+#: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:140
 msgid "Light"
 msgstr "亮色主題"
 
-#: source/creator/windows/settings.d:57 source/creator/windows/welcome.d:123
+#: source/creator/windows/settings.d:113 source/creator/windows/welcome.d:124
 msgid "Language"
 msgstr "語言"
 
-#: source/creator/windows/settings.d:66 source/creator/windows/welcome.d:139
-#, fuzzy
+#: source/creator/windows/settings.d:128 source/creator/windows/welcome.d:146
 msgid "UI Scale"
 msgstr "縮放"
 
-#: source/creator/windows/settings.d:74
-msgid "Disable Compositor"
-msgstr "停用合成器"
-
-#: source/creator/windows/settings.d:81
-msgid "Use software rendering"
-msgstr "使用軟體渲染"
-
-#: source/creator/windows/settings.d:90
-msgid "Undo/Redo History"
-msgstr "復原 歷史"
-
-#: source/creator/windows/settings.d:94
+#: source/creator/windows/settings.d:137
 msgid "Max Undo History"
 msgstr "最高復原數量"
 
-#: source/creator/windows/settings.d:104
-msgid "Accessibility"
-msgstr "協助工具"
+#: source/creator/windows/settings.d:143
+msgid "Linux Tweaks"
+msgstr ""
 
-#: source/creator/windows/settings.d:113
-msgid "Other"
-msgstr "其他"
+#: source/creator/windows/settings.d:145
+msgid "Disable Compositor"
+msgstr "停用合成器"
+
+#: source/creator/windows/settings.d:152
+msgid "No settings for this category."
+msgstr ""
+
+#: source/creator/windows/settings.d:165 source/creator/windows/welcome.d:157
+msgid "Inochi Creator needs to be restarted for some changes to take effect."
+msgstr ""
+
+#: source/creator/windows/settings.d:173
+msgid "Done"
+msgstr ""
 
 #: source/creator/windows/texviewer.d:47
 msgid "Texture Viewer"
@@ -1607,57 +1599,67 @@ msgstr "刷新可綁定參數"
 msgid "Bind Tracking to Parameter"
 msgstr "綁定跟蹤到參數"
 
-#: source/creator/windows/welcome.d:112
+#: source/creator/windows/welcome.d:113
 msgid "Quick Setup"
 msgstr ""
 
-#: source/creator/windows/welcome.d:153
+#: source/creator/windows/welcome.d:170
 msgid "Next"
-msgstr ""
-
-#: source/creator/windows/welcome.d:165
-#, fuzzy
-msgid "Create Project"
-msgstr "Inochi Creator 專案"
-
-#: source/creator/windows/welcome.d:168
-msgid "New..."
 msgstr ""
 
 #: source/creator/windows/welcome.d:182
 #, fuzzy
-msgid "Import PSD..."
-msgstr "匯入…"
+msgid "Create Project"
+msgstr "Inochi Creator 專案"
 
-#: source/creator/windows/welcome.d:191
+#: source/creator/windows/welcome.d:185
+msgid "New..."
+msgstr ""
+
+#: source/creator/windows/welcome.d:199
+msgid "Import PSD..."
+msgstr "PSD 匯入…"
+
+#: source/creator/windows/welcome.d:208
 msgid "Recent Projects"
 msgstr ""
 
-#: source/creator/windows/welcome.d:215
+#: source/creator/windows/welcome.d:232
 msgid "On the Web"
 msgstr ""
 
-#: source/creator/windows/welcome.d:219
+#: source/creator/windows/welcome.d:236
 msgid "Website"
 msgstr ""
 
-#: source/creator/windows/welcome.d:223
-#, fuzzy
+#: source/creator/windows/welcome.d:240
 msgid "Documentation"
-msgstr "線上說明書"
+msgstr "說明書"
 
-#: source/creator/windows/welcome.d:229
+#: source/creator/windows/welcome.d:246
 msgid "Patreon"
 msgstr ""
 
-#: source/creator/windows/welcome.d:232
+#: source/creator/windows/welcome.d:249
 msgid "Github Sponsors"
 msgstr ""
 
-#: source/creator/windows/welcome.d:258
+#: source/creator/windows/welcome.d:275
 #, fuzzy
 msgid "Inochi Creator Start"
 msgstr "Inochi Creator 專案"
+
+#~ msgid "General"
+#~ msgstr "一般"
+
+#~ msgid "Use software rendering"
+#~ msgstr "使用軟體渲染"
+
+#~ msgid "Undo/Redo History"
+#~ msgstr "復原 歷史"
+
+#~ msgid "Other"
+#~ msgstr "其他"
 
 #~ msgid "Tint"
 #~ msgstr "著色"

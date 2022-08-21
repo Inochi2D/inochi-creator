@@ -159,7 +159,7 @@ class ParameterBindingAllValueChangeAction(T)  : LazyBoundAction {
         Describe the action
     */
     string describeUndo() {
-        return _("%s->%s chang cancelled").format(self.getName(), name);
+        return _("%s->%s change cancelled").format(self.getName(), name);
     }
 
     /**
@@ -256,7 +256,7 @@ class ParameterBindingValueChangeAction(T)  : LazyBoundAction {
         Describe the action
     */
     string describeUndo() {
-        return _("%s->%s chang cancelled").format(self.getName(), name);
+        return _("%s->%s change cancelled").format(self.getName(), name);
     }
 
     /**
