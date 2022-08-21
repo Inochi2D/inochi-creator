@@ -8,69 +8,68 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-21 03:22+0200\n"
-"PO-Revision-Date: 2022-06-02 07:13-0600\n"
+"POT-Creation-Date: 2022-08-20 08:19+0200\n"
+"PO-Revision-Date: 2022-08-21 13:50+0800\n"
 "Last-Translator: LovelyA72 <a72@luotianyi.pro>\n"
 "Language-Team: Language zh-tw\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.1\n"
 
 #: source/creator/actions/binding.d:74
 #, c-format
 msgid "Added binding %s"
-msgstr ""
+msgstr "新增綁定 %s"
 
 #: source/creator/actions/binding.d:76
 #, c-format
 msgid "Removed binding %s"
-msgstr ""
+msgstr "移除綁定 %s"
 
 #: source/creator/actions/binding.d:84
 #, c-format
 msgid "Binding %s was removed"
-msgstr ""
+msgstr "已移除 %s 綁定"
 
 #: source/creator/actions/binding.d:86
 #, c-format
 msgid "Binding %s was added"
-msgstr ""
+msgstr "已新增 %s 綁定"
 
 #: source/creator/actions/binding.d:155 source/creator/actions/binding.d:252
 #: source/creator/actions/parameter.d:135
 #: source/creator/actions/parameter.d:211
-#, fuzzy, c-format
+#, c-format
 msgid "%s->%s changed"
-msgstr "%s->%s 變更為 %s"
+msgstr "%s 變更為 %s"
 
 #: source/creator/actions/binding.d:162 source/creator/actions/binding.d:259
-#: source/creator/actions/parameter.d:145
-#: source/creator/actions/parameter.d:219
-#, fuzzy, c-format
-msgid "%s->%s change cancelled"
-msgstr "%s->%s 變更為 %s"
+#, c-format
+msgid "%s->%s chang cancelled"
+msgstr "取消 %s 變更為 %s"
 
 #: source/creator/actions/drawable.d:82
 #, c-format
 msgid "Changed drawable mesh of %s"
-msgstr ""
+msgstr "已更改 %s 的可繪製網格"
 
 #: source/creator/actions/drawable.d:90
 #, c-format
 msgid "Drawable %s was changed"
-msgstr ""
+msgstr "已變更可繪製 %s"
 
 #: source/creator/actions/mesheditor.d:158
 #, c-format
 msgid "%s->Edited deformation of %s."
-msgstr ""
+msgstr "%s->編輯 %s 的塑形。"
 
 #: source/creator/actions/mesheditor.d:165
 #, c-format
 msgid "%s->deformation of %s was edited."
-msgstr ""
+msgstr "%s->已編輯 %s 的塑形。"
 
 #: source/creator/actions/node.d:92
 #, c-format
@@ -110,28 +109,34 @@ msgid "%s->%s changed from %s"
 msgstr "%s->%s 從 %s 變更了"
 
 #: source/creator/actions/parameter.d:51
-#, fuzzy, c-format
+#, c-format
 msgid "Added parameter %s"
-msgstr "新增參數"
+msgstr "新增參數 %s"
 
 #: source/creator/actions/parameter.d:53
-#, fuzzy, c-format
+#, c-format
 msgid "Removed parameter %s"
-msgstr "手臂參數"
+msgstr "移除參數 %s"
 
 #: source/creator/actions/parameter.d:61
-#, fuzzy, c-format
+#, c-format
 msgid "Parameter %s was removed"
-msgstr "參數名稱"
+msgstr "參數 %s 已經被移除"
 
 #: source/creator/actions/parameter.d:63
-#, fuzzy, c-format
+#, c-format
 msgid "Parameter %s was added"
-msgstr "參數名稱"
+msgstr "已新增參數 %s"
+
+#: source/creator/actions/parameter.d:145
+#: source/creator/actions/parameter.d:219
+#, c-format
+msgid "%s->%s change cancelled"
+msgstr "取消 %s->%s 變更"
 
 #: source/creator/core/dpi.d:51 source/creator/core/dpi.d:55
 msgid "100% (Locked)"
-msgstr ""
+msgstr "100%（已鎖定）"
 
 #. The name of the language this translation is a translation to
 #. in the native script of the language (for the region)
@@ -141,7 +146,6 @@ msgid "LANG_NAME"
 msgstr "繁體中文"
 
 #: source/creator/core/package.d:213
-#, fuzzy
 msgid "(Debug Mode)"
 msgstr "(除錯模式)"
 
@@ -161,19 +165,17 @@ msgstr "開啟…"
 #: source/creator/io/psd.d:145 source/creator/package.d:269
 #, c-format
 msgid "%s was imported..."
-msgstr ""
+msgstr "已匯入 %s ..."
 
 #: source/creator/io/psd.d:148 source/creator/package.d:273
-#, fuzzy
 msgid "Import failed..."
-msgstr "匯入…"
+msgstr "匯入失敗…"
 
 #: source/creator/io/psd.d:149 source/creator/package.d:177
 #: source/creator/package.d:211 source/creator/package.d:272
 #: source/creator/package.d:298 source/creator/panels/viewport.d:158
 #: source/creator/panels/viewport.d:159 source/creator/panels/viewport.d:172
 #: source/creator/viewport/vertex/package.d:137
-#, fuzzy
 msgid "Error"
 msgstr "錯誤"
 
@@ -189,50 +191,51 @@ msgstr ""
 #: source/creator/package.d:192
 #, c-format
 msgid "%s opened successfully."
-msgstr ""
+msgstr "成功開啟 %s。"
 
 #: source/creator/package.d:208
 #, c-format
 msgid "%s saved successfully."
-msgstr ""
+msgstr "成功存檔 %s ..."
 
 #: source/creator/package.d:210
 #, c-format
 msgid "Failed to save %s"
-msgstr ""
+msgstr "無法存檔 %s"
 
 #: source/creator/package.d:246
 #, c-format
 msgid ""
 "The following errors occured during file loading\n"
 "%s"
-msgstr "下列錯誤於檔案載入時發生"
+msgstr ""
+"下列錯誤於檔案載入時發生\n"
+"%s"
 
 #: source/creator/package.d:255
 msgid "Folder import completed with errors..."
-msgstr ""
+msgstr "匯入資料夾時發生錯誤..."
 
 #: source/creator/package.d:256
 msgid "Folder import completed..."
-msgstr ""
+msgstr "已匯入資料夾..."
 
 #: source/creator/package.d:296
 #, c-format
 msgid "%s was exported..."
-msgstr ""
+msgstr "已輸出 %s ..."
 
 #: source/creator/package.d:299
-#, fuzzy
 msgid "Export failed..."
-msgstr "輸出…"
+msgstr "輸出失敗…"
 
 #: source/creator/package.d:312
 msgid "Mipmap generation completed."
-msgstr ""
+msgstr "完成 Mipmap 生成。"
 
 #: source/creator/package.d:327
 msgid "Texture bleeding completed."
-msgstr ""
+msgstr "材質滲透完成。"
 
 #: source/creator/panels/actionhistory.d:26
 #: source/creator/windows/settings.d:135
@@ -272,7 +275,7 @@ msgstr "模型"
 
 #: source/creator/panels/inspector.d:196 source/creator/panels/inspector.d:201
 msgid "Inochi2D Ver."
-msgstr "Inochi2D 版本"
+msgstr "Inochi2D 版本."
 
 #: source/creator/panels/inspector.d:207
 msgid "General Info"
@@ -336,7 +339,7 @@ msgstr "來源"
 
 #: source/creator/panels/inspector.d:254
 msgid "Where the model comes from on the internet."
-msgstr "此模型於網路上的出處"
+msgstr "此模型於網路上的出處。"
 
 #: source/creator/panels/inspector.d:259
 msgid "Physics Globals"
@@ -348,7 +351,7 @@ msgstr "像素/公尺"
 
 #: source/creator/panels/inspector.d:262
 msgid "Number of pixels that correspond to 1 meter in the physics engine."
-msgstr "物理引擎中每一公尺對應的像素數"
+msgstr "物理引擎中每一公尺對應的像素數。"
 
 #: source/creator/panels/inspector.d:268
 msgid "Gravity"
@@ -364,19 +367,18 @@ msgid "%.2f m/s"
 msgstr "%.2f 公尺/秒"
 
 #: source/creator/panels/inspector.d:275
-#, fuzzy
 msgid "Rendering Settings"
-msgstr "設定"
+msgstr "渲染設定"
 
 #: source/creator/panels/inspector.d:277
 msgid "Use Point Filtering"
-msgstr ""
+msgstr "使用點篩選"
 
 #: source/creator/panels/inspector.d:281
 msgid ""
 "Makes Inochi2D model use point filtering, removing blur for low-resolution "
 "models."
-msgstr ""
+msgstr "Inochi2D 會使用點過濾以避免模糊低畫質模型。"
 
 #: source/creator/panels/inspector.d:301 source/creator/panels/inspector.d:1108
 msgid "Transform"
@@ -458,9 +460,8 @@ msgid "Drawable"
 msgstr "可繪製"
 
 #: source/creator/panels/inspector.d:555
-#, fuzzy
 msgid "Texture Offset"
-msgstr "材質"
+msgstr "材質位移"
 
 #. Switches Inochi Creator over to Mesh Edit mode
 #. and selects the mesh that you had selected previously
@@ -480,16 +481,14 @@ msgstr "無法檢視非網格組件"
 #: source/creator/panels/inspector.d:651 source/creator/panels/inspector.d:813
 #: source/creator/panels/inspector.d:1227
 #: source/creator/panels/inspector.d:1262
-#, fuzzy
 msgid "Tint (Multiply)"
-msgstr "相乘"
+msgstr "色調（相乘）"
 
 #: source/creator/panels/inspector.d:654 source/creator/panels/inspector.d:816
 #: source/creator/panels/inspector.d:1231
 #: source/creator/panels/inspector.d:1266
-#, fuzzy
 msgid "Tint (Screen)"
-msgstr "螢幕"
+msgstr "色調（螢幕）"
 
 #. Header for the Blending options for Parts
 #: source/creator/panels/inspector.d:663 source/creator/panels/inspector.d:820
@@ -544,7 +543,9 @@ msgid ""
 "Special blending mode that causes (while respecting transparency) the part "
 "to be slice by everything underneath.\n"
 "Basically reverse Clip to Lower."
-msgstr "特殊混和模式造成組件（在使用透明時）被下方的物件分割"
+msgstr ""
+"特殊混和模式使組件（在使用透明時）被下方的物件分割。\n"
+"基本上反向剪切至下方。"
 
 #: source/creator/panels/inspector.d:696 source/creator/panels/inspector.d:845
 #: source/creator/panels/inspector.d:1242
@@ -572,7 +573,7 @@ msgstr "遮罩來源"
 
 #: source/creator/panels/inspector.d:717
 msgid "(Drag a Part or Mask Here)"
-msgstr ""
+msgstr "（拖曳組件或是遮罩到此處）"
 
 #: source/creator/panels/inspector.d:724
 msgid "Mode"
@@ -676,13 +677,13 @@ msgstr "取消"
 
 #: source/creator/panels/inspector.d:1322
 msgid "Are you sure?"
-msgstr ""
+msgstr "確定？"
 
 #: source/creator/panels/inspector.d:1323
 msgid ""
 "The layout of the mesh has changed, all deformations to this mesh will be "
 "deleted if you continue."
-msgstr ""
+msgstr "此網格排列已變更，按下繼續後所有該網格的塑形會被刪除。"
 
 #: source/creator/panels/inspector.d:1334
 #: source/creator/windows/paramsplit.d:168
@@ -722,29 +723,29 @@ msgstr "更多資訊"
 #. %s is the name of the node in the More Info menu
 #. %u is the UUID of the node in the More Info menu
 #: source/creator/panels/nodes.d:104
-#, fuzzy, c-format
+#, c-format
 msgid "%s ID: %u"
-msgstr "%s ID: %lu"
+msgstr "%s ID: %u"
 
 #: source/creator/panels/nodes.d:107
 #, c-format
 msgid "%s Layer: %s"
-msgstr ""
+msgstr "%s 圖層：%s"
 
 #. %u is the UUID of the node in the More Info menu
 #: source/creator/panels/nodes.d:112
-#, fuzzy, c-format
+#, c-format
 msgid "ID: %u"
-msgstr "ID: %lu"
+msgstr "ID: %u"
 
 #: source/creator/panels/nodes.d:115
 #, c-format
 msgid "Layer: %s"
-msgstr ""
+msgstr "圖層：%s"
 
 #: source/creator/panels/nodes.d:288
 msgid "In vertex edit mode..."
-msgstr "點編輯模式"
+msgstr "點編輯模式..."
 
 #: source/creator/panels/nodes.d:357
 msgid "Nodes"
@@ -838,7 +839,7 @@ msgstr "編輯軸線端點"
 
 #: source/creator/panels/parameters.d:548
 msgid "Split"
-msgstr ""
+msgstr "分割"
 
 #: source/creator/panels/parameters.d:553
 msgid "Flip X"
@@ -925,13 +926,13 @@ msgstr "工具設定"
 #. Appended to the name of a face tracking receiver
 #. in the Tracking settings panel
 #: source/creator/panels/tracking.d:32
-#, fuzzy, c-format
+#, c-format
 msgid "%s Receiver"
 msgstr "%s 接收器"
 
 #: source/creator/panels/tracking.d:59
 msgid "A reciever which uses your phone and associated app to track your body"
-msgstr "接收器會使用您的手機和相關應用程式追蹤身體姿勢。"
+msgstr "接收器會使用您的手機和相關應用程式追蹤身體姿勢"
 
 #: source/creator/panels/tracking.d:63
 msgid "Bind Address"
@@ -963,17 +964,16 @@ msgid ""
 "The IP Address of your iPhone,\n"
 "You can find it in the VSeeFace Config panel in VTube Studio"
 msgstr ""
-"您的 iPhone 的 IP您可以在 VTube Studio 的 VSeeFace 設定頁面找到相關資訊。"
+"您 iPhone 的 IP，\n"
+"您可以在 VSeeFace 設定面板找到相關資訊。"
 
 #: source/creator/panels/tracking.d:102
-#, fuzzy
 msgid "A receiver which uses OpenSeeFace application"
-msgstr "一個使用 IOS 應用程式「VTubeStudio」的接收器"
+msgstr "一個使用應用程式「OpenSeeFace」的接收器"
 
 #: source/creator/panels/tracking.d:104
-#, fuzzy
 msgid "OSF Bind Address"
-msgstr "綁定 IP 地址"
+msgstr "OSF 綁定地址"
 
 #: source/creator/panels/tracking.d:115
 msgid "OSF Listen Port"
@@ -1091,14 +1091,13 @@ msgid ""
 "At least 3 vertices forming a triangle is needed."
 msgstr ""
 "無法套用網格\n"
-"最少需要由3個點組成的三角形"
+"最少需要由3個點組成的三角形。"
 
 #: source/creator/widgets/dialog.d:124
 msgid "OK"
 msgstr "確定"
 
 #: source/creator/widgets/dialog.d:132
-#, fuzzy
 msgid "No"
 msgstr "否"
 
@@ -1135,7 +1134,8 @@ msgstr "最近開啟"
 #. feels more safe with a save button then we have
 #. it here.
 #: source/creator/widgets/mainmenu.d:122 source/creator/windows/paramaxes.d:140
-#: source/creator/windows/paramprop.d:103 source/creator/windows/trkbind.d:129
+#: source/creator/windows/paramprop.d:103 source/creator/windows/settings.d:127
+#: source/creator/windows/trkbind.d:129
 msgid "Save"
 msgstr "儲存"
 
@@ -1149,7 +1149,7 @@ msgstr "Photoshop 檔案"
 
 #: source/creator/widgets/mainmenu.d:135
 msgid "Import a standard Photoshop PSD file."
-msgstr "匯入標準 Photoshop PSD 檔案"
+msgstr "匯入標準 Photoshop PSD 檔案。"
 
 #: source/creator/widgets/mainmenu.d:137
 msgid "Inochi2D Puppet"
@@ -1169,19 +1169,17 @@ msgstr "選擇檔案夾…"
 
 #: source/creator/widgets/mainmenu.d:158
 msgid "Supports PNGs, TGAs and JPEGs."
-msgstr "支援 PNG、TGA 和 JPEG"
+msgstr "支援 PNG、TGA 和 JPEG。"
 
 #: source/creator/widgets/mainmenu.d:161 source/creator/windows/psdmerge.d:412
 msgid "Merge"
 msgstr "合併"
 
 #: source/creator/widgets/mainmenu.d:174
-#, fuzzy
 msgid "Merge layers from Photoshop document"
-msgstr "Photoshop 檔案"
+msgstr "合併 Photoshop 檔案圖層"
 
 #: source/creator/widgets/mainmenu.d:176
-#, fuzzy
 msgid "Inochi Creator Project"
 msgstr "Inochi Creator 專案"
 
@@ -1221,7 +1219,8 @@ msgstr "取消復原"
 msgid "Cut"
 msgstr "剪下"
 
-#: source/creator/widgets/mainmenu.d:224 source/creator/windows/settings.d:281
+
+#: source/creator/widgets/mainmenu.d:224 source/creator/windows/settings.d:144
 msgid "Settings"
 msgstr "設定"
 
@@ -1272,7 +1271,7 @@ msgstr "截圖存檔…"
 
 #: source/creator/widgets/mainmenu.d:316
 msgid "Saves screenshot as PNG of the editor framebuffer."
-msgstr "將當畫面截圖存為 PNG "
+msgstr "將當畫面截圖存為 PNG。"
 
 #: source/creator/widgets/mainmenu.d:318
 msgid "Show Stats for Nerds"
@@ -1290,7 +1289,7 @@ msgstr "模型材質"
 #. be multiplied by their Alpha (transparency) component
 #: source/creator/widgets/mainmenu.d:335
 msgid "Premultiply textures"
-msgstr "材質預增值"
+msgstr "預乘材質"
 
 #: source/creator/widgets/mainmenu.d:339
 msgid ""
@@ -1299,13 +1298,13 @@ msgid ""
 "Only use this if your textures look garbled after importing files from an "
 "older version of Inochi Creator."
 msgstr ""
-"將材質像素乘上 Alpha 值\n"
+"將材質像素預乘上 Alpha 值\n"
 "\n"
-"僅用於解決字舊版 Inochi Creater 匯入檔案造成材質混亂的問題"
+"僅適用於解決自舊版 Inochi Creater 匯入檔案造成材質混亂的問題。"
 
 #: source/creator/widgets/mainmenu.d:341
 msgid "Bleed textures..."
-msgstr "Bleed textures..."
+msgstr "材質滲透..."
 
 #: source/creator/widgets/mainmenu.d:344
 msgid ""
@@ -1314,26 +1313,25 @@ msgid ""
 "\n"
 "Only use this if your game engine can't use premultiplied alpha."
 msgstr ""
-"Causes color to bleed out in to fully transparent pixels, this solves "
-"outlines on straight alpha compositing.\n"
+"使色彩滲出到透明像素上，以消除直通 alpha 渲染的白邊.\n"
 "\n"
-"Only use this if your game engine can't use premultiplied alpha."
+"僅適用於不支援預乘 alpha 的遊戲引擎."
 
 #: source/creator/widgets/mainmenu.d:346
 msgid "Generate Mipmaps..."
-msgstr "生成貼圖"
+msgstr "生成 Mipmap..."
 
 #: source/creator/widgets/mainmenu.d:349
 msgid "Regenerates the puppet's mipmaps."
-msgstr "重新生成模型貼圖"
+msgstr "重新生成模型 Mipmap。"
 
 #: source/creator/widgets/mainmenu.d:351
 msgid "Generate fake layer name info..."
-msgstr ""
+msgstr "產生假圖層名稱資訊..."
 
 #: source/creator/widgets/mainmenu.d:361
 msgid "Generates fake layer info based on node names"
-msgstr ""
+msgstr "依據節點名稱產生假圖層資訊"
 
 #: source/creator/widgets/mainmenu.d:367
 msgid "Puppet Recovery"
@@ -1348,7 +1346,7 @@ msgstr "嘗試修復…"
 msgid ""
 "Attempts all the recovery and repair methods below on the currently loaded "
 "model"
-msgstr "對當前模型進行以下修復方式"
+msgstr "對當前模型進行以下所有修復方式"
 
 #. REGEN NODE IDs
 #: source/creator/widgets/mainmenu.d:377
@@ -1441,114 +1439,112 @@ msgstr "參數內容"
 
 #: source/creator/windows/paramsplit.d:48
 msgid " (Split)"
-msgstr ""
+msgstr " （分割）"
 
 #: source/creator/windows/paramsplit.d:179
-#, fuzzy
 msgid "Split Parameter"
-msgstr "參數"
+msgstr "分割參數"
 
 #: source/creator/windows/psdmerge.d:234
 #, c-format
 msgid "%s  %s"
-msgstr ""
+msgstr "%s  %s"
 
 #: source/creator/windows/psdmerge.d:272
 msgid "Unmap"
-msgstr ""
+msgstr "取消映射"
 
 #: source/creator/windows/psdmerge.d:277
 msgid "Ignore"
-msgstr ""
+msgstr "無視"
 
 #: source/creator/windows/psdmerge.d:277
-#, fuzzy
 msgid "Use"
-msgstr "取消選定"
+msgstr "使用"
 
 #: source/creator/windows/psdmerge.d:374
 msgid "Only show unmapped"
-msgstr ""
+msgstr "只顯示未映射"
 
 #. Auto-rename
 #: source/creator/windows/psdmerge.d:394
 msgid "Auto-rename"
-msgstr ""
+msgstr "自動重新取名"
 
 #: source/creator/windows/psdmerge.d:395
 msgid ""
 "Renames all mapped nodes to match the names of the PSD layer that was merged "
 "in to them."
-msgstr ""
+msgstr "重新命名所有以映射的節點已對應 PSD 圖層。"
 
 #: source/creator/windows/psdmerge.d:398
-#, fuzzy
 msgid "Re-translate"
-msgstr "移動"
+msgstr "重新移動"
 
 #: source/creator/windows/psdmerge.d:399
 msgid ""
 "Moves all nodes so that they visually match their position in the canvas."
-msgstr ""
+msgstr "移動所有節點以對齊在畫面中的位置。"
 
 #: source/creator/windows/psdmerge.d:447
 msgid "PSD Merging"
 msgstr "PSD 合併"
 
-#: source/creator/windows/settings.d:77
+
+#: source/creator/windows/settings.d:46
+msgid "General"
+msgstr "一般"
+
+#: source/creator/windows/settings.d:48
 msgid "Look and Feel"
 msgstr "外觀設定"
 
-#: source/creator/windows/settings.d:85
-#, fuzzy
-msgid "Accessbility"
-msgstr "協助工具"
-
-#: source/creator/windows/settings.d:105 source/creator/windows/welcome.d:138
+#: source/creator/windows/settings.d:50 source/creator/windows/welcome.d:138
 msgid "Color Theme"
 msgstr "主題色彩"
 
-#: source/creator/windows/settings.d:105 source/creator/windows/settings.d:106
+#: source/creator/windows/settings.d:50 source/creator/windows/settings.d:51
 #: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:139
 msgid "Dark"
 msgstr "暗色主題"
 
-#: source/creator/windows/settings.d:105 source/creator/windows/settings.d:107
+#: source/creator/windows/settings.d:50 source/creator/windows/settings.d:52
 #: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:140
 msgid "Light"
 msgstr "亮色主題"
 
-#: source/creator/windows/settings.d:113 source/creator/windows/welcome.d:124
+
+#: source/creator/windows/settings.d:58 source/creator/windows/welcome.d:124
 msgid "Language"
 msgstr "語言"
 
-#: source/creator/windows/settings.d:128 source/creator/windows/welcome.d:146
+#: source/creator/windows/settings.d:67 source/creator/windows/welcome.d:146
 msgid "UI Scale"
-msgstr "縮放"
+msgstr "UI 縮放"
 
-#: source/creator/windows/settings.d:137
-msgid "Max Undo History"
-msgstr "最高復原數量"
-
-#: source/creator/windows/settings.d:143
-msgid "Linux Tweaks"
-msgstr ""
-
-#: source/creator/windows/settings.d:145
+#: source/creator/windows/settings.d:75
 msgid "Disable Compositor"
 msgstr "停用合成器"
 
-#: source/creator/windows/settings.d:152
-msgid "No settings for this category."
-msgstr ""
+#: source/creator/windows/settings.d:82
+msgid "Use software rendering"
+msgstr "使用軟體渲染"
 
-#: source/creator/windows/settings.d:165 source/creator/windows/welcome.d:157
-msgid "Inochi Creator needs to be restarted for some changes to take effect."
-msgstr ""
+#: source/creator/windows/settings.d:91
+msgid "Undo/Redo History"
+msgstr "復原 歷史"
 
-#: source/creator/windows/settings.d:173
-msgid "Done"
-msgstr ""
+#: source/creator/windows/settings.d:95
+msgid "Max Undo History"
+msgstr "最高復原數量"
+
+#: source/creator/windows/settings.d:105
+msgid "Accessibility"
+msgstr "協助工具"
+
+#: source/creator/windows/settings.d:114
+msgid "Other"
+msgstr "其他"
 
 #: source/creator/windows/texviewer.d:47
 msgid "Texture Viewer"
@@ -1601,53 +1597,57 @@ msgstr "綁定跟蹤到參數"
 
 #: source/creator/windows/welcome.d:113
 msgid "Quick Setup"
-msgstr ""
+msgstr "快速設定"
+
+
+#: source/creator/windows/welcome.d:157
+msgid "Inochi Creator needs to be restarted for some changes to take effect."
+msgstr "重啟 Inochi Creator 以讓變更生效。"
 
 #: source/creator/windows/welcome.d:170
 msgid "Next"
-msgstr ""
+msgstr "下一步"
 
 #: source/creator/windows/welcome.d:182
-#, fuzzy
 msgid "Create Project"
-msgstr "Inochi Creator 專案"
+msgstr "新增專案"
 
 #: source/creator/windows/welcome.d:185
 msgid "New..."
-msgstr ""
+msgstr "新增..."
 
 #: source/creator/windows/welcome.d:199
 msgid "Import PSD..."
-msgstr "PSD 匯入…"
+msgstr "匯入 PSD…"
+
 
 #: source/creator/windows/welcome.d:208
 msgid "Recent Projects"
-msgstr ""
+msgstr "最近專案"
 
 #: source/creator/windows/welcome.d:232
 msgid "On the Web"
-msgstr ""
+msgstr "在網路上"
 
 #: source/creator/windows/welcome.d:236
 msgid "Website"
-msgstr ""
+msgstr "官網"
 
 #: source/creator/windows/welcome.d:240
 msgid "Documentation"
-msgstr "說明書"
+msgstr "文檔"
 
 #: source/creator/windows/welcome.d:246
 msgid "Patreon"
-msgstr ""
+msgstr "Patreon"
 
 #: source/creator/windows/welcome.d:249
 msgid "Github Sponsors"
-msgstr ""
+msgstr "Github 贊助"
 
 #: source/creator/windows/welcome.d:275
-#, fuzzy
 msgid "Inochi Creator Start"
-msgstr "Inochi Creator 專案"
+msgstr "Inochi Creator 啟動"
 
 #~ msgid "General"
 #~ msgstr "一般"
