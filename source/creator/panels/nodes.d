@@ -205,7 +205,6 @@ protected:
                     }
             igPopID();
 
-            // Only allow reparenting one node
             if(igBeginDragDropTarget()) {
                 const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
                 if (payload !is null) {

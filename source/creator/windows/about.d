@@ -43,15 +43,15 @@ protected:
         ImVec2 sPos;
         igGetCursorScreenPos(&sPos);
 
-
         version (InBranding) {
             ImVec2 avail = incAvailableSpace();
             igSetCursorScreenPos(ImVec2(
                 sPos.x+(avail.x-(ADA_SIZE-ADA_SIZE_PARTIAL)), 
                 sPos.y+(avail.y-(ADA_SIZE+28))+(sin(currentTime())*4)
             ));
+
             igImage(
-                cast(void*)ada.getTextureId(),
+                cast(void*)incGetAda(),
                 ImVec2(ADA_SIZE, ADA_SIZE),
                 ImVec2(0, 0),
                 ImVec2(1, 1), 

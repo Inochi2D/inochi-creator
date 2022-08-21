@@ -42,7 +42,10 @@ private {
     bool done = false;
     ImGuiID viewportDock;
 
-    version (InBranding) Texture inLogo;
+    version (InBranding) {
+        Texture incLogo;
+        Texture incAda;
+    }
 
     ImFont* mainFont;
     ImFont* iconFont;
@@ -213,6 +216,7 @@ void incOpenWindow() {
         debug string WIN_TITLE = "Inochi Creator "~_("(Debug Mode)");
         else string WIN_TITLE = "Inochi Creator "~INC_VERSION;
     } else string WIN_TITLE = "Inochi Creator "~_("(Unsupported)");
+    
     window = SDL_CreateWindow(
         WIN_TITLE.toStringz, 
         SDL_WINDOWPOS_UNDEFINED,
@@ -288,7 +292,13 @@ void incOpenWindow() {
 
     version (InBranding) {
         // Load image resources
-        inLogo = new Texture(ShallowTexture(cast(ubyte[])import("logo.png")));
+        auto tex = ShallowTexture(cast(ubyte[])import("logo.png"));
+        inTexPremultiply(tex.data);
+        incLogo = new Texture(tex);
+
+        tex = ShallowTexture(cast(ubyte[])import("ui/ui-ada.png"));
+        inTexPremultiply(tex.data);
+        incAda = new Texture(tex);
     }
 
     // Load Settings
@@ -404,9 +414,42 @@ void incSetDarkMode(bool darkMode) {
         igStyleColorsLight(null);
         style.Colors[ImGuiCol.Border] = ImVec4(0.8, 0.8, 0.8, 0.5);
         style.Colors[ImGuiCol.BorderShadow] = ImVec4(0, 0, 0, 0.05);
+        style.Colors[ImGuiCol.TitleBg] = ImVec4(0.94, 0.94, 0.94, 1);
+        style.Colors[ImGuiCol.TitleBgActive] = ImVec4(0.96, 0.96, 0.96, 1);
+        
+        style.Colors[ImGuiCol.Separator] = ImVec4(0.86, 0.86, 0.86, 1);
+        
+        style.Colors[ImGuiCol.ScrollbarGrab] = ImVec4(0.68, 0.68, 0.68, 1);
+        style.Colors[ImGuiCol.ScrollbarGrabActive] = ImVec4(0.68, 0.68, 0.68, 1);
+        style.Colors[ImGuiCol.ScrollbarGrabHovered] = ImVec4(0.64, 0.64, 0.64, 1);
+
+        style.Colors[ImGuiCol.FrameBg] = ImVec4(1, 1, 1, 1);
+        style.Colors[ImGuiCol.FrameBgHovered] = ImVec4(0.78, 0.88, 1, 1);
+        style.Colors[ImGuiCol.FrameBgActive] = ImVec4(0.76, 0.86, 1, 1);
+
+        style.Colors[ImGuiCol.Button] = ImVec4(0.98, 0.98, 0.98, 1);
+        style.Colors[ImGuiCol.ButtonHovered] = ImVec4(1, 1, 1, 1);
+        style.Colors[ImGuiCol.ButtonActive] = ImVec4(0.8, 0.8, 0.8, 1);
+        style.Colors[ImGuiCol.CheckMark] = ImVec4(0, 0, 0, 1);
+
+        style.Colors[ImGuiCol.Tab] = ImVec4(0.98, 0.98, 0.98, 1);
+        style.Colors[ImGuiCol.TabHovered] = ImVec4(1, 1, 1, 1);
+        style.Colors[ImGuiCol.TabActive] = ImVec4(0.8, 0.8, 0.8, 1);
+        style.Colors[ImGuiCol.TabUnfocused] = ImVec4(0.92, 0.92, 0.92, 1);
+        style.Colors[ImGuiCol.TabUnfocusedActive] = ImVec4(0.88, 0.88, 0.88, 1);
+
+        style.Colors[ImGuiCol.MenuBarBg] = ImVec4(0.863, 0.863, 0.863, 1);  
+        style.Colors[ImGuiCol.PopupBg] = ImVec4(0.941, 0.941, 0.941, 1);  
+        style.Colors[ImGuiCol.Header] = ImVec4(0.990, 0.990, 0.990, 1);  
+        style.Colors[ImGuiCol.HeaderHovered] = ImVec4(1, 1, 1, 1);  
+
 
         style.FrameBorderSize = 1;
     } 
+
+
+    // Don't draw the silly roll menu
+    style.WindowMenuButtonPosition = ImGuiDir.None;
 
     // Set Dark mode setting
     incSettingsSet("DarkMode", darkMode);
@@ -555,6 +598,12 @@ void incEndLoop() {
         SDL_GL_MakeCurrent(currentWindow, currentCtx);
     }
 
+    
+    version(InBranding) {
+        import creator.core.egg;
+        incAdaUpdate();
+    }
+
     SDL_GL_SwapWindow(window);
 }
 
@@ -638,8 +687,15 @@ version (InBranding) {
     /**
         Gets the Inochi2D Logo
     */
-    GLuint incGetLogo() {
-        return inLogo.getTextureId;
+    Texture incGetLogo() {
+        return incLogo;
+    }
+
+    /**
+        Gets the Ada texture
+    */
+    Texture incGetAda() {
+        return incAda;
     }
 }
 
