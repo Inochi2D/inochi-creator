@@ -1524,7 +1524,7 @@ msgstr "Sprog"
 
 #: source/creator/windows/settings.d:67 source/creator/windows/welcome.d:146
 msgid "UI Scale"
-msgstr "Brugerflade Skalering"
+msgstr "Brugerfladeskalering"
 
 #: source/creator/windows/settings.d:75
 msgid "Disable Compositor"
@@ -1605,7 +1605,7 @@ msgstr "Hurtigopsætning"
 
 #: source/creator/windows/welcome.d:157
 msgid "Inochi Creator needs to be restarted for some changes to take effect."
-msgstr "Inochi Creator bør genstartes før at alle ændringer kan træde i kræft."
+msgstr "Inochi Creator bør genstartes før at alle ændringer kan træde i kraft."
 
 #: source/creator/windows/welcome.d:170
 msgid "Next"
