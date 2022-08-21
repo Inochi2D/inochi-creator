@@ -29,7 +29,6 @@ class SettingsWindow : Window {
 private:
     bool generalTabOpen = true;
     bool otherTabOpen = true;
-    bool useOpenDyslexic;
     bool changesRequiresRestart;
 
     int tmpUIScale;
@@ -71,20 +70,23 @@ protected:
 
     override
     void onUpdate() {
+        float availX = incAvailableSpace().x;
 
         // Sidebar
-        if (igBeginChild("SettingsSidebar", ImVec2(128, -28), true)) {
-            if (igSelectable(__("Look and Feel"), settingsPane == SettingsPane.LookAndFeel)) {
-                settingsPane = SettingsPane.LookAndFeel;
-            }
-            
-            if (igSelectable(__("Viewport"), settingsPane == SettingsPane.Viewport)) {
-                settingsPane = SettingsPane.Viewport;
-            }
-            
-            if (igSelectable(__("Accessbility"), settingsPane == SettingsPane.Accessibility)) {
-                settingsPane = SettingsPane.Accessibility;
-            }
+        if (igBeginChild("SettingsSidebar", ImVec2(availX/3.5, -28), true)) {
+            igPushTextWrapPos(128);
+                if (igSelectable(__("Look and Feel"), settingsPane == SettingsPane.LookAndFeel)) {
+                    settingsPane = SettingsPane.LookAndFeel;
+                }
+                
+                if (igSelectable(__("Viewport"), settingsPane == SettingsPane.Viewport)) {
+                    settingsPane = SettingsPane.Viewport;
+                }
+                
+                if (igSelectable(__("Accessbility"), settingsPane == SettingsPane.Accessibility)) {
+                    settingsPane = SettingsPane.Accessibility;
+                }
+            igPopTextWrapPos();
         }
         igEndChild();
         
@@ -93,7 +95,7 @@ protected:
 
         // Contents
         if (igBeginChild("SettingsContent", ImVec2(0, -28), true)) {
-            float availX = incAvailableSpace().x;
+            availX = incAvailableSpace().x;
 
             // Begins section, REMEMBER TO END IT
             beginSection(_(cast(string)settingsPane));
@@ -147,6 +149,15 @@ protected:
                                 }
                             endSection();
                         }
+                        break;
+                    case SettingsPane.Accessibility:
+                        bool disableCompositor = incSettingsGet!bool("useOpenDyslexic");
+                        if (igCheckbox(__("Use OpenDyslexic Font"), &disableCompositor)) {
+                            incSettingsSet("useOpenDyslexic", disableCompositor);
+                            changesRequiresRestart = true;
+                        }
+                        incTooltip("Use the OpenDyslexic for Latin text characters.");
+                        endSection();
                         break;
                     default:
                         incText(_("No settings for this category."));

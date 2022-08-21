@@ -118,12 +118,6 @@ string incGetAppFontsPath() {
         
         // Create our font directory
         mkdirRecurse(cachedFontDir);
-
-        // Create our font dir and install our fonts
-        import std.file : write;
-
-        write(buildPath(cachedFontDir, "OpenDyslexic.otf"), import("OpenDyslexic.otf"));
-        // TODO: Write a license file for OpenDyslexic?
     }
     return cachedFontDir;
 }

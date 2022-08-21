@@ -38,6 +38,7 @@ private {
         ImFontAtlas_AddFontFromMemoryTTF(atlas, cast(void*)data.ptr, cast(int)data.length, size, cfg, ranges);
     }
 
+    ubyte[] OPEN_DYSLEXIC = cast(ubyte[])import("OpenDyslexic.otf");
     ubyte[] NOTO = cast(ubyte[])import("NotoSans-Regular.ttf");
     ubyte[] NOTO_CJK = cast(ubyte[])import("NotoSansCJK-Regular.ttc");
     ubyte[] ICONS = cast(ubyte[])import("MaterialIcons.ttf");
@@ -69,16 +70,38 @@ struct FontEntry {
 void incInitFonts() {
     _incInitFontList();
     atlas = igGetIO().Fonts;
-        _incAddFontData("APP\0", NOTO, 26, (cast(ImWchar[])[
-            0x0020, 0x024F, // Basic Latin + Latin Supplement & Extended
-            0x0250, 0x036F, // IPA Extensions + Spacings + Diacritical Marks
-            0x0370, 0x03FF, // Greek and Coptic
-            0x0400, 0x052F, // Cyrillic + Supplementary
-            0x2000, 0x206F, // General Punctuation
-            0xFFFD, 0xFFFD, // Invalid
-            0]).ptr,
-            ImVec2(0, -6)
-        );
+        if (incSettingsGet!bool("useOpenDyslexic")) {
+
+            // Use OpenDyslexic for Latin
+            _incAddFontData("APP\0", OPEN_DYSLEXIC, 24, (cast(ImWchar[])[
+                0x0020, 0x024F, // Basic Latin + Latin Supplement & Extended
+                0]).ptr,
+                ImVec2(0, -8)
+            );
+
+            // Everything else will have to be NOTO
+            _incAddFontData("APP\0", NOTO, 26, (cast(ImWchar[])[
+                0x0250, 0x036F, // IPA Extensions + Spacings + Diacritical Marks
+                0x0370, 0x03FF, // Greek and Coptic
+                0x0400, 0x052F, // Cyrillic + Supplementary
+                0x2000, 0x206F, // General Punctuation
+                0xFFFD, 0xFFFD, // Invalid
+                0]).ptr,
+                ImVec2(0, -6)
+            );
+        } else {
+            _incAddFontData("APP\0", NOTO, 26, (cast(ImWchar[])[
+                0x0020, 0x024F, // Basic Latin + Latin Supplement & Extended
+                0x0250, 0x036F, // IPA Extensions + Spacings + Diacritical Marks
+                0x0370, 0x03FF, // Greek and Coptic
+                0x0400, 0x052F, // Cyrillic + Supplementary
+                0x2000, 0x206F, // General Punctuation
+                0xFFFD, 0xFFFD, // Invalid
+                0]).ptr,
+                ImVec2(0, -6)
+            );
+        }
+
         _incAddFontData("APP\0", NOTO_CJK, 26, (cast(ImWchar[])[
             0x3000, 0x30FF, // CJK Symbols and Punctuations, Hiragana, Katakana
             0x31F0, 0x31FF, // Katakana Phonetic Extensions
@@ -87,6 +110,7 @@ void incInitFonts() {
             0]).ptr,
             ImVec2(0, -6)
         );
+
         _incAddFontData(
             "Icons", 
             ICONS, 
