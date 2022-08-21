@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-20 08:19+0200\n"
+"POT-Creation-Date: 2022-08-21 03:22+0200\n"
 "PO-Revision-Date: 2022-05-12 02:47+0200\n"
 "Last-Translator: Luna <cli-luna@protonmail.com>\n"
 "Language-Team: Danish\n"
@@ -43,6 +43,14 @@ msgstr "Binding %s var tilføjet"
 #, c-format
 msgid "%s->%s changed"
 msgstr "%s->%s skiftet til %s"
+
+# c-format
+#: source/creator/actions/binding.d:162 source/creator/actions/binding.d:259
+#: source/creator/actions/parameter.d:145
+#: source/creator/actions/parameter.d:219
+#, c-format
+msgid "%s->%s change cancelled"
+msgstr "%s->%s ændring annulleret"
 
 #: source/creator/actions/drawable.d:82
 #, c-format
@@ -101,31 +109,29 @@ msgstr "%s->%s ændret til %s"
 msgid "%s->%s changed from %s"
 msgstr "%s->%s ændret fra %s"
 
+# c-format
 #: source/creator/actions/parameter.d:51
-#c-format
+#, c-format
 msgid "Added parameter %s"
 msgstr "Tilføjede parameter %s"
 
+# c-format
 #: source/creator/actions/parameter.d:53
-#c-format
+#, c-format
 msgid "Removed parameter %s"
 msgstr "Fjernede parameter %s"
 
+# c-format
 #: source/creator/actions/parameter.d:61
-#c-format
+#, c-format
 msgid "Parameter %s was removed"
 msgstr "Parameter %s var fjernet"
 
+# c-format
 #: source/creator/actions/parameter.d:63
-#c-format
+#, c-format
 msgid "Parameter %s was added"
 msgstr "Parameter %s var tilføjet"
-
-#: source/creator/actions/parameter.d:145
-#: source/creator/actions/parameter.d:219
-#c-format
-msgid "%s->%s change cancelled"
-msgstr "%s->%s ændring annulleret"
 
 #: source/creator/core/dpi.d:51 source/creator/core/dpi.d:55
 msgid "100% (Locked)"
@@ -231,6 +237,7 @@ msgid "Texture bleeding completed."
 msgstr "Teksturblødning fuldført."
 
 #: source/creator/panels/actionhistory.d:26
+#: source/creator/windows/settings.d:135
 msgid "Undo History"
 msgstr "Fortrydelseshistorik"
 
@@ -680,8 +687,8 @@ msgid ""
 "The layout of the mesh has changed, all deformations to this mesh will be "
 "deleted if you continue."
 msgstr ""
-"Layoutet af meshen er ændret, alle deformeringer vil blive slettet hvis "
-"du fortsætter."
+"Layoutet af meshen er ændret, alle deformeringer vil blive slettet hvis du "
+"fortsætter."
 
 #: source/creator/panels/inspector.d:1334
 #: source/creator/windows/paramsplit.d:168
@@ -718,10 +725,11 @@ msgstr "Vis"
 msgid "More Info"
 msgstr "Mere info"
 
+# c-format
 #. %s is the name of the node in the More Info menu
 #. %u is the UUID of the node in the More Info menu
 #: source/creator/panels/nodes.d:104
-#c-format
+#, c-format
 msgid "%s ID: %u"
 msgstr "%s ID: %u"
 
@@ -730,9 +738,10 @@ msgstr "%s ID: %u"
 msgid "%s Layer: %s"
 msgstr "%s Lag: %s"
 
+# c-format
 #. %u is the UUID of the node in the More Info menu
 #: source/creator/panels/nodes.d:112
-#c-format
+#, c-format
 msgid "ID: %u"
 msgstr "ID: %u"
 
@@ -921,10 +930,11 @@ msgstr "Parametre"
 msgid "Tool Settings"
 msgstr "Værktøjsegenskaber"
 
+# c-format
 #. Appended to the name of a face tracking receiver
 #. in the Tracking settings panel
 #: source/creator/panels/tracking.d:32
-#c-format
+#, c-format
 msgid "%s Receiver"
 msgstr "%s Modtager"
 
@@ -999,7 +1009,7 @@ msgstr "Tracking"
 msgid "%s is not supported"
 msgstr "%s er ikke understøttet"
 
-#: source/creator/panels/viewport.d:236
+#: source/creator/panels/viewport.d:236 source/creator/windows/settings.d:81
 msgid "Viewport"
 msgstr "Viewport"
 
@@ -1133,13 +1143,8 @@ msgstr "Seneste"
 #. Settings are autosaved, but in case the user
 #. feels more safe with a save button then we have
 #. it here.
-#. Save button
-#. Settings are autosaved, but in case the user
-#. feels more safe with a save button then we have
-#. it here.
 #: source/creator/widgets/mainmenu.d:122 source/creator/windows/paramaxes.d:140
-#: source/creator/windows/paramprop.d:103 source/creator/windows/settings.d:127
-#: source/creator/windows/trkbind.d:129
+#: source/creator/windows/paramprop.d:103 source/creator/windows/trkbind.d:129
 msgid "Save"
 msgstr "Gem"
 
@@ -1223,7 +1228,7 @@ msgstr "Gendan"
 msgid "Cut"
 msgstr "Klip"
 
-#: source/creator/widgets/mainmenu.d:224 source/creator/windows/settings.d:144
+#: source/creator/widgets/mainmenu.d:224 source/creator/windows/settings.d:281
 msgid "Settings"
 msgstr "Indstillinger"
 
@@ -1479,8 +1484,8 @@ msgid ""
 "Renames all mapped nodes to match the names of the PSD layer that was merged "
 "in to them."
 msgstr ""
-"Omnavngiver alle mappede noder så at de matcher navnene på PSD lagene som var "
-"flettet sammen med dem."
+"Omnavngiver alle mappede noder så at de matcher navnene på PSD lagene som "
+"var flettet sammen med dem."
 
 #: source/creator/windows/psdmerge.d:398
 msgid "Re-translate"
@@ -1496,59 +1501,59 @@ msgstr ""
 msgid "PSD Merging"
 msgstr "PSD Sammenflætning"
 
-#: source/creator/windows/settings.d:46
-msgid "General"
-msgstr "Generelt"
-
-#: source/creator/windows/settings.d:48
+#: source/creator/windows/settings.d:77
 msgid "Look and Feel"
 msgstr "Udseende"
 
-#: source/creator/windows/settings.d:50 source/creator/windows/welcome.d:138
+#: source/creator/windows/settings.d:85
+msgid "Accessbility"
+msgstr "Tilgængelighed"
+
+#: source/creator/windows/settings.d:105 source/creator/windows/welcome.d:138
 msgid "Color Theme"
 msgstr "Farvetema"
 
-#: source/creator/windows/settings.d:50 source/creator/windows/settings.d:51
+#: source/creator/windows/settings.d:105 source/creator/windows/settings.d:106
 #: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:139
 msgid "Dark"
 msgstr "Mørk"
 
-#: source/creator/windows/settings.d:50 source/creator/windows/settings.d:52
+#: source/creator/windows/settings.d:105 source/creator/windows/settings.d:107
 #: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:140
 msgid "Light"
 msgstr "Lys"
 
-#: source/creator/windows/settings.d:58 source/creator/windows/welcome.d:124
+#: source/creator/windows/settings.d:113 source/creator/windows/welcome.d:124
 msgid "Language"
 msgstr "Sprog"
 
-#: source/creator/windows/settings.d:67 source/creator/windows/welcome.d:146
+#: source/creator/windows/settings.d:128 source/creator/windows/welcome.d:146
 msgid "UI Scale"
-msgstr "Brugerflade Skalering"
+msgstr "Brugerfladeskalering"
 
-#: source/creator/windows/settings.d:75
+#: source/creator/windows/settings.d:137
+msgid "Max Undo History"
+msgstr "Maks Fortrydelseshistorik"
+
+#: source/creator/windows/settings.d:143
+msgid "Linux Tweaks"
+msgstr "Linuxjusteringer"
+
+#: source/creator/windows/settings.d:145
 msgid "Disable Compositor"
 msgstr "Slå compositor fra"
 
-#: source/creator/windows/settings.d:82
-msgid "Use software rendering"
-msgstr "Brug softwarerendering"
+#: source/creator/windows/settings.d:152
+msgid "No settings for this category."
+msgstr "Ingen instillinger fundet for denne kategori."
 
-#: source/creator/windows/settings.d:91
-msgid "Undo/Redo History"
-msgstr "Fortryd/Gendan Historik"
+#: source/creator/windows/settings.d:165 source/creator/windows/welcome.d:157
+msgid "Inochi Creator needs to be restarted for some changes to take effect."
+msgstr "Inochi Creator bør genstartes før at alle ændringer kan træde i kraft."
 
-#: source/creator/windows/settings.d:95
-msgid "Max Undo History"
-msgstr "Maks fortrydningshistorik"
-
-#: source/creator/windows/settings.d:105
-msgid "Accessibility"
-msgstr "Tilgænglighed"
-
-#: source/creator/windows/settings.d:114
-msgid "Other"
-msgstr "Andet"
+#: source/creator/windows/settings.d:173
+msgid "Done"
+msgstr "Fuldført"
 
 #: source/creator/windows/texviewer.d:47
 msgid "Texture Viewer"
@@ -1602,10 +1607,6 @@ msgstr "Bind Tracking til Parameter"
 #: source/creator/windows/welcome.d:113
 msgid "Quick Setup"
 msgstr "Hurtigopsætning"
-
-#: source/creator/windows/welcome.d:157
-msgid "Inochi Creator needs to be restarted for some changes to take effect."
-msgstr "Inochi Creator bør genstartes før at alle ændringer kan træde i kræft."
 
 #: source/creator/windows/welcome.d:170
 msgid "Next"

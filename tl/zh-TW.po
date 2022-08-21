@@ -49,7 +49,7 @@ msgstr "%s 變更為 %s"
 #: source/creator/actions/binding.d:162 source/creator/actions/binding.d:259
 #, c-format
 msgid "%s->%s chang cancelled"
-msgstr "%s 變更為 %s"
+msgstr "取消 %s 變更為 %s"
 
 #: source/creator/actions/drawable.d:82
 #, c-format
@@ -238,6 +238,7 @@ msgid "Texture bleeding completed."
 msgstr "材質滲透完成。"
 
 #: source/creator/panels/actionhistory.d:26
+#: source/creator/windows/settings.d:135
 msgid "Undo History"
 msgstr "復原歷史"
 
@@ -375,7 +376,7 @@ msgstr "使用點篩選"
 
 #: source/creator/panels/inspector.d:281
 msgid ""
-"Makes Inochi2D model use point filtering, removing blur for low-resoltion "
+"Makes Inochi2D model use point filtering, removing blur for low-resolution "
 "models."
 msgstr "Inochi2D 會使用點過濾以避免模糊低畫質模型。"
 
@@ -1000,7 +1001,7 @@ msgstr "追蹤"
 msgid "%s is not supported"
 msgstr "不支援 %s"
 
-#: source/creator/panels/viewport.d:236
+#: source/creator/panels/viewport.d:236 source/creator/windows/settings.d:81
 msgid "Viewport"
 msgstr "視圖"
 
@@ -1132,10 +1133,6 @@ msgstr "最近開啟"
 #. Settings are autosaved, but in case the user
 #. feels more safe with a save button then we have
 #. it here.
-#. Save button
-#. Settings are autosaved, but in case the user
-#. feels more safe with a save button then we have
-#. it here.
 #: source/creator/widgets/mainmenu.d:122 source/creator/windows/paramaxes.d:140
 #: source/creator/windows/paramprop.d:103 source/creator/windows/settings.d:127
 #: source/creator/windows/trkbind.d:129
@@ -1221,6 +1218,7 @@ msgstr "取消復原"
 #: source/creator/widgets/mainmenu.d:219
 msgid "Cut"
 msgstr "剪下"
+
 
 #: source/creator/widgets/mainmenu.d:224 source/creator/windows/settings.d:144
 msgid "Settings"
@@ -1492,6 +1490,7 @@ msgstr "移動所有節點以對齊在畫面中的位置。"
 msgid "PSD Merging"
 msgstr "PSD 合併"
 
+
 #: source/creator/windows/settings.d:46
 msgid "General"
 msgstr "一般"
@@ -1513,6 +1512,7 @@ msgstr "暗色主題"
 #: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:140
 msgid "Light"
 msgstr "亮色主題"
+
 
 #: source/creator/windows/settings.d:58 source/creator/windows/welcome.d:124
 msgid "Language"
@@ -1599,6 +1599,7 @@ msgstr "綁定跟蹤到參數"
 msgid "Quick Setup"
 msgstr "快速設定"
 
+
 #: source/creator/windows/welcome.d:157
 msgid "Inochi Creator needs to be restarted for some changes to take effect."
 msgstr "重啟 Inochi Creator 以讓變更生效。"
@@ -1617,7 +1618,8 @@ msgstr "新增..."
 
 #: source/creator/windows/welcome.d:199
 msgid "Import PSD..."
-msgstr "匯入 psd…"
+msgstr "匯入 PSD…"
+
 
 #: source/creator/windows/welcome.d:208
 msgid "Recent Projects"
@@ -1646,6 +1648,18 @@ msgstr "Github 贊助"
 #: source/creator/windows/welcome.d:275
 msgid "Inochi Creator Start"
 msgstr "Inochi Creator 啟動"
+
+#~ msgid "General"
+#~ msgstr "一般"
+
+#~ msgid "Use software rendering"
+#~ msgstr "使用軟體渲染"
+
+#~ msgid "Undo/Redo History"
+#~ msgstr "復原 歷史"
+
+#~ msgid "Other"
+#~ msgstr "其他"
 
 #~ msgid "Tint"
 #~ msgstr "著色"
