@@ -197,7 +197,11 @@ private:
                 }
 
                 if (retranslateMapped) {
-                    binding.node.localTransform.translation = localPosition;
+                    if (binding.node.lockToRoot) {
+                        binding.node.localTransform.translation = worldTranslation;
+                    } else {
+                        binding.node.localTransform.translation = localPosition;
+                    }
                 }
 
 
