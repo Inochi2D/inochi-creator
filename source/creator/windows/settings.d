@@ -156,7 +156,7 @@ protected:
                             incSettingsSet("useOpenDyslexic", disableCompositor);
                             changesRequiresRestart = true;
                         }
-                        incTooltip("Use the OpenDyslexic for Latin text characters.");
+                        incTooltip("Use the OpenDyslexic font for Latin text characters.");
                         endSection();
                         break;
                     default:
