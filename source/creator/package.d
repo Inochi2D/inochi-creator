@@ -165,6 +165,12 @@ void incNewProject() {
     incViewportPresentMode(editMode_);
 }
 
+void incResetRootNode(ref Puppet puppet) {
+    puppet.root.localTransform.translation = vec3(0, 0, 0);
+    puppet.root.localTransform.rotation = vec3(0, 0, 0);
+    puppet.root.localTransform.scale = vec2(1, 1);
+}
+
 void incOpenProject(string path) {
     incClearImguiData();
     
@@ -184,6 +190,8 @@ void incOpenProject(string path) {
     // Set the path
     currProjectPath = path;
     incAddPrevProject(path);
+
+    incResetRootNode(puppet);
 
     incActiveProject().puppet = puppet;
     incFocusCamera(incActivePuppet().root);
