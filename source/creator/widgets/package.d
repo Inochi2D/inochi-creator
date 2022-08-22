@@ -21,6 +21,7 @@ public import creator.widgets.lockbutton;
 public import creator.widgets.colorbutton;
 public import creator.widgets.dialog;
 public import creator.widgets.label;
+public import creator.widgets.texture;
 
 bool incBegin(const(char)* name, bool* pOpen, ImGuiWindowFlags flags) {
     version (NoUIScaling) {
