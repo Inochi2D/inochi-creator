@@ -46,8 +46,8 @@ void incTextureSlot(string text, Texture texture, ImVec2 size = ImVec2(92, 92), 
 
             if (texture) {
             
-                float paddedSizeX = size.x-paddingX;
-                float paddedSizeY = size.y-paddingY;
+                float paddedSizeX = size.x-(paddingX*2);
+                float paddedSizeY = size.y-(paddingY*2);
 
                 // Calculate render size
                 float widthScale = paddedSizeX / cast(float)texture.width;
