@@ -51,7 +51,7 @@ protected:
             ));
 
             igImage(
-                cast(void*)incGetAda(),
+                cast(void*)incGetAda().getTextureId(),
                 ImVec2(ADA_SIZE, ADA_SIZE),
                 ImVec2(0, 0),
                 ImVec2(1, 1), 
@@ -65,7 +65,7 @@ protected:
 
             version (InBranding) {
                 igImage(
-                    cast(void*)incGetLogo(), 
+                    cast(void*)incGetLogo().getTextureId(), 
                     ImVec2(64, 64), 
                     ImVec2(0, 0), 
                     ImVec2(1, 1), 
