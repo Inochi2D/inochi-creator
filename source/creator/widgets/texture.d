@@ -18,8 +18,8 @@ void incTextureSlot(string text, Texture texture, ImVec2 size = ImVec2(92, 92), 
             float paddingX = igGetStyle().FramePadding.x;
             float paddingY = igGetStyle().FramePadding.y;
 
-            float qsizex = quantize(size.x, gridSize);
-            float qsizey = quantize(size.y, gridSize);
+            float qsizex = quantize(size.x, gridSize/2);
+            float qsizey = quantize(size.y, gridSize/2);
 
             ImVec2 screenStart;
             auto drawList = igGetWindowDrawList();
