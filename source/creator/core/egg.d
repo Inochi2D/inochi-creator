@@ -20,30 +20,41 @@ version(InBranding) {
         vec2 adaOffset;
         vec2 adaVelocity;
         enum ADA_SIZE = 396;
+        enum CLICK_THRESH = 25;
+
+        enum JUMP_SPEED_X = 500;
+        enum JUMP_SPEED_Y = 700;
+        bool lhs;
         Camera cam;
     }
 
     void incAdaTickOne() {
         logoClickCounter++;
-        if (logoClickCounter == 25) {
-            
+        if (logoClickCounter == CLICK_THRESH) {
+            lhs = !lhs;
+
+            float uiScale = incGetUIScale();
             int w, h;
             SDL_GetWindowSize(incGetWindowPtr(), &w, &h);
 
-            adaOffset = vec2(0, 0);
+            float adaHalf = (ADA_SIZE*uiScale)/2;
+            float hws = (w/2)/uiScale;
 
-            float spawnX = uniform(-(w/2), (w/2));
-            adaVelocity = vec2(clamp(spawnX, -500, 500), -600f);
+            // Alternate jumping from left and right
+            float spawnX = lhs ? uniform(-(hws+adaHalf), -adaHalf) : uniform(adaHalf, hws-adaHalf);
+            float dirX = (lhs ? uniform(-JUMP_SPEED_X, -100) : uniform(100, JUMP_SPEED_X))*uiScale;
+            adaVelocity = vec2(dirX, -JUMP_SPEED_Y*uiScale);
+            adaOffset = vec2(spawnX, 0);
             
             cam = new Camera();
-            cam.position = vec2(spawnX, 0);
+            cam.position = vec2(0, 0);
             cam.scale = vec2(1, 1);
         }
     }
 
     // UwU
     void incAdaUpdate() {
-        if (logoClickCounter >= 25) {
+        if (logoClickCounter >= CLICK_THRESH) {
             adaCurrTime += deltaTime();
             float uiScale = incGetUIScale();
 
