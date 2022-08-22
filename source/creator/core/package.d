@@ -414,8 +414,8 @@ void incSetDarkMode(bool darkMode) {
         igStyleColorsLight(null);
         style.Colors[ImGuiCol.Border] = ImVec4(0.8, 0.8, 0.8, 0.5);
         style.Colors[ImGuiCol.BorderShadow] = ImVec4(0, 0, 0, 0.05);
-        style.Colors[ImGuiCol.TitleBg] = ImVec4(0.94, 0.94, 0.94, 1);
-        style.Colors[ImGuiCol.TitleBgActive] = ImVec4(0.96, 0.96, 0.96, 1);
+        style.Colors[ImGuiCol.TitleBg] = ImVec4(0.902, 0.902, 0.902, 1);
+        style.Colors[ImGuiCol.TitleBgActive] = ImVec4(0.98, 0.98, 0.98, 1);
         
         style.Colors[ImGuiCol.Separator] = ImVec4(0.86, 0.86, 0.86, 1);
         
