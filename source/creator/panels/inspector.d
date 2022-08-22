@@ -643,7 +643,19 @@ void incInspectorModelPart(Part node) {
     import std.conv : text;
     import std.string : toStringz;
 
-    incText("(TODO: Texture Select)");
+    Texture albedo = node.textures[0];
+    Texture emissive = node.textures.length > 2 ? node.textures[1] : null;
+    Texture bumpmap = node.textures.length > 3 ? node.textures[2] : null;
+
+    ImVec2 avail = incAvailableSpace();
+    float availForTextureSlots = round((avail.x/3.0)-2.0);
+    ImVec2 elemSize = ImVec2(availForTextureSlots, availForTextureSlots);
+
+    incTextureSlot(_("Albedo"), albedo, elemSize);
+    igSameLine(0, 4);
+    incTextureSlot(_("Emissive"), emissive, elemSize);
+    igSameLine(0, 4);
+    incTextureSlot(_("Bump"), bumpmap, elemSize);
     
     igSpacing();
     igSpacing();
