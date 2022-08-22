@@ -100,7 +100,7 @@ private:
             float heightScale = PreviewSize / cast(float)layer.height;
             float scale = min(widthScale, heightScale);
             
-            vec4 bounds = vec4(0, 0, layer.width, layer.height);
+            vec4 bounds = vec4(0, 0, layer.width*scale, layer.height*scale);
             if (widthScale > heightScale) bounds.x = (PreviewSize-bounds.z)/2;
             else if (widthScale < heightScale) bounds.y = (PreviewSize-bounds.w)/2;
 
@@ -204,7 +204,7 @@ private:
                     }
                 }
 
-
+                (cast(ExPart)binding.node).textures[0].dispose();
                 (cast(ExPart)binding.node).textures[0] = binding.layerTexture;
                 (cast(ExPart)binding.node).layerPath = binding.layerPath;
             } else {
