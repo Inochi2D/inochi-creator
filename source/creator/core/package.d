@@ -46,6 +46,7 @@ private {
         Texture incLogo;
         Texture incAda;
     }
+    Texture incGrid;
 
     ImFont* mainFont;
 
@@ -288,9 +289,10 @@ void incOpenWindow() {
 
     incCreateContext();
 
+    ShallowTexture tex;
     version (InBranding) {
         // Load image resources
-        auto tex = ShallowTexture(cast(ubyte[])import("logo.png"));
+        tex = ShallowTexture(cast(ubyte[])import("logo.png"));
         inTexPremultiply(tex.data);
         incLogo = new Texture(tex);
 
@@ -298,6 +300,13 @@ void incOpenWindow() {
         inTexPremultiply(tex.data);
         incAda = new Texture(tex);
     }
+
+    // Grid texture
+    tex = ShallowTexture(cast(ubyte[])import("ui/grid.png"));
+    inTexPremultiply(tex.data);
+    incGrid = new Texture(tex);
+    incGrid.setFiltering(Filtering.Point);
+    incGrid.setWrapping(Wrapping.Repeat);
 
     // Load Settings
     incShowStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
@@ -680,6 +689,13 @@ version (InBranding) {
     Texture incGetAda() {
         return incAda;
     }
+}
+
+/**
+    Gets the grid texture
+*/
+Texture incGetGrid() {
+    return incGrid;
 }
 
 void incHandleShortcuts() {

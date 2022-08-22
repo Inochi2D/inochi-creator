@@ -655,7 +655,7 @@ void incInspectorModelPart(Part node) {
     igSameLine(0, 4);
     incTextureSlot(_("Emissive"), emissive, elemSize);
     igSameLine(0, 4);
-    incTextureSlot(_("Bump"), bumpmap, elemSize);
+    incTextureSlot(_("Bumpmap"), bumpmap, elemSize);
     
     igSpacing();
     igSpacing();
