@@ -275,8 +275,8 @@ protected:
     override
     void onUpdate() {
 
-        if (incEditMode == EditMode.ModelEdit) { 
-            if (!incArmedParameter) {
+        if (incEditMode == EditMode.ModelEdit) {
+            if (!incArmedParameter && (igIsWindowFocused(ImGuiFocusedFlags.ChildWindows) || igIsWindowHovered(ImGuiHoveredFlags.ChildWindows))) {
                 if (incShortcut("Ctrl+A")) {
                     incSelectAll();
                 }
