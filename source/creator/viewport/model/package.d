@@ -19,27 +19,21 @@ void incViewportModelOverlay() {
         igSameLine(0, 0);
         incViewportModelDeformOverlay();
     } else {
-        igPushFont(incIconFont());
-            if (igButton("", ImVec2(0, 0))) {
-                incShowVertices = !incShowVertices;
-            }
-        igPopFont();
+        if (igButton("", ImVec2(0, 0))) {
+            incShowVertices = !incShowVertices;
+        }
         incTooltip(_("Show/hide Vertices"));
             
-        igPushFont(incIconFont());
-            igSameLine(0, 0);
-            if (igButton("", ImVec2(0, 0))) {
-                incShowBounds = !incShowBounds;
-            }
-        igPopFont();
+        igSameLine(0, 0);
+        if (igButton("", ImVec2(0, 0))) {
+            incShowBounds = !incShowBounds;
+        }
         incTooltip(_("Show/hide Bounds"));
 
-        igPushFont(incIconFont());
-            igSameLine(0, 0);
-            if (igButton("", ImVec2(0, 0))) {
-                incShowOrientation = !incShowOrientation;
-            }
-        igPopFont();
+        igSameLine(0, 0);
+        if (igButton("", ImVec2(0, 0))) {
+            incShowOrientation = !incShowOrientation;
+        }
         incTooltip(_("Show/hide Orientation Gizmo"));
     }
 }

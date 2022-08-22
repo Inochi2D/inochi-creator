@@ -48,8 +48,6 @@ private {
     }
 
     ImFont* mainFont;
-    ImFont* iconFont;
-    ImFont* biggerFont;
 
     bool isDarkMode = true;
     string[] files;
@@ -667,21 +665,6 @@ void incExit() {
 ImFont* incMainFont() {
     return mainFont;
 }
-
-/**
-    Bigger sized font
-*/
-ImFont* incBiggerFont() {
-    return biggerFont;
-}
-
-/**
-    Bigger sized font
-*/
-ImFont* incIconFont() {
-    return iconFont;
-}
-
 
 version (InBranding) {
     /**

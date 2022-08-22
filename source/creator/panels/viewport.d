@@ -199,12 +199,10 @@ protected:
                     incViewportTargetZoom = incViewportZoom;
                 }
                 if (incViewportTargetZoom != 1) {
-                    igPushFont(incIconFont());
-                        igSameLine(0, 8);
-                        if (igButton("", ImVec2(0, 0))) {
-                            incViewportTargetZoom = 1;
-                        }
-                    igPopFont();
+                    igSameLine(0, 8);
+                    if (igButton("", ImVec2(0, 0))) {
+                        incViewportTargetZoom = 1;
+                    }
                 }
                 igSameLine(0, 8);
                 igSeparatorEx(ImGuiSeparatorFlags.Vertical);
@@ -213,11 +211,9 @@ protected:
                 incText("x = %.2f y = %.2f".format(incViewportTargetPosition.x, incViewportTargetPosition.y));
                 if (incViewportTargetPosition != vec2(0)) {
                     igSameLine(0, 8);
-                    igPushFont(incIconFont());
-                        if (igButton("##2", ImVec2(0, 0))) {
-                            incViewportTargetPosition = vec2(0, 0);
-                        }
-                    igPopFont();
+                    if (igButton("##2", ImVec2(0, 0))) {
+                        incViewportTargetPosition = vec2(0, 0);
+                    }
                 }
 
 

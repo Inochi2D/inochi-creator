@@ -43,32 +43,24 @@ protected:
             
             if (igBeginMenu(__("Add"), true)) {
 
-                igPushFont(incIconFont());
-                    incText(incTypeIdToIcon("Node"));
-                igPopFont();
+                incText(incTypeIdToIcon("Node"));
                 igSameLine(0, 2);
                 if (igMenuItem(__("Node"), "", false, true)) incAddChildWithHistory(new Node(n), n);
                 
-                igPushFont(incIconFont());
-                    incText(incTypeIdToIcon("Mask"));
-                igPopFont();
+                incText(incTypeIdToIcon("Mask"));
                 igSameLine(0, 2);
                 if (igMenuItem(__("Mask"), "", false, true)) {
                     MeshData empty;
                     incAddChildWithHistory(new Mask(empty, n), n);
                 }
                 
-                igPushFont(incIconFont());
-                    incText(incTypeIdToIcon("Composite"));
-                igPopFont();
+                incText(incTypeIdToIcon("Composite"));
                 igSameLine(0, 2);
                 if (igMenuItem(__("Composite"), "", false, true)) {
                     incAddChildWithHistory(new Composite(n), n);
                 }
                 
-                igPushFont(incIconFont());
-                    incText(incTypeIdToIcon("SimplePhysics"));
-                igPopFont();
+                incText(incTypeIdToIcon("SimplePhysics"));
                 igSameLine(0, 2);
                 if (igMenuItem(__("Simple Physics"), "", false, true)) incAddChildWithHistory(new SimplePhysics(n), n);
 
@@ -315,38 +307,36 @@ protected:
         igSeparator();
         igSpacing();
         
-        igPushFont(incIconFont());
-            if (incEditMode() == EditMode.ModelEdit) {
-                auto selected = incSelectedNodes();
-                if (igButton("", ImVec2(24, 24))) {
-                    foreach(payloadNode; selected) incDeleteChildWithHistory(payloadNode);
-                }
-
-                if(igBeginDragDropTarget()) {
-                    const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
-                    if (payload !is null) {
-                        Node payloadNode = *cast(Node*)payload.Data;
-
-                        if (selected.length > 1) {
-                            foreach(pn; selected) incDeleteChildWithHistory(pn);
-                            incSelectNode(null);
-                        } else {
-
-                            // Make sure we don't keep selecting a node we've removed
-                            if (incNodeInSelection(payloadNode)) {
-                                incSelectNode(null);
-                            }
-
-                            incDeleteChildWithHistory(payloadNode);
-                        }
-                        
-                        igPopFont();
-                        return;
-                    }
-                    igEndDragDropTarget();
-                }
+        if (incEditMode() == EditMode.ModelEdit) {
+            auto selected = incSelectedNodes();
+            if (igButton("", ImVec2(24, 24))) {
+                foreach(payloadNode; selected) incDeleteChildWithHistory(payloadNode);
             }
-        igPopFont();
+
+            if(igBeginDragDropTarget()) {
+                const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+                if (payload !is null) {
+                    Node payloadNode = *cast(Node*)payload.Data;
+
+                    if (selected.length > 1) {
+                        foreach(pn; selected) incDeleteChildWithHistory(pn);
+                        incSelectNode(null);
+                    } else {
+
+                        // Make sure we don't keep selecting a node we've removed
+                        if (incNodeInSelection(payloadNode)) {
+                            incSelectNode(null);
+                        }
+
+                        incDeleteChildWithHistory(payloadNode);
+                    }
+                    
+                    igPopFont();
+                    return;
+                }
+                igEndDragDropTarget();
+            }
+        }
 
     }
 
