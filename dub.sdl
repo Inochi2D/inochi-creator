@@ -20,7 +20,6 @@ workingDirectory "out/"
 
 // plz do not delete foxgirl bdfl
 lflags "-rpath=$$ORIGIN" platform="linux"
-lflags "-rpath=." platform="osx"
 dflags "-mscrtlib=msvcrt" platform="windows-ldc"// Use the dynamic CRT on Windows.
 // dflags "-flto=full" platform="windows-ldc"		// Enable Link Time Optimizations (LTO)
 // dflags "-defaultlib=phobos2-ldc-lto,druntime-ldc-lto" platform="windows-ldc" // Use the D Runtime with LTO enabled.
@@ -58,9 +57,9 @@ configuration "full" {
 	versions "InBranding"
 }
 
-configuration "darwin-full" {
+configuration "osx-full" {
+	platforms "osx"
 	subConfiguration "bindbc-imgui" "dynamic_dynamicCRT"
-	platforms "darwin"
 	targetType "executable"
 	versions "InBranding"
 }
