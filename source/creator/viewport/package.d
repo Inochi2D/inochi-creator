@@ -7,6 +7,7 @@
 module creator.viewport;
 import inochi2d;
 import creator;
+import creator.core;
 import creator.core.input;
 import bindbc.imgui;
 import creator.viewport.model;
@@ -37,6 +38,10 @@ void incViewportDraw() {
             default: assert(0);
         }
     inEndScene();
+
+    if (incShouldPostProcess) {
+        inPostProcessScene();
+    }
 }
 
 /**

@@ -54,13 +54,16 @@ private {
     string[] files;
     bool isWayland;
     bool isTilingWM;
+
 }
 
 bool incShowStatsForNerds;
+bool incShouldPostProcess = false;
 
 bool incIsWayland() {
     return isWayland;
 }
+
 bool incIsTilingWM() {
     return isTilingWM;
 }
@@ -188,7 +191,7 @@ void incOpenWindow() {
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 
-    SDL_WindowFlags flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+    SDL_WindowFlags flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
 
     if (incSettingsGet!bool("WinMax", false)) {
         flags |= SDL_WINDOW_MAXIMIZED;

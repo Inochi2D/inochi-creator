@@ -44,6 +44,11 @@ void incToolbar() {
                     }
                     incTooltip(_("Reset physics"));
 
+                    if (incButtonColored("", ImVec2(32, 32), incShouldPostProcess ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
+                        incShouldPostProcess = !incShouldPostProcess;
+                    }
+                    incTooltip(_("Enable post processing"));
+
                     // Draw the toolbar relevant for that viewport
                     incViewportToolbar();
                 igPopStyleVar(2);

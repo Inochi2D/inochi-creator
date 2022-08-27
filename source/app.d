@@ -66,6 +66,8 @@ int main(string[] args)
         // Initialize node overrides
         incInitExtNodes();
 
+        inPostProcessingAddBasicLighting();
+
         // Open or create project
         if (args.length > 1) incOpenProject(args[1]);
         else incNewProject();
