@@ -15,7 +15,7 @@ void incTextureSlot(string text, Texture texture, ImVec2 size = ImVec2(92, 92), 
 
         ImVec2 startPos;
         igGetCursorPos(&startPos);
-        
+
         float paddingX = igGetStyle().FramePadding.x;
         float paddingY = igGetStyle().FramePadding.y;
 
@@ -72,10 +72,7 @@ void incTextureSlot(string text, Texture texture, ImVec2 size = ImVec2(92, 92), 
                         gridMin,
                         gridMax,
                         ImVec2(0, 0),
-                        ImVec2(
-                            clamp(quantize((qsizex/gridSize), 0.5), 1, float.max),
-                            clamp(quantize((qsizey/gridSize), 0.5), 1, float.max),
-                        ),
+                        ImVec2(1, 1),
                         0xFFFFFFFF,
                         igGetStyle().FrameRounding
                     );
