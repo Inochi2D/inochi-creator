@@ -52,6 +52,14 @@ void incTextureSlot(string text, Texture texture, ImVec2 size = ImVec2(92, 92), 
                         0xFFFFFFFF,
                         igGetStyle().FrameRounding
                     );
+                } else {
+                    ImDrawList_AddRectFilled(
+                        drawList,
+                        gridMin,
+                        gridMax,
+                        0xFF000000,
+                        igGetStyle().FrameRounding
+                    );
                 }
 
                 // Calculate padded size
