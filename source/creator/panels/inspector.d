@@ -657,6 +657,24 @@ void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 el
                 if (usage != TextureUsage.Albedo) {
                     if (igMenuItem(__("Remove"))) {
                         p.textures[usage] = null;
+                        
+                        incActivePuppet().rescanNodes();
+                        incActivePuppet().populateTextureSlots();
+                    }
+                } else {
+                    // Option which causes the Albedo color to be the emission color.
+                    // The item will glow the same color as it, itself is.
+                    if (igMenuItem(__("Make Emissive"))) {
+                        p.textures[TextureUsage.Emissive] = new Texture(
+                            ShallowTexture(
+                                p.textures[usage].getTextureData(true),
+                                p.textures[usage].width,
+                                p.textures[usage].height,
+                                4,  // Input is RGBA
+                                3   // Output should be RGB only
+                            )
+                        );
+
                         incActivePuppet().rescanNodes();
                         incActivePuppet().populateTextureSlots();
                     }
@@ -703,7 +721,7 @@ void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 el
                                 }
                             }
 
-                            if (tex.channels == 4) {
+                            if (tex.convChannels == 4) {
                                 inTexPremultiply(tex.data);
                             }
                             p.textures[usage] = new Texture(tex);
@@ -712,6 +730,7 @@ void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 el
                                 incDialog(__("Error"), _("%s is not supported").format(fname));
                             } else incDialog(__("Error"), ex.msg);
                         }
+
 
                         // We've added new stuff, rescan nodes
                         incActivePuppet().rescanNodes();
