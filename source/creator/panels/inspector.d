@@ -628,6 +628,112 @@ void incInspectorModelDrawable(Drawable node) {
     igPopStyleVar();
 }
 
+void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 elemSize) {
+    igPushID(p.uuid);
+    igPushID(cast(uint)usage);
+        import std.path : baseName, extension, setExtension;
+        import std.uni : toLower;
+        incTextureSlot(title, p.textures[usage], elemSize);
+
+        // Only have dropdown if there's actually textures in the slot
+        if (p.textures[usage]) {
+            igOpenPopupOnItemClick("TEX_OPTIONS");
+            if (igBeginPopup("TEX_OPTIONS")) {
+
+                // Allow saving texture to file
+                if (igMenuItem(__("Save to File"))) {
+                    TFD_Filter[] filters = [
+                        {["*.png"], "PNG File"}
+                    ];
+                    string file = incShowSaveDialog(filters, "texture.png");
+                    if (file) {
+                        if (file.extension.empty) {
+                            file = file.setExtension("png");
+                        }
+                        p.textures[usage].save(file);
+                    }
+                }
+
+                if (usage != TextureUsage.Albedo) {
+                    if (igMenuItem(__("Remove"))) {
+                        p.textures[usage] = null;
+                        incActivePuppet().rescanNodes();
+                        incActivePuppet().populateTextureSlots();
+                    }
+                }
+
+                igEndPopup();
+            }
+        }
+
+        // FILE DRAG & DROP
+        if (igBeginDragDropTarget()) {
+            const(ImGuiPayload)* payload = igAcceptDragDropPayload("__PARTS_DROP");
+            if (payload !is null) {
+                string[] files = *cast(string[]*)payload.Data;
+                if (files.length > 0) {
+                    string fname = files[0].baseName;
+
+                    switch(fname.extension.toLower) {
+                    case ".png", ".tga", ".jpeg", ".jpg":
+
+                        try {
+                            ShallowTexture tex;
+                            switch(usage) {
+                                case TextureUsage.Albedo:
+                                    tex = ShallowTexture(files[0], 4);
+                                    break;
+                                case TextureUsage.Emissive:
+                                    tex = ShallowTexture(files[0], 3);
+                                    break;
+                                case TextureUsage.Bumpmap:
+                                    tex = ShallowTexture(files[0], 3);
+                                    break;
+                                default:
+                                    tex = ShallowTexture(files[0]);
+                                    break;
+                            }
+
+                            if (usage != TextureUsage.Albedo) {
+
+                                // Error out if post processing textures don't match
+                                if (tex.width != p.textures[0].width || tex.height != p.textures[0].height) {
+                                    incDialog(__("Error"), _("Size of given texture does not match the Albedo texture."));
+                                    break;
+                                }
+                            }
+
+                            if (tex.channels == 4) {
+                                inTexPremultiply(tex.data);
+                            }
+                            p.textures[usage] = new Texture(tex);
+                        } catch(Exception ex) {
+                            if (ex.msg[0..11] == "unsupported") {
+                                incDialog(__("Error"), _("%s is not supported").format(fname));
+                            } else incDialog(__("Error"), ex.msg);
+                        }
+
+                        // We've added new stuff, rescan nodes
+                        incActivePuppet().rescanNodes();
+                        incActivePuppet().populateTextureSlots();
+                        break;
+                        
+                    default:
+                        incDialog(__("Error"), _("%s is not supported").format(fname)); 
+                        break;
+                    }
+                }
+
+                // Finish the file drag
+                incFinishFileDrag();
+            }
+
+            igEndDragDropTarget();
+        }
+    igPopID();
+    igPopID();
+}
+
 void incInspectorModelPart(Part node) {
     if (!igCollapsingHeader(__("Part"), ImGuiTreeNodeFlags.DefaultOpen)) 
         return;
@@ -643,19 +749,15 @@ void incInspectorModelPart(Part node) {
     import std.conv : text;
     import std.string : toStringz;
 
-    Texture albedo = node.textures[0];
-    Texture emissive = node.textures.length > 2 ? node.textures[1] : null;
-    Texture bumpmap = node.textures.length > 3 ? node.textures[2] : null;
-
     ImVec2 avail = incAvailableSpace();
     float availForTextureSlots = round((avail.x/3.0)-2.0);
     ImVec2 elemSize = ImVec2(availForTextureSlots, availForTextureSlots);
 
-    incTextureSlot(_("Albedo"), albedo, elemSize);
+    incInspectorTextureSlot(node, TextureUsage.Albedo, _("Albedo"), elemSize);
     igSameLine(0, 4);
-    incTextureSlot(_("Emissive"), emissive, elemSize);
+    incInspectorTextureSlot(node, TextureUsage.Emissive, _("Emissive"), elemSize);
     igSameLine(0, 4);
-    incTextureSlot(_("Bumpmap"), bumpmap, elemSize);
+    incInspectorTextureSlot(node, TextureUsage.Bumpmap, _("Bumpmap"), elemSize);
     
     igSpacing();
     igSpacing();

@@ -33,3 +33,12 @@ string incShowOpenDialog() {
     }
     return null;
 }
+
+string incShowSaveDialog(TFD_Filter[] filters, string fname) {
+    c_str filename = tinyfd_saveFileDialog(__("Save..."), fname.toStringz, filters);
+    if (filename !is null) {
+        string file = cast(string)filename.fromStringz;
+        return file;
+    }
+    return null;
+}
