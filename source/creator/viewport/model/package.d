@@ -69,7 +69,7 @@ void incViewportModelMenu() {
 
                     // ICON
                     igSetCursorPos(ImVec2(cursorPos.x+2, cursorPos.y+2));
-                    incTextureSlotUntitled("ICON", part.textures[0], ImVec2(ENTRY_SIZE-4, ENTRY_SIZE-4), 16, ImGuiWindowFlags.NoInputs);
+                    incTextureSlotUntitled("ICON", part.textures[0], ImVec2(ENTRY_SIZE-4, ENTRY_SIZE-4), 24, ImGuiWindowFlags.NoInputs);
                     
                     // Name
                     igSetCursorPos(ImVec2(cursorPos.x + ENTRY_SIZE + 4, cursorPos.y + (ENTRY_SIZE/2) - (nameSize.y/2)));
