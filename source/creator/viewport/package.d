@@ -168,6 +168,30 @@ void incViewportWithdrawMode(EditMode mode) {
     }
 }
 
+void incViewportMenu() {
+    switch(incEditMode) {
+        case EditMode.ModelEdit:
+            incViewportModelMenu();
+            break;
+        default: return;
+    }
+}
+
+void incViewportMenuOpening() {
+    switch(incEditMode) {
+        case EditMode.ModelEdit:
+            incViewportModelMenuOpening();
+            break;
+        default: return;
+    }
+}
+
+bool incViewportHasMenu() {
+    switch(incEditMode) {
+        case EditMode.ModelEdit: return true;
+        default: return false;
+    }
+}
 
 /**
     Updates the viewport tool settings

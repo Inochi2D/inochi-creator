@@ -104,11 +104,38 @@ protected:
             
             igImage(
                 cast(void*)inGetRenderImage(), 
-                ImVec2(width/incGetUIScale(), height/incGetUIScale()), 
-                ImVec2(0, 1), 
-                ImVec2(1, 0), 
+                ImVec2(ceil(width/incGetUIScale()), ceil(height/incGetUIScale())), 
+                ImVec2((0.5/width), 1-(0.5/height)), 
+                ImVec2(1-(0.5/width), (0.5/height)), 
                 ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0)
             );
+
+            // Popup right click menu
+            if (incViewportHasMenu()) {
+                static ImVec2 downPos;
+                ImVec2 currPos;
+                if (igIsItemHovered()) {
+                    if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                        igGetMousePos(&downPos);
+                    }
+
+                    if (!igIsPopupOpen("ViewportMenu") && igIsMouseReleased(ImGuiMouseButton.Right)) {
+                        igGetMousePos(&currPos);
+                        float dist = sqrt(((downPos.x-currPos.x)^^2)+((downPos.y-currPos.y)^^2));
+                        
+                        if (dist < 16) {
+                            incViewportMenuOpening();
+                            igOpenPopup("ViewportMenu");
+                        }
+                    }
+                }
+
+                if (igBeginPopup("ViewportMenu")) {
+                    incViewportMenu();
+                    igEndPopup();
+                }
+            }
+
             igGetCursorScreenPos(&sPosA);
 
             // Render our fancy in-viewport buttons
