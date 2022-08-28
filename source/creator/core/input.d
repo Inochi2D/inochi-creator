@@ -25,6 +25,7 @@ void incInputSetViewportMouse(float x, float y) {
     vec2 camPos = inGetCamera().position;
     vec2 camScale = inGetCamera().scale;
     vec2 camCenter = inGetCamera().getCenterOffset();
+    float uiScale = incGetUIScale();
 
     mpos = (
         mat4.translation(
@@ -38,8 +39,8 @@ void incInputSetViewportMouse(float x, float y) {
             1
         ).inverse() *
         mat4.translation(
-            x, 
-            y, 
+            x*uiScale, 
+            y*uiScale, 
             0
         ) *
         vec4(0, 0, 0, 1)
