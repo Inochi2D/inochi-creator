@@ -70,10 +70,12 @@ int main(string[] args)
 
         // Open or create project
         if (args.length > 1) incOpenProject(args[1]);
-        else incNewProject();
+        else {
+            incNewProject();
 
-        // TODO: Replace with first-time welcome screen
-        incPushWindow(new WelcomeWindow());
+            // TODO: Replace with first-time welcome screen
+            incPushWindow(new WelcomeWindow());
+        }
 
         // Update loop
         while(!incIsCloseRequested()) {
