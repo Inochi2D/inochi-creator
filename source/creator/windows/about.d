@@ -21,7 +21,6 @@ import std.stdio;
 class AboutWindow : Window {
 private:
     version (InBranding) {
-        Texture ada;
         enum ADA_SIZE = 332;
         enum ADA_SIZE_PARTIAL = ADA_SIZE/6;
         vec2 ada_float;
@@ -130,10 +129,6 @@ protected:
     }
 
 public:
-    ~this() {
-        version(InBranding) destroy(ada);
-    }
-
     this() {
         super(_("About"));
         this.onlyOne = true;
@@ -146,11 +141,6 @@ public:
         };
 
         // Only load Ada in official builds
-        version(InBranding) {
-            ada_float = vec2(0);
-            auto adaData = ShallowTexture(cast(ubyte[])import("ui/ui-ada.png"));
-            inTexPremultiply(adaData.data);
-            ada = new Texture(adaData);
-        }
+        version(InBranding) ada_float = vec2(0);
     }
 }
