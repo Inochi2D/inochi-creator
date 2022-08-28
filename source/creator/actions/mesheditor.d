@@ -55,10 +55,12 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     void markAsDirty() { dirty = true; }
 
     void updateNewState() {
-        auto newDeform      = cast(DeformationParameterBinding)param.getBinding(this.target, "deform");
-        if (deform is null && newDeform !is null)
-            bindingAdded = true;
-        deform = newDeform;
+        if (param) {
+            auto newDeform      = cast(DeformationParameterBinding)param.getBinding(this.target, "deform");
+            if (deform is null && newDeform !is null)
+                bindingAdded = true;
+            deform = newDeform;
+        }
     }
 
     void clear() {
