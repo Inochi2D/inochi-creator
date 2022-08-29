@@ -26,6 +26,8 @@ private:
     ImVec2 lastSize;
     bool actingInViewport;
 
+    ImVec2 priorWindowPadding;
+
 protected:
     override
     void onBeginUpdate() {
@@ -33,6 +35,7 @@ protected:
         ImGuiWindowClass wmclass;
         wmclass.DockNodeFlagsOverrideSet = ImGuiDockNodeFlagsI.NoTabBar;
         igSetNextWindowClass(&wmclass);
+        priorWindowPadding = igGetStyle().WindowPadding;
         igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(1, 2));
         igSetNextWindowDockID(incGetViewportDockSpace(), ImGuiCond.Always);
         super.onBeginUpdate();
@@ -111,6 +114,7 @@ protected:
             );
 
             // Popup right click menu
+            igPushStyleVar(ImGuiStyleVar.WindowPadding, priorWindowPadding);
             if (incViewportHasMenu()) {
                 static ImVec2 downPos;
                 ImVec2 currPos;
@@ -135,6 +139,7 @@ protected:
                     igEndPopup();
                 }
             }
+            igPopStyleVar();
 
             igGetCursorScreenPos(&sPosA);
 

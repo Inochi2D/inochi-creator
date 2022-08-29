@@ -28,9 +28,14 @@ void incViewportModelMenuOpening() {
     foundParts.length = 0;
 
     vec2 mpos = incInputGetMousePosition()*-1;
-    foreach(ref Part part; incActivePuppet.getAllParts()) {
+    mloop: foreach(ref Part part; incActivePuppet.getAllParts()) {
         rect b = rect(part.bounds.x, part.bounds.y, part.bounds.z-part.bounds.x, part.bounds.w-part.bounds.y);
         if (b.intersects(mpos)) {
+
+            // Skip already selected parts
+            foreach(pn; incSelectedNodes()) {
+                if (pn.uuid == part.uuid) continue mloop;
+            }
             foundParts ~= part;
         }
     }
@@ -44,7 +49,13 @@ void incViewportModelMenuOpening() {
 }
 
 void incViewportModelMenu() {
-    if (igBeginChild("FOUND_PARTS", ImVec2(256, 256))) {
+    if (incSelectedNode() != incActivePuppet().root) {
+        if (igMenuItem(__("Focus Selected"))) {
+            incFocusCamera(incSelectedNode());
+        }
+    }
+    
+    if (igBeginChild("FOUND_PARTS", ImVec2(256, 256), false)) {
         if (foundParts.length > 0) {
             ImVec2 avail = incAvailableSpace();
             ImVec2 cursorPos;
@@ -55,9 +66,10 @@ void incViewportModelMenu() {
                     // Selectable
                     igGetCursorPos(&cursorPos);
                     if (igSelectable("###PartSelectable", false, ImGuiSelectableFlags.None, ImVec2(avail.x, ENTRY_SIZE))) {
-                        if (incSelectedNode() == part) {
-                            incFocusCamera(part);
-                        } else incSelectNode(part);
+                        
+                        // Add selection if ctrl is down, otherwise set selection
+                        if (igIsKeyDown(ImGuiKey.LeftCtrl) || igIsKeyDown(ImGuiKey.RightCtrl)) incAddSelectNode(part);
+                        else incSelectNode(part);
 
                         // Escape early, we're already done.
                         igPopID();
