@@ -9,6 +9,5 @@ import inochi2d;
 import std.format;
 import std.exception;
 
-public import creator.atlas.part;
 public import creator.atlas.atlas;
 import creator.atlas.packer;

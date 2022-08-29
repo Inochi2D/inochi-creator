@@ -14,6 +14,7 @@ import creator.windows;
 import creator.widgets;
 import creator.core.actionstack;
 import creator.core.i18n;
+import creator.atlas.atlas : incInitAtlassing;
 import creator.ext;
 import inochi2d;
 import creator;
@@ -65,7 +66,11 @@ int main(string[] args)
 
         // Initialize node overrides
         incInitExtNodes();
+        
+        // Initialize atlassing
+        incInitAtlassing();
 
+        // Initialize default post processing shader
         inPostProcessingAddBasicLighting();
 
         // Open or create project

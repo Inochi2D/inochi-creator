@@ -290,24 +290,10 @@ void incImportINP(string file) {
     Exports an Inochi2D Puppet
 */
 void incExportINP(string file) {
+    import creator.windows.inpexport;
     import std.path : setExtension;
-    try {
-
-        string oFile = file.setExtension(".inp");
-        // Remember to populate texture slots otherwise things will break real bad!
-        incActivePuppet().populateTextureSlots();
-
-        // TODO: Generate optimized puppet from this puppet.
-
-        // Write the puppet to file
-        inWriteINPPuppet(incActivePuppet(), oFile);
-        incSetStatus(_("%s was exported...".format(oFile)));
-    } catch(Exception ex) {
-        incDialog(__("Error"), ex.msg);
-        incSetStatus(_("Export failed..."));
-        return;
-    }
-
+    string oFile = file.setExtension(".inp");
+    incPushWindow(new ExportWindow(oFile));
 }
 
 void incRegenerateMipmaps() {

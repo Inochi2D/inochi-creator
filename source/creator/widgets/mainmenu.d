@@ -213,7 +213,7 @@ void incMainMenu() {
                     }
 
                     if (igBeginMenu(__("Export"), true)) {
-                        if(igMenuItem(__("Inochi Puppet"), "", false, true)) {
+                        if(igMenuItem(__("Inochi2D Puppet"), "", false, true)) {
                             const TFD_Filter[] filters = [
                                 { ["*.inp"], "Inochi2D Puppet (*.inp)" }
                             ];

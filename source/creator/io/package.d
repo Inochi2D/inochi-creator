@@ -6,6 +6,7 @@
 */
 module creator.io;
 public import creator.io.psd;
+public import creator.io.inpexport;
 
 import tinyfiledialogs;
 public import tinyfiledialogs : TFD_Filter;
