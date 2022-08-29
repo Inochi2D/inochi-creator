@@ -230,44 +230,19 @@ void incOpenWindow() {
     SDL_SetWindowMinimumSize(window, 960, 720);
     
     GLSupport support;
+    gl_context = SDL_GL_CreateContext(window);
+    SDL_GL_SetSwapInterval(1);
 
-    // Gallium Support
-    version(InGallium) {
+    // Load GL 3
+    support = loadOpenGL();
+    switch(support) {
+        case GLSupport.noLibrary:
+            throw new Exception("OpenGL library could not be loaded!");
 
-        bool incInitGalliumCtx() {
-            if (gl_context !is null) SDL_GL_DeleteContext(gl_context);
-            gl_context = SDL_GL_CreateContext(window);
-            SDL_GL_SetSwapInterval(1);
-            support = loadOpenGL();
-            return support != GLSupport.noLibrary && support != GLSupport.noContext;
-        }
-        
-        if (!incInitGalliumCtx() && !incSettingsGet!bool("SoftwareRenderer")) {
-            debug writeln("Attempting Gallium software rendering...");
+        case GLSupport.noContext:
+            throw new Exception("No valid OpenGL 3.2 context was found!");
 
-            environment["GALLIUM_DRIVER"] = "llvmpipe";
-            if (!incInitGalliumCtx()) {
-                incSettingsSet("SoftwareRenderer", true);
-                throw new Exception("Could not create Gallium Zink nor llvmpipe GL 3.2 instance!");
-            }
-        }
-
-    } else {
-
-        gl_context = SDL_GL_CreateContext(window);
-        SDL_GL_SetSwapInterval(1);
-
-        // Load GL 3
-        support = loadOpenGL();
-        switch(support) {
-            case GLSupport.noLibrary:
-                throw new Exception("OpenGL library could not be loaded!");
-
-            case GLSupport.noContext:
-                throw new Exception("No valid OpenGL 4.2 context was found!");
-
-            default: break;
-        }
+        default: break;
     }
 
 
