@@ -35,6 +35,38 @@ public import creator.core.font;
 public import creator.core.dpi;
 import i18n;
 
+version(Windows) {
+    import core.sys.windows.windows;
+
+    // Windows 8.1+ DPI awareness enum
+    enum ProcessDPIAwareness { 
+        PROCESS_DPI_UNAWARE = 0,
+        PROCESS_SYSTEM_DPI_AWARE = 1,
+        PROCESS_PER_MONITOR_DPI_AWARE = 2
+    }
+
+
+    void incSetWin32DPIAwareness() {
+        void* userDLL, shcoreDLL;
+        
+        bool function() dpiAwareFunc8;
+        HRESULT function(ProcessDPIAwareness) dpiAwareFunc81;
+
+        userDLL = SDL_LoadObject("USER32.DLL");
+        if (userDLL) dpiAwareFunc8 = cast(typeof(dpiAwareFunc8))SDL_LoadFunction(userDLL, "SetProcessDPIAware");
+        
+        shcoreDLL = SDL_LoadObject("SHCORE.DLL");
+        if (shcoreDLL) dpiAwareFunc81 = cast(typeof(dpiAwareFunc81))SDL_LoadFunction(shcoreDLL, "SetProcessDpiAwareness");
+
+        if (dpiAwareFunc81) dpiAwareFunc81(ProcessDPIAwareness.PROCESS_PER_MONITOR_DPI_AWARE);
+        else if (dpiAwareFunc8) dpiAwareFunc8();
+
+        // Unload the DLLs
+        if (userDLL) SDL_UnloadObject(userDLL);
+        if (shcoreDLL) SDL_UnloadObject(shcoreDLL);        
+    }
+}
+
 private {
     SDL_GLContext gl_context;
     SDL_Window* window;
@@ -168,8 +200,7 @@ void incOpenWindow() {
     enforce(sdlSupport != SDLSupport.noLibrary, "SDL2 library not found!");
     enforce(sdlSupport != SDLSupport.badLibrary, "Bad SDL2 library found!");
     
-    version(BindImGui_Dynamic)
-    {
+    version(BindImGui_Dynamic) {
         auto imSupport = loadImGui();
         enforce(imSupport != ImGuiSupport.noLibrary, "cimgui library not found!");
     
@@ -178,6 +209,10 @@ void incOpenWindow() {
     }
 
     SDL_Init(SDL_INIT_EVERYTHING);
+    
+    version(Windows) {
+        incSetWin32DPIAwareness();
+    }
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -199,20 +234,6 @@ void incOpenWindow() {
 
     // Don't make KDE freak out when Inochi Creator opens
     if (!incSettingsGet!bool("DisableCompositor")) SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
-
-    version(InGallium) {
-        import std.process : environment;
-        if (incSettingsGet!bool("SoftwareRenderer")) {
-
-            // For Mesa builds, use llvmpipe gallium driver
-            environment["GALLIUM_DRIVER"] = "llvmpipe";
-        } else {
-
-            // For Mesa builds, use zink gallium driver
-            environment["GALLIUM_DRIVER"] = "zink";
-        }
-    }
-
 
     version(InBranding) {
         debug string WIN_TITLE = "Inochi Creator "~_("(Debug Mode)");
