@@ -152,6 +152,7 @@ void incNewProject() {
     activeProject.puppet = new Puppet;
     incFocusCamera(activeProject.puppet.root);
     incSelectNode(null);
+    incDisarmParameter();
 
     inDbgDrawMeshVertexPoints = true;
     inDbgDrawMeshOutlines = true;
