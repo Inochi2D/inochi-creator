@@ -216,7 +216,7 @@ protected:
                         }
                     }
                     
-                    igTreePop();
+                    if (open) igTreePop();
                     igEndDragDropTarget();
                     return;
                 }
