@@ -79,6 +79,12 @@ void incViewportModelMenu() {
                     }
                     igSetItemAllowOverlap();
 
+                    if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
+                        igSetDragDropPayload("_PUPPETNTREE", cast(void*)&part, (&part).sizeof, ImGuiCond.Always);
+                        incTextureSlotUntitled("DRAG_ICON", part.textures[0], ImVec2(ENTRY_SIZE-4, ENTRY_SIZE-4), 24, ImGuiWindowFlags.NoInputs);
+                        igEndDragDropSource();
+                    }
+
                     // ICON
                     igSetCursorPos(ImVec2(cursorPos.x+2, cursorPos.y+2));
                     incTextureSlotUntitled("ICON", part.textures[0], ImVec2(ENTRY_SIZE-4, ENTRY_SIZE-4), 24, ImGuiWindowFlags.NoInputs);
