@@ -456,6 +456,10 @@ void incSetDarkMode(bool darkMode) {
 
     // Don't draw the silly roll menu
     style.WindowMenuButtonPosition = ImGuiDir.None;
+    
+    version(OSX) {
+        style.WindowTitleAlign = ImVec2(0.5, 0.5);
+    }
 
     // Set Dark mode setting
     incSettingsSet("DarkMode", darkMode);
