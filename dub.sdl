@@ -19,7 +19,7 @@ workingDirectory "out/"
 
 // plz do not delete foxgirl bdfl
 lflags "-rpath=$$ORIGIN" platform="linux"
-dflags "-mscrtlib=msvcrt" platform="windows-ldc"// Use the dynamic CRT on Windows.
+dflags "-mscrtlib=msvcrt" platform="windows-ldc" // Use the dynamic CRT on Windows.
 // dflags "-flto=full" platform="windows-ldc"		// Enable Link Time Optimizations (LTO)
 // dflags "-defaultlib=phobos2-ldc-lto,druntime-ldc-lto" platform="windows-ldc" // Use the D Runtime with LTO enabled.
 
@@ -57,11 +57,9 @@ configuration "osx-full" {
 	subConfiguration "bindbc-imgui" "dynamic_dynamicCRT"
 	targetType "executable"
 	targetPath "out/Inochi Creator.app/Contents/MacOS"
-
-	lflags "-rpath" "@executable_path/../Frameworks"
-	// Move things around to be correct
-	postGenerateCommands "$ROOT_PACKAGE_DIR/osxbundle.sh"
-		
+	dflags "-preserve-dwarf-line-section=false"
+	lflags 	"-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
+	postGenerateCommands `mv "out/Inochi Creator.app/Contents/MacOS/libSDL2-2.0.dylib" "out/Inochi Creator.app/Contents/MacOS/libSDL2.dylib"`
 	versions "InBranding"
 }
 

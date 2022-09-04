@@ -6,15 +6,15 @@ LASTPWD=$PWD
 cd out/Inochi\ Creator.app/Contents
 
 # Remove old files
-rm -r Frameworks SharedSupport Resources
-rm Info.plist
+if [ -d "Frameworks" ]; then
+    echo "Removing files from prior bundle..."
+    rm -r Frameworks SharedSupport Resources
+    rm Info.plist
+fi
 
 # Create new directories and move dylibs
 mkdir -p Frameworks SharedSupport Resources
 mv -n MacOS/*.dylib Frameworks
-
-# Fix SDL2
-mv -n Frameworks/libSDL2*.dylib Frameworks/libSDL2.dylib
 
 # Move back to where we were
 cd $LASTPWD
