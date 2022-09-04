@@ -78,7 +78,10 @@ public:
 void incLocaleInit() {
     incLocaleScan(incGetAppLocalePath());
     incLocaleScan(getcwd());
-    incLocaleScan(thisExePath().rootName);
+    incLocaleScan(thisExePath().dirName);
+    
+    // On macOS we store the locale in the app bundle under the Resources subdirectory.
+    version(OSX) incLocaleScan(buildPath(thisExePath().dirName, "../Resources/i18n"));
     
     // Some distribution platforms like AppImage has its own locale path
     // this is here to detect it and add it in to the scan area.

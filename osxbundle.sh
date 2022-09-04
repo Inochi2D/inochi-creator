@@ -13,7 +13,8 @@ if [ -d "Frameworks" ]; then
 fi
 
 # Create new directories and move dylibs
-mkdir -p Frameworks SharedSupport Resources
+mkdir -p Frameworks SharedSupport Resources Resources/i18n
+mv MacOS/libSDL2*.dylib Frameworks/libSDL2.dylib
 mv -n MacOS/*.dylib Frameworks
 
 # Move back to where we were
@@ -23,6 +24,9 @@ echo "Setting up file structure..."
 
 # Copy info plist and icon
 cp res/Info.plist out/Inochi\ Creator.app/Contents/
+
+# Move any translation files in if any.
+mv -n out/*.mo out/Inochi\ Creator.app/Contents/Resources/i18n/
 
 # Copy license info to SharedSupport
 cp res/*-LICENSE out/Inochi\ Creator.app/Contents/SharedSupport/

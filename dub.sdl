@@ -59,7 +59,6 @@ configuration "osx-full" {
 	targetPath "out/Inochi Creator.app/Contents/MacOS"
 	dflags "-preserve-dwarf-line-section=false"
 	lflags 	"-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
-	postGenerateCommands `mv "out/Inochi Creator.app/Contents/MacOS/libSDL2-2.0.dylib" "out/Inochi Creator.app/Contents/MacOS/libSDL2.dylib"`
 	versions "InBranding"
 }
 
