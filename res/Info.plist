@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleName</key>
+  <string>InochiCreator</string>
+  <key>CFBundleDisplayName</key>
+  <string>Inochi Creator</string>
+  <key>CFBundleIdentifier</key>
+  <string>com.inochi2d.inochi-creator</string>
+  <key>CFBundleVersion</key>
+  <string>0.7.4</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>CFBundleSignature</key>
+  <string>inoc</string>
+  <key>CFBundleExecutable</key>
+  <string>inochi-creator</string>
+  <key>CFBundleIconFile</key>
+  <string>InochiCreator</string>
+</dict>
+</plist>
