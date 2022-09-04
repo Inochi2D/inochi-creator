@@ -31,3 +31,5 @@ settings.json
 .vscode
 
 source/creator/ver.d
+
+.DS_Store
