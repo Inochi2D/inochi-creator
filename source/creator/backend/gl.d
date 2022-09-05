@@ -87,11 +87,17 @@ void incGLBackendBeginRender() {
             vp.WorkSize.y -= (26+10)*(uiScale-1);
             
             int mx, my;
-            int wx, wy;
-            SDL_GetGlobalMouseState(&mx, &my);
-            SDL_GetWindowPosition(cast(SDL_Window*)vp.PlatformHandle, &wx, &wy);
-            io.MousePos.x = cast(float)(mx-wx)/uiScale;
-            io.MousePos.y = cast(float)(my-wy)/uiScale;
+            version(UseUIScaling) {
+                SDL_GetMouseState(&mx, &my);
+                io.MousePos.x = (cast(float)mx)/uiScale;
+                io.MousePos.y = (cast(float)my)/uiScale;
+            } else {
+                int wx, wy;
+                SDL_GetGlobalMouseState(&mx, &my);
+                SDL_GetWindowPosition(cast(SDL_Window*)vp.PlatformHandle, &wx, &wy);
+                io.MousePos.x = cast(float)(mx-wx)/uiScale;
+                io.MousePos.y = cast(float)(my-wy)/uiScale;
+            }
         }
     }
 }
@@ -548,8 +554,7 @@ void incGLBackendDestroyDeviceObjects() {
 // This is an _advanced_ and _optional_ feature, allowing the back-end to create and handle multiple viewports simultaneously.
 // If you are new to dear imgui or creating a new binding for dear imgui, it is recommended that you completely ignore this section first..
 //--------------------------------------------------------------------------------------------------------
-extern (C)
-{
+extern (C) {
     version (NoUIScaling) {
         void incGLBackendPlatformRenderWindow(ImGuiViewport* viewport, void*) {
             if (!(viewport.Flags & ImGuiViewportFlags.NoRendererClear)) {
