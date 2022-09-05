@@ -164,7 +164,7 @@ void incInitStyling() {
 */
 void incOpenWindow() {
     import std.process : environment;
-    isWayland = environment.get("XDG_SESSION_TYPE") == "wayland";
+
     switch(environment.get("XDG_SESSION_DESKTOP")) {
         case "i3":
 
@@ -250,6 +250,13 @@ void incOpenWindow() {
     );
     SDL_SetWindowMinimumSize(window, 960, 720);
     
+    // On Linux we want to check whether the window was created under wayland or x11
+    version(linux) {
+        SDL_SysWMinfo info;
+        SDL_GetWindowWMInfo(window, &info);
+        isWayland = info.subsystem == SDL_SYSWM_TYPE.SDL_SYSWM_WAYLAND;
+    }
+
     GLSupport support;
     gl_context = SDL_GL_CreateContext(window);
     SDL_GL_SetSwapInterval(1);
