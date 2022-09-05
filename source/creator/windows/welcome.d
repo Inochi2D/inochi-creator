@@ -51,12 +51,13 @@ protected:
         igSetNextWindowSizeConstraints(uiSize, uiSize);
         origWindowPadding = igGetStyle().WindowPadding;
         igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(0, 0));
+        igPushStyleVar(ImGuiStyleVar.WindowRounding, 10);
         super.onBeginUpdate();
     }
 
     override
     void onEndUpdate() {
-        igPopStyleVar();
+        igPopStyleVar(2);
         super.onEndUpdate();
     }
 
