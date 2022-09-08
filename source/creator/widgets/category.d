@@ -83,6 +83,7 @@ void incEndCategory() {
         igPushStyleColor(ImGuiCol.Separator, ImVec4(0, 0, 0, 0.2));
             igSeparator();
         igPopStyleColor();
+        igSpacing();
     }
 
     igPopID();
