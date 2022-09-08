@@ -374,6 +374,14 @@ public:
 
         switch(toolMode) {
             case VertexToolMode.Points:
+
+                if (deformOnly) {
+                    incStatusTooltip(_("Select"), _("Left Mouse"));
+                } else {
+                    incStatusTooltip(_("Select"), _("Left Mouse"));
+                    incStatusTooltip(_("Create"), _("Ctrl+Left Mouse"));
+                }
+                
                 void addOrRemoveVertex(bool selectedOnly) {
                     if (deformOnly) return;
                     // Check if mouse is over a vertex
@@ -504,6 +512,12 @@ public:
                 break;
             case VertexToolMode.Connect:
                 assert(!deformOnly);
+                if (selected.length == 0) {
+                    incStatusTooltip(_("Select"), _("Left Mouse"));
+                } else{
+                    incStatusTooltip(_("Connect/Disconnect"), _("Left Mouse"));
+                    incStatusTooltip(_("Connect Multiple"), _("Shift+Left Mouse"));
+                }
 
                 if (igIsMouseClicked(ImGuiMouseButton.Left)) {
                     if (vtxAtMouse !is null) {
@@ -543,6 +557,14 @@ public:
                 }
                 break;
             case VertexToolMode.PathDeform:
+                if (deforming) {
+                    incStatusTooltip(_("Deform"), _("Left Mouse"));
+                    incStatusTooltip(_("Switch Mode"), _("TAB"));
+                } else {
+                    incStatusTooltip(_("Create/Destroy"), _("Left Mouse (x2)"));
+                    incStatusTooltip(_("Switch Mode"), _("TAB"));
+                }
+                
                 vtxAtMouse = null; // Do not need this in this mode
 
                 if (incInputIsKeyPressed(ImGuiKey.Tab)) {
