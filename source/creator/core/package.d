@@ -321,7 +321,7 @@ void incOpenWindow() {
 void incCreateContext() {
 
     // Setup IMGUI
-    igCreateContext(null);
+    auto ctx = igCreateContext(null);
     io = igGetIO();
     
     // Setup font handling
@@ -344,6 +344,11 @@ void incCreateContext() {
 
     io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;                               // Enable Docking
     io.ConfigWindowsResizeFromEdges = true;                                         // Enable Edge resizing
+    version (OSX) io.ConfigMacOSXBehaviors = true;                                  // macOS Behaviours on macOS
+
+    // Force C locale due to imgui removing support for setting decimal separator.
+    import i18n.culture : i18nSetLocale;
+    i18nSetLocale("C");
 
     // NOTE: Viewports break DPI scaling system, as such if Viewports is enabled
     // we will be disable DPI scaling.
