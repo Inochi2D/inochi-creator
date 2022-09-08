@@ -63,8 +63,12 @@ bool incInputText(string wId, float width, ref string buffer, ImGuiInputTextFlag
             if (data.EventFlag == ImGuiInputTextFlags.CallbackResize) {
             
                 // Resize and pass buffer ptr in
-                (*udata.str).length = data.BufTextLen;
+                (*udata.str).length = data.BufTextLen+1;
+
+                // slice out the null terminator
                 data.Buf = cast(char*)(*udata.str).ptr;
+                data.Buf[data.BufTextLen] = '\0';
+                (*udata.str) = (*udata.str)[0..$-1];
             }
             return 0;
         },
@@ -137,8 +141,12 @@ bool incInputText(string wId, string label, float width, ref string buffer, ImGu
             if (data.EventFlag == ImGuiInputTextFlags.CallbackResize) {
             
                 // Resize and pass buffer ptr in
-                (*udata.str).length = data.BufTextLen;
+                (*udata.str).length = data.BufTextLen+1;
+
+                // slice out the null terminator
                 data.Buf = cast(char*)(*udata.str).ptr;
+                data.Buf[data.BufTextLen] = '\0';
+                (*udata.str) = (*udata.str)[0..$-1];
             }
             return 0;
         },
