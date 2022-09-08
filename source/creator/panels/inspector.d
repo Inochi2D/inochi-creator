@@ -52,18 +52,12 @@ protected:
 
                                 // Padding
                                 igSpacing();
-                                igSpacing();
-                                igSpacing();
-                                igSpacing();
                                 incInspectorDeformPart(part, param, cursor);
                             }
 
                             if (Composite composite = cast(Composite)node) {
 
                                 // Padding
-                                igSpacing();
-                                igSpacing();
-                                igSpacing();
                                 igSpacing();
                                 incInspectorDeformComposite(composite, param, cursor);
                             }
@@ -77,9 +71,6 @@ protected:
 
                                 // Padding
                                 igSpacing();
-                                igSpacing();
-                                igSpacing();
-                                igSpacing();
                                 incInspectorModelComposite(composite);
                             }
 
@@ -89,9 +80,6 @@ protected:
 
                                 // Padding
                                 igSpacing();
-                                igSpacing();
-                                igSpacing();
-                                igSpacing();
                                 incInspectorModelDrawable(drawable);
                             }
 
@@ -100,9 +88,6 @@ protected:
 
                                 // Padding
                                 igSpacing();
-                                igSpacing();
-                                igSpacing();
-                                igSpacing();
                                 incInspectorModelPart(part);
                             }
 
@@ -110,9 +95,6 @@ protected:
                             if (SimplePhysics part = cast(SimplePhysics)node) {
 
                                 // Padding
-                                igSpacing();
-                                igSpacing();
-                                igSpacing();
                                 igSpacing();
                                 incInspectorModelSimplePhysics(part);
                             }
@@ -157,11 +139,11 @@ private:
 void incCommonNonEditHeader(Node node) {
     // Top level
     igPushID(node.uuid);
-        string typeString = "%s\0".format(incTypeIdToIcon(node.typeId()));
+        string typeString = "%s".format(incTypeIdToIcon(node.typeId()));
         auto len = incMeasureString(typeString);
         incText(node.name);
         igSameLine(0, 0);
-        incDummy(ImVec2(-(len.x-14), len.y));
+        incDummy(ImVec2(-len.x, len.y));
         igSameLine(0, 0);
         incText(typeString);
     igPopID();
@@ -178,11 +160,11 @@ void incInspectorModelInfo() {
 
     // Top level
     igPushID(rootNode.uuid);
-        string typeString = "\0";
+        string typeString = "";
         auto len = incMeasureString(typeString);
         incText(_("Puppet"));
         igSameLine(0, 0);
-        incDummy(ImVec2(-(len.x-14), len.y));
+        incDummy(ImVec2(-len.x, len.y));
         igSameLine(0, 0);
         incText(typeString);
     igPopID();
@@ -204,7 +186,7 @@ void incInspectorModelInfo() {
     igSpacing();
     igSpacing();
 
-    if (igCollapsingHeader(__("General Info"), ImGuiTreeNodeFlags.DefaultOpen)) {
+    if (incBeginCategory(__("General Info"))) {
         igPushID("Name");
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Name"));
             incTooltip(_("Name of the puppet"));
@@ -231,10 +213,10 @@ void incInspectorModelInfo() {
             incTooltip(_("Where to contact the main author of the puppet"));
             incInputText("META_CONTACT", puppet.meta.contact);
         igPopID();
-        igSpacing();
     }
+    incEndCategory();
 
-    if (igCollapsingHeader(__("Licensing"), ImGuiTreeNodeFlags.DefaultOpen)) {
+    if (incBeginCategory(__("Licensing"))) {
         igPushID("LicenseURL");
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("License URL"));
             incTooltip(_("Link/URL to license"));
@@ -255,8 +237,9 @@ void incInspectorModelInfo() {
             incInputText("META_ORIGIN", puppet.meta.reference);
         igPopID();
     }
+    incEndCategory();
 
-    if (igCollapsingHeader(__("Physics Globals"), ImGuiTreeNodeFlags.DefaultOpen)) {
+    if (incBeginCategory(__("Physics Globals"))) {
         igPushID("PixelsPerMeter");
             incText(_("Pixels per meter"));
             incTooltip(_("Number of pixels that correspond to 1 meter in the physics engine."));
@@ -269,10 +252,10 @@ void incInspectorModelInfo() {
             incTooltip(_("Acceleration due to gravity, in m/s². Earth gravity is 9.8."));
             incDragFloat("Gravity", &puppet.physics.gravity, 0.01, 0, float.max, _("%.2f m/s"), ImGuiSliderFlags.NoRoundToFormat);
         igPopID();
-        igSpacing();
     }
+    incEndCategory();
 
-    if (igCollapsingHeader(__("Rendering Settings"), ImGuiTreeNodeFlags.DefaultOpen)) {
+    if (incBeginCategory(__("Rendering Settings"), ImVec4(1, 0, 0, 0.15))) {
         igPushID("Filtering");
             if (igCheckbox(__("Use Point Filtering"), &incActivePuppet().meta.preservePixels)) {
                 incActivePuppet().populateTextureSlots();
@@ -281,290 +264,52 @@ void incInspectorModelInfo() {
             incTooltip(_("Makes Inochi2D model use point filtering, removing blur for low-resolution models."));
         igPopID();
     }
+    incEndCategory();
 }
 
 void incModelModeHeader(Node node) {
     // Top level
     igPushID(node.uuid);
-        string typeString = "%s\0".format(incTypeIdToIcon(node.typeId()));
+        string typeString = "%s".format(incTypeIdToIcon(node.typeId()));
         auto len = incMeasureString(typeString);
         incInputText("###MODEL_NODE_HEADER", incAvailableSpace().x-24, node.name);
         igSameLine(0, 0);
-        incDummy(ImVec2(-(len.x-14), len.y));
+        incDummy(ImVec2(-len.x, len.y));
         igSameLine(0, 0);
         incText(typeString);
     igPopID();
-    igSeparator();
 }
 
 void incInspectorModelTRS(Node node) {
-    if (!igCollapsingHeader(__("Transform"), ImGuiTreeNodeFlags.DefaultOpen)) 
-        return;
-    
-    float adjustSpeed = 1;
-    // if (igIsKeyDown(igGetKeyIndex(ImGuiKeyModFlags_Shift))) {
-    //     adjustSpeed = 0.1;
-    // }
+    if (incBeginCategory(__("Transform"))) {
+        float adjustSpeed = 1;
+        // if (igIsKeyDown(igGetKeyIndex(ImGuiKeyModFlags_Shift))) {
+        //     adjustSpeed = 0.1;
+        // }
 
-    ImVec2 avail;
-    igGetContentRegionAvail(&avail);
+        ImVec2 avail;
+        igGetContentRegionAvail(&avail);
 
-    float fontSize = 16;
+        float fontSize = 16;
 
-    //
-    // Translation
-    //
+        //
+        // Translation
+        //
 
-    // Translation portion of the transformation matrix.
-    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Translation"));
-    igPushItemWidth((avail.x-4f)/3f);
-
-        // Translation X
-        igPushID(0);
-        if (incDragFloat("translation_x", &node.localTransform.translation.vector[0], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
-            incActionPush(
-                new NodeValueChangeAction!(Node, float)(
-                    "X",
-                    node, 
-                    incGetDragFloatInitialValue("translation_x"),
-                    node.localTransform.translation.vector[0],
-                    &node.localTransform.translation.vector[0]
-                )
-            );
-        }
-        igPopID();
-
-        igSameLine(0, 4);
-
-        // Translation Y
-        igPushID(1);
-            if (incDragFloat("translation_y", &node.localTransform.translation.vector[1], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
-                incActionPush(
-                    new NodeValueChangeAction!(Node, float)(
-                        "Y",
-                        node, 
-                        incGetDragFloatInitialValue("translation_y"),
-                        node.localTransform.translation.vector[1],
-                        &node.localTransform.translation.vector[1]
-                    )
-                );
-            }
-        igPopID();
-
-        igSameLine(0, 4);
-
-        // Translation Z
-        igPushID(2);
-            if (incDragFloat("translation_z", &node.localTransform.translation.vector[2], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
-                incActionPush(
-                    new NodeValueChangeAction!(Node, float)(
-                        "Z",
-                        node, 
-                        incGetDragFloatInitialValue("translation_z"),
-                        node.localTransform.translation.vector[2],
-                        &node.localTransform.translation.vector[2]
-                    )
-                );
-            }
-        igPopID();
-
-
-    
-        // Padding
-        igSpacing();
-        igSpacing();
-        
-        igBeginGroup();
-            // Button which locks all transformation to be based off the root node
-            // of the puppet, this more or less makes the item stay in place
-            // even if the parent moves.
-            ImVec2 textLength = incMeasureString(_("Lock to Root Node"));
-            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Lock to Root Node"));
-
-            incSpacer(ImVec2(-12, 1));
-            bool lockToRoot = node.lockToRoot;
-            if (incLockButton(&lockToRoot, "root_lk")) {
-
-                // TODO: Store this in undo history.
-                node.lockToRoot = lockToRoot;
-            }
-        igEndGroup();
-
-        // Button which locks all transformation to be based off the root node
-        // of the puppet, this more or less makes the item stay in place
-        // even if the parent moves.
-        incTooltip(_("Makes so that the translation of this node is based off the root node, making it stay in place even if its parent moves."));
-    
-        // Padding
-        igSpacing();
-        igSpacing();
-
-    igPopItemWidth();
-
-
-    //
-    // Rotation
-    //
-    igSpacing();
-    
-    // Rotation portion of the transformation matrix.
-    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Rotation"));
-    igPushItemWidth((avail.x-4f)/3f);
-
-        // Rotation X
-        igPushID(3);
-            if (incDragFloat("rotation_x", &node.localTransform.rotation.vector[0], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
-                incActionPush(
-                    new NodeValueChangeAction!(Node, float)(
-                        _("Rotation X"),
-                        node, 
-                        incGetDragFloatInitialValue("rotation_x"),
-                        node.localTransform.rotation.vector[0],
-                        &node.localTransform.rotation.vector[0]
-                    )
-                );
-            }
-        igPopID();
-        
-        igSameLine(0, 4);
-
-        // Rotation Y
-        igPushID(4);
-            if (incDragFloat("rotation_y", &node.localTransform.rotation.vector[1], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
-                incActionPush(
-                    new NodeValueChangeAction!(Node, float)(
-                        _("Rotation Y"),
-                        node, 
-                        incGetDragFloatInitialValue("rotation_y"),
-                        node.localTransform.rotation.vector[1],
-                        &node.localTransform.rotation.vector[1]
-                    )
-                );
-            }
-        igPopID();
-
-        igSameLine(0, 4);
-
-        // Rotation Z
-        igPushID(5);
-            if (incDragFloat("rotation_z", &node.localTransform.rotation.vector[2], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
-                incActionPush(
-                    new NodeValueChangeAction!(Node, float)(
-                        _("Rotation Z"),
-                        node, 
-                        incGetDragFloatInitialValue("rotation_z"),
-                        node.localTransform.rotation.vector[2],
-                        &node.localTransform.rotation.vector[2]
-                    )
-                );
-            }
-        igPopID();
-
-    igPopItemWidth();
-
-    avail.x += igGetFontSize();
-
-    //
-    // Scaling
-    //
-    igSpacing();
-    
-    // Scaling portion of the transformation matrix.
-    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Scale"));
-    igPushItemWidth((avail.x-14f)/2f);
-        
-        // Scale X
-        igPushID(6);
-            if (incDragFloat("scale_x", &node.localTransform.scale.vector[0], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
-                incActionPush(
-                    new NodeValueChangeAction!(Node, float)(
-                        _("Scale X"),
-                        node, 
-                        incGetDragFloatInitialValue("scale_x"),
-                        node.localTransform.scale.vector[0],
-                        &node.localTransform.scale.vector[0]
-                    )
-                );
-            }
-        igPopID();
-
-        igSameLine(0, 4);
-
-        // Scale Y
-        igPushID(7);
-            if (incDragFloat("scale_y", &node.localTransform.scale.vector[1], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
-                incActionPush(
-                    new NodeValueChangeAction!(Node, float)(
-                        _("Scale Y"),
-                        node, 
-                        incGetDragFloatInitialValue("scale_y"),
-                        node.localTransform.scale.vector[1],
-                        &node.localTransform.scale.vector[1]
-                    )
-                );
-            }
-        igPopID();
-
-    igPopItemWidth();
-
-    igSpacing();
-    igSpacing();
-
-    // An option in which positions will be snapped to whole integer values.
-    // In other words texture will always be on a pixel.
-    textLength = incMeasureString(_("Snap to Pixel"));
-    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Snap to Pixel"));
-    incSpacer(ImVec2(-12, 1));
-    if (incLockButton(&node.localTransform.pixelSnap, "pix_lk")) {
-        incActionPush(
-            new NodeValueChangeAction!(Node, bool)(
-                _("Snap to Pixel"),
-                node, 
-                !node.localTransform.pixelSnap,
-                node.localTransform.pixelSnap,
-                &node.localTransform.pixelSnap
-            )
-        );
-    }
-    
-    // Padding
-    igSpacing();
-    igSpacing();
-
-    // The sorting order ID, which Inochi2D uses to sort
-    // Parts to draw in the user specified order.
-    // negative values = closer to camera
-    // positive values = further away from camera
-    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Sorting"));
-    float zsortV = node.relZSort;
-    if (igInputFloat("###ZSort", &zsortV, 0.01, 0.05, "%0.2f")) {
-        node.zSort = zsortV;
-    }
-}
-
-void incInspectorModelDrawable(Drawable node) {
-    // The main type of anything that can be drawn to the screen
-    // in Inochi2D.
-    if (!igCollapsingHeader(__("Drawable"), ImGuiTreeNodeFlags.DefaultOpen)) 
-        return;
-
-    float adjustSpeed = 1;
-    ImVec2 avail = incAvailableSpace();
-
-    igBeginGroup();
-        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Texture Offset"));
-        igPushItemWidth((avail.x-4f)/2f);
+        // Translation portion of the transformation matrix.
+        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Translation"));
+        igPushItemWidth((avail.x-4f)/3f);
 
             // Translation X
-            igPushID(42);
-            if (incDragFloat("offset_x", &node.getMesh().origin.vector[0], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+            igPushID(0);
+            if (incDragFloat("translation_x", &node.localTransform.translation.vector[0], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
                 incActionPush(
                     new NodeValueChangeAction!(Node, float)(
                         "X",
                         node, 
-                        incGetDragFloatInitialValue("offset_x"),
-                        node.getMesh().origin.vector[0],
-                        &node.getMesh().origin.vector[0]
+                        incGetDragFloatInitialValue("translation_x"),
+                        node.localTransform.translation.vector[0],
+                        &node.localTransform.translation.vector[0]
                     )
                 );
             }
@@ -573,59 +318,297 @@ void incInspectorModelDrawable(Drawable node) {
             igSameLine(0, 4);
 
             // Translation Y
-            igPushID(43);
-                if (incDragFloat("offset_y", &node.getMesh().origin.vector[1], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+            igPushID(1);
+                if (incDragFloat("translation_y", &node.localTransform.translation.vector[1], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
                     incActionPush(
                         new NodeValueChangeAction!(Node, float)(
                             "Y",
                             node, 
-                            incGetDragFloatInitialValue("offset_y"),
-                            node.getMesh().origin.vector[1],
-                            &node.getMesh().origin.vector[1]
+                            incGetDragFloatInitialValue("translation_y"),
+                            node.localTransform.translation.vector[1],
+                            &node.localTransform.translation.vector[1]
                         )
                     );
                 }
             igPopID();
-        igPopItemWidth();
-    igEndGroup();
 
-    igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(8, 8));
-        igSpacing();
-        igSpacing();
+            igSameLine(0, 4);
 
-        if (igButton("", ImVec2(avail.x, 32))) {
-            incSetEditMode(EditMode.VertexEdit);
-            incSelectNode(node);
-            incVertexEditSetTarget(node);
-            incFocusCamera(node, vec2(0, 0));
-        }
-
-        // Allow copying mesh data via drag n drop for now
-        if(igBeginDragDropTarget()) {
-            const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
-            if (payload !is null) {
-                if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
-                    incSetEditMode(EditMode.VertexEdit);
-                    incSelectNode(node);
-                    incVertexEditSetTarget(node);
-                    incFocusCamera(node, vec2(0, 0));
-                    incVertexEditCopyMeshDataToTarget(payloadDrawable.getMesh());
+            // Translation Z
+            igPushID(2);
+                if (incDragFloat("translation_z", &node.localTransform.translation.vector[2], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float)(
+                            "Z",
+                            node, 
+                            incGetDragFloatInitialValue("translation_z"),
+                            node.localTransform.translation.vector[2],
+                            &node.localTransform.translation.vector[2]
+                        )
+                    );
                 }
-            }
+            igPopID();
+
+
+        
+            // Padding
+            igSpacing();
+            igSpacing();
             
-            igEndDragDropTarget();
-        } else {
+            igBeginGroup();
+                // Button which locks all transformation to be based off the root node
+                // of the puppet, this more or less makes the item stay in place
+                // even if the parent moves.
+                ImVec2 textLength = incMeasureString(_("Lock to Root Node"));
+                igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Lock to Root Node"));
+
+                incSpacer(ImVec2(-12, 1));
+                bool lockToRoot = node.lockToRoot;
+                if (incLockButton(&lockToRoot, "root_lk")) {
+
+                    // TODO: Store this in undo history.
+                    node.lockToRoot = lockToRoot;
+                }
+            igEndGroup();
+
+            // Button which locks all transformation to be based off the root node
+            // of the puppet, this more or less makes the item stay in place
+            // even if the parent moves.
+            incTooltip(_("Makes so that the translation of this node is based off the root node, making it stay in place even if its parent moves."));
+        
+            // Padding
+            igSpacing();
+            igSpacing();
+
+        igPopItemWidth();
 
 
-            // Switches Inochi Creator over to Mesh Edit mode
-            // and selects the mesh that you had selected previously
-            // in Model Edit mode.
-            incTooltip(_("Edit Mesh"));
+        //
+        // Rotation
+        //
+        igSpacing();
+        
+        // Rotation portion of the transformation matrix.
+        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Rotation"));
+        igPushItemWidth((avail.x-4f)/3f);
+
+            // Rotation X
+            igPushID(3);
+                if (incDragFloat("rotation_x", &node.localTransform.rotation.vector[0], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float)(
+                            _("Rotation X"),
+                            node, 
+                            incGetDragFloatInitialValue("rotation_x"),
+                            node.localTransform.rotation.vector[0],
+                            &node.localTransform.rotation.vector[0]
+                        )
+                    );
+                }
+            igPopID();
+            
+            igSameLine(0, 4);
+
+            // Rotation Y
+            igPushID(4);
+                if (incDragFloat("rotation_y", &node.localTransform.rotation.vector[1], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float)(
+                            _("Rotation Y"),
+                            node, 
+                            incGetDragFloatInitialValue("rotation_y"),
+                            node.localTransform.rotation.vector[1],
+                            &node.localTransform.rotation.vector[1]
+                        )
+                    );
+                }
+            igPopID();
+
+            igSameLine(0, 4);
+
+            // Rotation Z
+            igPushID(5);
+                if (incDragFloat("rotation_z", &node.localTransform.rotation.vector[2], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float)(
+                            _("Rotation Z"),
+                            node, 
+                            incGetDragFloatInitialValue("rotation_z"),
+                            node.localTransform.rotation.vector[2],
+                            &node.localTransform.rotation.vector[2]
+                        )
+                    );
+                }
+            igPopID();
+
+        igPopItemWidth();
+
+        avail.x += igGetFontSize();
+
+        //
+        // Scaling
+        //
+        igSpacing();
+        
+        // Scaling portion of the transformation matrix.
+        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Scale"));
+        igPushItemWidth((avail.x-14f)/2f);
+            
+            // Scale X
+            igPushID(6);
+                if (incDragFloat("scale_x", &node.localTransform.scale.vector[0], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float)(
+                            _("Scale X"),
+                            node, 
+                            incGetDragFloatInitialValue("scale_x"),
+                            node.localTransform.scale.vector[0],
+                            &node.localTransform.scale.vector[0]
+                        )
+                    );
+                }
+            igPopID();
+
+            igSameLine(0, 4);
+
+            // Scale Y
+            igPushID(7);
+                if (incDragFloat("scale_y", &node.localTransform.scale.vector[1], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float)(
+                            _("Scale Y"),
+                            node, 
+                            incGetDragFloatInitialValue("scale_y"),
+                            node.localTransform.scale.vector[1],
+                            &node.localTransform.scale.vector[1]
+                        )
+                    );
+                }
+            igPopID();
+
+        igPopItemWidth();
+
+        igSpacing();
+        igSpacing();
+
+        // An option in which positions will be snapped to whole integer values.
+        // In other words texture will always be on a pixel.
+        textLength = incMeasureString(_("Snap to Pixel"));
+        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Snap to Pixel"));
+        incSpacer(ImVec2(-12, 1));
+        if (incLockButton(&node.localTransform.pixelSnap, "pix_lk")) {
+            incActionPush(
+                new NodeValueChangeAction!(Node, bool)(
+                    _("Snap to Pixel"),
+                    node, 
+                    !node.localTransform.pixelSnap,
+                    node.localTransform.pixelSnap,
+                    &node.localTransform.pixelSnap
+                )
+            );
         }
+        
+        // Padding
+        igSpacing();
+        igSpacing();
 
-        igSpacing();
-        igSpacing();
-    igPopStyleVar();
+        // The sorting order ID, which Inochi2D uses to sort
+        // Parts to draw in the user specified order.
+        // negative values = closer to camera
+        // positive values = further away from camera
+        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Sorting"));
+        float zsortV = node.relZSort;
+        if (igInputFloat("###ZSort", &zsortV, 0.01, 0.05, "%0.2f")) {
+            node.zSort = zsortV;
+        }
+    }
+    incEndCategory();
+}
+
+void incInspectorModelDrawable(Drawable node) {
+    // The main type of anything that can be drawn to the screen
+    // in Inochi2D.
+    if (incBeginCategory(__("Drawable"))) {
+        float adjustSpeed = 1;
+        ImVec2 avail = incAvailableSpace();
+
+        igBeginGroup();
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Texture Offset"));
+            igPushItemWidth((avail.x-4f)/2f);
+
+                // Translation X
+                igPushID(42);
+                if (incDragFloat("offset_x", &node.getMesh().origin.vector[0], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                    incActionPush(
+                        new NodeValueChangeAction!(Node, float)(
+                            "X",
+                            node, 
+                            incGetDragFloatInitialValue("offset_x"),
+                            node.getMesh().origin.vector[0],
+                            &node.getMesh().origin.vector[0]
+                        )
+                    );
+                }
+                igPopID();
+
+                igSameLine(0, 4);
+
+                // Translation Y
+                igPushID(43);
+                    if (incDragFloat("offset_y", &node.getMesh().origin.vector[1], adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                        incActionPush(
+                            new NodeValueChangeAction!(Node, float)(
+                                "Y",
+                                node, 
+                                incGetDragFloatInitialValue("offset_y"),
+                                node.getMesh().origin.vector[1],
+                                &node.getMesh().origin.vector[1]
+                            )
+                        );
+                    }
+                igPopID();
+            igPopItemWidth();
+        igEndGroup();
+
+        igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(8, 8));
+            igSpacing();
+            igSpacing();
+
+            if (igButton("", ImVec2(avail.x, 32))) {
+                incSetEditMode(EditMode.VertexEdit);
+                incSelectNode(node);
+                incVertexEditSetTarget(node);
+                incFocusCamera(node, vec2(0, 0));
+            }
+
+            // Allow copying mesh data via drag n drop for now
+            if(igBeginDragDropTarget()) {
+                const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+                if (payload !is null) {
+                    if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
+                        incSetEditMode(EditMode.VertexEdit);
+                        incSelectNode(node);
+                        incVertexEditSetTarget(node);
+                        incFocusCamera(node, vec2(0, 0));
+                        incVertexEditCopyMeshDataToTarget(payloadDrawable.getMesh());
+                    }
+                }
+                
+                igEndDragDropTarget();
+            } else {
+
+
+                // Switches Inochi Creator over to Mesh Edit mode
+                // and selects the mesh that you had selected previously
+                // in Model Edit mode.
+                incTooltip(_("Edit Mesh"));
+            }
+
+            igSpacing();
+            igSpacing();
+        igPopStyleVar();
+    }
+    incEndCategory();
 }
 
 void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 elemSize) {
@@ -754,351 +737,353 @@ void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 el
 }
 
 void incInspectorModelPart(Part node) {
-    if (!igCollapsingHeader(__("Part"), ImGuiTreeNodeFlags.DefaultOpen)) 
-        return;
-    
-    if (!node.getMesh().isReady()) { 
+    if (incBeginCategory(__("Part"))) {
+        
+        if (!node.getMesh().isReady()) { 
+            igSpacing();
+            igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Cannot inspect an unmeshed part"));
+            return;
+        }
         igSpacing();
-        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Cannot inspect an unmeshed part"));
-        return;
-    }
-    igSpacing();
 
-    // BLENDING MODE
-    import std.conv : text;
-    import std.string : toStringz;
+        // BLENDING MODE
+        import std.conv : text;
+        import std.string : toStringz;
 
-    ImVec2 avail = incAvailableSpace();
-    float availForTextureSlots = round((avail.x/3.0)-2.0);
-    ImVec2 elemSize = ImVec2(availForTextureSlots, availForTextureSlots);
+        ImVec2 avail = incAvailableSpace();
+        float availForTextureSlots = round((avail.x/3.0)-2.0);
+        ImVec2 elemSize = ImVec2(availForTextureSlots, availForTextureSlots);
 
-    incInspectorTextureSlot(node, TextureUsage.Albedo, _("Albedo"), elemSize);
-    igSameLine(0, 4);
-    incInspectorTextureSlot(node, TextureUsage.Emissive, _("Emissive"), elemSize);
-    igSameLine(0, 4);
-    incInspectorTextureSlot(node, TextureUsage.Bumpmap, _("Bumpmap"), elemSize);
-    
-    igSpacing();
-    igSpacing();
-
-    incText(_("Tint (Multiply)"));
-    igColorEdit3("###TINT", cast(float[3]*)node.tint.ptr);
-
-    incText(_("Tint (Screen)"));
-    igColorEdit3("###S_TINT", cast(float[3]*)node.screenTint.ptr);
-
-    // Padding
-    igSeparator();
-    igSpacing();
-    igSpacing();
-
-    // Header for the Blending options for Parts
-    incText(_("Blending"));
-    if (igBeginCombo("###Blending", __(node.blendingMode.text))) {
-
-        // Normal blending mode as used in Photoshop, generally
-        // the default blending mode photoshop starts a layer out as.
-        if (igSelectable(__("Normal"), node.blendingMode == BlendMode.Normal)) node.blendingMode = BlendMode.Normal;
+        incInspectorTextureSlot(node, TextureUsage.Albedo, _("Albedo"), elemSize);
+        igSameLine(0, 4);
+        incInspectorTextureSlot(node, TextureUsage.Emissive, _("Emissive"), elemSize);
+        igSameLine(0, 4);
+        incInspectorTextureSlot(node, TextureUsage.Bumpmap, _("Bumpmap"), elemSize);
         
-        // Multiply blending mode, in which this texture's color data
-        // will be multiplied with the color data already in the framebuffer.
-        if (igSelectable(__("Multiply"), node.blendingMode == BlendMode.Multiply)) node.blendingMode = BlendMode.Multiply;
-                
-        // Color Dodge blending mode
-        if (igSelectable(__("Color Dodge"), node.blendingMode == BlendMode.ColorDodge)) node.blendingMode = BlendMode.ColorDodge;
-                
-        // Linear Dodge blending mode
-        if (igSelectable(__("Linear Dodge"), node.blendingMode == BlendMode.LinearDodge)) node.blendingMode = BlendMode.LinearDodge;
-                        
-        // Screen blending mode
-        if (igSelectable(__("Screen"), node.blendingMode == BlendMode.Screen)) node.blendingMode = BlendMode.Screen;
-                        
-        // Clip to Lower blending mode
-        if (igSelectable(__("Clip to Lower"), node.blendingMode == BlendMode.ClipToLower)) node.blendingMode = BlendMode.ClipToLower;
-        incTooltip(_("Special blending mode that causes (while respecting transparency) the part to be clipped to everything underneath"));
-                        
-        // Slice from Lower blending mode
-        if (igSelectable(__("Slice from Lower"), node.blendingMode == BlendMode.SliceFromLower)) node.blendingMode = BlendMode.SliceFromLower;
-        incTooltip(_("Special blending mode that causes (while respecting transparency) the part to be slice by everything underneath.\nBasically reverse Clip to Lower."));
-        
-        igEndCombo();
-    }
+        igSpacing();
+        igSpacing();
 
-    igSpacing();
+        incText(_("Tint (Multiply)"));
+        igColorEdit3("###TINT", cast(float[3]*)node.tint.ptr);
 
-    incText(_("Opacity"));
-    igSliderFloat("###Opacity", &node.opacity, 0, 1f, "%0.2f");
-    igSpacing();
-    igSpacing();
+        incText(_("Tint (Screen)"));
+        igColorEdit3("###S_TINT", cast(float[3]*)node.screenTint.ptr);
 
-    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Masks"));
-    igSpacing();
+        // Padding
+        igSeparator();
+        igSpacing();
+        igSpacing();
 
-    // Threshold slider name for adjusting how transparent a pixel can be
-    // before it gets discarded.
-    incText(_("Threshold"));
-    igSliderFloat("###Threshold", &node.maskAlphaThreshold, 0.0, 1.0, "%.2f");
-    
-    igSpacing();
+        // Header for the Blending options for Parts
+        incText(_("Blending"));
+        if (igBeginCombo("###Blending", __(node.blendingMode.text))) {
 
-    // The sources that the part gets masked by. Depending on the masking mode
-    // either the sources will cut out things that don't overlap, or cut out
-    // things that do.
-    incText(_("Mask Sources"));
-    if (igBeginListBox("###MaskSources", ImVec2(0, 128))) {
-        if (node.masks.length == 0) {
-            incText(_("(Drag a Part or Mask Here)"));
+            // Normal blending mode as used in Photoshop, generally
+            // the default blending mode photoshop starts a layer out as.
+            if (igSelectable(__("Normal"), node.blendingMode == BlendMode.Normal)) node.blendingMode = BlendMode.Normal;
+            
+            // Multiply blending mode, in which this texture's color data
+            // will be multiplied with the color data already in the framebuffer.
+            if (igSelectable(__("Multiply"), node.blendingMode == BlendMode.Multiply)) node.blendingMode = BlendMode.Multiply;
+                    
+            // Color Dodge blending mode
+            if (igSelectable(__("Color Dodge"), node.blendingMode == BlendMode.ColorDodge)) node.blendingMode = BlendMode.ColorDodge;
+                    
+            // Linear Dodge blending mode
+            if (igSelectable(__("Linear Dodge"), node.blendingMode == BlendMode.LinearDodge)) node.blendingMode = BlendMode.LinearDodge;
+                            
+            // Screen blending mode
+            if (igSelectable(__("Screen"), node.blendingMode == BlendMode.Screen)) node.blendingMode = BlendMode.Screen;
+                            
+            // Clip to Lower blending mode
+            if (igSelectable(__("Clip to Lower"), node.blendingMode == BlendMode.ClipToLower)) node.blendingMode = BlendMode.ClipToLower;
+            incTooltip(_("Special blending mode that causes (while respecting transparency) the part to be clipped to everything underneath"));
+                            
+            // Slice from Lower blending mode
+            if (igSelectable(__("Slice from Lower"), node.blendingMode == BlendMode.SliceFromLower)) node.blendingMode = BlendMode.SliceFromLower;
+            incTooltip(_("Special blending mode that causes (while respecting transparency) the part to be slice by everything underneath.\nBasically reverse Clip to Lower."));
+            
+            igEndCombo();
         }
 
-        foreach(i; 0..node.masks.length) {
-            MaskBinding* masker = &node.masks[i];
-            igPushID(cast(int)i);
-                if (igBeginPopup("###MaskSettings")) {
-                    if (igBeginMenu(__("Mode"))) {
-                        if (igMenuItem(__("Mask"), null, masker.mode == MaskingMode.Mask)) masker.mode = MaskingMode.Mask;
-                        if (igMenuItem(__("Dodge"), null, masker.mode == MaskingMode.DodgeMask)) masker.mode = MaskingMode.DodgeMask;
-                        
-                        igEndMenu();
-                    }
+        igSpacing();
 
-                    if (igMenuItem(__("Delete"))) {
-                        import std.algorithm.mutation : remove;
-                        node.masks = node.masks.remove(i);
+        incText(_("Opacity"));
+        igSliderFloat("###Opacity", &node.opacity, 0, 1f, "%0.2f");
+        igSpacing();
+        igSpacing();
+
+        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Masks"));
+        igSpacing();
+
+        // Threshold slider name for adjusting how transparent a pixel can be
+        // before it gets discarded.
+        incText(_("Threshold"));
+        igSliderFloat("###Threshold", &node.maskAlphaThreshold, 0.0, 1.0, "%.2f");
+        
+        igSpacing();
+
+        // The sources that the part gets masked by. Depending on the masking mode
+        // either the sources will cut out things that don't overlap, or cut out
+        // things that do.
+        incText(_("Mask Sources"));
+        if (igBeginListBox("###MaskSources", ImVec2(0, 128))) {
+            if (node.masks.length == 0) {
+                incText(_("(Drag a Part or Mask Here)"));
+            }
+
+            foreach(i; 0..node.masks.length) {
+                MaskBinding* masker = &node.masks[i];
+                igPushID(cast(int)i);
+                    if (igBeginPopup("###MaskSettings")) {
+                        if (igBeginMenu(__("Mode"))) {
+                            if (igMenuItem(__("Mask"), null, masker.mode == MaskingMode.Mask)) masker.mode = MaskingMode.Mask;
+                            if (igMenuItem(__("Dodge"), null, masker.mode == MaskingMode.DodgeMask)) masker.mode = MaskingMode.DodgeMask;
+                            
+                            igEndMenu();
+                        }
+
+                        if (igMenuItem(__("Delete"))) {
+                            import std.algorithm.mutation : remove;
+                            node.masks = node.masks.remove(i);
+                            igEndPopup();
+                            igPopID();
+                            igEndListBox();
+                            return;
+                        }
+
                         igEndPopup();
-                        igPopID();
-                        igEndListBox();
-                        return;
                     }
 
-                    igEndPopup();
-                }
+                    if (masker.mode == MaskingMode.Mask) igSelectable(_("%s (Mask)").format(masker.maskSrc.name).toStringz);
+                    else igSelectable(_("%s (Dodge)").format(masker.maskSrc.name).toStringz);
 
-                if (masker.mode == MaskingMode.Mask) igSelectable(_("%s (Mask)").format(masker.maskSrc.name).toStringz);
-                else igSelectable(_("%s (Dodge)").format(masker.maskSrc.name).toStringz);
+                    
+                    if(igBeginDragDropTarget()) {
+                        const(ImGuiPayload)* payload = igAcceptDragDropPayload("_MASKITEM");
+                        if (payload !is null) {
+                            if (MaskBinding* binding = cast(MaskBinding*)payload.Data) {
+                                ptrdiff_t maskIdx = node.getMaskIdx(binding.maskSrcUUID);
+                                if (maskIdx >= 0) {
+                                    import std.algorithm.mutation : remove;
 
-                
-                if(igBeginDragDropTarget()) {
-                    const(ImGuiPayload)* payload = igAcceptDragDropPayload("_MASKITEM");
-                    if (payload !is null) {
-                        if (MaskBinding* binding = cast(MaskBinding*)payload.Data) {
-                            ptrdiff_t maskIdx = node.getMaskIdx(binding.maskSrcUUID);
-                            if (maskIdx >= 0) {
-                                import std.algorithm.mutation : remove;
-
-                                node.masks = node.masks.remove(maskIdx);
-                                if (i == 0) node.masks = *binding ~ node.masks;
-                                else if (i >= node.masks.length-1) node.masks ~= *binding;
-                                else node.masks = node.masks[0..i] ~ *binding ~ node.masks[i+1..$];
+                                    node.masks = node.masks.remove(maskIdx);
+                                    if (i == 0) node.masks = *binding ~ node.masks;
+                                    else if (i >= node.masks.length-1) node.masks ~= *binding;
+                                    else node.masks = node.masks[0..i] ~ *binding ~ node.masks[i+1..$];
+                                }
                             }
                         }
-                    }
-                    
-                    igEndDragDropTarget();
-                }
-
-                // TODO: We really should account for left vs. right handedness
-                if (igIsItemClicked(ImGuiMouseButton.Right)) {
-                    igOpenPopup("###MaskSettings");
-                }
-
-                if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
-                    igSetDragDropPayload("_MASKITEM", cast(void*)masker, MaskBinding.sizeof, ImGuiCond.Always);
-                    incText(masker.maskSrc.name);
-                    igEndDragDropSource();
-                }
-            igPopID();
-        }
-        igEndListBox();
-    }
-
-    if(igBeginDragDropTarget()) {
-        const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
-        if (payload !is null) {
-            if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
-
-                // Make sure we don't mask against ourselves as well as don't double mask
-                if (payloadDrawable != node && !node.isMaskedBy(payloadDrawable)) {
-                    node.masks ~= MaskBinding(payloadDrawable.uuid, MaskingMode.Mask, payloadDrawable);
-                }
-            }
-        }
-        
-        igEndDragDropTarget();
-    }
-
-    // Padding
-    igSpacing();
-    igSpacing();
-}
-
-void incInspectorModelComposite(Composite node) {
-    if (!igCollapsingHeader(__("Composite"), ImGuiTreeNodeFlags.DefaultOpen)) 
-        return;
-    
-
-    igSpacing();
-
-    // BLENDING MODE
-    import std.conv : text;
-    import std.string : toStringz;
-
-
-    incText(_("Tint (Multiply)"));
-    igColorEdit3("###TINT", cast(float[3]*)node.tint.ptr);
-
-    incText(_("Tint (Screen)"));
-    igColorEdit3("###S_TINT", cast(float[3]*)node.screenTint.ptr);
-
-    // Header for the Blending options for Parts
-    incText(_("Blending"));
-    if (igBeginCombo("###Blending", __(node.blendingMode.text))) {
-
-        // Normal blending mode as used in Photoshop, generally
-        // the default blending mode photoshop starts a layer out as.
-        if (igSelectable(__("Normal"), node.blendingMode == BlendMode.Normal)) node.blendingMode = BlendMode.Normal;
-        
-        // Multiply blending mode, in which this texture's color data
-        // will be multiplied with the color data already in the framebuffer.
-        if (igSelectable(__("Multiply"), node.blendingMode == BlendMode.Multiply)) node.blendingMode = BlendMode.Multiply;
-                
-        // Color Dodge blending mode
-        if (igSelectable(__("Color Dodge"), node.blendingMode == BlendMode.ColorDodge)) node.blendingMode = BlendMode.ColorDodge;
-                
-        // Linear Dodge blending mode
-        if (igSelectable(__("Linear Dodge"), node.blendingMode == BlendMode.LinearDodge)) node.blendingMode = BlendMode.LinearDodge;
                         
-        // Screen blending mode
-        if (igSelectable(__("Screen"), node.blendingMode == BlendMode.Screen)) node.blendingMode = BlendMode.Screen;
-        
-        igEndCombo();
-    }
+                        igEndDragDropTarget();
+                    }
 
-    igSpacing();
+                    // TODO: We really should account for left vs. right handedness
+                    if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                        igOpenPopup("###MaskSettings");
+                    }
 
-    incText(_("Opacity"));
-    igSliderFloat("###Opacity", &node.opacity, 0, 1f, "%0.2f");
-    igSpacing();
-    igSpacing();
-
-    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Masks"));
-    igSpacing();
-
-    // Threshold slider name for adjusting how transparent a pixel can be
-    // before it gets discarded.
-    incText(_("Threshold"));
-    igSliderFloat("###Threshold", &node.threshold, 0.0, 1.0, "%.2f");
-    
-    igSpacing();
-
-    // Padding
-    igSpacing();
-    igSpacing();
-}
-
-void incInspectorModelSimplePhysics(SimplePhysics node) {
-    if (!igCollapsingHeader(__("SimplePhysics"), ImGuiTreeNodeFlags.DefaultOpen))
-        return;
-
-    float adjustSpeed = 1;
-
-    igSpacing();
-
-    // BLENDING MODE
-    import std.conv : text;
-    import std.string : toStringz;
-
-    igPushID("TargetParam");
-        incText(_("Parameter"));
-        string paramName = _("(unassigned)");
-        if (node.param !is null) paramName = node.param.name;
-        igInputText("###TARGET_PARAM", cast(char*)paramName.toStringz, paramName.length, ImGuiInputTextFlags.ReadOnly);
+                    if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
+                        igSetDragDropPayload("_MASKITEM", cast(void*)masker, MaskBinding.sizeof, ImGuiCond.Always);
+                        incText(masker.maskSrc.name);
+                        igEndDragDropSource();
+                    }
+                igPopID();
+            }
+            igEndListBox();
+        }
 
         if(igBeginDragDropTarget()) {
-            const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PARAMETER");
+            const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
             if (payload !is null) {
-                Parameter payloadParam = *cast(Parameter*)payload.Data;
-                node.param = payloadParam;
-            }
+                if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
 
+                    // Make sure we don't mask against ourselves as well as don't double mask
+                    if (payloadDrawable != node && !node.isMaskedBy(payloadDrawable)) {
+                        node.masks ~= MaskBinding(payloadDrawable.uuid, MaskingMode.Mask, payloadDrawable);
+                    }
+                }
+            }
+            
             igEndDragDropTarget();
         }
 
-    igPopID();
-
-    incText(_("Type"));
-    if (igBeginCombo("###PhysType", __(node.modelType.text))) {
-
-        if (igSelectable(__("Pendulum"), node.modelType == PhysicsModel.Pendulum)) node.modelType = PhysicsModel.Pendulum;
-
-        if (igSelectable(__("SpringPendulum"), node.modelType == PhysicsModel.SpringPendulum)) node.modelType = PhysicsModel.SpringPendulum;
-
-        igEndCombo();
+        // Padding
+        igSpacing();
+        igSpacing();
     }
+    incEndCategory();
+}
 
-    igSpacing();
+void incInspectorModelComposite(Composite node) {
+    if (incBeginCategory(__("Composite"))) {
+        
 
-    incText(_("Mapping mode"));
-    if (igBeginCombo("###PhysMapMode", __(node.mapMode.text))) {
+        igSpacing();
 
-        if (igSelectable(__("AngleLength"), node.mapMode == ParamMapMode.AngleLength)) node.mapMode = ParamMapMode.AngleLength;
+        // BLENDING MODE
+        import std.conv : text;
+        import std.string : toStringz;
 
-        if (igSelectable(__("XY"), node.mapMode == ParamMapMode.XY)) node.mapMode = ParamMapMode.XY;
 
-        igEndCombo();
+        incText(_("Tint (Multiply)"));
+        igColorEdit3("###TINT", cast(float[3]*)node.tint.ptr);
+
+        incText(_("Tint (Screen)"));
+        igColorEdit3("###S_TINT", cast(float[3]*)node.screenTint.ptr);
+
+        // Header for the Blending options for Parts
+        incText(_("Blending"));
+        if (igBeginCombo("###Blending", __(node.blendingMode.text))) {
+
+            // Normal blending mode as used in Photoshop, generally
+            // the default blending mode photoshop starts a layer out as.
+            if (igSelectable(__("Normal"), node.blendingMode == BlendMode.Normal)) node.blendingMode = BlendMode.Normal;
+            
+            // Multiply blending mode, in which this texture's color data
+            // will be multiplied with the color data already in the framebuffer.
+            if (igSelectable(__("Multiply"), node.blendingMode == BlendMode.Multiply)) node.blendingMode = BlendMode.Multiply;
+                    
+            // Color Dodge blending mode
+            if (igSelectable(__("Color Dodge"), node.blendingMode == BlendMode.ColorDodge)) node.blendingMode = BlendMode.ColorDodge;
+                    
+            // Linear Dodge blending mode
+            if (igSelectable(__("Linear Dodge"), node.blendingMode == BlendMode.LinearDodge)) node.blendingMode = BlendMode.LinearDodge;
+                            
+            // Screen blending mode
+            if (igSelectable(__("Screen"), node.blendingMode == BlendMode.Screen)) node.blendingMode = BlendMode.Screen;
+            
+            igEndCombo();
+        }
+
+        igSpacing();
+
+        incText(_("Opacity"));
+        igSliderFloat("###Opacity", &node.opacity, 0, 1f, "%0.2f");
+        igSpacing();
+        igSpacing();
+
+        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Masks"));
+        igSpacing();
+
+        // Threshold slider name for adjusting how transparent a pixel can be
+        // before it gets discarded.
+        incText(_("Threshold"));
+        igSliderFloat("###Threshold", &node.threshold, 0.0, 1.0, "%.2f");
+        
+        igSpacing();
+
+        // Padding
+        igSpacing();
+        igSpacing();
     }
+    incEndCategory();
+}
 
-    igSpacing();
+void incInspectorModelSimplePhysics(SimplePhysics node) {
+    if (incBeginCategory(__("SimplePhysics"))) {
+        float adjustSpeed = 1;
 
-    igPushID("SimplePhysics");
+        igSpacing();
 
-    igPushID(0);
-    incText(_("Gravity scale"));
-    incDragFloat("gravity", &node.gravity, adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-    igSpacing();
-    igSpacing();
-    igPopID();
+        // BLENDING MODE
+        import std.conv : text;
+        import std.string : toStringz;
 
-    igPushID(1);
-    incText(_("Length"));
-    incDragFloat("length", &node.length, adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-    igSpacing();
-    igSpacing();
-    igPopID();
+        igPushID("TargetParam");
+            incText(_("Parameter"));
+            string paramName = _("(unassigned)");
+            if (node.param !is null) paramName = node.param.name;
+            igInputText("###TARGET_PARAM", cast(char*)paramName.toStringz, paramName.length, ImGuiInputTextFlags.ReadOnly);
 
-    igPushID(2);
-    incText(_("Resonant frequency"));
-    incDragFloat("frequency", &node.frequency, adjustSpeed/100, 0.01, 30, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-    igSpacing();
-    igSpacing();
-    igPopID();
+            if(igBeginDragDropTarget()) {
+                const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PARAMETER");
+                if (payload !is null) {
+                    Parameter payloadParam = *cast(Parameter*)payload.Data;
+                    node.param = payloadParam;
+                }
 
-    igPushID(3);
-    incText(_("Damping"));
-    incDragFloat("damping_angle", &node.angleDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-    igPopID();
+                igEndDragDropTarget();
+            }
 
-    igPushID(4);
-    incDragFloat("damping_length", &node.lengthDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-    igSpacing();
-    igSpacing();
-    igPopID();
+        igPopID();
 
-    igPushID(5);
-    incText(_("Output scale"));
-    incDragFloat("output_scale.x", &node.outputScale.vector[0], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-    igPopID();
+        incText(_("Type"));
+        if (igBeginCombo("###PhysType", __(node.modelType.text))) {
 
-    igPushID(6);
-    incDragFloat("output_scale.y", &node.outputScale.vector[1], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-    igSpacing();
-    igSpacing();
-    igPopID();
+            if (igSelectable(__("Pendulum"), node.modelType == PhysicsModel.Pendulum)) node.modelType = PhysicsModel.Pendulum;
 
-    // Padding
-    igSpacing();
-    igSpacing();
+            if (igSelectable(__("SpringPendulum"), node.modelType == PhysicsModel.SpringPendulum)) node.modelType = PhysicsModel.SpringPendulum;
 
-    igPopID();
+            igEndCombo();
+        }
+
+        igSpacing();
+
+        incText(_("Mapping mode"));
+        if (igBeginCombo("###PhysMapMode", __(node.mapMode.text))) {
+
+            if (igSelectable(__("AngleLength"), node.mapMode == ParamMapMode.AngleLength)) node.mapMode = ParamMapMode.AngleLength;
+
+            if (igSelectable(__("XY"), node.mapMode == ParamMapMode.XY)) node.mapMode = ParamMapMode.XY;
+
+            igEndCombo();
+        }
+
+        igSpacing();
+
+        igPushID("SimplePhysics");
+
+        igPushID(0);
+        incText(_("Gravity scale"));
+        incDragFloat("gravity", &node.gravity, adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+        igSpacing();
+        igSpacing();
+        igPopID();
+
+        igPushID(1);
+        incText(_("Length"));
+        incDragFloat("length", &node.length, adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+        igSpacing();
+        igSpacing();
+        igPopID();
+
+        igPushID(2);
+        incText(_("Resonant frequency"));
+        incDragFloat("frequency", &node.frequency, adjustSpeed/100, 0.01, 30, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+        igSpacing();
+        igSpacing();
+        igPopID();
+
+        igPushID(3);
+        incText(_("Damping"));
+        incDragFloat("damping_angle", &node.angleDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+        igPopID();
+
+        igPushID(4);
+        incDragFloat("damping_length", &node.lengthDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+        igSpacing();
+        igSpacing();
+        igPopID();
+
+        igPushID(5);
+        incText(_("Output scale"));
+        incDragFloat("output_scale.x", &node.outputScale.vector[0], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+        igPopID();
+
+        igPushID(6);
+        incDragFloat("output_scale.y", &node.outputScale.vector[1], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+        igSpacing();
+        igSpacing();
+        igPopID();
+
+        // Padding
+        igSpacing();
+        igSpacing();
+
+        igPopID();
+        }
+    incEndCategory();
 }
 
 //
@@ -1238,180 +1223,180 @@ void incInspectorDeformSliderFloat(string name, string paramName, float min, flo
 }
 
 void incInspectorDeformTRS(Node node, Parameter param, vec2u cursor) {
-    if (!igCollapsingHeader(__("Transform"), ImGuiTreeNodeFlags.DefaultOpen)) 
-        return;
-    
-    float adjustSpeed = 1;
+    if (incBeginCategory(__("Transform"))) {   
+        float adjustSpeed = 1;
 
-    ImVec2 avail;
-    igGetContentRegionAvail(&avail);
+        ImVec2 avail;
+        igGetContentRegionAvail(&avail);
 
-    float fontSize = 16;
+        float fontSize = 16;
 
-    //
-    // Translation
-    //
+        //
+        // Translation
+        //
 
 
 
-    // Translation portion of the transformation matrix.
-    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Translation"));
-    igPushItemWidth((avail.x-4f)/3f);
+        // Translation portion of the transformation matrix.
+        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Translation"));
+        igPushItemWidth((avail.x-4f)/3f);
 
-        // Translation X
-        igPushID(0);
-            incInspectorDeformFloatDragVal("translation_x", "transform.t.x", 1f, node, param, cursor);
-        igPopID();
+            // Translation X
+            igPushID(0);
+                incInspectorDeformFloatDragVal("translation_x", "transform.t.x", 1f, node, param, cursor);
+            igPopID();
 
-        igSameLine(0, 4);
+            igSameLine(0, 4);
 
-        // Translation Y
-        igPushID(1);
-            incInspectorDeformFloatDragVal("translation_y", "transform.t.y", 1f, node, param, cursor);
-        igPopID();
+            // Translation Y
+            igPushID(1);
+                incInspectorDeformFloatDragVal("translation_y", "transform.t.y", 1f, node, param, cursor);
+            igPopID();
 
-        igSameLine(0, 4);
+            igSameLine(0, 4);
 
-        // Translation Z
-        igPushID(2);
-            incInspectorDeformFloatDragVal("translation_z", "transform.t.z", 1f, node, param, cursor);
-        igPopID();
-
-
-    
-        // Padding
-        igSpacing();
-        igSpacing();
-
-    igPopItemWidth();
+            // Translation Z
+            igPushID(2);
+                incInspectorDeformFloatDragVal("translation_z", "transform.t.z", 1f, node, param, cursor);
+            igPopID();
 
 
-    //
-    // Rotation
-    //
-    igSpacing();
-    
-    // Rotation portion of the transformation matrix.
-    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Rotation"));
-    igPushItemWidth((avail.x-4f)/3f);
-
-        // Rotation X
-        igPushID(3);
-            incInspectorDeformFloatDragVal("rotation.x", "transform.r.x", 0.05f, node, param, cursor);
-        igPopID();
-
-        igSameLine(0, 4);
-
-        // Rotation Y
-        igPushID(4);
-            incInspectorDeformFloatDragVal("rotation.y", "transform.r.y", 0.05f, node, param, cursor);
-        igPopID();
-
-        igSameLine(0, 4);
-
-        // Rotation Z
-        igPushID(5);
-            incInspectorDeformFloatDragVal("rotation.z", "transform.r.z", 0.05f, node, param, cursor);
-        igPopID();
-
-    igPopItemWidth();
-
-    avail.x += igGetFontSize();
-
-    //
-    // Scaling
-    //
-    igSpacing();
-    
-    // Scaling portion of the transformation matrix.
-    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Scale"));
-    igPushItemWidth((avail.x-14f)/2f);
         
-        // Scale X
-        igPushID(6);
-            incInspectorDeformFloatDragVal("scale.x", "transform.s.x", 0.1f, node, param, cursor);
-        igPopID();
+            // Padding
+            igSpacing();
+            igSpacing();
 
-        igSameLine(0, 4);
+        igPopItemWidth();
 
-        // Scale Y
-        igPushID(7);
-            incInspectorDeformFloatDragVal("scale.y", "transform.s.y", 0.1f, node, param, cursor);
-        igPopID();
 
-    igPopItemWidth();
+        //
+        // Rotation
+        //
+        igSpacing();
+        
+        // Rotation portion of the transformation matrix.
+        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Rotation"));
+        igPushItemWidth((avail.x-4f)/3f);
 
-    igSpacing();
-    igSpacing();
+            // Rotation X
+            igPushID(3);
+                incInspectorDeformFloatDragVal("rotation.x", "transform.r.x", 0.05f, node, param, cursor);
+            igPopID();
 
-    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Sorting"));
-    incInspectorDeformInputFloat("zSort", "zSort", 0.01, 0.05, node, param, cursor);
+            igSameLine(0, 4);
+
+            // Rotation Y
+            igPushID(4);
+                incInspectorDeformFloatDragVal("rotation.y", "transform.r.y", 0.05f, node, param, cursor);
+            igPopID();
+
+            igSameLine(0, 4);
+
+            // Rotation Z
+            igPushID(5);
+                incInspectorDeformFloatDragVal("rotation.z", "transform.r.z", 0.05f, node, param, cursor);
+            igPopID();
+
+        igPopItemWidth();
+
+        avail.x += igGetFontSize();
+
+        //
+        // Scaling
+        //
+        igSpacing();
+        
+        // Scaling portion of the transformation matrix.
+        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Scale"));
+        igPushItemWidth((avail.x-14f)/2f);
+            
+            // Scale X
+            igPushID(6);
+                incInspectorDeformFloatDragVal("scale.x", "transform.s.x", 0.1f, node, param, cursor);
+            igPopID();
+
+            igSameLine(0, 4);
+
+            // Scale Y
+            igPushID(7);
+                incInspectorDeformFloatDragVal("scale.y", "transform.s.y", 0.1f, node, param, cursor);
+            igPopID();
+
+        igPopItemWidth();
+
+        igSpacing();
+        igSpacing();
+
+        igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Sorting"));
+        incInspectorDeformInputFloat("zSort", "zSort", 0.01, 0.05, node, param, cursor);
+    }
+    incEndCategory();
 }
 
 void incInspectorDeformPart(Part node, Parameter param, vec2u cursor) {
-    if (!igCollapsingHeader(__("Part"), ImGuiTreeNodeFlags.DefaultOpen)) 
-        return;
+    if (incBeginCategory(__("Part"))) {
+        igBeginGroup();
+            igIndent(16);
+                // Header for texture options    
+                if (igCollapsingHeader(__("Textures")))  {
 
-    igBeginGroup();
-        igIndent(16);
-            // Header for texture options    
-            if (igCollapsingHeader(__("Textures")))  {
+                    incText(_("Tint (Multiply)"));
 
-                incText(_("Tint (Multiply)"));
+                    incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
 
-                incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
+                    incText(_("Tint (Screen)"));
+                    incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
 
-                incText(_("Tint (Screen)"));
-                incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
+                    // Padding
+                    igSeparator();
+                    igSpacing();
+                    igSpacing();
+                }
+            igUnindent();
+        igEndGroup();
 
-                // Padding
-                igSeparator();
-                igSpacing();
-                igSpacing();
-            }
-        igUnindent();
-    igEndGroup();
+        incText(_("Opacity"));
+        incInspectorDeformSliderFloat("###Opacity", "opacity", 0, 1f, node, param, cursor);
+        igSpacing();
+        igSpacing();
 
-    incText(_("Opacity"));
-    incInspectorDeformSliderFloat("###Opacity", "opacity", 0, 1f, node, param, cursor);
-    igSpacing();
-    igSpacing();
-
-    // Threshold slider name for adjusting how transparent a pixel can be
-    // before it gets discarded.
-    incText(_("Threshold"));
-    incInspectorDeformSliderFloat("###Threshold", "alphaThreshold", 0.0, 1.0, node, param, cursor);
+        // Threshold slider name for adjusting how transparent a pixel can be
+        // before it gets discarded.
+        incText(_("Threshold"));
+        incInspectorDeformSliderFloat("###Threshold", "alphaThreshold", 0.0, 1.0, node, param, cursor);
+    }
+    incEndCategory();
 }
 
 void incInspectorDeformComposite(Composite node, Parameter param, vec2u cursor) {
-    if (!igCollapsingHeader(__("Composite"), ImGuiTreeNodeFlags.DefaultOpen)) 
-        return;
+    if (incBeginCategory(__("Composite"))) {
+        igBeginGroup();
+            igIndent(16);
+                // Header for texture options    
+                if (igCollapsingHeader(__("Textures")))  {
 
-    igBeginGroup();
-        igIndent(16);
-            // Header for texture options    
-            if (igCollapsingHeader(__("Textures")))  {
+                    incText(_("Tint (Multiply)"));
 
-                incText(_("Tint (Multiply)"));
+                    incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
 
-                incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
+                    incText(_("Tint (Screen)"));
 
-                incText(_("Tint (Screen)"));
+                    incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
 
-                incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
+                    // Padding
+                    igSeparator();
+                    igSpacing();
+                    igSpacing();
+                }
+            igUnindent();
+        igEndGroup();
 
-                // Padding
-                igSeparator();
-                igSpacing();
-                igSpacing();
-            }
-        igUnindent();
-    igEndGroup();
-
-    incText(_("Opacity"));
-    incInspectorDeformSliderFloat("###Opacity", "opacity", 0, 1f, node, param, cursor);
-    igSpacing();
-    igSpacing();
+        incText(_("Opacity"));
+        incInspectorDeformSliderFloat("###Opacity", "opacity", 0, 1f, node, param, cursor);
+        igSpacing();
+        igSpacing();
+    }
+    incEndCategory();
 }
 
 //

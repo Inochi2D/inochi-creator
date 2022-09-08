@@ -22,6 +22,7 @@ public import creator.widgets.colorbutton;
 public import creator.widgets.dialog;
 public import creator.widgets.label;
 public import creator.widgets.texture;
+public import creator.widgets.category;
 
 bool incBegin(const(char)* name, bool* pOpen, ImGuiWindowFlags flags) {
     version (NoUIScaling) {
