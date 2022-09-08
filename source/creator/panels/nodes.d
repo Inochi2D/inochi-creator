@@ -6,6 +6,7 @@
 */
 module creator.panels.nodes;
 import creator.viewport.vertex;
+import creator.widgets.dragdrop;
 import creator.actions;
 import creator.panels;
 import creator;
@@ -186,11 +187,9 @@ protected:
                         if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
                             igSetDragDropPayload("_PUPPETNTREE", cast(void*)&n, (&n).sizeof, ImGuiCond.Always);
                             if (selectedNodes.length > 1) {
-                                foreach(node; selectedNodes) {
-                                    incText(node.name);
-                                }
+                                incDragdropNodeList(selectedNodes);
                             } else {
-                                incText(n.name);
+                                incDragdropNodeList(n);
                             }
                             igEndDragDropSource();
                         }

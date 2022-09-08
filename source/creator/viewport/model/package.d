@@ -10,6 +10,7 @@ import creator.widgets.tooltip;
 import creator.widgets.label;
 import creator.widgets.texture;
 import creator.widgets.dummy;
+import creator.widgets.dragdrop;
 import creator.core.input;
 import creator.core;
 import creator;
@@ -81,7 +82,7 @@ void incViewportModelMenu() {
 
                     if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
                         igSetDragDropPayload("_PUPPETNTREE", cast(void*)&part, (&part).sizeof, ImGuiCond.Always);
-                        incTextureSlotUntitled("DRAG_ICON", part.textures[0], ImVec2(ENTRY_SIZE-4, ENTRY_SIZE-4), 24, ImGuiWindowFlags.NoInputs);
+                        incDragdropNodeList(part);
                         igEndDragDropSource();
                     }
 
