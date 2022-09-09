@@ -804,44 +804,35 @@ protected:
                             // Popup
                             if (igBeginPopup("###CategorySettings")) {
                                 if (igMenuItem(__("Rename"))) {
+                                    incPushWindow(new RenameWindow(group.name));
                                 }
 
                                 if (igBeginMenu(__("Colors"))) {
                                     auto flags = ImGuiColorEditFlags.NoLabel | ImGuiColorEditFlags.NoTooltip;
-                                    if (igColorButton("NONE", ImVec4(0, 0, 0, 0), flags | ImGuiColorEditFlags.AlphaPreview, ImVec2(16, 16))) {
-                                        group.color = vec3(float.nan, float.nan, float.nan);
-                                    }
-                                    igSameLine(0, 4);
-                                    if (igColorButton("RED", ImVec4(1, 0, 0, 1), flags, ImVec2(16, 16))) {
-                                        group.color = vec3(0.25, 0.15, 0.15);
-                                    }
-                                    igSameLine(0, 4);
-                                    if (igColorButton("GREEN", ImVec4(0, 1, 0, 1), flags, ImVec2(16, 16))) {
-                                        group.color = vec3(0.15, 0.25, 0.15);
-                                    }
-                                    igSameLine(0, 4);
-                                    if (igColorButton("BLUE", ImVec4(0, 0, 1, 1), flags, ImVec2(16, 16))) {
-                                        group.color = vec3(0.15, 0.15, 0.25);
-                                    }
+                                    ImVec2 swatchSize = ImVec2(24, 24);
 
-                                    // Second Line
-                                    if (igColorButton("PURPLE", ImVec4(1, 0, 1, 1), flags, ImVec2(16, 16))) {
-                                        group.color = vec3(0.25, 0.15, 0.25);
-                                    }
+                                    // COLOR SWATCHES
+                                    if (igColorButton("NONE", ImVec4(0, 0, 0, 0), flags | ImGuiColorEditFlags.AlphaPreview, swatchSize)) group.color = vec3(float.nan, float.nan, float.nan);
                                     igSameLine(0, 4);
-                                    if (igColorButton("CYAN", ImVec4(0, 1, 1, 1), flags, ImVec2(16, 16))) {
-                                        group.color = vec3(0.15, 0.25, 0.25);
-                                    }
+                                    if (igColorButton("RED", ImVec4(1, 0, 0, 1), flags, swatchSize)) group.color = vec3(0.25, 0.15, 0.15);
                                     igSameLine(0, 4);
-                                    if (igColorButton("YELLOW", ImVec4(1, 1, 0, 1), flags, ImVec2(16, 16))) {
-                                        group.color = vec3(0.25, 0.25, 0.15);
-                                    }
+                                    if (igColorButton("GREEN", ImVec4(0, 1, 0, 1), flags, swatchSize)) group.color = vec3(0.15, 0.25, 0.15);
                                     igSameLine(0, 4);
-                                    if (igColorButton("WHITE", ImVec4(1, 1, 1, 1), flags, ImVec2(16, 16))) {
-                                        group.color = vec3(0.25, 0.25, 0.25);
-                                    }
+                                    if (igColorButton("BLUE", ImVec4(0, 0, 1, 1), flags, swatchSize)) group.color = vec3(0.15, 0.15, 0.25);
+                                    igSameLine(0, 4);
+                                    if (igColorButton("PURPLE", ImVec4(1, 0, 1, 1), flags, swatchSize)) group.color = vec3(0.25, 0.15, 0.25);
+                                    igSameLine(0, 4);
+                                    if (igColorButton("CYAN", ImVec4(0, 1, 1, 1), flags, swatchSize)) group.color = vec3(0.15, 0.25, 0.25);
+                                    igSameLine(0, 4);
+                                    if (igColorButton("YELLOW", ImVec4(1, 1, 0, 1), flags, swatchSize)) group.color = vec3(0.25, 0.25, 0.15);
+                                    igSameLine(0, 4);
+                                    if (igColorButton("WHITE", ImVec4(1, 1, 1, 1), flags, swatchSize)) group.color = vec3(0.25, 0.25, 0.25);
+                                    
+                                    igSpacing();
 
-                                    igColorPicker3("CUSTOM", &group.color.vector, ImGuiColorEditFlags.InputRGB | ImGuiColorEditFlags.DisplayHSV);
+                                    // CUSTOM COLOR PICKER
+                                    // Allows user to select a custom color for parameter group.
+                                    igColorPicker3(__("Custom Color"), &group.color.vector, ImGuiColorEditFlags.InputRGB | ImGuiColorEditFlags.DisplayHSV);
                                     igEndMenu();
                                 }
 
