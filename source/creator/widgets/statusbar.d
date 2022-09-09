@@ -43,23 +43,24 @@ void incStatusbar() {
         if (igBeginMenuBar()) {
             
             igPushStyleColor(ImGuiCol.Separator, ImVec4(1.000f, 1.000f, 1.000f, 0.098f));
-            foreach(i, item; items) {
+                foreach(i, item; items) {
 
-                // We've reached the end
-                if (i == itemIdx) break;
-                
-                float startX = igGetCursorPosX();
+                    // We've reached the end
+                    if (i == itemIdx) break;
+                    
+                    float startX = igGetCursorPosX();
 
-                // Render the tooltip
-                ImVec2 size = incMeasureString(item.action);
-                incText(item.action);
-                igSameLine(startX+(size.x-8), 0);
-                incText(":");
-                igSameLine(0, 4);
-                incText(item.key);
+                    // Render the tooltip
+                    ImVec2 size = incMeasureString(item.action);
+                    incText(item.action);
+                    igSameLine(startX+(size.x-8), 0);
+                    incText(":");
+                    igSameLine(0, 4);
+                    incText(item.key);
 
-                igSeparator(); 
-            }
+                    igSeparator(); 
+                }
+            igPopStyleColor();
 
             if (incTaskLength() > 0) {
                 if (incTaskGetProgress() >= 0) {
