@@ -7,6 +7,8 @@
 module creator.io;
 public import creator.io.psd;
 public import creator.io.inpexport;
+public import creator.io.videoexport;
+public import creator.io.imageexport;
 
 import tinyfiledialogs;
 public import tinyfiledialogs : TFD_Filter;

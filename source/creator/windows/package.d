@@ -22,6 +22,7 @@ public import creator.windows.trkbind;
 public import creator.windows.psdmerge;
 public import creator.windows.welcome;
 public import creator.windows.rename;
+public import creator.windows.imgexport;
 
 version(NoUIScaling) private ImGuiWindowClass* windowClass;
 

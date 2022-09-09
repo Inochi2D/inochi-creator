@@ -14,6 +14,7 @@ import creator.windows;
 import creator.widgets;
 import creator.core.actionstack;
 import creator.core.i18n;
+import creator.io;
 import creator.atlas.atlas : incInitAtlassing;
 import creator.ext;
 import inochi2d;
@@ -66,6 +67,9 @@ int main(string[] args)
 
         // Initialize node overrides
         incInitExt();
+
+        // Initialize video exporting
+        incInitVideoExport();
         
         // Initialize atlassing
         incInitAtlassing();

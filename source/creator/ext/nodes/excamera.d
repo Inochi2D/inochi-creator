@@ -97,9 +97,12 @@ public:
         Gets Inochi2D camera for this camera
     */
     Camera getCamera() {
+        vec2 scale = transform().scale;
+
         Camera cam = new Camera();
-        cam.position = transform().translation.xy;
-        cam.scale = vec2(1, 1);
+        cam.position = transform().translation.xy*vec2(-1, -1);
+        cam.rotation = -transform().rotation.z;
+        cam.scale = vec2(1/scale.x, 1/scale.y);
         return cam;
     }
 

@@ -229,6 +229,70 @@ void incMainMenu() {
                                 incExportINP(file);
                             }
                         }
+                        if (igBeginMenu(__("Image"), true)) {
+                            if(igMenuItem(__("PNG (*.png)"), "", false, true)) {
+                                const TFD_Filter[] filters = [
+                                    { ["*.png"], "Portable Network Graphics (*.png)" }
+                                ];
+
+                                import std.path : setExtension;
+
+                                c_str filename = tinyfd_saveFileDialog(__("Export..."), "", filters);
+                                if (filename !is null) {
+                                    string file = cast(string)filename.fromStringz;
+
+                                    incPushWindow(new ImageExportWindow(file.setExtension("png")));
+                                }
+                            }
+
+                            if(igMenuItem(__("JPEG (*.jpeg)"), "", false, true)) {
+                                const TFD_Filter[] filters = [
+                                    { ["*.jpeg"], "JPEG Image (*.jpeg)" }
+                                ];
+
+                                import std.path : setExtension;
+
+                                c_str filename = tinyfd_saveFileDialog(__("Export..."), "", filters);
+                                if (filename !is null) {
+                                    string file = cast(string)filename.fromStringz;
+
+                                    incPushWindow(new ImageExportWindow(file.setExtension("jpeg")));
+                                }
+                            }
+
+                            if(igMenuItem(__("TARGA (*.tga)"), "", false, true)) {
+                                const TFD_Filter[] filters = [
+                                    { ["*.tga"], "TARGA Graphics (*.tga)" }
+                                ];
+
+                                import std.path : setExtension;
+
+                                c_str filename = tinyfd_saveFileDialog(__("Export..."), "", filters);
+                                if (filename !is null) {
+                                    string file = cast(string)filename.fromStringz;
+
+                                    incPushWindow(new ImageExportWindow(file.setExtension("tga")));
+                                }
+                            }
+
+                            igEndMenu();
+                        }
+                        if(igMenuItem(__("Video"), "", false, incVideoCanExport())) {
+                            const TFD_Filter[] filters = [
+                                { ["*.mp4"], "H.264 Video (*.mp4)" },
+                                { ["*.avi"], "AVI Video (*.avi)" },
+                                { ["*.png"], "PNG Sequence (*.png)" }
+                            ];
+
+                            import std.path : setExtension;
+
+                            c_str filename = tinyfd_saveFileDialog(__("Export..."), "", filters);
+                            if (filename !is null) {
+                                string file = cast(string)filename.fromStringz;
+
+                                incExportINP(file);
+                            }
+                        }
                         igEndMenu();
                     }
 
