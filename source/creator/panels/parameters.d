@@ -510,22 +510,24 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
     }
 
     if (canGroup) {
-        auto peek = igAcceptDragDropPayload("_PARAMETER", ImGuiDragDropFlags.AcceptPeekOnly | ImGuiDragDropFlags.SourceAllowNullID);
-        if(peek && peek.Data && (*cast(ParamDragDropData**)peek.Data).param != param) {
-            if (igBeginDragDropTarget()) {
-                auto payload = igAcceptDragDropPayload("_PARAMETER");
-                
-                if (payload !is null) {
-                    ParamDragDropData* payloadParam = *cast(ParamDragDropData**)payload.Data;
-                    ptrdiff_t idx2 = (*payloadParam.paramArr).findParamIndex(payloadParam.param);
-                    if (idx2 >= 0) {
-                        paramArr[idx] = new ExParameterGroup(_("New Parameter Group"), [param, payloadParam.param]);
-                        (*payloadParam.paramArr) = (*payloadParam.paramArr).remove(idx2);
+        incBeginDragDropFake();
+            auto peek = igAcceptDragDropPayload("_PARAMETER", ImGuiDragDropFlags.AcceptPeekOnly | ImGuiDragDropFlags.SourceAllowNullID);
+            if(peek && peek.Data && (*cast(ParamDragDropData**)peek.Data).param != param) {
+                if (igBeginDragDropTarget()) {
+                    auto payload = igAcceptDragDropPayload("_PARAMETER");
+                    
+                    if (payload !is null) {
+                        ParamDragDropData* payloadParam = *cast(ParamDragDropData**)payload.Data;
+                        ptrdiff_t idx2 = (*payloadParam.paramArr).findParamIndex(payloadParam.param);
+                        if (idx2 >= 0) {
+                            paramArr[idx] = new ExParameterGroup(_("New Parameter Group"), [param, payloadParam.param]);
+                            (*payloadParam.paramArr) = (*payloadParam.paramArr).remove(idx2);
+                        }
                     }
+                    igEndDragDropTarget();
                 }
-                igEndDragDropTarget();
             }
-        }
+        incEndDragDropFake();
     }
 
     if (open) {
@@ -889,7 +891,7 @@ protected:
                     (*payloadParam.paramArr) = (*payloadParam.paramArr).remove(idx2);
                 }
 
-                parameters = payloadParam.param~parameters;
+                incActivePuppet().parameters = payloadParam.param~parameters;
             }
             igEndDragDropTarget();
         }

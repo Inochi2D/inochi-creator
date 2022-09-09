@@ -302,19 +302,21 @@ protected:
 
             // Handle figuring out whether the user is trying to scroll the list via drag & drop
             // We're only peeking in to the contents of the payload.
-            auto data = igAcceptDragDropPayload("_PUPPETNTREE", ImGuiDragDropFlags.AcceptPeekOnly | ImGuiDragDropFlags.SourceAllowNullID);
-            if (igIsMouseDragging(ImGuiMouseButton.Left) && data && data.Data) {
-                ImVec2 mousePos;
-                igGetMousePos(&mousePos);
+            incBeginDragDropFake();
+                auto data = igAcceptDragDropPayload("_PUPPETNTREE", ImGuiDragDropFlags.AcceptPeekOnly | ImGuiDragDropFlags.SourceAllowNullID);
+                if (igIsMouseDragging(ImGuiMouseButton.Left) && data && data.Data) {
+                    ImVec2 mousePos;
+                    igGetMousePos(&mousePos);
 
-                // If mouse is inside the window
-                if (mousePos.x > crect.Min.x && mousePos.x < crect.Max.x) {
-                    float scrollSpeed = (4*60)*deltaTime();
+                    // If mouse is inside the window
+                    if (mousePos.x > crect.Min.x && mousePos.x < crect.Max.x) {
+                        float scrollSpeed = (4*60)*deltaTime();
 
-                    if (mousePos.y < crect.Min.y+32 && mousePos.y >= crect.Min.y) scrollDelta = -scrollSpeed;
-                    if (mousePos.y > crect.Max.y-32 && mousePos.y <= crect.Max.y) scrollDelta = scrollSpeed;
+                        if (mousePos.y < crect.Min.y+32 && mousePos.y >= crect.Min.y) scrollDelta = -scrollSpeed;
+                        if (mousePos.y > crect.Max.y-32 && mousePos.y <= crect.Max.y) scrollDelta = scrollSpeed;
+                    }
                 }
-            }
+            incEndDragDropFake();
 
             igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 1));
             igPushStyleVar(ImGuiStyleVar.IndentSpacing, 14);

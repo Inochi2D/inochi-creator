@@ -23,6 +23,7 @@ public import creator.widgets.dialog;
 public import creator.widgets.label;
 public import creator.widgets.texture;
 public import creator.widgets.category;
+public import creator.widgets.dragdrop;
 
 bool incBegin(const(char)* name, bool* pOpen, ImGuiWindowFlags flags) {
     version (NoUIScaling) {

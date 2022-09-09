@@ -41,3 +41,23 @@ void incDragdropNodeList(Node[] nodes) {
         }
     }
 }
+
+/**
+    Begins fake drag/drop context
+*/
+void incBeginDragDropFake() {
+    auto storage = igGetStateStorage();
+    auto ctx = igGetCurrentContext();
+    ImGuiStorage_SetBool(storage, igGetID("DRAG_DROP_ACTIVE"), ctx.DragDropActive);
+    ctx.DragDropActive = true;
+}
+
+/**
+    Begins fake drag/drop context
+*/
+void incEndDragDropFake() {
+    auto storage = igGetStateStorage();
+    auto ctx = igGetCurrentContext();
+    bool active = ImGuiStorage_GetBool(storage, igGetID("DRAG_DROP_ACTIVE"), false);
+    ctx.DragDropActive = active;
+}
