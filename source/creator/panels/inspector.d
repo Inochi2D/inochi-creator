@@ -382,10 +382,14 @@ void incInspectorModelTRS(Node node) {
         // Rotation portion of the transformation matrix.
         igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Rotation"));
         igPushItemWidth((avail.x-4f)/3f);
+            float rotationDegrees;
 
             // Rotation X
             igPushID(3);
-                if (incDragFloat("rotation_x", &node.localTransform.rotation.vector[0], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                rotationDegrees = degrees(node.localTransform.rotation.vector[0]);
+                if (incDragFloat("rotation_x", &rotationDegrees, adjustSpeed/100, -float.max, float.max, "%.2f°", ImGuiSliderFlags.NoRoundToFormat)) {       
+                    node.localTransform.rotation.vector[0] = radians(rotationDegrees);         
+                    
                     incActionPush(
                         new NodeValueChangeAction!(Node, float)(
                             _("Rotation X"),
@@ -402,7 +406,10 @@ void incInspectorModelTRS(Node node) {
 
             // Rotation Y
             igPushID(4);
-                if (incDragFloat("rotation_y", &node.localTransform.rotation.vector[1], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                rotationDegrees = degrees(node.localTransform.rotation.vector[1]);
+                if (incDragFloat("rotation_y", &rotationDegrees, adjustSpeed/100, -float.max, float.max, "%.2f°", ImGuiSliderFlags.NoRoundToFormat)) {
+                    node.localTransform.rotation.vector[1] = radians(rotationDegrees);
+
                     incActionPush(
                         new NodeValueChangeAction!(Node, float)(
                             _("Rotation Y"),
@@ -419,7 +426,10 @@ void incInspectorModelTRS(Node node) {
 
             // Rotation Z
             igPushID(5);
-                if (incDragFloat("rotation_z", &node.localTransform.rotation.vector[2], adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+                rotationDegrees = degrees(node.localTransform.rotation.vector[2]);
+                if (incDragFloat("rotation_z", &rotationDegrees, adjustSpeed/100, -float.max, float.max, "%.2f°", ImGuiSliderFlags.NoRoundToFormat)) {
+                    node.localTransform.rotation.vector[2] = radians(rotationDegrees);
+
                     incActionPush(
                         new NodeValueChangeAction!(Node, float)(
                             _("Rotation Z"),
@@ -1096,12 +1106,21 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
 //
 //  MODEL MODE ARMED
 //
-void incInspectorDeformFloatDragVal(string name, string paramName, float adjustSpeed, Node node, Parameter param, vec2u cursor) {
+void incInspectorDeformFloatDragVal(string name, string paramName, float adjustSpeed, Node node, Parameter param, vec2u cursor, bool rotation=false) {
     float currFloat = node.getDefaultValue(paramName);
     if (ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName)) {
         currFloat = b.getValue(cursor);
     }
-    if (incDragFloat(name, &currFloat, adjustSpeed, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+
+    // Convert to degrees for display
+    if (rotation) currFloat = degrees(currFloat);
+
+    if (incDragFloat(name, &currFloat, adjustSpeed, -float.max, float.max, rotation ? "%.2f°" : "%.2f", ImGuiSliderFlags.NoRoundToFormat)) {
+        
+        // Convert back to radians for data managment
+        if (rotation) currFloat = radians(currFloat);
+
+        // Set binding
         GroupAction groupAction = null;
         ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
         if (b is null) {
@@ -1111,6 +1130,8 @@ void incInspectorDeformFloatDragVal(string name, string paramName, float adjustS
             auto addAction = new ParameterBindingAddAction(param, b);
             groupAction.addAction(addAction);
         }
+
+        // Push action
         auto action = new ParameterBindingValueChangeAction!(float)(b.getName(), b, cursor.x, cursor.y);
         b.setValue(cursor, currFloat);
         action.updateNewState();
@@ -1287,21 +1308,21 @@ void incInspectorDeformTRS(Node node, Parameter param, vec2u cursor) {
 
             // Rotation X
             igPushID(3);
-                incInspectorDeformFloatDragVal("rotation.x", "transform.r.x", 0.05f, node, param, cursor);
+                incInspectorDeformFloatDragVal("rotation.x", "transform.r.x", 0.05f, node, param, cursor, true);
             igPopID();
 
             igSameLine(0, 4);
 
             // Rotation Y
             igPushID(4);
-                incInspectorDeformFloatDragVal("rotation.y", "transform.r.y", 0.05f, node, param, cursor);
+                incInspectorDeformFloatDragVal("rotation.y", "transform.r.y", 0.05f, node, param, cursor, true);
             igPopID();
 
             igSameLine(0, 4);
 
             // Rotation Z
             igPushID(5);
-                incInspectorDeformFloatDragVal("rotation.z", "transform.r.z", 0.05f, node, param, cursor);
+                incInspectorDeformFloatDragVal("rotation.z", "transform.r.z", 0.05f, node, param, cursor, true);
             igPopID();
 
         igPopItemWidth();
