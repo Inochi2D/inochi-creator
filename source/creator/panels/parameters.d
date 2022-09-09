@@ -305,173 +305,174 @@ private {
     }
 
     void bindingList(Parameter param) {
-        if (!igCollapsingHeader(__("Bindings"), ImGuiTreeNodeFlags.DefaultOpen)) return;
+        if (incBeginCategory(__("Bindings"))) {
+            refreshBindingList(param);
 
-        refreshBindingList(param);
+            auto io = igGetIO();
+            auto style = igGetStyle();
+            ImS32 inactiveColor = igGetColorU32(style.Colors[ImGuiCol.TextDisabled]);
 
-        auto io = igGetIO();
-        auto style = igGetStyle();
-        ImS32 inactiveColor = igGetColorU32(style.Colors[ImGuiCol.TextDisabled]);
+            igBeginChild("BindingList", ImVec2(0, 256), false);
+                igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 1));
+                igPushStyleVar(ImGuiStyleVar.IndentSpacing, 14);
 
-        igBeginChild("BindingList", ImVec2(0, 256), false);
-            igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 1));
-            igPushStyleVar(ImGuiStyleVar.IndentSpacing, 14);
+                foreach(node; cAllBoundNodes) {
+                    ParameterBinding[] allBindings = cParamBindingEntriesAll[node];
+                    ParameterBinding[] *bindings = (node in cParamBindingEntries);
 
-            foreach(node; cAllBoundNodes) {
-                ParameterBinding[] allBindings = cParamBindingEntriesAll[node];
-                ParameterBinding[] *bindings = (node in cParamBindingEntries);
-
-                // Figure out if node is selected ( == all bindings selected)
-                bool nodeSelected = true;
-                bool someSelected = false;
-                foreach(binding; allBindings) {
-                    if ((binding.getTarget() in cSelectedBindings) is null)
-                        nodeSelected = false;
-                    else
-                        someSelected = true;
-                }
-
-                ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.OpenOnArrow;
-                if (nodeSelected)
-                    flags |= ImGuiTreeNodeFlags.Selected;
-
-                if (bindings is null) igPushStyleColor(ImGuiCol.Text, inactiveColor);
-                string nodeName = incTypeIdToIcon(node.typeId) ~ " " ~ node.name;
-                if (igTreeNodeEx(cast(void*)node.uuid, flags, nodeName.toStringz)) {
-
-                    if (bindings is null) igPopStyleColor();
-                    if (igBeginPopup("###BindingPopup")) {
-                        if (igMenuItem(__("Remove"), "", false, true)) {
-                            auto action = new GroupAction();
-                            foreach(binding; cSelectedBindings.byValue()) {
-                                action.addAction(new ParameterBindingRemoveAction(param, binding));
-                                param.removeBinding(binding);
-                            }
-                            incActionPush(action);
-                            incViewportNodeDeformNotifyParamValueChanged();
-                        }
-
-                        keypointActions(param, cSelectedBindings.values);
-
-                        if (igBeginMenu(__("Interpolation Mode"), true)) {
-                            if (igMenuItem(__("Nearest"), "", false, true)) {
-                                foreach(binding; cSelectedBindings.values) {
-                                    binding.interpolateMode = InterpolateMode.Nearest;
-                                }
-                                incViewportNodeDeformNotifyParamValueChanged();
-                            }
-                            if (igMenuItem(__("Linear"), "", false, true)) {
-                                foreach(binding; cSelectedBindings.values) {
-                                    binding.interpolateMode = InterpolateMode.Linear;
-                                }
-                                incViewportNodeDeformNotifyParamValueChanged();
-                            }
-                            igEndMenu();
-                        }
-
-                        bool haveCompatible = cCompatibleNodes.length > 0;
-                        if (igBeginMenu(__("Copy to"), haveCompatible)) {
-                            foreach(cNode; cCompatibleNodes) {
-                                if (igMenuItem(cNode.name.toStringz, "", false, true)) {
-                                    copySelectionToNode(param, cNode);
-                                }
-                            }
-                            igEndMenu();
-                        }
-                        if (igBeginMenu(__("Swap with"), haveCompatible)) {
-                            foreach(cNode; cCompatibleNodes) {
-                                if (igMenuItem(cNode.name.toStringz, "", false, true)) {
-                                    swapSelectionWithNode(param, cNode);
-                                }
-                            }
-                            igEndMenu();
-                        }
-
-                        igEndPopup();
-                    }
-                    if (igIsItemClicked(ImGuiMouseButton.Right)) {
-                        if (!someSelected) {
-                            cSelectedBindings.clear();
-                            foreach(binding; allBindings) {
-                                cSelectedBindings[binding.getTarget()] = binding;
-                            }
-                        }
-                        cCompatibleNodes = getCompatibleNodes();
-                        igOpenPopup("###BindingPopup");
-                    }
-
-                    // Node selection logic
-                    if (igIsItemClicked(ImGuiMouseButton.Left) && !igIsItemToggledOpen()) {
-                        
-                        // Select the node you've clicked in the bindings list
-                        if (incNodeInSelection(node)) {
-                            incFocusCamera(node);
-                        } else incSelectNode(node);
-                        
-                        if (!io.KeyCtrl) {
-                            cSelectedBindings.clear();
-                            nodeSelected = false;
-                        }
-                        foreach(binding; allBindings) {
-                            if (nodeSelected) cSelectedBindings.remove(binding.getTarget());
-                            else cSelectedBindings[binding.getTarget()] = binding;
-                        }
-                    }
-
-                    // Iterate over bindings
+                    // Figure out if node is selected ( == all bindings selected)
+                    bool nodeSelected = true;
+                    bool someSelected = false;
                     foreach(binding; allBindings) {
-                        ImGuiTreeNodeFlags flags2 =
-                            ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.OpenOnArrow |
-                            ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.NoTreePushOnOpen;
+                        if ((binding.getTarget() in cSelectedBindings) is null)
+                            nodeSelected = false;
+                        else
+                            someSelected = true;
+                    }
 
-                        bool selected = cast(bool)(binding.getTarget() in cSelectedBindings);
-                        if (selected) flags2 |= ImGuiTreeNodeFlags.Selected;
+                    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.OpenOnArrow;
+                    if (nodeSelected)
+                        flags |= ImGuiTreeNodeFlags.Selected;
 
-                        // Style as inactive if not set at this keypoint
-                        if (!binding.isSet(cParamPoint))
-                            igPushStyleColor(ImGuiCol.Text, inactiveColor);
+                    if (bindings is null) igPushStyleColor(ImGuiCol.Text, inactiveColor);
+                    string nodeName = incTypeIdToIcon(node.typeId) ~ " " ~ node.name;
+                    if (igTreeNodeEx(cast(void*)node.uuid, flags, nodeName.toStringz)) {
 
+                        if (bindings is null) igPopStyleColor();
+                        if (igBeginPopup("###BindingPopup")) {
+                            if (igMenuItem(__("Remove"), "", false, true)) {
+                                auto action = new GroupAction();
+                                foreach(binding; cSelectedBindings.byValue()) {
+                                    action.addAction(new ParameterBindingRemoveAction(param, binding));
+                                    param.removeBinding(binding);
+                                }
+                                incActionPush(action);
+                                incViewportNodeDeformNotifyParamValueChanged();
+                            }
 
-                        // Binding entry
-                        auto value = cast(ValueParameterBinding)binding;
-                        string label;
-                        if (value && binding.isSet(cParamPoint)) {
-                            label = format("%s (%.02f)", binding.getName(), value.getValue(cParamPoint));
-                        } else {
-                            label = binding.getName();
+                            keypointActions(param, cSelectedBindings.values);
+
+                            if (igBeginMenu(__("Interpolation Mode"), true)) {
+                                if (igMenuItem(__("Nearest"), "", false, true)) {
+                                    foreach(binding; cSelectedBindings.values) {
+                                        binding.interpolateMode = InterpolateMode.Nearest;
+                                    }
+                                    incViewportNodeDeformNotifyParamValueChanged();
+                                }
+                                if (igMenuItem(__("Linear"), "", false, true)) {
+                                    foreach(binding; cSelectedBindings.values) {
+                                        binding.interpolateMode = InterpolateMode.Linear;
+                                    }
+                                    incViewportNodeDeformNotifyParamValueChanged();
+                                }
+                                igEndMenu();
+                            }
+
+                            bool haveCompatible = cCompatibleNodes.length > 0;
+                            if (igBeginMenu(__("Copy to"), haveCompatible)) {
+                                foreach(cNode; cCompatibleNodes) {
+                                    if (igMenuItem(cNode.name.toStringz, "", false, true)) {
+                                        copySelectionToNode(param, cNode);
+                                    }
+                                }
+                                igEndMenu();
+                            }
+                            if (igBeginMenu(__("Swap with"), haveCompatible)) {
+                                foreach(cNode; cCompatibleNodes) {
+                                    if (igMenuItem(cNode.name.toStringz, "", false, true)) {
+                                        swapSelectionWithNode(param, cNode);
+                                    }
+                                }
+                                igEndMenu();
+                            }
+
+                            igEndPopup();
                         }
-
-                        // NOTE: This is a leaf node so it should NOT be popped.
-                        const(char)* bid = binding.getName().toStringz;
-                        igTreeNodeEx(bid, flags2, label.toStringz);
-                            if (!binding.isSet(cParamPoint)) igPopStyleColor();
-
-                            // Binding selection logic
-                            if (igIsItemClicked(ImGuiMouseButton.Right)) {
-                                if (!selected) {
-                                    cSelectedBindings.clear();
+                        if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                            if (!someSelected) {
+                                cSelectedBindings.clear();
+                                foreach(binding; allBindings) {
                                     cSelectedBindings[binding.getTarget()] = binding;
                                 }
-                                cCompatibleNodes = getCompatibleNodes();
-                                igOpenPopup("###BindingPopup");
                             }
-                            if (igIsItemClicked(ImGuiMouseButton.Left)) {
-                                if (!io.KeyCtrl) {
-                                    cSelectedBindings.clear();
-                                    selected = false;
-                                }
-                                if (selected) cSelectedBindings.remove(binding.getTarget());
+                            cCompatibleNodes = getCompatibleNodes();
+                            igOpenPopup("###BindingPopup");
+                        }
+
+                        // Node selection logic
+                        if (igIsItemClicked(ImGuiMouseButton.Left) && !igIsItemToggledOpen()) {
+                            
+                            // Select the node you've clicked in the bindings list
+                            if (incNodeInSelection(node)) {
+                                incFocusCamera(node);
+                            } else incSelectNode(node);
+                            
+                            if (!io.KeyCtrl) {
+                                cSelectedBindings.clear();
+                                nodeSelected = false;
+                            }
+                            foreach(binding; allBindings) {
+                                if (nodeSelected) cSelectedBindings.remove(binding.getTarget());
                                 else cSelectedBindings[binding.getTarget()] = binding;
                             }
-                    }
-                    
-                    igTreePop();
-                } else if (bindings is null) igPopStyleColor();
-            }
+                        }
 
-            igPopStyleVar();
-            igPopStyleVar();
-        igEndChild();
+                        // Iterate over bindings
+                        foreach(binding; allBindings) {
+                            ImGuiTreeNodeFlags flags2 =
+                                ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.OpenOnArrow |
+                                ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.NoTreePushOnOpen;
+
+                            bool selected = cast(bool)(binding.getTarget() in cSelectedBindings);
+                            if (selected) flags2 |= ImGuiTreeNodeFlags.Selected;
+
+                            // Style as inactive if not set at this keypoint
+                            if (!binding.isSet(cParamPoint))
+                                igPushStyleColor(ImGuiCol.Text, inactiveColor);
+
+
+                            // Binding entry
+                            auto value = cast(ValueParameterBinding)binding;
+                            string label;
+                            if (value && binding.isSet(cParamPoint)) {
+                                label = format("%s (%.02f)", binding.getName(), value.getValue(cParamPoint));
+                            } else {
+                                label = binding.getName();
+                            }
+
+                            // NOTE: This is a leaf node so it should NOT be popped.
+                            const(char)* bid = binding.getName().toStringz;
+                            igTreeNodeEx(bid, flags2, label.toStringz);
+                                if (!binding.isSet(cParamPoint)) igPopStyleColor();
+
+                                // Binding selection logic
+                                if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                                    if (!selected) {
+                                        cSelectedBindings.clear();
+                                        cSelectedBindings[binding.getTarget()] = binding;
+                                    }
+                                    cCompatibleNodes = getCompatibleNodes();
+                                    igOpenPopup("###BindingPopup");
+                                }
+                                if (igIsItemClicked(ImGuiMouseButton.Left)) {
+                                    if (!io.KeyCtrl) {
+                                        cSelectedBindings.clear();
+                                        selected = false;
+                                    }
+                                    if (selected) cSelectedBindings.remove(binding.getTarget());
+                                    else cSelectedBindings[binding.getTarget()] = binding;
+                                }
+                        }
+                        
+                        igTreePop();
+                    } else if (bindings is null) igPopStyleColor();
+                }
+
+                igPopStyleVar();
+                igPopStyleVar();
+            igEndChild();
+        }
+        incEndCategory();
     }
 
     ptrdiff_t findParamIndex(ref Parameter[] paramArr, Parameter param) {
@@ -870,6 +871,11 @@ protected:
                             // Render children if open
                             if (open) {
                                 foreach(ix, ref child; group.children) {
+
+                                    // Skip armed param
+                                    if (incArmedParameter() == child) continue;
+
+                                    // Otherwise render it
                                     incParameterView(ix, child, &grabParam, false, group.children, group.color);
                                 }
                             }
