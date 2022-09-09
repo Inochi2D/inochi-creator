@@ -1,5 +1,6 @@
 module creator.io.inpexport;
 import creator.atlas;
+import creator.ext;
 import inochi2d;
 
 private {
@@ -59,6 +60,21 @@ void incExportINP(Puppet origin, Atlas[] atlasses, string file) {
                 break;
             }
         }
+    }
+
+    // Flatten all parameter groups
+    foreach(i, ref param; editable.parameters) {
+        import std.array : insertInPlace;
+        if (auto group = cast(ExParameterGroup)param) {
+            if (i == 0) editable.parameters = group.children ~ editable.parameters[1..$];
+            else if (i+1 == editable.parameters.length) editable.parameters = editable.parameters[0..$-1] ~ group.children;
+            else editable.parameters = editable.parameters[0..i] ~ group.children ~ editable.parameters[i+1..$];
+        }
+    }
+
+    // Remove cameras
+    foreach(ref camera; editable.findNodesType!ExCamera(editable.root)) {
+        camera.parent = null;
     }
 
     editable.populateTextureSlots();
