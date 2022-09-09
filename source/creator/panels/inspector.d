@@ -49,16 +49,10 @@ protected:
 
                             // Node Part Section
                             if (Part part = cast(Part)node) {
-
-                                // Padding
-                                igSpacing();
                                 incInspectorDeformPart(part, param, cursor);
                             }
 
                             if (Composite composite = cast(Composite)node) {
-
-                                // Padding
-                                igSpacing();
                                 incInspectorDeformComposite(composite, param, cursor);
                             }
 
@@ -68,34 +62,22 @@ protected:
 
                             // Node Drawable Section
                             if (Composite composite = cast(Composite)node) {
-
-                                // Padding
-                                igSpacing();
                                 incInspectorModelComposite(composite);
                             }
 
 
                             // Node Drawable Section
                             if (Drawable drawable = cast(Drawable)node) {
-
-                                // Padding
-                                igSpacing();
                                 incInspectorModelDrawable(drawable);
                             }
 
                             // Node Part Section
                             if (Part part = cast(Part)node) {
-
-                                // Padding
-                                igSpacing();
                                 incInspectorModelPart(part);
                             }
 
                             // Node SimplePhysics Section
                             if (SimplePhysics part = cast(SimplePhysics)node) {
-
-                                // Padding
-                                igSpacing();
                                 incInspectorModelSimplePhysics(part);
                             }
                         }
@@ -255,7 +237,7 @@ void incInspectorModelInfo() {
     }
     incEndCategory();
 
-    if (incBeginCategory(__("Rendering Settings"), ImVec4(1, 0, 0, 0.15))) {
+    if (incBeginCategory(__("Rendering Settings"), ImVec4(0.35, 0.15, 0.15, 1))) {
         igPushID("Filtering");
             if (igCheckbox(__("Use Point Filtering"), &incActivePuppet().meta.preservePixels)) {
                 incActivePuppet().populateTextureSlots();
