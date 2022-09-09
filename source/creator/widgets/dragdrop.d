@@ -49,15 +49,19 @@ void incBeginDragDropFake() {
     auto storage = igGetStateStorage();
     auto ctx = igGetCurrentContext();
     ImGuiStorage_SetBool(storage, igGetID("DRAG_DROP_ACTIVE"), ctx.DragDropActive);
+    ImGuiStorage_SetInt(storage, igGetID("DRAG_DROP_FRAME_COUNT"), ctx.DragDropPayload.DataFrameCount);
     ctx.DragDropActive = true;
+    ctx.DragDropPayload.DataFrameCount = -1;
 }
 
 /**
-    Begins fake drag/drop context
+    Ends fake drag/drop context
 */
 void incEndDragDropFake() {
     auto storage = igGetStateStorage();
     auto ctx = igGetCurrentContext();
     bool active = ImGuiStorage_GetBool(storage, igGetID("DRAG_DROP_ACTIVE"), false);
+    int frameCount = ImGuiStorage_GetInt(storage, igGetID("DRAG_DROP_FRAME_COUNT"), 0);
     ctx.DragDropActive = active;
+    ctx.DragDropPayload.DataFrameCount = frameCount;
 }
