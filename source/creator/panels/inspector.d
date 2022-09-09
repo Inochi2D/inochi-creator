@@ -22,6 +22,9 @@ import std.algorithm.mutation;
 import std.conv;
 import i18n;
 
+// Drag drop data
+import creator.panels.parameters;
+
 import creator.actions.node;
 
 /**
@@ -1003,8 +1006,8 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
             if(igBeginDragDropTarget()) {
                 const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PARAMETER");
                 if (payload !is null) {
-                    Parameter payloadParam = *cast(Parameter*)payload.Data;
-                    node.param = payloadParam;
+                    ParamDragDropData* payloadParam = *cast(ParamDragDropData**)payload.Data;
+                    node.param = payloadParam.param;
                 }
 
                 igEndDragDropTarget();
