@@ -23,6 +23,8 @@ import std.stdio;
 private {
     bool dbgShowStyleEditor;
     bool dbgShowDebugger;
+    bool dbgShowMetrics;
+    bool dbgShowStackTool;
 
     void fileNew() {
         incPopWelcomeWindow();
@@ -257,6 +259,8 @@ void incMainMenu() {
                         igSeparator();
                         if(igMenuItem(__("Style Editor"), "", dbgShowStyleEditor, true)) dbgShowStyleEditor = !dbgShowStyleEditor;
                         if(igMenuItem(__("ImGui Debugger"), "", dbgShowDebugger, true)) dbgShowDebugger = !dbgShowDebugger;
+                        if(igMenuItem(__("ImGui Metrics"), "", dbgShowMetrics, true)) dbgShowMetrics = !dbgShowMetrics;
+                        if(igMenuItem(__("ImGui Stack Tool"), "", dbgShowStackTool, true)) dbgShowStackTool = !dbgShowStackTool;
                     }
                     igEndMenu();
                 }
@@ -473,7 +477,9 @@ void incMainMenu() {
     igPopStyleColor();
     igPopStyleColor();
 
-        // ImGui Debug Stuff
-        if (dbgShowStyleEditor) igShowStyleEditor(igGetStyle());
-        if (dbgShowDebugger) igShowAboutWindow(&dbgShowDebugger);
+    // ImGui Debug Stuff
+    if (dbgShowStyleEditor) igShowStyleEditor(igGetStyle());
+    if (dbgShowDebugger) igShowAboutWindow(&dbgShowDebugger);
+    if (dbgShowStackTool) igShowStackToolWindow();
+    if (dbgShowMetrics) igShowMetricsWindow();
 }
