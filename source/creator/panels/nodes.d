@@ -302,7 +302,7 @@ protected:
 
             // Handle figuring out whether the user is trying to scroll the list via drag & drop
             // We're only peeking in to the contents of the payload.
-            auto data = igAcceptDragDropPayload("_PUPPETNTREE", ImGuiDragDropFlags.AcceptPeekOnly);
+            auto data = igAcceptDragDropPayload("_PUPPETNTREE", ImGuiDragDropFlags.AcceptPeekOnly | ImGuiDragDropFlags.SourceAllowNullID);
             if (igIsMouseDragging(ImGuiMouseButton.Left) && data && data.Data) {
                 ImVec2 mousePos;
                 igGetMousePos(&mousePos);

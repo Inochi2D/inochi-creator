@@ -510,7 +510,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
     }
 
     if (canGroup) {
-        auto peek = igAcceptDragDropPayload("_PARAMETER", ImGuiDragDropFlags.AcceptPeekOnly);
+        auto peek = igAcceptDragDropPayload("_PARAMETER", ImGuiDragDropFlags.AcceptPeekOnly | ImGuiDragDropFlags.SourceAllowNullID);
         if(peek && peek.Data && (*cast(ParamDragDropData**)peek.Data).param != param) {
             if (igBeginDragDropTarget()) {
                 auto payload = igAcceptDragDropPayload("_PARAMETER");
