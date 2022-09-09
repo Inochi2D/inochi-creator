@@ -51,7 +51,7 @@ void incBeginDragDropFake() {
     ImGuiStorage_SetBool(storage, igGetID("DRAG_DROP_ACTIVE"), ctx.DragDropActive);
     ImGuiStorage_SetInt(storage, igGetID("DRAG_DROP_FRAME_COUNT"), ctx.DragDropPayload.DataFrameCount);
     ctx.DragDropActive = true;
-    ctx.DragDropPayload.DataFrameCount = -1;
+    ctx.DragDropPayload.DataFrameCount = ctx.FrameCount;
 }
 
 /**
@@ -61,7 +61,7 @@ void incEndDragDropFake() {
     auto storage = igGetStateStorage();
     auto ctx = igGetCurrentContext();
     bool active = ImGuiStorage_GetBool(storage, igGetID("DRAG_DROP_ACTIVE"), false);
-    int frameCount = ImGuiStorage_GetInt(storage, igGetID("DRAG_DROP_FRAME_COUNT"), 0);
+    int frameCount = ImGuiStorage_GetInt(storage, igGetID("DRAG_DROP_FRAME_COUNT"), -1);
     ctx.DragDropActive = active;
     ctx.DragDropPayload.DataFrameCount = frameCount;
 }
