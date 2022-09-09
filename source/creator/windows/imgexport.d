@@ -66,7 +66,6 @@ protected:
     override
     void onBeginUpdate() {
         flags |= ImGuiWindowFlags.NoSavedSettings;
-        incIsSettingsOpen = true;
         
         ImVec2 wpos = ImVec2(
             igGetMainViewport().Pos.x+(igGetMainViewport().Size.x/2),
@@ -89,27 +88,25 @@ protected:
         // Contents
         if (igBeginChild("ExportContent", ImVec2(0, -28), true)) {
             incText(_("Export Settings"));
-            igIndent();
+
+            igSpacing();
+
+            if (incBeginCategory(__("Camera"))) {
+                if (igBeginCombo("###CAMERA", selectedCamera.name.toStringz)) {
+
+                    foreach(ref camera; cameras) {
+                        if (igMenuItem(camera.cName)) {
+                            selectedCamera = camera;
+                        }
+                    }
+
+                    igEndCombo();
+                }
 
                 igSpacing();
-
-                incText(_("Camera"));
-                igIndent();
-                    if (igBeginCombo("###CAMERA", selectedCamera.name.toStringz)) {
-
-                        foreach(ref camera; cameras) {
-                            if (igMenuItem(camera.cName)) {
-                                selectedCamera = camera;
-                            }
-                        }
-
-                        igEndCombo();
-                    }
-                    igSpacing();
-
-                    igCheckbox(__("Allow Transparency"), &transparency);
-                igUnindent();
-            igUnindent();
+                igCheckbox(__("Allow Transparency"), &transparency);
+            }
+            incEndCategory();
         }
         igEndChild();
 

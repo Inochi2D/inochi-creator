@@ -135,7 +135,6 @@ protected:
     override
     void onBeginUpdate() {
         flags |= ImGuiWindowFlags.NoSavedSettings;
-        incIsSettingsOpen = true;
         
         ImVec2 wpos = ImVec2(
             igGetMainViewport().Pos.x+(igGetMainViewport().Size.x/2),
