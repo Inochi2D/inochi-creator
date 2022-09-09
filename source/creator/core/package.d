@@ -37,6 +37,15 @@ import i18n;
 
 version(Windows) {
     import core.sys.windows.windows;
+    import core.sys.windows.winuser;
+
+    // Windows 8.1+ DPI awareness context enum
+    enum DPIAwarenessContext { 
+        DPI_AWARENESS_CONTEXT_UNAWARE = 0,
+        DPI_AWARENESS_CONTEXT_SYSTEM_AWARE = 1,
+        DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE = 2,
+        DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = 3
+    }
 
     // Windows 8.1+ DPI awareness enum
     enum ProcessDPIAwareness { 
@@ -48,18 +57,29 @@ version(Windows) {
 
     void incSetWin32DPIAwareness() {
         void* userDLL, shcoreDLL;
-        
+
         bool function() dpiAwareFunc8;
+        HRESULT function(DPIAwarenessContext) dpiAwareFuncCtx81;
         HRESULT function(ProcessDPIAwareness) dpiAwareFunc81;
 
         userDLL = SDL_LoadObject("USER32.DLL");
-        if (userDLL) dpiAwareFunc8 = cast(typeof(dpiAwareFunc8))SDL_LoadFunction(userDLL, "SetProcessDPIAware");
+        if (userDLL) {
+            dpiAwareFunc8 = cast(typeof(dpiAwareFunc8)) SDL_LoadFunction(userDLL, "SetProcessDPIAware");
+            dpiAwareFuncCtx81 = cast(typeof(dpiAwareFuncCtx81)) SDL_LoadFunction(userDLL, "SetProcessDpiAwarenessContext");
+        }
         
         shcoreDLL = SDL_LoadObject("SHCORE.DLL");
-        if (shcoreDLL) dpiAwareFunc81 = cast(typeof(dpiAwareFunc81))SDL_LoadFunction(shcoreDLL, "SetProcessDpiAwareness");
+        if (shcoreDLL) {
+            dpiAwareFunc81 = cast(typeof(dpiAwareFunc81)) SDL_LoadFunction(shcoreDLL, "SetProcessDpiAwareness");
+        }
+        
+        if (dpiAwareFuncCtx81) {
+            dpiAwareFuncCtx81(DPIAwarenessContext.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
+            dpiAwareFuncCtx81(DPIAwarenessContext.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+        } else if (dpiAwareFunc81) {
+            dpiAwareFunc81(ProcessDPIAwareness.PROCESS_PER_MONITOR_DPI_AWARE);
+        } else if (dpiAwareFunc8) dpiAwareFunc8();
 
-        if (dpiAwareFunc81) dpiAwareFunc81(ProcessDPIAwareness.PROCESS_PER_MONITOR_DPI_AWARE);
-        else if (dpiAwareFunc8) dpiAwareFunc8();
 
         // Unload the DLLs
         if (userDLL) SDL_UnloadObject(userDLL);
@@ -553,24 +573,26 @@ void incSetDefaultLayout() {
     igDockBuilderRemoveNodeChildNodes(viewportDock);
     ImGuiID 
         dockMainID, dockIDNodes, dockIDInspector, dockIDHistory, dockIDParams,
-        dockIDToolSettings, dockIDLoggerAndTextureSlots;
+        dockIDToolSettings, dockIDLoggerAndTextureSlots, dockIDTimeline;
 
     dockMainID = viewportDock;
     dockIDNodes = igDockBuilderSplitNode(dockMainID, ImGuiDir.Left, 0.10f, null, &dockMainID);
     dockIDInspector = igDockBuilderSplitNode(dockIDNodes, ImGuiDir.Down, 0.60f, null, &dockIDNodes);
     dockIDToolSettings = igDockBuilderSplitNode(dockMainID, ImGuiDir.Right, 0.10f, null, &dockMainID);
     dockIDHistory = igDockBuilderSplitNode(dockIDToolSettings, ImGuiDir.Down, 0.50f, null, &dockIDToolSettings);
+    dockIDTimeline = igDockBuilderSplitNode(dockMainID, ImGuiDir.Down, 0.15f, null, &dockMainID);
     dockIDParams = igDockBuilderSplitNode(dockMainID, ImGuiDir.Left, 0.15f, null, &dockMainID);
-    dockIDLoggerAndTextureSlots = igDockBuilderSplitNode(dockMainID, ImGuiDir.Down, 0.15f, null, &dockMainID);
 
     igDockBuilderDockWindow("###Nodes", dockIDNodes);
     igDockBuilderDockWindow("###Inspector", dockIDInspector);
     igDockBuilderDockWindow("###Tool Settings", dockIDToolSettings);
     igDockBuilderDockWindow("###History", dockIDHistory);
+    igDockBuilderDockWindow("###Scene", dockIDHistory);
     igDockBuilderDockWindow("###Tracking", dockIDHistory);
+    igDockBuilderDockWindow("###Timeline", dockIDTimeline);
+    igDockBuilderDockWindow("###Logger", dockIDTimeline);
     igDockBuilderDockWindow("###Parameters", dockIDParams);
     igDockBuilderDockWindow("###Texture Slots", dockIDLoggerAndTextureSlots);
-    igDockBuilderDockWindow("###Logger", dockIDLoggerAndTextureSlots);
 
     igDockBuilderFinish(viewportDock);
 }
