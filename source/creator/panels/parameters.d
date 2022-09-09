@@ -842,7 +842,10 @@ protected:
                                     if (i == 0) incActivePuppet().parameters = group.children ~ parameters[i+1..$];
                                     else if (i+1 == parameters.length) incActivePuppet().parameters = parameters[0..$-1] ~ group.children;
                                     else incActivePuppet().parameters = parameters[0..i] ~ group.children ~ parameters[i+1..$];
+                                    
+                                    // End early.
                                     igEndPopup();
+                                    incEndCategory();
                                     igPopID();
                                     continue;
                                 }
