@@ -7,6 +7,7 @@
 module creator.panels.parameters;
 import creator.viewport.model.deform;
 import creator.panels;
+import creator.ext.param;
 import creator.widgets;
 import creator.windows;
 import creator.core;
@@ -17,10 +18,12 @@ import inochi2d;
 import i18n;
 import std.uni : toLower;
 import std.stdio;
-import std.algorithm;
 import creator.utils;
+import std.algorithm.sorting : sort;
+import std.algorithm.mutation : remove;
 
 private {
+
     ParameterBinding[][Node] cParamBindingEntries;
     ParameterBinding[][Node] cParamBindingEntriesAll;
     Node[] cAllBoundNodes;
@@ -470,20 +473,59 @@ private {
             igPopStyleVar();
         igEndChild();
     }
+
+    ptrdiff_t findParamIndex(ref Parameter[] paramArr, Parameter param) {
+        import std.algorithm.searching : countUntil;
+        ptrdiff_t idx = paramArr.countUntil(param);
+        return idx;
+    }
+    ParamDragDropData* dragDropData;
+}
+
+struct ParamDragDropData {
+    Parameter param;
+    Parameter[]* paramArr;
 }
 
 /**
     Generates a parameter view
 */
-void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string* grabParam) {
+void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string* grabParam, bool canGroup, ref Parameter[] paramArr, vec3 groupColor = vec3.init) {
     igPushID(cast(void*)param);
     scope(exit) igPopID();
 
-    bool open = incBeginCategory(param.name.toStringz);
+    
+    bool open;
+    if (!groupColor.isFinite) open = incBeginCategory(param.name.toStringz);
+    else open = incBeginCategory(param.name.toStringz, ImVec4(groupColor.r, groupColor.g, groupColor.b, 1));
     if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
-        igSetDragDropPayload("_PARAMETER", cast(void*)&param, (&param).sizeof, ImGuiCond.Always);
-        incText(param.name);
+        if (!dragDropData) dragDropData = new ParamDragDropData;
+        
+        dragDropData.param = param;
+        dragDropData.paramArr = &paramArr;
+
+        igSetDragDropPayload("_PARAMETER", cast(void*)&dragDropData, (&dragDropData).sizeof, ImGuiCond.Always);
+        incText(dragDropData.param.name);
         igEndDragDropSource();
+    }
+
+    if (canGroup) {
+        auto peek = igAcceptDragDropPayload("_PARAMETER", ImGuiDragDropFlags.AcceptPeekOnly);
+        if(peek && peek.Data && (*cast(ParamDragDropData**)peek.Data).param != param) {
+            if (igBeginDragDropTarget()) {
+                auto payload = igAcceptDragDropPayload("_PARAMETER");
+                
+                if (payload !is null) {
+                    ParamDragDropData* payloadParam = *cast(ParamDragDropData**)payload.Data;
+                    ptrdiff_t idx2 = (*payloadParam.paramArr).findParamIndex(payloadParam.param);
+                    if (idx2 >= 0) {
+                        paramArr[idx] = new ExParameterGroup(_("New Parameter Group"), [param, payloadParam.param]);
+                        (*payloadParam.paramArr) = (*payloadParam.paramArr).remove(idx2);
+                    }
+                }
+                igEndDragDropTarget();
+            }
+        }
     }
 
     if (open) {
@@ -493,7 +535,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
         ImVec2 avail = incAvailableSpace();
 
         // We want to always show armed parameters but also make sure the child is begun.
-        bool childVisible = igBeginChild("###PARAM", ImVec2(avail.x-32, reqSpace));
+        bool childVisible = igBeginChild("###PARAM", ImVec2(avail.x-24, reqSpace));
         if (childVisible || armedParam) {
 
             // Popup for rightclicking the controller
@@ -507,7 +549,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
             if (param.isVec2) incText("%.2f %.2f".format(param.value.x, param.value.y));
             else incText("%.2f".format(param.value.x));
 
-            if (incController("###CONTROLLER", param, ImVec2(avail.x-32, reqSpace-24), incArmedParameter() == param, *grabParam)) {
+            if (incController("###CONTROLLER", param, ImVec2(avail.x-24, reqSpace-24), incArmedParameter() == param, *grabParam)) {
                 if (incArmedParameter() == param) {
                     incViewportNodeDeformNotifyParamValueChanged();
                     paramPointChanged(param);
@@ -532,7 +574,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
             igSameLine(0, 0);
 
             // Parameter Setting Buttons
-            childVisible = igBeginChild("###SETTING", ImVec2(32, reqSpace), false);
+            childVisible = igBeginChild("###SETTING", ImVec2(24, reqSpace), false);
             if (childVisible || armedParam) {
                 if (igBeginPopup("###EditParam")) {
                     if (igMenuItem(__("Edit Properties"), "", false, true)) {
@@ -740,7 +782,7 @@ protected:
             
             // Always render the currently armed parameter on top
             if (incArmedParameter()) {
-                incParameterView!true(incArmedParameterIdx(), incArmedParameter(), &grabParam);
+                incParameterView!true(incArmedParameterIdx(), incArmedParameter(), &grabParam, false, parameters);
             }
 
             // Render other parameters
@@ -748,11 +790,118 @@ protected:
                 if (incArmedParameter() == param) continue;
                 import std.algorithm.searching : canFind;
                 if (filter.length == 0 || param.indexableName.canFind(filter)) {
-                    incParameterView(i, param, &grabParam);
+                    if (ExParameterGroup group = cast(ExParameterGroup)param) {
+                        igPushID(group.uuid);
+
+                            bool open;
+                            if (group.color.isFinite) open = incBeginCategory(group.name.toStringz, ImVec4(group.color.r, group.color.g, group.color.b, 1));
+                            else open = incBeginCategory(group.name.toStringz);
+                            
+                            if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                                igOpenPopup("###CategorySettings");
+                            }
+
+                            // Popup
+                            if (igBeginPopup("###CategorySettings")) {
+                                if (igMenuItem(__("Rename"))) {
+                                }
+
+                                if (igBeginMenu(__("Colors"))) {
+                                    auto flags = ImGuiColorEditFlags.NoLabel | ImGuiColorEditFlags.NoTooltip;
+                                    if (igColorButton("NONE", ImVec4(0, 0, 0, 0), flags | ImGuiColorEditFlags.AlphaPreview, ImVec2(16, 16))) {
+                                        group.color = vec3(float.nan, float.nan, float.nan);
+                                    }
+                                    igSameLine(0, 4);
+                                    if (igColorButton("RED", ImVec4(1, 0, 0, 1), flags, ImVec2(16, 16))) {
+                                        group.color = vec3(0.25, 0.15, 0.15);
+                                    }
+                                    igSameLine(0, 4);
+                                    if (igColorButton("GREEN", ImVec4(0, 1, 0, 1), flags, ImVec2(16, 16))) {
+                                        group.color = vec3(0.15, 0.25, 0.15);
+                                    }
+                                    igSameLine(0, 4);
+                                    if (igColorButton("BLUE", ImVec4(0, 0, 1, 1), flags, ImVec2(16, 16))) {
+                                        group.color = vec3(0.15, 0.15, 0.25);
+                                    }
+
+                                    // Second Line
+                                    if (igColorButton("PURPLE", ImVec4(1, 0, 1, 1), flags, ImVec2(16, 16))) {
+                                        group.color = vec3(0.25, 0.15, 0.25);
+                                    }
+                                    igSameLine(0, 4);
+                                    if (igColorButton("CYAN", ImVec4(0, 1, 1, 1), flags, ImVec2(16, 16))) {
+                                        group.color = vec3(0.15, 0.25, 0.25);
+                                    }
+                                    igSameLine(0, 4);
+                                    if (igColorButton("YELLOW", ImVec4(1, 1, 0, 1), flags, ImVec2(16, 16))) {
+                                        group.color = vec3(0.25, 0.25, 0.15);
+                                    }
+                                    igSameLine(0, 4);
+                                    if (igColorButton("WHITE", ImVec4(1, 1, 1, 1), flags, ImVec2(16, 16))) {
+                                        group.color = vec3(0.25, 0.25, 0.25);
+                                    }
+
+                                    igColorPicker3("CUSTOM", &group.color.vector, ImGuiColorEditFlags.InputRGB | ImGuiColorEditFlags.DisplayHSV);
+                                    igEndMenu();
+                                }
+
+                                if (igMenuItem(__("Delete"))) {
+                                    if (i == 0) incActivePuppet().parameters = group.children ~ parameters[i+1..$];
+                                    else if (i+1 == parameters.length) incActivePuppet().parameters = parameters[0..$-1] ~ group.children;
+                                    else incActivePuppet().parameters = parameters[0..i] ~ group.children ~ parameters[i+1..$];
+                                    igEndPopup();
+                                    igPopID();
+                                    continue;
+                                }
+                                igEndPopup();
+                            }
+
+                            // Allow drag/drop in to the category
+                            if (igBeginDragDropTarget()) {
+                                auto payload = igAcceptDragDropPayload("_PARAMETER");
+                                
+                                if (payload !is null) {
+                                    ParamDragDropData* payloadParam = *cast(ParamDragDropData**)payload.Data;
+                                    ptrdiff_t idx2 = (*payloadParam.paramArr).findParamIndex(payloadParam.param);
+                                    if (idx2 >= 0) {
+                                        (*payloadParam.paramArr) = (*payloadParam.paramArr).remove(idx2);
+                                        group.children = payloadParam.param ~ group.children;
+                                    }
+                                }
+                                igEndDragDropTarget();
+                            }
+
+                            // Render children if open
+                            if (open) {
+                                foreach(ix, ref child; group.children) {
+                                    incParameterView(ix, child, &grabParam, false, group.children, group.color);
+                                }
+                            }
+                            incEndCategory();
+                        igPopID();
+                    } else {
+                        incParameterView(i, param, &grabParam, true, incActivePuppet().parameters);
+                    }
                 }
             }
         }
         igEndChild();
+        
+        // Allow drag/drop out of categories
+        if (igBeginDragDropTarget()) {
+            auto payload = igAcceptDragDropPayload("_PARAMETER");
+            
+            if (payload !is null) {
+                ParamDragDropData* payloadParam = *cast(ParamDragDropData**)payload.Data;
+                ptrdiff_t idx2 = (*payloadParam.paramArr).findParamIndex(payloadParam.param);
+                if (idx2 >= 0) {
+                    (*payloadParam.paramArr) = (*payloadParam.paramArr).remove(idx2);
+                }
+
+                parameters = payloadParam.param~parameters;
+            }
+            igEndDragDropTarget();
+        }
 
         // Right align add button
         ImVec2 avail = incAvailableSpace();

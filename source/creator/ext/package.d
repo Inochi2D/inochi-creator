@@ -7,3 +7,9 @@
 /// Extensions to Inochi2D only used in Inochi Creator
 module creator.ext;
 public import creator.ext.nodes;
+public import creator.ext.param;
+
+void incInitExt() {
+    incInitExtNodes();
+    incRegisterExParameter();
+}

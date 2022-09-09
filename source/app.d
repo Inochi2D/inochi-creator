@@ -65,7 +65,7 @@ int main(string[] args)
         incOpenWindow();
 
         // Initialize node overrides
-        incInitExtNodes();
+        incInitExt();
         
         // Initialize atlassing
         incInitAtlassing();
