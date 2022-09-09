@@ -1,6 +1,6 @@
 # Inochi Creator
-![image](https://user-images.githubusercontent.com/7032834/170948484-2f3a8175-9c45-4cf6-ae7e-0a6ee86bdc53.png)
-_Ada model by [ku-ini](https://twitter.com/duckmastah)_
+![image](https://user-images.githubusercontent.com/7032834/189459431-f2fcbe64-ed8d-454e-8755-07a59f93f8ea.png)
+_Aka model by [seagetch](https://twitter.com/seagetch)_
 
 &nbsp;
 &nbsp;
