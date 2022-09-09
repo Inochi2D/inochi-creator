@@ -26,12 +26,14 @@ private:
     string outFile;
     ExCamera selectedCamera;
     ExCamera[] cameras;
+    bool transparency;
 
     void export_() {
         Camera cam = selectedCamera.getCamera();
         vec2 vp = selectedCamera.getViewport();
 
         Camera oc;
+        float or, og, ob, oa;
         int ow, oh;
         inGetViewport(ow, oh);
         oc = inGetCamera();
@@ -39,6 +41,10 @@ private:
         // Set state for dumping viewport
         inSetCamera(cam);
         inSetViewport(cast(int)vp.x, cast(int)vp.y);
+        if (transparency) {
+            inGetClearColor(or, og, ob, oa);
+            inSetClearColor(0, 0, 0, 0);
+        }
 
         // Render viewport
         inBeginScene();
@@ -51,6 +57,7 @@ private:
         incExportImage(outFile, data, cast(int)vp.x, cast(int)vp.y);
 
         // Reset state
+        if (transparency) inSetClearColor(or, og, ob, oa);
         inSetViewport(ow, oh);
         inSetCamera(oc);
     }
@@ -84,18 +91,24 @@ protected:
             incText(_("Export Settings"));
             igIndent();
 
+                igSpacing();
+
                 incText(_("Camera"));
-                if (igBeginCombo("###CAMERA", selectedCamera.name.toStringz)) {
+                igIndent();
+                    if (igBeginCombo("###CAMERA", selectedCamera.name.toStringz)) {
 
-                    foreach(ref camera; cameras) {
-                        if (igMenuItem(camera.cName)) {
-                            selectedCamera = camera;
+                        foreach(ref camera; cameras) {
+                            if (igMenuItem(camera.cName)) {
+                                selectedCamera = camera;
+                            }
                         }
+
+                        igEndCombo();
                     }
+                    igSpacing();
 
-                    igEndCombo();
-                }
-
+                    igCheckbox(__("Allow Transparency"), &transparency);
+                igUnindent();
             igUnindent();
         }
         igEndChild();
