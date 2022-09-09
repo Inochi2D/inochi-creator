@@ -13,6 +13,7 @@ import inochi2d.core;
 import inochi2d.fmt.serialize;
 import std.stdio : writeln;
 import inochi2d.math;
+import inochi2d.core.dbg;
 
 @TypeId("Camera")
 class ExCamera : Node {
@@ -47,7 +48,41 @@ protected:
     vec4 getInitialBoundsSize() {
         auto tr = transform;
         auto vpHalfSize = (viewport/2)*transform.scale;
-        return vec4(tr.translation.x-vpHalfSize.x, tr.translation.y-vpHalfSize.y, tr.translation.x+vpHalfSize.x, tr.translation.y+vpHalfSize.y);;
+        vec3 topLeft = vec3(
+            tr.translation.x-vpHalfSize.x, 
+            tr.translation.y-vpHalfSize.y,
+            0
+        );
+        vec3 bottomRight = vec3(
+            tr.translation.x+vpHalfSize.x, 
+            tr.translation.y+vpHalfSize.y,
+            0
+        );
+
+        return vec4(topLeft.xy, bottomRight.xy);
+    }
+
+    override
+    void drawBounds() {
+        auto tr = transform;
+        auto vpHalfSize = viewport/2;
+
+        vec3 topLeft = vec3(-vpHalfSize.x, -vpHalfSize.y, 0);
+        vec3 bottomRight = vec3(+vpHalfSize.x, +vpHalfSize.y, 0);
+        vec3 topRight = vec3(bottomRight.x, topLeft.y, 0);
+        vec3 bottomLeft = vec3(topLeft.x, bottomRight.y, 0);
+
+        inDbgSetBuffer([
+            topLeft, topRight,
+            topRight, bottomRight,
+            bottomRight, bottomLeft,
+            bottomLeft, topLeft
+        ]);
+
+        inDbgLineWidth(2);
+        inDbgDrawLines(vec4(0, 0, 0, 1), transform.matrix);
+        inDbgLineWidth(1);
+        inDbgDrawLines(vec4(1, 1, 1, 1), transform.matrix);
     }
 
 public:
