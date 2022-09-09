@@ -12,6 +12,7 @@ import creator.widgets;
 import creator.utils;
 import creator.windows;
 import creator.actions;
+import creator.ext;
 import creator;
 import inochi2d;
 import inochi2d.core.nodes.common;
@@ -59,6 +60,11 @@ protected:
                         } else {
                             incModelModeHeader(node);
                             incInspectorModelTRS(node);
+
+                            // Node Camera Section
+                            if (ExCamera camera = cast(ExCamera)node) {
+                                incInspectorModelCamera(camera);
+                            }
 
                             // Node Drawable Section
                             if (Composite composite = cast(Composite)node) {
@@ -889,6 +895,22 @@ void incInspectorModelPart(Part node) {
             
             igEndDragDropTarget();
         }
+
+        // Padding
+        igSpacing();
+        igSpacing();
+    }
+    incEndCategory();
+}
+
+void incInspectorModelCamera(ExCamera node) {
+    if (incBeginCategory(__("Camera"))) {
+        
+        incText(_("Viewport"));
+        igIndent();
+            igSetNextItemWidth(incAvailableSpace().x);
+            igDragFloat2("###VIEWPORT", &node.getViewport().vector);
+        igUnindent();
 
         // Padding
         igSpacing();

@@ -9,6 +9,7 @@ import creator.viewport.vertex;
 import creator.widgets.dragdrop;
 import creator.actions;
 import creator.panels;
+import creator.ext;
 import creator;
 import creator.widgets;
 import creator.ext;
@@ -64,6 +65,11 @@ protected:
                 incText(incTypeIdToIcon("SimplePhysics"));
                 igSameLine(0, 2);
                 if (igMenuItem(__("Simple Physics"), "", false, true)) incAddChildWithHistory(new SimplePhysics(n), n);
+
+                
+                incText(incTypeIdToIcon("Camera"));
+                igSameLine(0, 2);
+                if (igMenuItem(__("Camera"), "", false, true)) incAddChildWithHistory(new ExCamera(n), n);
 
                 igEndMenu();
             }
