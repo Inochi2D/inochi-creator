@@ -27,6 +27,7 @@ private:
     ExCamera selectedCamera;
     ExCamera[] cameras;
     bool transparency;
+    bool postprocessing;
 
     void export_() {
         Camera cam = selectedCamera.getCamera();
@@ -50,6 +51,7 @@ private:
         inBeginScene();
             incActivePuppet().draw();
         inEndScene();
+        if (postprocessing) inPostProcessScene();
 
         // Dump to file
         ubyte[] data = new ubyte[inViewportDataLength()];
@@ -105,6 +107,7 @@ protected:
 
                 igSpacing();
                 igCheckbox(__("Allow Transparency"), &transparency);
+                igCheckbox(__("Use Post Processing"), &postprocessing);
             }
             incEndCategory();
         }
