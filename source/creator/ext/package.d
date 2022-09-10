@@ -8,6 +8,30 @@
 module creator.ext;
 public import creator.ext.nodes;
 public import creator.ext.param;
+import inochi2d;
+
+class ExPuppet : Puppet {
+private:
+
+public:
+    this() { super(); }
+    this(Node root) { super(root); }
+
+    /**
+        Returns a parameter by UUID
+    */
+    override
+    Parameter findParameter(uint uuid) {
+        foreach(ref parameter; parameters) {
+            if (auto group = cast(ExParameterGroup)parameter) {
+                foreach(ref child; group.children) {
+                    if (child.uuid == uuid) return child;
+                }
+            } else if (parameter.uuid == uuid) return parameter;
+        }
+        return null;
+    }
+}
 
 void incInitExt() {
     incInitExtNodes();

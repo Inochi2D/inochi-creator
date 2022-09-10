@@ -149,7 +149,7 @@ void incNewProject() {
     incPopWindowListAll();
 
     activeProject = new Project;
-    activeProject.puppet = new Puppet;
+    activeProject.puppet = new ExPuppet;
     incFocusCamera(activeProject.puppet.root);
     incSelectNode(null);
     incDisarmParameter();
@@ -179,7 +179,7 @@ void incOpenProject(string path) {
 
     // Load the puppet from file
     try {
-        puppet = inLoadPuppet(path);
+        puppet = inLoadPuppet!ExPuppet(path);
     } catch (Exception ex) {
         incDialog(__("Error"), ex.msg);
         return;
@@ -232,7 +232,7 @@ void incImportFolder(string folder) {
 
     string[] failedFiles;
     // For each file find PNG, TGA and JPEG files and import them
-    Puppet puppet = new Puppet();
+    Puppet puppet = new ExPuppet();
     size_t i;
     foreach(file; dirEntries(folder, SpanMode.shallow, false)) {
         try {
