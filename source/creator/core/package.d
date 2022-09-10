@@ -7,6 +7,7 @@
 module creator.core;
 import creator.core.dpi;
 import creator.core.input;
+import creator.core.egg;
 import creator.panels;
 import creator.windows;
 import creator.utils.link;
@@ -286,7 +287,8 @@ void incOpenWindow() {
 
     // Setup Inochi2D
     inInit(() { return igGetTime(); });
-
+    
+    version(InBranding) incInitAda();
     incCreateContext();
 
     ShallowTexture tex;
