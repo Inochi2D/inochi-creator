@@ -31,7 +31,6 @@ version(InBranding) {
     void incAdaTickOne() {
         logoClickCounter++;
         if (logoClickCounter == CLICK_THRESH) {
-            writeln("Ada says hi!");
             lhs = !lhs;
 
             float uiScale = incGetUIScale();
