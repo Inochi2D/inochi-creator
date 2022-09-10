@@ -39,15 +39,17 @@ void incToolbar() {
                     }
                     incTooltip(_("Enable physics"));
 
-                    if (incButtonColored("", ImVec2(32, 32), ImVec4.init)) {
-                        incActivePuppet().resetDrivers();
-                    }
-                    incTooltip(_("Reset physics"));
+                    igSameLine(0, 0);
 
                     if (incButtonColored("", ImVec2(32, 32), incShouldPostProcess ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
                         incShouldPostProcess = !incShouldPostProcess;
                     }
                     incTooltip(_("Enable post processing"));
+
+                    if (incButtonColored("", ImVec2(32, 32), ImVec4.init)) {
+                        incActivePuppet().resetDrivers();
+                    }
+                    incTooltip(_("Reset physics"));
 
                     // Draw the toolbar relevant for that viewport
                     incViewportToolbar();
