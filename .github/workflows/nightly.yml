@@ -45,11 +45,11 @@ jobs:
         path: '*'
 
     - name: Release to nightly tag
-      uses: pyTooling/Actions/releaser@r0
+      uses: softprops/action-gh-release@v1
       with:
-        tag: nightly
-        token: ${{ secrets.GITHUB_TOKEN }}
-        files: otl/inochi-creator-i18n.zip
+        name: 'Nightly Build'
+        tag_name: nightly
+        files: 'otl/inochi-creator-i18n.dmg'
 
   linux-appimage:
     runs-on: ubuntu-18.04
@@ -202,8 +202,6 @@ jobs:
     
     - name: Set SDK env
       run: |
-        echo "SDKROOT=$(xcrun -sdk macosx11.1 --show-sdk-path)" >> $GITHUB_ENV
-        echo "MACOSX_DEPLOYMENT_TARGET=$(xcrun -sdk macosx11.1 --show-sdk-platform-version)" >> $GITHUB_ENV
         echo "CMAKE_OSX_ARCHITECTURES=\"arm64;x86_64\"" >> $GITHUB_ENV
     
     - name: Build deps for freetype
