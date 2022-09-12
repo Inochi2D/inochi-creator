@@ -253,9 +253,13 @@ ref VideoCodec[] incVideoCodecs() {
     Initlializes video export
 */
 void incInitVideoExport() {
-    auto output = execute(["ffmpeg", "-codecs"]);
-    if (output.status == 0) {
-        hasffmpeg = parseEncoders(output.output);
+    try {
+        auto output = execute(["ffmpeg", "-codecs"]);
+        if (output.status == 0) {
+            hasffmpeg = parseEncoders(output.output);
+        }
+    } catch (Exception ex) {
+        hasffmpeg = false;
     }
 }
 
