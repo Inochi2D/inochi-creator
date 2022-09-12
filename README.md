@@ -19,7 +19,7 @@ If you are a VTuber wanting to use Inochi2D we highly recommend checking out [In
 
 &nbsp;&nbsp;&nbsp;&nbsp;
 [![Download on itch.io](https://img.shields.io/github/v/release/Inochi2D/inochi-creator?color=%23fa5c5c&label=itch.io&logo=itch.io&style=for-the-badge)](https://lunafoxgirlvt.itch.io/inochi-creator)
-[![Latest Build](https://img.shields.io/github/v/release/Inochi2D/inochi-creator?style=for-the-badge)](https://github.com/Inochi2D/inochi-creator/releases/latest)
+[![Latest Build](https://img.shields.io/github/v/release/Inochi2D/inochi-creator?style=for-the-badge&logo=github)](https://github.com/Inochi2D/inochi-creator/releases/latest)
 
 ### Experimental Builds
 
