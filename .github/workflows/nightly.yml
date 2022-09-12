@@ -108,7 +108,6 @@ jobs:
 
     - name: Release to nightly tag
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
       with:
         name: 'Nightly Build'
         tag_name: nightly
@@ -162,7 +161,6 @@ jobs:
 
     - name: Release to nightly tag
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
       with:
         name: 'Nightly Build'
         tag_name: nightly
@@ -239,7 +237,6 @@ jobs:
 
     - name: Release to nightly tag
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
       with:
         name: 'Nightly Build'
         tag_name: nightly
