@@ -195,18 +195,37 @@ jobs:
         dub add-local inochi2d/ "0.7.2"
         dub add-local facetrack-d/ "0.6.2"
         dub add-local i18n/ "1.0.1"
+
+        # These are needed because the runner runs on x86_64
+        git clone https://github.com/google/brotli
+        git clone https://github.com/glennrp/libpng
     
-    - name: Set SDKROOT
-      run: echo "SDKROOT=$(xcrun -sdk macosx11.1 --show-sdk-path)" >> $GITHUB_ENV
+    - name: Set SDK env
+      run: |
+        echo "SDKROOT=$(xcrun -sdk macosx11.1 --show-sdk-path)" >> $GITHUB_ENV
+        echo "MACOSX_DEPLOYMENT_TARGET=$(xcrun -sdk macosx11.1 --show-sdk-platform-version)" >> $GITHUB_ENV
+        echo "CMAKE_OSX_ARCHITECTURES=\"arm64;x86_64\"" >> $GITHUB_ENV
     
-    - name: Set MACOSX_DEPLOYMENT_TARGET
-      run: echo "MACOSX_DEPLOYMENT_TARGET=$(xcrun -sdk macosx11.1 --show-sdk-platform-version)" >> $GITHUB_ENV
+    - name: Build deps for freetype
+      run: |
+        # Attempt to build brotli
+        mkdir build; cd build
+        cmake -DCMAKE_BUILD_TYPE=Release ../brotli
+        cmake --build . --config Release --target install
+        
+        rm -r *
+
+        # Attempt to build libpng
+        cmake -DCMAKE_BUILD_TYPE=Release ../libpng
+        make
+        make install
+        
+        # We're done with the build folder
+        cd ..
+        rm -r build/
 
     - name: 'Build Inochi Creator'
       run: |
-        
-        # Set CMAKE OSX arch variable
-        CMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
         # First build ARM64 version...
         echo "Building arm64 binary..."
