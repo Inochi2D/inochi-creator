@@ -197,6 +197,12 @@ jobs:
         dub add-local inochi2d/ "0.7.2"
         dub add-local facetrack-d/ "0.6.2"
         dub add-local i18n/ "1.0.1"
+    
+    - name: Set SDKROOT
+      run: echo "SDKROOT=$(xcrun -sdk macosx11.1 --show-sdk-path)" >> $GITHUB_ENV
+    
+    - name: Set MACOSX_DEPLOYMENT_TARGET
+      run: echo "MACOSX_DEPLOYMENT_TARGET=$(xcrun -sdk macosx11.1 --show-sdk-platform-version)" >> $GITHUB_ENV
 
     - name: 'Build Inochi Creator'
       run: |

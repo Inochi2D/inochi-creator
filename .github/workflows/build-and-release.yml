@@ -231,13 +231,19 @@ jobs:
         dub add-local inochi2d/ "0.7.2"
         dub add-local facetrack-d/ "0.6.2"
         dub add-local i18n/ "1.0.1"
-
+    
+    - name: Set SDKROOT
+      run: echo "SDKROOT=$(xcrun -sdk macosx11.1 --show-sdk-path)" >> $GITHUB_ENV
+    
+    - name: Set MACOSX_DEPLOYMENT_TARGET
+      run: echo "MACOSX_DEPLOYMENT_TARGET=$(xcrun -sdk macosx11.1 --show-sdk-platform-version)" >> $GITHUB_ENV
+    
     - name: 'Build Inochi Creator'
       run: |
         
         # Set CMAKE OSX arch variable
         CMAKE_OSX_ARCHITECTURES="arm64;x86_64"
-        
+
         # First build ARM64 version...
         echo "Building arm64 binary..."
         dub build --build=release --config=osx-full --arch=arm64-apple-macos
