@@ -22,7 +22,6 @@ void incToolbar() {
     igPushStyleColor(ImGuiCol.Separator, ImVec4(0, 0, 0, 0));
         igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(0, 10));
         if (igBeginViewportSideBar("##Toolbar", igGetMainViewport(), ImGuiDir.Up, 32, flags)) {
-            
             if (igBeginMenuBar()) {
                 igPopStyleVar();
                 
@@ -94,4 +93,67 @@ void incToolbar() {
     igPopStyleColor();
     igPopStyleColor();
     igPopStyleColor();
+}
+
+bool incBeginInnerToolbar(float height, bool matchTitlebar=false) {
+
+    auto style = igGetStyle();
+    auto window = igGetCurrentWindow();
+
+    auto barColor = matchTitlebar ? (
+        igIsWindowFocused(ImGuiFocusedFlags.RootAndChildWindows) ? 
+            style.Colors[ImGuiCol.TitleBgActive] : 
+            style.Colors[ImGuiCol.TitleBg]
+    ) : style.Colors[ImGuiCol.MenuBarBg];
+
+    igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
+    igPushStyleVar(ImGuiStyleVar.ChildBorderSize, 0);
+    igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(0, 0));
+    igPushStyleVar(ImGuiStyleVar.FrameBorderSize, 0);
+    igPushStyleColor(ImGuiCol.ChildBg, barColor);
+    igPushStyleColor(ImGuiCol.Button, barColor);
+
+    if (!window.IsExplicitChild) {
+        igPushClipRect(ImVec2(window.OuterRectClipped.Max.x, window.OuterRectClipped.Max.y-1), ImVec2(window.OuterRectClipped.Min.x, window.OuterRectClipped.Min.y), false);
+        igSetCursorPosY(igGetCursorPosY()-1);
+    }
+    
+    bool visible = igBeginChild("###Toolbar", ImVec2(0, height), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+    if (visible) igSetCursorPosX(igGetCursorPosX()+style.FramePadding.x);
+    return visible;
+}
+
+void incEndInnerToolbar() {
+    igPopClipRect();
+
+    igEndChild();
+    igPopStyleColor(2);
+    igPopStyleVar(4);
+
+    // Move cursor up
+    igSetCursorPosY(igGetCursorPosY()-igGetStyle().ItemSpacing.y);
+}
+
+/**
+    A toolbar button
+*/
+bool incToolbarButton(const(char)* text, float width = 0) {
+    bool clicked = igButton(text, ImVec2(width, incAvailableSpace().y));
+    igSameLine(0, 0);
+    return clicked;
+}
+
+/**
+    A toolbar button
+*/
+void incToolbarSpacer(float space) {
+    incDummy(ImVec2(space, 0));
+    igSameLine(0, 0);
+}
+
+/**
+    Vertical separator for toolbar
+*/
+void incToolbarSeparator() {
+    igSeparatorEx(ImGuiSeparatorFlags.Vertical);
 }
