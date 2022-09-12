@@ -1,5 +1,5 @@
 DMGTITLE="Install Inochi Creator"
-DMGFILENAME="$DMGTITLE.dmg"
+DMGFILENAME="Install_Inochi_Creator.dmg"
 
 if [ -d "out/Inochi Creator.app" ]; then
     if [ -f "out/$DMGFILENAME" ]; then

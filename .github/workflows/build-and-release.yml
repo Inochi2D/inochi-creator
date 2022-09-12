@@ -207,7 +207,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: dlang-community/setup-dlang@4c99aa991ce7d19dd3064de0a4f2f6b2f152e2d7
+    - uses: LunaTheFoxgirl/setup-dlang@v1
       with:
         compiler: ldc-latest
   
@@ -215,6 +215,9 @@ jobs:
       run: |
         brew update
         brew install create-dmg gettext
+
+        # Remove conflicting brew items
+        brew remove --ignore-dependencies aom cairo composer curl fontconfig freetype gd ghostscript httpd imagemagick jpeg-xl libavif libheif libxft mongodb-community@5.0 mongosh node@16 openjpeg php r sox webp libpng brotli
 
     - name: 'Generate i18n'
       run: |
@@ -231,19 +234,9 @@ jobs:
         dub add-local inochi2d/ "0.7.2"
         dub add-local facetrack-d/ "0.6.2"
         dub add-local i18n/ "1.0.1"
-    
-    - name: Set SDKROOT
-      run: echo "SDKROOT=$(xcrun -sdk macosx11.1 --show-sdk-path)" >> $GITHUB_ENV
-    
-    - name: Set MACOSX_DEPLOYMENT_TARGET
-      run: echo "MACOSX_DEPLOYMENT_TARGET=$(xcrun -sdk macosx11.1 --show-sdk-platform-version)" >> $GITHUB_ENV
-    
+
     - name: 'Build Inochi Creator'
       run: |
-        
-        # Set CMAKE OSX arch variable
-        CMAKE_OSX_ARCHITECTURES="arm64;x86_64"
-
         # First build ARM64 version...
         echo "Building arm64 binary..."
         dub build --build=release --config=osx-full --arch=arm64-apple-macos
@@ -271,17 +264,18 @@ jobs:
       run: |
         ./gendmg.sh
 
-    - name: 'Release DMG'
+    - name: Release
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
       with:
-          files: 'out/Install Inochi Creator.dmg'
+        name: 'Nightly Build'
+        tag_name: nightly
+        files: 'out/Install_Inochi_Creator.dmg'
 
     - name: Make Artifact of DMG
       uses: actions/upload-artifact@v3
       with:
         name: release-osx
-        path: 'out/Install Inochi Creator.dmg'
+        path: 'out/Install_Inochi_Creator.dmg'
         retention-days: 1
 
   macOS-dmg-itch:
@@ -302,4 +296,4 @@ jobs:
         ITCH_GAME: inochi-creator
         ITCH_USER: LunaFoxgirlVT
         VERSION_FILE: version.txt
-        PACKAGE: 'Install Inochi Creator.dmg'
+        PACKAGE: 'Install_Inochi_Creator.dmg'
