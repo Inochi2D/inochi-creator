@@ -198,13 +198,10 @@ jobs:
         dub add-local inochi2d/ "0.7.2"
         dub add-local facetrack-d/ "0.6.2"
         dub add-local i18n/ "1.0.1"
-    
-    - name: Set SDK env
-      run: |
-        echo "CMAKE_OSX_ARCHITECTURES=\"arm64;x86_64\"" >> $GITHUB_ENV
 
     - name: 'Build Inochi Creator'
       run: |
+        # CMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
         # First build ARM64 version...
         echo "Building arm64 binary..."
