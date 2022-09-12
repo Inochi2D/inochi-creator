@@ -179,6 +179,7 @@ jobs:
       run: |
         brew update
         brew install create-dmg gettext
+        brew remove libpng brotli
 
     - name: 'Generate i18n'
       run: |
@@ -199,9 +200,6 @@ jobs:
     - name: Set SDK env
       run: |
         echo "CMAKE_OSX_ARCHITECTURES=\"arm64;x86_64\"" >> $GITHUB_ENV
-
-        # Please tell me the cursed things that github is doing
-        cat $GITHUB_ENV
 
     - name: 'Build Inochi Creator'
       run: |
