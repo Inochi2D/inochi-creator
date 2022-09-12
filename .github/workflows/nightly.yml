@@ -202,7 +202,7 @@ jobs:
       run: |
         
         # Set CMAKE OSX arch variable
-        CMAKE_OSX_ARCHITECTURES=arm64;x86_64
+        CMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
         # First build ARM64 version...
         echo "Building arm64 binary..."
