@@ -1,0 +1,20 @@
+on:
+  push:
+    branches: [main]
+    tags:
+      - '*'
+  pull_request:
+name: CI
+jobs:
+  flatpak:
+    name: "Latest stable release Flatpak workflow"
+    runs-on: ubuntu-latest
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:kde-5.15
+      options: --privileged
+    steps:
+    - uses: actions/checkout@v2
+    - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v4
+      with:
+        manifest-path: res/com.inochi2d.inochi-creator.yml
+        cache-key: flatpak-builder-${{ github.sha }}
