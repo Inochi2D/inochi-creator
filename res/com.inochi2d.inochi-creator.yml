@@ -47,13 +47,12 @@ modules:
   - name: Inochi Creator
     buildsystem: simple
     build-commands:
-      - ls -a 
+      - mv inochi-creator /app/bin/inochi-creator
 
 
 
     sources: 
       - type: archive
-        url: https://github.com/Inochi2D/inochi-creator/releases/download/v0.7.3/inochi-creator-linux-x86_64.zip
-        sha256: 123678798876543423
-
+        url: https://github.com/Inochi2D/inochi-creator/releases/download/v0.7.3/inochi-creator-linux-x86_64.zip #This needs to be set to pull from the latest numbered release.
+        sha256: 026a2d8a4cf563ca5b9654da0dc21a3f715eaeeacc865f34d0d64511e59435e8 
 
