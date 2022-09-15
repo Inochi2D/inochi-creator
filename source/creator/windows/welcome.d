@@ -242,6 +242,10 @@ protected:
                                     incOpenLink("https://github.com/Inochi2D/Inochi-creator/wiki");
                                 }
 
+                                if (incTextLinkWithIcon("", _("Join our Discord"))) {
+                                    incOpenLink("https://discord.com/invite/abnxwN6r9v");
+                                }
+
                                 igNewLine();
                                 igNewLine();
                                 if (incTextLinkWithIcon("", _("Patreon"))) {
