@@ -475,6 +475,42 @@ private {
         incEndCategory();
     }
 
+    void pushColorScheme(vec3 color) {
+        float h, s, v;
+        igColorConvertRGBtoHSV(color.r, color.g, color.b, &h, &s, &v);
+
+        float maxS = lerp(1, 0.60, v);
+
+        vec3 c = color;
+        igColorConvertHSVtoRGB(
+            h, 
+            clamp(lerp(s, s-0.20, v), 0, maxS), 
+            clamp(v-0.15, 0.15, 0.90), 
+            &c.vector[0], &c.vector[1], &c.vector[2]
+        );
+        igPushStyleColor(ImGuiCol.FrameBg, ImVec4(c.r, c.g, c.b, 1));
+
+
+        maxS = lerp(1, 0.60, v);
+        igColorConvertHSVtoRGB(
+            h, 
+            lerp(
+                clamp(s-0.25, 0, maxS),
+                clamp(s+0.25, 0, maxS),
+                s
+            ),
+            v <= 0.55 ?
+                clamp(v+0.25, 0.45, 0.95) :
+                clamp(v-(0.25*(1+v)), 0.30, 1),
+            &c.vector[0], &c.vector[1], &c.vector[2]
+        );
+        igPushStyleColor(ImGuiCol.TextDisabled, ImVec4(c.r, c.g, c.b, 1));
+    }
+
+    void popColorScheme() {
+        igPopStyleColor(2);
+    }
+
     ptrdiff_t findParamIndex(ref Parameter[] paramArr, Parameter param) {
         import std.algorithm.searching : countUntil;
         ptrdiff_t idx = paramArr.countUntil(param);
@@ -499,6 +535,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
     bool open;
     if (!groupColor.isFinite) open = incBeginCategory(param.name.toStringz);
     else open = incBeginCategory(param.name.toStringz, ImVec4(groupColor.r, groupColor.g, groupColor.b, 1));
+
     if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
         if (!dragDropData) dragDropData = new ParamDragDropData;
         
@@ -532,6 +569,9 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
     }
 
     if (open) {
+        // Push color scheme
+        if (groupColor.isFinite) pushColorScheme(groupColor);
+
         float reqSpace = param.isVec2 ? 144 : 52;
 
         // Parameter Control
@@ -699,6 +739,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
         if (incArmedParameter() == param) {
             bindingList(param);
         }
+        if (groupColor.isFinite) popColorScheme();
     }
     incEndCategory();
 }
