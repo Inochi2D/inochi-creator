@@ -7,6 +7,7 @@
 module creator.panels.viewport;
 import creator.viewport;
 import creator.widgets;
+import creator.widgets.viewport;
 import creator.core;
 import creator.core.colorbleed;
 import creator.panels;
@@ -36,7 +37,7 @@ protected:
         wmclass.DockNodeFlagsOverrideSet = ImGuiDockNodeFlagsI.NoTabBar;
         igSetNextWindowClass(&wmclass);
         priorWindowPadding = igGetStyle().WindowPadding;
-        igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(1, 2));
+        igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(0, 2));
         igSetNextWindowDockID(incGetViewportDockSpace(), ImGuiCond.Always);
         super.onBeginUpdate();
     }
@@ -51,6 +52,8 @@ protected:
 
         auto io = igGetIO();
         auto camera = inGetCamera();
+        auto drawList = igGetWindowDrawList();
+        auto window = igGetCurrentWindow();
 
         // Draw viewport itself
         ImVec2 currSize;
@@ -67,11 +70,11 @@ protected:
         currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
         
 
-        if (igBeginChild("##ViewportView", ImVec2(0, -30))) {
+        if (igBeginChild("##ViewportView", ImVec2(0, -32))) {
             igGetContentRegionAvail(&currSize);
             currSize = ImVec2(
                 clamp(currSize.x, 128, float.max), 
-                clamp(currSize.y, 128, float.max)-4
+                clamp(currSize.y, 128, float.max)
             );
 
             if (currSize != lastSize) {
@@ -101,10 +104,6 @@ protected:
             inGetViewport(width, height);
 
             // Render our viewport
-            ImVec2 sPos;
-            ImVec2 sPosA;
-            igGetCursorScreenPos(&sPos);
-            
             igImage(
                 cast(void*)inGetRenderImage(), 
                 ImVec2(ceil(width/incGetUIScale()), ceil(height/incGetUIScale())), 
@@ -141,26 +140,39 @@ protected:
             }
             igPopStyleVar();
 
-            igGetCursorScreenPos(&sPosA);
-
-            // Render our fancy in-viewport buttons
-            igSetCursorScreenPos(ImVec2(sPos.x+8, sPos.y+8));
-                igSetItemAllowOverlap();
-                
-                igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
-                    if (igBeginChild("##ViewportMainControls", ImVec2(200, 28))) {
-                        igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
-                            incViewportDrawOverlay();
-                        igPopStyleVar();
-                    }
-                    igEndChild();
+            incBeginViewportToolArea("ToolArea", ImGuiDir.Left);
+                igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
+                    incViewportDrawTools();
                 igPopStyleVar();
+            incEndViewportToolArea();
 
-            igSetCursorScreenPos(sPosA);
+            incBeginViewportToolArea("OptionsArea", ImGuiDir.Right);
+                igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
+                    incViewportDrawOptions();
+                igPopStyleVar();
+            incEndViewportToolArea();
+
+            incBeginViewportToolArea("ConfirmArea", ImGuiDir.Left, ImGuiDir.Down, false);
+                incViewportDrawConfirmBar();
+            incEndViewportToolArea();
 
             lastSize = currSize;
             igEndChild();
         }
+
+        // Draw line in a better way
+        ImDrawList_AddLine(drawList, 
+            ImVec2(
+                window.InnerRect.Max.x-1,
+                window.InnerRect.Max.y+currSize.y,
+            ),
+            ImVec2(
+                window.InnerRect.Min.x+1,
+                window.InnerRect.Max.y+currSize.y,
+            ), 
+            igColorConvertFloat4ToU32(*igGetStyleColorVec4(ImGuiCol.Separator)), 
+            2
+        );
 
 
         // FILE DRAG & DROP
@@ -216,6 +228,7 @@ protected:
         // BOTTOM VIEWPORT CONTROLS
         igGetContentRegionAvail(&currSize);
         if (igBeginChild("##ViewportControls", ImVec2(0, currSize.y), false, flags.NoScrollbar)) {
+            igSetCursorPosY(igGetCursorPosY()+4);
             igPushItemWidth(72);
                 igSpacing();
                 igSameLine(0, 8);
@@ -236,6 +249,7 @@ protected:
                         incViewportTargetZoom = 1;
                     }
                 }
+
                 igSameLine(0, 8);
                 igSeparatorEx(ImGuiSeparatorFlags.Vertical);
 

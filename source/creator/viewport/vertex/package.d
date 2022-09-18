@@ -67,8 +67,12 @@ void incViewportVertexInspector(Drawable node) {
 
 }
 
-void incViewportVertexOverlay() {
-    editor.viewportOverlay();
+void incViewportVertexTools() {
+    editor.viewportTools();
+}
+
+void incViewportVertexOptions() {
+    
 }
 
 void incViewportVertexUpdate(ImGuiIO* io, Camera camera) {

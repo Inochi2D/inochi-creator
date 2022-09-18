@@ -31,7 +31,7 @@ void incBeginViewportToolArea(string id_str, ImGuiDir hdir, ImGuiDir vdir = ImGu
     ViewportToolAreaData* data = cast(ViewportToolAreaData*)ImGuiStorage_GetVoidPtr(storage, id);
     if (!data) {
         data = cast(ViewportToolAreaData*)igMemAlloc(ViewportToolAreaData.sizeof);
-        data.contentSize = ImVec2(0, 0);
+        data.contentSize = ImVec2(1, 1);
         ImGuiStorage_SetVoidPtr(storage, id, data);
     }
 
@@ -67,7 +67,7 @@ void incEndViewportToolArea() {
     auto storage = igGetStateStorage();
     auto id = igGetID("CONTENT_SIZE");
     ViewportToolAreaData* data = cast(ViewportToolAreaData*)ImGuiStorage_GetVoidPtr(storage, id);
-    if (data) data.contentSize = win.ContentSize;
+    if (data) data.contentSize = ImVec2(clamp(win.ContentSize.x, 1, float.max), clamp(win.ContentSize.y, 1, float.max));
     
     // Finally pop the user specified ID which the state storage is stored inside
     igPopID();

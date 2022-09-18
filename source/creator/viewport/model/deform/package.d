@@ -64,9 +64,9 @@ void incViewportModelDeformDraw(Camera camera, Parameter param) {
         editor.draw(camera);
 }
 
-void incViewportModelDeformOverlay() {
+void incViewportModelDeformTools() {
     if (editor) {
-        editor.viewportOverlay();
+        editor.viewportTools();
     }
 }
 

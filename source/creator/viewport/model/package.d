@@ -105,11 +105,14 @@ void incViewportModelMenu() {
     igEndChild();
 }
 
-void incViewportModelOverlay() {
+void incViewportModelTools() {
     if (incArmedParameter()) {
-        igSameLine(0, 0);
-        incViewportModelDeformOverlay();
-    } else {
+        incViewportModelDeformTools();
+    }
+}
+
+void incViewportModelOptions() {
+    if (!incArmedParameter()) {
         if (igButton("", ImVec2(0, 0))) {
             incShowVertices = !incShowVertices;
         }

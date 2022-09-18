@@ -47,19 +47,57 @@ void incViewportDraw() {
 /**
     Draws the viewport overlay (if any)
 */
-void incViewportDrawOverlay() {
+void incViewportDrawTools() {
+    switch(incEditMode) {
+        case EditMode.VertexEdit:
+            incViewportVertexTools();
+            break;
+        case EditMode.ModelEdit: 
+            incViewportModelTools(); 
+            break;
+        case EditMode.AnimEdit:
+        case EditMode.ModelTest:
+            break;
+        default: assert(0);
+    }
+}
+
+void incViewportDrawOptions() {
     switch(incEditMode) {
         case EditMode.ModelEdit:
-            incViewportModelOverlay();
+            incViewportModelOptions();
             break;
         case EditMode.VertexEdit:
-            incViewportVertexOverlay();
+            incViewportVertexOptions();
             break;
         case EditMode.AnimEdit:
             incViewportAnimOverlay();
             break;
         case EditMode.ModelTest:
             incViewportTestOverlay();
+            break;
+        default: assert(0);
+    }
+}
+
+void incViewportDrawConfirmBar() {
+    switch(incEditMode) {
+        // case EditMode.ModelEdit:
+        //     incViewportModelOverlay();
+        //     break;
+        // case EditMode.VertexEdit:
+        //     incViewportVertexOverlay();
+        //     break;
+        // case EditMode.AnimEdit:
+        //     incViewportAnimOverlay();
+        //     break;
+        // case EditMode.ModelTest:
+        //     incViewportTestOverlay();
+        //     break;
+        case EditMode.ModelEdit:
+        case EditMode.VertexEdit:
+        case EditMode.AnimEdit:
+        case EditMode.ModelTest:
             break;
         default: assert(0);
     }

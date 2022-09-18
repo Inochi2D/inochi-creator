@@ -717,7 +717,7 @@ public:
         }
     }
 
-    void viewportOverlay() {
+    void viewportTools() {
         igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
             if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Points ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
                 setToolMode(VertexToolMode.Points);
