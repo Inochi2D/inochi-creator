@@ -35,6 +35,12 @@ You may request permission to use our branding assets in your package by submitt
 Barebones builds are more or less equivalent to official builds with the exception that branding is removed,  
 and that we don't accept support tickets unless a problem can be replicated on an official build.
 
+To disable branding, you can build the package without the `--config=full` option, like so:
+
+**With branding**:  `dub build --compiler=ldc2 --build=release --config=full`
+
+**Without branding**: ``dub build --compiler=ldc2 --build=release``
+
 &nbsp;
 
 ## Building
