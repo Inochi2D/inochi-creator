@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-21 03:22+0200\n"
-"PO-Revision-Date: 2022-05-12 02:47+0200\n"
+"POT-Creation-Date: 2022-09-19 02:35+0200\n"
+"PO-Revision-Date: 2022-09-19 02:59+0200\n"
 "Last-Translator: Luna <cli-luna@protonmail.com>\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.1.1\n"
 
 #: source/creator/actions/binding.d:74
 #, c-format
@@ -42,7 +43,7 @@ msgstr "Binding %s var tilføjet"
 #: source/creator/actions/parameter.d:211
 #, c-format
 msgid "%s->%s changed"
-msgstr "%s->%s skiftet til %s"
+msgstr "%s->%s skiftet"
 
 # c-format
 #: source/creator/actions/binding.d:162 source/creator/actions/binding.d:259
@@ -62,12 +63,12 @@ msgstr "Ændrede %s's tegnbare mesh"
 msgid "Drawable %s was changed"
 msgstr "Tegnbar %s var ændret"
 
-#: source/creator/actions/mesheditor.d:158
+#: source/creator/actions/mesheditor.d:160
 #, c-format
 msgid "%s->Edited deformation of %s."
 msgstr "%s->Ændrede deformering af %s."
 
-#: source/creator/actions/mesheditor.d:165
+#: source/creator/actions/mesheditor.d:167
 #, c-format
 msgid "%s->deformation of %s was edited."
 msgstr "%s->Deformering af %s var ændret."
@@ -144,37 +145,54 @@ msgstr "100% (Låst)"
 msgid "LANG_NAME"
 msgstr "Dansk"
 
-#: source/creator/core/package.d:213
+#: source/creator/core/package.d:234
 msgid "(Debug Mode)"
 msgstr "(Udviklingstilstand)"
 
-#: source/creator/core/package.d:215
+#: source/creator/core/package.d:236
 msgid "(Unsupported)"
 msgstr "(Ikke understøttet)"
 
-#: source/creator/io/package.d:16 source/creator/widgets/mainmenu.d:142
-#: source/creator/widgets/mainmenu.d:167
+#: source/creator/io/imageexport.d:13 source/creator/windows/inpexport.d:248
+#, c-format
+msgid "%s was exported..."
+msgstr "%s var eksporteret..."
+
+#: source/creator/io/imageexport.d:15
+#, c-format
+msgid "%s failed to export with error (%s)..."
+msgstr "%s fejlede eksport med fejl (%s)..."
+
+#: source/creator/io/package.d:19 source/creator/widgets/mainmenu.d:167
+#: source/creator/widgets/mainmenu.d:192
 msgid "Import..."
 msgstr "Importér..."
 
-#: source/creator/io/package.d:29 source/creator/windows/welcome.d:190
+#: source/creator/io/package.d:32 source/creator/windows/welcome.d:191
 msgid "Open..."
 msgstr "Åben..."
 
-#: source/creator/io/psd.d:145 source/creator/package.d:269
+#: source/creator/io/package.d:41 source/creator/widgets/mainmenu.d:54
+msgid "Save..."
+msgstr "Gem..."
+
+#: source/creator/io/psd.d:145 source/creator/package.d:278
 #, c-format
 msgid "%s was imported..."
 msgstr "%s var importeret..."
 
-#: source/creator/io/psd.d:148 source/creator/package.d:273
+#: source/creator/io/psd.d:148 source/creator/package.d:282
 msgid "Import failed..."
 msgstr "Importering fejlet..."
 
-#: source/creator/io/psd.d:149 source/creator/package.d:177
-#: source/creator/package.d:211 source/creator/package.d:272
-#: source/creator/package.d:298 source/creator/panels/viewport.d:158
-#: source/creator/panels/viewport.d:159 source/creator/panels/viewport.d:172
-#: source/creator/viewport/vertex/package.d:137
+#: source/creator/io/psd.d:149 source/creator/package.d:184
+#: source/creator/package.d:220 source/creator/package.d:281
+#: source/creator/panels/inspector.d:699 source/creator/panels/inspector.d:710
+#: source/creator/panels/inspector.d:711 source/creator/panels/inspector.d:721
+#: source/creator/panels/viewport.d:204 source/creator/panels/viewport.d:205
+#: source/creator/panels/viewport.d:218
+#: source/creator/viewport/vertex/package.d:190
+#: source/creator/windows/inpexport.d:250
 msgid "Error"
 msgstr "Fejl"
 
@@ -187,22 +205,26 @@ msgstr ""
 "En fejl opstod under PSD import:\n"
 "%s"
 
-#: source/creator/package.d:192
+#: source/creator/io/videoexport.d:59
+msgid "Automatic selection"
+msgstr "Automatisk valg"
+
+#: source/creator/package.d:201
 #, c-format
 msgid "%s opened successfully."
 msgstr "%s åbnet successfuldt."
 
-#: source/creator/package.d:208
+#: source/creator/package.d:217
 #, c-format
 msgid "%s saved successfully."
 msgstr "%s gemt successfuldt."
 
-#: source/creator/package.d:210
+#: source/creator/package.d:219
 #, c-format
 msgid "Failed to save %s"
 msgstr "Kunne ikke gemme %s"
 
-#: source/creator/package.d:246
+#: source/creator/package.d:255
 #, c-format
 msgid ""
 "The following errors occured during file loading\n"
@@ -211,33 +233,24 @@ msgstr ""
 "De følgende fejl opstod under indlæsning af filerne\n"
 "%s"
 
-#: source/creator/package.d:255
+#: source/creator/package.d:264
 msgid "Folder import completed with errors..."
 msgstr "Mappeimportering fuldført med fejl..."
 
-#: source/creator/package.d:256
+#: source/creator/package.d:265
 msgid "Folder import completed..."
 msgstr "Mappeimportering fulført..."
 
-#: source/creator/package.d:296
-#, c-format
-msgid "%s was exported..."
-msgstr "%s var eksporteret..."
-
-#: source/creator/package.d:299
-msgid "Export failed..."
-msgstr "Exportering fejlet..."
-
-#: source/creator/package.d:312
+#: source/creator/package.d:307
 msgid "Mipmap generation completed."
 msgstr "Mipmap-generation fuldført."
 
-#: source/creator/package.d:327
+#: source/creator/package.d:322
 msgid "Texture bleeding completed."
 msgstr "Teksturblødning fuldført."
 
 #: source/creator/panels/actionhistory.d:26
-#: source/creator/windows/settings.d:135
+#: source/creator/windows/settings.d:137
 msgid "Undo History"
 msgstr "Fortrydelseshistorik"
 
@@ -255,133 +268,133 @@ msgstr "%d af %d"
 msgid "History"
 msgstr "Historik"
 
-#: source/creator/panels/inspector.d:132
+#: source/creator/panels/inspector.d:101
 msgid "No nodes selected..."
 msgstr "Ingen noder valgt..."
 
-#: source/creator/panels/inspector.d:134
+#: source/creator/panels/inspector.d:103
 msgid "Can only inspect a single node..."
 msgstr "Kan kun inspicere en enkelt node..."
 
-#: source/creator/panels/inspector.d:140
+#: source/creator/panels/inspector.d:109
 msgid "Inspector"
 msgstr "Inspektør"
 
 #. Selectable
-#: source/creator/panels/inspector.d:183 source/creator/panels/nodes.d:173
+#: source/creator/panels/inspector.d:152 source/creator/panels/nodes.d:172
 msgid "Puppet"
-msgstr "Puppet"
+msgstr "Model"
 
-#: source/creator/panels/inspector.d:196 source/creator/panels/inspector.d:201
+#: source/creator/panels/inspector.d:165 source/creator/panels/inspector.d:170
 msgid "Inochi2D Ver."
 msgstr "Inochi2D Ver."
 
-#: source/creator/panels/inspector.d:207
+#: source/creator/panels/inspector.d:176
 msgid "General Info"
 msgstr "Generel Info"
 
-#: source/creator/panels/inspector.d:209
+#: source/creator/panels/inspector.d:178
 msgid "Name"
 msgstr "Navn"
 
-#: source/creator/panels/inspector.d:210
+#: source/creator/panels/inspector.d:179
 msgid "Name of the puppet"
-msgstr "Navn på dukken"
+msgstr "Navn på modellen"
 
-#: source/creator/panels/inspector.d:216
+#: source/creator/panels/inspector.d:185
 msgid "Artist(s)"
 msgstr "Kunstner(e)"
 
-#: source/creator/panels/inspector.d:217
+#: source/creator/panels/inspector.d:186
 msgid "Artists who've drawn the puppet, seperated by comma"
-msgstr "Kunstnere som har tegnet dukken, sepereret med komma"
+msgstr "Kunstnere som har tegnet modellen, separeret med komma"
 
-#: source/creator/panels/inspector.d:223
+#: source/creator/panels/inspector.d:192
 msgid "Rigger(s)"
 msgstr "Rigger(e)"
 
-#: source/creator/panels/inspector.d:224
+#: source/creator/panels/inspector.d:193
 msgid "Riggers who've rigged the puppet, seperated by comma"
-msgstr "Rigger(e) som har rigget dukken, sepereret med komma"
+msgstr "Rigger(e) som har rigget modellen, separeret med komma"
 
-#: source/creator/panels/inspector.d:230
+#: source/creator/panels/inspector.d:199
 msgid "Contact"
 msgstr "Kontaktinfo"
 
-#: source/creator/panels/inspector.d:231
+#: source/creator/panels/inspector.d:200
 msgid "Where to contact the main author of the puppet"
-msgstr "Hvor man kan kontakte hovedforfatteren af dukken"
+msgstr "Hvor man kan kontakte hoved-forfatteren af modellen"
 
-#: source/creator/panels/inspector.d:237
+#: source/creator/panels/inspector.d:206
 msgid "Licensing"
 msgstr "Licens"
 
-#: source/creator/panels/inspector.d:239
+#: source/creator/panels/inspector.d:208
 msgid "License URL"
 msgstr "Licenslink"
 
-#: source/creator/panels/inspector.d:240
+#: source/creator/panels/inspector.d:209
 msgid "Link/URL to license"
 msgstr "Link/URL til licensen"
 
-#: source/creator/panels/inspector.d:246
+#: source/creator/panels/inspector.d:215
 msgid "Copyright"
 msgstr "Ophavsret"
 
-#: source/creator/panels/inspector.d:247
+#: source/creator/panels/inspector.d:216
 msgid "Copyright holder information of the puppet"
-msgstr "Ophavsretinformation for dukken"
+msgstr "Ejeren af ophavsretten til modellen"
 
-#: source/creator/panels/inspector.d:253
+#: source/creator/panels/inspector.d:222
 msgid "Origin"
 msgstr "Oprindelse"
 
-#: source/creator/panels/inspector.d:254
+#: source/creator/panels/inspector.d:223
 msgid "Where the model comes from on the internet."
 msgstr "Hvor dukken er oprindet fra på internettet."
 
-#: source/creator/panels/inspector.d:259
+#: source/creator/panels/inspector.d:229
 msgid "Physics Globals"
-msgstr "Fysikglobaler"
+msgstr "Fysik Globalværdier"
 
-#: source/creator/panels/inspector.d:261
+#: source/creator/panels/inspector.d:231
 msgid "Pixels per meter"
 msgstr "Pixel-per-meter"
 
-#: source/creator/panels/inspector.d:262
+#: source/creator/panels/inspector.d:232
 msgid "Number of pixels that correspond to 1 meter in the physics engine."
 msgstr "Antal pixler som svarer til en meter i fysikmotoren."
 
-#: source/creator/panels/inspector.d:268
+#: source/creator/panels/inspector.d:238
 msgid "Gravity"
 msgstr "Tyngdekraft"
 
-#: source/creator/panels/inspector.d:269
+#: source/creator/panels/inspector.d:239
 msgid "Acceleration due to gravity, in m/s². Earth gravity is 9.8."
 msgstr "Accelleration p.ga. tyngdekraft i m/s². Jorden's tyngdekræft er 9,8."
 
-#: source/creator/panels/inspector.d:270
+#: source/creator/panels/inspector.d:240
 #, c-format
 msgid "%.2f m/s"
-msgstr ""
+msgstr "%.2f m/s"
 
-#: source/creator/panels/inspector.d:275
+#: source/creator/panels/inspector.d:245
 msgid "Rendering Settings"
 msgstr "Rendering Indstillinger"
 
-#: source/creator/panels/inspector.d:277
+#: source/creator/panels/inspector.d:247
 msgid "Use Point Filtering"
 msgstr "Brug Punktfiltrering"
 
-#: source/creator/panels/inspector.d:281
+#: source/creator/panels/inspector.d:251
 msgid ""
 "Makes Inochi2D model use point filtering, removing blur for low-resolution "
 "models."
 msgstr ""
 "Får Inochi2D modellen til at bruge punktfiltering, som fjerner bløde kanter "
-"for modeller med lav opløsning"
+"for modeller med lav opløsning."
 
-#: source/creator/panels/inspector.d:301 source/creator/panels/inspector.d:1108
+#: source/creator/panels/inspector.d:271 source/creator/panels/inspector.d:1250
 msgid "Transform"
 msgstr "Transform"
 
@@ -389,21 +402,21 @@ msgstr "Transform"
 #. Translation
 #.
 #. Translation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:319 source/creator/panels/inspector.d:1125
+#: source/creator/panels/inspector.d:287 source/creator/panels/inspector.d:1265
 msgid "Translation"
 msgstr "Position"
 
 #. Button which locks all transformation to be based off the root node
 #. of the puppet, this more or less makes the item stay in place
 #. even if the parent moves.
-#: source/creator/panels/inspector.d:381 source/creator/panels/inspector.d:382
+#: source/creator/panels/inspector.d:349 source/creator/panels/inspector.d:350
 msgid "Lock to Root Node"
 msgstr "Lås til Rod"
 
 #. Button which locks all transformation to be based off the root node
 #. of the puppet, this more or less makes the item stay in place
 #. even if the parent moves.
-#: source/creator/panels/inspector.d:396
+#: source/creator/panels/inspector.d:364
 msgid ""
 "Makes so that the translation of this node is based off the root node, "
 "making it stay in place even if its parent moves."
@@ -412,39 +425,39 @@ msgstr ""
 "til at stå stille selvom den overordnet node flytter sig."
 
 #. Rotation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:411 source/creator/panels/inspector.d:1162
+#: source/creator/panels/inspector.d:379 source/creator/panels/inspector.d:1302
 msgid "Rotation"
 msgstr "Rotation"
 
-#: source/creator/panels/inspector.d:419
+#: source/creator/panels/inspector.d:391
 msgid "Rotation X"
 msgstr "Rotation X"
 
-#: source/creator/panels/inspector.d:436
+#: source/creator/panels/inspector.d:411
 msgid "Rotation Y"
 msgstr "Rotation Y"
 
-#: source/creator/panels/inspector.d:453
+#: source/creator/panels/inspector.d:431
 msgid "Rotation Z"
 msgstr "Rotation Z"
 
 #. Scaling portion of the transformation matrix.
-#: source/creator/panels/inspector.d:473 source/creator/panels/inspector.d:1194
+#: source/creator/panels/inspector.d:451 source/creator/panels/inspector.d:1334
 msgid "Scale"
 msgstr "Skalering"
 
-#: source/creator/panels/inspector.d:481
+#: source/creator/panels/inspector.d:459
 msgid "Scale X"
 msgstr "X Skalering"
 
-#: source/creator/panels/inspector.d:498
+#: source/creator/panels/inspector.d:476
 msgid "Scale Y"
 msgstr "Y Skalering"
 
 #. An option in which positions will be snapped to whole integer values.
 #. In other words texture will always be on a pixel.
-#: source/creator/panels/inspector.d:515 source/creator/panels/inspector.d:516
-#: source/creator/panels/inspector.d:521
+#: source/creator/panels/inspector.d:493 source/creator/panels/inspector.d:494
+#: source/creator/panels/inspector.d:499
 msgid "Snap to Pixel"
 msgstr "Lås til Pixel"
 
@@ -452,254 +465,279 @@ msgstr "Lås til Pixel"
 #. Parts to draw in the user specified order.
 #. negative values = closer to camera
 #. positive values = further away from camera
-#: source/creator/panels/inspector.d:538 source/creator/panels/inspector.d:1214
+#: source/creator/panels/inspector.d:516 source/creator/panels/inspector.d:1354
 msgid "Sorting"
 msgstr "Sortering"
 
 #. The main type of anything that can be drawn to the screen
 #. in Inochi2D.
-#: source/creator/panels/inspector.d:548
+#: source/creator/panels/inspector.d:528
 msgid "Drawable"
 msgstr "Tegnebar"
 
-#: source/creator/panels/inspector.d:555
+#: source/creator/panels/inspector.d:533
 msgid "Texture Offset"
-msgstr "Tekstur Forskydning"
+msgstr "Teksturforskydning"
 
 #. Switches Inochi Creator over to Mesh Edit mode
 #. and selects the mesh that you had selected previously
 #. in Model Edit mode.
-#: source/creator/panels/inspector.d:623
+#: source/creator/panels/inspector.d:601
 msgid "Edit Mesh"
 msgstr "Rediger Mesh"
 
-#: source/creator/panels/inspector.d:632 source/creator/panels/inspector.d:1219
+#. Allow saving texture to file
+#: source/creator/panels/inspector.d:624
+msgid "Save to File"
+msgstr "Gem til Fil"
+
+#: source/creator/panels/inspector.d:638 source/creator/panels/parameters.d:343
+msgid "Remove"
+msgstr "Fjern"
+
+#. Option which causes the Albedo color to be the emission color.
+#. The item will glow the same color as it, itself is.
+#: source/creator/panels/inspector.d:647
+msgid "Make Emissive"
+msgstr "Gør Udstrålende"
+
+#: source/creator/panels/inspector.d:699
+msgid "Size of given texture does not match the Albedo texture."
+msgstr "Størrelse af given tekstur er ikke den samme som Albedo teksturen."
+
+#: source/creator/panels/inspector.d:710 source/creator/panels/inspector.d:721
+#: source/creator/panels/viewport.d:204 source/creator/panels/viewport.d:218
+#, c-format
+msgid "%s is not supported"
+msgstr "%s er ikke understøttet"
+
+#: source/creator/panels/inspector.d:737 source/creator/panels/inspector.d:1361
 msgid "Part"
 msgstr "Del"
 
-#: source/creator/panels/inspector.d:637
+#: source/creator/panels/inspector.d:741
 msgid "Cannot inspect an unmeshed part"
 msgstr "Kan ikke inspicere en ikke-meshed del"
 
-#: source/creator/panels/inspector.d:651 source/creator/panels/inspector.d:813
-#: source/creator/panels/inspector.d:1227
-#: source/creator/panels/inspector.d:1262
+#: source/creator/panels/inspector.d:754
+msgid "Albedo"
+msgstr "Albedo"
+
+#: source/creator/panels/inspector.d:756
+msgid "Emissive"
+msgstr "Udstråling"
+
+#: source/creator/panels/inspector.d:758
+msgid "Bumpmap"
+msgstr "Bumpmap"
+
+#: source/creator/panels/inspector.d:763 source/creator/panels/inspector.d:942
+#: source/creator/panels/inspector.d:1367
+#: source/creator/panels/inspector.d:1403
 msgid "Tint (Multiply)"
 msgstr "Omfarv (Multiplicér)"
 
-#: source/creator/panels/inspector.d:654 source/creator/panels/inspector.d:816
-#: source/creator/panels/inspector.d:1231
-#: source/creator/panels/inspector.d:1266
+#: source/creator/panels/inspector.d:766 source/creator/panels/inspector.d:945
+#: source/creator/panels/inspector.d:1371
+#: source/creator/panels/inspector.d:1407
 msgid "Tint (Screen)"
 msgstr "Omfarv (Skærm)"
 
 #. Header for the Blending options for Parts
-#: source/creator/panels/inspector.d:663 source/creator/panels/inspector.d:820
+#: source/creator/panels/inspector.d:775 source/creator/panels/inspector.d:949
 msgid "Blending"
 msgstr "Blandingstildstand"
 
 #. Normal blending mode as used in Photoshop, generally
 #. the default blending mode photoshop starts a layer out as.
-#: source/creator/panels/inspector.d:668 source/creator/panels/inspector.d:825
+#: source/creator/panels/inspector.d:780 source/creator/panels/inspector.d:954
 msgid "Normal"
 msgstr "Normal"
 
 #. Multiply blending mode, in which this texture's color data
 #. will be multiplied with the color data already in the framebuffer.
-#: source/creator/panels/inspector.d:672 source/creator/panels/inspector.d:829
+#: source/creator/panels/inspector.d:784 source/creator/panels/inspector.d:958
 msgid "Multiply"
 msgstr "Multiplicér"
 
 #. Color Dodge blending mode
-#: source/creator/panels/inspector.d:675 source/creator/panels/inspector.d:832
+#: source/creator/panels/inspector.d:787 source/creator/panels/inspector.d:961
 msgid "Color Dodge"
 msgstr "Farvebrændning"
 
 #. Linear Dodge blending mode
-#: source/creator/panels/inspector.d:678 source/creator/panels/inspector.d:835
+#: source/creator/panels/inspector.d:790 source/creator/panels/inspector.d:964
 msgid "Linear Dodge"
 msgstr "Lineær Brænding"
 
 #. Screen blending mode
-#: source/creator/panels/inspector.d:681 source/creator/panels/inspector.d:838
+#: source/creator/panels/inspector.d:793 source/creator/panels/inspector.d:967
 msgid "Screen"
 msgstr "Skærm"
 
 #. Clip to Lower blending mode
-#: source/creator/panels/inspector.d:684
+#: source/creator/panels/inspector.d:796
 msgid "Clip to Lower"
 msgstr "Klip til Synlig"
 
-#: source/creator/panels/inspector.d:685
+#: source/creator/panels/inspector.d:797
 msgid ""
 "Special blending mode that causes (while respecting transparency) the part "
 "to be clipped to everything underneath"
 msgstr ""
 "Speciel blandingstilstand som for delen til kun at blive tegnet over synlige "
-"pixels."
+"pixels"
 
 #. Slice from Lower blending mode
-#: source/creator/panels/inspector.d:688
+#: source/creator/panels/inspector.d:800
 msgid "Slice from Lower"
 msgstr "Skær fra Synlig"
 
-#: source/creator/panels/inspector.d:689
+#: source/creator/panels/inspector.d:801
 msgid ""
 "Special blending mode that causes (while respecting transparency) the part "
 "to be slice by everything underneath.\n"
 "Basically reverse Clip to Lower."
 msgstr "Speciel blandingstilstand som skærer et hul i synlige pixels."
 
-#: source/creator/panels/inspector.d:696 source/creator/panels/inspector.d:845
-#: source/creator/panels/inspector.d:1242
-#: source/creator/panels/inspector.d:1278
+#: source/creator/panels/inspector.d:808 source/creator/panels/inspector.d:974
+#: source/creator/panels/inspector.d:1383
+#: source/creator/panels/inspector.d:1420
 msgid "Opacity"
 msgstr "Gennemsigtighed"
 
-#: source/creator/panels/inspector.d:701 source/creator/panels/inspector.d:850
+#: source/creator/panels/inspector.d:813 source/creator/panels/inspector.d:979
 msgid "Masks"
 msgstr "Masker"
 
 #. Threshold slider name for adjusting how transparent a pixel can be
 #. before it gets discarded.
-#: source/creator/panels/inspector.d:706 source/creator/panels/inspector.d:855
-#: source/creator/panels/inspector.d:1249
+#: source/creator/panels/inspector.d:818 source/creator/panels/inspector.d:984
+#: source/creator/panels/inspector.d:1390
 msgid "Threshold"
 msgstr "Grænseværdi"
 
 #. The sources that the part gets masked by. Depending on the masking mode
 #. either the sources will cut out things that don't overlap, or cut out
 #. things that do.
-#: source/creator/panels/inspector.d:714
+#: source/creator/panels/inspector.d:826
 msgid "Mask Sources"
 msgstr "Maskekilder"
 
-#: source/creator/panels/inspector.d:717
+#: source/creator/panels/inspector.d:829
 msgid "(Drag a Part or Mask Here)"
 msgstr "(Træk en Del eller Maske her)"
 
-#: source/creator/panels/inspector.d:724
+#: source/creator/panels/inspector.d:836
 msgid "Mode"
 msgstr "Tilstand"
 
-#: source/creator/panels/inspector.d:725 source/creator/panels/nodes.d:56
+#: source/creator/panels/inspector.d:837 source/creator/panels/nodes.d:54
 msgid "Mask"
 msgstr "Maske"
 
-#: source/creator/panels/inspector.d:726
+#: source/creator/panels/inspector.d:838
 msgid "Dodge"
 msgstr "Brænd"
 
-#: source/creator/panels/inspector.d:731 source/creator/panels/nodes.d:83
-#: source/creator/panels/parameters.d:615
+#: source/creator/panels/inspector.d:843 source/creator/panels/nodes.d:82
+#: source/creator/panels/parameters.d:698
+#: source/creator/panels/parameters.d:883
 msgid "Delete"
 msgstr "Slet"
 
-#: source/creator/panels/inspector.d:743
+#: source/creator/panels/inspector.d:855
 #, c-format
 msgid "%s (Mask)"
 msgstr "%s (Maske)"
 
-#: source/creator/panels/inspector.d:744
+#: source/creator/panels/inspector.d:856
 #, c-format
 msgid "%s (Dodge)"
 msgstr "%s (Brænd)"
 
-#: source/creator/panels/inspector.d:802 source/creator/panels/inspector.d:1254
-#: source/creator/panels/nodes.d:65
+#: source/creator/panels/inspector.d:916 source/creator/panels/nodes.d:72
+#: source/creator/windows/imgexport.d:96
+msgid "Camera"
+msgstr "Kamera"
+
+#: source/creator/panels/inspector.d:918 source/creator/panels/viewport.d:280
+#: source/creator/windows/settings.d:82
+msgid "Viewport"
+msgstr "Viewport"
+
+#: source/creator/panels/inspector.d:932 source/creator/panels/inspector.d:1397
+#: source/creator/panels/nodes.d:61
 msgid "Composite"
 msgstr "Sammensætning"
 
-#: source/creator/panels/inspector.d:866
+#: source/creator/panels/inspector.d:997
 msgid "SimplePhysics"
 msgstr "SimpelFysik"
 
-#: source/creator/panels/inspector.d:878 source/creator/windows/trkbind.d:47
+#: source/creator/panels/inspector.d:1007 source/creator/windows/trkbind.d:47
 msgid "Parameter"
 msgstr "Parameter"
 
-#: source/creator/panels/inspector.d:879
+#: source/creator/panels/inspector.d:1008
 msgid "(unassigned)"
 msgstr "(ingen værdi)"
 
-#: source/creator/panels/inspector.d:895
+#: source/creator/panels/inspector.d:1024
 msgid "Type"
 msgstr "Type"
 
-#: source/creator/panels/inspector.d:898
+#: source/creator/panels/inspector.d:1027
 msgid "Pendulum"
 msgstr "Pendul"
 
-#: source/creator/panels/inspector.d:900
+#: source/creator/panels/inspector.d:1029
 msgid "SpringPendulum"
 msgstr "Fjederpendul"
 
-#: source/creator/panels/inspector.d:907
+#: source/creator/panels/inspector.d:1036
 msgid "Mapping mode"
 msgstr "Tilknytningstilstand"
 
-#: source/creator/panels/inspector.d:910
+#: source/creator/panels/inspector.d:1039
 msgid "AngleLength"
 msgstr "Vinkellængde"
 
-#: source/creator/panels/inspector.d:912
+#: source/creator/panels/inspector.d:1041
 msgid "XY"
 msgstr "XY"
 
-#: source/creator/panels/inspector.d:922
+#: source/creator/panels/inspector.d:1051
 msgid "Gravity scale"
 msgstr "Tyngdekræftsskala"
 
-#: source/creator/panels/inspector.d:929
+#: source/creator/panels/inspector.d:1058
 msgid "Length"
 msgstr "Længde"
 
-#: source/creator/panels/inspector.d:936
+#: source/creator/panels/inspector.d:1065
 msgid "Resonant frequency"
 msgstr "Resonansfrekvens"
 
-#: source/creator/panels/inspector.d:943
+#: source/creator/panels/inspector.d:1072
 msgid "Damping"
 msgstr "Dæmpning"
 
-#: source/creator/panels/inspector.d:954
+#: source/creator/panels/inspector.d:1083
 msgid "Output scale"
 msgstr "Output skala"
 
 #. Header for texture options
-#: source/creator/panels/inspector.d:1225
-#: source/creator/panels/inspector.d:1260
+#: source/creator/panels/inspector.d:1365
+#: source/creator/panels/inspector.d:1401
 msgid "Textures"
 msgstr "Teksturer"
-
-#. Cancels the edited state for the axies points
-#: source/creator/panels/inspector.d:1312 source/creator/widgets/dialog.d:116
-#: source/creator/windows/paramaxes.d:133
-msgid "Cancel"
-msgstr "Annuller"
-
-#: source/creator/panels/inspector.d:1322
-msgid "Are you sure?"
-msgstr "Er du sikker?"
-
-#: source/creator/panels/inspector.d:1323
-msgid ""
-"The layout of the mesh has changed, all deformations to this mesh will be "
-"deleted if you continue."
-msgstr ""
-"Layoutet af meshen er ændret, alle deformeringer vil blive slettet hvis du "
-"fortsætter."
-
-#: source/creator/panels/inspector.d:1334
-#: source/creator/windows/paramsplit.d:168
-msgid "Apply"
-msgstr "Anvend"
 
 #: source/creator/panels/logger.d:25
 msgid "Logger"
 msgstr "Logning"
 
-#: source/creator/panels/nodes.d:44
+#: source/creator/panels/nodes.d:46
 msgid "Add"
 msgstr "Tilføj"
 
@@ -707,224 +745,236 @@ msgstr "Tilføj"
 msgid "Node"
 msgstr "Node"
 
-#: source/creator/panels/nodes.d:73
+#: source/creator/panels/nodes.d:67
 msgid "Simple Physics"
 msgstr "Simpel Fysik"
 
 #. Option to hide the node (and subnodes)
-#: source/creator/panels/nodes.d:79
+#: source/creator/panels/nodes.d:78
 msgid "Hide"
 msgstr "Skjul"
 
 #. Option to show the node (and subnodes)
-#: source/creator/panels/nodes.d:79
+#: source/creator/panels/nodes.d:78
 msgid "Show"
 msgstr "Vis"
 
-#: source/creator/panels/nodes.d:98
+#: source/creator/panels/nodes.d:97
 msgid "More Info"
 msgstr "Mere info"
 
 # c-format
 #. %s is the name of the node in the More Info menu
 #. %u is the UUID of the node in the More Info menu
-#: source/creator/panels/nodes.d:104
+#: source/creator/panels/nodes.d:103
 #, c-format
 msgid "%s ID: %u"
 msgstr "%s ID: %u"
 
-#: source/creator/panels/nodes.d:107
+#: source/creator/panels/nodes.d:106
 #, c-format
 msgid "%s Layer: %s"
 msgstr "%s Lag: %s"
 
 # c-format
 #. %u is the UUID of the node in the More Info menu
-#: source/creator/panels/nodes.d:112
+#: source/creator/panels/nodes.d:111
 #, c-format
 msgid "ID: %u"
 msgstr "ID: %u"
 
-#: source/creator/panels/nodes.d:115
+#: source/creator/panels/nodes.d:114
 #, c-format
 msgid "Layer: %s"
 msgstr "Lag: %s"
 
-#: source/creator/panels/nodes.d:288
+#: source/creator/panels/nodes.d:284
 msgid "In vertex edit mode..."
 msgstr "I vertexredigeringstilstand..."
 
-#: source/creator/panels/nodes.d:357
+#: source/creator/panels/nodes.d:385
 msgid "Nodes"
 msgstr "Noder"
 
-#: source/creator/panels/parameters.d:176
+#: source/creator/panels/parameters.d:179
 msgid "Unset"
 msgstr "Afsæt"
 
-#: source/creator/panels/parameters.d:185
+#: source/creator/panels/parameters.d:188
 msgid "Set to current"
 msgstr "Sæt til nuværende"
 
-#: source/creator/panels/parameters.d:194
+#: source/creator/panels/parameters.d:197
 msgid "Reset"
 msgstr "Nulstil"
 
-#: source/creator/panels/parameters.d:203 source/creator/windows/trkbind.d:110
+#: source/creator/panels/parameters.d:206 source/creator/windows/trkbind.d:110
 msgid "Invert"
 msgstr "Invertér"
 
-#: source/creator/panels/parameters.d:212
-#: source/creator/panels/parameters.d:573
+#: source/creator/panels/parameters.d:215
+#: source/creator/panels/parameters.d:656
 msgid "Mirror"
 msgstr "Spejlvend"
 
-#: source/creator/panels/parameters.d:213
-#: source/creator/panels/parameters.d:235
-#: source/creator/panels/parameters.d:574
+#: source/creator/panels/parameters.d:216
+#: source/creator/panels/parameters.d:238
+#: source/creator/panels/parameters.d:657
 msgid "Horizontally"
 msgstr "Horisontalt"
 
-#: source/creator/panels/parameters.d:222
-#: source/creator/panels/parameters.d:244
-#: source/creator/panels/parameters.d:578
+#: source/creator/panels/parameters.d:225
+#: source/creator/panels/parameters.d:247
+#: source/creator/panels/parameters.d:661
 msgid "Vertically"
 msgstr "Vertikalt"
 
-#: source/creator/panels/parameters.d:234
-#: source/creator/panels/parameters.d:265
+#: source/creator/panels/parameters.d:237
+#: source/creator/panels/parameters.d:268
 msgid "Set from mirror"
 msgstr "Sæt fra spej"
 
-#: source/creator/panels/parameters.d:253
+#: source/creator/panels/parameters.d:256
 msgid "Diagonally"
 msgstr "Diagonalt"
 
-#: source/creator/panels/parameters.d:276 source/creator/widgets/mainmenu.d:220
+#: source/creator/panels/parameters.d:279 source/creator/widgets/mainmenu.d:309
 msgid "Copy"
 msgstr "Kopiér"
 
-#: source/creator/panels/parameters.d:284 source/creator/widgets/mainmenu.d:221
+#: source/creator/panels/parameters.d:287 source/creator/widgets/mainmenu.d:310
 msgid "Paste"
 msgstr "Indsæt"
 
-#: source/creator/panels/parameters.d:305
+#: source/creator/panels/parameters.d:308
 msgid "Bindings"
 msgstr "Bindinger"
 
-#: source/creator/panels/parameters.d:341
-msgid "Remove"
-msgstr "Fjern"
-
-#: source/creator/panels/parameters.d:353
+#: source/creator/panels/parameters.d:355
 msgid "Interpolation Mode"
 msgstr "Interpoleringstilstand"
 
-#: source/creator/panels/parameters.d:354
+#: source/creator/panels/parameters.d:356
 msgid "Nearest"
 msgstr "Næreste"
 
-#: source/creator/panels/parameters.d:360
+#: source/creator/panels/parameters.d:362
 msgid "Linear"
 msgstr "Lineær"
 
-#: source/creator/panels/parameters.d:370
+#: source/creator/panels/parameters.d:372
 msgid "Copy to"
 msgstr "Kopiér til"
 
-#: source/creator/panels/parameters.d:378
+#: source/creator/panels/parameters.d:380
 msgid "Swap with"
 msgstr "Udskift med"
 
-#: source/creator/panels/parameters.d:540
+#: source/creator/panels/parameters.d:561
+msgid "New Parameter Group"
+msgstr "Ny Parametergruppe"
+
+#: source/creator/panels/parameters.d:623
 msgid "Edit Properties"
 msgstr "Redigér egenskaber"
 
-#: source/creator/panels/parameters.d:544
+#: source/creator/panels/parameters.d:627
 msgid "Edit Axes Points"
 msgstr "Redigér aksepunkter"
 
-#: source/creator/panels/parameters.d:548
+#: source/creator/panels/parameters.d:631
 msgid "Split"
 msgstr "Split"
 
-#: source/creator/panels/parameters.d:553
+#: source/creator/panels/parameters.d:636
 msgid "Flip X"
 msgstr "Flip X"
 
-#: source/creator/panels/parameters.d:559
+#: source/creator/panels/parameters.d:642
 msgid "Flip Y"
 msgstr "Flip Y"
 
-#: source/creator/panels/parameters.d:566
+#: source/creator/panels/parameters.d:649
 msgid "Flip"
 msgstr "Flip"
 
-#: source/creator/panels/parameters.d:584
+#: source/creator/panels/parameters.d:667
 msgid "Mirrored Autofill"
 msgstr "Spejlvendt Autoudfyldning"
 
-#: source/creator/panels/parameters.d:585
-msgid ""
-msgstr ""
-
-#: source/creator/panels/parameters.d:589
-msgid ""
-msgstr ""
-
-#: source/creator/panels/parameters.d:594
-msgid ""
-msgstr ""
-
-#: source/creator/panels/parameters.d:598
-msgid ""
-msgstr ""
-
-#: source/creator/panels/parameters.d:609
+#: source/creator/panels/parameters.d:692
 msgid "Duplicate"
 msgstr "Duplikér"
 
 #. Sets the default value of the param
-#: source/creator/panels/parameters.d:627
+#: source/creator/panels/parameters.d:710
 msgid "Set Starting Position"
 msgstr "Sæt Startposition"
 
 #. Arms the parameter for recording values.
-#: source/creator/panels/parameters.d:652
+#: source/creator/panels/parameters.d:735
 msgid "Arm Parameter"
 msgstr "Armér Parameter"
 
-#: source/creator/panels/parameters.d:675
+#: source/creator/panels/parameters.d:760
 msgid "Add 1D Parameter (0..1)"
 msgstr "Tilføj 1D Parameter (0..1)"
 
-#: source/creator/panels/parameters.d:683
+#: source/creator/panels/parameters.d:768
 msgid "Add 1D Parameter (-1..1)"
 msgstr "Tilføj 1D Parameter (-1..1)"
 
-#: source/creator/panels/parameters.d:694
+#: source/creator/panels/parameters.d:779
 msgid "Add 2D Parameter (0..1)"
 msgstr "Tilføj 2D Parameter (0..1)"
 
-#: source/creator/panels/parameters.d:702
+#: source/creator/panels/parameters.d:787
 msgid "Add 2D Parameter (-1..+1)"
 msgstr "Tilføj 2D Parameter (-1..1)"
 
-#: source/creator/panels/parameters.d:714
+#: source/creator/panels/parameters.d:799
 msgid "Add Mouth Shape"
 msgstr "Tilføj Mundform"
 
-#: source/creator/panels/parameters.d:736
+#: source/creator/panels/parameters.d:821
 msgid "Filter, search for specific parameters"
 msgstr "Filter, søg for specifike parametre"
 
-#: source/creator/panels/parameters.d:767
+#. Textbox
+#: source/creator/panels/parameters.d:850 source/creator/windows/rename.d:42
+#: source/creator/windows/rename.d:57
+msgid "Rename"
+msgstr "Omnavngiv"
+
+#: source/creator/panels/parameters.d:854
+msgid "Colors"
+msgstr "Farver"
+
+#. CUSTOM COLOR PICKER
+#. Allows user to select a custom color for parameter group.
+#: source/creator/panels/parameters.d:879
+msgid "Custom Color"
+msgstr "Selvvalgt Farve"
+
+#: source/creator/panels/parameters.d:958
 msgid "Add Parameter"
 msgstr "Tilføj Parameter"
 
-#: source/creator/panels/parameters.d:772
+#: source/creator/panels/parameters.d:963
 msgid "Parameters"
 msgstr "Parametre"
+
+#: source/creator/panels/scene.d:29
+msgid "Ambient Light"
+msgstr "Omgivende Lys"
+
+#: source/creator/panels/scene.d:38
+msgid "Scene"
+msgstr "Scene"
+
+#: source/creator/panels/timeline.d:50
+msgid "Timeline"
+msgstr "Tidslinje"
 
 #: source/creator/panels/toolsettings.d:31
 msgid "Tool Settings"
@@ -961,7 +1011,7 @@ msgstr "Porten som VMC bindingen skal lytte på, normalt 39540"
 
 #: source/creator/panels/tracking.d:87
 msgid "A reciever which uses the VTubeStudio iOS app"
-msgstr "En modtager som bruger VTubeStudio iOS appen."
+msgstr "En modtager som bruger VTubeStudio iOS appen"
 
 #: source/creator/panels/tracking.d:90
 msgid "iPhone IP"
@@ -977,7 +1027,7 @@ msgstr ""
 
 #: source/creator/panels/tracking.d:102
 msgid "A receiver which uses OpenSeeFace application"
-msgstr "En modtager som bruger OpenSeeFace programmet."
+msgstr "En modtager som bruger OpenSeeFace programmet"
 
 #: source/creator/panels/tracking.d:104
 msgid "OSF Bind Address"
@@ -1003,15 +1053,6 @@ msgstr "Ikke i Test Tilstand..."
 #: source/creator/panels/tracking.d:153
 msgid "Tracking"
 msgstr "Tracking"
-
-#: source/creator/panels/viewport.d:158 source/creator/panels/viewport.d:172
-#, c-format
-msgid "%s is not supported"
-msgstr "%s er ikke understøttet"
-
-#: source/creator/panels/viewport.d:236 source/creator/windows/settings.d:81
-msgid "Viewport"
-msgstr "Viewport"
 
 #: source/creator/utils/crashdump.d:52
 msgid ""
@@ -1047,55 +1088,162 @@ msgstr ""
 "smidt på dit hjemmemappe som et git-issue på https://github.com/Inochi2D/"
 "inochi-creator/issues"
 
-#: source/creator/viewport/common/mesheditor.d:705
+#: source/creator/viewport/common/mesheditor.d:379
+#: source/creator/viewport/common/mesheditor.d:381
+#: source/creator/viewport/common/mesheditor.d:516
+msgid "Select"
+msgstr "Vælg"
+
+#: source/creator/viewport/common/mesheditor.d:379
+#: source/creator/viewport/common/mesheditor.d:381
+#: source/creator/viewport/common/mesheditor.d:516
+#: source/creator/viewport/common/mesheditor.d:518
+#: source/creator/viewport/common/mesheditor.d:561
+msgid "Left Mouse"
+msgstr "Venstre Museknap"
+
+#: source/creator/viewport/common/mesheditor.d:382
+msgid "Create"
+msgstr "Opret"
+
+#: source/creator/viewport/common/mesheditor.d:382
+msgid "Ctrl+Left Mouse"
+msgstr "Ctrl+Venstre Museknap"
+
+#: source/creator/viewport/common/mesheditor.d:518
+msgid "Connect/Disconnect"
+msgstr "Forbind/Frakoble"
+
+#: source/creator/viewport/common/mesheditor.d:519
+msgid "Connect Multiple"
+msgstr "Sammensæt flere"
+
+#: source/creator/viewport/common/mesheditor.d:519
+msgid "Shift+Left Mouse"
+msgstr "Shift+Venstre Museknap"
+
+#: source/creator/viewport/common/mesheditor.d:561
+msgid "Deform"
+msgstr "Deformér"
+
+#: source/creator/viewport/common/mesheditor.d:562
+#: source/creator/viewport/common/mesheditor.d:565
+msgid "Switch Mode"
+msgstr "Skift Tilstand"
+
+#: source/creator/viewport/common/mesheditor.d:562
+#: source/creator/viewport/common/mesheditor.d:565
+msgid "TAB"
+msgstr "TAB"
+
+#: source/creator/viewport/common/mesheditor.d:564
+msgid "Create/Destroy"
+msgstr "Opret/Fjern"
+
+#: source/creator/viewport/common/mesheditor.d:564
+msgid "Left Mouse (x2)"
+msgstr "Venstre Museknap (x2)"
+
+#: source/creator/viewport/common/mesheditor.d:729
 msgid "Vertex Tool"
 msgstr "Hjørneværktøj"
 
-#: source/creator/viewport/common/mesheditor.d:714
+#: source/creator/viewport/common/mesheditor.d:737
 msgid "Edge Tool"
 msgstr "Kantværktøj"
 
-#: source/creator/viewport/common/mesheditor.d:724
+#: source/creator/viewport/common/mesheditor.d:746
 msgid "Path Deform Tool"
 msgstr "Stideformeringsværktøj"
 
-#: source/creator/viewport/model/package.d:27
-msgid "Show/hide Vertices"
-msgstr "Vis/skjul Hjørner"
+#: source/creator/viewport/model/package.d:55
+msgid "Focus Selected"
+msgstr "Fokusér på valgt"
 
-#: source/creator/viewport/model/package.d:35
-msgid "Show/hide Bounds"
-msgstr "Vis/skjul Grænser"
+#: source/creator/viewport/model/package.d:103
+msgid "No parts found"
+msgstr "Ingen dele fundet"
 
-#: source/creator/viewport/model/package.d:43
-msgid "Show/hide Orientation Gizmo"
-msgstr "Vis/skjul Orientationsgizmo"
+#: source/creator/viewport/model/package.d:120
+msgid "Hide Vertices"
+msgstr "Skjul Hjørner"
 
-#: source/creator/viewport/package.d:196
+#: source/creator/viewport/model/package.d:120
+msgid "Show Vertices"
+msgstr "Vis Hjørner"
+
+#: source/creator/viewport/model/package.d:126
+msgid "Hide Bounds"
+msgstr "Skjul Grænser"
+
+#: source/creator/viewport/model/package.d:126
+msgid "Show Bounds"
+msgstr "Vis Grænser"
+
+#: source/creator/viewport/model/package.d:132
+msgid "Hide Orientation Gizmo"
+msgstr "Skjul Orientationsgizmo"
+
+#: source/creator/viewport/model/package.d:132
+msgid "Show Orientation Gizmo"
+msgstr "Vis Orientationsgizmo"
+
+#: source/creator/viewport/package.d:253
 msgid "No tool selected..."
 msgstr "Intet værktøj valgt..."
 
-#: source/creator/viewport/vertex/package.d:28
+#: source/creator/viewport/vertex/package.d:38
 msgid "Flip Horizontally"
 msgstr "Flip Horisontalt"
 
-#: source/creator/viewport/vertex/package.d:33
+#: source/creator/viewport/vertex/package.d:43
 msgid "Flip Vertically"
 msgstr "Flip Vertikalt"
 
-#: source/creator/viewport/vertex/package.d:41
+#: source/creator/viewport/vertex/package.d:53
 msgid "Mirror Horizontally"
 msgstr "Spejl Horisontalt"
 
-#: source/creator/viewport/vertex/package.d:48
+#: source/creator/viewport/vertex/package.d:61
 msgid "Mirror Vertically"
 msgstr "Spejl Vertikalt"
 
-#: source/creator/viewport/vertex/package.d:65
+#: source/creator/viewport/vertex/package.d:82
 msgid "Automatically connects vertices"
 msgstr "Forbinder hjørner automatisk"
 
-#: source/creator/viewport/vertex/package.d:137
+#: source/creator/viewport/vertex/package.d:90
+msgid " Apply"
+msgstr " Anvend"
+
+#: source/creator/viewport/vertex/package.d:96
+msgid "Are you sure?"
+msgstr "Er du sikker?"
+
+#: source/creator/viewport/vertex/package.d:97
+msgid ""
+"The layout of the mesh has changed, all deformations to this mesh will be "
+"deleted if you continue."
+msgstr ""
+"Layoutet af meshen er ændret, alle deformeringer vil blive slettet hvis du "
+"fortsætter."
+
+#: source/creator/viewport/vertex/package.d:108
+#: source/creator/windows/paramsplit.d:168
+msgid "Apply"
+msgstr "Anvend"
+
+#: source/creator/viewport/vertex/package.d:112
+msgid " Cancel"
+msgstr " Annuller"
+
+#. Cancels the edited state for the axies points
+#: source/creator/viewport/vertex/package.d:123
+#: source/creator/widgets/dialog.d:116 source/creator/windows/paramaxes.d:133
+msgid "Cancel"
+msgstr "Annuller"
+
+#: source/creator/viewport/vertex/package.d:190
 msgid ""
 "Cannot apply invalid mesh\n"
 "At least 3 vertices forming a triangle is needed."
@@ -1108,34 +1256,30 @@ msgid "OK"
 msgstr "OK"
 
 #: source/creator/widgets/dialog.d:132
-msgid "No"
-msgstr "Nej"
-
-#: source/creator/widgets/dialog.d:140
 msgid "Yes"
 msgstr "Ja"
 
-#: source/creator/widgets/mainmenu.d:52
-msgid "Save..."
-msgstr "Gem..."
+#: source/creator/widgets/dialog.d:140
+msgid "No"
+msgstr "Nej"
 
-#: source/creator/widgets/mainmenu.d:66 source/creator/widgets/mainmenu.d:126
+#: source/creator/widgets/mainmenu.d:68 source/creator/widgets/mainmenu.d:151
 msgid "Save As..."
 msgstr "Gem Som..."
 
-#: source/creator/widgets/mainmenu.d:99
+#: source/creator/widgets/mainmenu.d:125
 msgid "File"
 msgstr "Filer"
 
-#: source/creator/widgets/mainmenu.d:101
+#: source/creator/widgets/mainmenu.d:126
 msgid "New"
 msgstr "Ny"
 
-#: source/creator/widgets/mainmenu.d:105
+#: source/creator/widgets/mainmenu.d:130
 msgid "Open"
 msgstr "Åben"
 
-#: source/creator/widgets/mainmenu.d:110
+#: source/creator/widgets/mainmenu.d:135
 msgid "Recent"
 msgstr "Seneste"
 
@@ -1143,163 +1287,190 @@ msgstr "Seneste"
 #. Settings are autosaved, but in case the user
 #. feels more safe with a save button then we have
 #. it here.
-#: source/creator/widgets/mainmenu.d:122 source/creator/windows/paramaxes.d:140
+#: source/creator/widgets/mainmenu.d:147 source/creator/windows/imgexport.d:121
+#: source/creator/windows/paramaxes.d:140
 #: source/creator/windows/paramprop.d:103 source/creator/windows/trkbind.d:129
 msgid "Save"
 msgstr "Gem"
 
-#: source/creator/widgets/mainmenu.d:130
+#: source/creator/widgets/mainmenu.d:155
 msgid "Import"
 msgstr "Importér"
 
-#: source/creator/widgets/mainmenu.d:131 source/creator/widgets/mainmenu.d:162
+#: source/creator/widgets/mainmenu.d:156 source/creator/widgets/mainmenu.d:187
 msgid "Photoshop Document"
 msgstr "Photoshop Dokument"
 
-#: source/creator/widgets/mainmenu.d:135
+#: source/creator/widgets/mainmenu.d:160
 msgid "Import a standard Photoshop PSD file."
 msgstr "Importér en standard Photoshop PSD fil."
 
-#: source/creator/widgets/mainmenu.d:137
+#: source/creator/widgets/mainmenu.d:162 source/creator/widgets/mainmenu.d:218
 msgid "Inochi2D Puppet"
-msgstr "Inochi2D Puppet"
+msgstr "Inochi2D Model"
 
-#: source/creator/widgets/mainmenu.d:149
+#: source/creator/widgets/mainmenu.d:174
 msgid "Import existing puppet file, editing options limited"
-msgstr "Import ekstisterende puppet fil, redigerings muligheder er begrænset"
+msgstr "Import eksisterende model fil, redigerings muligheder er begrænset"
 
-#: source/creator/widgets/mainmenu.d:151
+#: source/creator/widgets/mainmenu.d:176
 msgid "Image Folder"
 msgstr "Billedemappe"
 
-#: source/creator/widgets/mainmenu.d:152
+#: source/creator/widgets/mainmenu.d:177
 msgid "Select a Folder..."
 msgstr "Vælg Mappe..."
 
-#: source/creator/widgets/mainmenu.d:158
+#: source/creator/widgets/mainmenu.d:183
 msgid "Supports PNGs, TGAs and JPEGs."
 msgstr "Understøtter PNG, TGA og JPEG."
 
-#: source/creator/widgets/mainmenu.d:161 source/creator/windows/psdmerge.d:412
+#: source/creator/widgets/mainmenu.d:186 source/creator/windows/psdmerge.d:416
 msgid "Merge"
 msgstr "Sammenflet"
 
-#: source/creator/widgets/mainmenu.d:174
+#: source/creator/widgets/mainmenu.d:199
 msgid "Merge layers from Photoshop document"
 msgstr "Sammenflet lag fra Photoshop dokument"
 
-#: source/creator/widgets/mainmenu.d:176
+#: source/creator/widgets/mainmenu.d:201
 msgid "Inochi Creator Project"
 msgstr "Inochi Creator Projekt"
 
-#: source/creator/widgets/mainmenu.d:187
+#: source/creator/widgets/mainmenu.d:212
 msgid "Merge another Inochi Creator project in to this one"
 msgstr "Sammenflet et andet Inochi Creator projekt med dette projekt"
 
-#: source/creator/widgets/mainmenu.d:192
+#: source/creator/widgets/mainmenu.d:217 source/creator/windows/inpexport.d:244
 msgid "Export"
 msgstr "Eksportér"
 
-#: source/creator/widgets/mainmenu.d:193
-msgid "Inochi Puppet"
-msgstr "Inochi Puppet"
-
-#: source/creator/widgets/mainmenu.d:200
+#: source/creator/widgets/mainmenu.d:225 source/creator/widgets/mainmenu.d:240
+#: source/creator/widgets/mainmenu.d:255 source/creator/widgets/mainmenu.d:270
+#: source/creator/widgets/mainmenu.d:289
 msgid "Export..."
 msgstr "Exportér..."
 
-#: source/creator/widgets/mainmenu.d:210
+#: source/creator/widgets/mainmenu.d:232
+msgid "Image"
+msgstr "Billede"
+
+#: source/creator/widgets/mainmenu.d:233
+msgid "PNG (*.png)"
+msgstr "PNG (*.png)"
+
+#: source/creator/widgets/mainmenu.d:248
+msgid "JPEG (*.jpeg)"
+msgstr "JPEG (*.jpeg)"
+
+#: source/creator/widgets/mainmenu.d:263
+msgid "TARGA (*.tga)"
+msgstr "TARGA (*.tga)"
+
+#: source/creator/widgets/mainmenu.d:280
+msgid "Video"
+msgstr "Video"
+
+#: source/creator/widgets/mainmenu.d:299
 msgid "Quit"
 msgstr "Afslut"
 
-#: source/creator/widgets/mainmenu.d:214
+#: source/creator/widgets/mainmenu.d:303
 msgid "Edit"
 msgstr "Redigér"
 
-#: source/creator/widgets/mainmenu.d:215
+#: source/creator/widgets/mainmenu.d:304
 msgid "Undo"
 msgstr "Fortryd"
 
-#: source/creator/widgets/mainmenu.d:216
+#: source/creator/widgets/mainmenu.d:305
 msgid "Redo"
 msgstr "Gendan"
 
-#: source/creator/widgets/mainmenu.d:219
+#: source/creator/widgets/mainmenu.d:308
 msgid "Cut"
 msgstr "Klip"
 
-#: source/creator/widgets/mainmenu.d:224 source/creator/windows/settings.d:281
+#: source/creator/widgets/mainmenu.d:313 source/creator/windows/settings.d:199
 msgid "Settings"
 msgstr "Indstillinger"
 
-#: source/creator/widgets/mainmenu.d:232
+#: source/creator/widgets/mainmenu.d:321
 msgid "ImGui Debugging"
 msgstr "ImGui Debugging"
 
-#: source/creator/widgets/mainmenu.d:235
+#: source/creator/widgets/mainmenu.d:324
 msgid "Style Editor"
 msgstr "Stilredigering"
 
-#: source/creator/widgets/mainmenu.d:236
+#: source/creator/widgets/mainmenu.d:325
 msgid "ImGui Debugger"
 msgstr "ImGui Debugger"
 
-#: source/creator/widgets/mainmenu.d:241
+#: source/creator/widgets/mainmenu.d:326
+msgid "ImGui Metrics"
+msgstr "ImGui Måleværktøj"
+
+#: source/creator/widgets/mainmenu.d:327
+msgid "ImGui Stack Tool"
+msgstr "ImGui Stackværktøj"
+
+#: source/creator/widgets/mainmenu.d:332
 msgid "View"
 msgstr "Vis"
 
-#: source/creator/widgets/mainmenu.d:242
+#: source/creator/widgets/mainmenu.d:333
 msgid "Reset Layout"
 msgstr "Nulstil Layout"
 
-#: source/creator/widgets/mainmenu.d:251
+#: source/creator/widgets/mainmenu.d:342
 msgid "Panels"
 msgstr "Paneler"
 
-#: source/creator/widgets/mainmenu.d:270
+#: source/creator/widgets/mainmenu.d:361
 msgid "Configuration"
 msgstr "Konfigurering"
 
 #. Opens the directory where configuration resides in the user's file browser.
-#: source/creator/widgets/mainmenu.d:273
+#: source/creator/widgets/mainmenu.d:364
 msgid "Open Configuration Folder"
 msgstr "Åben Konfigurationsmappe"
 
-#: source/creator/widgets/mainmenu.d:282
+#: source/creator/widgets/mainmenu.d:373
 msgid "Extras"
 msgstr "Ekstra"
 
-#: source/creator/widgets/mainmenu.d:285
+#: source/creator/widgets/mainmenu.d:376
 msgid "Save Screenshot"
 msgstr "Gem Skærmbillede"
 
-#: source/creator/widgets/mainmenu.d:291
+#: source/creator/widgets/mainmenu.d:382
 msgid "Save Screenshot..."
 msgstr "Gem Skærmbillede..."
 
-#: source/creator/widgets/mainmenu.d:316
+#: source/creator/widgets/mainmenu.d:407
 msgid "Saves screenshot as PNG of the editor framebuffer."
 msgstr "Gemmer et skærmbillede som PNG af editor framebufferet."
 
-#: source/creator/widgets/mainmenu.d:318
+#: source/creator/widgets/mainmenu.d:409
 msgid "Show Stats for Nerds"
 msgstr "Vis Statistiker for Nørder"
 
-#: source/creator/widgets/mainmenu.d:327
+#: source/creator/widgets/mainmenu.d:418
 msgid "Tools"
 msgstr "Værktøjer"
 
-#: source/creator/widgets/mainmenu.d:330
+#: source/creator/widgets/mainmenu.d:421
 msgid "Puppet Texturing"
-msgstr "Puppet Teksturering"
+msgstr "Model Teksturering"
 
 #. Premultiply textures, causing every pixel value in every texture to
 #. be multiplied by their Alpha (transparency) component
-#: source/creator/widgets/mainmenu.d:335
+#: source/creator/widgets/mainmenu.d:426
 msgid "Premultiply textures"
 msgstr "Formultiplicér teksture"
 
-#: source/creator/widgets/mainmenu.d:339
+#: source/creator/widgets/mainmenu.d:430
 msgid ""
 "Premultiplies textures by their alpha component.\n"
 "\n"
@@ -1310,11 +1481,11 @@ msgstr ""
 "Brug kun hvis dine teksturerer ser forkerte ud efter at du har importeret "
 "dem fra en tidligere version af Inochi Creator."
 
-#: source/creator/widgets/mainmenu.d:341
+#: source/creator/widgets/mainmenu.d:432
 msgid "Bleed textures..."
 msgstr "Udblød teksturer..."
 
-#: source/creator/widgets/mainmenu.d:344
+#: source/creator/widgets/mainmenu.d:435
 msgid ""
 "Causes color to bleed out in to fully transparent pixels, this solves "
 "outlines on straight alpha compositing.\n"
@@ -1325,104 +1496,160 @@ msgstr ""
 "straight-alfa sammensætning.\n"
 "Brug kun hvis din spilmotor ikke understøtter formultipliceret alfa."
 
-#: source/creator/widgets/mainmenu.d:346
+#: source/creator/widgets/mainmenu.d:437
 msgid "Generate Mipmaps..."
 msgstr "Generér Mipmaps..."
 
-#: source/creator/widgets/mainmenu.d:349
+#: source/creator/widgets/mainmenu.d:440
 msgid "Regenerates the puppet's mipmaps."
-msgstr "Omgenererer puppetens mipmaps."
+msgstr "Om-genererer modellens mipmaps."
 
-#: source/creator/widgets/mainmenu.d:351
+#: source/creator/widgets/mainmenu.d:442
 msgid "Generate fake layer name info..."
 msgstr "Genererer falske lag navne..."
 
-#: source/creator/widgets/mainmenu.d:361
+#: source/creator/widgets/mainmenu.d:452
 msgid "Generates fake layer info based on node names"
 msgstr "Genererer falske lag navne baseret på node navne"
 
-#: source/creator/widgets/mainmenu.d:367
+#: source/creator/widgets/mainmenu.d:458
 msgid "Puppet Recovery"
-msgstr "Puppet Gendannelse"
+msgstr "Model Gendannelse"
 
 #. FULL REPAIR
-#: source/creator/widgets/mainmenu.d:371
+#: source/creator/widgets/mainmenu.d:462
 msgid "Attempt full repair..."
 msgstr "Forsøg fuld reperation..."
 
-#: source/creator/widgets/mainmenu.d:374
+#: source/creator/widgets/mainmenu.d:465
 msgid ""
 "Attempts all the recovery and repair methods below on the currently loaded "
 "model"
 msgstr "Prøver alle reperationsmetoder på den indlæste model"
 
 #. REGEN NODE IDs
-#: source/creator/widgets/mainmenu.d:377
+#: source/creator/widgets/mainmenu.d:468
 msgid "Regenerate Node IDs"
 msgstr "Regenerér Node IDer"
 
-#: source/creator/widgets/mainmenu.d:381
+#: source/creator/widgets/mainmenu.d:472
 msgid "Regenerates all the unique IDs for the model"
 msgstr "Regenererer alle modellens unikke IDer"
 
-#: source/creator/widgets/mainmenu.d:387
+#: source/creator/widgets/mainmenu.d:478
 msgid "Verify INP File..."
 msgstr "Verificér INP Fil..."
 
-#: source/creator/widgets/mainmenu.d:390
+#: source/creator/widgets/mainmenu.d:481
 msgid "Attempts to verify and repair INP files"
 msgstr "Prøver at verificere og repererer INP filer"
 
-#: source/creator/widgets/mainmenu.d:395
+#: source/creator/widgets/mainmenu.d:486
 msgid "Help"
 msgstr "Hjælp"
 
-#: source/creator/widgets/mainmenu.d:397
+#: source/creator/widgets/mainmenu.d:488
 msgid "Tutorial"
 msgstr "Tutorial"
 
-#: source/creator/widgets/mainmenu.d:400
+#: source/creator/widgets/mainmenu.d:491
 msgid "Online Documentation"
 msgstr "Online Dokumentation"
 
-#: source/creator/widgets/mainmenu.d:404
+#: source/creator/widgets/mainmenu.d:495
 msgid "Inochi2D Documentation"
 msgstr "Inochi2D Dokumentation"
 
-#: source/creator/widgets/mainmenu.d:409 source/creator/windows/about.d:138
+#: source/creator/widgets/mainmenu.d:500 source/creator/windows/about.d:133
 msgid "About"
 msgstr "Om"
 
 #. Donate button
 #. NOTE: Is this too obstructive in the UI?
-#: source/creator/widgets/mainmenu.d:419 source/creator/widgets/mainmenu.d:435
-#: source/creator/windows/about.d:125
+#: source/creator/widgets/mainmenu.d:514 source/creator/widgets/mainmenu.d:530
+#: source/creator/windows/about.d:124
 msgid "Donate"
 msgstr "Donér"
 
-#: source/creator/widgets/mainmenu.d:438
+#: source/creator/widgets/mainmenu.d:533
 msgid "Support development via Patreon"
 msgstr "Støt udviklingen på Patreon"
 
-#: source/creator/widgets/toolbar.d:35
+#: source/creator/widgets/toolbar.d:39
 msgid "Enable physics"
 msgstr "Slå fysik til"
 
-#: source/creator/widgets/toolbar.d:40
+#: source/creator/widgets/toolbar.d:46
+msgid "Enable post processing"
+msgstr "Slå efterbehandling til"
+
+#: source/creator/widgets/toolbar.d:51
 msgid "Reset physics"
 msgstr "Nulstil fysik"
 
-#: source/creator/widgets/toolbar.d:60
+#: source/creator/widgets/toolbar.d:69
 msgid "Edit Puppet"
-msgstr "Redigér Puppet"
+msgstr "Redigér Model"
 
-#: source/creator/widgets/toolbar.d:65
+#: source/creator/widgets/toolbar.d:74
 msgid "Edit Animation"
 msgstr "Redigér Animation"
 
-#: source/creator/widgets/toolbar.d:70
+#: source/creator/widgets/toolbar.d:79
 msgid "Test Puppet"
-msgstr "Test Puppet"
+msgstr "Test Model"
+
+#: source/creator/windows/imgexport.d:92
+msgid "Export Settings"
+msgstr "Eksporteringsindstillinger"
+
+#: source/creator/windows/imgexport.d:109
+msgid "Allow Transparency"
+msgstr "Tillad Gennemsigtighed"
+
+#: source/creator/windows/imgexport.d:110
+msgid "Use Post Processing"
+msgstr "Brug efterbehandling"
+
+#: source/creator/windows/imgexport.d:131
+msgid "Export Image..."
+msgstr "Eksportér Billede..."
+
+#: source/creator/windows/inpexport.d:162
+msgid "Atlassing"
+msgstr "Atlassing"
+
+#: source/creator/windows/inpexport.d:192
+msgid "Resolution"
+msgstr "Opløsning"
+
+#: source/creator/windows/inpexport.d:209
+msgid "Texture Scale"
+msgstr "Teksturskala"
+
+#: source/creator/windows/inpexport.d:216
+msgid "Padding"
+msgstr "Polstring"
+
+#: source/creator/windows/inpexport.d:222 source/creator/windows/settings.d:163
+msgid "No settings for this category."
+msgstr "Ingen instillinger fundet for denne kategori."
+
+#: source/creator/windows/inpexport.d:236
+msgid ""
+"A texture was too large to fit the texture atlas, the textures have been "
+"scaled down."
+msgstr ""
+"En tekstur var for stor til at passe ind i tekstur atlasset, teksturene er "
+"blevet skaleret ned."
+
+#: source/creator/windows/inpexport.d:251
+msgid "Export failed..."
+msgstr "Exportering fejlet..."
+
+#: source/creator/windows/inpexport.d:263
+msgid "Export Options"
+msgstr "Eksport-indstillinger"
 
 #. Title for the parameter axis points window
 #. This window allows adjusting axies in the
@@ -1453,33 +1680,33 @@ msgstr " (Split)"
 msgid "Split Parameter"
 msgstr "Split Parametre"
 
-#: source/creator/windows/psdmerge.d:234
+#: source/creator/windows/psdmerge.d:238
 #, c-format
 msgid "%s  %s"
-msgstr ""
+msgstr "%s  %s"
 
-#: source/creator/windows/psdmerge.d:272
+#: source/creator/windows/psdmerge.d:276
 msgid "Unmap"
 msgstr "Afmap"
 
-#: source/creator/windows/psdmerge.d:277
+#: source/creator/windows/psdmerge.d:281
 msgid "Ignore"
 msgstr "Ignorér"
 
-#: source/creator/windows/psdmerge.d:277
+#: source/creator/windows/psdmerge.d:281
 msgid "Use"
 msgstr "Brug"
 
-#: source/creator/windows/psdmerge.d:374
+#: source/creator/windows/psdmerge.d:378
 msgid "Only show unmapped"
 msgstr "Vis kun afmappede"
 
 #. Auto-rename
-#: source/creator/windows/psdmerge.d:394
+#: source/creator/windows/psdmerge.d:398
 msgid "Auto-rename"
 msgstr "Auto omnavngiv"
 
-#: source/creator/windows/psdmerge.d:395
+#: source/creator/windows/psdmerge.d:399
 msgid ""
 "Renames all mapped nodes to match the names of the PSD layer that was merged "
 "in to them."
@@ -1487,71 +1714,76 @@ msgstr ""
 "Omnavngiver alle mappede noder så at de matcher navnene på PSD lagene som "
 "var flettet sammen med dem."
 
-#: source/creator/windows/psdmerge.d:398
+#: source/creator/windows/psdmerge.d:402
 msgid "Re-translate"
 msgstr "Omregn positioner"
 
-#: source/creator/windows/psdmerge.d:399
+#: source/creator/windows/psdmerge.d:403
 msgid ""
 "Moves all nodes so that they visually match their position in the canvas."
 msgstr ""
 "Flytter alle noder så at de visuelt matcher deres position i kanvasset."
 
-#: source/creator/windows/psdmerge.d:447
+#: source/creator/windows/psdmerge.d:451
 msgid "PSD Merging"
 msgstr "PSD Sammenflætning"
 
-#: source/creator/windows/settings.d:77
+#: source/creator/windows/rename.d:64
+#, c-format
+msgid "Rename %s..."
+msgstr "Omnavngiv %s..."
+
+#: source/creator/windows/settings.d:78
 msgid "Look and Feel"
 msgstr "Udseende"
 
-#: source/creator/windows/settings.d:85
+#: source/creator/windows/settings.d:86
 msgid "Accessbility"
 msgstr "Tilgængelighed"
 
-#: source/creator/windows/settings.d:105 source/creator/windows/welcome.d:138
+#: source/creator/windows/settings.d:107 source/creator/windows/welcome.d:139
 msgid "Color Theme"
 msgstr "Farvetema"
 
-#: source/creator/windows/settings.d:105 source/creator/windows/settings.d:106
-#: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:139
+#: source/creator/windows/settings.d:107 source/creator/windows/settings.d:108
+#: source/creator/windows/welcome.d:139 source/creator/windows/welcome.d:140
 msgid "Dark"
 msgstr "Mørk"
 
-#: source/creator/windows/settings.d:105 source/creator/windows/settings.d:107
-#: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:140
+#: source/creator/windows/settings.d:107 source/creator/windows/settings.d:109
+#: source/creator/windows/welcome.d:139 source/creator/windows/welcome.d:141
 msgid "Light"
 msgstr "Lys"
 
-#: source/creator/windows/settings.d:113 source/creator/windows/welcome.d:124
+#: source/creator/windows/settings.d:115 source/creator/windows/welcome.d:125
 msgid "Language"
 msgstr "Sprog"
 
-#: source/creator/windows/settings.d:128 source/creator/windows/welcome.d:146
+#: source/creator/windows/settings.d:130 source/creator/windows/welcome.d:147
 msgid "UI Scale"
 msgstr "Brugerfladeskalering"
 
-#: source/creator/windows/settings.d:137
+#: source/creator/windows/settings.d:139
 msgid "Max Undo History"
 msgstr "Maks Fortrydelseshistorik"
 
-#: source/creator/windows/settings.d:143
+#: source/creator/windows/settings.d:145
 msgid "Linux Tweaks"
 msgstr "Linuxjusteringer"
 
-#: source/creator/windows/settings.d:145
+#: source/creator/windows/settings.d:147
 msgid "Disable Compositor"
 msgstr "Slå compositor fra"
 
-#: source/creator/windows/settings.d:152
-msgid "No settings for this category."
-msgstr "Ingen instillinger fundet for denne kategori."
+#: source/creator/windows/settings.d:155
+msgid "Use OpenDyslexic Font"
+msgstr "Brug OpenDyslexic skrifttype"
 
-#: source/creator/windows/settings.d:165 source/creator/windows/welcome.d:157
+#: source/creator/windows/settings.d:176 source/creator/windows/welcome.d:158
 msgid "Inochi Creator needs to be restarted for some changes to take effect."
 msgstr "Inochi Creator bør genstartes før at alle ændringer kan træde i kraft."
 
-#: source/creator/windows/settings.d:173
+#: source/creator/windows/settings.d:184
 msgid "Done"
 msgstr "Fuldført"
 
@@ -1604,50 +1836,57 @@ msgstr "Genopfrisk Bindebare"
 msgid "Bind Tracking to Parameter"
 msgstr "Bind Tracking til Parameter"
 
-#: source/creator/windows/welcome.d:113
+#: source/creator/windows/welcome.d:114
 msgid "Quick Setup"
 msgstr "Hurtigopsætning"
 
-#: source/creator/windows/welcome.d:170
+#: source/creator/windows/welcome.d:171
 msgid "Next"
 msgstr "Næste"
 
-#: source/creator/windows/welcome.d:182
+#: source/creator/windows/welcome.d:183
 msgid "Create Project"
-msgstr "Skab Projekt"
+msgstr "Opret Projekt"
 
-#: source/creator/windows/welcome.d:185
+#: source/creator/windows/welcome.d:186
 msgid "New..."
 msgstr "Ny..."
 
-#: source/creator/windows/welcome.d:199
+#: source/creator/windows/welcome.d:200
 msgid "Import PSD..."
 msgstr "Importér PSD..."
 
-#: source/creator/windows/welcome.d:208
+#: source/creator/windows/welcome.d:209
 msgid "Recent Projects"
 msgstr "Seneste Projekter"
 
-#: source/creator/windows/welcome.d:232
+#: source/creator/windows/welcome.d:233
 msgid "On the Web"
 msgstr "På nettet"
 
-#: source/creator/windows/welcome.d:236
+#: source/creator/windows/welcome.d:237
 msgid "Website"
 msgstr "Hjemmeside"
 
-#: source/creator/windows/welcome.d:240
+#: source/creator/windows/welcome.d:241
 msgid "Documentation"
 msgstr "Dokumentation"
 
-#: source/creator/windows/welcome.d:246
+#: source/creator/windows/welcome.d:245
+msgid "Join our Discord"
+msgstr "Besøg vores Discord"
+
+#: source/creator/windows/welcome.d:251
 msgid "Patreon"
-msgstr ""
+msgstr "Patreon"
 
-#: source/creator/windows/welcome.d:249
+#: source/creator/windows/welcome.d:254
 msgid "Github Sponsors"
-msgstr ""
+msgstr "GitHub Sponsors"
 
-#: source/creator/windows/welcome.d:275
+#: source/creator/windows/welcome.d:280
 msgid "Inochi Creator Start"
 msgstr "Inochi Creator Start"
+
+#~ msgid "Inochi Puppet"
+#~ msgstr "Inochi Puppet"

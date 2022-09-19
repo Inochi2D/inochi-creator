@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-19 02:31+0200\n"
+"POT-Creation-Date: 2022-09-19 02:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -882,22 +882,6 @@ msgstr ""
 
 #: source/creator/panels/parameters.d:667
 msgid "Mirrored Autofill"
-msgstr ""
-
-#: source/creator/panels/parameters.d:668
-msgid ""
-msgstr ""
-
-#: source/creator/panels/parameters.d:672
-msgid ""
-msgstr ""
-
-#: source/creator/panels/parameters.d:677
-msgid ""
-msgstr ""
-
-#: source/creator/panels/parameters.d:681
-msgid ""
 msgstr ""
 
 #: source/creator/panels/parameters.d:692
