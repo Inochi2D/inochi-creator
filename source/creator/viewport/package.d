@@ -82,20 +82,10 @@ void incViewportDrawOptions() {
 
 void incViewportDrawConfirmBar() {
     switch(incEditMode) {
-        // case EditMode.ModelEdit:
-        //     incViewportModelOverlay();
-        //     break;
-        // case EditMode.VertexEdit:
-        //     incViewportVertexOverlay();
-        //     break;
-        // case EditMode.AnimEdit:
-        //     incViewportAnimOverlay();
-        //     break;
-        // case EditMode.ModelTest:
-        //     incViewportTestOverlay();
-        //     break;
-        case EditMode.ModelEdit:
         case EditMode.VertexEdit:
+            incViewportVertexConfirmBar();
+            break;
+        case EditMode.ModelEdit:
         case EditMode.AnimEdit:
         case EditMode.ModelTest:
             break;

@@ -140,21 +140,23 @@ protected:
             }
             igPopStyleVar();
 
-            incBeginViewportToolArea("ToolArea", ImGuiDir.Left);
-                igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
-                    incViewportDrawTools();
-                igPopStyleVar();
-            incEndViewportToolArea();
+            igPushStyleVar(ImGuiStyleVar.FrameBorderSize, 0);
+                incBeginViewportToolArea("ToolArea", ImGuiDir.Left);
+                    igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
+                        incViewportDrawTools();
+                    igPopStyleVar();
+                incEndViewportToolArea();
 
-            incBeginViewportToolArea("OptionsArea", ImGuiDir.Right);
-                igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
-                    incViewportDrawOptions();
-                igPopStyleVar();
-            incEndViewportToolArea();
+                incBeginViewportToolArea("OptionsArea", ImGuiDir.Right);
+                    igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
+                        incViewportDrawOptions();
+                    igPopStyleVar();
+                incEndViewportToolArea();
 
-            incBeginViewportToolArea("ConfirmArea", ImGuiDir.Left, ImGuiDir.Down, false);
-                incViewportDrawConfirmBar();
-            incEndViewportToolArea();
+                incBeginViewportToolArea("ConfirmArea", ImGuiDir.Left, ImGuiDir.Down, false);
+                    incViewportDrawConfirmBar();
+                incEndViewportToolArea();
+            igPopStyleVar();
 
             lastSize = currSize;
             igEndChild();

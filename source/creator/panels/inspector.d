@@ -92,10 +92,6 @@ protected:
                         }
                     
                     break;
-                    case EditMode.VertexEdit:
-                        incCommonNonEditHeader(node);
-                        incInspectorMeshEditDrawable(cast(Drawable)node);
-                        break;
                     default:
                         incCommonNonEditHeader(node);
                         break;
@@ -1366,7 +1362,7 @@ void incInspectorDeformPart(Part node, Parameter param, vec2u cursor) {
         igBeginGroup();
             igIndent(16);
                 // Header for texture options    
-                if (igCollapsingHeader(__("Textures")))  {
+                if (incBeginCategory(__("Textures")))  {
 
                     incText(_("Tint (Multiply)"));
 
@@ -1380,6 +1376,7 @@ void incInspectorDeformPart(Part node, Parameter param, vec2u cursor) {
                     igSpacing();
                     igSpacing();
                 }
+                incEndCategory();
             igUnindent();
         igEndGroup();
 
@@ -1401,7 +1398,7 @@ void incInspectorDeformComposite(Composite node, Parameter param, vec2u cursor) 
         igBeginGroup();
             igIndent(16);
                 // Header for texture options    
-                if (igCollapsingHeader(__("Textures")))  {
+                if (incBeginCategory(__("Textures")))  {
 
                     incText(_("Tint (Multiply)"));
 
@@ -1416,6 +1413,7 @@ void incInspectorDeformComposite(Composite node, Parameter param, vec2u cursor) 
                     igSpacing();
                     igSpacing();
                 }
+                incEndCategory();
             igUnindent();
         igEndGroup();
 
@@ -1425,58 +1423,4 @@ void incInspectorDeformComposite(Composite node, Parameter param, vec2u cursor) 
         igSpacing();
     }
     incEndCategory();
-}
-
-//
-//  MESH EDIT MODE
-//
-void incInspectorMeshEditDrawable(Drawable node) {
-    igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(8, 8));
-        igSpacing();
-        igSpacing();
-
-        incViewportVertexInspector(node);
-
-        ImVec2 avail = incAvailableSpace();
-        incDummy(ImVec2(avail.x, avail.y-38));
-
-        // Right align
-        incDummy(ImVec2(avail.x-72, 32));
-        igSameLine(0, 0);
-
-        if (igButton("", ImVec2(32, 32))) {
-            if (igGetIO().KeyShift) {
-                incMeshEditReset();
-            } else {
-                incMeshEditClear();
-            }
-
-            incSetEditMode(EditMode.ModelEdit);
-            incSelectNode(node);
-            incFocusCamera(node);
-        }
-        incTooltip(_("Cancel"));
-
-        igSameLine(0, 8);
-
-        if (igButton("", ImVec2(32, 32))) {
-            if (incMeshEditGetIsApplySafe()) {
-                incMeshEditApply();
-            } else {
-                incDialog(
-                    "CONFIRM_VERTEX_APPLY", 
-                    __("Are you sure?"), 
-                    _("The layout of the mesh has changed, all deformations to this mesh will be deleted if you continue."),
-                    DialogLevel.Warning,
-                    DialogButtons.Yes | DialogButtons.No
-                );
-            }
-        }
-
-        // In case of a warning popup preventing application.
-        if (incDialogButtonSelected("CONFIRM_VERTEX_APPLY") == DialogButtons.Yes) {
-            incMeshEditApply();
-        }
-        incTooltip(_("Apply"));
-    igPopStyleVar();
 }

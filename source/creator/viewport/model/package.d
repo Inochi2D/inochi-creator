@@ -11,6 +11,7 @@ import creator.widgets.label;
 import creator.widgets.texture;
 import creator.widgets.dummy;
 import creator.widgets.dragdrop;
+import creator.widgets.colorbutton;
 import creator.core.input;
 import creator.core;
 import creator;
@@ -113,22 +114,22 @@ void incViewportModelTools() {
 
 void incViewportModelOptions() {
     if (!incArmedParameter()) {
-        if (igButton("", ImVec2(0, 0))) {
+        if (incButtonColored("", ImVec2(0, 0), incShowVertices ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
             incShowVertices = !incShowVertices;
         }
-        incTooltip(_("Show/hide Vertices"));
+        incTooltip(incShowVertices ? _("Hide Vertices") : _("Show Vertices"));
             
         igSameLine(0, 0);
-        if (igButton("", ImVec2(0, 0))) {
+        if (incButtonColored("", ImVec2(0, 0), incShowBounds ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
             incShowBounds = !incShowBounds;
         }
-        incTooltip(_("Show/hide Bounds"));
+        incTooltip(incShowBounds ? _("Hide Bounds") : _("Show Bounds"));
 
         igSameLine(0, 0);
-        if (igButton("", ImVec2(0, 0))) {
+        if (incButtonColored("", ImVec2(0, 0), incShowOrientation ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
             incShowOrientation = !incShowOrientation;
         }
-        incTooltip(_("Show/hide Orientation Gizmo"));
+        incTooltip(incShowOrientation ? _("Hide Orientation Gizmo") : _("Show Orientation Gizmo"));
     }
 }
 

@@ -718,40 +718,41 @@ public:
     }
 
     void viewportTools() {
-        igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
-            if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Points ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-                setToolMode(VertexToolMode.Points);
-                path = null;
-                refreshMesh();
-            }
-            incTooltip(_("Vertex Tool"));
-
-            if (!deformOnly) {
-                igSameLine(0, 0);
-                if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Connect ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-                    setToolMode(VertexToolMode.Connect);
+        igSetWindowFontScale(1.30);
+            igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(1, 1));
+            igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(8, 8));
+                if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Points ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                    setToolMode(VertexToolMode.Points);
                     path = null;
                     refreshMesh();
                 }
-                incTooltip(_("Edge Tool"));
-            }
+                incTooltip(_("Vertex Tool"));
 
-            igSameLine(0, 0);
-            if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.PathDeform ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-                setToolMode(VertexToolMode.PathDeform);
-                path = new CatmullSpline;
-                deforming = false;
-                refreshMesh();
-            }
-            incTooltip(_("Path Deform Tool"));
+                if (!deformOnly) {
+                    if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Connect ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                        setToolMode(VertexToolMode.Connect);
+                        path = null;
+                        refreshMesh();
+                    }
+                    incTooltip(_("Edge Tool"));
+                }
 
-        igPopStyleVar();
+                if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.PathDeform ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                    setToolMode(VertexToolMode.PathDeform);
+                    path = new CatmullSpline;
+                    deforming = false;
+                    refreshMesh();
+                }
+                incTooltip(_("Path Deform Tool"));
+
+            igPopStyleVar(2);
+        igSetWindowFontScale(1);
     }
-
 
     CatmullSpline getPath() {
         return path;
     }
+
     void setPath(CatmullSpline path) {
         this.path = path;
 

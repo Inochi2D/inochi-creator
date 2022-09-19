@@ -23,15 +23,27 @@ private {
 
 void incViewportVertexInspector(Drawable node) {
 
+    
+
+}
+
+void incViewportVertexTools() {
+    editor.viewportTools();
+}
+
+void incViewportVertexOptions() {
+    igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
     igBeginGroup();
         if (igButton("")) editor.mesh.flipHorz();
         incTooltip(_("Flip Horizontally"));
 
-        igSameLine(0, 4);
+        igSameLine(0, 0);
 
         if (igButton("")) editor.mesh.flipVert();
         incTooltip(_("Flip Vertically"));
     igEndGroup();
+
+    igSameLine(0, 4);
 
     igBeginGroup();
         if (incButtonColored("", ImVec2(0, 0), editor.mirrorHoriz ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
@@ -40,7 +52,8 @@ void incViewportVertexInspector(Drawable node) {
         }
         incTooltip(_("Mirror Horizontally"));
 
-        igSameLine(0, 4);
+        igSameLine(0, 0);
+
         if (incButtonColored("", ImVec2(0, 0), editor.mirrorVert ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
             editor.mirrorVert = !editor.mirrorVert;
             editor.refreshMesh();
@@ -48,13 +61,17 @@ void incViewportVertexInspector(Drawable node) {
         incTooltip(_("Mirror Vertically"));
     igEndGroup();
 
+    igSameLine(0, 4);
+
     igBeginGroup();
         if (incButtonColored("", ImVec2(0, 0),
             editor.previewTriangulate ? ImVec4(1, 1, 0, 1) : ImVec4.init)) {
             editor.previewTriangulate = !editor.previewTriangulate;
             editor.refreshMesh();
         }
-        igSameLine(0, 4);
+        
+        igSameLine(0, 0);
+
         if (incButtonColored("", ImVec2(0, 0),
             editor.previewingTriangulation() ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
             if (editor.previewingTriangulation()) {
@@ -64,15 +81,47 @@ void incViewportVertexInspector(Drawable node) {
         }
         incTooltip(_("Automatically connects vertices"));
     igEndGroup();
-
+    igPopStyleVar();
 }
 
-void incViewportVertexTools() {
-    editor.viewportTools();
-}
+void incViewportVertexConfirmBar() {
+    Drawable target = editor.getTarget();
+    igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(16, 4));
+        if (igButton(__(" Apply"), ImVec2(0, 26))) {
+            if (incMeshEditGetIsApplySafe()) {
+                incMeshEditApply();
+            } else {
+                incDialog(
+                    "CONFIRM_VERTEX_APPLY", 
+                    __("Are you sure?"), 
+                    _("The layout of the mesh has changed, all deformations to this mesh will be deleted if you continue."),
+                    DialogLevel.Warning,
+                    DialogButtons.Yes | DialogButtons.No
+                );
+            }
+        }
 
-void incViewportVertexOptions() {
-    
+        // In case of a warning popup preventing application.
+        if (incDialogButtonSelected("CONFIRM_VERTEX_APPLY") == DialogButtons.Yes) {
+            incMeshEditApply();
+        }
+        incTooltip(_("Apply"));
+        
+        igSameLine(0, 0);
+
+        if (igButton(__(" Cancel"), ImVec2(0, 26))) {
+            if (igGetIO().KeyShift) {
+                incMeshEditReset();
+            } else {
+                incMeshEditClear();
+            }
+
+            incSetEditMode(EditMode.ModelEdit);
+            incSelectNode(target);
+            incFocusCamera(target);
+        }
+        incTooltip(_("Cancel"));
+    igPopStyleVar();
 }
 
 void incViewportVertexUpdate(ImGuiIO* io, Camera camera) {
