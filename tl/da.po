@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-19 02:35+0200\n"
-"PO-Revision-Date: 2022-09-19 02:59+0200\n"
+"PO-Revision-Date: 2022-09-19 03:04+0200\n"
 "Last-Translator: Luna <cli-luna@protonmail.com>\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -1154,7 +1154,7 @@ msgstr "Kantværktøj"
 
 #: source/creator/viewport/common/mesheditor.d:746
 msgid "Path Deform Tool"
-msgstr "Stideformeringsværktøj"
+msgstr "Sti-deformeringsværktøj"
 
 #: source/creator/viewport/model/package.d:55
 msgid "Focus Selected"
