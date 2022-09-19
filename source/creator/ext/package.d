@@ -31,6 +31,22 @@ public:
         }
         return null;
     }
+    
+
+    /**
+        Gets if a node is bound to ANY parameter.
+    */
+    override
+    bool getIsNodeBound(Node n) {
+        foreach(ref parameter; parameters) {
+            if (auto group = cast(ExParameterGroup)parameter) {
+                foreach(ref child; group.children) {
+                    if (child.hasAnyBinding(n)) return true;
+                }
+            } else if (parameter.hasAnyBinding(n)) return true;
+        }
+        return false;
+    }
 }
 
 void incInitExt() {
