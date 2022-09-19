@@ -665,20 +665,20 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                         igEndMenu();
                     }
                     if (igBeginMenu(__("Mirrored Autofill"), true)) {
-                        if (igMenuItem(__(""), "", false, true)) {
+                        if (igMenuItem("", "", false, true)) {
                             mirroredAutofill(param, 0, 0, 0.4999);
                             incViewportNodeDeformNotifyParamValueChanged();
                         }
-                        if (igMenuItem(__(""), "", false, true)) {
+                        if (igMenuItem("", "", false, true)) {
                             mirroredAutofill(param, 0, 0.5001, 1);
                             incViewportNodeDeformNotifyParamValueChanged();
                         }
                         if (param.isVec2) {
-                            if (igMenuItem(__(""), "", false, true)) {
+                            if (igMenuItem("", "", false, true)) {
                                 mirroredAutofill(param, 1, 0, 0.4999);
                                 incViewportNodeDeformNotifyParamValueChanged();
                             }
-                            if (igMenuItem(__(""), "", false, true)) {
+                            if (igMenuItem("", "", false, true)) {
                                 mirroredAutofill(param, 1, 0.5001, 1);
                                 incViewportNodeDeformNotifyParamValueChanged();
                             }
