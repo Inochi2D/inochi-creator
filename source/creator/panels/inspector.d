@@ -846,6 +846,7 @@ void incInspectorModelPart(Part node) {
                             igEndPopup();
                             igPopID();
                             igEndListBox();
+                            incEndCategory();
                             return;
                         }
 
@@ -866,7 +867,7 @@ void incInspectorModelPart(Part node) {
 
                                     node.masks = node.masks.remove(maskIdx);
                                     if (i == 0) node.masks = *binding ~ node.masks;
-                                    else if (i >= node.masks.length-1) node.masks ~= *binding;
+                                    else if (i+1 >= node.masks.length) node.masks ~= *binding;
                                     else node.masks = node.masks[0..i] ~ *binding ~ node.masks[i+1..$];
                                 }
                             }
