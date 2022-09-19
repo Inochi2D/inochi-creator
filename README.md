@@ -41,6 +41,8 @@ To disable branding, you can build the package without the `--config=full` optio
 
 **Without branding**: ``dub build --compiler=ldc2 --build=release``
 
+More information can be found inside of the [`dub.sdl`](https://github.com/Inochi2D/inochi-creator/blob/main/dub.sdl#L26) file
+
 &nbsp;
 
 ## Building
