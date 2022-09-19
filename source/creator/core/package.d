@@ -96,6 +96,7 @@ private {
     ImGuiID viewportDock;
 
     version (InBranding) {
+        Texture incLogoI2D;
         Texture incLogo;
         Texture incAda;
     }
@@ -293,8 +294,14 @@ void incOpenWindow() {
 
     ShallowTexture tex;
     version (InBranding) {
+
         // Load image resources
         tex = ShallowTexture(cast(ubyte[])import("logo.png"));
+        inTexPremultiply(tex.data);
+        incLogoI2D = new Texture(tex);
+
+        // Load image resources
+        tex = ShallowTexture(cast(ubyte[])import("icon.png"));
         inTexPremultiply(tex.data);
         incLogo = new Texture(tex);
 
@@ -739,6 +746,10 @@ version (InBranding) {
     */
     Texture incGetAda() {
         return incAda;
+    }
+
+    Texture incGetLogoI2D() {
+        return incLogoI2D;
     }
 }
 

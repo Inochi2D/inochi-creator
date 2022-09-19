@@ -1,22 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-  <key>CFBundleName</key>
-  <string>InochiCreator</string>
-  <key>CFBundleDisplayName</key>
-  <string>Inochi Creator</string>
-  <key>CFBundleIdentifier</key>
-  <string>com.inochi2d.inochi-creator</string>
-  <key>CFBundleVersion</key>
-  <string>0.7.4</string>
-  <key>CFBundlePackageType</key>
-  <string>APPL</string>
-  <key>CFBundleSignature</key>
-  <string>inoc</string>
-  <key>CFBundleExecutable</key>
-  <string>inochi-creator</string>
-  <key>CFBundleIconFile</key>
-  <string>InochiCreator</string>
-</dict>
+  <dict>
+    <key>CFBundleName</key>
+    <string>InochiCreator</string>
+    <key>CFBundleDisplayName</key>
+    <string>Inochi Creator</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.inochi2d.inochi-creator</string>
+    <key>CFBundleVersion</key>
+    <string>0.7.4</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleSignature</key>
+    <string>inoc</string>
+    <key>CFBundleExecutable</key>
+    <string>inochi-creator</string>
+    <key>CFBundleIconFile</key>
+    <string>InochiCreator</string>
+    <key>CFBundleDocumentTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleTypeIconFile</key>
+        <string>project.icns</string>
+        <key>CFBundleTypeName</key>
+        <string>Inochi Creator Project</string>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>LSItemContentTypes</key>
+        <array>
+            <string>com.inochi2d.inochi-creator.project</string>
+        </array>
+      </dict>
+    </array>
+    <key>UTExportedTypeDeclarations</key>
+    <array>
+      <dict>
+        <key>UTTypeIdentifier</key>
+        <string>com.inochi2d.inochi-creator.project</string>
+        <key>UTTypeReferenceURL</key>
+        <string>https://github.com/Inochi2D/inochi2d/wiki/INP-Data-Interchange-Format</string>
+        <key>UTTypeDescription</key>
+        <string>Inochi Creator Project</string>
+        <key>UTTypeIconFile</key>
+        <string>project.icns</string>
+        <key>UTTypeConformsTo</key>
+        <array>
+          <string>public.data</string>
+        </array>
+        <key>UTTypeTagSpecification</key>
+        <dict>
+          <key>public.filename-extension</key>
+          <array>
+            <string>inx</string>
+          </array>
+        </dict>
+      </dict>
+    </array>
+  </dict>
 </plist>

@@ -103,7 +103,7 @@ void incMainMenu() {
             igGetContentRegionAvail(&avail);
             version (InBranding) {
                 igImage(
-                    cast(void*)incGetLogo().getTextureId(), 
+                    cast(void*)incGetLogoI2D().getTextureId(), 
                     ImVec2(avail.y*2, avail.y*2), 
                     ImVec2(0, 0), ImVec2(1, 1), 
                     ImVec4(1, 1, 1, 1), 
