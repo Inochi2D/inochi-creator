@@ -720,7 +720,7 @@ public:
     void viewportTools() {
         igSetWindowFontScale(1.30);
             igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(1, 1));
-            igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(8, 8));
+            igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(8, 10));
                 if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Points ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
                     setToolMode(VertexToolMode.Points);
                     path = null;
