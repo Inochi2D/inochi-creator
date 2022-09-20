@@ -35,28 +35,14 @@ cp LICENSE out/Inochi\ Creator.app/Contents/SharedSupport/LICENSE
 
 # Create icons dir
 # TODO: check if dir exists, skip this step if it does
-ICONDIR="out/icons.iconset"
-if [ ! -d "$ICONDIR" ]; then
-    echo "Creating Icons..."
-    mkdir -p $ICONDIR
-
-    # Create normal icons
-    for SIZE in 16 32 63 128 256 512; do
-        sips -z $SIZE $SIZE res/icon.png --out $ICONDIR/icon_${SIZE}x${SIZE}.png;
-    done
-
-    # Create retina icons
-    for SIZE in 16 32 63 128 256 512; do
-        sips -z $SIZE $SIZE res/icon.png --out $ICONDIR/icon_$(expr $SIZE / 2)x$(expr $SIZE / 2)x2.png;
-    done
-
-    iconutil -c icns -o $ICONDIR/InochiCreator.icns $ICONDIR
+if [ ! -d "out/InochiCreator.icns" ]; then
+    iconutil -c icns -o out/InochiCreator.icns res/Inochi-Creator.iconset
 else
     echo "Icons already exist, skipping..."
 fi
 
 echo "Applying Icon..."
-cp $ICONDIR/InochiCreator.icns out/Inochi\ Creator.app/Contents/Resources/InochiCreator.icns 
+cp out/InochiCreator.icns out/Inochi\ Creator.app/Contents/Resources/InochiCreator.icns 
 
 echo "Cleaning up..."
 find out/Inochi\ Creator.app/Contents/MacOS -type f ! -name "inochi-creator" -delete
