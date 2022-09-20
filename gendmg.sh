@@ -24,7 +24,7 @@ if [ -d "out/Inochi Creator.app" ]; then
     
     create-dmg \
         --volname "$DMGTITLE" \
-        --volicon "icons.iconset/InochiCreator.icns" \
+        --volicon "InochiCreator.icns" \
         --window-size 800 600 \
         --icon "Inochi Creator.app" 200 250 \
         --hide-extension "Inochi Creator.app" \
