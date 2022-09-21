@@ -34,20 +34,13 @@ jobs:
         ./gentl.sh
 
         cp out/* otl/
-          
-    - name: 'Archive i18n'
-      uses: thedoctor0/zip-release@main
-      with:
-        type: 'zip'
-        filename: 'inochi-creator-i18n.zip'
-        directory: 'otl/'
-        path: '*'
 
-    - name: 'Release i18n'
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
+    - name: Make Artifact
+      uses: actions/upload-artifact@v3
       with:
-          files: 'otl/inochi-creator-i18n.zip'
+        name: translations
+        path: otl/
+        retention-days: 1
 
   linux-appimage:
     runs-on: ubuntu-18.04
@@ -128,12 +121,18 @@ jobs:
 
   windows-zip:
     runs-on: windows-latest
+    needs: build-resources
 
     steps:
     - uses: actions/checkout@v3
     - uses: dlang-community/setup-dlang@4c99aa991ce7d19dd3064de0a4f2f6b2f152e2d7
       with:
         compiler: ldc-latest
+        
+    - name: Download translations
+      uses: actions/download-artifact@v3
+      with:
+        name: translations
       
     - name: "Clone dependencies & set versions"
       run: |
@@ -160,6 +159,9 @@ jobs:
           }
           Invoke-VSDevEnvironment
           dub build --compiler=ldc2 --build=release --config=win32-full
+          
+          mkdir -p out/i18n/
+          cp otl/* out/i18n/
 
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
