@@ -98,6 +98,8 @@ public:
         Draws the frame
     */
     final void update() {
+        if (!disabled && !visible) return;
+
         igPushItemFlag(ImGuiItemFlags.Disabled, disabled);
             this.onBeginUpdate();
                 this.onUpdate();
@@ -132,6 +134,14 @@ public:
             windowClass.ViewportFlagsOverrideClear = ImGuiViewportFlags.NoDecoration | ImGuiViewportFlags.NoTaskBarIcon;
             windowClass.ViewportFlagsOverrideSet = ImGuiViewportFlags.NoAutoMerge;
         }
+    }
+    
+    /**
+        Gets whether the window is visible.
+    */
+    final
+    bool isVisible() {
+        return visible;
     }
 }
 
