@@ -692,7 +692,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                     if (igMenuItem(__("Duplicate"), "", false, true)) {
                         Parameter newParam = param.dup;
                         incActivePuppet().parameters ~= newParam;
-                        incActionPush(new ParameterAddAction(newParam));
+                        incActionPush(new ParameterAddAction(newParam, &paramArr));
                     }
 
                     if (igMenuItem(__("Delete"), "", false, true)) {
@@ -700,7 +700,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                             incDisarmParameter();
                         }
                         incActivePuppet().removeParameter(param);
-                        incActionPush(new ParameterRemoveAction(param));
+                        incActionPush(new ParameterRemoveAction(param, &paramArr));
                     }
 
                     igNewLine();
@@ -763,7 +763,7 @@ protected:
                     false
                 );
                 incActivePuppet().parameters ~= param;
-                incActionPush(new ParameterAddAction(param));
+                incActionPush(new ParameterAddAction(param, &incActivePuppet().parameters));
             }
             if (igMenuItem(__("Add 1D Parameter (-1..1)"), "", false, true)) {
                 Parameter param = new Parameter(
@@ -774,7 +774,7 @@ protected:
                 param.max.x = 1;
                 param.insertAxisPoint(0, 0.5);
                 incActivePuppet().parameters ~= param;
-                incActionPush(new ParameterAddAction(param));
+                incActionPush(new ParameterAddAction(param, &incActivePuppet().parameters));
             }
             if (igMenuItem(__("Add 2D Parameter (0..1)"), "", false, true)) {
                 Parameter param = new Parameter(
@@ -782,7 +782,7 @@ protected:
                     true
                 );
                 incActivePuppet().parameters ~= param;
-                incActionPush(new ParameterAddAction(param));
+                incActionPush(new ParameterAddAction(param, &incActivePuppet().parameters));
             }
             if (igMenuItem(__("Add 2D Parameter (-1..+1)"), "", false, true)) {
                 Parameter param = new Parameter(
@@ -794,7 +794,7 @@ protected:
                 param.insertAxisPoint(0, 0.5);
                 param.insertAxisPoint(1, 0.5);
                 incActivePuppet().parameters ~= param;
-                incActionPush(new ParameterAddAction(param));
+                incActionPush(new ParameterAddAction(param, &incActivePuppet().parameters));
             }
             if (igMenuItem(__("Add Mouth Shape"), "", false, true)) {
                 Parameter param = new Parameter(
@@ -810,7 +810,7 @@ protected:
                 param.insertAxisPoint(1, 0.5);
                 param.insertAxisPoint(1, 0.6);
                 incActivePuppet().parameters ~= param;
-                incActionPush(new ParameterAddAction(param));
+                incActionPush(new ParameterAddAction(param, &incActivePuppet().parameters));
             }
             igEndPopup();
         }

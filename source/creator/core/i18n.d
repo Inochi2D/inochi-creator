@@ -39,6 +39,10 @@ private {
     }
 
     void incLocaleScan(string path) {
+
+        // Skip non-existent paths
+        if (!path.exists) return;
+
         foreach(DirEntry entry; dirEntries(path, "*.mo", SpanMode.shallow)) {
             
             // Get langcode from filename

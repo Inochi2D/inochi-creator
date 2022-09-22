@@ -40,7 +40,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: translations
-        path: otl/
+        path: otl/*
         retention-days: 1
 
   linux-appimage:
@@ -122,6 +122,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: translations
+        path: out/i18n/
       
     - name: "Clone dependencies & set versions"
       run: |
@@ -148,9 +149,6 @@ jobs:
           }
           Invoke-VSDevEnvironment
           dub build --compiler=ldc2 --build=release --config=win32-full
-          
-          mkdir -p out/i18n/
-          cp otl/* out/i18n/
 
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
