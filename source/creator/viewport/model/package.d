@@ -11,7 +11,7 @@ import creator.widgets.label;
 import creator.widgets.texture;
 import creator.widgets.dummy;
 import creator.widgets.dragdrop;
-import creator.widgets.colorbutton;
+import creator.widgets.button;
 import creator.core.input;
 import creator.core;
 import creator;
