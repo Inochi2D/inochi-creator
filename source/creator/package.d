@@ -469,8 +469,16 @@ void incFocusCamera(Node node) {
     import creator.viewport : incViewportTargetZoom, incViewportTargetPosition;
     if (node is null) return;
 
-    auto nt = node.transform;
-    incFocusCamera(node, vec2(-nt.translation.x, -nt.translation.y));
+    // Calculate actual center.
+    vec4 bounds = node.getCombinedBounds();
+    if (auto drawable = cast(Drawable)node) {
+        drawable.updateBounds();
+        bounds = drawable.bounds;
+    }
+    vec2 pos = bounds.xy+((bounds.zw - bounds.xy)*0.5);
+
+    // Focus camera to calculated center
+    incFocusCamera(node, vec2(-pos.x, -pos.y));
 }
 
 /**
@@ -487,17 +495,18 @@ void incFocusCamera(Node node, vec2 position) {
 
     vec4 bounds = node.getCombinedBounds();
     vec2 boundsSize = bounds.zw - bounds.xy;
-    if (auto drawable = cast(Drawable)node) boundsSize = drawable.bounds.zw - drawable.bounds.xy;
-    else {
-        nt.translation = vec3(bounds.x + ((bounds.z-bounds.x)/2), bounds.y + ((bounds.w-bounds.y)/2), 0);
+    if (auto drawable = cast(Drawable)node) {
+        boundsSize = drawable.bounds.zw - drawable.bounds.xy;
+    } else {
+        nt.translation = vec3(bounds.x + ((bounds.z-bounds.x)*0.5), bounds.y + ((bounds.w-bounds.y)*0.5), 0);
     }
     
 
-    float largestViewport = max(width, height);
+    float largestViewport = min(width, height);
     float largestBounds = max(boundsSize.x, boundsSize.y);
 
     float factor = largestViewport/largestBounds;
-    incViewportTargetZoom = clamp(factor*0.85, 0.1, 2);
+    incViewportTargetZoom = clamp(factor*0.90, 0.1, 2.5);
 
     incViewportTargetPosition = vec2(
         position.x,
