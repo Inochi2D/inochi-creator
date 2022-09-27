@@ -34,7 +34,7 @@ bool incDropdownButton(string idStr, ImVec2 size = ImVec2(-1, -1), bool open=fal
     igSameLine(0, 0);
 
     const(float) default_size = igGetFrameHeight();
-    if (size.x <= 0) size.x = 18;
+    if (size.x <= 0) size.x = 16;
     if (size.y <= 0) size.y = default_size;
 
     auto id = igGetID(idStr.ptr, idStr.ptr+idStr.length);
@@ -58,9 +58,11 @@ bool incDropdownButton(string idStr, ImVec2 size = ImVec2(-1, -1), bool open=fal
     igRenderNavHighlight(bb, id);
     igRenderFrame(bb.Min, bb.Max, bgCol, true, ctx.Style.FrameRounding);
     const(string) s = "";
+    ImVec2 ssize = incMeasureString(s);
+    
     igRenderText(ImVec2(
-        bb.Min.x + max(0.0f, (size.x - ctx.FontSize) * 0.5f), 
-        bb.Min.y + max(0.0f, (size.y - ctx.FontSize) * 0.5f)
+        bb.Min.x + max(0.0f, (size.x - ssize.x) * 0.5f), 
+        bb.Min.y + max(0.0f, (size.y - ssize.y) * 0.5f)
     ), s.ptr, s.ptr+s.length, true);
     return pressed;
 }
