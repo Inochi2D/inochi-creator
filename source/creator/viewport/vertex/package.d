@@ -33,55 +33,65 @@ void incViewportVertexTools() {
 
 void incViewportVertexOptions() {
     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
-    igBeginGroup();
-        if (igButton("")) editor.mesh.flipHorz();
-        incTooltip(_("Flip Horizontally"));
+    igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(4, 4));
+        igBeginGroup();
+            if (igButton("")) editor.mesh.flipHorz();
+            incTooltip(_("Flip Horizontally"));
 
-        igSameLine(0, 0);
+            igSameLine(0, 0);
 
-        if (igButton("")) editor.mesh.flipVert();
-        incTooltip(_("Flip Vertically"));
-    igEndGroup();
+            if (igButton("")) editor.mesh.flipVert();
+            incTooltip(_("Flip Vertically"));
+        igEndGroup();
 
-    igSameLine(0, 4);
+        igSameLine(0, 4);
 
-    igBeginGroup();
-        if (incButtonColored("", ImVec2(0, 0), editor.mirrorHoriz ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-            editor.mirrorHoriz = !editor.mirrorHoriz;
-            editor.refreshMesh();
-        }
-        incTooltip(_("Mirror Horizontally"));
-
-        igSameLine(0, 0);
-
-        if (incButtonColored("", ImVec2(0, 0), editor.mirrorVert ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-            editor.mirrorVert = !editor.mirrorVert;
-            editor.refreshMesh();
-        }
-        incTooltip(_("Mirror Vertically"));
-    igEndGroup();
-
-    igSameLine(0, 4);
-
-    igBeginGroup();
-        if (incButtonColored("", ImVec2(0, 0),
-            editor.previewTriangulate ? ImVec4(1, 1, 0, 1) : ImVec4.init)) {
-            editor.previewTriangulate = !editor.previewTriangulate;
-            editor.refreshMesh();
-        }
-        
-        igSameLine(0, 0);
-
-        if (incButtonColored("", ImVec2(0, 0),
-            editor.previewingTriangulation() ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-            if (editor.previewingTriangulation()) {
-                editor.applyPreview();
+        igBeginGroup();
+            if (incButtonColored("", ImVec2(0, 0), editor.mirrorHoriz ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                editor.mirrorHoriz = !editor.mirrorHoriz;
                 editor.refreshMesh();
             }
-        }
-        incTooltip(_("Automatically connects vertices"));
-    igEndGroup();
-    igPopStyleVar();
+            incTooltip(_("Mirror Horizontally"));
+
+            igSameLine(0, 0);
+
+            if (incButtonColored("", ImVec2(0, 0), editor.mirrorVert ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                editor.mirrorVert = !editor.mirrorVert;
+                editor.refreshMesh();
+            }
+            incTooltip(_("Mirror Vertically"));
+        igEndGroup();
+
+        igSameLine(0, 4);
+
+        igBeginGroup();
+            if (incButtonColored("", ImVec2(0, 0),
+                editor.previewTriangulate ? ImVec4(1, 1, 0, 1) : ImVec4.init)) {
+                editor.previewTriangulate = !editor.previewTriangulate;
+                editor.refreshMesh();
+            }
+            incTooltip(_("Triangulate vertices"));
+
+            if (incBeginDropdownMenu("TRIANGULATE_SETTINGS")) {
+                incDummyLabel("TODO: Options Here", ImVec2(0, 192));
+
+                // Button which bakes some auto generated content
+                // In this case, a mesh is baked from the triangulation.
+                if (incButtonColored(__("Bake"), ImVec2(incAvailableSpace().x, 0),
+                    editor.previewingTriangulation() ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                    if (editor.previewingTriangulation()) {
+                        editor.applyPreview();
+                        editor.refreshMesh();
+                    }
+                }
+                incTooltip(_("Bakes the triangulation, applying it to the mesh."));
+                
+                incEndDropdownMenu();
+            }
+            incTooltip(_("Triangulation Options"));
+
+        igEndGroup();
+    igPopStyleVar(2);
 }
 
 void incViewportVertexConfirmBar() {
@@ -156,6 +166,13 @@ void incViewportVertexWithdraw() {
 
 Drawable incVertexEditGetTarget() {
     return editor.getTarget();
+}
+
+void incVertexEditStartEditing(Drawable target) {
+    incSetEditMode(EditMode.VertexEdit);
+    incSelectNode(target);
+    incVertexEditSetTarget(target);
+    incFocusCamera(target, vec2(0, 0));
 }
 
 void incVertexEditSetTarget(Drawable target) {

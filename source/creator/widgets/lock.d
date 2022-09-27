@@ -4,7 +4,7 @@
     
     Authors: Luna Nielsen
 */
-module creator.widgets.lockbutton;
+module creator.widgets.lock;
 import creator.widgets;
 import creator.core;
 import std.string;

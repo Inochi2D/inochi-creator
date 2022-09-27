@@ -754,6 +754,11 @@ private:
 protected:
     override
     void onUpdate() {
+        if (incEditMode == EditMode.VertexEdit) {
+            incLabelOver(_("In vertex edit mode..."), ImVec2(0, 0), true);
+            return;
+        }
+
         auto parameters = incActivePuppet().parameters;
 
         if (igBeginPopup("###AddParameter")) {

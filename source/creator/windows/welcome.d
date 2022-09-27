@@ -17,6 +17,7 @@ import inochi2d;
 import creator.ver;
 import creator.io;
 import creator;
+import creator.config;
 
 class WelcomeWindow : Window {
 private:
@@ -75,8 +76,6 @@ protected:
         ImVec2 origin;
         igGetCursorStartPos(&origin);
 
-        version(InBranding) {
-
             if (igBeginChild("##BANNER", ImVec2(0, 200))) {
                 igPushStyleColor(ImGuiCol.Text, 0xFFFFFFFF);
                     // Banner Image
@@ -84,20 +83,28 @@ protected:
 
                     //Logo
                     igSetCursorPos(origin);
-                    igImage(cast(void*)bannerLogo.getTextureId(), ImVec2(296, 100));
+                    version(InBranding) {
+                        igImage(cast(void*)bannerLogo.getTextureId(), ImVec2(296, 100));
+                    } else {
+                        igSetWindowFontScale(2);
+                            incTextShadowed("Inochi Creator");
+                        igSetWindowFontScale(1);
+                        incTextShadowed(_("Unsupported"));
+                    }
                     
+                    // Artist name
+                    string artistString = _("Art by %s").format(INC_BANNER_ARTIST_NAME);
+                    ImVec2 vsSize = incMeasureString(artistString);
+                    igSetCursorPos(ImVec2(512-(vsSize.x+8), 200-(vsSize.y+8)));
+                    incText(artistString);
+
                     // Version String
-                    ImVec2 vsSize = incMeasureString(INC_VERSION);
+                    vsSize = incMeasureString(INC_VERSION);
                     igSetCursorPos(ImVec2(512-(vsSize.x+8), 8));
                     incTextShadowed(INC_VERSION);
                 igPopStyleColor();
-            }
             igEndChild();
-        } else {
-            igSetWindowFontScale(3);
-                igText("Inochi Creator (Unsupported)");
-            igSetWindowFontScale(1);
-        }
+        } 
         igSetCursorPos(ImVec2(origin.x, origin.y+192));
 
         
@@ -279,13 +286,12 @@ public:
     this() {
         super(_("Inochi Creator Start"));
 
-        version(InBranding) {
-            auto bannerTex = ShallowTexture(cast(ubyte[])import("ui/banner.png"));
-            auto bannerLogoTex = ShallowTexture(cast(ubyte[])import("ui/banner-logo.png"));
+        auto bannerTex = ShallowTexture(cast(ubyte[])import("ui/banner.png"));
+        banner = new Texture(bannerTex);
 
-            //inTexPremultiply(bannerTex.data);
-            
-            banner = new Texture(bannerTex);
+        version(InBranding) {
+            auto bannerLogoTex = ShallowTexture(cast(ubyte[])import("ui/banner-logo.png"));   
+            inTexPremultiply(bannerLogoTex.data); 
             bannerLogo = new Texture(bannerLogoTex);
         }
         if (!incSettingsGet!bool("hasDoneQuickSetup", false)) step = 0;

@@ -75,10 +75,18 @@ protected:
             }
 
             static if (!isRoot) {
+
+                // Edit mesh option for drawables
+                if (Drawable d = cast(Drawable)n) {
+                    if (igMenuItem(__("Edit Mesh"))) {
+                        incVertexEditStartEditing(d);
+                    }
+                }
+                
                 if (igMenuItem(n.enabled ? /* Option to hide the node (and subnodes) */ __("Hide") :  /* Option to show the node (and subnodes) */ __("Show"))) {
                     n.enabled = !n.enabled;
                 }
-                
+
                 if (igMenuItem(__("Delete"), "", false, !isRoot)) {
 
                     if (selected.length > 1) {
@@ -281,7 +289,7 @@ protected:
         }
 
         if (incEditMode == EditMode.VertexEdit) {
-            incText(_("In vertex edit mode..."));
+            incLabelOver(_("In vertex edit mode..."), ImVec2(0, 0), true);
             return;
         }
 

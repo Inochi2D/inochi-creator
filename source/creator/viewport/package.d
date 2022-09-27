@@ -86,6 +86,8 @@ void incViewportDrawConfirmBar() {
             incViewportVertexConfirmBar();
             break;
         case EditMode.ModelEdit:
+            incViewportModelConfirmBar();
+            break;
         case EditMode.AnimEdit:
         case EditMode.ModelTest:
             break;

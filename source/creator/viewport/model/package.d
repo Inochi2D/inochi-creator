@@ -11,9 +11,10 @@ import creator.widgets.label;
 import creator.widgets.texture;
 import creator.widgets.dummy;
 import creator.widgets.dragdrop;
-import creator.widgets.colorbutton;
+import creator.widgets.button;
 import creator.core.input;
 import creator.core;
+import creator.viewport.vertex;
 import creator;
 import inochi2d;
 import bindbc.imgui;
@@ -110,6 +111,40 @@ void incViewportModelTools() {
     if (incArmedParameter()) {
         incViewportModelDeformTools();
     }
+}
+
+void incViewportModelConfirmBar() {
+    igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(16, 4));
+        if (Drawable node = cast(Drawable)incSelectedNode()) {
+            if (igButton(__(" Edit Mesh"), ImVec2(0, 26))) {
+                incVertexEditStartEditing(node);
+            }
+
+            // Allow copying mesh data via drag n drop for now
+            if(igBeginDragDropTarget()) {
+                incTooltip(_("Copy Mesh Data"));
+                
+                const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+                if (payload !is null) {
+                    if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
+                        incSetEditMode(EditMode.VertexEdit);
+                        incSelectNode(node);
+                        incVertexEditSetTarget(node);
+                        incFocusCamera(node, vec2(0, 0));
+                        incVertexEditCopyMeshDataToTarget(payloadDrawable.getMesh());
+                    }
+                }
+                igEndDragDropTarget();
+            } else {
+
+
+                // Switches Inochi Creator over to Mesh Edit mode
+                // and selects the mesh that you had selected previously
+                // in Model Edit mode.
+                incTooltip(_("Edit Mesh"));
+            }
+        }
+    igPopStyleVar();
 }
 
 void incViewportModelOptions() {
