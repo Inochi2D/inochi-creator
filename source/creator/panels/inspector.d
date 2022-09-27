@@ -571,44 +571,6 @@ void incInspectorModelDrawable(Drawable node) {
                 igPopID();
             igPopItemWidth();
         igEndGroup();
-
-        igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(8, 8));
-            igSpacing();
-            igSpacing();
-
-            if (igButton("", ImVec2(avail.x, 32))) {
-                incSetEditMode(EditMode.VertexEdit);
-                incSelectNode(node);
-                incVertexEditSetTarget(node);
-                incFocusCamera(node, vec2(0, 0));
-            }
-
-            // Allow copying mesh data via drag n drop for now
-            if(igBeginDragDropTarget()) {
-                const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
-                if (payload !is null) {
-                    if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
-                        incSetEditMode(EditMode.VertexEdit);
-                        incSelectNode(node);
-                        incVertexEditSetTarget(node);
-                        incFocusCamera(node, vec2(0, 0));
-                        incVertexEditCopyMeshDataToTarget(payloadDrawable.getMesh());
-                    }
-                }
-                
-                igEndDragDropTarget();
-            } else {
-
-
-                // Switches Inochi Creator over to Mesh Edit mode
-                // and selects the mesh that you had selected previously
-                // in Model Edit mode.
-                incTooltip(_("Edit Mesh"));
-            }
-
-            igSpacing();
-            igSpacing();
-        igPopStyleVar();
     }
     incEndCategory();
 }
