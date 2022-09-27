@@ -11,6 +11,7 @@ import creator.panels;
 import creator.core;
 import creator.core.input;
 import creator.utils.link;
+import creator.config;
 import creator;
 import inochi2d;
 import inochi2d.core.dbg;
@@ -485,9 +486,6 @@ void incMainMenu() {
 
                 if (igBeginMenu(__("Help"), true)) {
 
-                    if(igMenuItem(__("Tutorial"), "(TODO)", false, false)) { }
-                    igSeparator();
-                    
                     if(igMenuItem(__("Online Documentation"), "", false, true)) {
                         incOpenLink("https://github.com/Inochi2D/inochi-creator/wiki");
                     }
@@ -495,7 +493,21 @@ void incMainMenu() {
                     if(igMenuItem(__("Inochi2D Documentation"), "", false, true)) {
                         incOpenLink("https://github.com/Inochi2D/inochi2d/wiki");
                     }
+                    igSpacing();
                     igSeparator();
+                    igSpacing();
+                    
+
+                    if (igMenuItem(__("Report a Bug"))) {
+                        incOpenLink(INC_BUG_REPORT_URI);
+                    }
+                    if (igMenuItem(__("Request a Feature"))) {
+                        incOpenLink(INC_FEATURE_REQ_URI);
+                    }
+                    igSpacing();
+                    igSeparator();
+                    igSpacing();
+
 
                     if(igMenuItem(__("About"), "", false, true)) {
                         incPushWindow(new AboutWindow);
