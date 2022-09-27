@@ -160,7 +160,7 @@ protected:
                         endSection();
                         break;
                     default:
-                        incText(_("No settings for this category."));
+                        incLabelOver(_("No settings for this category."), ImVec2(0, 0), true);
                         break;
                 }
             igPopItemWidth();

@@ -144,7 +144,7 @@ protected:
                 }
             }
         } else {
-            incText(_("Not in Test Mode..."));
+            incLabelOver(_("Not in Test Mode..."), ImVec2(0, 0), true);
         }
     }
 
