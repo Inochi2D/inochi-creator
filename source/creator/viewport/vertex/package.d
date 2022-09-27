@@ -89,7 +89,7 @@ void incViewportVertexOptions() {
                 incEndDropdownMenu();
             }
             incTooltip(_("Triangulation Options"));
-            
+
         igEndGroup();
     igPopStyleVar(2);
 }
@@ -166,6 +166,13 @@ void incViewportVertexWithdraw() {
 
 Drawable incVertexEditGetTarget() {
     return editor.getTarget();
+}
+
+void incVertexEditStartEditing(Drawable target) {
+    incSetEditMode(EditMode.VertexEdit);
+    incSelectNode(target);
+    incVertexEditSetTarget(target);
+    incFocusCamera(target, vec2(0, 0));
 }
 
 void incVertexEditSetTarget(Drawable target) {
