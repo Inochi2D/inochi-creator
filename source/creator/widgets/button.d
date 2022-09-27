@@ -85,14 +85,15 @@ bool incBeginDropdownMenu(string idStr) {
     }
 
     // Dropdown button itself
-    auto _ = incDropdownButton("DROPDOWN_BTN", ImVec2(-1, -1), menuData.wasOpen);
-    igOpenPopupOnItemClick("DROPDOWN_CONTENT", ImGuiPopupFlags.MouseButtonLeft | ImGuiPopupFlags.NoOpenOverItems);
+    auto pressed = incDropdownButton("DROPDOWN_BTN", ImVec2(-1, -1), menuData.wasOpen);
+    if (igIsPopupOpen("DROPDOWN_CONTENT") && pressed) igClosePopupsOverWindow(window, true);
+    else if (pressed) igOpenPopup("DROPDOWN_CONTENT", ImGuiPopupFlags.MouseButtonLeft | ImGuiPopupFlags.NoOpenOverItems);
 
     ImVec2 pos;
     igGetCursorScreenPos(&pos);
 
-    // window.OuterRectClipped;
-    
+    // Clamp to outer window
+    if (window) pos.x = clamp(pos.x, window.OuterRectClipped.Max.x, window.OuterRectClipped.Min.x-192);
 
     // Dropdown menu
     igSetNextWindowSizeConstraints(ImVec2(192, 0), ImVec2(192, float.max));
