@@ -37,6 +37,11 @@ private:
 protected:
     override
     void onUpdate() {
+        if (incEditMode == EditMode.VertexEdit) {
+            incLabelOver(_("In vertex edit mode..."), ImVec2(0, 0), true);
+            return;
+        }
+
         auto nodes = incSelectedNodes();
         if (nodes.length == 1) {
             Node node = nodes[0];
@@ -98,9 +103,9 @@ protected:
                 }
             } else incInspectorModelInfo();
         } else if (nodes.length == 0) {
-            incText(_("No nodes selected..."));
+            incLabelOver(_("No nodes selected..."), ImVec2(0, 0), true);
         } else {
-            incText(_("Can only inspect a single node..."));
+            incLabelOver(_("Can only inspect a single node..."), ImVec2(0, 0), true);
         }
     }
 

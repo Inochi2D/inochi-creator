@@ -281,7 +281,7 @@ protected:
         }
 
         if (incEditMode == EditMode.VertexEdit) {
-            incText(_("In vertex edit mode..."));
+            incLabelOver(_("In vertex edit mode..."), ImVec2(0, 0), true);
             return;
         }
 
