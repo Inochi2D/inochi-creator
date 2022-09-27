@@ -44,7 +44,6 @@ body:
       options:
         - x86_64
         - arm64 / aarch64
-        - i686
   - type: dropdown
     id: sys-os
     attributes:
