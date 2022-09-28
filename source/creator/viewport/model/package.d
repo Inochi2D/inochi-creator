@@ -114,6 +114,10 @@ void incViewportModelTools() {
 }
 
 void incViewportModelConfirmBar() {
+
+    // If parameter is armed we should *not* show the edit mesh button
+    if (incArmedParameter()) return;
+
     igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(16, 4));
         if (Drawable node = cast(Drawable)incSelectedNode()) {
             if (igButton(__(" Edit Mesh"), ImVec2(0, 26))) {
