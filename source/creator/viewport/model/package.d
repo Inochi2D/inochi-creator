@@ -114,6 +114,10 @@ void incViewportModelTools() {
 }
 
 void incViewportModelConfirmBar() {
+
+    // If parameter is armed we should *not* show the edit mesh button
+    if (incArmedParameter()) return;
+
     igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(16, 4));
         if (Drawable node = cast(Drawable)incSelectedNode()) {
             if (igButton(__(" Edit Mesh"), ImVec2(0, 26))) {
@@ -148,24 +152,33 @@ void incViewportModelConfirmBar() {
 }
 
 void incViewportModelOptions() {
-    if (!incArmedParameter()) {
-        if (incButtonColored("", ImVec2(0, 0), incShowVertices ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-            incShowVertices = !incShowVertices;
-        }
-        incTooltip(incShowVertices ? _("Hide Vertices") : _("Show Vertices"));
-            
-        igSameLine(0, 0);
-        if (incButtonColored("", ImVec2(0, 0), incShowBounds ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-            incShowBounds = !incShowBounds;
-        }
-        incTooltip(incShowBounds ? _("Hide Bounds") : _("Show Bounds"));
+    igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
+    igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(4, 4));
+        if (!incArmedParameter()) {
+            if(incBeginDropdownMenu("GIZMOS", "")) {
 
-        igSameLine(0, 0);
-        if (incButtonColored("", ImVec2(0, 0), incShowOrientation ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-            incShowOrientation = !incShowOrientation;
+                if (incButtonColored("", ImVec2(0, 0), incShowVertices ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                    incShowVertices = !incShowVertices;
+                }
+                incTooltip(incShowVertices ? _("Hide Vertices") : _("Show Vertices"));
+                    
+                igSameLine(0, 4);
+                if (incButtonColored("", ImVec2(0, 0), incShowBounds ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                    incShowBounds = !incShowBounds;
+                }
+                incTooltip(incShowBounds ? _("Hide Bounds") : _("Show Bounds"));
+
+                igSameLine(0, 4);
+                if (incButtonColored("", ImVec2(0, 0), incShowOrientation ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                    incShowOrientation = !incShowOrientation;
+                }
+                incTooltip(incShowOrientation ? _("Hide Orientation Gizmo") : _("Show Orientation Gizmo"));
+
+                incEndDropdownMenu();
+            }
+            incTooltip(_("Gizmos"));
         }
-        incTooltip(incShowOrientation ? _("Hide Orientation Gizmo") : _("Show Orientation Gizmo"));
-    }
+    igPopStyleVar(2);
 }
 
 void incViewportModelNodeSelectionChanged() {

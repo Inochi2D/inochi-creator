@@ -78,8 +78,10 @@ protected:
 
                 // Edit mesh option for drawables
                 if (Drawable d = cast(Drawable)n) {
-                    if (igMenuItem(__("Edit Mesh"))) {
-                        incVertexEditStartEditing(d);
+                    if (!incArmedParameter()) {
+                        if (igMenuItem(__("Edit Mesh"))) {
+                            incVertexEditStartEditing(d);
+                        }
                     }
                 }
                 
