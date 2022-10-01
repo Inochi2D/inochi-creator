@@ -36,7 +36,7 @@ public import creator.core.font;
 public import creator.core.dpi;
 import i18n;
 
-import dportals;
+version(linux) import dportals;
 
 version(Windows) {
     import core.sys.windows.windows;
@@ -554,7 +554,7 @@ void incBeginLoopNoEv() {
     igNewFrame();
     incGLBackendBeginRender();
 
-    dpUpdate();
+    version(linux) dpUpdate();
 
 
 
