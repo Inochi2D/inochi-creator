@@ -94,7 +94,7 @@ string incShowOpenFolderDialog(string title="Open...") {
         promise.await();
         return promise.uriFromPromise();
     } else {
-        c_str filename = tinyfd_selectFolderDialog(title, null);
+        c_str filename = tinyfd_selectFolderDialog(title.toStringz, null);
         if (filename !is null) return cast(string)filename.fromStringz;
         return null;
     }
@@ -108,7 +108,7 @@ string incShowOpenDialog(const(TFD_Filter)[] filters, string title="Open...") {
         promise.await();
         return promise.uriFromPromise();
     } else {
-        c_str filename = tinyfd_openFileDialog(title, "", filters, false);
+        c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, false);
         if (filename !is null) {
             string file = cast(string)filename.fromStringz;
             return file;
@@ -125,7 +125,7 @@ string incShowSaveDialog(const(TFD_Filter)[] filters, string fname, string title
         promise.await();
         return promise.uriFromPromise();
     } else {
-        c_str filename = tinyfd_saveFileDialog(title, fname.toStringz, filters);
+        c_str filename = tinyfd_saveFileDialog(title.toStringz, fname.toStringz, filters);
         if (filename !is null) {
             string file = cast(string)filename.fromStringz;
             return file;
