@@ -64,7 +64,7 @@ private {
                 uri = uri.replace("%20", " ");
                 return uri[7..$];
             }
-            return "";
+            return null;
         }
     }
 }
