@@ -4,7 +4,6 @@ authors "Inochi2D Project"
 copyright "Copyright © 2020, Inochi2D Project"
 license "BSD 2-clause"
 dependency "inochi2d" version="~>0.7.2"
-dependency "dportals" version="~>0.1.0"
 dependency "tinyfiledialogs" version="~>0.10.1"
 dependency "facetrack-d" version="~>0.6.2"
 dependency "bindbc-sdl" version="~>1.1.2"
@@ -19,12 +18,17 @@ lflags "-rpath=$$ORIGIN" platform="linux"
 versions "GL_32" "USE_SDL2" "USE_GL" "SDL_208" "USE_OpenGL3" "UseUIScaling"
 stringImportPaths "res/" "./"
 preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\""
+
+
 configuration "barebones" {
 	platforms "linux"
 	targetType "executable"
 	subConfiguration "bindbc-imgui" "static_dynamicCRT"
 	copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/OpenDyslexic-LICENSE" "LICENSE"
+	
+	dependency "dportals" version="~>0.1.0"
 }
+
 configuration "win32-barebones" {
 	platforms "windows"
 	targetType "executable"
@@ -32,12 +36,18 @@ configuration "win32-barebones" {
 	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows-dmd"
 	copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/OpenDyslexic-LICENSE" "LICENSE"
 }
+
 configuration "full" {
+
 	platforms "linux"
 	targetType "executable"
 	subConfiguration "bindbc-imgui" "static_dynamicCRT"
 	versions "InBranding"
+	
+	dependency "dportals" version="~>0.1.0"
 }
+
+
 configuration "osx-full" {
 	platforms "osx"
 	targetType "executable"
@@ -47,6 +57,7 @@ configuration "osx-full" {
 	lflags "-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
 	versions "InBranding"
 }
+
 configuration "win32-full" {
 	platforms "windows"
 	targetType "executable"
@@ -56,6 +67,7 @@ configuration "win32-full" {
 	versions "InBranding"
 	preBuildCommands "rc.exe /v res\\inochi-creator.rc"
 }
+
 configuration "win32-lite" {
 	platforms "windows"
 	targetType "executable"
