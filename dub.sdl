@@ -3,78 +3,62 @@ description "Inochi2D rigging application"
 authors "Inochi2D Project"
 copyright "Copyright © 2020, Inochi2D Project"
 license "BSD 2-clause"
-dependency "inmath" version="~>1.0.1"
+dependency "inochi2d" version="~>0.7.2"
+dependency "dportals" version="~>0.1.0"
 dependency "tinyfiledialogs" version="~>0.10.1"
 dependency "facetrack-d" version="~>0.6.2"
 dependency "bindbc-sdl" version="~>1.1.2"
 dependency "bindbc-imgui" version="~>0.7.0"
 dependency "i18n-d" version="~>1.0.1"
 dependency "psd-d" version="~>0.6.1"
-dependency "inochi2d" version="~>0.7.2"
+dependency "inmath" version="~>1.0.1"
 targetPath "out/"
+workingDirectory "out/"
+dflags "-mscrtlib=msvcrt" platform="windows-ldc"
+lflags "-rpath=$$ORIGIN" platform="linux"
 versions "GL_32" "USE_SDL2" "USE_GL" "SDL_208" "USE_OpenGL3" "UseUIScaling"
 stringImportPaths "res/" "./"
 preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\""
-workingDirectory "out/"
-
-// plz do not delete foxgirl bdfl
-lflags "-rpath=$$ORIGIN" platform="linux"
-dflags "-mscrtlib=msvcrt" platform="windows-ldc" // Use the dynamic CRT on Windows.
-// dflags "-flto=full" platform="windows-ldc"		// Enable Link Time Optimizations (LTO)
-// dflags "-defaultlib=phobos2-ldc-lto,druntime-ldc-lto" platform="windows-ldc" // Use the D Runtime with LTO enabled.
-
-// These configurations are meant for debug and unoffical builds of Inochi Creator
-// We will not provide support for barebones builds unless bugs/issues can be replicated
-// in official builds.
-
 configuration "barebones" {
-	subConfiguration "bindbc-imgui" "static_dynamicCRT"
 	platforms "linux"
-	copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/OpenDyslexic-LICENSE" "LICENSE"
 	targetType "executable"
+	subConfiguration "bindbc-imgui" "static_dynamicCRT"
+	copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/OpenDyslexic-LICENSE" "LICENSE"
 }
-
 configuration "win32-barebones" {
-	subConfiguration "bindbc-imgui" "static_staticCRT"
 	platforms "windows"
 	targetType "executable"
+	subConfiguration "bindbc-imgui" "static_staticCRT"
 	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows-dmd"
 	copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/OpenDyslexic-LICENSE" "LICENSE"
 }
-
-// Official build configurations.
-// Do not package your compilation of Inochi Creator with these configurations
-// unless you have prior permission from the Inochi2D project.
 configuration "full" {
-	subConfiguration "bindbc-imgui" "static_dynamicCRT"
 	platforms "linux"
 	targetType "executable"
+	subConfiguration "bindbc-imgui" "static_dynamicCRT"
 	versions "InBranding"
 }
-
 configuration "osx-full" {
 	platforms "osx"
-	subConfiguration "bindbc-imgui" "dynamic_dynamicCRT"
 	targetType "executable"
 	targetPath "out/Inochi Creator.app/Contents/MacOS"
+	subConfiguration "bindbc-imgui" "dynamic_dynamicCRT"
 	dflags "-preserve-dwarf-line-section=false"
-	lflags 	"-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
+	lflags "-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
 	versions "InBranding"
 }
-
 configuration "win32-full" {
-	subConfiguration "bindbc-imgui" "static_staticCRT"
 	platforms "windows"
 	targetType "executable"
+	subConfiguration "bindbc-imgui" "static_staticCRT"
 	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows-dmd"
 	sourceFiles "res\\inochi-creator.res"
-	preBuildCommands "rc.exe /v res\\inochi-creator.rc"
 	versions "InBranding"
+	preBuildCommands "rc.exe /v res\\inochi-creator.rc"
 }
-
 configuration "win32-lite" {
-	subConfiguration "bindbc-imgui" "static_staticCRT"
 	platforms "windows"
 	targetType "executable"
+	subConfiguration "bindbc-imgui" "static_staticCRT"
 	versions "InBranding" "InLite"
 }

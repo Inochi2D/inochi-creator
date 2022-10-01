@@ -36,6 +36,8 @@ public import creator.core.font;
 public import creator.core.dpi;
 import i18n;
 
+import dportals;
+
 version(Windows) {
     import core.sys.windows.windows;
     import core.sys.windows.winuser;
@@ -319,6 +321,8 @@ void incOpenWindow() {
 
     // Load Settings
     incShowStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
+
+    version(linux) dpInit();
 }
 
 void incCreateContext() {
@@ -549,6 +553,8 @@ void incBeginLoopNoEv() {
     // Do our DPI pre-processing
     igNewFrame();
     incGLBackendBeginRender();
+
+    dpUpdate();
 
 
 
