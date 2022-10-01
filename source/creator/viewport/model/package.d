@@ -163,7 +163,7 @@ void incViewportModelOptions() {
                 incTooltip(incShowVertices ? _("Hide Vertices") : _("Show Vertices"));
                     
                 igSameLine(0, 4);
-                if (incButtonColored("", ImVec2(0, 0), incShowBounds ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                if (incButtonColored("", ImVec2(0, 0), incShowBounds ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
                     incShowBounds = !incShowBounds;
                 }
                 incTooltip(incShowBounds ? _("Hide Bounds") : _("Show Bounds"));
