@@ -20,6 +20,7 @@ import i18n;
 
 import std.string;
 import std.stdio;
+import std.path : setExtension;
 
 private {
     bool dbgShowStyleEditor;
@@ -33,8 +34,12 @@ private {
     }
 
     void fileOpen() {
+        const TFD_Filter[] filters = [
+            { ["*.inx"], "Inochi Creator Project (*.inx)" }
+        ];
+
         incPopWelcomeWindow();
-        string file = incShowOpenDialog();
+        string file = incShowOpenDialog(filters, _("Open..."));
         if (file) incOpenProject(file);
     }
 
@@ -52,11 +57,8 @@ private {
                 { ["*.inx"], "Inochi Creator Project (*.inx)" }
             ];
 
-            c_str filename = tinyfd_saveFileDialog(__("Save..."), "", filters);
-            if (filename !is null) {
-                string file = cast(string)filename.fromStringz;
-                incSaveProject(file);
-            }
+            string file = incShowSaveDialog(filters, _("Save..."));
+            if (file) incSaveProject(file);
         }
     }
 
@@ -66,11 +68,8 @@ private {
             { ["*.inx"], "Inochi Creator Project (*.inx)" }
         ];
 
-        c_str filename = tinyfd_saveFileDialog(__("Save As..."), "", filters);
-        if (filename !is null) {
-            string file = cast(string)filename.fromStringz;
-            incSaveProject(file);
-        }
+        string file = incShowSaveDialog(filters, _("Save As..."));
+        if (file) incSaveProject(file);
     }
 }
 
@@ -165,9 +164,8 @@ void incMainMenu() {
                                 { ["*.inp"], "Inochi2D Puppet (*.inp)" }
                             ];
 
-                            c_str filename = tinyfd_openFileDialog(__("Import..."), "", filters, false);
-                            if (filename !is null) {
-                                string file = cast(string)filename.fromStringz;
+                            string file = incShowOpenDialog(filters, _("Import..."));
+                            if (file) {
                                 incPopWelcomeWindow();
                                 incImportINP(file);
                             }
@@ -175,10 +173,10 @@ void incMainMenu() {
                         incTooltip(_("Import existing puppet file, editing options limited"));
 
                         if (igMenuItem(__("Image Folder"))) {
-                            c_str folder = tinyfd_selectFolderDialog(__("Select a Folder..."), null);
-                            if (folder !is null) {
+                            string folder = incShowOpenFolderDialog(_("Select a Folder..."));
+                            if (folder) {
                                 incPopWelcomeWindow();
-                                incImportFolder(cast(string)folder.fromStringz);
+                                incImportFolder(folder);
                             }
                         }
                         incTooltip(_("Supports PNGs, TGAs and JPEGs."));
@@ -190,9 +188,8 @@ void incMainMenu() {
                                 { ["*.psd"], "Photoshop Document (*.psd)" }
                             ];
 
-                            c_str filename = tinyfd_openFileDialog(__("Import..."), "", filters, false);
-                            if (filename !is null) {
-                                string file = cast(string)filename.fromStringz;
+                            string file = incShowOpenDialog(filters, _("Import..."));
+                            if (file) {
                                 incPopWelcomeWindow();
                                 incPushWindow(new PSDMergeWindow(file));
                             }
@@ -221,14 +218,8 @@ void incMainMenu() {
                                 { ["*.inp"], "Inochi2D Puppet (*.inp)" }
                             ];
 
-                            import std.path : setExtension;
-
-                            c_str filename = tinyfd_saveFileDialog(__("Export..."), "", filters);
-                            if (filename !is null) {
-                                string file = cast(string)filename.fromStringz;
-
-                                incExportINP(file);
-                            }
+                            string file = incShowSaveDialog(filters, "", _("Export..."));
+                            if (file) incExportINP(file);
                         }
                         if (igBeginMenu(__("Image"), true)) {
                             if(igMenuItem(__("PNG (*.png)"), "", false, true)) {
@@ -236,14 +227,8 @@ void incMainMenu() {
                                     { ["*.png"], "Portable Network Graphics (*.png)" }
                                 ];
 
-                                import std.path : setExtension;
-
-                                c_str filename = tinyfd_saveFileDialog(__("Export..."), "", filters);
-                                if (filename !is null) {
-                                    string file = cast(string)filename.fromStringz;
-
-                                    incPushWindow(new ImageExportWindow(file.setExtension("png")));
-                                }
+                                string file = incShowSaveDialog(filters, "", _("Export..."));
+                                if (file) incPushWindow(new ImageExportWindow(file.setExtension("png")));
                             }
 
                             if(igMenuItem(__("JPEG (*.jpeg)"), "", false, true)) {
@@ -251,14 +236,8 @@ void incMainMenu() {
                                     { ["*.jpeg"], "JPEG Image (*.jpeg)" }
                                 ];
 
-                                import std.path : setExtension;
-
-                                c_str filename = tinyfd_saveFileDialog(__("Export..."), "", filters);
-                                if (filename !is null) {
-                                    string file = cast(string)filename.fromStringz;
-
-                                    incPushWindow(new ImageExportWindow(file.setExtension("jpeg")));
-                                }
+                                string file = incShowSaveDialog(filters, "", _("Export..."));
+                                if (file) incPushWindow(new ImageExportWindow(file.setExtension("jpeg")));
                             }
 
                             if(igMenuItem(__("TARGA (*.tga)"), "", false, true)) {
@@ -266,14 +245,8 @@ void incMainMenu() {
                                     { ["*.tga"], "TARGA Graphics (*.tga)" }
                                 ];
 
-                                import std.path : setExtension;
-
-                                c_str filename = tinyfd_saveFileDialog(__("Export..."), "", filters);
-                                if (filename !is null) {
-                                    string file = cast(string)filename.fromStringz;
-
-                                    incPushWindow(new ImageExportWindow(file.setExtension("tga")));
-                                }
+                                string file = incShowSaveDialog(filters, "", _("Export..."));
+                                if (file) incPushWindow(new ImageExportWindow(file.setExtension("tga")));
                             }
 
                             igEndMenu();
@@ -285,14 +258,8 @@ void incMainMenu() {
                                 { ["*.png"], "PNG Sequence (*.png)" }
                             ];
 
-                            import std.path : setExtension;
-
-                            c_str filename = tinyfd_saveFileDialog(__("Export..."), "", filters);
-                            if (filename !is null) {
-                                string file = cast(string)filename.fromStringz;
-
-                                incExportINP(file);
-                            }
+                            // string file = incShowSaveDialog(filters, "", _("Export..."));
+                            // if (file) incPushWindow(new ImageExportWindow(file.setExtension("tga")));
                         }
                         igEndMenu();
                     }
@@ -378,11 +345,10 @@ void incMainMenu() {
                         const TFD_Filter[] filters = [
                             { ["*.png"], "PNG Image (*.png)" }
                         ];
-
-                        import std.path : setExtension;
-                        c_str filename = tinyfd_saveFileDialog(__("Save Screenshot..."), "", filters);
-                        if (filename !is null) {
-                            string file = (cast(string)filename.fromStringz).setExtension("png");
+                        
+                        string filename = incShowSaveDialog(filters, "", _("Save Screenshot..."));
+                        if (filename) {
+                            string file = filename.setExtension("png");
 
                             // Dump viewport to RGBA byte array
                             int width, height;

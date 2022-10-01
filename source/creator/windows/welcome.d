@@ -196,7 +196,11 @@ protected:
                                 }
 
                                 if (incTextLinkWithIcon("", _("Open..."))) {
-                                    string file = incShowOpenDialog();
+                                    const TFD_Filter[] filters = [
+                                        { ["*.inx"], "Inochi Creator Project (*.inx)" }
+                                    ];
+
+                                    string file = incShowOpenDialog(filters, _("Open..."));
                                     if (file) {
                                         incOpenProject(file);
                                         this.close();
