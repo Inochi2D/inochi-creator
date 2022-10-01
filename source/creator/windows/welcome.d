@@ -75,38 +75,55 @@ protected:
 
         ImVec2 origin;
         igGetCursorStartPos(&origin);
-
             if (igBeginChild("##BANNER", ImVec2(0, 200))) {
                 igPushStyleColor(ImGuiCol.Text, 0xFFFFFFFF);
-                    // Banner Image
-                    igImage(cast(void*)banner.getTextureId(), ImVec2(512, 200));
+                    ImVec2 spos;
+                    igGetCursorScreenPos(&spos); 
+                    
+                    // Background
+                    ImDrawList_AddImageRounded(
+                        igGetWindowDrawList(), 
+                        cast(void*)banner.getTextureId(),
+                        ImVec2(spos.x+1, spos.y+1),
+                        ImVec2(spos.x+511, spos.y+199),
+                        ImVec2(0, 0),
+                        ImVec2(1, 1),
+                        0xFFFFFFFF,
+                        10,
+                        ImDrawFlags.RoundCornersTop
+                    );
 
                     //Logo
-                    igSetCursorPos(origin);
+                    igSetCursorPosY(origin.y+4);
                     version(InBranding) {
                         igImage(cast(void*)bannerLogo.getTextureId(), ImVec2(296, 100));
                     } else {
+                        igSetCursorPosY(origin.y+12);
+                        igSetCursorPosX(origin.x+12);
                         igSetWindowFontScale(2);
-                            incTextShadowed("Inochi Creator");
+                            incTextBordered("Inochi Creator");
                         igSetWindowFontScale(1);
-                        incTextShadowed(_("Unsupported"));
+                        igSetCursorPosX(origin.x+12);
+                        incTextBordered(_("Unsupported"));
                     }
+
+                    // Version String
+                    ImVec2 vsSize = incMeasureString(INC_VERSION);
+                    igSetCursorPos(ImVec2(512-(vsSize.x+12), 12));
+                    incTextShadowed(INC_VERSION);
+
+                    // igSetCursorPosY(origin.y+54);
+                    // // Banner Image
+                    // igImage( ImVec2(512, 200));
                     
                     // Artist name
                     string artistString = _("Art by %s").format(INC_BANNER_ARTIST_NAME);
-                    ImVec2 vsSize = incMeasureString(artistString);
-                    igSetCursorPos(ImVec2(512-(vsSize.x+8), 200-(vsSize.y+8)));
-                    incText(artistString);
-
-                    // Version String
-                    vsSize = incMeasureString(INC_VERSION);
-                    igSetCursorPos(ImVec2(512-(vsSize.x+8), 8));
-                    incTextShadowed(INC_VERSION);
+                    vsSize = incMeasureString(artistString);
+                    igSetCursorPos(ImVec2(512-(vsSize.x+12), 200-(vsSize.y+8)));
+                    incTextBordered(artistString);
                 igPopStyleColor();
             igEndChild();
         } 
-        igSetCursorPos(ImVec2(origin.x, origin.y+192));
-
         
         igIndent();
             if (igBeginChild("##CONFIG_AREA", ImVec2(-4, 0), false, ImGuiWindowFlags.NoScrollbar)) {
