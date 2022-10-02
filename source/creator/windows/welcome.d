@@ -116,12 +116,8 @@ protected:
                 ImVec2 vsSize = incMeasureString(INC_VERSION);
                 igSetCursorPos(ImVec2(512-(vsSize.x+12), 12));
                 incTextShadowed(INC_VERSION);
-
-                // igSetCursorPosY(origin.y+54);
-                // // Banner Image
-                // igImage( ImVec2(512, 200));
                 
-                // Artist name
+                // Banner Artist Name
                 string artistString = _("Art by %s").format(INC_BANNER_ARTIST_NAME);
                 vsSize = incMeasureString(artistString);
                 igSetCursorPos(ImVec2(512-(vsSize.x+12), 200-(vsSize.y+8)));
