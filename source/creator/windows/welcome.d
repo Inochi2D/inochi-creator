@@ -19,6 +19,8 @@ import creator.io;
 import creator;
 import creator.config;
 
+import creator.widgets.shadow;
+
 class WelcomeWindow : Window {
 private:
     int step = 1;
@@ -31,6 +33,9 @@ private:
     // Temporary variables for setup
     int tmpUIScale;
 
+    ImVec2 uiSize;
+    ImDrawList* shadowDrawList;
+
 protected:
     override
     void onBeginUpdate() {
@@ -40,11 +45,6 @@ protected:
         ImVec2 wpos = ImVec2(
             igGetMainViewport().Pos.x+(igGetMainViewport().Size.x/2),
             igGetMainViewport().Pos.y+(igGetMainViewport().Size.y/2),
-        );
-
-        ImVec2 uiSize = ImVec2(
-            512, 
-            384
         );
 
         igSetNextWindowPos(wpos, ImGuiCond.Always, ImVec2(0.5, 0.5));
@@ -64,6 +64,11 @@ protected:
 
     override
     void onUpdate() {
+        auto window = igGetCurrentWindow();
+        incRenderWindowShadow(
+            shadowDrawList,
+            window.OuterRectClipped
+        );
         
         // Fix styling for subwindows
         igPushStyleVar(ImGuiStyleVar.WindowPadding, origWindowPadding);
@@ -301,6 +306,7 @@ protected:
     override
     void onClose() {
         if (step > 0) incSettingsSet!bool("hasDoneQuickSetup", true);
+        incDestroyWindowDrawList(shadowDrawList);
     }
 
 public:
@@ -319,5 +325,12 @@ public:
 
         // Load UI scale
         tmpUIScale = cast(int)(incGetUIScale()*100);
+
+        uiSize = ImVec2(
+            512, 
+            384
+        );
+
+        shadowDrawList = incCreateWindowDrawList();
     }
 }
