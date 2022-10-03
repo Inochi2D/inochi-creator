@@ -838,8 +838,17 @@ protected:
             foreach(i, ref param; parameters) {
                 if (incArmedParameter() == param) continue;
                 import std.algorithm.searching : canFind;
-                if (filter.length == 0 || param.indexableName.canFind(filter)) {
-                    if (ExParameterGroup group = cast(ExParameterGroup)param) {
+                ExParameterGroup group = cast(ExParameterGroup)param;
+                bool found = filter.length == 0 || param.indexableName.canFind(filter);
+                if (group) {
+                    foreach (ix, ref child; group.children) {
+                        if (incArmedParameter() == child) continue;
+                        if (child.indexableName.canFind(filter))
+                            found = true;
+                    }
+                }
+                if (found) {
+                    if (group) {
                         igPushID(group.uuid);
 
                             bool open;
@@ -920,9 +929,10 @@ protected:
 
                                     // Skip armed param
                                     if (incArmedParameter() == child) continue;
-
-                                    // Otherwise render it
-                                    incParameterView(ix, child, &grabParam, false, group.children, group.color);
+                                    if (child.indexableName.canFind(filter)) {
+                                        // Otherwise render it
+                                        incParameterView(ix, child, &grabParam, false, group.children, group.color);
+                                    }
                                 }
                             }
                             incEndCategory();
