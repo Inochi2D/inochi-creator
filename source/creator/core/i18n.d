@@ -6,6 +6,7 @@ import i18n.tr;
 import std.file;
 import std.path;
 import std.string;
+import std.algorithm : sort;
 
 /+
     HACK: This little comment tricks genpot to generate our LANG_NAME entry.
@@ -42,7 +43,6 @@ private {
 
         // Skip non-existent paths
         if (!path.exists) return;
-
         foreach(DirEntry entry; dirEntries(path, "*.mo", SpanMode.shallow)) {
             
             // Get langcode from filename
@@ -53,7 +53,7 @@ private {
 
             string langName = i18nGetLanguageName(entry.name);
             if (langName == "<UNKNOWN LANGUAGE>") langName = incGetCultureExpression(langcode);
-
+            
             // Add locale
             localeFiles ~= TLEntry(
                 langName,
@@ -96,6 +96,9 @@ void incLocaleInit() {
     // this is here to detect it and add it in to the scan area.
     auto extraLocalePath = incGetAppLocalePathExtra();
     if (extraLocalePath) incLocaleScan(extraLocalePath);
+    
+    // sort the files by human readable name
+    localeFiles.sort!((a,b) => a.humanName < b.humanName);
 }
 
 /**
