@@ -11,7 +11,6 @@ import inochi2d;
 import bindbc.sdl;
 import std.stdio;
 import std.string;
-import std.utf;
 import core.memory : GC;
 
 private {
