@@ -57,7 +57,7 @@ private {
                 { ["*.inx"], "Inochi Creator Project (*.inx)" }
             ];
 
-            string file = incShowSaveDialog(filters, _("Save..."));
+            string file = incShowSaveDialog(filters, "", _("Save..."));
             if (file) incSaveProject(file);
         }
     }
@@ -68,7 +68,8 @@ private {
             { ["*.inx"], "Inochi Creator Project (*.inx)" }
         ];
 
-        string file = incShowSaveDialog(filters, _("Save As..."));
+        string fname = incProjectPath().length > 0 ? incProjectPath : "";
+        string file = incShowSaveDialog(filters, fname, _("Save As..."));
         if (file) incSaveProject(file);
     }
 }

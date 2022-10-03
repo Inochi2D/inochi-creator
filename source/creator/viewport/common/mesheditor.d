@@ -486,7 +486,7 @@ public:
                 }
 
                 // Dragging
-                if (igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
+                if (incDragStartedInViewport(ImGuiMouseButton.Left) && igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
                     if (!isSelecting) {
                         isDragging = true;
                         getDeformAction();
@@ -603,7 +603,7 @@ public:
                     pathDragTarget = editPath.findPoint(mousePos);
                 }
 
-                if (igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
+                if (incDragStartedInViewport(ImGuiMouseButton.Left) && igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
                     if (pathDragTarget != -1)  {
                         isDragging = true;
                         getDeformAction();
