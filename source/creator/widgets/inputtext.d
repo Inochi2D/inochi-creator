@@ -61,7 +61,10 @@ bool incInputText(string wId, float width, ref string buffer, ImGuiInputTextFlag
 
             // Allow resizing strings on GC heap
             if (data.EventFlag == ImGuiInputTextFlags.CallbackResize) {
-            
+
+                // Make sure the buffer doesn't become negatively sized.
+                if (data.BufTextLen < 0) data.BufTextLen = 0;
+
                 // Resize and pass buffer ptr in
                 (*udata.str).length = data.BufTextLen+1;
 
@@ -139,6 +142,9 @@ bool incInputText(string wId, string label, float width, ref string buffer, ImGu
 
             // Allow resizing strings on GC heap
             if (data.EventFlag == ImGuiInputTextFlags.CallbackResize) {
+
+                // Make sure the buffer doesn't become negatively sized.
+                if (data.BufTextLen < 0) data.BufTextLen = 0;
             
                 // Resize and pass buffer ptr in
                 (*udata.str).length = data.BufTextLen+1;
