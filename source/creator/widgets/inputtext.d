@@ -10,6 +10,8 @@ import creator.core;
 import inochi2d;
 import bindbc.sdl;
 import std.stdio;
+import std.string;
+import std.utf;
 import core.memory : GC;
 
 private {
@@ -35,6 +37,12 @@ bool incInputText(string wId, float width, ref string buffer, ImGuiInputTextFlag
     // NOTE: null strings would result in segfault, make sure it's at least just empty.
     if (buffer.ptr is null) {
         buffer = "";
+    }
+
+    if (buffer.ptr[buffer.length] != '\0') {
+        // If buffer.ptr does not end with '\0', recreate string to force '\0' at the end.
+        string buffer2 = buffer;
+        buffer = fromStringz(buffer2.ptr[0..buffer2.length]~'\0');
     }
 
     // Push ID
