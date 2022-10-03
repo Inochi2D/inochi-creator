@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-21 11:04+0900\n"
-"PO-Revision-Date: 2022-08-21 11:08+0900\n"
+"POT-Creation-Date: 2022-09-21 23:58+0900\n"
+"PO-Revision-Date: 2022-10-01 20:15+0900\n"
 "Last-Translator: Sae Okuri <sae.okuri@gmail.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
@@ -109,12 +109,12 @@ msgstr "割り当て%sが削除されました"
 msgid "Binding %s was added"
 msgstr "割り当て%sが再度追加されました"
 
-#: source/creator/actions/mesheditor.d:158
+#: source/creator/actions/mesheditor.d:160
 #, c-format
 msgid "%s->Edited deformation of %s."
 msgstr "%s: %sのデフォーマが変更されました"
 
-#: source/creator/actions/mesheditor.d:165
+#: source/creator/actions/mesheditor.d:167
 #, c-format
 msgid "%s->deformation of %s was edited."
 msgstr "%s: %sのデフォーマの変更が元に戻されました"
@@ -129,67 +129,60 @@ msgstr "ドローアブル%sのメッシュが変更されました"
 msgid "Drawable %s was changed"
 msgstr "Drawable%sの変更が元に戻されました"
 
-#: source/creator/package.d:177 source/creator/package.d:211
-#: source/creator/package.d:272 source/creator/package.d:298
-#: source/creator/panels/viewport.d:158 source/creator/panels/viewport.d:159
-#: source/creator/panels/viewport.d:172 source/creator/io/psd.d:149
-#: source/creator/viewport/vertex/package.d:137
+#: source/creator/package.d:184 source/creator/package.d:220
+#: source/creator/package.d:281 source/creator/windows/inpexport.d:250
+#: source/creator/panels/viewport.d:204 source/creator/panels/viewport.d:205
+#: source/creator/panels/viewport.d:218 source/creator/panels/inspector.d:699
+#: source/creator/panels/inspector.d:710 source/creator/panels/inspector.d:711
+#: source/creator/panels/inspector.d:721 source/creator/io/psd.d:149
+#: source/creator/viewport/vertex/package.d:190
 msgid "Error"
 msgstr "エラー"
 
-#: source/creator/package.d:192
+#: source/creator/package.d:201
 #, c-format
 msgid "%s opened successfully."
 msgstr "%sを読み込みました。"
 
-#: source/creator/package.d:208
+#: source/creator/package.d:217
 #, c-format
 msgid "%s saved successfully."
 msgstr "%sを保存しました。"
 
-#: source/creator/package.d:210
+#: source/creator/package.d:219
 #, c-format
 msgid "Failed to save %s"
 msgstr "%sの保存に失敗しました。"
 
-#: source/creator/package.d:246
+#: source/creator/package.d:255
 #, c-format
 msgid ""
 "The following errors occured during file loading\n"
 "%s"
 msgstr "%sの読み込み中に、次のエラーが発生しました。"
 
-#: source/creator/package.d:255
+#: source/creator/package.d:264
 msgid "Folder import completed with errors..."
 msgstr "フォルダのインポートに失敗しました。"
 
-#: source/creator/package.d:256
+#: source/creator/package.d:265
 msgid "Folder import completed..."
 msgstr "フォルダのインポートが完了しました。"
 
-#: source/creator/package.d:269 source/creator/io/psd.d:145
+#: source/creator/package.d:278 source/creator/io/psd.d:145
 #, c-format
 msgid "%s was imported..."
 msgstr "%sをインポートしました。"
 
-#: source/creator/package.d:273 source/creator/io/psd.d:148
+#: source/creator/package.d:282 source/creator/io/psd.d:148
 msgid "Import failed..."
 msgstr "インポートに失敗しました："
 
-#: source/creator/package.d:296
-#, c-format
-msgid "%s was exported..."
-msgstr "%sをエクスポートしました。"
-
-#: source/creator/package.d:299
-msgid "Export failed..."
-msgstr "エクスポートに失敗しました。"
-
-#: source/creator/package.d:312
+#: source/creator/package.d:307
 msgid "Mipmap generation completed."
 msgstr "Mipmapの生成が完了しました。"
 
-#: source/creator/package.d:327
+#: source/creator/package.d:322
 msgid "Texture bleeding completed."
 msgstr "テクスチャのbleedingが完了しました。"
 
@@ -205,8 +198,9 @@ msgstr "パラメータ範囲"
 #. feels more safe with a save button then we have
 #. it here.
 #. Actually saves the edited state for the axies points
-#: source/creator/windows/paramprop.d:103 source/creator/windows/trkbind.d:129
-#: source/creator/windows/paramaxes.d:140 source/creator/widgets/mainmenu.d:122
+#: source/creator/windows/paramprop.d:103
+#: source/creator/windows/imgexport.d:121 source/creator/windows/trkbind.d:129
+#: source/creator/windows/paramaxes.d:140 source/creator/widgets/mainmenu.d:147
 msgid "Save"
 msgstr "保存"
 
@@ -215,61 +209,93 @@ msgstr "保存"
 msgid "Parameter Properties"
 msgstr "パラメータ設定"
 
-#: source/creator/windows/psdmerge.d:234
+#: source/creator/windows/imgexport.d:92
+msgid "Export Settings"
+msgstr "エクスポート設定"
+
+#: source/creator/windows/imgexport.d:96 source/creator/panels/nodes.d:72
+#: source/creator/panels/inspector.d:917
+msgid "Camera"
+msgstr "カメラ"
+
+#: source/creator/windows/imgexport.d:109
+msgid "Allow Transparency"
+msgstr "透過色を許可"
+
+#: source/creator/windows/imgexport.d:110
+msgid "Use Post Processing"
+msgstr "ポストプロセスを使用"
+
+#: source/creator/windows/imgexport.d:131
+msgid "Export Image..."
+msgstr "画像をエクスポート..."
+
+#. Textbox
+#: source/creator/windows/rename.d:42 source/creator/windows/rename.d:57
+#: source/creator/panels/parameters.d:850
+msgid "Rename"
+msgstr "名前を変更"
+
+#: source/creator/windows/rename.d:64
+#, c-format
+msgid "Rename %s..."
+msgstr "%sの名前を変更"
+
+#: source/creator/windows/psdmerge.d:238
 #, c-format
 msgid "%s  %s"
-msgstr ""
+msgstr "%s  %s"
 
-#: source/creator/windows/psdmerge.d:272
+#: source/creator/windows/psdmerge.d:276
 msgid "Unmap"
 msgstr "割り当てを解除"
 
-#: source/creator/windows/psdmerge.d:277
+#: source/creator/windows/psdmerge.d:281
 msgid "Ignore"
 msgstr "無視"
 
-#: source/creator/windows/psdmerge.d:277
+#: source/creator/windows/psdmerge.d:281
 msgid "Use"
 msgstr "使用"
 
-#: source/creator/windows/psdmerge.d:374
+#: source/creator/windows/psdmerge.d:378
 msgid "Only show unmapped"
 msgstr "未割り当てのみ表示"
 
 #. Auto-rename
-#: source/creator/windows/psdmerge.d:394
+#: source/creator/windows/psdmerge.d:398
 msgid "Auto-rename"
 msgstr "自動的にリネームする"
 
-#: source/creator/windows/psdmerge.d:395
+#: source/creator/windows/psdmerge.d:399
 msgid ""
 "Renames all mapped nodes to match the names of the PSD layer that was merged "
 "in to them."
 msgstr "割り当てられたノードをすべてPSDのレイヤー名に変更します。"
 
-#: source/creator/windows/psdmerge.d:398
+#: source/creator/windows/psdmerge.d:402
 msgid "Re-translate"
 msgstr "ノード位置の再更新"
 
-#: source/creator/windows/psdmerge.d:399
+#: source/creator/windows/psdmerge.d:403
 msgid ""
 "Moves all nodes so that they visually match their position in the canvas."
 msgstr "PSD上のレイヤーの位置に合わせて、全ノードの位置を更新します。"
 
-#: source/creator/windows/psdmerge.d:412 source/creator/widgets/mainmenu.d:161
+#: source/creator/windows/psdmerge.d:416 source/creator/widgets/mainmenu.d:186
 msgid "Merge"
 msgstr "マージ"
 
-#: source/creator/windows/psdmerge.d:447
+#: source/creator/windows/psdmerge.d:451
 msgid "PSD Merging"
 msgstr "PSDファイルをマージする"
 
 #: source/creator/windows/paramsplit.d:48
 msgid " (Split)"
-msgstr ""
+msgstr "(分割)"
 
 #: source/creator/windows/paramsplit.d:168
-#: source/creator/panels/inspector.d:1334
+#: source/creator/viewport/vertex/package.d:108
 msgid "Apply"
 msgstr "適用"
 
@@ -281,7 +307,7 @@ msgstr "パラメータを分割"
 msgid "Texture Viewer"
 msgstr "テクスチャビューワー"
 
-#: source/creator/windows/trkbind.d:47 source/creator/panels/inspector.d:878
+#: source/creator/windows/trkbind.d:47 source/creator/panels/inspector.d:1008
 msgid "Parameter"
 msgstr "パラメータ"
 
@@ -321,7 +347,7 @@ msgstr "Z軸回転"
 msgid "Binding Axis"
 msgstr "割り当て軸"
 
-#: source/creator/windows/trkbind.d:110 source/creator/panels/parameters.d:203
+#: source/creator/windows/trkbind.d:110 source/creator/panels/parameters.d:206
 msgid "Invert"
 msgstr "反転"
 
@@ -335,8 +361,8 @@ msgid "Bind Tracking to Parameter"
 msgstr "トラッキングをパラメータに割り当て"
 
 #. Cancels the edited state for the axies points
-#: source/creator/windows/paramaxes.d:133
-#: source/creator/panels/inspector.d:1312 source/creator/widgets/dialog.d:116
+#: source/creator/windows/paramaxes.d:133 source/creator/widgets/dialog.d:116
+#: source/creator/viewport/vertex/package.d:123
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -348,14 +374,59 @@ msgstr "キャンセル"
 msgid "Parameter Axes Points"
 msgstr "キー設定"
 
+#: source/creator/windows/inpexport.d:162
+msgid "Atlassing"
+msgstr "テクスチャアトラスの作成"
+
+#: source/creator/windows/inpexport.d:192
+msgid "Resolution"
+msgstr "解像度"
+
+#: source/creator/windows/inpexport.d:209
+msgid "Texture Scale"
+msgstr "テクスチャ倍率"
+
+#: source/creator/windows/inpexport.d:216
+msgid "Padding"
+msgstr "余白"
+
+#: source/creator/windows/inpexport.d:222 source/creator/windows/settings.d:163
+msgid "No settings for this category."
+msgstr "このカテゴリには設定項目がありません"
+
+#: source/creator/windows/inpexport.d:236
+msgid ""
+"A texture was too large to fit the texture atlas, the textures have been "
+"scaled down."
+msgstr ""
+"テクスチャが大きすぎてテクスチャアトラスに収まらないため、テクスチャをスケー"
+"ルダウンしました。"
+
+#: source/creator/windows/inpexport.d:244 source/creator/widgets/mainmenu.d:217
+msgid "Export"
+msgstr "エクスポート"
+
+#: source/creator/windows/inpexport.d:248 source/creator/io/imageexport.d:13
+#, c-format
+msgid "%s was exported..."
+msgstr "%sをエクスポートしました。"
+
+#: source/creator/windows/inpexport.d:251
+msgid "Export failed..."
+msgstr "エクスポートに失敗しました。"
+
+#: source/creator/windows/inpexport.d:263
+msgid "Export Options"
+msgstr "エクスポートオプション"
+
 #. Donate button
 #. NOTE: Is this too obstructive in the UI?
-#: source/creator/windows/about.d:125 source/creator/widgets/mainmenu.d:419
-#: source/creator/widgets/mainmenu.d:435
+#: source/creator/windows/about.d:124 source/creator/widgets/mainmenu.d:514
+#: source/creator/widgets/mainmenu.d:530
 msgid "Donate"
 msgstr "寄付"
 
-#: source/creator/windows/about.d:138 source/creator/widgets/mainmenu.d:409
+#: source/creator/windows/about.d:133 source/creator/widgets/mainmenu.d:500
 msgid "About"
 msgstr "Inochi Creatorについて"
 
@@ -363,7 +434,8 @@ msgstr "Inochi Creatorについて"
 msgid "Look and Feel"
 msgstr "見た目や操作感"
 
-#: source/creator/windows/settings.d:82 source/creator/panels/viewport.d:236
+#: source/creator/windows/settings.d:82 source/creator/panels/viewport.d:280
+#: source/creator/panels/inspector.d:919
 msgid "Viewport"
 msgstr "表示領域"
 
@@ -371,25 +443,25 @@ msgstr "表示領域"
 msgid "Accessbility"
 msgstr "アクセシビリティ"
 
-#: source/creator/windows/settings.d:107 source/creator/windows/welcome.d:138
+#: source/creator/windows/settings.d:107 source/creator/windows/welcome.d:139
 msgid "Color Theme"
 msgstr "カラーテーマ"
 
 #: source/creator/windows/settings.d:107 source/creator/windows/settings.d:108
-#: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:139
+#: source/creator/windows/welcome.d:139 source/creator/windows/welcome.d:140
 msgid "Dark"
 msgstr "ダーク"
 
 #: source/creator/windows/settings.d:107 source/creator/windows/settings.d:109
-#: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:140
+#: source/creator/windows/welcome.d:139 source/creator/windows/welcome.d:141
 msgid "Light"
 msgstr "明るい"
 
-#: source/creator/windows/settings.d:115 source/creator/windows/welcome.d:124
+#: source/creator/windows/settings.d:115 source/creator/windows/welcome.d:125
 msgid "Language"
 msgstr "言語設定"
 
-#: source/creator/windows/settings.d:130 source/creator/windows/welcome.d:146
+#: source/creator/windows/settings.d:130 source/creator/windows/welcome.d:147
 msgid "UI Scale"
 msgstr "UI表示倍率"
 
@@ -414,11 +486,7 @@ msgstr "コンポジターを無効化"
 msgid "Use OpenDyslexic Font"
 msgstr "OpenDyslexicフォントを使用する"
 
-#: source/creator/windows/settings.d:163
-msgid "No settings for this category."
-msgstr "このカテゴリには設定項目がありません"
-
-#: source/creator/windows/settings.d:176 source/creator/windows/welcome.d:157
+#: source/creator/windows/settings.d:176 source/creator/windows/welcome.d:158
 msgid "Inochi Creator needs to be restarted for some changes to take effect."
 msgstr "変更を有効にするにはInochi Creatorを再起動する必要があります。"
 
@@ -426,63 +494,71 @@ msgstr "変更を有効にするにはInochi Creatorを再起動する必要が�
 msgid "Done"
 msgstr "完了"
 
-#: source/creator/windows/settings.d:292 source/creator/widgets/mainmenu.d:224
+#: source/creator/windows/settings.d:199 source/creator/widgets/mainmenu.d:313
 msgid "Settings"
 msgstr "設定"
 
-#: source/creator/windows/welcome.d:113
+#: source/creator/windows/welcome.d:114
 msgid "Quick Setup"
 msgstr "クイックセットアップ"
 
-#: source/creator/windows/welcome.d:170
+#: source/creator/windows/welcome.d:171
 msgid "Next"
 msgstr "次へ"
 
-#: source/creator/windows/welcome.d:182
+#: source/creator/windows/welcome.d:183
 msgid "Create Project"
 msgstr "プロジェクトを作成"
 
-#: source/creator/windows/welcome.d:185
+#: source/creator/windows/welcome.d:186
 msgid "New..."
 msgstr "新規作成..."
 
-#: source/creator/windows/welcome.d:190 source/creator/io/package.d:29
+#: source/creator/windows/welcome.d:191 source/creator/io/package.d:32
 msgid "Open..."
 msgstr "開く..."
 
-#: source/creator/windows/welcome.d:199
+#: source/creator/windows/welcome.d:200
 msgid "Import PSD..."
 msgstr "PSDファイルをインポート..."
 
-#: source/creator/windows/welcome.d:208
+#: source/creator/windows/welcome.d:209
 msgid "Recent Projects"
 msgstr "最近開いたプロジェクト..."
 
-#: source/creator/windows/welcome.d:232
+#: source/creator/windows/welcome.d:233
 msgid "On the Web"
 msgstr "Webサイトへのリンク"
 
-#: source/creator/windows/welcome.d:236
+#: source/creator/windows/welcome.d:237
 msgid "Website"
 msgstr "公式サイト"
 
-#: source/creator/windows/welcome.d:240
+#: source/creator/windows/welcome.d:241
 msgid "Documentation"
 msgstr "ドキュメント"
 
-#: source/creator/windows/welcome.d:246
+#: source/creator/windows/welcome.d:245
+msgid "Join our Discord"
+msgstr "Discordに参加"
+
+#: source/creator/windows/welcome.d:251
 msgid "Patreon"
 msgstr ""
 
-#: source/creator/windows/welcome.d:249
+#: source/creator/windows/welcome.d:254
 msgid "Github Sponsors"
 msgstr ""
 
-#: source/creator/windows/welcome.d:275
+#: source/creator/windows/welcome.d:280
 msgid "Inochi Creator Start"
 msgstr "Inochi Creatorを開始"
 
-#: source/creator/panels/nodes.d:44
+#: source/creator/panels/timeline.d:50
+msgid "Timeline"
+msgstr "タイムライン"
+
+#: source/creator/panels/nodes.d:46
 msgid "Add"
 msgstr "追加"
 
@@ -490,235 +566,233 @@ msgstr "追加"
 msgid "Node"
 msgstr "ノード"
 
-#: source/creator/panels/nodes.d:56 source/creator/panels/inspector.d:725
+#: source/creator/panels/nodes.d:54 source/creator/panels/inspector.d:837
 msgid "Mask"
 msgstr "マスク"
 
-#: source/creator/panels/nodes.d:65 source/creator/panels/inspector.d:802
-#: source/creator/panels/inspector.d:1254
+#: source/creator/panels/nodes.d:61 source/creator/panels/inspector.d:933
+#: source/creator/panels/inspector.d:1398
 msgid "Composite"
 msgstr "コンポジット"
 
-#: source/creator/panels/nodes.d:73
+#: source/creator/panels/nodes.d:67
 msgid "Simple Physics"
 msgstr "簡易物理演算"
 
 #. Option to hide the node (and subnodes)
-#: source/creator/panels/nodes.d:79
+#: source/creator/panels/nodes.d:78
 msgid "Hide"
 msgstr "非表示"
 
 #. Option to show the node (and subnodes)
-#: source/creator/panels/nodes.d:79
+#: source/creator/panels/nodes.d:78
 msgid "Show"
 msgstr "表示"
 
-#: source/creator/panels/nodes.d:83 source/creator/panels/parameters.d:615
-#: source/creator/panels/inspector.d:731
+#: source/creator/panels/nodes.d:82 source/creator/panels/parameters.d:698
+#: source/creator/panels/parameters.d:883 source/creator/panels/inspector.d:843
 msgid "Delete"
 msgstr "削除"
 
-#: source/creator/panels/nodes.d:98
+#: source/creator/panels/nodes.d:97
 msgid "More Info"
 msgstr "もっと見る"
 
 #. %s is the name of the node in the More Info menu
 #. %u is the UUID of the node in the More Info menu
-#: source/creator/panels/nodes.d:104
+#: source/creator/panels/nodes.d:103
 #, c-format
 msgid "%s ID: %u"
 msgstr ""
 
-#: source/creator/panels/nodes.d:107
+#: source/creator/panels/nodes.d:106
 #, c-format
 msgid "%s Layer: %s"
 msgstr "%s レイヤー: %s"
 
 #. %u is the UUID of the node in the More Info menu
-#: source/creator/panels/nodes.d:112
+#: source/creator/panels/nodes.d:111
 #, c-format
 msgid "ID: %u"
 msgstr ""
 
-#: source/creator/panels/nodes.d:115
+#: source/creator/panels/nodes.d:114
 #, c-format
 msgid "Layer: %s"
 msgstr "レイヤー: %s"
 
 #. Selectable
-#: source/creator/panels/nodes.d:173 source/creator/panels/inspector.d:183
+#: source/creator/panels/nodes.d:172 source/creator/panels/inspector.d:152
 msgid "Puppet"
 msgstr "パペット"
 
-#: source/creator/panels/nodes.d:288
+#: source/creator/panels/nodes.d:284
 msgid "In vertex edit mode..."
 msgstr "メッシュ編集中"
 
-#: source/creator/panels/nodes.d:357
+#: source/creator/panels/nodes.d:385
 msgid "Nodes"
 msgstr "ノード"
 
-#: source/creator/panels/parameters.d:176
+#: source/creator/panels/parameters.d:179
 msgid "Unset"
 msgstr "キーを削除"
 
-#: source/creator/panels/parameters.d:185
+#: source/creator/panels/parameters.d:188
 msgid "Set to current"
 msgstr "キーを追加"
 
-#: source/creator/panels/parameters.d:194
+#: source/creator/panels/parameters.d:197
 msgid "Reset"
 msgstr "リセット"
 
-#: source/creator/panels/parameters.d:212
-#: source/creator/panels/parameters.d:573
+#: source/creator/panels/parameters.d:215
+#: source/creator/panels/parameters.d:656
 msgid "Mirror"
 msgstr "鏡像反転"
 
-#: source/creator/panels/parameters.d:213
-#: source/creator/panels/parameters.d:235
-#: source/creator/panels/parameters.d:574
+#: source/creator/panels/parameters.d:216
+#: source/creator/panels/parameters.d:238
+#: source/creator/panels/parameters.d:657
 msgid "Horizontally"
 msgstr "水平方向"
 
-#: source/creator/panels/parameters.d:222
-#: source/creator/panels/parameters.d:244
-#: source/creator/panels/parameters.d:578
+#: source/creator/panels/parameters.d:225
+#: source/creator/panels/parameters.d:247
+#: source/creator/panels/parameters.d:661
 msgid "Vertically"
 msgstr "垂直方向"
 
-#: source/creator/panels/parameters.d:234
-#: source/creator/panels/parameters.d:265
+#: source/creator/panels/parameters.d:237
+#: source/creator/panels/parameters.d:268
 msgid "Set from mirror"
 msgstr "反対方向から反転コピー"
 
-#: source/creator/panels/parameters.d:253
+#: source/creator/panels/parameters.d:256
 msgid "Diagonally"
 msgstr "対角方向"
 
-#: source/creator/panels/parameters.d:276 source/creator/widgets/mainmenu.d:220
+#: source/creator/panels/parameters.d:279 source/creator/widgets/mainmenu.d:309
 msgid "Copy"
 msgstr "コピー"
 
-#: source/creator/panels/parameters.d:284 source/creator/widgets/mainmenu.d:221
+#: source/creator/panels/parameters.d:287 source/creator/widgets/mainmenu.d:310
 msgid "Paste"
 msgstr "貼り付け"
 
-#: source/creator/panels/parameters.d:305
+#: source/creator/panels/parameters.d:308
 msgid "Bindings"
 msgstr "割り当て"
 
-#: source/creator/panels/parameters.d:341
+#: source/creator/panels/parameters.d:343 source/creator/panels/inspector.d:638
 msgid "Remove"
 msgstr "削除"
 
-#: source/creator/panels/parameters.d:353
+#: source/creator/panels/parameters.d:355
 msgid "Interpolation Mode"
 msgstr "補間モード"
 
-#: source/creator/panels/parameters.d:354
+#: source/creator/panels/parameters.d:356
 msgid "Nearest"
 msgstr "最近傍"
 
-#: source/creator/panels/parameters.d:360
+#: source/creator/panels/parameters.d:362
 msgid "Linear"
 msgstr "線形補完"
 
-#: source/creator/panels/parameters.d:370
+#: source/creator/panels/parameters.d:372
 msgid "Copy to"
 msgstr "コピー"
 
-#: source/creator/panels/parameters.d:378
+#: source/creator/panels/parameters.d:380
 msgid "Swap with"
 msgstr "入れ替え"
 
-#: source/creator/panels/parameters.d:540
+#: source/creator/panels/parameters.d:561
+msgid "New Parameter Group"
+msgstr "新規パラメータグループを追加"
+
+#: source/creator/panels/parameters.d:623
 msgid "Edit Properties"
 msgstr "プロパティ..."
 
-#: source/creator/panels/parameters.d:544
+#: source/creator/panels/parameters.d:627
 msgid "Edit Axes Points"
 msgstr "キー設定"
 
-#: source/creator/panels/parameters.d:548
+#: source/creator/panels/parameters.d:631
 msgid "Split"
 msgstr "分割"
 
-#: source/creator/panels/parameters.d:553
+#: source/creator/panels/parameters.d:636
 msgid "Flip X"
 msgstr "キーの左右入れ替え"
 
-#: source/creator/panels/parameters.d:559
+#: source/creator/panels/parameters.d:642
 msgid "Flip Y"
 msgstr "キーの上下入れ替え"
 
-#: source/creator/panels/parameters.d:566
+#: source/creator/panels/parameters.d:649
 msgid "Flip"
 msgstr "キーの対称入れ替え"
 
-#: source/creator/panels/parameters.d:584
+#: source/creator/panels/parameters.d:667
 msgid "Mirrored Autofill"
 msgstr "反転コピーしてキーを設定"
 
-#: source/creator/panels/parameters.d:585
-msgid ""
-msgstr ""
-
-#: source/creator/panels/parameters.d:589
-msgid ""
-msgstr ""
-
-#: source/creator/panels/parameters.d:594
-msgid ""
-msgstr ""
-
-#: source/creator/panels/parameters.d:598
-msgid ""
-msgstr ""
-
-#: source/creator/panels/parameters.d:609
+#: source/creator/panels/parameters.d:692
 msgid "Duplicate"
 msgstr "複製"
 
 #. Sets the default value of the param
-#: source/creator/panels/parameters.d:627
+#: source/creator/panels/parameters.d:710
 msgid "Set Starting Position"
 msgstr "初期値に設定"
 
 #. Arms the parameter for recording values.
-#: source/creator/panels/parameters.d:652
+#: source/creator/panels/parameters.d:735
 msgid "Arm Parameter"
 msgstr "パラメータ編集"
 
-#: source/creator/panels/parameters.d:675
+#: source/creator/panels/parameters.d:760
 msgid "Add 1D Parameter (0..1)"
 msgstr "1次元パラメータ (0..1)を追加"
 
-#: source/creator/panels/parameters.d:683
+#: source/creator/panels/parameters.d:768
 msgid "Add 1D Parameter (-1..1)"
 msgstr "1次元パラメータ(-1..1)を追加"
 
-#: source/creator/panels/parameters.d:694
+#: source/creator/panels/parameters.d:779
 msgid "Add 2D Parameter (0..1)"
 msgstr "2次元パラメータ(0..1)を追加"
 
-#: source/creator/panels/parameters.d:702
+#: source/creator/panels/parameters.d:787
 msgid "Add 2D Parameter (-1..+1)"
 msgstr "2次元パラメータ(-1..1)を追加"
 
-#: source/creator/panels/parameters.d:714
+#: source/creator/panels/parameters.d:799
 msgid "Add Mouth Shape"
 msgstr "口の形パラメータを追加"
 
-#: source/creator/panels/parameters.d:736
+#: source/creator/panels/parameters.d:821
 msgid "Filter, search for specific parameters"
 msgstr "パラメータ名での絞り込み"
 
-#: source/creator/panels/parameters.d:767
+#: source/creator/panels/parameters.d:854
+msgid "Colors"
+msgstr "色を選択"
+
+#. CUSTOM COLOR PICKER
+#. Allows user to select a custom color for parameter group.
+#: source/creator/panels/parameters.d:879
+msgid "Custom Color"
+msgstr "カスタム色"
+
+#: source/creator/panels/parameters.d:958
 msgid "Add Parameter"
 msgstr "パラメータを追加"
 
-#: source/creator/panels/parameters.d:772
+#: source/creator/panels/parameters.d:963
 msgid "Parameters"
 msgstr "パラメータ"
 
@@ -795,125 +869,126 @@ msgstr "テストモードではありません"
 msgid "Tracking"
 msgstr "トラッキング"
 
-#: source/creator/panels/viewport.d:158 source/creator/panels/viewport.d:172
+#: source/creator/panels/viewport.d:204 source/creator/panels/viewport.d:218
+#: source/creator/panels/inspector.d:710 source/creator/panels/inspector.d:721
 #, c-format
 msgid "%s is not supported"
 msgstr "%sはサポートされていません。"
 
-#: source/creator/panels/inspector.d:132
+#: source/creator/panels/inspector.d:101
 msgid "No nodes selected..."
 msgstr "ノードが選択されていません"
 
-#: source/creator/panels/inspector.d:134
+#: source/creator/panels/inspector.d:103
 msgid "Can only inspect a single node..."
 msgstr "単一のノードのみを検査できます..."
 
-#: source/creator/panels/inspector.d:140
+#: source/creator/panels/inspector.d:109
 msgid "Inspector"
 msgstr "インスペクター"
 
-#: source/creator/panels/inspector.d:196 source/creator/panels/inspector.d:201
+#: source/creator/panels/inspector.d:165 source/creator/panels/inspector.d:170
 msgid "Inochi2D Ver."
 msgstr "Inochi2D バージョン"
 
-#: source/creator/panels/inspector.d:207
+#: source/creator/panels/inspector.d:176
 msgid "General Info"
 msgstr "基本情報"
 
-#: source/creator/panels/inspector.d:209
+#: source/creator/panels/inspector.d:178
 msgid "Name"
 msgstr "名称"
 
-#: source/creator/panels/inspector.d:210
+#: source/creator/panels/inspector.d:179
 msgid "Name of the puppet"
 msgstr "パペットの名称"
 
-#: source/creator/panels/inspector.d:216
+#: source/creator/panels/inspector.d:185
 msgid "Artist(s)"
 msgstr "イラストレーター"
 
-#: source/creator/panels/inspector.d:217
+#: source/creator/panels/inspector.d:186
 msgid "Artists who've drawn the puppet, seperated by comma"
 msgstr "パペットのイラストを手がけたイラストレーター名（カンマ区切り）"
 
-#: source/creator/panels/inspector.d:223
+#: source/creator/panels/inspector.d:192
 msgid "Rigger(s)"
 msgstr "モデラー"
 
-#: source/creator/panels/inspector.d:224
+#: source/creator/panels/inspector.d:193
 msgid "Riggers who've rigged the puppet, seperated by comma"
 msgstr "パペットを作成したモデラー名（カンマ区切り）"
 
-#: source/creator/panels/inspector.d:230
+#: source/creator/panels/inspector.d:199
 msgid "Contact"
 msgstr "連絡先"
 
-#: source/creator/panels/inspector.d:231
+#: source/creator/panels/inspector.d:200
 msgid "Where to contact the main author of the puppet"
 msgstr "パペットのメイン作者の連絡先"
 
-#: source/creator/panels/inspector.d:237
+#: source/creator/panels/inspector.d:206
 msgid "Licensing"
 msgstr "ライセンス"
 
-#: source/creator/panels/inspector.d:239
+#: source/creator/panels/inspector.d:208
 msgid "License URL"
 msgstr "ライセンスURL"
 
-#: source/creator/panels/inspector.d:240
+#: source/creator/panels/inspector.d:209
 msgid "Link/URL to license"
 msgstr "ライセンスへのリンク"
 
-#: source/creator/panels/inspector.d:246
+#: source/creator/panels/inspector.d:215
 msgid "Copyright"
 msgstr "著作者"
 
-#: source/creator/panels/inspector.d:247
+#: source/creator/panels/inspector.d:216
 msgid "Copyright holder information of the puppet"
 msgstr "パペットの著作権保有者の情報"
 
-#: source/creator/panels/inspector.d:253
+#: source/creator/panels/inspector.d:222
 msgid "Origin"
 msgstr "オリジナル"
 
-#: source/creator/panels/inspector.d:254
+#: source/creator/panels/inspector.d:223
 msgid "Where the model comes from on the internet."
 msgstr "元になったモデル"
 
-#: source/creator/panels/inspector.d:259
+#: source/creator/panels/inspector.d:229
 msgid "Physics Globals"
 msgstr "物理演算の全体設定"
 
-#: source/creator/panels/inspector.d:261
+#: source/creator/panels/inspector.d:231
 msgid "Pixels per meter"
 msgstr "1メートルあたりのピクセル数"
 
-#: source/creator/panels/inspector.d:262
+#: source/creator/panels/inspector.d:232
 msgid "Number of pixels that correspond to 1 meter in the physics engine."
 msgstr "物理演算の1メートルにあたるピクセル数を設定する"
 
-#: source/creator/panels/inspector.d:268
+#: source/creator/panels/inspector.d:238
 msgid "Gravity"
 msgstr "重力"
 
-#: source/creator/panels/inspector.d:269
+#: source/creator/panels/inspector.d:239
 msgid "Acceleration due to gravity, in m/s². Earth gravity is 9.8."
 msgstr "重力加速度を設定する。地上での重力加速度は9.8"
 
-#: source/creator/panels/inspector.d:270
+#: source/creator/panels/inspector.d:240
 #, c-format
 msgid "%.2f m/s"
 msgstr ""
 
-#: source/creator/panels/inspector.d:275
+#: source/creator/panels/inspector.d:245
 msgid "Rendering Settings"
 msgstr "レンダリング設定"
 
-#: source/creator/panels/inspector.d:277
+#: source/creator/panels/inspector.d:247
 msgid "Use Point Filtering"
 msgstr "ポイントフィルタを使用"
 
-#: source/creator/panels/inspector.d:281
+#: source/creator/panels/inspector.d:251
 msgid ""
 "Makes Inochi2D model use point filtering, removing blur for low-resolution "
 "models."
@@ -921,7 +996,7 @@ msgstr ""
 "モデルが低解像度の場合に、Inochi2Dモデルがポイントフィルタを利用することによ"
 "り、ぼやけて表示されるのを防ぎます。"
 
-#: source/creator/panels/inspector.d:301 source/creator/panels/inspector.d:1108
+#: source/creator/panels/inspector.d:271 source/creator/panels/inspector.d:1251
 msgid "Transform"
 msgstr "変形"
 
@@ -929,21 +1004,21 @@ msgstr "変形"
 #. Translation
 #.
 #. Translation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:319 source/creator/panels/inspector.d:1125
+#: source/creator/panels/inspector.d:287 source/creator/panels/inspector.d:1266
 msgid "Translation"
 msgstr "移動"
 
 #. Button which locks all transformation to be based off the root node
 #. of the puppet, this more or less makes the item stay in place
 #. even if the parent moves.
-#: source/creator/panels/inspector.d:381 source/creator/panels/inspector.d:382
+#: source/creator/panels/inspector.d:349 source/creator/panels/inspector.d:350
 msgid "Lock to Root Node"
 msgstr "ルートノードに固定"
 
 #. Button which locks all transformation to be based off the root node
 #. of the puppet, this more or less makes the item stay in place
 #. even if the parent moves.
-#: source/creator/panels/inspector.d:396
+#: source/creator/panels/inspector.d:364
 msgid ""
 "Makes so that the translation of this node is based off the root node, "
 "making it stay in place even if its parent moves."
@@ -952,39 +1027,39 @@ msgstr ""
 "ドが移動しても、このノードは元の位置に留まります。"
 
 #. Rotation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:411 source/creator/panels/inspector.d:1162
+#: source/creator/panels/inspector.d:379 source/creator/panels/inspector.d:1303
 msgid "Rotation"
 msgstr "回転"
 
-#: source/creator/panels/inspector.d:419
+#: source/creator/panels/inspector.d:391
 msgid "Rotation X"
 msgstr "X軸回転"
 
-#: source/creator/panels/inspector.d:436
+#: source/creator/panels/inspector.d:411
 msgid "Rotation Y"
 msgstr "Y軸回転"
 
-#: source/creator/panels/inspector.d:453
+#: source/creator/panels/inspector.d:431
 msgid "Rotation Z"
 msgstr "Z軸回転"
 
 #. Scaling portion of the transformation matrix.
-#: source/creator/panels/inspector.d:473 source/creator/panels/inspector.d:1194
+#: source/creator/panels/inspector.d:451 source/creator/panels/inspector.d:1335
 msgid "Scale"
 msgstr "スケール"
 
-#: source/creator/panels/inspector.d:481
+#: source/creator/panels/inspector.d:459
 msgid "Scale X"
 msgstr "X軸スケール"
 
-#: source/creator/panels/inspector.d:498
+#: source/creator/panels/inspector.d:476
 msgid "Scale Y"
 msgstr "Y軸スケール"
 
 #. An option in which positions will be snapped to whole integer values.
 #. In other words texture will always be on a pixel.
-#: source/creator/panels/inspector.d:515 source/creator/panels/inspector.d:516
-#: source/creator/panels/inspector.d:521
+#: source/creator/panels/inspector.d:493 source/creator/panels/inspector.d:494
+#: source/creator/panels/inspector.d:499
 msgid "Snap to Pixel"
 msgstr "ピクセルにスナップ"
 
@@ -992,85 +1067,112 @@ msgstr "ピクセルにスナップ"
 #. Parts to draw in the user specified order.
 #. negative values = closer to camera
 #. positive values = further away from camera
-#: source/creator/panels/inspector.d:538 source/creator/panels/inspector.d:1214
+#: source/creator/panels/inspector.d:516 source/creator/panels/inspector.d:1355
 msgid "Sorting"
 msgstr "ソート\t"
 
 #. The main type of anything that can be drawn to the screen
 #. in Inochi2D.
-#: source/creator/panels/inspector.d:548
+#: source/creator/panels/inspector.d:528
 msgid "Drawable"
 msgstr "ドローアブル"
 
-#: source/creator/panels/inspector.d:555
+#: source/creator/panels/inspector.d:533
 msgid "Texture Offset"
 msgstr "テクスチャオフセット"
 
 #. Switches Inochi Creator over to Mesh Edit mode
 #. and selects the mesh that you had selected previously
 #. in Model Edit mode.
-#: source/creator/panels/inspector.d:623
+#: source/creator/panels/inspector.d:601
 msgid "Edit Mesh"
 msgstr "メッシュの編集"
 
-#: source/creator/panels/inspector.d:632 source/creator/panels/inspector.d:1219
+#. Allow saving texture to file
+#: source/creator/panels/inspector.d:624
+msgid "Save to File"
+msgstr "ファイルに保存"
+
+#. Option which causes the Albedo color to be the emission color.
+#. The item will glow the same color as it, itself is.
+#: source/creator/panels/inspector.d:647
+msgid "Make Emissive"
+msgstr "発光させる"
+
+#: source/creator/panels/inspector.d:699
+msgid "Size of given texture does not match the Albedo texture."
+msgstr "テクスチャのサイズがアルベドテクスチャと一致しません。"
+
+#: source/creator/panels/inspector.d:737 source/creator/panels/inspector.d:1362
 msgid "Part"
 msgstr "パーツ"
 
-#: source/creator/panels/inspector.d:637
+#: source/creator/panels/inspector.d:741
 msgid "Cannot inspect an unmeshed part"
 msgstr "メッシュされていないパーツは検査できません"
 
-#: source/creator/panels/inspector.d:651 source/creator/panels/inspector.d:813
-#: source/creator/panels/inspector.d:1227
-#: source/creator/panels/inspector.d:1262
+#: source/creator/panels/inspector.d:754
+msgid "Albedo"
+msgstr "色情報(Albedo)"
+
+#: source/creator/panels/inspector.d:756
+msgid "Emissive"
+msgstr "発光(Emissive)"
+
+#: source/creator/panels/inspector.d:758
+msgid "Bumpmap"
+msgstr "バンプマップ"
+
+#: source/creator/panels/inspector.d:763 source/creator/panels/inspector.d:943
+#: source/creator/panels/inspector.d:1368
+#: source/creator/panels/inspector.d:1404
 msgid "Tint (Multiply)"
 msgstr "乗算を適用する色"
 
-#: source/creator/panels/inspector.d:654 source/creator/panels/inspector.d:816
-#: source/creator/panels/inspector.d:1231
-#: source/creator/panels/inspector.d:1266
+#: source/creator/panels/inspector.d:766 source/creator/panels/inspector.d:946
+#: source/creator/panels/inspector.d:1372
+#: source/creator/panels/inspector.d:1408
 msgid "Tint (Screen)"
 msgstr "スクリーンを適用する色"
 
 #. Header for the Blending options for Parts
-#: source/creator/panels/inspector.d:663 source/creator/panels/inspector.d:820
+#: source/creator/panels/inspector.d:775 source/creator/panels/inspector.d:950
 msgid "Blending"
 msgstr "合成"
 
 #. Normal blending mode as used in Photoshop, generally
 #. the default blending mode photoshop starts a layer out as.
-#: source/creator/panels/inspector.d:668 source/creator/panels/inspector.d:825
+#: source/creator/panels/inspector.d:780 source/creator/panels/inspector.d:955
 msgid "Normal"
 msgstr "通常"
 
 #. Multiply blending mode, in which this texture's color data
 #. will be multiplied with the color data already in the framebuffer.
-#: source/creator/panels/inspector.d:672 source/creator/panels/inspector.d:829
+#: source/creator/panels/inspector.d:784 source/creator/panels/inspector.d:959
 msgid "Multiply"
 msgstr "乗算"
 
 #. Color Dodge blending mode
-#: source/creator/panels/inspector.d:675 source/creator/panels/inspector.d:832
+#: source/creator/panels/inspector.d:787 source/creator/panels/inspector.d:962
 msgid "Color Dodge"
 msgstr "覆い焼き"
 
 #. Linear Dodge blending mode
-#: source/creator/panels/inspector.d:678 source/creator/panels/inspector.d:835
+#: source/creator/panels/inspector.d:790 source/creator/panels/inspector.d:965
 msgid "Linear Dodge"
 msgstr "加算"
 
 #. Screen blending mode
-#: source/creator/panels/inspector.d:681 source/creator/panels/inspector.d:838
+#: source/creator/panels/inspector.d:793 source/creator/panels/inspector.d:968
 msgid "Screen"
 msgstr "スクリーン"
 
 #. Clip to Lower blending mode
-#: source/creator/panels/inspector.d:684
+#: source/creator/panels/inspector.d:796
 msgid "Clip to Lower"
 msgstr "クリッピング"
 
-#: source/creator/panels/inspector.d:685
+#: source/creator/panels/inspector.d:797
 msgid ""
 "Special blending mode that causes (while respecting transparency) the part "
 "to be clipped to everything underneath"
@@ -1079,11 +1181,11 @@ msgstr ""
 "状がクリッピングされる、特殊な合成モードです。"
 
 #. Slice from Lower blending mode
-#: source/creator/panels/inspector.d:688
+#: source/creator/panels/inspector.d:800
 msgid "Slice from Lower"
 msgstr "切り取り"
 
-#: source/creator/panels/inspector.d:689
+#: source/creator/panels/inspector.d:801
 msgid ""
 "Special blending mode that causes (while respecting transparency) the part "
 "to be slice by everything underneath.\n"
@@ -1093,121 +1195,109 @@ msgstr ""
 "状が切り取られる、特殊な合成モードです。\n"
 "基本的にクリッピングを反転した結果になります。"
 
-#: source/creator/panels/inspector.d:696 source/creator/panels/inspector.d:845
-#: source/creator/panels/inspector.d:1242
-#: source/creator/panels/inspector.d:1278
+#: source/creator/panels/inspector.d:808 source/creator/panels/inspector.d:975
+#: source/creator/panels/inspector.d:1384
+#: source/creator/panels/inspector.d:1421
 msgid "Opacity"
 msgstr "不透明度"
 
-#: source/creator/panels/inspector.d:701 source/creator/panels/inspector.d:850
+#: source/creator/panels/inspector.d:813 source/creator/panels/inspector.d:980
 msgid "Masks"
 msgstr "マスク"
 
 #. Threshold slider name for adjusting how transparent a pixel can be
 #. before it gets discarded.
-#: source/creator/panels/inspector.d:706 source/creator/panels/inspector.d:855
-#: source/creator/panels/inspector.d:1249
+#: source/creator/panels/inspector.d:818 source/creator/panels/inspector.d:985
+#: source/creator/panels/inspector.d:1391
 msgid "Threshold"
 msgstr "しきい値"
 
 #. The sources that the part gets masked by. Depending on the masking mode
 #. either the sources will cut out things that don't overlap, or cut out
 #. things that do.
-#: source/creator/panels/inspector.d:714
+#: source/creator/panels/inspector.d:826
 msgid "Mask Sources"
 msgstr "マスク元パーツ"
 
-#: source/creator/panels/inspector.d:717
+#: source/creator/panels/inspector.d:829
 msgid "(Drag a Part or Mask Here)"
 msgstr "パーツ/マスクをここにドラッグ"
 
-#: source/creator/panels/inspector.d:724
+#: source/creator/panels/inspector.d:836
 msgid "Mode"
 msgstr "モード"
 
-#: source/creator/panels/inspector.d:726
+#: source/creator/panels/inspector.d:838
 msgid "Dodge"
 msgstr "覆い焼き"
 
-#: source/creator/panels/inspector.d:743
+#: source/creator/panels/inspector.d:856
 #, c-format
 msgid "%s (Mask)"
 msgstr "%s (マスク)"
 
-#: source/creator/panels/inspector.d:744
+#: source/creator/panels/inspector.d:857
 #, c-format
 msgid "%s (Dodge)"
 msgstr "%s (覆い焼き)"
 
-#: source/creator/panels/inspector.d:866
+#: source/creator/panels/inspector.d:998
 msgid "SimplePhysics"
 msgstr "簡易物理演算"
 
-#: source/creator/panels/inspector.d:879
+#: source/creator/panels/inspector.d:1009
 msgid "(unassigned)"
 msgstr "(割当てなし)"
 
-#: source/creator/panels/inspector.d:895
+#: source/creator/panels/inspector.d:1025
 msgid "Type"
 msgstr "種別"
 
-#: source/creator/panels/inspector.d:898
+#: source/creator/panels/inspector.d:1028
 msgid "Pendulum"
 msgstr "振り子"
 
-#: source/creator/panels/inspector.d:900
+#: source/creator/panels/inspector.d:1030
 msgid "SpringPendulum"
 msgstr "バネ振り子"
 
-#: source/creator/panels/inspector.d:907
+#: source/creator/panels/inspector.d:1037
 msgid "Mapping mode"
 msgstr "割当モード"
 
-#: source/creator/panels/inspector.d:910
+#: source/creator/panels/inspector.d:1040
 msgid "AngleLength"
 msgstr "角度"
 
-#: source/creator/panels/inspector.d:912
+#: source/creator/panels/inspector.d:1042
 msgid "XY"
 msgstr ""
 
-#: source/creator/panels/inspector.d:922
+#: source/creator/panels/inspector.d:1052
 msgid "Gravity scale"
 msgstr "重力スケール"
 
-#: source/creator/panels/inspector.d:929
+#: source/creator/panels/inspector.d:1059
 msgid "Length"
 msgstr "長さ"
 
-#: source/creator/panels/inspector.d:936
+#: source/creator/panels/inspector.d:1066
 msgid "Resonant frequency"
 msgstr "共振周波数"
 
-#: source/creator/panels/inspector.d:943
+#: source/creator/panels/inspector.d:1073
 msgid "Damping"
 msgstr "減衰"
 
-#: source/creator/panels/inspector.d:954
+#: source/creator/panels/inspector.d:1084
 msgid "Output scale"
 msgstr "出力スケール"
 
 #. Header for texture options
-#: source/creator/panels/inspector.d:1225
-#: source/creator/panels/inspector.d:1260
+#: source/creator/panels/inspector.d:1366
+#: source/creator/panels/inspector.d:1402
 msgid "Textures"
 msgstr "テクスチャ"
-
-#: source/creator/panels/inspector.d:1322
-msgid "Are you sure?"
-msgstr "本当によろしいですか？"
-
-#: source/creator/panels/inspector.d:1323
-msgid ""
-"The layout of the mesh has changed, all deformations to this mesh will be "
-"deleted if you continue."
-msgstr ""
-"メッシュのレイアウトが変更されたので、このメッシュに対するデフォーマの設定が"
-"全て解除されてしまいます。"
 
 #: source/creator/panels/actionhistory.d:56
 msgid "Clear History"
@@ -1223,6 +1313,14 @@ msgstr "%d/%d"
 msgid "History"
 msgstr "履歴"
 
+#: source/creator/panels/scene.d:29
+msgid "Ambient Light"
+msgstr "環境光"
+
+#: source/creator/panels/scene.d:38
+msgid "Scene"
+msgstr "シーン"
+
 #: source/creator/panels/toolsettings.d:31
 msgid "Tool Settings"
 msgstr "ツール設定"
@@ -1231,10 +1329,18 @@ msgstr "ツール設定"
 msgid "Logger"
 msgstr "ログ"
 
-#: source/creator/io/package.d:16 source/creator/widgets/mainmenu.d:142
-#: source/creator/widgets/mainmenu.d:167
+#: source/creator/io/videoexport.d:59
+msgid "Automatic selection"
+msgstr "自動選択"
+
+#: source/creator/io/package.d:19 source/creator/widgets/mainmenu.d:167
+#: source/creator/widgets/mainmenu.d:192
 msgid "Import..."
 msgstr "インポート..."
+
+#: source/creator/io/package.d:41 source/creator/widgets/mainmenu.d:54
+msgid "Save..."
+msgstr "名前を付けて保存..."
 
 #: source/creator/io/psd.d:149
 #, c-format
@@ -1242,6 +1348,11 @@ msgid ""
 "An error occured during PSD import:\n"
 "%s"
 msgstr "PSDファイルのマージ中にエラーが発生しました：%s"
+
+#: source/creator/io/imageexport.d:15
+#, c-format
+msgid "%s failed to export with error (%s)..."
+msgstr "%sのエクスポートに失敗しました。(エラー: %s)..."
 
 #: source/creator/utils/crashdump.d:52
 msgid ""
@@ -1277,23 +1388,27 @@ msgstr ""
 "りください。\n"
 "https://github.com/Inochi2D/inochi-creator/issues"
 
-#: source/creator/widgets/toolbar.d:35
+#: source/creator/widgets/toolbar.d:39
 msgid "Enable physics"
 msgstr "物理演算の有効化"
 
-#: source/creator/widgets/toolbar.d:40
+#: source/creator/widgets/toolbar.d:46
+msgid "Enable post processing"
+msgstr "ポストプロセスの有効化"
+
+#: source/creator/widgets/toolbar.d:51
 msgid "Reset physics"
 msgstr "物理演算の初期化"
 
-#: source/creator/widgets/toolbar.d:60
+#: source/creator/widgets/toolbar.d:69
 msgid "Edit Puppet"
 msgstr "パペット編集"
 
-#: source/creator/widgets/toolbar.d:65
+#: source/creator/widgets/toolbar.d:74
 msgid "Edit Animation"
 msgstr "アニメーション編集"
 
-#: source/creator/widgets/toolbar.d:70
+#: source/creator/widgets/toolbar.d:79
 msgid "Test Puppet"
 msgstr "パペットをテスト"
 
@@ -1302,181 +1417,199 @@ msgid "OK"
 msgstr ""
 
 #: source/creator/widgets/dialog.d:132
-msgid "No"
-msgstr "いいえ"
-
-#: source/creator/widgets/dialog.d:140
 msgid "Yes"
 msgstr "はい"
 
-#: source/creator/widgets/mainmenu.d:52
-msgid "Save..."
-msgstr "名前を付けて保存..."
+#: source/creator/widgets/dialog.d:140
+msgid "No"
+msgstr "いいえ"
 
-#: source/creator/widgets/mainmenu.d:66 source/creator/widgets/mainmenu.d:126
+#: source/creator/widgets/mainmenu.d:68 source/creator/widgets/mainmenu.d:151
 msgid "Save As..."
 msgstr "名前を付けて保存"
 
-#: source/creator/widgets/mainmenu.d:99
+#: source/creator/widgets/mainmenu.d:125
 msgid "File"
 msgstr "ファイル"
 
-#: source/creator/widgets/mainmenu.d:101
+#: source/creator/widgets/mainmenu.d:126
 msgid "New"
 msgstr "新規作成"
 
-#: source/creator/widgets/mainmenu.d:105
+#: source/creator/widgets/mainmenu.d:130
 msgid "Open"
 msgstr "開く"
 
-#: source/creator/widgets/mainmenu.d:110
+#: source/creator/widgets/mainmenu.d:135
 msgid "Recent"
 msgstr "最近開いたファイル"
 
-#: source/creator/widgets/mainmenu.d:130
+#: source/creator/widgets/mainmenu.d:155
 msgid "Import"
 msgstr "インポート"
 
-#: source/creator/widgets/mainmenu.d:131 source/creator/widgets/mainmenu.d:162
+#: source/creator/widgets/mainmenu.d:156 source/creator/widgets/mainmenu.d:187
 msgid "Photoshop Document"
 msgstr "PSDファイル"
 
-#: source/creator/widgets/mainmenu.d:135
+#: source/creator/widgets/mainmenu.d:160
 msgid "Import a standard Photoshop PSD file."
 msgstr "PSDファイルをインポート"
 
-#: source/creator/widgets/mainmenu.d:137
+#: source/creator/widgets/mainmenu.d:162 source/creator/widgets/mainmenu.d:218
 msgid "Inochi2D Puppet"
 msgstr "Inochi2D パペット"
 
-#: source/creator/widgets/mainmenu.d:149
+#: source/creator/widgets/mainmenu.d:174
 msgid "Import existing puppet file, editing options limited"
 msgstr "パペットファイル(INP)をインポートします。編集機能が制限されます。"
 
-#: source/creator/widgets/mainmenu.d:151
+#: source/creator/widgets/mainmenu.d:176
 msgid "Image Folder"
 msgstr "画像フォルダ"
 
-#: source/creator/widgets/mainmenu.d:152
+#: source/creator/widgets/mainmenu.d:177
 msgid "Select a Folder..."
 msgstr "フォルダを選択してください"
 
-#: source/creator/widgets/mainmenu.d:158
+#: source/creator/widgets/mainmenu.d:183
 msgid "Supports PNGs, TGAs and JPEGs."
 msgstr "サポート形式: PNG / TGA / JPEG"
 
-#: source/creator/widgets/mainmenu.d:174
+#: source/creator/widgets/mainmenu.d:199
 msgid "Merge layers from Photoshop document"
 msgstr "PhotoshopのPSDファイルのレイヤーをマージします。"
 
-#: source/creator/widgets/mainmenu.d:176
+#: source/creator/widgets/mainmenu.d:201
 msgid "Inochi Creator Project"
 msgstr "Inochi Creatorプロジェクト"
 
-#: source/creator/widgets/mainmenu.d:187
+#: source/creator/widgets/mainmenu.d:212
 msgid "Merge another Inochi Creator project in to this one"
 msgstr "他のInochi Creatorプロジェクトをこのプロジェクトにマージします。"
 
-#: source/creator/widgets/mainmenu.d:192
-msgid "Export"
-msgstr "エクスポート"
-
-#: source/creator/widgets/mainmenu.d:193
-msgid "Inochi Puppet"
-msgstr "Inochi2D パペット"
-
-#: source/creator/widgets/mainmenu.d:200
+#: source/creator/widgets/mainmenu.d:225 source/creator/widgets/mainmenu.d:240
+#: source/creator/widgets/mainmenu.d:255 source/creator/widgets/mainmenu.d:270
+#: source/creator/widgets/mainmenu.d:289
 msgid "Export..."
 msgstr "エクスポート..."
 
-#: source/creator/widgets/mainmenu.d:210
+#: source/creator/widgets/mainmenu.d:232
+msgid "Image"
+msgstr "画像"
+
+#: source/creator/widgets/mainmenu.d:233
+msgid "PNG (*.png)"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:248
+msgid "JPEG (*.jpeg)"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:263
+msgid "TARGA (*.tga)"
+msgstr ""
+
+#: source/creator/widgets/mainmenu.d:280
+msgid "Video"
+msgstr "動画"
+
+#: source/creator/widgets/mainmenu.d:299
 msgid "Quit"
 msgstr "終了"
 
-#: source/creator/widgets/mainmenu.d:214
+#: source/creator/widgets/mainmenu.d:303
 msgid "Edit"
 msgstr "編集"
 
-#: source/creator/widgets/mainmenu.d:215
+#: source/creator/widgets/mainmenu.d:304
 msgid "Undo"
 msgstr "元に戻す"
 
-#: source/creator/widgets/mainmenu.d:216
+#: source/creator/widgets/mainmenu.d:305
 msgid "Redo"
 msgstr "やり直す"
 
-#: source/creator/widgets/mainmenu.d:219
+#: source/creator/widgets/mainmenu.d:308
 msgid "Cut"
 msgstr "切り取り"
 
-#: source/creator/widgets/mainmenu.d:232
+#: source/creator/widgets/mainmenu.d:321
 msgid "ImGui Debugging"
 msgstr "ImGuiデバッガー"
 
-#: source/creator/widgets/mainmenu.d:235
+#: source/creator/widgets/mainmenu.d:324
 msgid "Style Editor"
 msgstr "スタイルエディター"
 
-#: source/creator/widgets/mainmenu.d:236
+#: source/creator/widgets/mainmenu.d:325
 msgid "ImGui Debugger"
 msgstr "ImGuiデバッガー"
 
-#: source/creator/widgets/mainmenu.d:241
+#: source/creator/widgets/mainmenu.d:326
+msgid "ImGui Metrics"
+msgstr "ImGuiメトリックス"
+
+#: source/creator/widgets/mainmenu.d:327
+msgid "ImGui Stack Tool"
+msgstr "ImGuiスタックツール"
+
+#: source/creator/widgets/mainmenu.d:332
 msgid "View"
 msgstr "表示"
 
-#: source/creator/widgets/mainmenu.d:242
+#: source/creator/widgets/mainmenu.d:333
 msgid "Reset Layout"
 msgstr "レイアウトをリセット"
 
-#: source/creator/widgets/mainmenu.d:251
+#: source/creator/widgets/mainmenu.d:342
 msgid "Panels"
 msgstr "パネル"
 
-#: source/creator/widgets/mainmenu.d:270
+#: source/creator/widgets/mainmenu.d:361
 msgid "Configuration"
 msgstr "設定"
 
 #. Opens the directory where configuration resides in the user's file browser.
-#: source/creator/widgets/mainmenu.d:273
+#: source/creator/widgets/mainmenu.d:364
 msgid "Open Configuration Folder"
 msgstr "設定フォルダを開く"
 
-#: source/creator/widgets/mainmenu.d:282
+#: source/creator/widgets/mainmenu.d:373
 msgid "Extras"
 msgstr "その他"
 
-#: source/creator/widgets/mainmenu.d:285
+#: source/creator/widgets/mainmenu.d:376
 msgid "Save Screenshot"
 msgstr "スクリーンショットを保存"
 
-#: source/creator/widgets/mainmenu.d:291
+#: source/creator/widgets/mainmenu.d:382
 msgid "Save Screenshot..."
 msgstr "スクリーンショットを保存..."
 
-#: source/creator/widgets/mainmenu.d:316
+#: source/creator/widgets/mainmenu.d:407
 msgid "Saves screenshot as PNG of the editor framebuffer."
 msgstr "エディタのパペットの画像をPNGとして保存します"
 
-#: source/creator/widgets/mainmenu.d:318
+#: source/creator/widgets/mainmenu.d:409
 msgid "Show Stats for Nerds"
 msgstr "詳細情報"
 
-#: source/creator/widgets/mainmenu.d:327
+#: source/creator/widgets/mainmenu.d:418
 msgid "Tools"
 msgstr "ツール"
 
-#: source/creator/widgets/mainmenu.d:330
+#: source/creator/widgets/mainmenu.d:421
 msgid "Puppet Texturing"
 msgstr "パペットのテクスチャ操作"
 
 #. Premultiply textures, causing every pixel value in every texture to
 #. be multiplied by their Alpha (transparency) component
-#: source/creator/widgets/mainmenu.d:335
+#: source/creator/widgets/mainmenu.d:426
 msgid "Premultiply textures"
 msgstr "テクスチャを事前合成"
 
-#: source/creator/widgets/mainmenu.d:339
+#: source/creator/widgets/mainmenu.d:430
 msgid ""
 "Premultiplies textures by their alpha component.\n"
 "\n"
@@ -1488,115 +1621,135 @@ msgstr ""
 "旧バージョンのInochi Creatorからファイルをインポートした際に、テクスチャが正"
 "常に表示されない場合にのみ使用してください。"
 
-#: source/creator/widgets/mainmenu.d:341
+#: source/creator/widgets/mainmenu.d:432
 msgid "Bleed textures..."
 msgstr "テクスチャをブリード..."
 
-#: source/creator/widgets/mainmenu.d:344
+#: source/creator/widgets/mainmenu.d:435
 msgid ""
 "Causes color to bleed out in to fully transparent pixels, this solves "
 "outlines on straight alpha compositing.\n"
 "\n"
 "Only use this if your game engine can't use premultiplied alpha."
 msgstr ""
-"色を透明度付きの色に置き換えます。Straight-Alphaコンポジットを利用している場"
-"合に境界にジャギーが出てしまう問題を解決します。\n"
+"透明度付きの色をブリードアウトして不透明色に置き換えます。Straight-Alphaコン"
+"ポジットを利用している場合に境界が黒ずんでしまう問題を解決します。\n"
 "利用しているゲームエンジンがPremultiplied-Alphaコンポジットを利用できない場合"
 "にのみ利用してください。"
 
-#: source/creator/widgets/mainmenu.d:346
+#: source/creator/widgets/mainmenu.d:437
 msgid "Generate Mipmaps..."
 msgstr "ミップマップを生成..."
 
-#: source/creator/widgets/mainmenu.d:349
+#: source/creator/widgets/mainmenu.d:440
 msgid "Regenerates the puppet's mipmaps."
 msgstr "パペットのミップマップを再作成"
 
-#: source/creator/widgets/mainmenu.d:351
+#: source/creator/widgets/mainmenu.d:442
 msgid "Generate fake layer name info..."
 msgstr "仮のレイヤー情報を生成"
 
-#: source/creator/widgets/mainmenu.d:361
+#: source/creator/widgets/mainmenu.d:452
 msgid "Generates fake layer info based on node names"
 msgstr "ノード名を利用して、仮のレイヤー情報を生成します。"
 
-#: source/creator/widgets/mainmenu.d:367
+#: source/creator/widgets/mainmenu.d:458
 msgid "Puppet Recovery"
 msgstr "パペットの修復"
 
 #. FULL REPAIR
-#: source/creator/widgets/mainmenu.d:371
+#: source/creator/widgets/mainmenu.d:462
 msgid "Attempt full repair..."
 msgstr "修復を試みます..."
 
-#: source/creator/widgets/mainmenu.d:374
+#: source/creator/widgets/mainmenu.d:465
 msgid ""
 "Attempts all the recovery and repair methods below on the currently loaded "
 "model"
 msgstr "現在読み込まれているモデルに、すべての復旧・修復方法を試みます"
 
 #. REGEN NODE IDs
-#: source/creator/widgets/mainmenu.d:377
+#: source/creator/widgets/mainmenu.d:468
 msgid "Regenerate Node IDs"
 msgstr "ノードIDの再生成"
 
-#: source/creator/widgets/mainmenu.d:381
+#: source/creator/widgets/mainmenu.d:472
 msgid "Regenerates all the unique IDs for the model"
 msgstr "モデルの全ユニークIDを再生成"
 
-#: source/creator/widgets/mainmenu.d:387
+#: source/creator/widgets/mainmenu.d:478
 msgid "Verify INP File..."
 msgstr "INPファイルをチェック..."
 
-#: source/creator/widgets/mainmenu.d:390
+#: source/creator/widgets/mainmenu.d:481
 msgid "Attempts to verify and repair INP files"
 msgstr "INPファイルのチェックと修復を行います"
 
-#: source/creator/widgets/mainmenu.d:395
+#: source/creator/widgets/mainmenu.d:486
 msgid "Help"
 msgstr "ヘルプ"
 
-#: source/creator/widgets/mainmenu.d:397
+#: source/creator/widgets/mainmenu.d:488
 msgid "Tutorial"
 msgstr "チュートリアル"
 
-#: source/creator/widgets/mainmenu.d:400
+#: source/creator/widgets/mainmenu.d:491
 msgid "Online Documentation"
 msgstr "オンラインドキュメント"
 
-#: source/creator/widgets/mainmenu.d:404
+#: source/creator/widgets/mainmenu.d:495
 msgid "Inochi2D Documentation"
 msgstr "Inochi2Dについて"
 
-#: source/creator/widgets/mainmenu.d:438
+#: source/creator/widgets/mainmenu.d:533
 msgid "Support development via Patreon"
 msgstr "Patreonで開発者を支援する"
 
-#: source/creator/viewport/package.d:196
+#: source/creator/viewport/package.d:253
 msgid "No tool selected..."
 msgstr "ノードが選択されていません..."
 
-#: source/creator/viewport/vertex/package.d:28
+#: source/creator/viewport/vertex/package.d:38
 msgid "Flip Horizontally"
 msgstr "水平方向に反転"
 
-#: source/creator/viewport/vertex/package.d:33
+#: source/creator/viewport/vertex/package.d:43
 msgid "Flip Vertically"
 msgstr "垂直方向に反転"
 
-#: source/creator/viewport/vertex/package.d:41
+#: source/creator/viewport/vertex/package.d:53
 msgid "Mirror Horizontally"
 msgstr "水平方向にミラーリング"
 
-#: source/creator/viewport/vertex/package.d:48
+#: source/creator/viewport/vertex/package.d:61
 msgid "Mirror Vertically"
 msgstr "垂直方向にミラーリング"
 
-#: source/creator/viewport/vertex/package.d:65
+#: source/creator/viewport/vertex/package.d:82
 msgid "Automatically connects vertices"
 msgstr "頂点を接続"
 
-#: source/creator/viewport/vertex/package.d:137
+#: source/creator/viewport/vertex/package.d:90
+msgid " Apply"
+msgstr " 適用"
+
+#: source/creator/viewport/vertex/package.d:96
+msgid "Are you sure?"
+msgstr "本当によろしいですか？"
+
+#: source/creator/viewport/vertex/package.d:97
+msgid ""
+"The layout of the mesh has changed, all deformations to this mesh will be "
+"deleted if you continue."
+msgstr ""
+"メッシュのレイアウトが変更されたので、このメッシュに対するデフォーマの設定が"
+"全て解除されてしまいます。"
+
+#: source/creator/viewport/vertex/package.d:112
+msgid " Cancel"
+msgstr " キャンセル"
+
+#: source/creator/viewport/vertex/package.d:190
 msgid ""
 "Cannot apply invalid mesh\n"
 "At least 3 vertices forming a triangle is needed."
@@ -1604,35 +1757,111 @@ msgstr ""
 "最低でもレイヤーのメッシュには3個以上の頂点が必要なため、この変更を適用できま"
 "せん。"
 
-#: source/creator/viewport/model/package.d:27
-msgid "Show/hide Vertices"
-msgstr "頂点の表示/非表示の切り替え"
+#: source/creator/viewport/model/package.d:55
+msgid "Focus Selected"
+msgstr "選択..."
 
-#: source/creator/viewport/model/package.d:35
-msgid "Show/hide Bounds"
-msgstr "境界の表示/非表示の切り替え"
+#: source/creator/viewport/model/package.d:103
+msgid "No parts found"
+msgstr "選択できるパーツがありません"
 
-#: source/creator/viewport/model/package.d:43
-msgid "Show/hide Orientation Gizmo"
-msgstr "ギズモの表示/非表示の切り替え"
+#: source/creator/viewport/model/package.d:120
+msgid "Hide Vertices"
+msgstr "頂点を非表示"
 
-#: source/creator/viewport/common/mesheditor.d:705
+#: source/creator/viewport/model/package.d:120
+msgid "Show Vertices"
+msgstr "頂点を表示"
+
+#: source/creator/viewport/model/package.d:126
+msgid "Hide Bounds"
+msgstr "境界を非表示"
+
+#: source/creator/viewport/model/package.d:126
+msgid "Show Bounds"
+msgstr "境界を表示"
+
+#: source/creator/viewport/model/package.d:132
+msgid "Hide Orientation Gizmo"
+msgstr "ギズモを非表示"
+
+#: source/creator/viewport/model/package.d:132
+msgid "Show Orientation Gizmo"
+msgstr "ギズモを表示"
+
+#: source/creator/viewport/common/mesheditor.d:379
+#: source/creator/viewport/common/mesheditor.d:381
+#: source/creator/viewport/common/mesheditor.d:516
+msgid "Select"
+msgstr "選択"
+
+#: source/creator/viewport/common/mesheditor.d:379
+#: source/creator/viewport/common/mesheditor.d:381
+#: source/creator/viewport/common/mesheditor.d:516
+#: source/creator/viewport/common/mesheditor.d:518
+#: source/creator/viewport/common/mesheditor.d:561
+msgid "Left Mouse"
+msgstr "左クリック"
+
+#: source/creator/viewport/common/mesheditor.d:382
+msgid "Create"
+msgstr "作成"
+
+#: source/creator/viewport/common/mesheditor.d:382
+msgid "Ctrl+Left Mouse"
+msgstr "Ctrl+左クリック"
+
+#: source/creator/viewport/common/mesheditor.d:518
+msgid "Connect/Disconnect"
+msgstr "接続/接続解除"
+
+#: source/creator/viewport/common/mesheditor.d:519
+msgid "Connect Multiple"
+msgstr "続けて接続"
+
+#: source/creator/viewport/common/mesheditor.d:519
+msgid "Shift+Left Mouse"
+msgstr "Shift+左クリック"
+
+#: source/creator/viewport/common/mesheditor.d:561
+msgid "Deform"
+msgstr "変形"
+
+#: source/creator/viewport/common/mesheditor.d:562
+#: source/creator/viewport/common/mesheditor.d:565
+msgid "Switch Mode"
+msgstr "モード変更"
+
+#: source/creator/viewport/common/mesheditor.d:562
+#: source/creator/viewport/common/mesheditor.d:565
+msgid "TAB"
+msgstr "TABキー"
+
+#: source/creator/viewport/common/mesheditor.d:564
+msgid "Create/Destroy"
+msgstr "作成/削除"
+
+#: source/creator/viewport/common/mesheditor.d:564
+msgid "Left Mouse (x2)"
+msgstr "左ダブルクリック"
+
+#: source/creator/viewport/common/mesheditor.d:729
 msgid "Vertex Tool"
 msgstr "頂点ツール"
 
-#: source/creator/viewport/common/mesheditor.d:714
+#: source/creator/viewport/common/mesheditor.d:737
 msgid "Edge Tool"
 msgstr "エッジツール"
 
-#: source/creator/viewport/common/mesheditor.d:724
+#: source/creator/viewport/common/mesheditor.d:746
 msgid "Path Deform Tool"
 msgstr "パス変形ツール"
 
-#: source/creator/core/package.d:213
+#: source/creator/core/package.d:235
 msgid "(Debug Mode)"
 msgstr "(デバッグ版)"
 
-#: source/creator/core/package.d:215
+#: source/creator/core/package.d:237
 msgid "(Unsupported)"
 msgstr "(非サポート版)"
 
@@ -1646,6 +1875,42 @@ msgstr "100%(固定)"
 #: source/creator/core/i18n.d:16
 msgid "LANG_NAME"
 msgstr "日本語"
+
+#~ msgid "Unsupported"
+#~ msgstr "(非サポート版)"
+
+#~ msgid "Art by %s"
+#~ msgstr "%s による作品"
+
+#~ msgid "Report a Bug"
+#~ msgstr "バグを報告"
+
+#~ msgid "Request a Feature"
+#~ msgstr "機能追加を提案"
+
+#~ msgid "Triangulate vertices"
+#~ msgstr "頂点を接続して三角形を作成"
+
+#~ msgid "Bake"
+#~ msgstr "実行"
+
+#~ msgid "Bakes the triangulation, applying it to the mesh."
+#~ msgstr "頂点を接続して三角形のメッシュを作成します"
+
+#~ msgid "Triangulation Options"
+#~ msgstr "三角形作成のオプション"
+
+#~ msgid " Edit Mesh"
+#~ msgstr " メッシュの編集"
+
+#~ msgid "Copy Mesh Data"
+#~ msgstr "メッシュデータをコピー"
+
+#~ msgid "Gizmos"
+#~ msgstr "ギズモ"
+
+#~ msgid "Inochi Puppet"
+#~ msgstr "Inochi2D パペット"
 
 #~ msgid "%s->%s chang cancelled"
 #~ msgstr "%s: %sがキャンセルされました"
@@ -1664,9 +1929,6 @@ msgstr "日本語"
 
 #~ msgid "UI Scale (EXPERIMENTAL)"
 #~ msgstr "UIの表示倍率（試験段階）"
-
-#~ msgid "Texture Slots"
-#~ msgstr "テクスチャスロット"
 
 #~ msgid "Use Native Titlebar"
 #~ msgstr "OSのタイトルバーを使う"
@@ -1731,9 +1993,6 @@ msgstr "日本語"
 
 #~ msgid "Lock Translate Z"
 #~ msgstr "Zの翻訳を固定"
-
-#~ msgid "Triangulate"
-#~ msgstr "三角形に分割"
 
 #~ msgid "OpenSeeFace Receiver"
 #~ msgstr "OpenSeeFace レシーバー"
