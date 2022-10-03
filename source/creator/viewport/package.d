@@ -255,8 +255,29 @@ void incViewportToolSettingsNoTool() {
     incText(_("No tool selected..."));
 }
 
+bool incStartedDrag(int btn) {
+    return isDragging[btn];
+}
 
+void incBeginDrag(int btn) {
+    isDragging[btn] = true;
+}
 
+void incEndDrag(int btn) {
+    isDragging[btn] = false;
+}
+
+bool incDragStartedInViewport(int btn) {
+    return isDraggingInViewport[btn];
+}
+
+void incBeginDragInViewport(int btn) {
+    isDraggingInViewport[btn] = true;
+}
+
+void incEndDragInViewport(int btn) {
+    isDraggingInViewport[btn] = false;
+}
 
 //
 //          VIEWPORT CAMERA HANDLING
@@ -293,6 +314,8 @@ void incViewportReset() {
 //          Internal Viewport Stuff(TM)
 //
 private {
+    bool[ImGuiMouseButton.COUNT] isDraggingInViewport;
+    bool[ImGuiMouseButton.COUNT] isDragging;
     bool isMovingViewport;
     float sx, sy;
     float csx, csy;

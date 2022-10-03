@@ -27,6 +27,7 @@ private:
     ImVec2 lastSize;
     bool actingInViewport;
 
+
     ImVec2 priorWindowPadding;
 
 protected:
@@ -69,6 +70,21 @@ protected:
         // Also viewport of 0 is too small, minimum 128.
         currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
         
+        foreach(btn; 0..cast(int)ImGuiMouseButton.COUNT) {
+            if (!incStartedDrag(btn)) {
+                if (io.MouseDown[btn]) {
+                    if (igIsWindowHovered(ImGuiHoveredFlags.ChildWindows)) {
+                        incBeginDragInViewport(btn);
+                    }
+                    incBeginDrag(btn);
+                }
+            }
+
+            if (incStartedDrag(btn) && !io.MouseDown[btn]) {
+                incEndDrag(btn);
+                incEndDragInViewport(btn);
+            }
+        }
 
         if (igBeginChild("##ViewportView", ImVec2(0, -32))) {
             igGetContentRegionAvail(&currSize);
