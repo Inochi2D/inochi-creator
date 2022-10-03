@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-03 00:04+0200\n"
+"POT-Creation-Date: 2022-10-03 15:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -179,6 +179,8 @@ msgstr ""
 #: source/creator/panels/viewport.d:218
 #: source/creator/viewport/vertex/package.d:207
 #: source/creator/windows/inpexport.d:250
+#: source/creator/windows/paramaxes.d:187
+#: source/creator/windows/paramprop.d:106
 msgid "Error"
 msgstr ""
 
@@ -616,7 +618,7 @@ msgstr ""
 
 #: source/creator/panels/inspector.d:810 source/creator/panels/nodes.d:92
 #: source/creator/panels/parameters.d:698
-#: source/creator/panels/parameters.d:888
+#: source/creator/panels/parameters.d:897
 msgid "Delete"
 msgstr ""
 
@@ -631,7 +633,7 @@ msgid "%s (Dodge)"
 msgstr ""
 
 #: source/creator/panels/inspector.d:884 source/creator/panels/nodes.d:72
-#: source/creator/windows/imgexport.d:97
+#: source/creator/windows/imgexport.d:96
 msgid "Camera"
 msgstr ""
 
@@ -916,26 +918,26 @@ msgid "Filter, search for specific parameters"
 msgstr ""
 
 #. Textbox
-#: source/creator/panels/parameters.d:855 source/creator/windows/rename.d:42
+#: source/creator/panels/parameters.d:864 source/creator/windows/rename.d:42
 #: source/creator/windows/rename.d:57
 msgid "Rename"
 msgstr ""
 
-#: source/creator/panels/parameters.d:859
+#: source/creator/panels/parameters.d:868
 msgid "Colors"
 msgstr ""
 
 #. CUSTOM COLOR PICKER
 #. Allows user to select a custom color for parameter group.
-#: source/creator/panels/parameters.d:884
+#: source/creator/panels/parameters.d:893
 msgid "Custom Color"
 msgstr ""
 
-#: source/creator/panels/parameters.d:963
+#: source/creator/panels/parameters.d:973
 msgid "Add Parameter"
 msgstr ""
 
-#: source/creator/panels/parameters.d:968
+#: source/creator/panels/parameters.d:978
 msgid "Parameters"
 msgstr ""
 
@@ -1224,7 +1226,7 @@ msgstr ""
 
 #. Cancels the edited state for the axies points
 #: source/creator/viewport/vertex/package.d:133
-#: source/creator/widgets/dialog.d:116 source/creator/windows/paramaxes.d:133
+#: source/creator/widgets/dialog.d:116 source/creator/windows/paramaxes.d:169
 msgid "Cancel"
 msgstr ""
 
@@ -1279,8 +1281,8 @@ msgstr ""
 #. Settings are autosaved, but in case the user
 #. feels more safe with a save button then we have
 #. it here.
-#: source/creator/widgets/mainmenu.d:147 source/creator/windows/imgexport.d:122
-#: source/creator/windows/paramaxes.d:140
+#: source/creator/widgets/mainmenu.d:147 source/creator/windows/imgexport.d:121
+#: source/creator/windows/paramaxes.d:176
 #: source/creator/windows/paramprop.d:103 source/creator/windows/trkbind.d:129
 msgid "Save"
 msgstr ""
@@ -1588,19 +1590,19 @@ msgstr ""
 msgid "Test Puppet"
 msgstr ""
 
-#: source/creator/windows/imgexport.d:93
+#: source/creator/windows/imgexport.d:92
 msgid "Export Settings"
 msgstr ""
 
-#: source/creator/windows/imgexport.d:110
+#: source/creator/windows/imgexport.d:109
 msgid "Allow Transparency"
 msgstr ""
 
-#: source/creator/windows/imgexport.d:111
+#: source/creator/windows/imgexport.d:110
 msgid "Use Post Processing"
 msgstr ""
 
-#: source/creator/windows/imgexport.d:132
+#: source/creator/windows/imgexport.d:131
 msgid "Export Image..."
 msgstr ""
 
@@ -1638,24 +1640,37 @@ msgstr ""
 msgid "Export Options"
 msgstr ""
 
+#. Points where the user can set parameter values
+#: source/creator/windows/paramaxes.d:156
+msgid "Breakpoints"
+msgstr ""
+
+#: source/creator/windows/paramaxes.d:187
+msgid "One or more axes points are overlapping, this is not allowed."
+msgstr ""
+
 #. Title for the parameter axis points window
 #. This window allows adjusting axies in the
 #. Parameter it's attached to.
 #. Keypoints show up on every intersecting axis line.
-#: source/creator/windows/paramaxes.d:189
+#: source/creator/windows/paramaxes.d:246
 msgid "Parameter Axes Points"
 msgstr ""
 
-#: source/creator/windows/paramprop.d:34
+#: source/creator/windows/paramprop.d:44
 msgid "Parameter Name"
 msgstr ""
 
-#: source/creator/windows/paramprop.d:41
+#: source/creator/windows/paramprop.d:49
 msgid "Parameter Constraints"
 msgstr ""
 
+#: source/creator/windows/paramprop.d:106
+msgid "Name is already taken"
+msgstr ""
+
 #. Title for the parameter properties window.
-#: source/creator/windows/paramprop.d:117
+#: source/creator/windows/paramprop.d:139
 msgid "Parameter Properties"
 msgstr ""
 

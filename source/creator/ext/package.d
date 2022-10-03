@@ -34,6 +34,21 @@ public:
     
 
     /**
+        Returns a parameter by UUID
+    */
+    Parameter findParameter(string name) {
+        foreach(ref parameter; parameters) {
+            if (auto group = cast(ExParameterGroup)parameter) {
+                foreach(ref child; group.children) {
+                    if (child.name == name) return child;
+                }
+            } else if (parameter.name == name) return parameter;
+        }
+        return null;
+    }
+    
+
+    /**
         Gets if a node is bound to ANY parameter.
     */
     override

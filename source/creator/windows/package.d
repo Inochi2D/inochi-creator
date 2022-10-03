@@ -70,6 +70,10 @@ protected:
 
     void onClose() { }
 
+    void unclose() {
+        this.visible = true;
+    }
+
 public:
 
 
