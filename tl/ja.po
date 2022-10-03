@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-21 23:58+0900\n"
-"PO-Revision-Date: 2022-09-22 00:53+0900\n"
+"PO-Revision-Date: 2022-10-01 20:15+0900\n"
 "Last-Translator: Sae Okuri <sae.okuri@gmail.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
@@ -244,7 +244,7 @@ msgstr "%sの名前を変更"
 #: source/creator/windows/psdmerge.d:238
 #, c-format
 msgid "%s  %s"
-msgstr ""
+msgstr "%s  %s"
 
 #: source/creator/windows/psdmerge.d:276
 msgid "Unmap"
@@ -292,7 +292,7 @@ msgstr "PSDファイルをマージする"
 
 #: source/creator/windows/paramsplit.d:48
 msgid " (Split)"
-msgstr ""
+msgstr "(分割)"
 
 #: source/creator/windows/paramsplit.d:168
 #: source/creator/viewport/vertex/package.d:108
@@ -1876,6 +1876,39 @@ msgstr "100%(固定)"
 msgid "LANG_NAME"
 msgstr "日本語"
 
+#~ msgid "Unsupported"
+#~ msgstr "(非サポート版)"
+
+#~ msgid "Art by %s"
+#~ msgstr "%s による作品"
+
+#~ msgid "Report a Bug"
+#~ msgstr "バグを報告"
+
+#~ msgid "Request a Feature"
+#~ msgstr "機能追加を提案"
+
+#~ msgid "Triangulate vertices"
+#~ msgstr "頂点を接続して三角形を作成"
+
+#~ msgid "Bake"
+#~ msgstr "実行"
+
+#~ msgid "Bakes the triangulation, applying it to the mesh."
+#~ msgstr "頂点を接続して三角形のメッシュを作成します"
+
+#~ msgid "Triangulation Options"
+#~ msgstr "三角形作成のオプション"
+
+#~ msgid " Edit Mesh"
+#~ msgstr " メッシュの編集"
+
+#~ msgid "Copy Mesh Data"
+#~ msgstr "メッシュデータをコピー"
+
+#~ msgid "Gizmos"
+#~ msgstr "ギズモ"
+
 #~ msgid "Inochi Puppet"
 #~ msgstr "Inochi2D パペット"
 
@@ -1960,9 +1993,6 @@ msgstr "日本語"
 
 #~ msgid "Lock Translate Z"
 #~ msgstr "Zの翻訳を固定"
-
-#~ msgid "Triangulate"
-#~ msgstr "三角形に分割"
 
 #~ msgid "OpenSeeFace Receiver"
 #~ msgstr "OpenSeeFace レシーバー"
