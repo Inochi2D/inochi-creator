@@ -972,16 +972,31 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
         import std.string : toStringz;
 
         igPushID("TargetParam");
+            if (igBeginPopup("TPARAM")) {
+                if (node.param) {
+                    if (igMenuItem(__("Unmap"))) {
+                        node.param = null;
+                        incActivePuppet().rescanNodes();
+                    }
+                } else {
+                    incDummyLabel(_("Unassigned"), ImVec2(128, 16));
+                }
+
+                igEndPopup();
+            }
+
             incText(_("Parameter"));
             string paramName = _("(unassigned)");
             if (node.param !is null) paramName = node.param.name;
             igInputText("###TARGET_PARAM", cast(char*)paramName.toStringz, paramName.length, ImGuiInputTextFlags.ReadOnly);
+            igOpenPopupOnItemClick("TPARAM", ImGuiPopupFlags.MouseButtonRight);
 
             if(igBeginDragDropTarget()) {
                 const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PARAMETER");
                 if (payload !is null) {
                     ParamDragDropData* payloadParam = *cast(ParamDragDropData**)payload.Data;
                     node.param = payloadParam.param;
+                    incActivePuppet().rescanNodes();
                 }
 
                 igEndDragDropTarget();
