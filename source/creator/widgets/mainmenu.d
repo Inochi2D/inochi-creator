@@ -265,7 +265,20 @@ void incMainMenu() {
                         igEndMenu();
                     }
 
-                    if(igMenuItem(__("Quit"), "Alt+F4", false, true)) incExit();
+                    // Close Project option
+                    if (igMenuItem(__("Close Project"))) {
+                        
+                        // Just in case...
+                        incPopWelcomeWindow();
+
+                        // TODO: Check if changes were done to project and warn before
+                        // creating new project
+                        incNewProject();
+                        incPushWindow(new WelcomeWindow());
+                    }
+
+                    // Quit option
+                    if (igMenuItem(__("Quit"), "Alt+F4", false, true)) incExit();
                     igEndMenu();
                 }
                 
