@@ -7,7 +7,9 @@
 module creator.ext.nodes;
 
 public import creator.ext.nodes.expart;
+public import creator.ext.nodes.excamera;
 
 void incInitExtNodes() {
     incRegisterExPart();
+    incRegisterExCamera();
 }

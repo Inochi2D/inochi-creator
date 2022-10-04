@@ -6,8 +6,10 @@
 */
 module creator.panels.nodes;
 import creator.viewport.vertex;
+import creator.widgets.dragdrop;
 import creator.actions;
 import creator.panels;
+import creator.ext;
 import creator;
 import creator.widgets;
 import creator.ext;
@@ -43,43 +45,50 @@ protected:
             
             if (igBeginMenu(__("Add"), true)) {
 
-                igPushFont(incIconFont());
-                    incText(incTypeIdToIcon("Node"));
-                igPopFont();
+                incText(incTypeIdToIcon("Node"));
                 igSameLine(0, 2);
                 if (igMenuItem(__("Node"), "", false, true)) incAddChildWithHistory(new Node(n), n);
                 
-                igPushFont(incIconFont());
-                    incText(incTypeIdToIcon("Mask"));
-                igPopFont();
+                incText(incTypeIdToIcon("Mask"));
                 igSameLine(0, 2);
                 if (igMenuItem(__("Mask"), "", false, true)) {
                     MeshData empty;
                     incAddChildWithHistory(new Mask(empty, n), n);
                 }
                 
-                igPushFont(incIconFont());
-                    incText(incTypeIdToIcon("Composite"));
-                igPopFont();
+                incText(incTypeIdToIcon("Composite"));
                 igSameLine(0, 2);
                 if (igMenuItem(__("Composite"), "", false, true)) {
                     incAddChildWithHistory(new Composite(n), n);
                 }
                 
-                igPushFont(incIconFont());
-                    incText(incTypeIdToIcon("SimplePhysics"));
-                igPopFont();
+                incText(incTypeIdToIcon("SimplePhysics"));
                 igSameLine(0, 2);
                 if (igMenuItem(__("Simple Physics"), "", false, true)) incAddChildWithHistory(new SimplePhysics(n), n);
+
+                
+                incText(incTypeIdToIcon("Camera"));
+                igSameLine(0, 2);
+                if (igMenuItem(__("Camera"), "", false, true)) incAddChildWithHistory(new ExCamera(n), n);
 
                 igEndMenu();
             }
 
             static if (!isRoot) {
+
+                // Edit mesh option for drawables
+                if (Drawable d = cast(Drawable)n) {
+                    if (!incArmedParameter()) {
+                        if (igMenuItem(__("Edit Mesh"))) {
+                            incVertexEditStartEditing(d);
+                        }
+                    }
+                }
+                
                 if (igMenuItem(n.enabled ? /* Option to hide the node (and subnodes) */ __("Hide") :  /* Option to show the node (and subnodes) */ __("Show"))) {
                     n.enabled = !n.enabled;
                 }
-                
+
                 if (igMenuItem(__("Delete"), "", false, !isRoot)) {
 
                     if (selected.length > 1) {
@@ -194,18 +203,15 @@ protected:
                         if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
                             igSetDragDropPayload("_PUPPETNTREE", cast(void*)&n, (&n).sizeof, ImGuiCond.Always);
                             if (selectedNodes.length > 1) {
-                                foreach(node; selectedNodes) {
-                                    incText(node.name);
-                                }
+                                incDragdropNodeList(selectedNodes);
                             } else {
-                                incText(n.name);
+                                incDragdropNodeList(n);
                             }
                             igEndDragDropSource();
                         }
                     }
             igPopID();
 
-            // Only allow reparenting one node
             if(igBeginDragDropTarget()) {
                 const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
                 if (payload !is null) {
@@ -225,7 +231,7 @@ protected:
                         }
                     }
                     
-                    igTreePop();
+                    if (open) igTreePop();
                     igEndDragDropTarget();
                     return;
                 }
@@ -276,8 +282,8 @@ protected:
     override
     void onUpdate() {
 
-        if (incEditMode == EditMode.ModelEdit) { 
-            if (!incArmedParameter) {
+        if (incEditMode == EditMode.ModelEdit) {
+            if (!incArmedParameter && (igIsWindowFocused(ImGuiFocusedFlags.ChildWindows) || igIsWindowHovered(ImGuiHoveredFlags.ChildWindows))) {
                 if (incShortcut("Ctrl+A")) {
                     incSelectAll();
                 }
@@ -285,15 +291,49 @@ protected:
         }
 
         if (incEditMode == EditMode.VertexEdit) {
-            incText(_("In vertex edit mode..."));
+            incLabelOver(_("In vertex edit mode..."), ImVec2(0, 0), true);
             return;
         }
 
         if (igBeginChild("NodesMain", ImVec2(0, -30), false)) {
+            
+            // temp variables
+            float scrollDelta = 0;
+            auto avail = incAvailableSpace();
+
+            // Get the screen position of our node window
+            // as well as the size for the drag/drop scroll
+            ImVec2 screenPos;
+            igGetCursorScreenPos(&screenPos);
+            ImRect crect = ImRect(
+                screenPos,
+                ImVec2(screenPos.x+avail.x, screenPos.y+avail.y)
+            );
+
+            // Handle figuring out whether the user is trying to scroll the list via drag & drop
+            // We're only peeking in to the contents of the payload.
+            incBeginDragDropFake();
+                auto data = igAcceptDragDropPayload("_PUPPETNTREE", ImGuiDragDropFlags.AcceptPeekOnly | ImGuiDragDropFlags.SourceAllowNullID);
+                if (igIsMouseDragging(ImGuiMouseButton.Left) && data && data.Data) {
+                    ImVec2 mousePos;
+                    igGetMousePos(&mousePos);
+
+                    // If mouse is inside the window
+                    if (mousePos.x > crect.Min.x && mousePos.x < crect.Max.x) {
+                        float scrollSpeed = (4*60)*deltaTime();
+
+                        if (mousePos.y < crect.Min.y+32 && mousePos.y >= crect.Min.y) scrollDelta = -scrollSpeed;
+                        if (mousePos.y > crect.Max.y-32 && mousePos.y <= crect.Max.y) scrollDelta = scrollSpeed;
+                    }
+                }
+            incEndDragDropFake();
+
             igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 1));
             igPushStyleVar(ImGuiStyleVar.IndentSpacing, 14);
 
             if (igBeginTable("NodesContent", 2, ImGuiTableFlags.ScrollX, ImVec2(0, 0), 0)) {
+                auto window = igGetCurrentWindow();
+                igSetScrollY(window.Scroll.y+scrollDelta);
                 igTableSetupColumn("Nodes", ImGuiTableColumnFlags.WidthFixed, 0, 0);
                 //igTableSetupColumn("Visibility", ImGuiTableColumnFlags_WidthFixed, 32, 1);
                 
@@ -316,38 +356,36 @@ protected:
         igSeparator();
         igSpacing();
         
-        igPushFont(incIconFont());
-            if (incEditMode() == EditMode.ModelEdit) {
-                auto selected = incSelectedNodes();
-                if (igButton("", ImVec2(24, 24))) {
-                    foreach(payloadNode; selected) incDeleteChildWithHistory(payloadNode);
-                }
-
-                if(igBeginDragDropTarget()) {
-                    const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
-                    if (payload !is null) {
-                        Node payloadNode = *cast(Node*)payload.Data;
-
-                        if (selected.length > 1) {
-                            foreach(pn; selected) incDeleteChildWithHistory(pn);
-                            incSelectNode(null);
-                        } else {
-
-                            // Make sure we don't keep selecting a node we've removed
-                            if (incNodeInSelection(payloadNode)) {
-                                incSelectNode(null);
-                            }
-
-                            incDeleteChildWithHistory(payloadNode);
-                        }
-                        
-                        igPopFont();
-                        return;
-                    }
-                    igEndDragDropTarget();
-                }
+        if (incEditMode() == EditMode.ModelEdit) {
+            auto selected = incSelectedNodes();
+            if (igButton("", ImVec2(24, 24))) {
+                foreach(payloadNode; selected) incDeleteChildWithHistory(payloadNode);
             }
-        igPopFont();
+
+            if(igBeginDragDropTarget()) {
+                const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+                if (payload !is null) {
+                    Node payloadNode = *cast(Node*)payload.Data;
+
+                    if (selected.length > 1) {
+                        foreach(pn; selected) incDeleteChildWithHistory(pn);
+                        incSelectNode(null);
+                    } else {
+
+                        // Make sure we don't keep selecting a node we've removed
+                        if (incNodeInSelection(payloadNode)) {
+                            incSelectNode(null);
+                        }
+
+                        incDeleteChildWithHistory(payloadNode);
+                    }
+                    
+                    igPopFont();
+                    return;
+                }
+                igEndDragDropTarget();
+            }
+        }
 
     }
 

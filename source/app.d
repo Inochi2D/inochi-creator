@@ -14,6 +14,8 @@ import creator.windows;
 import creator.widgets;
 import creator.core.actionstack;
 import creator.core.i18n;
+import creator.io;
+import creator.atlas.atlas : incInitAtlassing;
 import creator.ext;
 import inochi2d;
 import creator;
@@ -64,14 +66,25 @@ int main(string[] args)
         incOpenWindow();
 
         // Initialize node overrides
-        incInitExtNodes();
+        incInitExt();
+
+        // Initialize video exporting
+        incInitVideoExport();
+        
+        // Initialize atlassing
+        incInitAtlassing();
+
+        // Initialize default post processing shader
+        inPostProcessingAddBasicLighting();
 
         // Open or create project
-        if (args.length > 1) incOpenProject(args[1]);
-        else incNewProject();
+        if (incSettingsGet!bool("hasDoneQuickSetup", false) && args.length > 1) incOpenProject(args[1]);
+        else {
+            incNewProject();
 
-        // TODO: Replace with first-time welcome screen
-        incPushWindow(new WelcomeWindow());
+            // TODO: Replace with first-time welcome screen
+            incPushWindow(new WelcomeWindow());
+        }
 
         // Update loop
         while(!incIsCloseRequested()) {

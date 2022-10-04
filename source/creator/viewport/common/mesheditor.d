@@ -374,6 +374,14 @@ public:
 
         switch(toolMode) {
             case VertexToolMode.Points:
+
+                if (deformOnly) {
+                    incStatusTooltip(_("Select"), _("Left Mouse"));
+                } else {
+                    incStatusTooltip(_("Select"), _("Left Mouse"));
+                    incStatusTooltip(_("Create"), _("Ctrl+Left Mouse"));
+                }
+                
                 void addOrRemoveVertex(bool selectedOnly) {
                     if (deformOnly) return;
                     // Check if mouse is over a vertex
@@ -478,7 +486,7 @@ public:
                 }
 
                 // Dragging
-                if (igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
+                if (incDragStartedInViewport(ImGuiMouseButton.Left) && igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
                     if (!isSelecting) {
                         isDragging = true;
                         getDeformAction();
@@ -504,6 +512,12 @@ public:
                 break;
             case VertexToolMode.Connect:
                 assert(!deformOnly);
+                if (selected.length == 0) {
+                    incStatusTooltip(_("Select"), _("Left Mouse"));
+                } else{
+                    incStatusTooltip(_("Connect/Disconnect"), _("Left Mouse"));
+                    incStatusTooltip(_("Connect Multiple"), _("Shift+Left Mouse"));
+                }
 
                 if (igIsMouseClicked(ImGuiMouseButton.Left)) {
                     if (vtxAtMouse !is null) {
@@ -543,6 +557,14 @@ public:
                 }
                 break;
             case VertexToolMode.PathDeform:
+                if (deforming) {
+                    incStatusTooltip(_("Deform"), _("Left Mouse"));
+                    incStatusTooltip(_("Switch Mode"), _("TAB"));
+                } else {
+                    incStatusTooltip(_("Create/Destroy"), _("Left Mouse (x2)"));
+                    incStatusTooltip(_("Switch Mode"), _("TAB"));
+                }
+                
                 vtxAtMouse = null; // Do not need this in this mode
 
                 if (incInputIsKeyPressed(ImGuiKey.Tab)) {
@@ -581,7 +603,7 @@ public:
                     pathDragTarget = editPath.findPoint(mousePos);
                 }
 
-                if (igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
+                if (incDragStartedInViewport(ImGuiMouseButton.Left) && igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
                     if (pathDragTarget != -1)  {
                         isDragging = true;
                         getDeformAction();
@@ -695,41 +717,42 @@ public:
         }
     }
 
-    void viewportOverlay() {
-        igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
-            if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Points ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-                setToolMode(VertexToolMode.Points);
-                path = null;
-                refreshMesh();
-            }
-            incTooltip(_("Vertex Tool"));
-
-            if (!deformOnly) {
-                igSameLine(0, 0);
-                if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Connect ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-                    setToolMode(VertexToolMode.Connect);
+    void viewportTools() {
+        igSetWindowFontScale(1.30);
+            igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(1, 1));
+            igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(8, 10));
+                if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Points ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                    setToolMode(VertexToolMode.Points);
                     path = null;
                     refreshMesh();
                 }
-                incTooltip(_("Edge Tool"));
-            }
+                incTooltip(_("Vertex Tool"));
 
-            igSameLine(0, 0);
-            if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.PathDeform ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-                setToolMode(VertexToolMode.PathDeform);
-                path = new CatmullSpline;
-                deforming = false;
-                refreshMesh();
-            }
-            incTooltip(_("Path Deform Tool"));
+                if (!deformOnly) {
+                    if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Connect ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                        setToolMode(VertexToolMode.Connect);
+                        path = null;
+                        refreshMesh();
+                    }
+                    incTooltip(_("Edge Tool"));
+                }
 
-        igPopStyleVar();
+                if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.PathDeform ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                    setToolMode(VertexToolMode.PathDeform);
+                    path = new CatmullSpline;
+                    deforming = false;
+                    refreshMesh();
+                }
+                incTooltip(_("Path Deform Tool"));
+
+            igPopStyleVar(2);
+        igSetWindowFontScale(1);
     }
-
 
     CatmullSpline getPath() {
         return path;
     }
+
     void setPath(CatmullSpline path) {
         this.path = path;
 

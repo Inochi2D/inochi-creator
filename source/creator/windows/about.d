@@ -21,7 +21,6 @@ import std.stdio;
 class AboutWindow : Window {
 private:
     version (InBranding) {
-        Texture ada;
         enum ADA_SIZE = 332;
         enum ADA_SIZE_PARTIAL = ADA_SIZE/6;
         vec2 ada_float;
@@ -43,15 +42,15 @@ protected:
         ImVec2 sPos;
         igGetCursorScreenPos(&sPos);
 
-
         version (InBranding) {
             ImVec2 avail = incAvailableSpace();
             igSetCursorScreenPos(ImVec2(
                 sPos.x+(avail.x-(ADA_SIZE-ADA_SIZE_PARTIAL)), 
                 sPos.y+(avail.y-(ADA_SIZE+28))+(sin(currentTime())*4)
             ));
+
             igImage(
-                cast(void*)ada.getTextureId(),
+                cast(void*)incGetAda().getTextureId(),
                 ImVec2(ADA_SIZE, ADA_SIZE),
                 ImVec2(0, 0),
                 ImVec2(1, 1), 
@@ -65,7 +64,7 @@ protected:
 
             version (InBranding) {
                 igImage(
-                    cast(void*)incGetLogo(), 
+                    cast(void*)incGetLogo().getTextureId(), 
                     ImVec2(64, 64), 
                     ImVec2(0, 0), 
                     ImVec2(1, 1), 
@@ -130,10 +129,6 @@ protected:
     }
 
 public:
-    ~this() {
-        version(InBranding) destroy(ada);
-    }
-
     this() {
         super(_("About"));
         this.onlyOne = true;
@@ -146,11 +141,6 @@ public:
         };
 
         // Only load Ada in official builds
-        version(InBranding) {
-            ada_float = vec2(0);
-            auto adaData = ShallowTexture(cast(ubyte[])import("ui/ui-ada.png"));
-            inTexPremultiply(adaData.data);
-            ada = new Texture(adaData);
-        }
+        version(InBranding) ada_float = vec2(0);
     }
 }

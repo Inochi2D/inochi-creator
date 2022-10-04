@@ -128,17 +128,17 @@ void incRenderDialogs() {
                 igSameLine(0, 0);
             }
             
-            if ((entry.btns & DialogButtons.No) == 8) {
-                if (igButton(__("No"), ImVec2(btnSize, btnHeight))) {
-                    entry.selected = DialogButtons.No;
+            if ((entry.btns & DialogButtons.Yes) == 4) {
+                if (igButton(__("Yes"), ImVec2(btnSize, btnHeight))) {
+                    entry.selected = DialogButtons.Yes;
                     igCloseCurrentPopup();
                 }
                 igSameLine(0, 0);
             }
             
-            if ((entry.btns & DialogButtons.Yes) == 4) {
-                if (igButton(__("Yes"), ImVec2(btnSize, btnHeight))) {
-                    entry.selected = DialogButtons.Yes;
+            if ((entry.btns & DialogButtons.No) == 8) {
+                if (igButton(__("No"), ImVec2(btnSize, btnHeight))) {
+                    entry.selected = DialogButtons.No;
                     igCloseCurrentPopup();
                 }
             }

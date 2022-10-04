@@ -18,19 +18,45 @@ import i18n;
 class ParameterAddRemoveAction(bool added = true) : Action {
 public:
     Parameter self;
+    Driver[] drivers;
+    Parameter[]* parentList;
 
-    this(Parameter self) {
+    this(Parameter self, Parameter[]* parentList) {
         this.self = self;
+        this.parentList = parentList;
+
+        // Find drivers
+        foreach(ref driver; incActivePuppet().getDrivers()) {
+            if (SimplePhysics sf = cast(SimplePhysics)driver) {
+                if (sf.param !is null && sf.param.uuid == self.uuid) {
+                    drivers ~= driver;
+                }
+            }
+        }
+
+        // Empty drivers
+        foreach(ref driver; drivers) {
+            if (SimplePhysics sf = cast(SimplePhysics)driver) {
+                sf.param = null;
+            }
+        }
     }
 
     /**
         Rollback
     */
     void rollback() {
-        if (!added)
-            incActivePuppet().parameters ~= self;
+        if (!added) 
+        incActivePuppet().parameters ~= self;
         else
             incActivePuppet().removeParameter(self);
+            
+        // Re-apply drivers
+        foreach(ref driver; drivers) {
+            if (SimplePhysics sf = cast(SimplePhysics)driver) {
+                sf.param = self;
+            }
+        }
     }
 
     /**
@@ -41,6 +67,13 @@ public:
             incActivePuppet().parameters ~= self;
         else
             incActivePuppet().removeParameter(self);
+            
+        // Empty drivers
+        foreach(ref driver; drivers) {
+            if (SimplePhysics sf = cast(SimplePhysics)driver) {
+                sf.param = null;
+            }
+        }
     }
 
     /**

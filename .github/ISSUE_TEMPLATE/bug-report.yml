@@ -1,0 +1,79 @@
+name: Bug Report
+description: Report an issue with Inochi Creator
+title: "[BUG]"
+labels: bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: checkboxes
+    id: checkboxes
+    attributes:
+      label: Validations
+      description: Before submitting the bug report, please make sure you do the following
+      options:
+        - label: I have checked for similar bug reports and could not find any.
+          required: true
+        - label: I have tested and confirmed that this is an issue in an official branded build.
+          required: true
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is, and the behavior you expect instead. If you intend to submit a PR for this issue, tell us in the description. Thanks!
+      placeholder: I am doing ... What I expect is ...  What is actually happening is ...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+  - type: dropdown
+    id: sys-arch
+    attributes:
+      label: System Architecture
+      options:
+        - x86_64
+        - arm64 / aarch64
+  - type: dropdown
+    id: sys-os
+    attributes:
+      label: Operating System
+      options:
+        - Windows
+        - macOS
+        - Linux
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The version of Inochi Creator you are running, or the commit hash if you are running a nightly / main branch build
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        Optional. If applicable, provide logs using the format below:
+        ````
+        <details>
+        <summary>Click to expand!</summary>
+        ```
+        // paste the log text here
+        ```
+        </details>
+        ````
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: |
+        Any other context or screenshots about the issue here.

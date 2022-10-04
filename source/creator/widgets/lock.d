@@ -4,7 +4,7 @@
     
     Authors: Luna Nielsen
 */
-module creator.widgets.lockbutton;
+module creator.widgets.lock;
 import creator.widgets;
 import creator.core;
 import std.string;
@@ -17,16 +17,14 @@ bool incLockButton(bool* val, string origin) {
 
     igSameLine(0, 0);
     igPushID(origin.ptr);
-        igPushFont(incIconFont());
-            igPushItemWidth(16);
-                incText(((*val ? "\uE897" : "\uE898")));
-                
-                if ((clicked = igIsItemClicked(ImGuiMouseButton.Left)) == true) {
-                    *val = !*val;
-                }
-                
-            igPopItemWidth();
-        igPopFont();
+        igPushItemWidth(16);
+            incText(((*val ? "\uE897" : "\uE898")));
+            
+            if ((clicked = igIsItemClicked(ImGuiMouseButton.Left)) == true) {
+                *val = !*val;
+            }
+            
+        igPopItemWidth();
     igPopID();
     return clicked;
 }

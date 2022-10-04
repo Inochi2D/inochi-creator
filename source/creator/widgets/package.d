@@ -17,10 +17,13 @@ public import creator.widgets.statusbar;
 public import creator.widgets.secrets;
 public import creator.widgets.dummy;
 public import creator.widgets.drag;
-public import creator.widgets.lockbutton;
-public import creator.widgets.colorbutton;
+public import creator.widgets.lock;
+public import creator.widgets.button;
 public import creator.widgets.dialog;
 public import creator.widgets.label;
+public import creator.widgets.texture;
+public import creator.widgets.category;
+public import creator.widgets.dragdrop;
 
 bool incBegin(const(char)* name, bool* pOpen, ImGuiWindowFlags flags) {
     version (NoUIScaling) {

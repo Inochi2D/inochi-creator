@@ -10,6 +10,7 @@ import creator.core;
 import inochi2d;
 import bindbc.sdl;
 import std.stdio;
+import std.string;
 import core.memory : GC;
 
 private {
@@ -37,6 +38,11 @@ bool incInputText(string wId, float width, ref string buffer, ImGuiInputTextFlag
         buffer = "";
     }
 
+    if (buffer.ptr[buffer.length] != '\0') {
+        // If buffer.ptr does not end with '\0', recreate string to force '\0' at the end.
+        buffer = buffer.ptr[0..buffer.length]~'\0';
+    }
+
     // Push ID
     auto id = igGetID(wId.ptr, wId.ptr+wId.length);
     igPushID(id);
@@ -61,10 +67,17 @@ bool incInputText(string wId, float width, ref string buffer, ImGuiInputTextFlag
 
             // Allow resizing strings on GC heap
             if (data.EventFlag == ImGuiInputTextFlags.CallbackResize) {
-            
+
+                // Make sure the buffer doesn't become negatively sized.
+                if (data.BufTextLen < 0) data.BufTextLen = 0;
+
                 // Resize and pass buffer ptr in
-                (*udata.str).length = data.BufTextLen;
+                (*udata.str).length = data.BufTextLen+1;
+
+                // slice out the null terminator
                 data.Buf = cast(char*)(*udata.str).ptr;
+                data.Buf[data.BufTextLen] = '\0';
+                (*udata.str) = (*udata.str)[0..$-1];
             }
             return 0;
         },
@@ -135,10 +148,17 @@ bool incInputText(string wId, string label, float width, ref string buffer, ImGu
 
             // Allow resizing strings on GC heap
             if (data.EventFlag == ImGuiInputTextFlags.CallbackResize) {
+
+                // Make sure the buffer doesn't become negatively sized.
+                if (data.BufTextLen < 0) data.BufTextLen = 0;
             
                 // Resize and pass buffer ptr in
-                (*udata.str).length = data.BufTextLen;
+                (*udata.str).length = data.BufTextLen+1;
+
+                // slice out the null terminator
                 data.Buf = cast(char*)(*udata.str).ptr;
+                data.Buf[data.BufTextLen] = '\0';
+                (*udata.str) = (*udata.str)[0..$-1];
             }
             return 0;
         },

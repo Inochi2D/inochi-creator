@@ -7,6 +7,7 @@
 module creator.panels.viewport;
 import creator.viewport;
 import creator.widgets;
+import creator.widgets.viewport;
 import creator.core;
 import creator.core.colorbleed;
 import creator.panels;
@@ -26,6 +27,9 @@ private:
     ImVec2 lastSize;
     bool actingInViewport;
 
+
+    ImVec2 priorWindowPadding;
+
 protected:
     override
     void onBeginUpdate() {
@@ -33,7 +37,8 @@ protected:
         ImGuiWindowClass wmclass;
         wmclass.DockNodeFlagsOverrideSet = ImGuiDockNodeFlagsI.NoTabBar;
         igSetNextWindowClass(&wmclass);
-        igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(1, 2));
+        priorWindowPadding = igGetStyle().WindowPadding;
+        igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(0, 2));
         igSetNextWindowDockID(incGetViewportDockSpace(), ImGuiCond.Always);
         super.onBeginUpdate();
     }
@@ -48,6 +53,8 @@ protected:
 
         auto io = igGetIO();
         auto camera = inGetCamera();
+        auto drawList = igGetWindowDrawList();
+        auto window = igGetCurrentWindow();
 
         // Draw viewport itself
         ImVec2 currSize;
@@ -63,12 +70,27 @@ protected:
         // Also viewport of 0 is too small, minimum 128.
         currSize = ImVec2(clamp(currSize.x, 128, float.max), clamp(currSize.y, 128, float.max));
         
+        foreach(btn; 0..cast(int)ImGuiMouseButton.COUNT) {
+            if (!incStartedDrag(btn)) {
+                if (io.MouseDown[btn]) {
+                    if (igIsWindowHovered(ImGuiHoveredFlags.ChildWindows)) {
+                        incBeginDragInViewport(btn);
+                    }
+                    incBeginDrag(btn);
+                }
+            }
 
-        if (igBeginChild("##ViewportView", ImVec2(0, -30))) {
+            if (incStartedDrag(btn) && !io.MouseDown[btn]) {
+                incEndDrag(btn);
+                incEndDragInViewport(btn);
+            }
+        }
+
+        if (igBeginChild("##ViewportView", ImVec2(0, -32))) {
             igGetContentRegionAvail(&currSize);
             currSize = ImVec2(
                 clamp(currSize.x, 128, float.max), 
-                clamp(currSize.y, 128, float.max)-4
+                clamp(currSize.y, 128, float.max)
             );
 
             if (currSize != lastSize) {
@@ -98,37 +120,77 @@ protected:
             inGetViewport(width, height);
 
             // Render our viewport
-            ImVec2 sPos;
-            ImVec2 sPosA;
-            igGetCursorScreenPos(&sPos);
-            
             igImage(
                 cast(void*)inGetRenderImage(), 
-                ImVec2(width/incGetUIScale(), height/incGetUIScale()), 
-                ImVec2(0, 1), 
-                ImVec2(1, 0), 
+                ImVec2(ceil(width/incGetUIScale()), ceil(height/incGetUIScale())), 
+                ImVec2((0.5/width), 1-(0.5/height)), 
+                ImVec2(1-(0.5/width), (0.5/height)), 
                 ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0)
             );
-            igGetCursorScreenPos(&sPosA);
 
-            // Render our fancy in-viewport buttons
-            igSetCursorScreenPos(ImVec2(sPos.x+8, sPos.y+8));
-                igSetItemAllowOverlap();
-                
-                igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
-                    if (igBeginChild("##ViewportMainControls", ImVec2(200, 28))) {
-                        igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
-                            incViewportDrawOverlay();
-                        igPopStyleVar();
+            // Popup right click menu
+            igPushStyleVar(ImGuiStyleVar.WindowPadding, priorWindowPadding);
+            if (incViewportHasMenu()) {
+                static ImVec2 downPos;
+                ImVec2 currPos;
+                if (igIsItemHovered()) {
+                    if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                        igGetMousePos(&downPos);
                     }
-                    igEndChild();
-                igPopStyleVar();
 
-            igSetCursorScreenPos(sPosA);
+                    if (!igIsPopupOpen("ViewportMenu") && igIsMouseReleased(ImGuiMouseButton.Right)) {
+                        igGetMousePos(&currPos);
+                        float dist = sqrt(((downPos.x-currPos.x)^^2)+((downPos.y-currPos.y)^^2));
+                        
+                        if (dist < 16) {
+                            incViewportMenuOpening();
+                            igOpenPopup("ViewportMenu");
+                        }
+                    }
+                }
+
+                if (igBeginPopup("ViewportMenu")) {
+                    incViewportMenu();
+                    igEndPopup();
+                }
+            }
+            igPopStyleVar();
+
+            igPushStyleVar(ImGuiStyleVar.FrameBorderSize, 0);
+                incBeginViewportToolArea("ToolArea", ImGuiDir.Left);
+                    igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
+                        incViewportDrawTools();
+                    igPopStyleVar();
+                incEndViewportToolArea();
+
+                incBeginViewportToolArea("OptionsArea", ImGuiDir.Right);
+                    igPushStyleVar_Vec2(ImGuiStyleVar.FramePadding, ImVec2(6, 6));
+                        incViewportDrawOptions();
+                    igPopStyleVar();
+                incEndViewportToolArea();
+
+                incBeginViewportToolArea("ConfirmArea", ImGuiDir.Left, ImGuiDir.Down, false);
+                    incViewportDrawConfirmBar();
+                incEndViewportToolArea();
+            igPopStyleVar();
 
             lastSize = currSize;
             igEndChild();
         }
+
+        // Draw line in a better way
+        ImDrawList_AddLine(drawList, 
+            ImVec2(
+                window.InnerRect.Max.x-1,
+                window.InnerRect.Max.y+currSize.y,
+            ),
+            ImVec2(
+                window.InnerRect.Min.x+1,
+                window.InnerRect.Max.y+currSize.y,
+            ), 
+            igColorConvertFloat4ToU32(*igGetStyleColorVec4(ImGuiCol.Separator)), 
+            2
+        );
 
 
         // FILE DRAG & DROP
@@ -184,6 +246,7 @@ protected:
         // BOTTOM VIEWPORT CONTROLS
         igGetContentRegionAvail(&currSize);
         if (igBeginChild("##ViewportControls", ImVec2(0, currSize.y), false, flags.NoScrollbar)) {
+            igSetCursorPosY(igGetCursorPosY()+4);
             igPushItemWidth(72);
                 igSpacing();
                 igSameLine(0, 8);
@@ -199,13 +262,12 @@ protected:
                     incViewportTargetZoom = incViewportZoom;
                 }
                 if (incViewportTargetZoom != 1) {
-                    igPushFont(incIconFont());
-                        igSameLine(0, 8);
-                        if (igButton("", ImVec2(0, 0))) {
-                            incViewportTargetZoom = 1;
-                        }
-                    igPopFont();
+                    igSameLine(0, 8);
+                    if (igButton("", ImVec2(0, 0))) {
+                        incViewportTargetZoom = 1;
+                    }
                 }
+
                 igSameLine(0, 8);
                 igSeparatorEx(ImGuiSeparatorFlags.Vertical);
 
@@ -213,11 +275,9 @@ protected:
                 incText("x = %.2f y = %.2f".format(incViewportTargetPosition.x, incViewportTargetPosition.y));
                 if (incViewportTargetPosition != vec2(0)) {
                     igSameLine(0, 8);
-                    igPushFont(incIconFont());
-                        if (igButton("##2", ImVec2(0, 0))) {
-                            incViewportTargetPosition = vec2(0, 0);
-                        }
-                    igPopFont();
+                    if (igButton("##2", ImVec2(0, 0))) {
+                        incViewportTargetPosition = vec2(0, 0);
+                    }
                 }
 
 

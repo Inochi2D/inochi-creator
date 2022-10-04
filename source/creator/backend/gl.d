@@ -65,29 +65,40 @@ void incGLBackendNewFrame() {
 
 void incGLBackendBeginRender() {
     version (UseUIScaling) {
-        float uiScale = incGetUIScale();
-        auto io = igGetIO();
-        auto vp = igGetMainViewport();
+        version (OSX) {
+            // macOS handles the UI scaling automatically, as such we don't need to do as much cursed shit(TM) there.
+            
+        } else {
+            float uiScale = incGetUIScale();
+            auto io = igGetIO();
+            auto vp = igGetMainViewport();
 
-        vp.WorkSize.x = ceil(cast(double)vp.WorkSize.x/cast(double)uiScale);
-        vp.WorkSize.y = ceil(cast(double)vp.WorkSize.y/cast(double)uiScale);
-        vp.Size.x = ceil(cast(double)vp.Size.x/cast(double)uiScale);
-        vp.Size.y = ceil(cast(double)vp.Size.y/cast(double)uiScale);
+            vp.WorkSize.x = ceil(cast(double)vp.WorkSize.x/cast(double)uiScale);
+            vp.WorkSize.y = ceil(cast(double)vp.WorkSize.y/cast(double)uiScale);
+            vp.Size.x = ceil(cast(double)vp.Size.x/cast(double)uiScale);
+            vp.Size.y = ceil(cast(double)vp.Size.y/cast(double)uiScale);
 
-        // NOTE:
-        // For some reason there's this weird offset added during scaling
-        // This magic number SOMEHOW works, and I don't know why
-        // I hate computers
-        //
-        // This only works with scaling up to 200%, after which it breaks
-        vp.WorkSize.y -= (26+10)*(uiScale-1);
-        
-        int mx, my;
-        int wx, wy;
-        SDL_GetGlobalMouseState(&mx, &my);
-        SDL_GetWindowPosition(cast(SDL_Window*)vp.PlatformHandle, &wx, &wy);
-        io.MousePos.x = cast(float)(mx-wx)/uiScale;
-        io.MousePos.y = cast(float)(my-wy)/uiScale;
+            // NOTE:
+            // For some reason there's this weird offset added during scaling
+            // This magic number SOMEHOW works, and I don't know why
+            // I hate computers
+            //
+            // This only works with scaling up to 200%, after which it breaks
+            vp.WorkSize.y -= (26+10)*(uiScale-1);
+            
+            int mx, my;
+            version(UseUIScaling) {
+                SDL_GetMouseState(&mx, &my);
+                io.MousePos.x = (cast(float)mx)/uiScale;
+                io.MousePos.y = (cast(float)my)/uiScale;
+            } else {
+                int wx, wy;
+                SDL_GetGlobalMouseState(&mx, &my);
+                SDL_GetWindowPosition(cast(SDL_Window*)vp.PlatformHandle, &wx, &wy);
+                io.MousePos.x = cast(float)(mx-wx)/uiScale;
+                io.MousePos.y = cast(float)(my-wy)/uiScale;
+            }
+        }
     }
 }
 
@@ -543,8 +554,7 @@ void incGLBackendDestroyDeviceObjects() {
 // This is an _advanced_ and _optional_ feature, allowing the back-end to create and handle multiple viewports simultaneously.
 // If you are new to dear imgui or creating a new binding for dear imgui, it is recommended that you completely ignore this section first..
 //--------------------------------------------------------------------------------------------------------
-extern (C)
-{
+extern (C) {
     version (NoUIScaling) {
         void incGLBackendPlatformRenderWindow(ImGuiViewport* viewport, void*) {
             if (!(viewport.Flags & ImGuiViewportFlags.NoRendererClear)) {

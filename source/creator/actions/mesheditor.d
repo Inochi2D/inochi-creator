@@ -55,10 +55,12 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     void markAsDirty() { dirty = true; }
 
     void updateNewState() {
-        auto newDeform      = cast(DeformationParameterBinding)param.getBinding(this.target, "deform");
-        if (deform is null && newDeform !is null)
-            bindingAdded = true;
-        deform = newDeform;
+        if (param) {
+            auto newDeform      = cast(DeformationParameterBinding)param.getBinding(this.target, "deform");
+            if (deform is null && newDeform !is null)
+                bindingAdded = true;
+            deform = newDeform;
+        }
     }
 
     void clear() {
@@ -199,7 +201,10 @@ public:
     SplinePoint[] newTargetPathPoints;
 
     auto path() {
-        return self.getPath();
+        if (self !is null)
+            return self.getPath();
+        else
+            return null;
     }
 
     this(string name, void delegate() update = null) {
@@ -208,7 +213,7 @@ public:
             oldPathPoints = path.points.dup;
         else
             oldPathPoints = null;
-        if (this.path.target !is null)
+        if (this.path && this.path.target !is null)
             oldTargetPathPoints = this.path.target.points.dup;
         else
             oldTargetPathPoints = null;

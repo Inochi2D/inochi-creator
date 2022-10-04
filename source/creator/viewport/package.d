@@ -7,6 +7,7 @@
 module creator.viewport;
 import inochi2d;
 import creator;
+import creator.core;
 import creator.core.input;
 import bindbc.imgui;
 import creator.viewport.model;
@@ -37,24 +38,58 @@ void incViewportDraw() {
             default: assert(0);
         }
     inEndScene();
+
+    if (incShouldPostProcess) {
+        inPostProcessScene();
+    }
 }
 
 /**
     Draws the viewport overlay (if any)
 */
-void incViewportDrawOverlay() {
+void incViewportDrawTools() {
+    switch(incEditMode) {
+        case EditMode.VertexEdit:
+            incViewportVertexTools();
+            break;
+        case EditMode.ModelEdit: 
+            incViewportModelTools(); 
+            break;
+        case EditMode.AnimEdit:
+        case EditMode.ModelTest:
+            break;
+        default: assert(0);
+    }
+}
+
+void incViewportDrawOptions() {
     switch(incEditMode) {
         case EditMode.ModelEdit:
-            incViewportModelOverlay();
+            incViewportModelOptions();
             break;
         case EditMode.VertexEdit:
-            incViewportVertexOverlay();
+            incViewportVertexOptions();
             break;
         case EditMode.AnimEdit:
             incViewportAnimOverlay();
             break;
         case EditMode.ModelTest:
             incViewportTestOverlay();
+            break;
+        default: assert(0);
+    }
+}
+
+void incViewportDrawConfirmBar() {
+    switch(incEditMode) {
+        case EditMode.VertexEdit:
+            incViewportVertexConfirmBar();
+            break;
+        case EditMode.ModelEdit:
+            incViewportModelConfirmBar();
+            break;
+        case EditMode.AnimEdit:
+        case EditMode.ModelTest:
             break;
         default: assert(0);
     }
@@ -163,6 +198,30 @@ void incViewportWithdrawMode(EditMode mode) {
     }
 }
 
+void incViewportMenu() {
+    switch(incEditMode) {
+        case EditMode.ModelEdit:
+            incViewportModelMenu();
+            break;
+        default: return;
+    }
+}
+
+void incViewportMenuOpening() {
+    switch(incEditMode) {
+        case EditMode.ModelEdit:
+            incViewportModelMenuOpening();
+            break;
+        default: return;
+    }
+}
+
+bool incViewportHasMenu() {
+    switch(incEditMode) {
+        case EditMode.ModelEdit: return true;
+        default: return false;
+    }
+}
 
 /**
     Updates the viewport tool settings
@@ -196,8 +255,29 @@ void incViewportToolSettingsNoTool() {
     incText(_("No tool selected..."));
 }
 
+bool incStartedDrag(int btn) {
+    return isDragging[btn];
+}
 
+void incBeginDrag(int btn) {
+    isDragging[btn] = true;
+}
 
+void incEndDrag(int btn) {
+    isDragging[btn] = false;
+}
+
+bool incDragStartedInViewport(int btn) {
+    return isDraggingInViewport[btn];
+}
+
+void incBeginDragInViewport(int btn) {
+    isDraggingInViewport[btn] = true;
+}
+
+void incEndDragInViewport(int btn) {
+    isDraggingInViewport[btn] = false;
+}
 
 //
 //          VIEWPORT CAMERA HANDLING
@@ -234,6 +314,8 @@ void incViewportReset() {
 //          Internal Viewport Stuff(TM)
 //
 private {
+    bool[ImGuiMouseButton.COUNT] isDraggingInViewport;
+    bool[ImGuiMouseButton.COUNT] isDragging;
     bool isMovingViewport;
     float sx, sy;
     float csx, csy;

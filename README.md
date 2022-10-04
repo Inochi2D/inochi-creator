@@ -1,14 +1,32 @@
 # Inochi Creator
-![image](https://user-images.githubusercontent.com/7032834/170948484-2f3a8175-9c45-4cf6-ae7e-0a6ee86bdc53.png)
-_Ada model by [ku-ini](https://twitter.com/duckmastah)_
+![image](https://user-images.githubusercontent.com/7032834/189459431-f2fcbe64-ed8d-454e-8755-07a59f93f8ea.png)
+_Aka model by [seagetch](https://twitter.com/seagetch)_
 
-&nbsp;
-&nbsp;
+----------------
 
 [![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dclipsey%26type%3Dpatrons&style=for-the-badge)](https://patreon.com/clipsey)
 [![Join the Discord](https://img.shields.io/discord/855173611409506334?label=Community&logo=discord&logoColor=FFFFFF&style=for-the-badge)](https://discord.com/invite/abnxwN6r9v)
 
-Inochi Creator is tool to create and edit [Inochi2D puppets](https://github.com/Inochi2D/inochi2d).
+Inochi Creator is an open source editor for the [Inochi2D puppet format](https://github.com/Inochi2D/inochi2d).  This application allows you to rig models for use in games or for other real-time applications such as [VTubing](https://en.wikipedia.org/wiki/VTuber). Animation is achieved by morphing, transforming and in other ways distorting layered 2D textures in real-time. These distortions can trick the end user in to perciving 3D depth in the 2D art.
+
+If you are a VTuber wanting to use Inochi2D we highly recommend checking out [Inochi Session](https://github.com/Inochi2D/inochi-session) as well.
+
+&nbsp;
+
+## Downloads
+
+### Stable Builds
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+[![Download on itch.io](https://img.shields.io/github/v/release/Inochi2D/inochi-creator?color=%23fa5c5c&label=itch.io&logo=itch.io&style=for-the-badge)](https://lunafoxgirlvt.itch.io/inochi-creator)
+[![Latest Build](https://img.shields.io/github/v/release/Inochi2D/inochi-creator?style=for-the-badge&logo=github)](https://github.com/Inochi2D/inochi-creator/releases/latest)
+
+### Experimental Builds
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+[![Nightly Builds](https://img.shields.io/github/workflow/status/Inochi2D/inochi-creator/Nightly/main?label=Nightly&style=for-the-badge)](https://github.com/Inochi2D/inochi-creator/releases/tag/nightly)  
+
+&nbsp;
 
 ## For package maintainers
 We do not officially support packages that we don't officially build ourselves, we ask that you build using the barebones configurations, as the branding assets are copyright the Inochi2D Project.  
@@ -17,18 +35,7 @@ You may request permission to use our branding assets in your package by submitt
 Barebones builds are more or less equivalent to official builds with the exception that branding is removed,  
 and that we don't accept support tickets unless a problem can be replicated on an official build.
 
-## What package formats are/will be officially supported?
-Anything we upload to the Releases page is officially supported, as well as anything that is linked to on our official website (TBA).  
-We currently plan to distribute Inochi Creator in the following formats:
- - Windows MSI Installer
- - Linux AppImage
- - macOS DMG
-
-## Under Construction
-Inochi Creator is currently under construction and is not recommended for production use.
-
-## Intel Integrated Graphics
-Inochi Creator versions below 0.7.3 do not support Intel iGPUs. 0.7.3 and newer supports Intel iGPUs.
+&nbsp;
 
 ## Building
 It's occasionally the case that our dependencies are out of sync with dub, so it's somewhat recommended if you're building from source to clone the tip of `main` and `dub add-local . "<version matching inochi-creator dep>"` any of our forked dependencies (i18n-d, psd-d, bindbc-imgui, facetrack-d, inmath, inochi2d). This will generally keep you up to date with what we're doing, and it's how the primary contributors work. Ideally we'd have a script to help set this up, but currently we do it manually, PRs welcome :)

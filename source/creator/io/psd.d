@@ -42,7 +42,7 @@ void incImportPSD(string file) {
         import std.array : join;
         PSD doc = parseDocument(file);
         vec2i docCenter = vec2i(doc.width/2, doc.height/2);
-        Puppet puppet = new Puppet();
+        Puppet puppet = new ExPuppet();
 
         Layer[] layerGroupStack;
         bool isLastStackItemHidden() {

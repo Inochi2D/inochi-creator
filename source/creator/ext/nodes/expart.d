@@ -25,13 +25,6 @@ protected:
     }
 
     override
-    void serializeSelf(ref InochiSerializerCompact serializer) {
-        super.serializeSelf(serializer);
-        serializer.putKey("psdLayerPath");
-        serializer.putValue(layerPath);
-    }
-
-    override
     SerdeException deserializeFromFghj(Fghj data) {
         auto err = super.deserializeFromFghj(data);
         if (err) return err;

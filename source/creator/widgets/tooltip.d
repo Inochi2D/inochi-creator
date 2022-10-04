@@ -13,6 +13,7 @@ import creator.core;
     Creates a new tooltip
 */
 void incTooltip(string tip) {
+    igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(4, 4));
     if (igIsItemHovered()) {
         igBeginTooltip();
 
@@ -24,4 +25,5 @@ void incTooltip(string tip) {
 
         igEndTooltip();
     }
+    igPopStyleVar();
 }

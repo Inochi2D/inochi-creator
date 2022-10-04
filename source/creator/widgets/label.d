@@ -46,6 +46,29 @@ void incTextShadowed(string text) {
 }
 
 /**
+    Renders text with a slight border
+*/
+void incTextBordered(string text) {
+    
+    ImVec2 origin;
+    igGetCursorPos(&origin);
+    
+    // Shadow
+    igSetCursorPos(ImVec2(origin.x+1, origin.y));
+    incTextColored(ImVec4(0.25, 0.25, 0.25, 0.8), text);
+    igSetCursorPos(ImVec2(origin.x-1, origin.y));
+    incTextColored(ImVec4(0.25, 0.25, 0.25, 0.8), text);
+    igSetCursorPos(ImVec2(origin.x, origin.y+1));
+    incTextColored(ImVec4(0.25, 0.25, 0.25, 0.8), text);
+    igSetCursorPos(ImVec2(origin.x, origin.y-1));
+    incTextColored(ImVec4(0.25, 0.25, 0.25, 0.8), text);
+
+    // Version String
+    igSetCursorPos(origin);
+    incText(text);
+}
+
+/**
     Render wrapped
 */
 void incTextWrapped(string text) {
@@ -60,7 +83,7 @@ bool incTextLinkWithIcon(string icon, string text) {
     return incTextLink(text);
 }
 
-bool incTextLink(string text, ImVec4 hoverColor = ImVec4(0.313, 0.521, 0.737, 1), ImVec4 clickedColor = ImVec4(0.132, 0.335, 0.523, 1), ImVec4 baseColor = ImVec4(0.176, 0.447, 0.698, 1)) {
+bool incTextLink(string text, ImVec4 hoverColor = ImVec4(0.313, 0.521, 0.737, 1), ImVec4 clickedColor = ImVec4(0.132, 0.335, 0.523, 1), ImVec4 baseColor = ImVec4(0.186, 0.457, 0.708, 1)) {
     ImGuiWindow* window = igGetCurrentWindow();
     if (window.SkipItems) return false;
     

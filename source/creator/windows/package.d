@@ -21,6 +21,8 @@ public import creator.windows.paramsplit;
 public import creator.windows.trkbind;
 public import creator.windows.psdmerge;
 public import creator.windows.welcome;
+public import creator.windows.rename;
+public import creator.windows.imgexport;
 
 version(NoUIScaling) private ImGuiWindowClass* windowClass;
 
@@ -68,6 +70,10 @@ protected:
 
     void onClose() { }
 
+    void unclose() {
+        this.visible = true;
+    }
+
 public:
 
 
@@ -96,6 +102,8 @@ public:
         Draws the frame
     */
     final void update() {
+        if (!disabled && !visible) return;
+
         igPushItemFlag(ImGuiItemFlags.Disabled, disabled);
             this.onBeginUpdate();
                 this.onUpdate();
@@ -130,6 +138,14 @@ public:
             windowClass.ViewportFlagsOverrideClear = ImGuiViewportFlags.NoDecoration | ImGuiViewportFlags.NoTaskBarIcon;
             windowClass.ViewportFlagsOverrideSet = ImGuiViewportFlags.NoAutoMerge;
         }
+    }
+    
+    /**
+        Gets whether the window is visible.
+    */
+    final
+    bool isVisible() {
+        return visible;
     }
 }
 
@@ -183,6 +199,7 @@ void incPopWindowList(Window window) {
 
     ptrdiff_t i = windowList.countUntil(window);
     if (i != -1) {
+        window.onClose();
         if (windowList.length == 1) windowList.length = 0;
         else windowList = windowList.remove(i);
     }

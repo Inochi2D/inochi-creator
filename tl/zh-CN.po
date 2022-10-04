@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-20 07:54+0200\n"
-"PO-Revision-Date: 2022-06-02 07:13-0600\n"
+"POT-Creation-Date: 2022-08-21 03:22+0200\n"
+"PO-Revision-Date: 2022-08-20 09:09-0600\n"
 "Last-Translator: LovelyA72 <a72@luotianyi.pro>\n"
 "Language-Team: Chinese (Simplified)\n"
 "Language: zh-CN\n"
@@ -21,22 +21,22 @@ msgstr ""
 #: source/creator/actions/binding.d:74
 #, c-format
 msgid "Added binding %s"
-msgstr ""
+msgstr "添加 %s 的绑定"
 
 #: source/creator/actions/binding.d:76
 #, c-format
 msgid "Removed binding %s"
-msgstr ""
+msgstr "移除 %s 的绑定"
 
 #: source/creator/actions/binding.d:84
 #, c-format
 msgid "Binding %s was removed"
-msgstr ""
+msgstr "已移除 %s 的绑定"
 
 #: source/creator/actions/binding.d:86
 #, c-format
 msgid "Binding %s was added"
-msgstr ""
+msgstr "已添加 %s 的绑定"
 
 #: source/creator/actions/binding.d:155 source/creator/actions/binding.d:252
 #: source/creator/actions/parameter.d:135
@@ -46,29 +46,31 @@ msgid "%s->%s changed"
 msgstr "%s->%s 变更为了 %s"
 
 #: source/creator/actions/binding.d:162 source/creator/actions/binding.d:259
+#: source/creator/actions/parameter.d:145
+#: source/creator/actions/parameter.d:219
 #, fuzzy, c-format
-msgid "%s->%s chang cancelled"
+msgid "%s->%s change cancelled"
 msgstr "%s->%s 变更为了 %s"
 
 #: source/creator/actions/drawable.d:82
 #, c-format
 msgid "Changed drawable mesh of %s"
-msgstr ""
+msgstr "更改了 %s 的可绘制网格"
 
 #: source/creator/actions/drawable.d:90
 #, c-format
 msgid "Drawable %s was changed"
-msgstr ""
+msgstr "可绘制对项 %s 被更改了"
 
 #: source/creator/actions/mesheditor.d:158
 #, c-format
 msgid "%s->Edited deformation of %s."
-msgstr ""
+msgstr "%s->已编辑 %s 的变形"
 
 #: source/creator/actions/mesheditor.d:165
 #, c-format
 msgid "%s->deformation of %s was edited."
-msgstr ""
+msgstr "%s-> %s 的变形被编辑了"
 
 #: source/creator/actions/node.d:92
 #, c-format
@@ -127,15 +129,9 @@ msgstr "参数名称"
 msgid "Parameter %s was added"
 msgstr "参数名称"
 
-#: source/creator/actions/parameter.d:145
-#: source/creator/actions/parameter.d:219
-#, fuzzy, c-format
-msgid "%s->%s change cancelled"
-msgstr "%s->%s 变更为了 %s"
-
 #: source/creator/core/dpi.d:51 source/creator/core/dpi.d:55
 msgid "100% (Locked)"
-msgstr ""
+msgstr "100% （已锁定）"
 
 #. The name of the language this translation is a translation to
 #. in the native script of the language (for the region)
@@ -151,14 +147,14 @@ msgstr "(调试模式)"
 
 #: source/creator/core/package.d:215
 msgid "(Unsupported)"
-msgstr ""
+msgstr "（不支持）"
 
 #: source/creator/io/package.d:16 source/creator/widgets/mainmenu.d:142
 #: source/creator/widgets/mainmenu.d:167
 msgid "Import..."
 msgstr "导入..."
 
-#: source/creator/io/package.d:29 source/creator/windows/welcome.d:173
+#: source/creator/io/package.d:29 source/creator/windows/welcome.d:190
 #, fuzzy
 msgid "Open..."
 msgstr "打开"
@@ -166,7 +162,7 @@ msgstr "打开"
 #: source/creator/io/psd.d:145 source/creator/package.d:269
 #, c-format
 msgid "%s was imported..."
-msgstr ""
+msgstr "已导入 %s"
 
 #: source/creator/io/psd.d:148 source/creator/package.d:273
 #, fuzzy
@@ -180,64 +176,65 @@ msgstr "导入..."
 #: source/creator/viewport/vertex/package.d:137
 #, fuzzy
 msgid "Error"
-msgstr "镜像"
+msgstr "错误"
 
 #: source/creator/io/psd.d:149
 #, c-format
 msgid ""
 "An error occured during PSD import:\n"
 "%s"
-msgstr ""
+msgstr "导入PSD时发生了错误：%s"
 
 #: source/creator/package.d:192
 #, c-format
 msgid "%s opened successfully."
-msgstr ""
+msgstr "已打开%s"
 
 #: source/creator/package.d:208
 #, c-format
 msgid "%s saved successfully."
-msgstr ""
+msgstr "已保存%s"
 
 #: source/creator/package.d:210
 #, c-format
 msgid "Failed to save %s"
-msgstr ""
+msgstr "%s保存失败"
 
 #: source/creator/package.d:246
 #, c-format
 msgid ""
 "The following errors occured during file loading\n"
 "%s"
-msgstr ""
+msgstr "加载文件时发生了以下错误%s"
 
 #: source/creator/package.d:255
 msgid "Folder import completed with errors..."
-msgstr ""
+msgstr "文件夹已导入，但是包含错误"
 
 #: source/creator/package.d:256
 msgid "Folder import completed..."
-msgstr ""
+msgstr "文件夹已导入"
 
 #: source/creator/package.d:296
 #, c-format
 msgid "%s was exported..."
-msgstr ""
+msgstr "%s已导出"
 
 #: source/creator/package.d:299
 #, fuzzy
 msgid "Export failed..."
-msgstr "导出..."
+msgstr "导出失败..."
 
 #: source/creator/package.d:312
 msgid "Mipmap generation completed."
-msgstr ""
+msgstr "Mipmap生成完成"
 
 #: source/creator/package.d:327
 msgid "Texture bleeding completed."
-msgstr ""
+msgstr "材质出血完成"
 
 #: source/creator/panels/actionhistory.d:26
+#: source/creator/windows/settings.d:135
 #, fuzzy
 msgid "Undo History"
 msgstr "撤销历史"
@@ -371,17 +368,18 @@ msgstr ""
 #: source/creator/panels/inspector.d:275
 #, fuzzy
 msgid "Rendering Settings"
-msgstr "设置"
+msgstr "渲染设置"
 
 #: source/creator/panels/inspector.d:277
 msgid "Use Point Filtering"
-msgstr ""
+msgstr "使用点过滤"
 
 #: source/creator/panels/inspector.d:281
+#, fuzzy
 msgid ""
-"Makes Inochi2D model use point filtering, removing blur for low-resoltion "
+"Makes Inochi2D model use point filtering, removing blur for low-resolution "
 "models."
-msgstr ""
+msgstr "使Inochi2D模型使用点过滤，这会去除低分辨率模型的模糊"
 
 #: source/creator/panels/inspector.d:301 source/creator/panels/inspector.d:1108
 #, fuzzy
@@ -582,7 +580,7 @@ msgstr "蒙版来源"
 
 #: source/creator/panels/inspector.d:717
 msgid "(Drag a Part or Mask Here)"
-msgstr ""
+msgstr "(将零件或蒙版拖到此处)"
 
 #: source/creator/panels/inspector.d:724
 msgid "Mode"
@@ -688,13 +686,13 @@ msgstr "取消"
 
 #: source/creator/panels/inspector.d:1322
 msgid "Are you sure?"
-msgstr ""
+msgstr "你确认吗？"
 
 #: source/creator/panels/inspector.d:1323
 msgid ""
 "The layout of the mesh has changed, all deformations to this mesh will be "
 "deleted if you continue."
-msgstr ""
+msgstr "网格的布局已更改，如果你继续，此网格的所有变形都将会被删除"
 
 #: source/creator/panels/inspector.d:1334
 #: source/creator/windows/paramsplit.d:168
@@ -741,7 +739,7 @@ msgstr ""
 #: source/creator/panels/nodes.d:107
 #, c-format
 msgid "%s Layer: %s"
-msgstr ""
+msgstr "%s 图层: %s"
 
 #. %u is the UUID of the node in the More Info menu
 #: source/creator/panels/nodes.d:112
@@ -752,7 +750,7 @@ msgstr ""
 #: source/creator/panels/nodes.d:115
 #, c-format
 msgid "Layer: %s"
-msgstr ""
+msgstr "图层: %s"
 
 #: source/creator/panels/nodes.d:288
 msgid "In vertex edit mode..."
@@ -852,7 +850,7 @@ msgstr "编辑轴点"
 
 #: source/creator/panels/parameters.d:548
 msgid "Split"
-msgstr ""
+msgstr "拆分"
 
 #: source/creator/panels/parameters.d:553
 msgid "Flip X"
@@ -995,7 +993,7 @@ msgstr "绑定地址"
 
 #: source/creator/panels/tracking.d:115
 msgid "OSF Listen Port"
-msgstr ""
+msgstr "OSF监听地址"
 
 #: source/creator/panels/tracking.d:127
 #, fuzzy
@@ -1018,9 +1016,9 @@ msgstr "跟踪"
 #: source/creator/panels/viewport.d:158 source/creator/panels/viewport.d:172
 #, c-format
 msgid "%s is not supported"
-msgstr ""
+msgstr "不支持 %s"
 
-#: source/creator/panels/viewport.d:236
+#: source/creator/panels/viewport.d:236 source/creator/windows/settings.d:81
 msgid "Viewport"
 msgstr "视图"
 
@@ -1105,24 +1103,26 @@ msgid ""
 "Cannot apply invalid mesh\n"
 "At least 3 vertices forming a triangle is needed."
 msgstr ""
+"无法应用无效网格\n"
+"至少需要三个顶点来形成一个三角形"
 
 #: source/creator/widgets/dialog.d:124
 msgid "OK"
-msgstr ""
+msgstr "确认"
 
 #: source/creator/widgets/dialog.d:132
 #, fuzzy
 msgid "No"
-msgstr "节点"
+msgstr "否"
 
 #: source/creator/widgets/dialog.d:140
 msgid "Yes"
-msgstr ""
+msgstr "是"
 
 #: source/creator/widgets/mainmenu.d:52
 #, fuzzy
 msgid "Save..."
-msgstr "另存为..."
+msgstr "保存..."
 
 #: source/creator/widgets/mainmenu.d:66 source/creator/widgets/mainmenu.d:126
 msgid "Save As..."
@@ -1142,19 +1142,14 @@ msgstr "打开"
 
 #: source/creator/widgets/mainmenu.d:110
 msgid "Recent"
-msgstr ""
+msgstr "近期打开的文件"
 
 #. Actually saves the edited state for the axies points
 #. Settings are autosaved, but in case the user
 #. feels more safe with a save button then we have
 #. it here.
-#. Save button
-#. Settings are autosaved, but in case the user
-#. feels more safe with a save button then we have
-#. it here.
 #: source/creator/widgets/mainmenu.d:122 source/creator/windows/paramaxes.d:140
-#: source/creator/windows/paramprop.d:103 source/creator/windows/settings.d:126
-#: source/creator/windows/trkbind.d:129
+#: source/creator/windows/paramprop.d:103 source/creator/windows/trkbind.d:129
 msgid "Save"
 msgstr "保存"
 
@@ -1177,7 +1172,7 @@ msgstr "Inochi2D 模型"
 #: source/creator/widgets/mainmenu.d:149
 #, fuzzy
 msgid "Import existing puppet file, editing options limited"
-msgstr "导入一个已有的 Inochi2D 模型"
+msgstr "导入一个已有的 Inochi2D 模型，但是部分参数无法被编辑"
 
 #: source/creator/widgets/mainmenu.d:151
 msgid "Image Folder"
@@ -1193,12 +1188,12 @@ msgstr "支持PNG, TGA, 和JPEG"
 
 #: source/creator/widgets/mainmenu.d:161 source/creator/windows/psdmerge.d:412
 msgid "Merge"
-msgstr ""
+msgstr "合并"
 
 #: source/creator/widgets/mainmenu.d:174
 #, fuzzy
 msgid "Merge layers from Photoshop document"
-msgstr "PSD"
+msgstr "合并PSD文件的图层"
 
 #: source/creator/widgets/mainmenu.d:176
 #, fuzzy
@@ -1207,7 +1202,7 @@ msgstr "Inochi Creator 崩溃日志"
 
 #: source/creator/widgets/mainmenu.d:187
 msgid "Merge another Inochi Creator project in to this one"
-msgstr ""
+msgstr "将另一个Inochi Creator项目合并到这个项目中"
 
 #: source/creator/widgets/mainmenu.d:192
 msgid "Export"
@@ -1241,7 +1236,7 @@ msgstr "恢复"
 msgid "Cut"
 msgstr "剪切"
 
-#: source/creator/widgets/mainmenu.d:224 source/creator/windows/settings.d:143
+#: source/creator/widgets/mainmenu.d:224 source/creator/windows/settings.d:281
 msgid "Settings"
 msgstr "设置"
 
@@ -1272,12 +1267,12 @@ msgstr "面板"
 
 #: source/creator/widgets/mainmenu.d:270
 msgid "Configuration"
-msgstr ""
+msgstr "选项"
 
 #. Opens the directory where configuration resides in the user's file browser.
 #: source/creator/widgets/mainmenu.d:273
 msgid "Open Configuration Folder"
-msgstr ""
+msgstr "打开配置文件夹"
 
 #: source/creator/widgets/mainmenu.d:282
 msgid "Extras"
@@ -1350,11 +1345,11 @@ msgstr "重新生成模型的贴图"
 
 #: source/creator/widgets/mainmenu.d:351
 msgid "Generate fake layer name info..."
-msgstr ""
+msgstr "生成假图层名称信息..."
 
 #: source/creator/widgets/mainmenu.d:361
 msgid "Generates fake layer info based on node names"
-msgstr ""
+msgstr "根据节点名称生产虚假图层信息"
 
 #: source/creator/widgets/mainmenu.d:367
 msgid "Puppet Recovery"
@@ -1468,7 +1463,7 @@ msgstr "参数属性"
 
 #: source/creator/windows/paramsplit.d:48
 msgid " (Split)"
-msgstr ""
+msgstr "（拆分）"
 
 #: source/creator/windows/paramsplit.d:179
 #, fuzzy
@@ -1482,11 +1477,11 @@ msgstr ""
 
 #: source/creator/windows/psdmerge.d:272
 msgid "Unmap"
-msgstr ""
+msgstr "取消映射"
 
 #: source/creator/windows/psdmerge.d:277
 msgid "Ignore"
-msgstr ""
+msgstr "无视"
 
 #: source/creator/windows/psdmerge.d:277
 #, fuzzy
@@ -1495,18 +1490,18 @@ msgstr "取消选定"
 
 #: source/creator/windows/psdmerge.d:374
 msgid "Only show unmapped"
-msgstr ""
+msgstr "只显示未映射项"
 
 #. Auto-rename
 #: source/creator/windows/psdmerge.d:394
 msgid "Auto-rename"
-msgstr ""
+msgstr "自动重命名"
 
 #: source/creator/windows/psdmerge.d:395
 msgid ""
 "Renames all mapped nodes to match the names of the PSD layer that was merged "
 "in to them."
-msgstr ""
+msgstr "重命名所有映射了的节点来匹配合并到它们的PSD图层的名称"
 
 #: source/creator/windows/psdmerge.d:398
 #, fuzzy
@@ -1516,67 +1511,67 @@ msgstr "位移"
 #: source/creator/windows/psdmerge.d:399
 msgid ""
 "Moves all nodes so that they visually match their position in the canvas."
-msgstr ""
+msgstr "移动所有节点，使它们在视觉上匹配它们在画布中的位置"
 
 #: source/creator/windows/psdmerge.d:447
 msgid "PSD Merging"
-msgstr ""
+msgstr "PSD合并"
 
-#: source/creator/windows/settings.d:45
-msgid "General"
-msgstr "通用"
-
-#: source/creator/windows/settings.d:47
+#: source/creator/windows/settings.d:77
 msgid "Look and Feel"
 msgstr "外观"
 
-#: source/creator/windows/settings.d:49 source/creator/windows/welcome.d:131
+#: source/creator/windows/settings.d:85
+#, fuzzy
+msgid "Accessbility"
+msgstr "可访问性"
+
+#: source/creator/windows/settings.d:105 source/creator/windows/welcome.d:138
 msgid "Color Theme"
 msgstr "主题"
 
-#: source/creator/windows/settings.d:49 source/creator/windows/settings.d:50
-#: source/creator/windows/welcome.d:131 source/creator/windows/welcome.d:132
+#: source/creator/windows/settings.d:105 source/creator/windows/settings.d:106
+#: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:139
 msgid "Dark"
 msgstr "暗色"
 
-#: source/creator/windows/settings.d:49 source/creator/windows/settings.d:51
-#: source/creator/windows/welcome.d:131 source/creator/windows/welcome.d:133
+#: source/creator/windows/settings.d:105 source/creator/windows/settings.d:107
+#: source/creator/windows/welcome.d:138 source/creator/windows/welcome.d:140
 msgid "Light"
 msgstr "亮色"
 
-#: source/creator/windows/settings.d:57 source/creator/windows/welcome.d:123
+#: source/creator/windows/settings.d:113 source/creator/windows/welcome.d:124
 msgid "Language"
 msgstr "语言"
 
-#: source/creator/windows/settings.d:66 source/creator/windows/welcome.d:139
+#: source/creator/windows/settings.d:128 source/creator/windows/welcome.d:146
 #, fuzzy
 msgid "UI Scale"
 msgstr "缩放"
 
-#: source/creator/windows/settings.d:74
-msgid "Disable Compositor"
-msgstr "停用合成器"
-
-#: source/creator/windows/settings.d:81
-msgid "Use software rendering"
-msgstr ""
-
-#: source/creator/windows/settings.d:90
-#, fuzzy
-msgid "Undo/Redo History"
-msgstr "撤销/恢复历史"
-
-#: source/creator/windows/settings.d:94
+#: source/creator/windows/settings.d:137
 msgid "Max Undo History"
 msgstr "最大撤销历史"
 
-#: source/creator/windows/settings.d:104
-msgid "Accessibility"
-msgstr "可访问性"
+#: source/creator/windows/settings.d:143
+msgid "Linux Tweaks"
+msgstr ""
 
-#: source/creator/windows/settings.d:113
-msgid "Other"
-msgstr "其他"
+#: source/creator/windows/settings.d:145
+msgid "Disable Compositor"
+msgstr "停用合成器"
+
+#: source/creator/windows/settings.d:152
+msgid "No settings for this category."
+msgstr ""
+
+#: source/creator/windows/settings.d:165 source/creator/windows/welcome.d:157
+msgid "Inochi Creator needs to be restarted for some changes to take effect."
+msgstr "Inochi Creator 需要重新启动才能使某些更改生效"
+
+#: source/creator/windows/settings.d:173
+msgid "Done"
+msgstr ""
 
 #: source/creator/windows/texviewer.d:47
 msgid "Texture Viewer"
@@ -1634,56 +1629,69 @@ msgstr "刷新可绑定参数"
 msgid "Bind Tracking to Parameter"
 msgstr "绑定跟踪到参数"
 
-#: source/creator/windows/welcome.d:112
+#: source/creator/windows/welcome.d:113
 msgid "Quick Setup"
-msgstr ""
+msgstr "快捷配置助手"
 
-#: source/creator/windows/welcome.d:153
+#: source/creator/windows/welcome.d:170
 msgid "Next"
-msgstr ""
-
-#: source/creator/windows/welcome.d:165
-msgid "Create Project"
-msgstr ""
-
-#: source/creator/windows/welcome.d:168
-msgid "New..."
-msgstr ""
+msgstr "下一步"
 
 #: source/creator/windows/welcome.d:182
+msgid "Create Project"
+msgstr "创建项目"
+
+#: source/creator/windows/welcome.d:185
+msgid "New..."
+msgstr "新建..."
+
+#: source/creator/windows/welcome.d:199
 #, fuzzy
 msgid "Import PSD..."
-msgstr "导入..."
+msgstr "导入PSD..."
 
-#: source/creator/windows/welcome.d:191
+#: source/creator/windows/welcome.d:208
 msgid "Recent Projects"
-msgstr ""
+msgstr "最近打开的项目"
 
-#: source/creator/windows/welcome.d:215
+#: source/creator/windows/welcome.d:232
 msgid "On the Web"
-msgstr ""
+msgstr "在线信息"
 
-#: source/creator/windows/welcome.d:219
+#: source/creator/windows/welcome.d:236
 msgid "Website"
-msgstr ""
+msgstr "网站"
 
-#: source/creator/windows/welcome.d:223
+#: source/creator/windows/welcome.d:240
 #, fuzzy
 msgid "Documentation"
 msgstr "在线文档"
 
-#: source/creator/windows/welcome.d:229
+#: source/creator/windows/welcome.d:246
 msgid "Patreon"
-msgstr ""
+msgstr "Patreon 赞助"
 
-#: source/creator/windows/welcome.d:232
+#: source/creator/windows/welcome.d:249
 msgid "Github Sponsors"
-msgstr ""
+msgstr "Github Sponsors 赞助"
 
-#: source/creator/windows/welcome.d:258
+#: source/creator/windows/welcome.d:275
 #, fuzzy
 msgid "Inochi Creator Start"
 msgstr "Inochi Creator 崩溃日志"
+
+#~ msgid "General"
+#~ msgstr "通用"
+
+#~ msgid "Use software rendering"
+#~ msgstr "使用软件渲染器"
+
+#, fuzzy
+#~ msgid "Undo/Redo History"
+#~ msgstr "撤销/恢复历史"
+
+#~ msgid "Other"
+#~ msgstr "其他"
 
 #~ msgid "UI Scale (EXPERIMENTAL)"
 #~ msgstr "界面缩放"

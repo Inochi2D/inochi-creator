@@ -10,6 +10,7 @@ string incTypeIdToIcon(string typeId) {
         case "Composite": return "";
         case "Mask": return "\ue14e";
         case "SimplePhysics": return "\ue922";
+        case "Camera": return "";
         default: return "\ue97a"; 
     }
 }
