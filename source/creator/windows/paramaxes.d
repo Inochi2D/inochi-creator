@@ -29,7 +29,7 @@ private:
         }
 
         foreach(i, y; points[1]) {
-            if (!y.fixed) endPoint.x = i;
+            if (!y.fixed) endPoint.y = i;
         }
     }
 
