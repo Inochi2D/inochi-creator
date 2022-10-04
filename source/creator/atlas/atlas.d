@@ -93,7 +93,6 @@ void incInitAtlassing() {
     A texture atlas
 */
 class Atlas {
-    import std.stdio;
 public:
     /**
         The scale of every element
@@ -170,24 +169,11 @@ public:
         // boundingUVRect may exceed (0..1) if mesh exceeds the texture boundary.
         rect boundingUVRect = rect(uvArea.x - textureStartOffset.x, uvArea.y - textureStartOffset.y, 
                                    uvArea.z - uvArea.x + textureStartOffset.x + textureEndOffset.x, uvArea.w - uvArea.y + textureStartOffset.y + textureEndOffset.y);
-        /*
-        if (uvRect.x < 0 || uvRect.y < 0) {
-            float shiftX = uvRect.x < 0 ? abs(uvRect.x) : 0;
-            float shiftY = uvRect.y < 0 ? abs(uvRect.y) : 0;
-            uvRect.width += shiftX;
-            uvRect.height += shiftY;
-        }
-        */
-        writefln("Part: %s", p.name);
-        writefln("          uvRect: %s", uvRect);
-        writefln("  boundingUVRect: %s", boundingUVRect);
 
         vec2i size = vec2i(
             cast(int)((p.textures[0].width*boundingUVRect.width)*scale)+(padding*2), 
             cast(int)((p.textures[0].height*boundingUVRect.height)*scale)+(padding*2)
         );
-
-        writefln("  Requested size: %s, scale=%f, padding=%d", size, scale, padding);
 
         // Get a slot for the texture in the atlas
         vec4 atlasArea = packer.packTexture(size);
@@ -200,9 +186,6 @@ public:
         textureEndOffset.x   *= p.textures[0].width  * scale;
         textureEndOffset.y   *= p.textures[0].height * scale;
         // Render textures in to our atlas
-        writefln("  texture size: %d, %d", p.textures[0].width, p.textures[0].height);
-        writefln("  atlasArea: %s", atlasArea);
-        writefln("  texture offsets: %s, %s", textureStartOffset, textureEndOffset);
         foreach(i, ref Texture texture; p.textures) {
             if (texture) {
                 setCanvas(textures[i]);
@@ -210,11 +193,9 @@ public:
                 rect where = rect(atlasArea.x+textureStartOffset.x+padding, atlasArea.y+textureStartOffset.y+padding, 
                                   atlasArea.z-(padding*2)-textureStartOffset.x - textureEndOffset.x, atlasArea.w-(padding*2)-textureStartOffset.y - textureEndOffset.y);
                 mappings[p.uuid] = rect(atlasArea.x+padding, atlasArea.y+padding, atlasArea.z-padding*2, atlasArea.w-padding*2);
-                writefln("  where: %s", where);
                 renderToTexture(texture, where, uvRect);
             }
         }
-        writeln();
         return true;
     }
 
