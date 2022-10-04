@@ -43,6 +43,7 @@ private {
 
         // Skip non-existent paths
         if (!path.exists) return;
+
         foreach(DirEntry entry; dirEntries(path, "*.mo", SpanMode.shallow)) {
             
             // Get langcode from filename
@@ -59,7 +60,8 @@ private {
                 langName,
                 langName.toStringz,
                 langcode, 
-                entry.name
+                entry.name,
+                path
             );
         }
     }
@@ -74,6 +76,7 @@ public:
     const(char)* humanNameC;
     string code;
     string file;
+    string path;
 }
 
 /**
@@ -83,7 +86,6 @@ void incLocaleInit() {
 
     // These exist for testing + user added localization
     incLocaleScan(incGetAppLocalePath());
-    incLocaleScan(getcwd());
     incLocaleScan(thisExePath().dirName);
 
     // On Windows we want to store locales next to the exe file in a i18n folder
@@ -98,7 +100,42 @@ void incLocaleInit() {
     if (extraLocalePath) incLocaleScan(extraLocalePath);
     
     // sort the files by human readable name
-    localeFiles.sort!((a,b) => a.humanName < b.humanName);
+    localeFiles.sort!((a,b) => (a.humanName == b.humanName) ? (a.path < b.path) 
+                                                            : (a.humanName < b.humanName));
+    //disambiguate locales with the same human name
+    markDups(localeFiles);
+}
+
+
+/**
+    Disambiguate by source folder for TLEntrys with identical humanNames.
+    Expects an array sorted by humanName
+*/
+void markDups(TLEntry[] entries) {
+
+    // Skip if only one entry
+    if (entries.length <= 1) return;
+    
+    TLEntry* prevEntry = &entries[0];
+    bool prevIsDup = false;
+
+    foreach(ref entry; entries[1 .. $]) {
+        bool entryIsDup = entry.humanName == prevEntry.humanName;
+
+        // If prevEntry has same humanName as entry before prevEntry, or as this entry,
+        // disambiguate with the source folder
+        if (prevIsDup || entryIsDup) {
+            prevEntry.humanName ~= " (" ~ prevEntry.path ~ ")";
+            prevEntry.humanNameC = prevEntry.humanName.toStringz;
+        }
+        prevIsDup = entryIsDup;
+        prevEntry = &entry;
+    }
+
+    if (prevIsDup) {
+        prevEntry.humanName ~= " (" ~ prevEntry.path ~ ")";
+        prevEntry.humanNameC = prevEntry.humanName.toStringz;
+    }
 }
 
 /**
