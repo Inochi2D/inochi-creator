@@ -93,6 +93,7 @@ void incInitAtlassing() {
     A texture atlas
 */
 class Atlas {
+    import std.stdio;
 public:
     /**
         The scale of every element
@@ -136,6 +137,8 @@ public:
     */
     bool pack(Part p) {
         auto mesh = p.getMesh();
+        vec2 textureStartOffset = vec2(0, 0);
+        vec2 textureEndOffset   = vec2(0, 0);
 
         // Calculate how much of the texture is actually used in UV coordinates
         vec4 uvArea = vec4(1, 1, 0, 0);
@@ -145,19 +148,46 @@ public:
             if (uv.x > uvArea.z) uvArea.z = uv.x;
             if (uv.y > uvArea.w) uvArea.w = uv.y;
         }
+        if (uvArea.x < 0) {
+            textureStartOffset.x = -uvArea.x;
+            uvArea.x = 0;
+        }
+        if (uvArea.y < 0) {
+            textureStartOffset.y = -uvArea.y;
+            uvArea.y = 0;
+        }
+        if (uvArea.z > 1) {
+            textureEndOffset.x   = uvArea.z - 1;
+            uvArea.z = 1;
+        }
+        if (uvArea.w > 1) {
+            textureEndOffset.y   = uvArea.w - 1;
+            uvArea.w = 1;
+        }
 
+        // uvRect is always between (0..1)
         rect uvRect = rect(uvArea.x, uvArea.y, uvArea.z-uvArea.x, uvArea.w-uvArea.y);
+        // boundingUVRect may exceed (0..1) if mesh exceeds the texture boundary.
+        rect boundingUVRect = rect(uvArea.x - textureStartOffset.x, uvArea.y - textureStartOffset.y, 
+                                   uvArea.z - uvArea.x + textureStartOffset.x + textureEndOffset.x, uvArea.w - uvArea.y + textureStartOffset.y + textureEndOffset.y);
+        /*
         if (uvRect.x < 0 || uvRect.y < 0) {
             float shiftX = uvRect.x < 0 ? abs(uvRect.x) : 0;
             float shiftY = uvRect.y < 0 ? abs(uvRect.y) : 0;
             uvRect.width += shiftX;
             uvRect.height += shiftY;
         }
+        */
+        writefln("Part: %s", p.name);
+        writefln("          uvRect: %s", uvRect);
+        writefln("  boundingUVRect: %s", boundingUVRect);
 
         vec2i size = vec2i(
-            cast(int)((p.textures[0].width*uvRect.width)*scale)+(padding*2), 
-            cast(int)((p.textures[0].height*uvRect.height)*scale)+(padding*2)
+            cast(int)((p.textures[0].width*boundingUVRect.width)*scale)+(padding*2), 
+            cast(int)((p.textures[0].height*boundingUVRect.height)*scale)+(padding*2)
         );
+
+        writefln("  Requested size: %s, scale=%f, padding=%d", size, scale, padding);
 
         // Get a slot for the texture in the atlas
         vec4 atlasArea = packer.packTexture(size);
@@ -165,16 +195,26 @@ public:
         // Could not fit texture, return false
         if (atlasArea == vec4i(0, 0, 0, 0)) return false;
 
+        textureStartOffset.x *= p.textures[0].width  * scale;
+        textureStartOffset.y *= p.textures[0].height * scale;
+        textureEndOffset.x   *= p.textures[0].width  * scale;
+        textureEndOffset.y   *= p.textures[0].height * scale;
         // Render textures in to our atlas
+        writefln("  texture size: %d, %d", p.textures[0].width, p.textures[0].height);
+        writefln("  atlasArea: %s", atlasArea);
+        writefln("  texture offsets: %s, %s", textureStartOffset, textureEndOffset);
         foreach(i, ref Texture texture; p.textures) {
             if (texture) {
                 setCanvas(textures[i]);
-
-                rect where = rect(atlasArea.x+padding, atlasArea.y+padding, atlasArea.z-(padding*2), atlasArea.w-(padding*2));
-                mappings[p.uuid] = where;
+                // where is the calculated texture boundary #2, specifying the area which texture is copied. (alsway between 0..1 in UV position)
+                rect where = rect(atlasArea.x+textureStartOffset.x+padding, atlasArea.y+textureStartOffset.y+padding, 
+                                  atlasArea.z-(padding*2)-textureStartOffset.x - textureEndOffset.x, atlasArea.w-(padding*2)-textureStartOffset.y - textureEndOffset.y);
+                mappings[p.uuid] = rect(atlasArea.x+padding, atlasArea.y+padding, atlasArea.z-padding*2, atlasArea.w-padding*2);
+                writefln("  where: %s", where);
                 renderToTexture(texture, where, uvRect);
             }
         }
+        writeln();
         return true;
     }
 
