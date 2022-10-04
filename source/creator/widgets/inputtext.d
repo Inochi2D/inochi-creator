@@ -40,8 +40,7 @@ bool incInputText(string wId, float width, ref string buffer, ImGuiInputTextFlag
 
     if (buffer.ptr[buffer.length] != '\0') {
         // If buffer.ptr does not end with '\0', recreate string to force '\0' at the end.
-        string buffer2 = buffer;
-        buffer = fromStringz(buffer2.ptr[0..buffer2.length]~'\0');
+        buffer = buffer.ptr[0..buffer.length]~'\0';
     }
 
     // Push ID
