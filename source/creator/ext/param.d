@@ -2,6 +2,7 @@ module creator.ext.param;
 import inochi2d;
 import inochi2d.fmt;
 import inmath;
+import creator;
 
 class ExParameterGroup : Parameter {
 public:
@@ -17,8 +18,13 @@ public:
 
     override
     void update() {
+        // This only gets called as the initiap part of the update step, and it should
+        // skip driven parameters, which are updated later.
+        auto enableDrivers = incActivePuppet().enableDrivers;
+        auto parameterDrivers = incActivePuppet().getParameterDrivers();
         foreach(ref child; children) {
-            child.update();
+            if (!enableDrivers || child !in parameterDrivers)
+                child.update();
         }
     }
 

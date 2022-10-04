@@ -199,6 +199,7 @@ void incPopWindowList(Window window) {
 
     ptrdiff_t i = windowList.countUntil(window);
     if (i != -1) {
+        window.onClose();
         if (windowList.length == 1) windowList.length = 0;
         else windowList = windowList.remove(i);
     }
