@@ -34,6 +34,21 @@ public:
     
 
     /**
+        Returns a parameter by UUID
+    */
+    Parameter findParameter(string name) {
+        foreach(ref parameter; parameters) {
+            if (auto group = cast(ExParameterGroup)parameter) {
+                foreach(ref child; group.children) {
+                    if (child.name == name) return child;
+                }
+            } else if (parameter.name == name) return parameter;
+        }
+        return null;
+    }
+    
+
+    /**
         Gets if a node is bound to ANY parameter.
     */
     override
@@ -46,6 +61,34 @@ public:
             } else if (parameter.hasAnyBinding(n)) return true;
         }
         return false;
+    }
+    
+
+    /**
+        Removes a parameter from this puppet
+    */
+    override
+    void removeParameter(Parameter param) {
+        import std.algorithm.searching : countUntil;
+        import std.algorithm.mutation : remove;
+
+        // First attempt to remove from root
+        ptrdiff_t idx = parameters.countUntil(param);
+        if (idx >= 0) {
+            parameters = parameters.remove(idx);
+            return;
+        }
+
+        // Next attempt to remove from groups
+        foreach(ref parameter; parameters) {
+            if (auto group = cast(ExParameterGroup)parameter) {
+                idx = group.children.countUntil(param);
+                if (idx >= 0) {
+                    group.children = group.children.remove(idx);
+                    return;
+                }
+            }
+        }
     }
 }
 

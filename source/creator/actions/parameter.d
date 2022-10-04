@@ -28,7 +28,7 @@ public:
         // Find drivers
         foreach(ref driver; incActivePuppet().getDrivers()) {
             if (SimplePhysics sf = cast(SimplePhysics)driver) {
-                if (sf.param.uuid == self.uuid) {
+                if (sf.param !is null && sf.param.uuid == self.uuid) {
                     drivers ~= driver;
                 }
             }

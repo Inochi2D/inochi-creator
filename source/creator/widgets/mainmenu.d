@@ -57,7 +57,7 @@ private {
                 { ["*.inx"], "Inochi Creator Project (*.inx)" }
             ];
 
-            string file = incShowSaveDialog(filters, _("Save..."));
+            string file = incShowSaveDialog(filters, "", _("Save..."));
             if (file) incSaveProject(file);
         }
     }
@@ -68,7 +68,8 @@ private {
             { ["*.inx"], "Inochi Creator Project (*.inx)" }
         ];
 
-        string file = incShowSaveDialog(filters, _("Save As..."));
+        string fname = incProjectPath().length > 0 ? incProjectPath : "";
+        string file = incShowSaveDialog(filters, fname, _("Save As..."));
         if (file) incSaveProject(file);
     }
 }
@@ -264,7 +265,20 @@ void incMainMenu() {
                         igEndMenu();
                     }
 
-                    if(igMenuItem(__("Quit"), "Alt+F4", false, true)) incExit();
+                    // Close Project option
+                    if (igMenuItem(__("Close Project"))) {
+                        
+                        // Just in case...
+                        incPopWelcomeWindow();
+
+                        // TODO: Check if changes were done to project and warn before
+                        // creating new project
+                        incNewProject();
+                        incPushWindow(new WelcomeWindow());
+                    }
+
+                    // Quit option
+                    if (igMenuItem(__("Quit"), "Alt+F4", false, true)) incExit();
                     igEndMenu();
                 }
                 
