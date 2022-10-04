@@ -188,6 +188,13 @@ public:
 
             int channels = i == TextureUsage.Albedo ? 4 : 3;
             textures[i] = new Texture(cast(int)atlasSize, cast(int)atlasSize, channels);
+            // Clear the new texture
+            glBindFramebuffer(GL_FRAMEBUFFER, writeFBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                                   textures[i].getTextureId(), 0);
+            glClearColor(0, 0, 0, 0);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
     }
 
