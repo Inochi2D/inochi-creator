@@ -38,7 +38,7 @@ void incExportINP(Puppet origin, Atlas[] atlasses, string file) {
                     if (uv.y > uvArea.w) uvArea.w = uv.y;
                 }
                 vec2 minUV = uvArea.xy;
-                vec2 maxUV = vec2(uvArea.z-uvArea.x, uvArea.w-uvArea.y);
+                vec2 maxUV = uvArea.zw;
                 foreach(ref uv; uvs) uv = uv.mapUVCoord(minUV, maxUV);
 
                 // Now we need to scale those UV coordinates to fit within the mapping
