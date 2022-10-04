@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-04 19:01+0200\n"
+"POT-Creation-Date: 2022-10-05 00:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -381,7 +381,7 @@ msgid ""
 "models."
 msgstr ""
 
-#: source/creator/panels/inspector.d:276 source/creator/panels/inspector.d:1218
+#: source/creator/panels/inspector.d:276 source/creator/panels/inspector.d:1233
 msgid "Transform"
 msgstr ""
 
@@ -389,7 +389,7 @@ msgstr ""
 #. Translation
 #.
 #. Translation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:292 source/creator/panels/inspector.d:1233
+#: source/creator/panels/inspector.d:292 source/creator/panels/inspector.d:1248
 msgid "Translation"
 msgstr ""
 
@@ -410,7 +410,7 @@ msgid ""
 msgstr ""
 
 #. Rotation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:384 source/creator/panels/inspector.d:1270
+#: source/creator/panels/inspector.d:384 source/creator/panels/inspector.d:1285
 msgid "Rotation"
 msgstr ""
 
@@ -427,7 +427,7 @@ msgid "Rotation Z"
 msgstr ""
 
 #. Scaling portion of the transformation matrix.
-#: source/creator/panels/inspector.d:456 source/creator/panels/inspector.d:1302
+#: source/creator/panels/inspector.d:456 source/creator/panels/inspector.d:1317
 msgid "Scale"
 msgstr ""
 
@@ -450,7 +450,7 @@ msgstr ""
 #. Parts to draw in the user specified order.
 #. negative values = closer to camera
 #. positive values = further away from camera
-#: source/creator/panels/inspector.d:521 source/creator/panels/inspector.d:1322
+#: source/creator/panels/inspector.d:521 source/creator/panels/inspector.d:1337
 msgid "Sorting"
 msgstr ""
 
@@ -489,7 +489,7 @@ msgstr ""
 msgid "%s is not supported"
 msgstr ""
 
-#: source/creator/panels/inspector.d:704 source/creator/panels/inspector.d:1329
+#: source/creator/panels/inspector.d:704 source/creator/panels/inspector.d:1344
 msgid "Part"
 msgstr ""
 
@@ -510,14 +510,14 @@ msgid "Bumpmap"
 msgstr ""
 
 #: source/creator/panels/inspector.d:730 source/creator/panels/inspector.d:910
-#: source/creator/panels/inspector.d:1335
-#: source/creator/panels/inspector.d:1371
+#: source/creator/panels/inspector.d:1350
+#: source/creator/panels/inspector.d:1386
 msgid "Tint (Multiply)"
 msgstr ""
 
 #: source/creator/panels/inspector.d:733 source/creator/panels/inspector.d:913
-#: source/creator/panels/inspector.d:1339
-#: source/creator/panels/inspector.d:1375
+#: source/creator/panels/inspector.d:1354
+#: source/creator/panels/inspector.d:1390
 msgid "Tint (Screen)"
 msgstr ""
 
@@ -577,8 +577,8 @@ msgid ""
 msgstr ""
 
 #: source/creator/panels/inspector.d:775 source/creator/panels/inspector.d:942
-#: source/creator/panels/inspector.d:1351
-#: source/creator/panels/inspector.d:1388
+#: source/creator/panels/inspector.d:1366
+#: source/creator/panels/inspector.d:1403
 msgid "Opacity"
 msgstr ""
 
@@ -589,7 +589,7 @@ msgstr ""
 #. Threshold slider name for adjusting how transparent a pixel can be
 #. before it gets discarded.
 #: source/creator/panels/inspector.d:785 source/creator/panels/inspector.d:952
-#: source/creator/panels/inspector.d:1358
+#: source/creator/panels/inspector.d:1373
 msgid "Threshold"
 msgstr ""
 
@@ -642,7 +642,7 @@ msgstr ""
 msgid "Viewport"
 msgstr ""
 
-#: source/creator/panels/inspector.d:900 source/creator/panels/inspector.d:1365
+#: source/creator/panels/inspector.d:900 source/creator/panels/inspector.d:1380
 #: source/creator/panels/nodes.d:61
 msgid "Composite"
 msgstr ""
@@ -651,61 +651,69 @@ msgstr ""
 msgid "SimplePhysics"
 msgstr ""
 
-#: source/creator/panels/inspector.d:975 source/creator/windows/trkbind.d:47
+#: source/creator/panels/inspector.d:977 source/creator/windows/psdmerge.d:276
+msgid "Unmap"
+msgstr ""
+
+#: source/creator/panels/inspector.d:982
+msgid "Unassigned"
+msgstr ""
+
+#: source/creator/panels/inspector.d:988 source/creator/windows/trkbind.d:47
 msgid "Parameter"
 msgstr ""
 
-#: source/creator/panels/inspector.d:976
+#: source/creator/panels/inspector.d:989
 msgid "(unassigned)"
 msgstr ""
 
-#: source/creator/panels/inspector.d:992
+#: source/creator/panels/inspector.d:1007
 msgid "Type"
 msgstr ""
 
-#: source/creator/panels/inspector.d:995
+#: source/creator/panels/inspector.d:1010
 msgid "Pendulum"
 msgstr ""
 
-#: source/creator/panels/inspector.d:997
+#: source/creator/panels/inspector.d:1012
 msgid "SpringPendulum"
 msgstr ""
 
-#: source/creator/panels/inspector.d:1004
+#: source/creator/panels/inspector.d:1019
 msgid "Mapping mode"
 msgstr ""
 
-#: source/creator/panels/inspector.d:1007
+#: source/creator/panels/inspector.d:1022
 msgid "AngleLength"
 msgstr ""
 
-#: source/creator/panels/inspector.d:1009
+#: source/creator/panels/inspector.d:1024
 msgid "XY"
 msgstr ""
 
-#: source/creator/panels/inspector.d:1019
+#: source/creator/panels/inspector.d:1034
 msgid "Gravity scale"
 msgstr ""
 
-#: source/creator/panels/inspector.d:1026
+#: source/creator/panels/inspector.d:1041
 msgid "Length"
 msgstr ""
 
-#: source/creator/panels/inspector.d:1033
+#: source/creator/panels/inspector.d:1048
 msgid "Resonant frequency"
 msgstr ""
 
-#: source/creator/panels/inspector.d:1040
+#: source/creator/panels/inspector.d:1055
 msgid "Damping"
 msgstr ""
 
-#: source/creator/panels/inspector.d:1051
+#: source/creator/panels/inspector.d:1066
 msgid "Output scale"
 msgstr ""
 
 #. Header for texture options
-#: source/creator/panels/inspector.d:1333
-#: source/creator/panels/inspector.d:1369
+#: source/creator/panels/inspector.d:1348
+#: source/creator/panels/inspector.d:1384
 msgid "Textures"
 msgstr ""
 
@@ -1691,10 +1699,6 @@ msgstr ""
 #: source/creator/windows/psdmerge.d:238
 #, c-format
 msgid "%s  %s"
-msgstr ""
-
-#: source/creator/windows/psdmerge.d:276
-msgid "Unmap"
 msgstr ""
 
 #: source/creator/windows/psdmerge.d:281
