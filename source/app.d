@@ -78,7 +78,7 @@ int main(string[] args)
         inPostProcessingAddBasicLighting();
 
         // Open or create project
-        if (args.length > 1) incOpenProject(args[1]);
+        if (incSettingsGet!bool("hasDoneQuickSetup", false) && args.length > 1) incOpenProject(args[1]);
         else {
             incNewProject();
 
