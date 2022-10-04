@@ -15,30 +15,34 @@ DEPS: dict[str, URL] = {
     "psd-d": "https://github.com/Inochi2D/psd-d.git",
     "gitver": "https://github.com/Inochi2D/gitver.git",
     "facetrack-d": "https://github.com/Inochi2D/facetrack-d.git",
+    "i18n-d": "https://github.com/KitsunebiGames/i18n",
 }
+
 
 def parse_sdl_file(path: Path) -> dict[str, str]:
     """Parse dub SDL file and return dependency versions"""
-    versions: dict[str,str] = dict()
-    with path.open('r') as fp:
+    versions: dict[str, str] = dict()
+    with path.open("r") as fp:
         for line in fp:
             if line.startswith("dependency"):
                 line = line.strip()
                 _, name, version = line.split()
                 name = name[1:-1]
-                version = version.split('=')[-1][3:-1]
+                version = version.split("=")[-1][3:-1]
                 logging.debug(f"Found dependecy: {name}-{version}")
                 versions[name] = version
 
     return versions
 
+
 def cli() -> Namespace:
     """Argument Parsing Definition"""
     parser = ArgumentParser(
-        description="Get dev dependecies for Inochi2D Creator from Git")
+        description="Get dev dependecies for Inochi2D Creator from Git"
+    )
     parser.add_argument(
         "--dep",
-        action='append',
+        action="append",
         choices=[key for key in DEPS.keys()],
         help="Which dep to get from git (default: all from Inochi2D git group)",
     )
@@ -46,15 +50,17 @@ def cli() -> Namespace:
         "--dub-sdl",
         type=Path,
         default=Path("./dub.sdl"),
-        help="Path to the dub.sdl file defining the dependencies")
+        help="Path to the dub.sdl file defining the dependencies",
+    )
     parser.add_argument(
         "--clone-path",
         type=Path,
         default=Path("./deps"),
-        help="Where to clone the dependencies (default: ./deps)")
+        help="Where to clone the dependencies (default: ./deps)",
+    )
     parser.add_argument(
         "--verbose",
-        action='store_true',
+        action="store_true",
         help="Increase Verbosity",
     )
     return parser.parse_args()
