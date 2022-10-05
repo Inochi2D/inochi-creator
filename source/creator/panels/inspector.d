@@ -734,7 +734,7 @@ void incInspectorModelPart(Part node) {
         igColorEdit3("###S_TINT", cast(float[3]*)node.screenTint.ptr);
 
         // Padding
-        igSeparator();
+        igSpacing();
         igSpacing();
         igSpacing();
 

@@ -9,6 +9,7 @@ private {
         bool badColor;
         bool isDark;
         ImVec4 contentBounds;
+        IncCategoryFlags flags;
     }
 
     void incGetCategoryColors(ImVec4 color, out ImVec4 hoverColor, out ImVec4 activeColor, out ImVec4 bgColor, out ImVec4 shadowColor, ref ImVec4 textColor, ref bool isDark) {
@@ -114,6 +115,7 @@ bool incBeginCategory(const(char)* title, ImVec4 color, IncCategoryFlags flags =
     }
 
     // Calculate some values for drawing our background color.
+    data.flags = flags;
     data.badColor = isDark != incGetDarkMode();
     data.isDark = isDark;
     data.contentBounds.x = igGetCursorPosX();
@@ -147,7 +149,7 @@ bool incBeginCategory(const(char)* title, ImVec4 color, IncCategoryFlags flags =
     window.WorkRect.Min.x -= paddingX;
     igSetCursorPosX(igGetCursorPosX()+paddingX);
 
-    if ((flags & IncCategoryFlags.NoCollapse) == IncCategoryFlags.NoCollapse) {
+    if ((data.flags & IncCategoryFlags.NoCollapse) == IncCategoryFlags.NoCollapse) {
         data.open = true;
         igIndent();
             igText(title);
