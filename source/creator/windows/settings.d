@@ -36,15 +36,14 @@ private:
 
     SettingsPane settingsPane = SettingsPane.LookAndFeel;
 
-    void beginSection(string title) {
-        incText(title);
+    void beginSection(const(char)* title) {
+        incBeginCategory(title, IncCategoryFlags.NoCollapse);
         incDummy(ImVec2(0, 4));
-        igIndent();
     }
     
     void endSection() {
-        igUnindent();
-        igNewLine();
+        incDummy(ImVec2(0, 4));
+        incEndCategory();
     }
 protected:
     override
@@ -98,7 +97,7 @@ protected:
             availX = incAvailableSpace().x;
 
             // Begins section, REMEMBER TO END IT
-            beginSection(_(cast(string)settingsPane));
+            beginSection(__(cast(string)settingsPane));
 
             // Start settings panel elements
             igPushItemWidth(availX/2);
@@ -134,7 +133,7 @@ protected:
                         }
                         endSection();
 
-                        beginSection(_("Undo History"));
+                        beginSection(__("Undo History"));
                             int maxHistory = cast(int)incActionGetUndoHistoryLength();
                             if (igDragInt(__("Max Undo History"), &maxHistory, 1, 1, 1000, "%d")) {
                                 incActionSetUndoHistoryLength(maxHistory);
@@ -142,7 +141,7 @@ protected:
                         endSection();
 
                         version(linux) {
-                            beginSection(_("Linux Tweaks"));
+                            beginSection(__("Linux Tweaks"));
                                 bool disableCompositor = incSettingsGet!bool("DisableCompositor");
                                 if (igCheckbox(__("Disable Compositor"), &disableCompositor)) {
                                     incSettingsSet("DisableCompositor", disableCompositor);
@@ -164,6 +163,8 @@ protected:
                         break;
                 }
             igPopItemWidth();
+
+            endSection();
         }
         igEndChild();
 
