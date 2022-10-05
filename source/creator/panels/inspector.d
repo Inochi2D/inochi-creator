@@ -247,7 +247,7 @@ void incInspectorModelInfo() {
     }
     incEndCategory();
 
-    if (incBeginCategory(__("Rendering Settings"), ImVec4(0.35, 0.15, 0.15, 1))) {
+    if (incBeginCategory(__("Rendering Settings"))) {
         igPushID("Filtering");
             if (igCheckbox(__("Use Point Filtering"), &incActivePuppet().meta.preservePixels)) {
                 incActivePuppet().populateTextureSlots();
