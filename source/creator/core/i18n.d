@@ -7,6 +7,7 @@ import std.file;
 import std.path;
 import std.string;
 import std.algorithm : sort;
+import std.uni : icmp;
 
 /+
     HACK: This little comment tricks genpot to generate our LANG_NAME entry.
@@ -100,12 +101,18 @@ void incLocaleInit() {
     if (extraLocalePath) incLocaleScan(extraLocalePath);
     
     // sort the files by human readable name
-    localeFiles.sort!((a,b) => (a.humanName == b.humanName) ? (a.path < b.path) 
-                                                            : (a.humanName < b.humanName));
+    localeFiles.sort!(compareEntries);
     //disambiguate locales with the same human name
     markDups(localeFiles);
 }
 
+bool compareEntries(TLEntry a, TLEntry b) {
+    int cmp = icmp(a.humanName, b.humanName);
+    if (cmp == 0) {
+        return a.path < b.path;
+    }
+    return cmp < 0;
+}
 
 /**
     Disambiguate by source folder for TLEntrys with identical humanNames.
