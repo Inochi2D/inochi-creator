@@ -87,6 +87,7 @@ protected:
 
     override
     void onUpdate() {
+
         // Contents
         if (igBeginChild("ExportContent", ImVec2(0, -28), true)) {
             incText(_("Export Settings"));

@@ -87,7 +87,7 @@ private:
     }
 
     Atlas[] generateAtlasses() {
-        Atlas[] atlasses = [new Atlas(options.atlasResolution,options.padding, options.resolutionScale)];
+        Atlas[] atlasses = [new Atlas(options.atlasResolution, options.padding, options.resolutionScale)];
 
         Part[] parts = incActivePuppet().getAllParts();
         size_t partsLeft = parts.length;
@@ -109,7 +109,6 @@ private:
             foreach(part; parts) {
                 if (taken[part] == true) continue;
 
-                vec4i area;
                 if (atlasses[$-1].pack(part)) {
                     taken[part] = true;
                     partsLeft--;
