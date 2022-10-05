@@ -187,6 +187,11 @@ jobs:
           sudo rm -r /usr/local/lib/libharfbuzz.dylib
         fi
 
+        # And the .a for it as well
+        if [ -f "/usr/local/lib/libharfbuzz.a" ]; then
+          sudo rm -r /usr/local/lib/libharfbuzz.a
+        fi
+
     - name: 'Generate i18n'
       run: |
         sudo chmod +x gentl.sh
