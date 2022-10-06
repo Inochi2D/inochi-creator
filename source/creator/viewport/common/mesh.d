@@ -58,10 +58,12 @@ bool isConnectedTo(MeshVertex* self, MeshVertex* other) {
 class IncMesh {
 private:
     MeshData* data;
+    vec2 eOrigin;
 
     void mImport(ref MeshData data) {
         // Reset vertex length
         vertices.length = 0;
+        eOrigin = data.origin;
 
         // Iterate over flat mesh and extract it in to
         // vertices and "connections"
@@ -69,7 +71,7 @@ private:
 
         iVertices.length = data.vertices.length;
         foreach(idx, vertex; data.vertices) {
-            iVertices[idx] = new MeshVertex(vertex+data.origin, []);
+            iVertices[idx] = new MeshVertex(vertex, []);
         }
 
         foreach(i; 0..data.indices.length/3) {
@@ -108,6 +110,7 @@ private:
     MeshData mExport() {
         import std.algorithm.searching : canFind;
         MeshData* newData = new MeshData;
+        newData.origin = eOrigin;
 
         ushort[MeshVertex*] indices;
         ushort indiceIdx = 0;
