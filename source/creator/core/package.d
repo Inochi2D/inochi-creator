@@ -572,7 +572,7 @@ void incBeginLoopNoEv() {
     }
 
     // Add docking space
-    viewportDock = igDockSpaceOverViewport(null, cast(ImGuiDockNodeFlags)0, null);
+    viewportDock = igDockSpaceOverViewport(null, ImGuiDockNodeFlags.NoDockingInCentralNode, null);
     if (!incSettingsCanGet("firstrun_complete")) {
         incSetDefaultLayout();
         incSettingsSet("firstrun_complete", true);
