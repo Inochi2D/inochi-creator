@@ -82,7 +82,7 @@ jobs:
     - name: 'Build Inochi Creator'
       run: |
         # Build the project, with its main file included, without unittests
-        dub build --compiler=ldc2 --build=release --config=full
+        dub build --compiler=ldc2 --build=release --config=full --debug=tracking
 
     - name: 'Build AppImage'
       run: |
@@ -148,7 +148,7 @@ jobs:
               }
           }
           Invoke-VSDevEnvironment
-          dub build --compiler=ldc2 --build=release --config=win32-full
+          dub build --compiler=ldc2 --build=release --config=win32-full --debug=tracking
 
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
@@ -212,12 +212,12 @@ jobs:
       run: |
         # First build ARM64 version...
         echo "Building arm64 binary..."
-        dub build --build=release --config=osx-full --arch=arm64-apple-macos
+        dub build --build=release --config=osx-full --arch=arm64-apple-macos --debug=tracking
         mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
 
         # Then the X86_64 version...
         echo "Building x86_64 binary..."
-        dub build --build=release --config=osx-full --arch=x86_64-apple-macos
+        dub build --build=release --config=osx-full --arch=x86_64-apple-macos --debug=tracking
         mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64"
 
         # Glue them together with lipo
