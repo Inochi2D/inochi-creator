@@ -180,7 +180,10 @@ jobs:
         brew install create-dmg gettext
 
         # Remove conflicting brew items
-        brew remove --ignore-dependencies freetype harfbuzz libpng brotli
+        # GitHub Actions likes to randomly change what packages are installed, so assume that if any of these fail, it was never installed and won't cause any problems
+        for package in freetype harfbuzz libpng brotli; do
+          brew remove --ignore-dependencies "$package" || true
+        done
 
     - name: 'Generate i18n'
       run: |
