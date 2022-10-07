@@ -180,17 +180,7 @@ jobs:
         brew install create-dmg gettext
 
         # Remove conflicting brew items
-        brew remove --ignore-dependencies aom cairo composer curl fontconfig freetype gd ghostscript httpd imagemagick jpeg-xl libavif libheif libxft mongodb-community@5.0 mongosh node@16 openjpeg php r sox webp libpng brotli
-
-        # Delete fake harfbuzz if need be
-        if [ -f "/usr/local/lib/libharfbuzz.dylib" ]; then
-          sudo rm -r /usr/local/lib/libharfbuzz.dylib
-        fi
-
-        # And the .a for it as well
-        if [ -f "/usr/local/lib/libharfbuzz.a" ]; then
-          sudo rm -r /usr/local/lib/libharfbuzz.a
-        fi
+        brew remove --ignore-dependencies freetype harfbuzz libpng brotli
 
     - name: 'Generate i18n'
       run: |
