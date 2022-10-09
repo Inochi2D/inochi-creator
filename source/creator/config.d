@@ -22,6 +22,12 @@ module creator.config;
 enum INC_BANNER_ARTIST_NAME = "七乃ななせ";
 
 /**
+    Link to the artist's preferred social media,
+    or art posting page.
+*/
+enum INC_BANNER_ARTIST_PAGE = "https://twitter.com/nana_nono120";
+
+/**
     URI for bug reports, for unofficial builds this SHOULD be changed.
 */
 enum INC_BUG_REPORT_URI = "https://github.com/Inochi2D/inochi-creator/issues/new?assignees=&labels=bug&template=bug-report.yml&title=%5BBUG%5D";

@@ -122,6 +122,15 @@ protected:
                 vsSize = incMeasureString(artistString);
                 igSetCursorPos(ImVec2(512-(vsSize.x+12), 200-(vsSize.y+8)));
                 incTextBordered(artistString);
+
+                if (igIsItemHovered()) {
+                    igSetMouseCursor(ImGuiMouseCursor.Hand);
+                }
+
+                // Clicking artist link sends you to the artist's page
+                if (igIsItemClicked()) {
+                    incOpenLink(INC_BANNER_ARTIST_PAGE);
+                }
             igPopStyleColor();
         } 
         igEndChild();
