@@ -1300,7 +1300,7 @@ msgid ""
 "deleted if you continue."
 msgstr ""
 "Il layout della griglia è cambiato, tutte le deformazioni di questa griglia saranno "
-"cancellate se si continua".
+"cancellate se si continua."
 
 #: source/creator/viewport/vertex/package.d:118
 #: source/creator/windows/paramsplit.d:168
@@ -1323,8 +1323,8 @@ msgid ""
 "Cannot apply invalid mesh\n"
 "At least 3 vertices forming a triangle is needed."
 msgstr ""
-"Impossibile applicare una griglia non valida".
-"Sono necessari almeno 3 vertici che formino un triangolo".
+"Impossibile applicare una griglia non valida\n"
+"Sono necessari almeno 3 vertici che formino un triangolo."
 
 #: source/creator/widgets/dialog.d:124
 msgid "OK"
@@ -1606,12 +1606,11 @@ msgstr "Rigenera le mipmap del pupazzo."
 
 #: source/creator/widgets/mainmenu.d:423
 msgid "Generate fake layer name info..."
-msgstr ""
-"Genera informazioni false sul nome del livello...".
+msgstr "Genera informazioni false sul nome del livello..."
 
 #: source/creator/widgets/mainmenu.d:433
 msgid "Generates fake layer info based on node names"
-msgstr "Genera informazioni false sui livelli in base ai nomi dei nodi".
+msgstr "Genera informazioni false sui livelli in base ai nomi dei nodi"
 
 #: source/creator/widgets/mainmenu.d:439
 msgid "Puppet Recovery"
@@ -1755,7 +1754,7 @@ msgid ""
 "scaled down."
 msgstr ""
 "Una texture era troppo grande per adattarsi all'atlante delle texture, "
-"le texture sono state ridimensionate".
+"le texture sono state ridimensionate."
 
 #: source/creator/windows/inpexport.d:250
 #, fuzzy
