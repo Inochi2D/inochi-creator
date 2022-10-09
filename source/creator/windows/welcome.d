@@ -316,6 +316,7 @@ public:
 
         auto bannerTex = ShallowTexture(cast(ubyte[])import("ui/banner.png"));
         banner = new Texture(bannerTex);
+        banner.setAnisotropy(1.5);
 
         version(InBranding) {
             auto bannerLogoTex = ShallowTexture(cast(ubyte[])import("ui/banner-logo.png"));   
