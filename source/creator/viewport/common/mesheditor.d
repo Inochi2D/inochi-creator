@@ -15,6 +15,7 @@ import creator.viewport.common.spline;
 import creator.core.input;
 import creator.core.actionstack;
 import creator.actions;
+import creator.ext;
 import creator.widgets;
 import creator;
 import inochi2d;
@@ -277,10 +278,20 @@ public:
             // Remove incompatible Deforms
 
             foreach (param; incActivePuppet().parameters) {
-                ParameterBinding binding = param.getBinding(target, "deform");
-                if (binding) {
-                    param.removeBinding(binding);
-                    action.addBinding(param, binding);
+                if (auto group = cast(ExParameterGroup)param) {
+                    foreach(x, ref xparam; group.children) {
+                        ParameterBinding binding = xparam.getBinding(target, "deform");
+                        if (binding) {
+                            xparam.removeBinding(binding);
+                            action.addBinding(xparam, binding);
+                        }
+                    }
+                } else {
+                    ParameterBinding binding = param.getBinding(target, "deform");
+                    if (binding) {
+                        param.removeBinding(binding);
+                        action.addBinding(param, binding);
+                    }
                 }
             }
             vertexMapDirty = false;
