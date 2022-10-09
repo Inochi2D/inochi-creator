@@ -57,8 +57,8 @@ void incToolbar() {
                 // Render mode switch buttons
                 ImVec2 avail;
                 igGetContentRegionAvail(&avail);
-                igDummy(ImVec2(avail.x-(32*3), 0));
-
+                debug(InExperimental) igDummy(ImVec2(avail.x-(32*3), 0));
+                else igDummy(ImVec2(avail.x-(32*2), 0));
                 igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(0, 0));
                 igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
                     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
@@ -72,11 +72,12 @@ void incToolbar() {
                                 incSetEditMode(EditMode.AnimEdit);
                             }
                             incTooltip(_("Edit Animation"));
-
-                            if (incButtonColored("", ImVec2(32, 32), incEditMode == EditMode.ModelTest ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
-                                incSetEditMode(EditMode.ModelTest);
+                            debug(InExperimental) {
+                                if (incButtonColored("", ImVec2(32, 32), incEditMode == EditMode.ModelTest ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
+                                    incSetEditMode(EditMode.ModelTest);
+                                }
+                                incTooltip(_("Test Puppet"));
                             }
-                            incTooltip(_("Test Puppet"));
                         }
                     igPopStyleVar();
                 igPopStyleVar(2);
