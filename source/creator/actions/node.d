@@ -11,44 +11,34 @@ import creator;
 import inochi2d;
 import std.format;
 import i18n;
+import std.exception;
 
 /**
     An action that happens when a node is changed
 */
-class NodeChangeAction : Action {
+class NodeMoveAction : Action {
 public:
+
     /**
-        Creates a new node change action
+        Descriptive name
     */
-    this(Node prev, Node self, Node new_, Transform prevPos, Transform newPos) {
-        this.prevParent = prev;
-        this.self = self;
-        this.newParent = new_;
-        this.originalTransform = prevPos;
-        this.newTransform = newPos;
-    }
+    string descrName;
     
     /**
-        Creates a new node change action
+        Which index in to the parent the nodes should be placed
     */
-    this(Node prev, Node self, Node new_) {
-        this.prevParent = prev;
-        this.self = self;
-        this.newParent = new_;
-
-        this.originalTransform = self.localTransform;
-        this.newTransform = self.localTransform;
-    }
+    size_t parentOffset;
 
     /**
         Previous parent of node
     */
-    Node prevParent;
+    Node[uint] prevParents;
+    size_t[uint] prevOffsets;
 
     /**
-        Node itself
+        Nodes that was moved
     */
-    Node self;
+    Node[] nodes;
 
     /**
         New parent of node
@@ -66,11 +56,45 @@ public:
     Transform newTransform;
 
     /**
+        Creates a new node change action
+    */
+    this(Node[] nodes, Node new_, size_t pOffset = 0) {
+        this.newParent = new_;
+        this.nodes = nodes;
+        this.parentOffset = pOffset;
+
+        // Enforce reparenting rules
+        foreach(sn; nodes) enforce(sn.canReparent(new_), _("%s can not be reparented in to %s due to a circular dependency.").format(sn.name, new_.name));
+        
+        // Reparent
+        foreach(ref sn; nodes) {
+            
+            // Store ref to prev parent
+            if (sn.parent) {
+                prevParents[sn.uuid] = sn.parent;
+                prevOffsets[sn.uuid] = sn.getIndexInParent();
+            }
+
+            // Set relative position
+            sn.setRelativeTo(new_);
+            sn.parent = new_;
+            sn.insertInto(new_, pOffset);
+        }
+        incActivePuppet().rescanNodes();
+    
+        // Set visual name
+        if (nodes.length == 1) descrName = nodes[0].name;
+        else descrName = _("nodes");
+    }
+
+    /**
         Rollback
     */
     void rollback() {
-        self.parent = prevParent;
-        self.localTransform = originalTransform;
+        foreach(ref sn; nodes) {
+            sn.setRelativeTo(prevParents[sn.uuid]);
+            sn.insertInto(prevParents[sn.uuid], prevOffsets[sn.uuid]);
+        }
         incActivePuppet().rescanNodes();
     }
 
@@ -78,8 +102,10 @@ public:
         Redo
     */
     void redo() {
-        self.parent = newParent;
-        self.localTransform = newTransform;
+        foreach(sn; nodes) {
+            sn.setRelativeTo(newParent);
+            sn.insertInto(newParent, parentOffset);
+        }
         incActivePuppet().rescanNodes();
     }
 
@@ -87,17 +113,18 @@ public:
         Describe the action
     */
     string describe() {
-        if (prevParent is null) return "Created %s".format(self.name);
-        if (newParent is null) return "Deleted %s".format(self.name);
-        return _("Moved %s to %s").format(self.name, newParent.name);
+        if (prevParents.length == 0) return _("Created %s").format(descrName);
+        if (newParent is null) return _("Deleted %s").format(descrName);
+        return _("Moved %s to %s").format(descrName, newParent.name);
     }
 
     /**
         Describe the action
     */
     string describeUndo() {
-        if (prevParent is null) return "Created %s".format(self.name);
-        return _("Moved %s from %s").format(self.name, prevParent.name);
+        if (prevParents.length == 0) return _("Created %s").format(descrName);
+        if (nodes.length == 1 && prevParents.length == 1) return  _("Moved %s from %s").format(descrName, prevParents[nodes[0].uuid].name);
+        return _("Moved %s from origin").format(descrName);
     }
 
     /**
@@ -159,20 +186,22 @@ public:
 }
 
 /**
+    Moves multiple children with history
+*/
+void incMoveChildrenWithHistory(Node[] n, Node to, size_t offset) {
+    // Push action to stack
+    incActionPush(new NodeMoveAction(
+        n,
+        to,
+        offset
+    ));
+}
+
+/**
     Moves child with history
 */
-void incMoveChildWithHistory(Node n, Node to) {
-
-    // Calculate transforms
-    // Transform currentLocal = n.localTransform;
-    // // Push action to stack
-    // incActionPush(new NodeChangeAction(
-    //     n.parent,
-    //     n,
-    //     to,
-    //     currentLocal,
-    //     Transform(newPosition)
-    // ));
+void incMoveChildWithHistory(Node n, Node to, size_t offset) {
+    incMoveChildrenWithHistory([n], to, offset);
 }
 
 /**
@@ -182,9 +211,8 @@ void incAddChildWithHistory(Node n, Node to, string name=null) {
     if (to is null) to = incActivePuppet().root;
 
     // Push action to stack
-    incActionPush(new NodeChangeAction(
-        null,
-        n,
+    incActionPush(new NodeMoveAction(
+        [n],
         to
     ));
 
@@ -199,9 +227,8 @@ void incAddChildWithHistory(Node n, Node to, string name=null) {
 */
 void incDeleteChildWithHistory(Node n) {
     // Push action to stack
-    incActionPush(new NodeChangeAction(
-        n.parent,
-        n,
+    incActionPush(new NodeMoveAction(
+        [n],
         null
     ));
 
