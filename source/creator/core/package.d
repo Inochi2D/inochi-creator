@@ -214,7 +214,7 @@ void incOpenWindow() {
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -266,7 +266,7 @@ void incOpenWindow() {
             throw new Exception("OpenGL library could not be loaded!");
 
         case GLSupport.noContext:
-            throw new Exception("No valid OpenGL 3.2 context was found!");
+            throw new Exception("No valid OpenGL 3.1 context was found!");
 
         default: break;
     }
