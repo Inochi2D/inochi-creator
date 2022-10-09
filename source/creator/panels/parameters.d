@@ -88,7 +88,7 @@ private {
                 float offX = param.axisPoints[0][x];
                 if (axis == 0 && (offX < min || offX > max)) continue;
                 foreach(y; 0..yCount) {
-                    float offY = param.axisPoints[1][x];
+                    float offY = param.axisPoints[1][y];
                     if (axis == 1 && (offY < min || offY > max)) continue;
 
                     vec2u index = vec2u(x, y);
@@ -734,11 +734,11 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                         }
                         if (param.isVec2) {
                             if (igMenuItem("", "", false, true)) {
-                                mirroredAutofill(param, 1, 0, 0.4999);
+                                mirroredAutofill(param, 1, 0.5001, 1);
                                 incViewportNodeDeformNotifyParamValueChanged();
                             }
                             if (igMenuItem("", "", false, true)) {
-                                mirroredAutofill(param, 1, 0.5001, 1);
+                                mirroredAutofill(param, 1, 0, 0.4999);
                                 incViewportNodeDeformNotifyParamValueChanged();
                             }
                         }
