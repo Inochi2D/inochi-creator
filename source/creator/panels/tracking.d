@@ -51,7 +51,7 @@ private:
 
 protected:
     override
-    debug(tracking)
+    debug(InExperimental)
     void onUpdate() {
 
         if (incEditMode == EditMode.ModelTest) {
@@ -158,6 +158,6 @@ public:
 /**
     Generate tracking panel frame
 */
-debug(tracking) mixin incPanel!TrackingPanel;
+debug(InExperimental) mixin incPanel!TrackingPanel;
 
 

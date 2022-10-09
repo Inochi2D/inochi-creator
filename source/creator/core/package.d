@@ -603,7 +603,7 @@ void incSetDefaultLayout() {
     igDockBuilderDockWindow("###Tool Settings", dockIDToolSettings);
     igDockBuilderDockWindow("###History", dockIDHistory);
     igDockBuilderDockWindow("###Scene", dockIDHistory);
-    debug(tracking) igDockBuilderDockWindow("###Tracking", dockIDHistory);
+    debug(InExperimental) igDockBuilderDockWindow("###Tracking", dockIDHistory);
     igDockBuilderDockWindow("###Timeline", dockIDTimeline);
     igDockBuilderDockWindow("###Logger", dockIDTimeline);
     igDockBuilderDockWindow("###Parameters", dockIDParams);
