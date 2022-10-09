@@ -40,7 +40,10 @@ float incGetUIScaleFont() {
 */
 float incGetUIScale() {
     version (NoUIScaling) return 1; 
-    else version (UseUIScaling) return uiScale;
+    else version (UseUIScaling) {
+        version (OSX) return 1;
+        else return uiScale;
+    }
     else return 1;
 }
 

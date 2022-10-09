@@ -125,9 +125,14 @@ protected:
                             }
 
                             version (UseUIScaling) {
-                                if (igInputInt(__("UI Scale"), &tmpUIScale, 25, 50, ImGuiInputTextFlags.EnterReturnsTrue)) {
-                                    tmpUIScale = clamp(tmpUIScale, 100, 200);
-                                    incSetUIScale(cast(float)tmpUIScale/100.0);
+                                version(OSX) {
+
+                                    // macOS follows Retina scaling.
+                                } else {
+                                    if (igInputInt(__("UI Scale"), &tmpUIScale, 25, 50, ImGuiInputTextFlags.EnterReturnsTrue)) {
+                                        tmpUIScale = clamp(tmpUIScale, 100, 200);
+                                        incSetUIScale(cast(float)tmpUIScale/100.0);
+                                    }
                                 }
                             }
                         endSection();

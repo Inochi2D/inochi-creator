@@ -104,20 +104,26 @@ void incGLBackendBeginRender() {
 
 bool incGLBackendProcessEvent(const(SDL_Event)* event) {
     version (UseUIScaling) {
-        switch(event.type) {
-
-            // For UI Scaling we want to send in our own scaled UI inputs
-            case SDL_EventType.SDL_MOUSEMOTION:
-                float uiScale = incGetUIScale();
-                ImGuiIO_AddMousePosEvent(
-                    igGetIO(), 
-                    cast(float)event.motion.x/uiScale, 
-                    cast(float)event.motion.y/uiScale
-                );
-                return true;
+        version (OSX) {
             
-            default:
-                return ImGui_ImplSDL2_ProcessEvent(event);
+            // macOS handles the UI scaling automatically, as such we don't need to do as much cursed shit(TM) there.
+            return ImGui_ImplSDL2_ProcessEvent(event);
+        } else {
+            switch(event.type) {
+
+                // For UI Scaling we want to send in our own scaled UI inputs
+                case SDL_EventType.SDL_MOUSEMOTION:
+                    float uiScale = incGetUIScale();
+                    ImGuiIO_AddMousePosEvent(
+                        igGetIO(), 
+                        cast(float)event.motion.x/uiScale, 
+                        cast(float)event.motion.y/uiScale
+                    );
+                    return true;
+                
+                default:
+                    return ImGui_ImplSDL2_ProcessEvent(event);
+            }
         }
 
     } else {
