@@ -19,7 +19,7 @@ module creator.config;
 
     If you change the banner you SHOULD change this.
 */
-enum INC_BANNER_ARTIST_NAME = "ku-ini & いろは";
+enum INC_BANNER_ARTIST_NAME = "七乃ななせ";
 
 /**
     URI for bug reports, for unofficial builds this SHOULD be changed.
