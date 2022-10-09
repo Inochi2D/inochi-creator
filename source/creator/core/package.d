@@ -307,6 +307,13 @@ void incOpenWindow() {
         inTexPremultiply(tex.data);
         incLogo = new Texture(tex);
 
+        // Set X11 window icon
+        version(linux) {
+            if (!isWayland) {
+                SDL_SetWindowIcon(window, SDL_CreateRGBSurfaceWithFormatFrom(tex.data.ptr, tex.width, tex.height, 32, 4*tex.width,  SDL_PIXELFORMAT_RGBA32));
+            }
+        }
+
         tex = ShallowTexture(cast(ubyte[])import("ui/ui-ada.png"));
         inTexPremultiply(tex.data);
         incAda = new Texture(tex);
@@ -322,7 +329,9 @@ void incOpenWindow() {
     // Load Settings
     incShowStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
 
-    version(linux) dpInit();
+    version(linux) {
+        dpInit();
+    }
 }
 
 void incCreateContext() {
