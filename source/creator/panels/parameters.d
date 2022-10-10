@@ -194,7 +194,7 @@ private {
             newParam.insertAxisPoint(0, key);
             foreach(binding; param.bindings) {
                 ParameterBinding b = newParam.getOrAddBinding(binding.getTarget().node, binding.getName());
-                auto keyIndex = param.findClosestKeypoint(vec2(key, 0));
+                auto keyIndex = param.findClosestKeypoint(vec2(key, newParam.min.x));
                 binding.copyKeypointToBinding(keyIndex, b, keyIndex);
             }
         }
