@@ -183,7 +183,7 @@ jobs:
         ITCH_GAME: inochi-creator
         ITCH_USER: LunaFoxgirlVT
         VERSION_FILE: version.txt
-        PACKAGE: 'inochi-creator-win32-x86_64.zip'
+        PACKAGE: 'out/inochi-creator-win32-x86_64.zip'
 
   macOS-build:
     runs-on: macos-12
@@ -298,4 +298,4 @@ jobs:
         ITCH_GAME: inochi-creator
         ITCH_USER: LunaFoxgirlVT
         VERSION_FILE: version.txt
-        PACKAGE: 'inochi-creator-macOS.dmg'
+        PACKAGE: 'out/inochi-creator-macOS.zip'
