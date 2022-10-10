@@ -31,7 +31,6 @@ private:
 protected:
     override
     void onBeginUpdate() {
-        flags |= ImGuiWindowFlags.NoResize;
         igSetNextWindowSize(ImVec2(384, 192), ImGuiCond.Appearing);
         igSetNextWindowSizeConstraints(ImVec2(384, 192), ImVec2(float.max, float.max));
         super.onBeginUpdate();

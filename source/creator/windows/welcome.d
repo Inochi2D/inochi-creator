@@ -118,10 +118,19 @@ protected:
                 incTextShadowed(INC_VERSION);
                 
                 // Banner Artist Name
-                string artistString = _("Art by %s").format(INC_BANNER_ARTIST_NAME);
+                string artistString = INC_BANNER_ARTIST_NAME;
                 vsSize = incMeasureString(artistString);
                 igSetCursorPos(ImVec2(512-(vsSize.x+12), 200-(vsSize.y+8)));
                 incTextBordered(artistString);
+
+                if (igIsItemHovered()) {
+                    igSetMouseCursor(ImGuiMouseCursor.Hand);
+                }
+
+                // Clicking artist link sends you to the artist's page
+                if (igIsItemClicked()) {
+                    incOpenLink(INC_BANNER_ARTIST_PAGE);
+                }
             igPopStyleColor();
         } 
         igEndChild();
@@ -169,9 +178,14 @@ protected:
                             }
 
                             version (UseUIScaling) {
-                                if (igInputInt(__("UI Scale"), &tmpUIScale, 25, 50, ImGuiInputTextFlags.EnterReturnsTrue)) {
-                                    tmpUIScale = clamp(tmpUIScale, 100, 200);
-                                    incSetUIScale(cast(float)tmpUIScale/100.0);
+                                version(OSX) {
+
+                                    // macOS follows Retina scaling, skip showing this
+                                } else {
+                                    if (igInputInt(__("UI Scale"), &tmpUIScale, 25, 50, ImGuiInputTextFlags.EnterReturnsTrue)) {
+                                        tmpUIScale = clamp(tmpUIScale, 100, 200);
+                                        incSetUIScale(cast(float)tmpUIScale/100.0);
+                                    }
                                 }
                             }
 
@@ -311,6 +325,7 @@ public:
 
         auto bannerTex = ShallowTexture(cast(ubyte[])import("ui/banner.png"));
         banner = new Texture(bannerTex);
+        banner.setAnisotropy(1.5);
 
         version(InBranding) {
             auto bannerLogoTex = ShallowTexture(cast(ubyte[])import("ui/banner-logo.png"));   

@@ -71,11 +71,22 @@ private {
 
 string incShowImportDialog(const(TFD_Filter)[] filters) {
     version(linux) {
-        FileOpenOptions op;
-        op.filters = tfdToFileFilter(filters);
-        auto promise = dpFileChooserOpenFile(getWindowHandle(), "Import...", op);
-        promise.await();
-        return promise.uriFromPromise();
+        try {
+            FileOpenOptions op;
+            op.filters = tfdToFileFilter(filters);
+            auto promise = dpFileChooserOpenFile(getWindowHandle(), "Import...", op);
+            promise.await();
+            return promise.uriFromPromise();
+        } catch (Throwable ex) {
+
+            // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
+            c_str filename = tinyfd_openFileDialog(__("Import..."), "", filters, false);
+            if (filename !is null) {
+                string file = cast(string)filename.fromStringz;
+                return file;
+            }
+            return null;
+        }
     } else {
         c_str filename = tinyfd_openFileDialog(__("Import..."), "", filters, false);
         if (filename !is null) {
@@ -88,11 +99,19 @@ string incShowImportDialog(const(TFD_Filter)[] filters) {
 
 string incShowOpenFolderDialog(string title="Open...") {
     version(linux) {
-        FileOpenOptions op;
-        op.directory = true;
-        auto promise = dpFileChooserOpenFile(getWindowHandle(), title, op);
-        promise.await();
-        return promise.uriFromPromise();
+        try {
+            FileOpenOptions op;
+            op.directory = true;
+            auto promise = dpFileChooserOpenFile(getWindowHandle(), title, op);
+            promise.await();
+            return promise.uriFromPromise();
+        } catch(Throwable _) {
+
+            // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
+            c_str filename = tinyfd_selectFolderDialog(title.toStringz, null);
+            if (filename !is null) return cast(string)filename.fromStringz;
+            return null;
+        }
     } else {
         c_str filename = tinyfd_selectFolderDialog(title.toStringz, null);
         if (filename !is null) return cast(string)filename.fromStringz;
@@ -102,11 +121,22 @@ string incShowOpenFolderDialog(string title="Open...") {
 
 string incShowOpenDialog(const(TFD_Filter)[] filters, string title="Open...") {
     version(linux) {
-        FileOpenOptions op;
-        op.filters = tfdToFileFilter(filters);
-        auto promise = dpFileChooserOpenFile(getWindowHandle(), title, op);
-        promise.await();
-        return promise.uriFromPromise();
+        try {
+            FileOpenOptions op;
+            op.filters = tfdToFileFilter(filters);
+            auto promise = dpFileChooserOpenFile(getWindowHandle(), title, op);
+            promise.await();
+            return promise.uriFromPromise();
+        } catch(Throwable ex) {
+
+            // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
+            c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, false);
+            if (filename !is null) {
+                string file = cast(string)filename.fromStringz;
+                return file;
+            }
+            return null;
+        }
     } else {
         c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, false);
         if (filename !is null) {
@@ -119,11 +149,22 @@ string incShowOpenDialog(const(TFD_Filter)[] filters, string title="Open...") {
 
 string incShowSaveDialog(const(TFD_Filter)[] filters, string fname, string title = "Save...") {
     version(linux) {
-        FileSaveOptions op;
-        op.filters = tfdToFileFilter(filters);
-        auto promise = dpFileChooserSaveFile(getWindowHandle(), title, op);
-        promise.await();
-        return promise.uriFromPromise();
+        try {
+            FileSaveOptions op;
+            op.filters = tfdToFileFilter(filters);
+            auto promise = dpFileChooserSaveFile(getWindowHandle(), title, op);
+            promise.await();
+            return promise.uriFromPromise();
+        } catch (Throwable ex) {
+
+            // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
+            c_str filename = tinyfd_saveFileDialog(title.toStringz, fname.toStringz, filters);
+            if (filename !is null) {
+                string file = cast(string)filename.fromStringz;
+                return file;
+            }
+            return null;
+        }
     } else {
         c_str filename = tinyfd_saveFileDialog(title.toStringz, fname.toStringz, filters);
         if (filename !is null) {

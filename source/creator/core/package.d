@@ -266,7 +266,7 @@ void incOpenWindow() {
             throw new Exception("OpenGL library could not be loaded!");
 
         case GLSupport.noContext:
-            throw new Exception("No valid OpenGL 3.2 context was found!");
+            throw new Exception("No valid OpenGL context was found!");
 
         default: break;
     }
@@ -307,6 +307,13 @@ void incOpenWindow() {
         inTexPremultiply(tex.data);
         incLogo = new Texture(tex);
 
+        // Set X11 window icon
+        version(linux) {
+            if (!isWayland) {
+                SDL_SetWindowIcon(window, SDL_CreateRGBSurfaceWithFormatFrom(tex.data.ptr, tex.width, tex.height, 32, 4*tex.width,  SDL_PIXELFORMAT_RGBA32));
+            }
+        }
+
         tex = ShallowTexture(cast(ubyte[])import("ui/ui-ada.png"));
         inTexPremultiply(tex.data);
         incAda = new Texture(tex);
@@ -322,7 +329,9 @@ void incOpenWindow() {
     // Load Settings
     incShowStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
 
-    version(linux) dpInit();
+    version(linux) {
+        dpInit();
+    }
 }
 
 void incCreateContext() {
@@ -572,7 +581,7 @@ void incBeginLoopNoEv() {
     }
 
     // Add docking space
-    viewportDock = igDockSpaceOverViewport(null, cast(ImGuiDockNodeFlags)0, null);
+    viewportDock = igDockSpaceOverViewport(null, ImGuiDockNodeFlags.NoDockingInCentralNode, null);
     if (!incSettingsCanGet("firstrun_complete")) {
         incSetDefaultLayout();
         incSettingsSet("firstrun_complete", true);
@@ -603,7 +612,7 @@ void incSetDefaultLayout() {
     igDockBuilderDockWindow("###Tool Settings", dockIDToolSettings);
     igDockBuilderDockWindow("###History", dockIDHistory);
     igDockBuilderDockWindow("###Scene", dockIDHistory);
-    igDockBuilderDockWindow("###Tracking", dockIDHistory);
+    debug(InExperimental) igDockBuilderDockWindow("###Tracking", dockIDHistory);
     igDockBuilderDockWindow("###Timeline", dockIDTimeline);
     igDockBuilderDockWindow("###Logger", dockIDTimeline);
     igDockBuilderDockWindow("###Parameters", dockIDParams);

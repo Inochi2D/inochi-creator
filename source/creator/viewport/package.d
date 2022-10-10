@@ -322,6 +322,7 @@ private {
     bool isMovingPart;
 
     void incViewportMovement(ImGuiIO* io, Camera camera) {
+        float uiScale = incGetUIScale();
         
         // HANDLE MOVE VIEWPORT
         if (!isMovingViewport && io.MouseDown[1] && incInputIsDragRequested()) {
@@ -339,8 +340,8 @@ private {
         if (isMovingViewport) {
 
             camera.position = vec2(
-                csx+((io.MousePos.x-sx)/incViewportZoom),
-                csy+((io.MousePos.y-sy)/incViewportZoom)
+                csx+((io.MousePos.x-sx)/incViewportZoom)*uiScale,
+                csy+((io.MousePos.y-sy)/incViewportZoom)*uiScale
             );
 
             incViewportTargetPosition = camera.position;
@@ -348,7 +349,7 @@ private {
 
         // HANDLE ZOOM
         if (io.MouseWheel != 0) {
-            incViewportZoom += (io.MouseWheel/50)*incViewportZoom;
+            incViewportZoom += (io.MouseWheel/50)*incViewportZoom*uiScale;
             incViewportZoom = clamp(incViewportZoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX);
             camera.scale = vec2(incViewportZoom);
             incViewportTargetZoom = incViewportZoom;

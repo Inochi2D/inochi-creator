@@ -82,7 +82,7 @@ jobs:
     - name: 'Build Inochi Creator'
       run: |
         # Build the project, with its main file included, without unittests
-        dub build --compiler=ldc2 --build=release --config=full
+        dub build --compiler=ldc2 --build=release --config=full --debug=InExperimental
 
     - name: 'Build AppImage'
       run: |
@@ -148,7 +148,7 @@ jobs:
               }
           }
           Invoke-VSDevEnvironment
-          dub build --compiler=ldc2 --build=release --config=win32-full
+          dub build --compiler=ldc2 --build=release --config=win32-full --debug=InExperimental
 
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
@@ -182,6 +182,16 @@ jobs:
         # Remove conflicting brew items
         brew remove --ignore-dependencies aom cairo composer curl fontconfig freetype gd ghostscript httpd imagemagick jpeg-xl libavif libheif libxft mongodb-community@5.0 mongosh node@16 openjpeg php r sox webp libpng brotli
 
+        # Delete fake harfbuzz if need be
+        if [ -f "/usr/local/lib/libharfbuzz.dylib" ]; then
+          sudo rm -r /usr/local/lib/libharfbuzz.dylib
+        fi
+
+        # And the .a for it as well
+        if [ -f "/usr/local/lib/libharfbuzz.a" ]; then
+          sudo rm -r /usr/local/lib/libharfbuzz.a
+        fi
+
     - name: 'Generate i18n'
       run: |
         sudo chmod +x gentl.sh
@@ -202,12 +212,12 @@ jobs:
       run: |
         # First build ARM64 version...
         echo "Building arm64 binary..."
-        dub build --build=release --config=osx-full --arch=arm64-apple-macos
+        dub build --build=release --config=osx-full --arch=arm64-apple-macos --debug=InExperimental
         mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
 
         # Then the X86_64 version...
         echo "Building x86_64 binary..."
-        dub build --build=release --config=osx-full --arch=x86_64-apple-macos
+        dub build --build=release --config=osx-full --arch=x86_64-apple-macos --debug=InExperimental
         mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64"
 
         # Glue them together with lipo

@@ -247,7 +247,7 @@ void incInspectorModelInfo() {
     }
     incEndCategory();
 
-    if (incBeginCategory(__("Rendering Settings"), ImVec4(0.35, 0.15, 0.15, 1))) {
+    if (incBeginCategory(__("Rendering Settings"))) {
         igPushID("Filtering");
             if (igCheckbox(__("Use Point Filtering"), &incActivePuppet().meta.preservePixels)) {
                 incActivePuppet().populateTextureSlots();
@@ -734,7 +734,7 @@ void incInspectorModelPart(Part node) {
         igColorEdit3("###S_TINT", cast(float[3]*)node.screenTint.ptr);
 
         // Padding
-        igSeparator();
+        igSpacing();
         igSpacing();
         igSpacing();
 
@@ -972,16 +972,31 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
         import std.string : toStringz;
 
         igPushID("TargetParam");
+            if (igBeginPopup("TPARAM")) {
+                if (node.param) {
+                    if (igMenuItem(__("Unmap"))) {
+                        node.param = null;
+                        incActivePuppet().rescanNodes();
+                    }
+                } else {
+                    incDummyLabel(_("Unassigned"), ImVec2(128, 16));
+                }
+
+                igEndPopup();
+            }
+
             incText(_("Parameter"));
             string paramName = _("(unassigned)");
             if (node.param !is null) paramName = node.param.name;
             igInputText("###TARGET_PARAM", cast(char*)paramName.toStringz, paramName.length, ImGuiInputTextFlags.ReadOnly);
+            igOpenPopupOnItemClick("TPARAM", ImGuiPopupFlags.MouseButtonRight);
 
             if(igBeginDragDropTarget()) {
                 const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PARAMETER");
                 if (payload !is null) {
                     ParamDragDropData* payloadParam = *cast(ParamDragDropData**)payload.Data;
                     node.param = payloadParam.param;
+                    incActivePuppet().rescanNodes();
                 }
 
                 igEndDragDropTarget();

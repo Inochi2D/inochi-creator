@@ -36,15 +36,14 @@ private:
 
     SettingsPane settingsPane = SettingsPane.LookAndFeel;
 
-    void beginSection(string title) {
-        incText(title);
+    void beginSection(const(char)* title) {
+        incBeginCategory(title, IncCategoryFlags.NoCollapse);
         incDummy(ImVec2(0, 4));
-        igIndent();
     }
     
     void endSection() {
-        igUnindent();
-        igNewLine();
+        incDummy(ImVec2(0, 4));
+        incEndCategory();
     }
 protected:
     override
@@ -97,44 +96,48 @@ protected:
         if (igBeginChild("SettingsContent", ImVec2(0, -28), true)) {
             availX = incAvailableSpace().x;
 
-            // Begins section, REMEMBER TO END IT
-            beginSection(_(cast(string)settingsPane));
-
             // Start settings panel elements
             igPushItemWidth(availX/2);
                 switch(settingsPane) {
                     case SettingsPane.LookAndFeel:
-                        if(igBeginCombo(__("Color Theme"), incGetDarkMode() ? __("Dark") : __("Light"))) {
-                            if (igSelectable(__("Dark"), incGetDarkMode())) incSetDarkMode(true);
-                            if (igSelectable(__("Light"), !incGetDarkMode())) incSetDarkMode(false);
 
-                            igEndCombo();
-                        }
-                        
-                        import std.string : toStringz;
-                        if(igBeginCombo(__("Language"), incLocaleCurrentName().toStringz)) {
-                            if (igSelectable("English")) {
-                                incLocaleSet(null);
-                                changesRequiresRestart = true;
+                        beginSection(__("Look and Feel"));
+                            if(igBeginCombo(__("Color Theme"), incGetDarkMode() ? __("Dark") : __("Light"))) {
+                                if (igSelectable(__("Dark"), incGetDarkMode())) incSetDarkMode(true);
+                                if (igSelectable(__("Light"), !incGetDarkMode())) incSetDarkMode(false);
+
+                                igEndCombo();
                             }
-                            foreach(entry; incLocaleGetEntries()) {
-                                if (igSelectable(entry.humanNameC)) {
-                                    incLocaleSet(entry.code);
+                            
+                            import std.string : toStringz;
+                            if(igBeginCombo(__("Language"), incLocaleCurrentName().toStringz)) {
+                                if (igSelectable("English")) {
+                                    incLocaleSet(null);
                                     changesRequiresRestart = true;
                                 }
+                                foreach(entry; incLocaleGetEntries()) {
+                                    if (igSelectable(entry.humanNameC)) {
+                                        incLocaleSet(entry.code);
+                                        changesRequiresRestart = true;
+                                    }
+                                }
+                                igEndCombo();
                             }
-                            igEndCombo();
-                        }
 
-                        version (UseUIScaling) {
-                            if (igInputInt(__("UI Scale"), &tmpUIScale, 25, 50, ImGuiInputTextFlags.EnterReturnsTrue)) {
-                                tmpUIScale = clamp(tmpUIScale, 100, 200);
-                                incSetUIScale(cast(float)tmpUIScale/100.0);
+                            version (UseUIScaling) {
+                                version(OSX) {
+
+                                    // macOS follows Retina scaling.
+                                } else {
+                                    if (igInputInt(__("UI Scale"), &tmpUIScale, 25, 50, ImGuiInputTextFlags.EnterReturnsTrue)) {
+                                        tmpUIScale = clamp(tmpUIScale, 100, 200);
+                                        incSetUIScale(cast(float)tmpUIScale/100.0);
+                                    }
+                                }
                             }
-                        }
                         endSection();
 
-                        beginSection(_("Undo History"));
+                        beginSection(__("Undo History"));
                             int maxHistory = cast(int)incActionGetUndoHistoryLength();
                             if (igDragInt(__("Max Undo History"), &maxHistory, 1, 1, 1000, "%d")) {
                                 incActionSetUndoHistoryLength(maxHistory);
@@ -142,7 +145,7 @@ protected:
                         endSection();
 
                         version(linux) {
-                            beginSection(_("Linux Tweaks"));
+                            beginSection(__("Linux Tweaks"));
                                 bool disableCompositor = incSettingsGet!bool("DisableCompositor");
                                 if (igCheckbox(__("Disable Compositor"), &disableCompositor)) {
                                     incSettingsSet("DisableCompositor", disableCompositor);
@@ -151,12 +154,13 @@ protected:
                         }
                         break;
                     case SettingsPane.Accessibility:
-                        bool disableCompositor = incSettingsGet!bool("useOpenDyslexic");
-                        if (igCheckbox(__("Use OpenDyslexic Font"), &disableCompositor)) {
-                            incSettingsSet("useOpenDyslexic", disableCompositor);
-                            changesRequiresRestart = true;
-                        }
-                        incTooltip("Use the OpenDyslexic font for Latin text characters.");
+                        beginSection(__("Accessibility"));
+                            bool disableCompositor = incSettingsGet!bool("useOpenDyslexic");
+                            if (igCheckbox(__("Use OpenDyslexic Font"), &disableCompositor)) {
+                                incSettingsSet("useOpenDyslexic", disableCompositor);
+                                changesRequiresRestart = true;
+                            }
+                            incTooltip("Use the OpenDyslexic font for Latin text characters.");
                         endSection();
                         break;
                     default:
