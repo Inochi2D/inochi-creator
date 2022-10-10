@@ -47,7 +47,7 @@ public:
     */
     void rollback() {
         if (!added) 
-        incActivePuppet().parameters ~= self;
+            incActivePuppet().parameters ~= self;
         else
             incActivePuppet().removeParameter(self);
             
