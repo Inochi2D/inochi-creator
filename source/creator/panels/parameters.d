@@ -20,6 +20,7 @@ import i18n;
 import std.uni : toLower;
 import std.stdio;
 import creator.utils;
+import std.algorithm.searching : canFind;
 import std.algorithm.sorting : sort;
 import std.algorithm.mutation : remove;
 
@@ -174,6 +175,48 @@ private {
         }
 
         refreshBindingList(param);
+    }
+
+    void convertTo2D(Parameter param) {
+        Parameter newParam = new Parameter(param.name, true);
+        newParam.uuid = param.uuid;
+        newParam.min  = vec2(param.min.x, param.min.x);
+        newParam.max  = vec2(param.max.x, param.max.x);
+        long findIndex(T)(T[] array, T target) {
+            foreach (idx, t; array) {
+                if (t == target)
+                    return idx;
+            }
+            return -1;
+        }
+        foreach (key; param.axisPoints[0]) {
+            if (newParam.min.x != key && newParam.max.x != key)
+            newParam.insertAxisPoint(0, key);
+            foreach(binding; param.bindings) {
+                ParameterBinding b = newParam.getOrAddBinding(binding.getTarget().node, binding.getName());
+                auto keyIndex = param.findClosestKeypoint(vec2(key, 0));
+                binding.copyKeypointToBinding(keyIndex, b, keyIndex);
+            }
+        }
+        auto index = findIndex(incActivePuppet().parameters, param);
+        writefln("top leve find index: %d", index);
+        if (index >= 0) {
+            writefln("replace %s [%d]", newParam, index);
+            incActivePuppet().parameters[index] = newParam;
+        } else {
+            foreach (idx, xparam; incActivePuppet().parameters) {
+                if (auto group = cast(ExParameterGroup)xparam) {
+                    index = findIndex(group.children, param);
+                    writefln("group leve find index: %d", index);
+                    if (index >= 0) {
+                        group.children[index] = newParam;
+                        writefln("replace child of %s --> %s [%d]", group.name, newParam, index);
+                        break;
+                    }
+                }
+            }
+        }
+//        refreshBindingList(newParam);
     }
 
     void keypointActions(Parameter param, ParameterBinding[] bindings) {
@@ -689,6 +732,10 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                     
                     if (igMenuItem(__("Split"), "", false, true)) {
                         incPushWindowList(new ParamSplitWindow(idx, param));
+                    }
+
+                    if (!param.isVec2 && igMenuItem(__("To 2D"), "", false, true)) {
+                        convertTo2D(param);
                     }
 
                     if (param.isVec2) {
