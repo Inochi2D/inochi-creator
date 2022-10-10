@@ -76,8 +76,6 @@ jobs:
         # Build the project, with its main file included, without unittests
         dub build --compiler=ldc2 --build=release --config=full
 
-        dub run gitver -- --prefix INC --itchfile source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt
-
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
       with:
@@ -143,8 +141,6 @@ jobs:
           }
           Invoke-VSDevEnvironment
           dub build --compiler=ldc2 --build=release --config=win32-full
-
-          dub run gitver -- --prefix INC --itchfile source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt
 
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
@@ -256,8 +252,6 @@ jobs:
         echo "Cleaning up..."
         rm "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
         ./osxbundle.sh
-
-        dub run gitver -- --prefix INC --itchfile source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt
 
     - name: Archive Zip
       uses: thedoctor0/zip-release@main

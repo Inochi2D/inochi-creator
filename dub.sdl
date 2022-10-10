@@ -17,7 +17,6 @@ dflags "-mscrtlib=msvcrt" platform="windows-ldc"
 lflags "-rpath=$$ORIGIN" platform="linux"
 versions "GL_32" "USE_SDL2" "USE_GL" "SDL_208" "USE_OpenGL3" "UseUIScaling"
 stringImportPaths "res/" "./"
-preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\""
 
 
 configuration "barebones" {
@@ -45,6 +44,8 @@ configuration "full" {
 	versions "InBranding"
 	
 	dependency "dportals" version="~>0.1.0"
+	
+	preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
 }
 
 
@@ -56,6 +57,8 @@ configuration "osx-full" {
 	dflags "-preserve-dwarf-line-section=false"
 	lflags "-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
 	versions "InBranding"
+
+	preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
 }
 
 configuration "win32-full" {
@@ -66,6 +69,8 @@ configuration "win32-full" {
 	sourceFiles "res\\inochi-creator.res"
 	versions "InBranding"
 	preBuildCommands "rc.exe /v res\\inochi-creator.rc"
+
+	preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
 }
 
 configuration "win32-lite" {
