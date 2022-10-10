@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-09 23:49+0200\n"
-"PO-Revision-Date: 2022-10-10 21:14+0900\n"
+"PO-Revision-Date: 2022-10-10 21:26+0900\n"
 "Last-Translator: Sae Okuri <sae.okuri@gmail.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
@@ -76,7 +76,7 @@ msgstr "%s: %sのデフォーマの変更が元に戻されました"
 #: source/creator/actions/node.d:67
 #, c-format
 msgid "%s can not be reparented in to %s due to a circular dependency."
-msgstr ""
+msgstr "循環参照になってしまうため%sを%sの子ノードにすることは出来ません。"
 
 #: source/creator/actions/node.d:87
 msgid "nodes"
