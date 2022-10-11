@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-09 23:49+0200\n"
-"PO-Revision-Date: 2022-10-11 11:05+0900\n"
+"PO-Revision-Date: 2022-10-11 11:59+0900\n"
 "Last-Translator: Sae Okuri <sae.okuri@gmail.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
@@ -60,7 +60,7 @@ msgstr "ドローアブル%sのメッシュが変更されました"
 #: source/creator/actions/drawable.d:90
 #, c-format
 msgid "Drawable %s was changed"
-msgstr "Drawable%sの変更が元に戻されました"
+msgstr "ドローアブル%sの変更が元に戻されました"
 
 #: source/creator/actions/mesheditor.d:160
 #, c-format
