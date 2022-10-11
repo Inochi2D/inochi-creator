@@ -76,9 +76,10 @@ public:
             }
 
             // Set relative position
-            sn.setRelativeTo(new_);
-            sn.parent = new_;
-            sn.insertInto(new_, pOffset);
+            if (new_) {
+                sn.setRelativeTo(new_);
+                sn.insertInto(new_, pOffset);
+            } else sn.parent = null;
         }
         incActivePuppet().rescanNodes();
     
@@ -92,8 +93,10 @@ public:
     */
     void rollback() {
         foreach(ref sn; nodes) {
-            sn.setRelativeTo(prevParents[sn.uuid]);
-            sn.insertInto(prevParents[sn.uuid], prevOffsets[sn.uuid]);
+            if (prevParents[sn.uuid]) {
+                sn.setRelativeTo(prevParents[sn.uuid]);
+                sn.insertInto(prevParents[sn.uuid], prevOffsets[sn.uuid]);
+            } else sn.parent = null;
         }
         incActivePuppet().rescanNodes();
     }
@@ -103,8 +106,10 @@ public:
     */
     void redo() {
         foreach(sn; nodes) {
-            sn.setRelativeTo(newParent);
-            sn.insertInto(newParent, parentOffset);
+            if (newParent) {
+                sn.setRelativeTo(newParent);
+                sn.insertInto(newParent, parentOffset);
+            } else sn.parent = null;
         }
         incActivePuppet().rescanNodes();
     }
@@ -231,8 +236,20 @@ void incDeleteChildWithHistory(Node n) {
         [n],
         null
     ));
+    
+    incActivePuppet().rescanNodes();
+}
 
-    n.parent = null;
+/**
+    Deletes child with history
+*/
+void incDeleteChildrenWithHistory(Node[] n) {
+    // Push action to stack
+    incActionPush(new NodeMoveAction(
+        n,
+        null
+    ));
+
     incActivePuppet().rescanNodes();
 }
 
