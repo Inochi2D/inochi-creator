@@ -152,7 +152,7 @@ msgstr "パラメータ(%s)が再度削除されました"
 #: source/creator/actions/parameter.d:96
 #, c-format
 msgid "Parameter %s was added"
-msgstr "パラメータ(%s)が再追加されました。"
+msgstr "パラメータ(%s)が再度追加されました。"
 
 #: source/creator/core/dpi.d:54 source/creator/core/dpi.d:58
 msgid "100% (Locked)"
@@ -253,7 +253,7 @@ msgstr "フォルダのインポートが完了しました。"
 
 #: source/creator/package.d:307
 msgid "Mipmap generation completed."
-msgstr "Mipmapの生成が完了しました。"
+msgstr "ミップマップの生成が完了しました。"
 
 #: source/creator/package.d:322
 msgid "Texture bleeding completed."
@@ -281,7 +281,7 @@ msgstr "履歴"
 #: source/creator/panels/inspector.d:41 source/creator/panels/nodes.d:291
 #: source/creator/panels/parameters.d:818
 msgid "In vertex edit mode..."
-msgstr "メッシュ編集中"
+msgstr "メッシュ編集中..."
 
 #: source/creator/panels/inspector.d:106
 msgid "No nodes selected..."
@@ -386,12 +386,12 @@ msgstr "重力"
 
 #: source/creator/panels/inspector.d:244
 msgid "Acceleration due to gravity, in m/s². Earth gravity is 9.8."
-msgstr "重力加速度を設定する。地上での重力加速度は9.8メートル/妙²"
+msgstr "重力加速度を設定する。地上での重力加速度は9.8m/s²"
 
 #: source/creator/panels/inspector.d:245
 #, c-format
 msgid "%.2f m/s²"
-msgstr "%.2f メートル/秒²"
+msgstr "%.2f m/s²"
 
 #: source/creator/panels/inspector.d:250
 msgid "Rendering Settings"
