@@ -42,6 +42,7 @@
   [seagetch](https://twitter.com/seagetch)
   [40Nix](https://twitter.com/40Nix)
   [小栗さえ](https://twitter.com/OkuriSae)
+  [ねじくぎ](https://twitter.com/scrwnl)
 ### 中文
   [LovelyA72](https://twitter.com/LovelyA72) (简体中文)
   [cheetosysst](https://twitter.com/Thect_36) (繁體中文)
