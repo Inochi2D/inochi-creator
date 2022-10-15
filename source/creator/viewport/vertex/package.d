@@ -9,6 +9,7 @@ import i18n;
 import creator.viewport;
 import creator.viewport.common.mesh;
 import creator.viewport.common.mesheditor;
+import creator.viewport.common.automesh;
 import creator.core.input;
 import creator.widgets;
 import creator;
@@ -91,6 +92,18 @@ void incViewportVertexOptions() {
             incTooltip(_("Triangulation Options"));
 
         igEndGroup();
+
+        igSameLine(0, 4);
+
+        igBeginGroup();
+            if (igButton("")) {
+                auto processor = new ContourAutoMeshProcessor;
+                editor.mesh = processor.autoMesh(editor.getTarget(), editor.getMesh());
+                editor.refreshMesh();
+            }
+            incTooltip(_("Auto Meshing (Experimental)"));
+        igEndGroup();
+
     igPopStyleVar(2);
 }
 
