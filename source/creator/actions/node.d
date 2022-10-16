@@ -94,7 +94,7 @@ public:
     void rollback() {
         foreach(ref sn; nodes) {
             if (prevParents[sn.uuid]) {
-                sn.setRelativeTo(prevParents[sn.uuid]);
+                if (!sn.lockToRoot()) sn.setRelativeTo(prevParents[sn.uuid]);
                 sn.insertInto(prevParents[sn.uuid], prevOffsets[sn.uuid]);
             } else sn.parent = null;
         }
@@ -107,7 +107,7 @@ public:
     void redo() {
         foreach(sn; nodes) {
             if (newParent) {
-                sn.setRelativeTo(newParent);
+                if (!sn.lockToRoot()) sn.setRelativeTo(newParent);
                 sn.insertInto(newParent, parentOffset);
             } else sn.parent = null;
         }
@@ -326,4 +326,89 @@ public:
         TSelf otherChange = cast(TSelf) other;
         return (otherChange !is null && otherChange.getName() == this.getName());
     }
+}
+
+class NodeRootBaseSetAction : Action {
+public:
+    alias TSelf = typeof(this);
+    Node node;
+    bool origState;
+    bool state;
+
+
+    this(Node n, bool state) {
+        this.node = n;
+        this.origState = n.lockToRoot;
+        this.state = state;
+
+        n.lockToRoot = this.state;
+    }
+
+    /**
+        Rollback
+    */
+    void rollback() {
+        this.node.lockToRoot = origState;
+    }
+
+    /**
+        Redo
+    */
+    void redo() {
+        this.node.lockToRoot = state;
+    }
+
+    /**
+        Describe the action
+    */
+    string describe() {
+        if (origState) return _("%s locked to root node").format(node.name);
+        else return _("%s unlocked from root node").format(node.name);
+    }
+
+    /**
+        Describe the action
+    */
+    string describeUndo() {
+        if (state) return _("%s locked to root node").format(node.name);
+        else return _("%s unlocked from root node").format(node.name);
+    }
+
+    /**
+        Gets name of this action
+    */
+    string getName() {
+        return this.stringof;
+    }
+    
+    /**
+        Merge
+    */
+    bool merge(Action other) {
+        if (this.canMerge(other)) {
+            this.node.lockToRoot = !state;
+            this.state = !state;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+        Gets whether this node can merge with an other
+    */
+    bool canMerge(Action other) {
+        TSelf otherChange = cast(TSelf) other;
+        return otherChange && otherChange.node == this.node;
+    }
+}
+
+/**
+    Locks to root node
+*/
+void incLockToRootNode(Node n) {
+    // Push action to stack
+    incActionPush(new NodeRootBaseSetAction(
+        n, 
+        !n.lockToRoot
+    ));
 }
