@@ -98,7 +98,7 @@ void incViewportVertexOptions() {
         igBeginGroup();
             if (igButton("")) {
                 auto processor = new ContourAutoMeshProcessor;
-                editor.mesh = processor.autoMesh(editor.getTarget(), editor.getMesh());
+                editor.mesh = processor.autoMesh(editor.getTarget(), editor.getMesh(), editor.mirrorHoriz, 0, editor.mirrorVert, 0);
                 editor.refreshMesh();
             }
             incTooltip(_("Auto Meshing (Experimental)"));

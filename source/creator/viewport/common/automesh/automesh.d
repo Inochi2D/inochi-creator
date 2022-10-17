@@ -5,6 +5,6 @@ import inochi2d.core;
 
 class AutoMeshProcessor {
 public:
-    abstract IncMesh autoMesh(Drawable targets, IncMesh meshData);
+    abstract IncMesh autoMesh(Drawable targets, IncMesh meshData, bool mirrorHoriz = false, float axisHoriz = 0, bool mirrorVert = false, float axisVert = 0);
 
 };

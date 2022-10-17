@@ -12,14 +12,14 @@ import mir.math.stat: mean;
 import std.algorithm;
 import std.algorithm.iteration: map, reduce;
 import std.stdio;
+import std.array;
 
 class ContourAutoMeshProcessor : AutoMeshProcessor {
-    const int STEP = 32;
+    int STEP = 32;
     const int SMALL_THRESHOLD = 256;
     ubyte maskThreshold = 15;
 public:
-    override IncMesh autoMesh(Drawable target, IncMesh mesh) {
-
+    override IncMesh autoMesh(Drawable target, IncMesh mesh, bool mirrorHoriz = false, float axisHoriz = 0, bool mirrorVert = false, float axisVert = 0) {
         auto contoursToVec2s(ContourType)(ref ContourType contours) {
             vec2[] result;
             foreach (contour; contours) {
@@ -33,20 +33,41 @@ public:
             return result;
         }
 
-        auto scaling(vec2[] contour, float scale, int erode_dilate) {
-            float cx = 0, cy = 0;
+        auto calcMoment(vec2[] contour) {
             auto moment = contour.reduce!((a, b){return a+b;})();
-            moment /= contour.length;
-            return contour.map!((c) { return (c - moment)*scale + moment; })();
+            return moment / contour.length;
+        }
+
+        auto scaling(vec2[] contour, vec2 moment, float scale, int erode_dilate) {
+            float cx = 0, cy = 0;
+            return contour.map!((c) { return (c - moment)*scale + moment; })().array;
         }
         
-        auto resampling(vec2[] contour, double rate) {
+        auto resampling(vec2[] contour, double rate, bool mirrorHoriz, float axisHoriz, bool mirrorVert, float axisVert) {
             vec2[] sampled;
-            sampled ~= contour[0];
+            ulong base = 0;
+            if (mirrorHoriz) {
+                float minDistance = -1;
+                foreach (i, vertex; contour) {
+                    if (minDistance < 0 || vertex.x - axisHoriz < minDistance) {
+                        base = i;
+                        minDistance = vertex.x - axisHoriz;
+                    }
+                }
+            }
+            sampled ~= contour[base];
+            float side = 0;
             foreach (idx; 1..contour.length) {
                 vec2 prev = sampled[$-1];
-                vec2 c    = contour[idx];
+                vec2 c    = contour[(idx + base)%$];
                 if ((c-prev).lengthSquared > rate*rate) {
+                    if (mirrorHoriz) {
+                        if (side == 0) {
+                            side = sign(c.x - axisHoriz);
+                        } else if (sign(c.x - axisHoriz) != side) {
+                            continue;
+                        }
+                    }
                     sampled ~= c;
                 }
             }
@@ -119,12 +140,22 @@ public:
                 // special scaling for smaller parts
                 scales = [1, 1.1, 0.8, 0.6, 0.2];
             }
+            auto moment = calcMoment(contourVec);
             foreach (double scale; scales) {
                 double samplingRate = STEP;
                 samplingRate = samplingRate / scale / scale / step; // heulistic sampling rate
 
-                auto contour2 = resampling(contourVec, samplingRate);
-                auto contour3 = scaling(contour2, scale, 0);
+                auto contour2 = resampling(contourVec, samplingRate, mirrorHoriz, imgCenter.x + axisHoriz, mirrorVert, imgCenter.y + axisVert);
+                auto contour3 = scaling(contour2, moment, scale, 0);
+                if (mirrorHoriz) {
+                    auto flipped = contour3.map!((a) => vec2(imgCenter.x + axisHoriz - (a.x - imgCenter.x - axisHoriz), a.y));
+                    foreach (f; flipped) {
+                        auto scaledContourVec = scaling(contourVec, moment, scale, 0);
+                        auto index = scaledContourVec.map!((a)=>(a - f).lengthSquared).minIndex();
+                        contour3 ~= scaledContourVec[index];
+                    }
+                }
+
                 foreach (vec2 c; contour3) {
                     if (mesh.vertices.length > 0) {
                         auto minDistance = mesh.vertices.map!((v) { return ((c-imgCenter) - v.position).length; } ).reduce!(min);
