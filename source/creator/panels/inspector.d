@@ -179,6 +179,12 @@ void incInspectorModelInfo() {
     igSpacing();
 
     if (incBeginCategory(__("General Info"))) {
+        igPushID("Part Count");
+            incTextColored(ImVec4(0.7, 0.5, 0.5, 1), _("Part Count"));
+            incTextColored(ImVec4(0.7, 0.5, 0.5, 1), "%s".format(incActivePuppet().getRootParts().length));
+        igPopID();
+        igSpacing();
+
         igPushID("Name");
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Name"));
             incTooltip(_("Name of the puppet"));
@@ -357,9 +363,7 @@ void incInspectorModelTRS(Node node) {
                 incSpacer(ImVec2(-12, 1));
                 bool lockToRoot = node.lockToRoot;
                 if (incLockButton(&lockToRoot, "root_lk")) {
-
-                    // TODO: Store this in undo history.
-                    node.lockToRoot = lockToRoot;
+                    incLockToRootNode(node);
                 }
             igEndGroup();
 
