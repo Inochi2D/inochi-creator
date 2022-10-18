@@ -1,7 +1,9 @@
 module creator.viewport.common.automesh.contours;
 
+import i18n;
 import creator.viewport.common.automesh.automesh;
 import creator.viewport.common.mesh;
+import creator.widgets;
 import inochi2d.core;
 import inmath;
 import dcv.core;
@@ -13,13 +15,18 @@ import std.algorithm;
 import std.algorithm.iteration: map, reduce;
 import std.stdio;
 import std.array;
+import bindbc.imgui;
 
 class ContourAutoMeshProcessor : AutoMeshProcessor {
-    int STEP = 32;
-    const int SMALL_THRESHOLD = 256;
-    ubyte maskThreshold = 15;
+    float SAMPLING_STEP = 32;
+    const float SMALL_THRESHOLD = 256;
+    float maskThreshold = 15;
+    float MIN_DISTANCE = 16;
+    float MAX_DISTANCE = -1;
 public:
     override IncMesh autoMesh(Drawable target, IncMesh mesh, bool mirrorHoriz = false, float axisHoriz = 0, bool mirrorVert = false, float axisVert = 0) {
+        if (MAX_DISTANCE < 0)
+            MAX_DISTANCE = SAMPLING_STEP * 2;
         auto contoursToVec2s(ContourType)(ref ContourType contours) {
             vec2[] result;
             foreach (contour; contours) {
@@ -88,7 +95,7 @@ public:
         int size = max(texture.width, texture.height);
         double imageScale = 1;
 
-        double step = 1;
+        float step = 1;
         if (size < SMALL_THRESHOLD) {
             step = SMALL_THRESHOLD / size * 2; // heulistic parameter adjustment. 
         }
@@ -96,7 +103,7 @@ public:
         auto imbin = gray;
         foreach (y; 0..imbin.shape[0]) {
             foreach (x; 0..imbin.shape[1]) {
-                imbin[y, x] = imbin[y, x] < maskThreshold? 0: 255;
+                imbin[y, x] = imbin[y, x] < cast(ubyte)maskThreshold? 0: 255;
             }
         }
         auto labels = bwlabel(imbin);
@@ -135,15 +142,21 @@ public:
             double[] scales;
             if (step == 1) {
                 // scaling for larger parts
-                scales = [1, 1.1, 0.9, 0.6, 0.4, 0.2, 0.1];
+                scales = [1, 1.1, 0.9, 0.7, 0.4, 0.2, 0.1];
             } else {
                 // special scaling for smaller parts
                 scales = [1, 1.1, 0.8, 0.6, 0.2];
             }
             auto moment = calcMoment(contourVec);
+            auto xlist = contourVec.map!((a)=>a.x);
+            auto ylist = contourVec.map!((a)=>a.y);
+            auto boundWidth  = xlist.reduce!(max) - xlist.reduce!(min);
+            auto boundHeight = ylist.reduce!(max) - ylist.reduce!(min);
+            auto minSize = min(boundWidth, boundHeight) * 0.05;
+            minSize = min(minSize, MIN_DISTANCE);
             foreach (double scale; scales) {
-                double samplingRate = STEP;
-                samplingRate = samplingRate / scale / scale / step; // heulistic sampling rate
+                double samplingRate = SAMPLING_STEP;
+                samplingRate = min(MAX_DISTANCE / scale, samplingRate / scale / scale / step); // heulistic sampling rate
 
                 auto contour2 = resampling(contourVec, samplingRate, mirrorHoriz, imgCenter.x + axisHoriz, mirrorVert, imgCenter.y + axisVert);
                 auto contour3 = scaling(contour2, moment, scale, 0);
@@ -159,7 +172,7 @@ public:
                 foreach (vec2 c; contour3) {
                     if (mesh.vertices.length > 0) {
                         auto minDistance = mesh.vertices.map!((v) { return ((c-imgCenter) - v.position).length; } ).reduce!(min);
-                        if (minDistance > STEP / 4)
+                        if (minDistance > minSize)
                             mesh.vertices ~= new MeshVertex(c - imgCenter, []);
                     } else 
                         mesh.vertices ~= new MeshVertex(c - imgCenter, []);
@@ -170,5 +183,63 @@ public:
         
         return mesh.autoTriangulate();
     };
+
+    override void configure() {
+        if (MAX_DISTANCE < 0)
+            MAX_DISTANCE = SAMPLING_STEP * 2;
+
+        incText(_("Sampling rate"));
+        igSameLine();
+        igPushID("SAMPLING_STEP");
+            igSetNextItemWidth(80);
+            if (incDragFloat(
+                "sampling_rate", &SAMPLING_STEP, 0.01,
+                1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
+            ) {
+                SAMPLING_STEP = SAMPLING_STEP;
+                if (MAX_DISTANCE < SAMPLING_STEP)
+                    MAX_DISTANCE  = SAMPLING_STEP * 2;
+            }
+        igPopID();
+
+        incText(_("Mask threshold"));
+        igSameLine();
+        igPushID("MASK_THRESHOLD");
+            igSetNextItemWidth(80);
+            if (incDragFloat(
+                "mask_threshold", &maskThreshold, 0.01,
+                1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
+            ) {
+                maskThreshold = maskThreshold;
+            }
+        igPopID();        
+
+        incText(_("Distance between vertex"));
+        igIndent();
+            incText(_("Minimum"));
+            igSameLine();
+            igPushID("MIN_DISTANCE");
+                igSetNextItemWidth(80);
+                if (incDragFloat(
+                    "min_distance", &MIN_DISTANCE, 0.01,
+                    1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
+                ) {
+                    MIN_DISTANCE = MIN_DISTANCE;
+                }
+            igPopID();        
+
+            incText(_("Maximum"));
+            igSameLine();
+            igPushID("MAX_DISTANCE");
+                igSetNextItemWidth(80);
+                if (incDragFloat(
+                    "min_distance", &MAX_DISTANCE, 0.01,
+                    1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
+                ) {
+                    MAX_DISTANCE = MAX_DISTANCE;
+                }
+            igPopID();
+        igUnindent();
+    }
 
 };

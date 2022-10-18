@@ -20,6 +20,10 @@ import bindbc.opengl;
 
 private {
     IncMeshEditor editor;
+    AutoMeshProcessor[] autoMeshProcessors = [
+        new ContourAutoMeshProcessor()
+    ];
+    AutoMeshProcessor activeProcessor = null;
 }
 
 void incViewportVertexInspector(Drawable node) {
@@ -97,10 +101,27 @@ void incViewportVertexOptions() {
 
         igBeginGroup();
             if (igButton("")) {
-                auto processor = new ContourAutoMeshProcessor;
-                editor.mesh = processor.autoMesh(editor.getTarget(), editor.getMesh(), editor.mirrorHoriz, 0, editor.mirrorVert, 0);
+                if (!activeProcessor)
+                    activeProcessor = autoMeshProcessors[0];
+                editor.mesh = activeProcessor.autoMesh(editor.getTarget(), editor.getMesh(), editor.mirrorHoriz, 0, editor.mirrorVert, 0);
                 editor.refreshMesh();
             }
+            if (incBeginDropdownMenu("AUTOMESH_SETTINGS")) {
+                if (!activeProcessor)
+                    activeProcessor = autoMeshProcessors[0];
+                activeProcessor.configure();
+
+                // Button which bakes some auto generated content
+                // In this case, a mesh is baked from the triangulation.
+                if (igButton(__("Bake"),ImVec2(incAvailableSpace().x, 0))) {
+                    editor.mesh = activeProcessor.autoMesh(editor.getTarget(), editor.getMesh(), editor.mirrorHoriz, 0, editor.mirrorVert, 0);
+                    editor.refreshMesh();
+                }
+                incTooltip(_("Bakes the auto mesh."));
+                
+                incEndDropdownMenu();
+            }
+            incTooltip(_("Triangulation Options"));
             incTooltip(_("Auto Meshing (Experimental)"));
         igEndGroup();
 
