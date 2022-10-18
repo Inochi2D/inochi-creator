@@ -193,7 +193,7 @@ public:
         igPushID("SAMPLING_STEP");
             igSetNextItemWidth(80);
             if (incDragFloat(
-                "sampling_rate", &SAMPLING_STEP, 0.01,
+                "sampling_rate", &SAMPLING_STEP, 1,
                 1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
             ) {
                 SAMPLING_STEP = SAMPLING_STEP;
@@ -207,7 +207,7 @@ public:
         igPushID("MASK_THRESHOLD");
             igSetNextItemWidth(80);
             if (incDragFloat(
-                "mask_threshold", &maskThreshold, 0.01,
+                "mask_threshold", &maskThreshold, 1,
                 1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
             ) {
                 maskThreshold = maskThreshold;
@@ -221,7 +221,7 @@ public:
             igPushID("MIN_DISTANCE");
                 igSetNextItemWidth(80);
                 if (incDragFloat(
-                    "min_distance", &MIN_DISTANCE, 0.01,
+                    "min_distance", &MIN_DISTANCE, 1,
                     1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
                 ) {
                     MIN_DISTANCE = MIN_DISTANCE;
@@ -233,7 +233,7 @@ public:
             igPushID("MAX_DISTANCE");
                 igSetNextItemWidth(80);
                 if (incDragFloat(
-                    "min_distance", &MAX_DISTANCE, 0.01,
+                    "min_distance", &MAX_DISTANCE, 1,
                     1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
                 ) {
                     MAX_DISTANCE = MAX_DISTANCE;
