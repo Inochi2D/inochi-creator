@@ -22,7 +22,7 @@ private {
 
 bool incImportShowPSDDialog() {
     TFD_Filter[] filters = [{ ["*.psd"], "Photoshop Document (*.psd)" }];
-    string file = incShowImportDialog(filters);
+    string file = incShowImportDialog(filters, _("Import..."));
 
     if (file) {
         incImportPSD(file);

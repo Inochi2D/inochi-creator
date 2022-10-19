@@ -205,24 +205,7 @@ protected:
 
                     switch(fname.extension.toLower) {
                     case ".png", ".tga", ".jpeg", ".jpg":
-
-                        try {
-                            auto tex = new ShallowTexture(file);
-                            incColorBleedPixels(tex);
-                            inTexPremultiply(tex.data);
-                            incAddChildWithHistory(
-                                inCreateSimplePart(*tex, null, fname), 
-                                incSelectedNode(), 
-                                fname
-                            );
-                        } catch(Exception ex) {
-                            if (ex.msg[0..11] == "unsupported") {
-                                incDialog(__("Error"), _("%s is not supported").format(fname));
-                            } else incDialog(__("Error"), ex.msg);
-                        }
-
-                        // We've added new stuff, rescan nodes
-                        incActivePuppet().rescanNodes();
+                        incCreatePartsFromFiles([file]);
                         break;
 
                     // Allow dragging PSD in to main window

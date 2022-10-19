@@ -197,6 +197,20 @@ void incMainMenu() {
                         }
                         incTooltip(_("Merge layers from Photoshop document"));
 
+                        if(igMenuItem(__("Image Files"), "", false, true)) {
+                            const TFD_Filter[] filters = [
+                                { ["*.png"], "Portable Network Graphics (*.png)" },
+                                { ["*.jpeg", "*.jpg"], "JPEG Image (*.jpeg)" },
+                                { ["*.tga"], "TARGA Graphics (*.tga)" }
+                            ];
+
+                            string path = incShowImportDialog(filters, _("Import..."), true);
+                            if (path) {
+                                incCreatePartsFromFiles(path.split("|"));
+                            }
+                        }
+                        incTooltip(_("Merges (adds) selected image files to project"));
+
                         if (igMenuItem(__("Inochi Creator Project"), "", false, true)) {
                             incPopWelcomeWindow();
                             // const TFD_Filter[] filters = [
@@ -234,7 +248,7 @@ void incMainMenu() {
 
                             if(igMenuItem(__("JPEG (*.jpeg)"), "", false, true)) {
                                 const TFD_Filter[] filters = [
-                                    { ["*.jpeg"], "JPEG Image (*.jpeg)" }
+                                    { ["*.jpeg", "*.jpg"], "JPEG Image (*.jpeg)" }
                                 ];
 
                                 string file = incShowSaveDialog(filters, "", _("Export..."));
@@ -409,7 +423,7 @@ void incMainMenu() {
                             { ["*.inp"], "Inochi2D Puppet (*.inp)" }
                         ];
 
-                        if (string path = incShowImportDialog(filters)) {
+                        if (string path = incShowImportDialog(filters, _("Import..."))) {
                             Puppet p = inLoadPuppet(path);
 
                             if ("com.inochi2d.inochi-session.bindings" in p.extData) {
