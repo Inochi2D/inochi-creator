@@ -121,8 +121,7 @@ void incViewportVertexOptions() {
                 
                 incEndDropdownMenu();
             }
-            incTooltip(_("Triangulation Options"));
-            incTooltip(_("Auto Meshing (Experimental)"));
+            incTooltip(_("Auto Meshing Options"));
         igEndGroup();
 
     igPopStyleVar(2);

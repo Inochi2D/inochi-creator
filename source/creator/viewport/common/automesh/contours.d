@@ -23,6 +23,8 @@ class ContourAutoMeshProcessor : AutoMeshProcessor {
     float maskThreshold = 15;
     float MIN_DISTANCE = 16;
     float MAX_DISTANCE = -1;
+    float[] SCALES = [1, 1.1, 0.9, 0.7, 0.4, 0.2, 0.1];
+    string presetName;
 public:
     override IncMesh autoMesh(Drawable target, IncMesh mesh, bool mirrorHoriz = false, float axisHoriz = 0, bool mirrorVert = false, float axisVert = 0) {
         if (MAX_DISTANCE < 0)
@@ -92,13 +94,8 @@ public:
         auto img = new Image(texture.width, texture.height, ImageFormat.IF_RGB_ALPHA);
         copy(data, img.data);
         
-        int size = max(texture.width, texture.height);
-        double imageScale = 1;
-
         float step = 1;
-        if (size < SMALL_THRESHOLD) {
-            step = SMALL_THRESHOLD / size * 2; // heulistic parameter adjustment. 
-        }
+
         auto gray = img.sliced[0..$, 0..$, 3]; // Use transparent channel for boundary search
         auto imbin = gray;
         foreach (y; 0..imbin.shape[0]) {
@@ -139,24 +136,16 @@ public:
             if (contourVec.length == 0)
                 continue;
 
-            double[] scales;
-            if (step == 1) {
-                // scaling for larger parts
-                scales = [1, 1.1, 0.9, 0.7, 0.4, 0.2, 0.1];
-            } else {
-                // special scaling for smaller parts
-                scales = [1, 1.1, 0.8, 0.6, 0.2];
-            }
+            float[] scales;
+            // scaling for larger parts
+            scales = SCALES;
+
             auto moment = calcMoment(contourVec);
-            auto xlist = contourVec.map!((a)=>a.x);
-            auto ylist = contourVec.map!((a)=>a.y);
-            auto boundWidth  = xlist.reduce!(max) - xlist.reduce!(min);
-            auto boundHeight = ylist.reduce!(max) - ylist.reduce!(min);
-            auto minSize = min(boundWidth, boundHeight) * 0.05;
-            minSize = min(minSize, MIN_DISTANCE);
+            auto minSize = MIN_DISTANCE;
+
             foreach (double scale; scales) {
                 double samplingRate = SAMPLING_STEP;
-                samplingRate = min(MAX_DISTANCE / scale, samplingRate / scale / scale / step); // heulistic sampling rate
+                samplingRate = min(MAX_DISTANCE / scale, scale > 0? samplingRate / scale / scale / step: 1); // heulistic sampling rate
 
                 auto contour2 = resampling(contourVec, samplingRate, mirrorHoriz, imgCenter.x + axisHoriz, mirrorVert, imgCenter.y + axisVert);
                 auto contour3 = scaling(contour2, moment, scale, 0);
@@ -187,59 +176,195 @@ public:
     override void configure() {
         if (MAX_DISTANCE < 0)
             MAX_DISTANCE = SAMPLING_STEP * 2;
+        if (!presetName) {
+            presetName = "Normal parts";
+        }
 
-        incText(_("Sampling rate"));
-        igSameLine();
-        igPushID("SAMPLING_STEP");
-            igSetNextItemWidth(80);
-            if (incDragFloat(
-                "sampling_rate", &SAMPLING_STEP, 1,
-                1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
-            ) {
-                SAMPLING_STEP = SAMPLING_STEP;
-                if (MAX_DISTANCE < SAMPLING_STEP)
-                    MAX_DISTANCE  = SAMPLING_STEP * 2;
+        incText(_("Presets"));
+        igIndent();
+        if(igBeginCombo(__("Presets"), __(presetName))) {
+            if (igSelectable(__("Normal parts"))) {
+                presetName = "Normal parts";
+                SAMPLING_STEP = 50;
+                maskThreshold = 15;
+                MIN_DISTANCE = 16;
+                MAX_DISTANCE = SAMPLING_STEP * 2;
+                SCALES = [1, 1.1, 0.9, 0.7, 0.4, 0.2, 0.1, 0];
             }
+            if (igSelectable(__("Detailed mesh"))) {
+                presetName = "Detailed mesh";
+                SAMPLING_STEP = 32;
+                maskThreshold = 15;
+                MIN_DISTANCE = 16;
+                MAX_DISTANCE = SAMPLING_STEP * 2;
+                SCALES = [1, 1.1, 0.9, 0.7, 0.4, 0.2, 0.1, 0];
+            }
+            if (igSelectable(__("Large parts"))) {
+                presetName = "Large parts";
+                SAMPLING_STEP = 80;
+                maskThreshold = 15;
+                MIN_DISTANCE = 24;
+                MAX_DISTANCE = SAMPLING_STEP * 2;
+                SCALES = [1, 1.1, 0.9, 0.7, 0.4, 0.2, 0.1, 0];
+            }
+            if (igSelectable(__("Small parts"))) {
+                presetName = "Small parts";
+                SAMPLING_STEP = 24;
+                maskThreshold = 15;
+                MIN_DISTANCE = 12;
+                MAX_DISTANCE = SAMPLING_STEP * 2;
+                SCALES = [1, 1.1, 0.6, 0.2];
+
+            }
+            if (igSelectable(__("Thin and minimum parts"))) {
+                presetName = "Thin and minimum parts";
+                SAMPLING_STEP = 12;
+                maskThreshold = 1;
+                MIN_DISTANCE = 4;
+                MAX_DISTANCE = SAMPLING_STEP * 2;
+                SCALES = [1];
+
+            }
+            if (igSelectable(__("Preserve edges"))) {
+                presetName = "Preserve edges";
+                SAMPLING_STEP = 24;
+                maskThreshold = 15;
+                MIN_DISTANCE = 8;
+                MAX_DISTANCE = SAMPLING_STEP * 2;
+                SCALES = [1, 1.2, 0.8];
+
+            }
+            igEndCombo();
+        }
+        igUnindent();
+
+        igPushID("CONFIGURE_OPTIONS");
+        if (incBeginCategory(__("Details"))) {
+
+            if (igBeginChild("###CONTOUR_OPTIONS", ImVec2(0, 320))) {
+                incText(_("Sampling rate"));
+                igIndent();
+                igPushID("SAMPLING_STEP");
+                    igSetNextItemWidth(64);
+                    if (incDragFloat(
+                        "sampling_rate", &SAMPLING_STEP, 1,
+                        1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
+                    ) {
+                        SAMPLING_STEP = SAMPLING_STEP;
+                        if (MAX_DISTANCE < SAMPLING_STEP)
+                            MAX_DISTANCE  = SAMPLING_STEP * 2;
+                    }
+                igPopID();
+                igUnindent();
+
+                incText(_("Mask threshold"));
+                igIndent();
+                igPushID("MASK_THRESHOLD");
+                    igSetNextItemWidth(64);
+                    if (incDragFloat(
+                        "mask_threshold", &maskThreshold, 1,
+                        1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
+                    ) {
+                        maskThreshold = maskThreshold;
+                    }
+                igPopID();
+                igUnindent();
+
+                incText(_("Distance between vertices"));
+                igIndent();
+                    incText(_("Minimum"));
+                    igIndent();
+                        igPushID("MIN_DISTANCE");
+                            igSetNextItemWidth(64);
+                            if (incDragFloat(
+                                "min_distance", &MIN_DISTANCE, 1,
+                                1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
+                            ) {
+                                MIN_DISTANCE = MIN_DISTANCE;
+                            }
+
+                        igPopID();
+                    igUnindent();
+
+                    incText(_("Maximum"));
+                    igIndent();
+                        igPushID("MAX_DISTANCE");
+                            igSetNextItemWidth(64);
+                            if (incDragFloat(
+                                "min_distance", &MAX_DISTANCE, 1,
+                                1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
+                            ) {
+                                MAX_DISTANCE = MAX_DISTANCE;
+                            }
+                        igPopID();
+                    igUnindent();
+                igUnindent();
+
+                int deleteIndex = -1;
+                incText("Scales");
+                igIndent();
+                    igPushID("SCALES");
+                        if (igBeginChild("###AXIS_ADJ", ImVec2(0, 240))) {
+                            if (SCALES.length > 0) {
+                                int ix;
+                                foreach(i, ref pt; SCALES) {
+                                    ix++;
+
+                                    // Do not allow existing points to cross over
+                                    vec2 range = vec2(0, 2);
+
+                                    igSetNextItemWidth(80);
+                                    igPushID(cast(int)i);
+                                        if (incDragFloat(
+                                            "adj_offset", &SCALES[i], 0.01,
+                                            range.x, range.y, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
+                                        ) {
+                                            // do something
+                                        }
+                                        igSameLine(0, 0);
+
+                                        if (i == SCALES.length - 1) {
+                                            incDummy(ImVec2(-52, 32));
+                                            igSameLine(0, 0);
+                                            if (igButton("", ImVec2(24, 24))) {
+                                                deleteIndex = cast(int)i;
+                                            }
+                                            igSameLine(0, 0);
+                                            if (igButton("", ImVec2(24, 24))) {
+                                                SCALES ~= 1.0;
+                                            }
+
+                                        } else {
+                                            incDummy(ImVec2(-28, 32));
+                                            igSameLine(0, 0);
+                                            if (igButton("", ImVec2(24, 24))) {
+                                                deleteIndex = cast(int)i;
+                                            }
+                                        }
+                                    igPopID();
+                                }
+                            } else {
+                                incDummy(ImVec2(-28, 24));
+                                igSameLine(0, 0);
+                                if (igButton("", ImVec2(24, 24))) {
+                                    SCALES ~= 1.0;
+                                }
+                            }
+                        }
+                        igEndChild();
+                    igPopID();
+                igUnindent();
+                incTooltip(_("Specifying scaling factor to apply for contours. If multiple scales are specified, vertices are populated per scale factors."));
+                if (deleteIndex != -1) {
+                    SCALES = SCALES.remove(cast(uint)deleteIndex);
+                }
+            }
+            igEndChild();
+        }
+        incEndCategory();
         igPopID();
 
-        incText(_("Mask threshold"));
-        igSameLine();
-        igPushID("MASK_THRESHOLD");
-            igSetNextItemWidth(80);
-            if (incDragFloat(
-                "mask_threshold", &maskThreshold, 1,
-                1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
-            ) {
-                maskThreshold = maskThreshold;
-            }
-        igPopID();        
 
-        incText(_("Distance between vertex"));
-        igIndent();
-            incText(_("Minimum"));
-            igSameLine();
-            igPushID("MIN_DISTANCE");
-                igSetNextItemWidth(80);
-                if (incDragFloat(
-                    "min_distance", &MIN_DISTANCE, 1,
-                    1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
-                ) {
-                    MIN_DISTANCE = MIN_DISTANCE;
-                }
-            igPopID();        
-
-            incText(_("Maximum"));
-            igSameLine();
-            igPushID("MAX_DISTANCE");
-                igSetNextItemWidth(80);
-                if (incDragFloat(
-                    "min_distance", &MAX_DISTANCE, 1,
-                    1, 200, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
-                ) {
-                    MAX_DISTANCE = MAX_DISTANCE;
-                }
-            igPopID();
-        igUnindent();
     }
 
 };
