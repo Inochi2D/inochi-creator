@@ -830,12 +830,18 @@ public:
     }
 
     Deformation* deformByDeformationBinding(DeformationParameterBinding binding, vec2u index, bool flipHorz = false) {
-
-        if (!binding)
+        import std.stdio;
+        if (!binding) {
+            writeln("binding is null");
             return null;
+        }
         Drawable part = cast(Drawable)binding.getTarget().node;
-        if (!part)
+        if (!part) {
+            writeln("part is null");
             return null;
+        }
+
+        auto origVertices = vertices.dup;
 
         // find triangle which covers specified point. 
         // If no triangl is found, nearest triangl for the point is selected.
@@ -895,14 +901,39 @@ public:
                 swap(triangle[0], triangle[2]);
             }
             vec2 axis0 = bindingMesh.vertices[triangle[1]] - bindingMesh.vertices[triangle[0]];
+            float axis0len = axis0.length;
+            axis0 /= axis0.length;
             vec2 axis1 = bindingMesh.vertices[triangle[2]] - bindingMesh.vertices[triangle[0]];
-            vec2 relPt = pt - bindingMesh.vertices[triangle[0]];
-            return vec2(dot(axis0, relPt) / axis0.length, dot(axis1, relPt) / axis1.length);
+            float axis1len = axis1.length;
+            axis1 /= axis1.length;
+
+            auto relPt = pt - bindingMesh.vertices[triangle[0]];
+            if (relPt.lengthSquared == 0)
+                return vec2(0, 0);
+            float cosA = dot(axis0, axis1);
+            if (cosA == 0) {
+                return vec2(dot(relPt, axis0), dot(relPt, axis1));
+            } else {
+                float argA = acos(cosA);
+                float sinA = sin(argA);
+                float tanA = tan(argA);
+                float cosB = dot(axis0, relPt) / relPt.length;
+                float argB = acos(cosB);
+                float sinB = sin(argB);
+                
+                vec2 ortPt = vec2(relPt.length * cosB, relPt.length * sinB);
+                
+                mat2 H = mat2([1, -1/tanA, 0, 1/sinA]);
+                auto result = H * ortPt;
+
+                return result;
+            }
         }
 
         // Apply transform for mesh
         vec2[] transformMesh(ref MeshData bindingMesh, Deformation deform) {
             vec2[] result;
+            assert(bindingMesh.vertices.length == deform.vertexOffsets.length);
             foreach (i, v; bindingMesh.vertices) {
                 result ~= v + deform.vertexOffsets[i];
             }
@@ -915,13 +946,15 @@ public:
             auto p2 = vertices[triangle[1]];
             auto p3 = vertices[triangle[2]];
             vec2 axis0 = p2 - p1;
+            axis0 /= axis0.length;
             vec2 axis1 = p3 - p1;
-            return p1 + axis0 * offset.x / axis0.length + axis1 * offset.y / axis1.length;            
+            axis1 /= axis1.length;
+            return p1 + axis0 * offset.x + axis1 * offset.y;
         }
         
         MeshData bindingMesh = part.getMesh();
         Deformation deform = binding.getValue(index);
-        Deformation* newDeform = new Deformation(deform.vertexOffsets.dup);
+        Deformation* newDeform = new Deformation([]);
 
         foreach (i, v; vertices) {
             vec2 pt = v.position;
@@ -931,10 +964,12 @@ public:
             vec2 ofs = calcOffsetInTriangleCoords(pt, bindingMesh, triangle);
             auto targetMesh = transformMesh(bindingMesh, deform);
             vec2 newPos = transformPoint(pt, ofs, targetMesh, triangle);
+            writefln("final=%s", newPos);
             if (flipHorz)
                 newPos.x = -newPos.x;
-            newDeform.vertexOffsets[i] = newPos - data.vertices[i];
+            newDeform.vertexOffsets ~= newPos - origVertices[i].position;
         }
+        writefln("newDeform=%s", newDeform);
         return newDeform;
     }
 }
