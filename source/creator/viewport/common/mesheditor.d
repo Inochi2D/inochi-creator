@@ -249,13 +249,12 @@ public:
     }
 
     void applyToTarget() {
-        import std.stdio;
+        // Apply the model
+        auto action = new DrawableChangeAction(target.name, target);
 
         // Export mesh
         MeshData data = mesh.export_();
-//        writefln("vertices=%d", data.vertices.length);
         data.fixWinding();
-//        writefln("vertices=%d", data.vertices.length);
 
         // Fix UVs
         foreach(i; 0..data.uvs.length) {
@@ -281,13 +280,8 @@ public:
             foreach (uint x; 0..cast(uint)deformBinding.values.length) {
                 foreach (uint y; 0..cast(uint)deformBinding.values[x].length) {
                     auto deform = deformBinding.values[x][y];
-//                    writefln("deformBinding=%s", deformBinding);
-//                    writefln("deform=%s", deform);
                     if (deformBinding.isSet(vec2u(x, y))) {
                         auto newDeform = mesh.deformByDeformationBinding(deformBinding, vec2u(x, y), false);
-//                        writefln("deformed");
-//                        if (newDeform)
-//                            writefln("deform=%d", newDeform.vertexOffsets.length);
                         if (newDeform) 
                             deformBinding.values[x][y] = *newDeform;
                     }
@@ -300,29 +294,19 @@ public:
             if (auto group = cast(ExParameterGroup)param) {
                 foreach(x, ref xparam; group.children) {
                     ParameterBinding binding = xparam.getBinding(target, "deform");
+                    if (binding)
+                        action.addAction(new ParameterChangeBindingsAction("Deformation recalculation on mesh update", xparam, null));
                     alterDeform(binding);
-/*
-                    if (binding) {
-                        xparam.removeBinding(binding);
-                        action.addBinding(xparam, binding);
-                    }
-*/
                 }
             } else {
                 ParameterBinding binding = param.getBinding(target, "deform");
+                if (binding)
+                    action.addAction(new ParameterChangeBindingsAction("Deformation recalculation on mesh update", param, null));
                 alterDeform(binding);
-/*
-                if (binding) {
-                    param.removeBinding(binding);
-                    action.addBinding(param, binding);
-                }
-*/
             }
         }
         vertexMapDirty = false;
 
-        // Apply the model
-        auto action = new DrawableChangeAction(target.name, target);
         target.rebuffer(data);
 
         action.updateNewState();

@@ -964,12 +964,10 @@ public:
             vec2 ofs = calcOffsetInTriangleCoords(pt, bindingMesh, triangle);
             auto targetMesh = transformMesh(bindingMesh, deform);
             vec2 newPos = transformPoint(pt, ofs, targetMesh, triangle);
-            writefln("final=%s", newPos);
             if (flipHorz)
                 newPos.x = -newPos.x;
             newDeform.vertexOffsets ~= newPos - origVertices[i].position;
         }
-        writefln("newDeform=%s", newDeform);
         return newDeform;
     }
 }
