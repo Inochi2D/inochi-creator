@@ -586,6 +586,66 @@ void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 el
         import std.uni : toLower;
         incTextureSlot(title, p.textures[usage], elemSize);
 
+        void applyTextureToSlot(Part p, TextureUsage usage, string file) {
+            switch(file.extension.toLower) {
+                case ".png", ".tga", ".jpeg", ".jpg":
+
+                    try {
+                        ShallowTexture tex;
+                        switch(usage) {
+                            case TextureUsage.Albedo:
+                                tex = ShallowTexture(file, 4);
+                                break;
+                            case TextureUsage.Emissive:
+                                tex = ShallowTexture(file, 3);
+                                break;
+                            case TextureUsage.Bumpmap:
+                                tex = ShallowTexture(file, 3);
+                                break;
+                            default:
+                                tex = ShallowTexture(file);
+                                break;
+                        }
+
+                        if (usage != TextureUsage.Albedo) {
+
+                            // Error out if post processing textures don't match
+                            if (tex.width != p.textures[0].width || tex.height != p.textures[0].height) {
+                                incDialog(__("Error"), _("Size of given texture does not match the Albedo texture."));
+                                break;
+                            }
+                        }
+
+                        if (tex.convChannels == 4) {
+                            inTexPremultiply(tex.data);
+                        }
+                        p.textures[usage] = new Texture(tex);
+                        
+                        if (usage == TextureUsage.Albedo) {
+                            foreach(i, _; p.textures[1..$]) {
+                                if (p.textures[i] && (p.textures[i].width != p.textures[0].width || p.textures[i].height != p.textures[0].height)) {
+                                    p.textures[i] = null;
+                                }
+                            }
+                        }
+                    } catch(Exception ex) {
+                        if (ex.msg[0..11] == "unsupported") {
+                            incDialog(__("Error"), _("%s is not supported").format(file));
+                        } else incDialog(__("Error"), ex.msg);
+                    }
+
+
+                    // We've added new stuff, rescan nodes
+                    incActivePuppet().rescanNodes();
+                    incActivePuppet().populateTextureSlots();
+                    break;
+                    
+                default:
+                    incDialog(__("Error"), _("%s is not supported").format(file)); 
+                    break;
+            }
+        }
+
         // Only have dropdown if there's actually textures in the slot
         if (p.textures[usage]) {
             igOpenPopupOnItemClick("TEX_OPTIONS");
@@ -602,6 +662,20 @@ void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 el
                             file = file.setExtension("png");
                         }
                         p.textures[usage].save(file);
+                    }
+                }
+
+                // Allow saving texture to file
+                if (igMenuItem(__("Load from File"))) {
+                    TFD_Filter[] filters = [
+                        { ["*.png"], "Portable Network Graphics (*.png)" },
+                        { ["*.jpeg", "*.jpg"], "JPEG Image (*.jpeg)" },
+                        { ["*.tga"], "TARGA Graphics (*.tga)" }
+                    ];
+
+                    string file = incShowImportDialog(filters, _("Import..."));
+                    if (file) {
+                        applyTextureToSlot(p, usage, file);
                     }
                 }
 
@@ -641,57 +715,7 @@ void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 el
             if (payload !is null) {
                 string[] files = *cast(string[]*)payload.Data;
                 if (files.length > 0) {
-                    string fname = files[0].baseName;
-
-                    switch(fname.extension.toLower) {
-                    case ".png", ".tga", ".jpeg", ".jpg":
-
-                        try {
-                            ShallowTexture tex;
-                            switch(usage) {
-                                case TextureUsage.Albedo:
-                                    tex = ShallowTexture(files[0], 4);
-                                    break;
-                                case TextureUsage.Emissive:
-                                    tex = ShallowTexture(files[0], 3);
-                                    break;
-                                case TextureUsage.Bumpmap:
-                                    tex = ShallowTexture(files[0], 3);
-                                    break;
-                                default:
-                                    tex = ShallowTexture(files[0]);
-                                    break;
-                            }
-
-                            if (usage != TextureUsage.Albedo) {
-
-                                // Error out if post processing textures don't match
-                                if (tex.width != p.textures[0].width || tex.height != p.textures[0].height) {
-                                    incDialog(__("Error"), _("Size of given texture does not match the Albedo texture."));
-                                    break;
-                                }
-                            }
-
-                            if (tex.convChannels == 4) {
-                                inTexPremultiply(tex.data);
-                            }
-                            p.textures[usage] = new Texture(tex);
-                        } catch(Exception ex) {
-                            if (ex.msg[0..11] == "unsupported") {
-                                incDialog(__("Error"), _("%s is not supported").format(fname));
-                            } else incDialog(__("Error"), ex.msg);
-                        }
-
-
-                        // We've added new stuff, rescan nodes
-                        incActivePuppet().rescanNodes();
-                        incActivePuppet().populateTextureSlots();
-                        break;
-                        
-                    default:
-                        incDialog(__("Error"), _("%s is not supported").format(fname)); 
-                        break;
-                    }
+                    applyTextureToSlot(p, usage, files[0]);
                 }
 
                 // Finish the file drag

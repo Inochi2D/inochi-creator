@@ -398,8 +398,8 @@ public:
                     // Check if mouse is over a vertex
                     if (vtxAtMouse !is null) {
 
-                        // In the case that it is, double clicking would remove an item
-                        if (!selectedOnly || isSelected(vtxAtMouse)) {
+                    // In the case that it is, double clicking would remove an item
+                    if (!selectedOnly || isSelected(vtxAtMouse)) {
                             foreachMirror((uint axis) {
                                 mesh.removeVertexAt(mirror(axis, mousePos));
                             });
@@ -419,7 +419,8 @@ public:
                         refreshMesh();
                         vertexMapDirty = true;
                         changed = true;
-                        selectOne(mesh.vertices[off]);
+                        if (io.KeyCtrl) selectOne(mesh.vertices[$-1]);
+                        else selectOne(mesh.vertices[off]);
                     }
                 }
 
