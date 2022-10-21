@@ -57,7 +57,8 @@ private {
 
 enum IncCategoryFlags {
     None = 0,
-    NoCollapse = 1
+    NoCollapse = 1,
+    DefaultClosed = 2,
 }
 
 /**
@@ -154,7 +155,13 @@ bool incBeginCategory(const(char)* title, ImVec4 color, IncCategoryFlags flags =
         igIndent();
             igText(title);
         igUnindent();
-    } else data.open = igTreeNodeEx(title, ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.NoTreePushOnOpen | ImGuiTreeNodeFlags.SpanAvailWidth);
+    } else {
+        bool defaultClosed = (data.flags & IncCategoryFlags.DefaultClosed) == IncCategoryFlags.DefaultClosed;
+        data.open = igTreeNodeEx(title, defaultClosed ? 
+            ImGuiTreeNodeFlags.NoTreePushOnOpen | ImGuiTreeNodeFlags.SpanAvailWidth :
+            ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.NoTreePushOnOpen | ImGuiTreeNodeFlags.SpanAvailWidth
+        );
+    }
 
     window.ContentRegionRect.Min.x += paddingX;
     window.WorkRect.Min.x += paddingX;
