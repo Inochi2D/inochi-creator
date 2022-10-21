@@ -257,7 +257,7 @@ msgstr "ミップマップの生成が完了しました。"
 
 #: source/creator/package.d:322
 msgid "Texture bleeding completed."
-msgstr "テクスチャのbleedingが完了しました。"
+msgstr "テクスチャのブリーディングが完了しました。"
 
 #: source/creator/panels/actionhistory.d:26
 #: source/creator/windows/settings.d:140
@@ -1856,7 +1856,7 @@ msgstr "OpenDyslexicフォントを使用する"
 
 #: source/creator/windows/settings.d:180 source/creator/windows/welcome.d:197
 msgid "Inochi Creator needs to be restarted for some changes to take effect."
-msgstr "変更を有効にするにはInochi Creatorを再起動が必要となる場合があります。"
+msgstr "変更を有効にするにはInochi Creatorの再起動が必要となる場合があります。"
 
 #: source/creator/windows/settings.d:188
 msgid "Done"
