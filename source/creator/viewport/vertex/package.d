@@ -217,11 +217,14 @@ void incVertexEditCopyMeshDataToTarget(MeshData data) {
 }
 
 bool incMeshEditGetIsApplySafe() {
+    /* Disabled temporary
     Drawable target = cast(Drawable)editor.getTarget();
     return !(
         editor.mesh.getVertexCount() != target.getMesh().vertices.length &&
         incActivePuppet().getIsNodeBound(target)
     );
+    */
+    return true;
 }
 
 /**
