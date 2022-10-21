@@ -218,7 +218,7 @@ private {
             }
         }
         incActionPush(action);
-   }
+    }
 
     void keypointActions(Parameter param, ParameterBinding[] bindings) {
         if (igMenuItem(__("Unset"), "", false, true)) {
@@ -277,6 +277,25 @@ private {
                 incViewportNodeDeformNotifyParamValueChanged();
             }
             igEndMenu();
+        }
+        if (igMenuItem(__("Flip Deform"), "", false, true)) {
+            auto editor = incViewportModelDeformGetEditor();
+            if (editor) {
+                auto action = new ParameterChangeBindingsValueAction("Flip Deform", param, bindings, cParamPoint.x, cParamPoint.y);
+                foreach(binding; bindings) {
+                    auto deformBinding = cast(DeformationParameterBinding)binding;
+                    auto target = cast(Drawable)binding.getTarget().node;
+                    if (target) {
+                        editor.setTarget(target);
+                        auto newDeform = editor.getMesh().deformByDeformationBinding(deformBinding, cParamPoint, true);
+                        if (newDeform)
+                            deformBinding.setValue(cParamPoint, *newDeform);
+                    }
+                }
+                action.updateNewState();
+                incActionPush(action);
+                incViewportNodeDeformNotifyParamValueChanged();
+            }
         }
         if (param.isVec2) {
             if (igBeginMenu(__("Set from mirror"), true)) {

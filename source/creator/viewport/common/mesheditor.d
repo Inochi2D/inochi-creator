@@ -249,6 +249,9 @@ public:
     }
 
     void applyToTarget() {
+        // Apply the model
+        auto action = new DrawableChangeAction(target.name, target);
+
         // Export mesh
         MeshData data = mesh.export_();
         data.fixWinding();
@@ -270,32 +273,43 @@ public:
         if (data.vertices.length != target.vertices.length)
             vertexMapDirty = true;
 
-        // Apply the model
-        auto action = new DrawableChangeAction(target.name, target);
-        target.rebuffer(data);
-
         if (vertexMapDirty) {
-            // Remove incompatible Deforms
+            void alterDeform(ParameterBinding binding) {
+                auto deformBinding = cast(DeformationParameterBinding)binding;
+                if (!deformBinding)
+                    return;
+                foreach (uint x; 0..cast(uint)deformBinding.values.length) {
+                    foreach (uint y; 0..cast(uint)deformBinding.values[x].length) {
+                        auto deform = deformBinding.values[x][y];
+                        if (deformBinding.isSet(vec2u(x, y))) {
+                            auto newDeform = mesh.deformByDeformationBinding(deformBinding, vec2u(x, y), false);
+                            if (newDeform) 
+                                deformBinding.values[x][y] = *newDeform;
+                        }
+                    }
+                }
+                deformBinding.reInterpolate();
+            }
 
             foreach (param; incActivePuppet().parameters) {
                 if (auto group = cast(ExParameterGroup)param) {
                     foreach(x, ref xparam; group.children) {
                         ParameterBinding binding = xparam.getBinding(target, "deform");
-                        if (binding) {
-                            xparam.removeBinding(binding);
-                            action.addBinding(xparam, binding);
-                        }
+                        if (binding)
+                            action.addAction(new ParameterChangeBindingsAction("Deformation recalculation on mesh update", xparam, null));
+                        alterDeform(binding);
                     }
                 } else {
                     ParameterBinding binding = param.getBinding(target, "deform");
-                    if (binding) {
-                        param.removeBinding(binding);
-                        action.addBinding(param, binding);
-                    }
+                    if (binding)
+                        action.addAction(new ParameterChangeBindingsAction("Deformation recalculation on mesh update", param, null));
+                    alterDeform(binding);
                 }
             }
             vertexMapDirty = false;
         }
+
+        target.rebuffer(data);
 
         action.updateNewState();
         incActionPush(action);
