@@ -257,7 +257,7 @@ msgstr "ミップマップの生成が完了しました。"
 
 #: source/creator/package.d:322
 msgid "Texture bleeding completed."
-msgstr "テクスチャのbleedingが完了しました。"
+msgstr "テクスチャのブリーディングが完了しました。"
 
 #: source/creator/panels/actionhistory.d:26
 #: source/creator/windows/settings.d:140
