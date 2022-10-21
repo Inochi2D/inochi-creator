@@ -120,7 +120,9 @@ void incViewportModelConfirmBar() {
 
     igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(16, 4));
         if (Drawable node = cast(Drawable)incSelectedNode()) {
-            if (igButton(__(" Edit Mesh"), ImVec2(0, 26))) {
+            const(char)* text = incHasDragDrop("_PUPPETNTREE") ? __(" Copy Mesh") : __(" Edit Mesh");
+            
+            if (igButton(text, ImVec2(0, 26))) {
                 incVertexEditStartEditing(node);
             }
 

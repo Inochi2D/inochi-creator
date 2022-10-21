@@ -65,3 +65,10 @@ void incEndDragDropFake() {
     ctx.DragDropActive = active;
     ctx.DragDropPayload.DataFrameCount = frameCount;
 }
+
+bool incHasDragDrop(const(char)* name) {
+    incBeginDragDropFake();
+        auto peek = igAcceptDragDropPayload(name, ImGuiDragDropFlags.AcceptPeekOnly | ImGuiDragDropFlags.SourceAllowNullID);
+    incEndDragDropFake();
+    return peek && peek.Data;
+}
