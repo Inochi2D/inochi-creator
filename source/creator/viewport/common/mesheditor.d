@@ -57,6 +57,7 @@ private:
     bool deforming = false;
     CatmullSpline path;
     uint pathDragTarget;
+    float meshEditAOE = 4;
 
     MeshEditorDeformationAction deformAction = null;
 
@@ -138,6 +139,27 @@ private:
         MeshVertex *v = mesh.getVertexFromPoint(mirror(axis, vtx.position));
         if (v is vtx) return null;
         return v;
+    }
+
+    bool isOnMirror(vec2 pos, float aoe) {
+        return 
+            (mirrorVert && pos.y > -aoe && pos.y < aoe) ||
+            (mirrorHoriz && pos.x > -aoe && pos.x < aoe);
+    }
+
+    bool isOnMirrorCenter(vec2 pos, float aoe) {
+        return 
+            (mirrorVert && pos.y > -aoe && pos.y < aoe) &&
+            (mirrorHoriz && pos.x > -aoe && pos.x < aoe);
+    }
+
+    void placeOnMirror(vec2 pos, float aoe) {
+        if (isOnMirror(pos, aoe)) {
+            if (mirrorHoriz && mirrorVert && isOnMirrorCenter(pos, aoe)) pos = vec2(0, 0);
+            else if (mirrorVert) pos.y = 0;
+            else if (mirrorHoriz) pos.x = 0;
+            mesh.vertices ~= new MeshVertex(pos);
+        }
     }
 
     void foreachMirror(void delegate(uint axis) func) {
@@ -412,8 +434,8 @@ public:
                     // Check if mouse is over a vertex
                     if (vtxAtMouse !is null) {
 
-                    // In the case that it is, double clicking would remove an item
-                    if (!selectedOnly || isSelected(vtxAtMouse)) {
+                        // In the case that it is, double clicking would remove an item
+                        if (!selectedOnly || isSelected(vtxAtMouse)) {
                             foreachMirror((uint axis) {
                                 mesh.removeVertexAt(mirror(axis, mousePos));
                             });
@@ -427,9 +449,13 @@ public:
                         }
                     } else {
                         ulong off = mesh.vertices.length;
-                        foreachMirror((uint axis) {
-                            mesh.vertices ~= new MeshVertex(mirror(axis, mousePos));
-                        });
+                        if (isOnMirror(mousePos, meshEditAOE)) {
+                            placeOnMirror(mousePos, meshEditAOE);
+                        } else {
+                            foreachMirror((uint axis) {
+                                mesh.vertices ~= new MeshVertex(mirror(axis, mousePos));
+                            });
+                        }
                         refreshMesh();
                         vertexMapDirty = true;
                         changed = true;
