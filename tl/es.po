@@ -264,7 +264,7 @@ msgstr "La fusión del color de la textura ha sido completada."
 #: source/creator/panels/actionhistory.d:26
 #: source/creator/windows/settings.d:140
 msgid "Undo History"
-msgstr "Deshacer el historial"
+msgstr "Historial de acciones deshechas"
 
 #: source/creator/panels/actionhistory.d:56
 msgid "Clear History"
@@ -1477,7 +1477,7 @@ msgstr "Vista"
 
 #: source/creator/widgets/mainmenu.d:315
 msgid "Reset Layout"
-msgstr "Restablecer la disposición"
+msgstr "Restablecer el diseño"
 
 #: source/creator/widgets/mainmenu.d:324
 msgid "Panels"
@@ -1633,7 +1633,7 @@ msgstr "Acerca de"
 #: source/creator/widgets/mainmenu.d:506 source/creator/widgets/mainmenu.d:522
 #: source/creator/windows/about.d:124
 msgid "Donate"
-msgstr "Dona"
+msgstr "Dona aquí"
 
 #: source/creator/widgets/mainmenu.d:525
 msgid "Support development via Patreon"
@@ -1858,7 +1858,7 @@ msgstr "Usar fuente OpenDyslexic"
 
 #: source/creator/windows/settings.d:180 source/creator/windows/welcome.d:197
 msgid "Inochi Creator needs to be restarted for some changes to take effect."
-msgstr "Inochi Creator necesita ser reiniciado poara que algunos cambios tomen efecto."
+msgstr "Inochi Creator necesita ser reiniciado para que algunos cambios tomen efecto."
 
 #: source/creator/windows/settings.d:188
 msgid "Done"
