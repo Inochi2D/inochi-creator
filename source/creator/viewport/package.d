@@ -271,12 +271,26 @@ bool incDragStartedInViewport(int btn) {
     return isDraggingInViewport[btn];
 }
 
+bool incDragStartedOnHandle(int btn, string name) {
+    return (name in isDraggingOnHandle) !is null && isDraggingOnHandle[name].dragged[btn];
+}
+
 void incBeginDragInViewport(int btn) {
     isDraggingInViewport[btn] = true;
 }
 
+void incBeginDragOnHandle(int btn, string name) {
+    if (name !in isDraggingOnHandle)
+        isDraggingOnHandle[name] = DraggingOnHandle(true);
+    isDraggingOnHandle[name].dragged[btn] = true;
+}
+
 void incEndDragInViewport(int btn) {
     isDraggingInViewport[btn] = false;
+}
+
+void incEndDragOnHandle(int btn, string name) {
+    isDraggingOnHandle[name].dragged[btn] = false;
 }
 
 void incViewportTransformHandle() {
@@ -308,17 +322,86 @@ void incViewportTransformHandle() {
 
             auto obounds=(cast(Part)selectedNode).bounds;
             auto bounds = vec4(WorldToViewport(obounds.x, obounds.y), WorldToViewport(obounds.z, obounds.w));
-            incBeginViewportToolArea("X", ImVec2(bounds.x - 32, bounds.y - 32));
+            string name = selectedNode.name ~ "move";
+            ImGuiMouseButton btn = ImGuiMouseButton.Left;
+            if (incDragStartedOnHandle(btn, name)) {
+                if (igIsMouseDown(btn)) {
+                    writefln("drag move");
+                } else {
+                    writeln("release move");
+                    incEndDragOnHandle(btn, name);
+                    incEndDrag(btn);
+                }
+            }
+            incBeginViewportToolArea(name, ImVec2(bounds.x - 32, bounds.y - 32));
             igButton("", ImVec2(32, 32));
+            if (igIsItemHovered() && igIsMouseDown(btn)) {
+                if (!incDragStartedOnHandle(btn, name)) {
+                    writeln("start move");
+                    incBeginDrag(btn);
+                    incBeginDragOnHandle(btn, name);
+                }
+            }
+            name = selectedNode.name ~ "scale";
+            if (incDragStartedOnHandle(btn, name)) {
+                if (igIsMouseDown(btn)) {
+                    writefln("drag scale");
+                } else {
+                    writeln("release scale");
+                    incEndDrag(btn);
+                    incEndDragOnHandle(btn, name);
+                }
+            }
             incEndViewportToolArea();
-            incBeginViewportToolArea("Y", ImVec2(bounds.x - 32, bounds.w));
+            incBeginViewportToolArea(name, ImVec2(bounds.x - 32, bounds.w));
             igButton("", ImVec2(32, 32));
+            if (igIsItemHovered() && igIsMouseDown(btn)) {
+                if (!incDragStartedOnHandle(btn, name)) {
+                    writeln("start scale");
+                    incBeginDrag(btn);
+                    incBeginDragOnHandle(btn, name);
+                }
+            }
+            name = selectedNode.name ~ "rotate";
+            if (incDragStartedOnHandle(btn, name)) {
+                if (igIsMouseDown(btn)) {
+                    writefln("drag rotate");
+                } else {
+                    writeln("release rotate");
+                    incEndDrag(btn);
+                    incEndDragOnHandle(btn, name);
+                }
+            }
             incEndViewportToolArea();
-            incBeginViewportToolArea("Z", ImVec2(bounds.z, bounds.y - 32));
+            incBeginViewportToolArea(name, ImVec2(bounds.z, bounds.y - 32));
             igButton("", ImVec2(32, 32));
+            if (igIsItemHovered() && igIsMouseDown(btn)) {
+                if (!incDragStartedOnHandle(btn, name)) {
+                    writeln("start rotate");
+                    incBeginDrag(btn);
+                    incBeginDragOnHandle(btn, name);
+                }
+            }
+            name = selectedNode.name ~ "sort";
+            if (incDragStartedOnHandle(btn, name)) {
+                if (igIsMouseDown(btn)) {
+                    writefln("drag sort");
+                } else {
+                    writeln("release sort");
+                    incEndDrag(btn);
+                    incEndDragOnHandle(btn, name);
+                }
+            }
             incEndViewportToolArea();
-            incBeginViewportToolArea("W", ImVec2(bounds.z, bounds.w));
+            incBeginViewportToolArea(name, ImVec2(bounds.z, bounds.w));
             igButton("", ImVec2(32, 32));
+            if (igIsItemHovered() && igIsMouseDown(btn)) {
+                if (!incDragStartedOnHandle(btn, name)) {
+                    writeln("start sort");
+                    incBeginDrag(btn);
+                    incBeginDragOnHandle(btn, name);
+                }
+            }
             incEndViewportToolArea();
         }
     }
@@ -359,7 +442,11 @@ void incViewportReset() {
 //          Internal Viewport Stuff(TM)
 //
 private {
+    struct DraggingOnHandle {
+        bool [ImGuiMouseButton.COUNT] dragged;
+    }
     bool[ImGuiMouseButton.COUNT] isDraggingInViewport;
+    DraggingOnHandle[string] isDraggingOnHandle;
     bool[ImGuiMouseButton.COUNT] isDragging;
     bool isMovingViewport;
     float sx, sy;
