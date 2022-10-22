@@ -279,6 +279,51 @@ void incEndDragInViewport(int btn) {
     isDraggingInViewport[btn] = false;
 }
 
+void incViewportTransformHandle() {
+    Camera camera = inGetCamera();
+    Parameter param = incArmedParameter();
+    if (incSelectedNodes.length > 0) {
+        foreach(selectedNode; incSelectedNodes) {
+            if (cast(Part)selectedNode is null) continue; 
+
+            import std.stdio;
+            import creator.viewport;
+            import creator.widgets.viewport;
+            ImVec2 currSize;
+            ImVec2 pos;
+
+            vec2 WorldToViewport(float x, float y) {
+                vec2 camPos = camera.position;
+                vec2 camScale = camera.scale;
+                vec2 camCenter = camera.getCenterOffset();
+                float uiScale = incGetUIScale();
+
+                return (
+                    mat3.scaling(uiScale, uiScale,1).inverse()
+                    * mat3.scaling(camScale.x, camScale.y, 1) 
+                    * mat3.translation(camPos.x+camCenter.x, camPos.y+camCenter.y, 0) 
+                    * vec3(x, y, 1)
+                ).xy;
+            }
+
+            auto obounds=(cast(Part)selectedNode).bounds;
+            auto bounds = vec4(WorldToViewport(obounds.x, obounds.y), WorldToViewport(obounds.z, obounds.w));
+            incBeginViewportToolArea("X", ImVec2(bounds.x - 32, bounds.y - 32));
+            igButton("", ImVec2(32, 32));
+            incEndViewportToolArea();
+            incBeginViewportToolArea("Y", ImVec2(bounds.x - 32, bounds.w));
+            igButton("", ImVec2(32, 32));
+            incEndViewportToolArea();
+            incBeginViewportToolArea("Z", ImVec2(bounds.z, bounds.y - 32));
+            igButton("", ImVec2(32, 32));
+            incEndViewportToolArea();
+            incBeginViewportToolArea("W", ImVec2(bounds.z, bounds.w));
+            igButton("", ImVec2(32, 32));
+            incEndViewportToolArea();
+        }
+    }
+}
+
 //
 //          VIEWPORT CAMERA HANDLING
 //

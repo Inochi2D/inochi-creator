@@ -28,22 +28,22 @@ void incInputSetViewportMouse(float x, float y) {
     float uiScale = incGetUIScale();
 
     mpos = (
-        mat4.translation(
+        mat3.translation(
             camPos.x+camCenter.x, 
-            camPos.y+camCenter.y, 
+            camPos.y+camCenter.y,
             0
         ) * 
-        mat4.scaling(
+        mat3.scaling(
             camScale.x, 
-            camScale.y, 
+            camScale.y,
             1
         ).inverse() *
-        mat4.translation(
-            x*uiScale, 
-            y*uiScale, 
-            0
+        mat3.scaling(
+            uiScale, 
+            uiScale, 
+            1
         ) *
-        vec4(0, 0, 0, 1)
+        vec3(x, y, 1)
     ).xy;
 }
 

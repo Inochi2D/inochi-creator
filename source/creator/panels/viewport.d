@@ -172,6 +172,7 @@ protected:
                 incBeginViewportToolArea("ConfirmArea", ImGuiDir.Left, ImGuiDir.Down, false);
                     incViewportDrawConfirmBar();
                 incEndViewportToolArea();
+                incViewportTransformHandle();
             igPopStyleVar();
 
             lastSize = currSize;
@@ -191,7 +192,6 @@ protected:
             igColorConvertFloat4ToU32(*igGetStyleColorVec4(ImGuiCol.Separator)), 
             2
         );
-
 
         // FILE DRAG & DROP
         if (igBeginDragDropTarget()) {
