@@ -429,6 +429,12 @@ private {
                                     }
                                     incViewportNodeDeformNotifyParamValueChanged();
                                 }
+                                if (igMenuItem(__("Cubic"), "", false, true)) {
+                                    foreach(binding; cSelectedBindings.values) {
+                                        binding.interpolateMode = InterpolateMode.Cubic;
+                                    }
+                                    incViewportNodeDeformNotifyParamValueChanged();
+                                }
                                 igEndMenu();
                             }
 
