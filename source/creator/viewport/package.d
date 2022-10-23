@@ -322,20 +322,6 @@ void incViewportTransformHandle() {
             ImVec2 currSize;
             ImVec2 pos;
 
-            vec2 WorldToViewport(float x, float y) {
-                vec2 camPos = camera.position;
-                vec2 camScale = camera.scale;
-                vec2 camCenter = camera.getCenterOffset();
-                float uiScale = incGetUIScale();
-
-                return (
-                    mat3.scaling(uiScale, uiScale,1).inverse()
-                    * mat3.scaling(camScale.x, camScale.y, 1) 
-                    * mat3.translation(camPos.x+camCenter.x, camPos.y+camCenter.y, 0) 
-                    * vec3(x, y, 1)
-                ).xy;
-            }
-
             auto obounds=(cast(Part)selectedNode).bounds;
             auto bounds = vec4(WorldToViewport(obounds.x, obounds.y), WorldToViewport(obounds.z, obounds.w));
 
@@ -451,7 +437,7 @@ void incViewportTransformHandle() {
                     vec2 mpos, origPos;
                     incGetDragOriginOnHandle(btn, name, origPos);
                     mpos = incInputGetMousePosition();
-                    vec2 origin = selectedNode.localTransform.translation.xy;
+                    auto origin = -(obounds.xy + obounds.zw) / 2;
                     mpos -= origin;
                     origPos -= origin;
                     
@@ -554,7 +540,7 @@ void incViewportTransformHandle() {
                     vec2 mpos, origPos;
                     incGetDragOriginOnHandle(btn, name, origPos);
                     mpos = incInputGetMousePosition();
-                    vec2 origin = selectedNode.localTransform.translation.xy;
+                    auto origin = -(obounds.xy + obounds.zw) / 2;
                     mpos -= origin;
                     origPos -= origin;
 
