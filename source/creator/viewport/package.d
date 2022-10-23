@@ -315,6 +315,7 @@ DraggingOnHandle incGetDragOnHandleStatus(int btn, string name) {
 
 void incViewportTransformHandle() {
     Camera camera = inGetCamera();
+    auto io = igGetIO();
     Parameter param = incArmedParameter();
     if (incSelectedNodes.length > 0) {
         foreach(selectedNode; incSelectedNodes) {
@@ -350,24 +351,40 @@ void incViewportTransformHandle() {
             if (incDragStartedOnHandle(btn, name)) {
                 vec2 prevValue;
                 incGetDragPrevValueOnHandle(btn, name, prevValue);
+                DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
+
                 if (igIsMouseDown(btn)) {
                     vec2 mpos, origPos;
                     incGetDragOriginOnHandle(btn, name, origPos);
                     mpos = incInputGetMousePosition();
                     auto relPos = -(mpos - origPos);
+                    float newValueX = prevValue.x + relPos.x;
+                    float newValueY = prevValue.y + relPos.y;
+                    if (io.KeyCtrl) {
+                        newValueX = round(newValueX / 5) * 5;
+                        newValueY = round(newValueY / 5) * 5;
+                    }
+                    if (io.KeyShift) {
+                        if (abs(relPos.x) > abs(relPos.y))
+                            status.lockOrientation(LockedOrientation.Vertical);
+                        else
+                            status.lockOrientation(LockedOrientation.Horizontal);
+                    } else {
+                        status.lockOrientation(LockedOrientation.None);
+                    }
+                    if (status.locked == LockedOrientation.Vertical)
+                        newValueY = prevValue.y;
+                    if (status.locked == LockedOrientation.Horizontal)
+                        newValueX = prevValue.x;
 
                     if (armedParam) {
-                        if (relPos.x != 0)
-                            changeParameter(selectedNode, armedParam, "transform.t.x", index, prevValue.x + relPos.x);
-                        if (relPos.y != 0)
-                            changeParameter(selectedNode, armedParam, "transform.t.y", index, prevValue.y + relPos.y);
+                        changeParameter(selectedNode, armedParam, "transform.t.x", index, newValueX);
+                        changeParameter(selectedNode, armedParam, "transform.t.y", index, newValueY);
                     } else {
-                        selectedNode.localTransform.translation.vector[0] = prevValue.x + relPos.x;
-                        selectedNode.localTransform.translation.vector[1] = prevValue.y + relPos.y;
+                        selectedNode.localTransform.translation.vector[0] = newValueX;
+                        selectedNode.localTransform.translation.vector[1] = newValueY;
                     }
                 } else {
-                    DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
-
                     if (!armedParam) {
                         if (selectedNode.localTransform.translation.vector[0] != prevValue.x) {
                             status.actions["X"] =
@@ -410,6 +427,7 @@ void incViewportTransformHandle() {
             if (incDragStartedOnHandle(btn, name)) {
                 vec2 prevValue;
                 incGetDragPrevValueOnHandle(btn, name, prevValue);
+                DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
 
                 if (igIsMouseDown(btn)) {
                     vec2 mpos, origPos;
@@ -418,22 +436,39 @@ void incViewportTransformHandle() {
                     auto origin = -(obounds.xy + obounds.zw) / 2;
                     mpos -= origin;
                     origPos -= origin;
-                    
+                    origPos = (mat3.identity.rotateZ(selectedNode.localTransform.rotation.vector[2]) * vec3(origPos.x, origPos.y, 1)).xy;
+                    mpos = (mat3.identity.rotateZ(selectedNode.localTransform.rotation.vector[2]) * vec3(mpos.x, mpos.y, 1)).xy;
                     float ratioX = origPos.x == 0? 0: mpos.x / origPos.x;
                     float ratioY = origPos.y == 0? 0: mpos.y / origPos.y;
+                    float newValueX = prevValue.x * ratioX;
+                    float newValueY = prevValue.y * ratioY;
+                    if (io.KeyCtrl) {
+                        newValueX = round(newValueX * 10) / 10;
+                        newValueY = round(newValueY * 10) / 10;
+                    }
+                    if (io.KeyShift) {
+                        if (abs(ratioX) > abs(ratioY)) {
+                            status.lockOrientation(LockedOrientation.Vertical);
+                        } else {
+                            status.lockOrientation(LockedOrientation.Horizontal);
+                        }
+                    } else {
+                        status.lockOrientation(LockedOrientation.None);
+                    }
+                    if (status.locked == LockedOrientation.Vertical) {
+                        newValueY = prevValue.y;
+                    } else if (status.locked == LockedOrientation.Horizontal) {
+                        newValueX = prevValue.x;
+                    }
 
                     if (armedParam) {
-                        if (ratioX != 1)
-                            changeParameter(selectedNode, armedParam, "transform.s.x", index, prevValue.x * ratioX);
-                        if (ratioY != 1)
-                            changeParameter(selectedNode, armedParam, "transform.s.y", index, prevValue.y * ratioY);
+                        changeParameter(selectedNode, armedParam, "transform.s.x", index, newValueX);
+                        changeParameter(selectedNode, armedParam, "transform.s.y", index, newValueY);
                     } else {
-                        selectedNode.localTransform.scale.vector[0] = prevValue.x * ratioX;
-                        selectedNode.localTransform.scale.vector[1] = prevValue.y * ratioY;
+                        selectedNode.localTransform.scale.vector[0] = newValueX;
+                        selectedNode.localTransform.scale.vector[1] = newValueY;
                     }
                 } else {
-                    DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
-
                     if (!armedParam) {
                         if (selectedNode.localTransform.scale.vector[0] != prevValue.x) {
                             status.actions["X"] =
@@ -475,6 +510,7 @@ void incViewportTransformHandle() {
             if (incDragStartedOnHandle(btn, name)) {
                 vec2 prevValue;
                 incGetDragPrevValueOnHandle(btn, name, prevValue);
+                DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
 
                 if (igIsMouseDown(btn)) {
                     vec2 mpos, origPos;
@@ -493,16 +529,17 @@ void incViewportTransformHandle() {
                     float origArg = getArg(origPos);
                     float newArg  = getArg(mpos);
                     float diffArg = newArg - origArg;
-
-                    if (armedParam) {
-                        if (diffArg != 0)
-                            changeParameter(selectedNode, armedParam, "transform.r.z", index, prevValue.x + diffArg);
-                    } else {
-                        selectedNode.localTransform.rotation.vector[2] = prevValue.x + diffArg;
+                    float newValue = prevValue.x + diffArg;
+                    if (io.KeyCtrl) {
+                        newValue = radians(round(degrees(newValue) / 5) * 5);
                     }
 
+                    if (armedParam) {
+                        changeParameter(selectedNode, armedParam, "transform.r.z", index, newValue);
+                    } else {
+                        selectedNode.localTransform.rotation.vector[2] = newValue;
+                    }
                 } else {
-                    DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
                     if (!armedParam) {
                         if (selectedNode.localTransform.rotation.vector[2] != prevValue.x) {
                             status.actions["Z"] =
@@ -593,16 +630,30 @@ void incViewportReset() {
 //          Internal Viewport Stuff(TM)
 //
 private {
+    enum LockedOrientation {
+        None, Horizontal, Vertical
+    };
     class DraggingOnHandle {
         bool dragged;
         vec2 dragOrigin;
         vec2 prevValue;
         Action[string] actions;
+        LockedOrientation locked;
 
         this(vec2 origin=vec2(0,0), vec2 value=vec2(0, 0)) {
             dragged = true;
             dragOrigin = origin;
             prevValue = value;
+            locked = LockedOrientation.None;
+        }
+
+        void lockOrientation(LockedOrientation orientation) {
+            if (orientation == LockedOrientation.None)
+                locked = orientation;
+            else if (locked != LockedOrientation.None)
+                return;
+            else
+                locked = orientation;
         }
 
         void commitActions() {
