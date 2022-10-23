@@ -40,6 +40,8 @@ protected:
         priorWindowPadding = igGetStyle().WindowPadding;
         igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(0, 2));
         igSetNextWindowDockID(incGetViewportDockSpace(), ImGuiCond.Always);
+
+        flags |= ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
         super.onBeginUpdate();
     }
 
