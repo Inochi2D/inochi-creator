@@ -438,23 +438,37 @@ void incViewportTransformHandle() {
                     origPos -= origin;
                     origPos = (mat3.identity.rotateZ(selectedNode.localTransform.rotation.vector[2]) * vec3(origPos.x, origPos.y, 1)).xy;
                     mpos = (mat3.identity.rotateZ(selectedNode.localTransform.rotation.vector[2]) * vec3(mpos.x, mpos.y, 1)).xy;
-                    float ratioX = origPos.x == 0? 0: mpos.x / origPos.x;
-                    float ratioY = origPos.y == 0? 0: mpos.y / origPos.y;
+                    float ratioX = origPos.x == 0 ? 0 : mpos.x / origPos.x;
+                    float ratioY = origPos.y == 0 ? 0 : mpos.y / origPos.y;
                     float newValueX = prevValue.x * ratioX;
                     float newValueY = prevValue.y * ratioY;
-                    if (io.KeyCtrl) {
-                        newValueX = round(newValueX * 10) / 10;
-                        newValueY = round(newValueY * 10) / 10;
-                    }
                     if (io.KeyShift) {
-                        if (abs(ratioX) > abs(ratioY)) {
-                            status.lockOrientation(LockedOrientation.Vertical);
+                        if (io.KeyAlt) {
+
+                            // Keep Ratio
+                            float origMouseSqrt = sqrt((mpos.x^^2) + (mpos.y^^2)) / sqrt((origPos.x^^2) + (origPos.y^^2));
+                            newValueX = prevValue.x * origMouseSqrt;
+                            newValueY = prevValue.y * origMouseSqrt;
+
                         } else {
-                            status.lockOrientation(LockedOrientation.Horizontal);
+
+                            // Lock to axis
+                            if (abs(ratioX) > abs(ratioY)) {
+                                status.lockOrientation(LockedOrientation.Vertical);
+                            } else {
+                                status.lockOrientation(LockedOrientation.Horizontal);
+                            }
                         }
                     } else {
                         status.lockOrientation(LockedOrientation.None);
                     }
+
+                    // Snap
+                    if (io.KeyCtrl) {
+                        newValueX = round(newValueX * 10) / 10;
+                        newValueY = round(newValueY * 10) / 10;
+                    }
+                    
                     if (status.locked == LockedOrientation.Vertical) {
                         newValueY = prevValue.y;
                     } else if (status.locked == LockedOrientation.Horizontal) {

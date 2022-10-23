@@ -87,8 +87,7 @@ protected:
                 incEndDragInViewport(btn);
             }
         }
-
-        if (igBeginChild("##ViewportView", ImVec2(0, -32))) {
+        if (igBeginChild("##ViewportView", ImVec2(0, -32), false, flags)) {
             igGetContentRegionAvail(&currSize);
             currSize = ImVec2(
                 clamp(currSize.x, 128, float.max), 
