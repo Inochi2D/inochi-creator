@@ -446,9 +446,9 @@ void incViewportTransformHandle() {
                         if (io.KeyAlt) {
 
                             // Keep Ratio
-                            float origMouseSqrt = sqrt((mpos.x^^2) + (mpos.y^^2)) / sqrt((origPos.x^^2) + (origPos.y^^2));
-                            newValueX = prevValue.x * origMouseSqrt;
-                            newValueY = prevValue.y * origMouseSqrt;
+                            float nScale = sqrt((mpos.x^^2) + (mpos.y^^2)) / sqrt((origPos.x^^2) + (origPos.y^^2));
+                            newValueX = prevValue.x * nScale;
+                            newValueY = prevValue.y * nScale;
 
                         } else {
 
@@ -465,8 +465,8 @@ void incViewportTransformHandle() {
 
                     // Snap
                     if (io.KeyCtrl) {
-                        newValueX = round(newValueX * 10) / 10;
-                        newValueY = round(newValueY * 10) / 10;
+                        newValueX = floor(newValueX * 10) / 10;
+                        newValueY = floor(newValueY * 10) / 10;
                     }
                     
                     if (status.locked == LockedOrientation.Vertical) {
