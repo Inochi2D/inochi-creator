@@ -9,6 +9,7 @@ import inochi2d;
 import creator;
 import creator.core;
 import creator.core.input;
+import creator.actions;
 import bindbc.imgui;
 import creator.viewport.model;
 import creator.viewport.vertex;
@@ -272,17 +273,30 @@ bool incDragStartedInViewport(int btn) {
 }
 
 bool incDragStartedOnHandle(int btn, string name) {
-    return (name in isDraggingOnHandle) !is null && isDraggingOnHandle[name].dragged[btn];
+    return (name in isDraggingOnHandle[btn].dragged) !is null && isDraggingOnHandle[btn].dragged[name];
 }
 
 void incBeginDragInViewport(int btn) {
     isDraggingInViewport[btn] = true;
 }
 
-void incBeginDragOnHandle(int btn, string name) {
-    if (name !in isDraggingOnHandle)
-        isDraggingOnHandle[name] = DraggingOnHandle(true);
-    isDraggingOnHandle[name].dragged[btn] = true;
+void incBeginDragOnHandle(int btn, string name, vec2 prevValue = vec2(0,0)) {
+    isDraggingOnHandle[btn].dragged[name] = true;
+    auto mpos = incInputGetMousePosition();
+    isDraggingOnHandle[btn].dragOrigin[name] = mpos;
+    isDraggingOnHandle[btn].prevValue[name] = prevValue;
+}
+
+bool incGetDragOriginOnHandle(int btn, string name, out vec2 mpos) {
+    bool result = incDragStartedOnHandle(btn, name);
+    mpos = isDraggingOnHandle[btn].dragOrigin[name];
+    return result;
+}
+
+bool incGetDragPrevValueOnHandle(int btn, string name, out vec2 value) {
+    bool result = incDragStartedOnHandle(btn, name);
+    value = isDraggingOnHandle[btn].prevValue[name];
+    return result;
 }
 
 void incEndDragInViewport(int btn) {
@@ -290,7 +304,9 @@ void incEndDragInViewport(int btn) {
 }
 
 void incEndDragOnHandle(int btn, string name) {
-    isDraggingOnHandle[name].dragged[btn] = false;
+    isDraggingOnHandle[btn].dragged.remove(name);
+    isDraggingOnHandle[btn].dragOrigin.remove(name);
+    isDraggingOnHandle[btn].prevValue.remove(name);
 }
 
 void incViewportTransformHandle() {
@@ -322,13 +338,90 @@ void incViewportTransformHandle() {
 
             auto obounds=(cast(Part)selectedNode).bounds;
             auto bounds = vec4(WorldToViewport(obounds.x, obounds.y), WorldToViewport(obounds.z, obounds.w));
+
+            Parameter armedParam = incArmedParameter();
+
+            // Move
             string name = selectedNode.name ~ "move";
             ImGuiMouseButton btn = ImGuiMouseButton.Left;
+            vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
             if (incDragStartedOnHandle(btn, name)) {
                 if (igIsMouseDown(btn)) {
-                    writefln("drag move");
+                    vec2 mpos, origPos;
+                    incGetDragOriginOnHandle(btn, name, origPos);
+                    mpos = incInputGetMousePosition();
+
+                    if (armedParam) {
+                        // Convert back to radians for data managment
+                        // Set binding
+                        GroupAction groupAction = null;
+                        vec2 relPos = -(mpos - origPos);
+                        GroupAction changeParameter(Node node, GroupAction action, Parameter param, string paramName, vec2u index, float prevValue, float newValue) {
+                            if (newValue == 0) {
+                                return action;
+                            }
+                            if (!action)
+                                action = new GroupAction();
+                            ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
+                            if (b is null) {
+                                b = cast(ValueParameterBinding)param.createBinding(node, paramName);
+                                param.addBinding(b);
+                                auto addAction = new ParameterBindingAddAction(param, b);
+                                action.addAction(addAction);
+                            }
+                            // Push action
+                            auto addAction = new ParameterBindingValueChangeAction!(float)(b.getName(), b, index.x, index.y);
+                            action.addAction(addAction);
+                            b.setValue(index, prevValue + newValue);
+                            addAction.updateNewState();
+                            return action;
+                        }
+                        vec2 prevValue;
+                        incGetDragPrevValueOnHandle(btn, name, prevValue);
+                        if (relPos.x != 0) {
+                            groupAction = changeParameter(selectedNode, groupAction, armedParam, "transform.t.x", index, prevValue.x, prevValue.x + relPos.x);
+                        }
+                        if (relPos.y != 0) {
+                            groupAction = changeParameter(selectedNode, groupAction, armedParam, "transform.t.y", index, prevValue.y, prevValue.y + relPos.y);
+                        }
+                        if (groupAction)
+                            incActionPush(groupAction);                            
+                    } else {
+                        auto action = new GroupAction();
+                        Node node = selectedNode;
+                        vec2 prevValue;
+                        incGetDragPrevValueOnHandle(btn, name, prevValue);
+                        auto relPos = -(mpos - origPos);
+
+                        node.localTransform.translation.vector[0] = prevValue.x + relPos.x;
+                        node.localTransform.translation.vector[1] = prevValue.y + relPos.y;
+                        if (relPos.x != 0) {
+                            action.addAction(
+                                new NodeValueChangeAction!(Node, float)(
+                                    "X",
+                                    node, 
+                                    prevValue.x,
+                                    node.localTransform.translation.vector[0],
+                                    &node.localTransform.translation.vector[0]
+                                )
+                            );
+                        }
+                        if (relPos.y != 0) {
+                            action.addAction(
+                                new NodeValueChangeAction!(Node, float)(
+                                    "Y",
+                                    node, 
+                                    prevValue.y,
+                                    node.localTransform.translation.vector[1],
+                                    &node.localTransform.translation.vector[1]
+                                )
+                            );
+
+                        }
+                        incActionPush(action);
+
+                    }
                 } else {
-                    writeln("release move");
                     incEndDragOnHandle(btn, name);
                     incEndDrag(btn);
                 }
@@ -337,17 +430,99 @@ void incViewportTransformHandle() {
             igButton("", ImVec2(32, 32));
             if (igIsItemHovered() && igIsMouseDown(btn)) {
                 if (!incDragStartedOnHandle(btn, name)) {
-                    writeln("start move");
                     incBeginDrag(btn);
-                    incBeginDragOnHandle(btn, name);
+                    if (armedParam) {
+                        ValueParameterBinding b;
+                        b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.t.x");
+                        auto origX = (b !is null)? b.getValue(index) : 0;
+                        b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.t.y");
+                        auto origY = (b !is null)? b.getValue(index) : 0;
+                        incBeginDragOnHandle(btn, name, vec2(origX, origY));
+                    } else
+                        incBeginDragOnHandle(btn, name, vec2(selectedNode.localTransform.translation.vector[0], selectedNode.localTransform.translation.vector[1]));
                 }
             }
+
+            // Scaling
             name = selectedNode.name ~ "scale";
             if (incDragStartedOnHandle(btn, name)) {
                 if (igIsMouseDown(btn)) {
-                    writefln("drag scale");
+                    vec2 mpos, origPos;
+                    incGetDragOriginOnHandle(btn, name, origPos);
+                    mpos = incInputGetMousePosition();
+                    vec2 origin = selectedNode.localTransform.translation.xy;
+                    mpos -= origin;
+                    origPos -= origin;
+                    if (armedParam) {
+                        GroupAction groupAction = null;
+                        GroupAction changeParameter(Node node, GroupAction action, Parameter param, string paramName, vec2u index, float prevValue, float newValue) {
+                            if (newValue == 0) {
+                                return action;
+                            }
+                            if (!action)
+                                action = new GroupAction();
+                            ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
+                            if (b is null) {
+                                b = cast(ValueParameterBinding)param.createBinding(node, paramName);
+                                param.addBinding(b);
+                                auto addAction = new ParameterBindingAddAction(param, b);
+                                action.addAction(addAction);
+                            }
+                            // Push action
+                            auto addAction = new ParameterBindingValueChangeAction!(float)(b.getName(), b, index.x, index.y);
+                            action.addAction(addAction);
+                            b.setValue(index, prevValue + newValue);
+                            addAction.updateNewState();
+                            return action;
+                        }
+                        float ratioX = origPos.x == 0? 0: mpos.x / origPos.x;
+                        float ratioY = origPos.y == 0? 0: mpos.y / origPos.y;
+                        vec2 prevValue;
+                        incGetDragPrevValueOnHandle(btn, name, prevValue);
+                        if (ratioX != 1) {
+                            groupAction = changeParameter(selectedNode, groupAction, armedParam, "transform.s.x", index, prevValue.x, prevValue.x * ratioX);
+                        }
+                        if (ratioY != 1) {
+                            groupAction = changeParameter(selectedNode, groupAction, armedParam, "transform.s.y", index, prevValue.y, prevValue.y * ratioY);
+                        }
+                        if (groupAction)
+                            incActionPush(groupAction);                            
+                    } else {
+                        auto action = new GroupAction();
+                        Node node = selectedNode;
+                        vec2 prevValue;
+
+                        incGetDragPrevValueOnHandle(btn, name, prevValue);
+
+                        float ratioX = origPos.x == 0? 0: mpos.x / origPos.x;
+                        float ratioY = origPos.y == 0? 0: mpos.y / origPos.y;
+                        node.localTransform.scale.vector[0] = prevValue.x * ratioX;
+                        node.localTransform.scale.vector[1] = prevValue.y * ratioY;
+                        if (ratioX != 1) {
+                            action.addAction(
+                                new NodeValueChangeAction!(Node, float)(
+                                    "X",
+                                    node, 
+                                    prevValue.x,
+                                    node.localTransform.scale.vector[0],
+                                    &node.localTransform.scale.vector[0]
+                                )
+                            );
+                        }
+                        if (ratioY != 1) {
+                            action.addAction(
+                                new NodeValueChangeAction!(Node, float)(
+                                    "Y",
+                                    node, 
+                                    prevValue.y,
+                                    node.localTransform.scale.vector[1],
+                                    &node.localTransform.scale.vector[1]
+                                )
+                            );
+                        }
+                        incActionPush(action);
+                    }
                 } else {
-                    writeln("release scale");
                     incEndDrag(btn);
                     incEndDragOnHandle(btn, name);
                 }
@@ -357,17 +532,28 @@ void incViewportTransformHandle() {
             igButton("", ImVec2(32, 32));
             if (igIsItemHovered() && igIsMouseDown(btn)) {
                 if (!incDragStartedOnHandle(btn, name)) {
-                    writeln("start scale");
                     incBeginDrag(btn);
-                    incBeginDragOnHandle(btn, name);
+                    if (armedParam) {
+                        ValueParameterBinding b;
+                        b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.s.x");
+                        auto origX = (b !is null)? b.getValue(index) : 1;
+                        b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.s.y");
+                        auto origY = (b !is null)? b.getValue(index) : 1;
+                        incBeginDragOnHandle(btn, name, vec2(origX, origY));
+                    } else
+                        incBeginDragOnHandle(btn, name, vec2(selectedNode.localTransform.scale.vector[0], selectedNode.localTransform.scale.vector[1]));
                 }
             }
+
+            // Rotation
             name = selectedNode.name ~ "rotate";
             if (incDragStartedOnHandle(btn, name)) {
                 if (igIsMouseDown(btn)) {
-                    writefln("drag rotate");
+                    if (armedParam) {
+
+                    } else {
+                    }
                 } else {
-                    writeln("release rotate");
                     incEndDrag(btn);
                     incEndDragOnHandle(btn, name);
                 }
@@ -377,7 +563,6 @@ void incViewportTransformHandle() {
             igButton("", ImVec2(32, 32));
             if (igIsItemHovered() && igIsMouseDown(btn)) {
                 if (!incDragStartedOnHandle(btn, name)) {
-                    writeln("start rotate");
                     incBeginDrag(btn);
                     incBeginDragOnHandle(btn, name);
                 }
@@ -385,9 +570,11 @@ void incViewportTransformHandle() {
             name = selectedNode.name ~ "sort";
             if (incDragStartedOnHandle(btn, name)) {
                 if (igIsMouseDown(btn)) {
-                    writefln("drag sort");
+                    if (armedParam) {
+
+                    } else {
+                    }
                 } else {
-                    writeln("release sort");
                     incEndDrag(btn);
                     incEndDragOnHandle(btn, name);
                 }
@@ -397,7 +584,6 @@ void incViewportTransformHandle() {
             igButton("", ImVec2(32, 32));
             if (igIsItemHovered() && igIsMouseDown(btn)) {
                 if (!incDragStartedOnHandle(btn, name)) {
-                    writeln("start sort");
                     incBeginDrag(btn);
                     incBeginDragOnHandle(btn, name);
                 }
@@ -443,10 +629,12 @@ void incViewportReset() {
 //
 private {
     struct DraggingOnHandle {
-        bool [ImGuiMouseButton.COUNT] dragged;
+        bool[string] dragged;
+        vec2[string] dragOrigin;
+        vec2[string] prevValue;
     }
     bool[ImGuiMouseButton.COUNT] isDraggingInViewport;
-    DraggingOnHandle[string] isDraggingOnHandle;
+    DraggingOnHandle[ImGuiMouseButton.COUNT] isDraggingOnHandle;
     bool[ImGuiMouseButton.COUNT] isDragging;
     bool isMovingViewport;
     float sx, sy;
