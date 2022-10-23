@@ -5,7 +5,6 @@
     Authors: Luna Nielsen
 */
 module creator.viewport.model.deform;
-import creator.viewport.model.deform.mesh;
 import creator.viewport.common.mesh;
 import creator.viewport.common.mesheditor;
 import creator.widgets.tooltip;
