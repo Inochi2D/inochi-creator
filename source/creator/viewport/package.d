@@ -327,6 +327,27 @@ void incViewportTransformHandle() {
 
             Parameter armedParam = incArmedParameter();
 
+            GroupAction changeParameter(Node node, GroupAction action, Parameter param, string paramName, vec2u index, float newValue) {
+                if (newValue == 0) {
+                    return action;
+                }
+                if (!action)
+                    action = new GroupAction();
+                ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
+                if (b is null) {
+                    b = cast(ValueParameterBinding)param.createBinding(node, paramName);
+                    param.addBinding(b);
+                    auto addAction = new ParameterBindingAddAction(param, b);
+                    action.addAction(addAction);
+                }
+                // Push action
+                auto addAction = new ParameterBindingValueChangeAction!(float)(b.getName(), b, index.x, index.y);
+                action.addAction(addAction);
+                b.setValue(index, newValue);
+                addAction.updateNewState();
+                return action;
+            }
+
             // Move
             string name = selectedNode.name ~ "move";
             ImGuiMouseButton btn = ImGuiMouseButton.Left;
@@ -342,33 +363,13 @@ void incViewportTransformHandle() {
                         // Set binding
                         GroupAction groupAction = null;
                         vec2 relPos = -(mpos - origPos);
-                        GroupAction changeParameter(Node node, GroupAction action, Parameter param, string paramName, vec2u index, float prevValue, float newValue) {
-                            if (newValue == 0) {
-                                return action;
-                            }
-                            if (!action)
-                                action = new GroupAction();
-                            ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
-                            if (b is null) {
-                                b = cast(ValueParameterBinding)param.createBinding(node, paramName);
-                                param.addBinding(b);
-                                auto addAction = new ParameterBindingAddAction(param, b);
-                                action.addAction(addAction);
-                            }
-                            // Push action
-                            auto addAction = new ParameterBindingValueChangeAction!(float)(b.getName(), b, index.x, index.y);
-                            action.addAction(addAction);
-                            b.setValue(index, prevValue + newValue);
-                            addAction.updateNewState();
-                            return action;
-                        }
                         vec2 prevValue;
                         incGetDragPrevValueOnHandle(btn, name, prevValue);
                         if (relPos.x != 0) {
-                            groupAction = changeParameter(selectedNode, groupAction, armedParam, "transform.t.x", index, prevValue.x, relPos.x);
+                            groupAction = changeParameter(selectedNode, groupAction, armedParam, "transform.t.x", index, prevValue.x + relPos.x);
                         }
                         if (relPos.y != 0) {
-                            groupAction = changeParameter(selectedNode, groupAction, armedParam, "transform.t.y", index, prevValue.y, relPos.y);
+                            groupAction = changeParameter(selectedNode, groupAction, armedParam, "transform.t.y", index, prevValue.y + relPos.y);
                         }
                         if (groupAction)
                             incActionPush(groupAction);                            
@@ -383,24 +384,15 @@ void incViewportTransformHandle() {
                         node.localTransform.translation.vector[1] = prevValue.y + relPos.y;
                         if (relPos.x != 0) {
                             action.addAction(
-                                new NodeValueChangeAction!(Node, float)(
-                                    "X",
-                                    node, 
-                                    prevValue.x,
-                                    node.localTransform.translation.vector[0],
-                                    &node.localTransform.translation.vector[0]
+                                new NodeValueChangeAction!(Node, float)("X", node, prevValue.x,
+                                    node.localTransform.translation.vector[0], &node.localTransform.translation.vector[0]
                                 )
                             );
                         }
                         if (relPos.y != 0) {
                             action.addAction(
-                                new NodeValueChangeAction!(Node, float)(
-                                    "Y",
-                                    node, 
-                                    prevValue.y,
-                                    node.localTransform.translation.vector[1],
-                                    &node.localTransform.translation.vector[1]
-                                )
+                                new NodeValueChangeAction!(Node, float)("Y", node, prevValue.y,
+                                    node.localTransform.translation.vector[1], &node.localTransform.translation.vector[1])
                             );
 
                         }
@@ -443,35 +435,15 @@ void incViewportTransformHandle() {
                     
                     if (armedParam) {
                         GroupAction groupAction = null;
-                        GroupAction changeParameter(Node node, GroupAction action, Parameter param, string paramName, vec2u index, float prevValue, float newValue) {
-                            if (newValue == 0) {
-                                return action;
-                            }
-                            if (!action)
-                                action = new GroupAction();
-                            ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
-                            if (b is null) {
-                                b = cast(ValueParameterBinding)param.createBinding(node, paramName);
-                                param.addBinding(b);
-                                auto addAction = new ParameterBindingAddAction(param, b);
-                                action.addAction(addAction);
-                            }
-                            // Push action
-                            auto addAction = new ParameterBindingValueChangeAction!(float)(b.getName(), b, index.x, index.y);
-                            action.addAction(addAction);
-                            b.setValue(index, prevValue * newValue);
-                            addAction.updateNewState();
-                            return action;
-                        }
                         float ratioX = origPos.x == 0? 0: mpos.x / origPos.x;
                         float ratioY = origPos.y == 0? 0: mpos.y / origPos.y;
                         vec2 prevValue;
                         incGetDragPrevValueOnHandle(btn, name, prevValue);
                         if (ratioX != 1) {
-                            groupAction = changeParameter(selectedNode, groupAction, armedParam, "transform.s.x", index, prevValue.x, ratioX);
+                            groupAction = changeParameter(selectedNode, groupAction, armedParam, "transform.s.x", index, prevValue.x * ratioX);
                         }
                         if (ratioY != 1) {
-                            groupAction = changeParameter(selectedNode, groupAction, armedParam, "transform.s.y", index, prevValue.y, ratioY);
+                            groupAction = changeParameter(selectedNode, groupAction, armedParam, "transform.s.y", index, prevValue.y * ratioY);
                         }
                         if (groupAction)
                             incActionPush(groupAction);                            
@@ -488,24 +460,14 @@ void incViewportTransformHandle() {
                         node.localTransform.scale.vector[1] = prevValue.y * ratioY;
                         if (ratioX != 1) {
                             action.addAction(
-                                new NodeValueChangeAction!(Node, float)(
-                                    "X",
-                                    node, 
-                                    prevValue.x,
-                                    node.localTransform.scale.vector[0],
-                                    &node.localTransform.scale.vector[0]
-                                )
+                                new NodeValueChangeAction!(Node, float)("X", node, prevValue.x,
+                                    node.localTransform.scale.vector[0], &node.localTransform.scale.vector[0])
                             );
                         }
                         if (ratioY != 1) {
                             action.addAction(
-                                new NodeValueChangeAction!(Node, float)(
-                                    "Y",
-                                    node, 
-                                    prevValue.y,
-                                    node.localTransform.scale.vector[1],
-                                    &node.localTransform.scale.vector[1]
-                                )
+                                new NodeValueChangeAction!(Node, float)("Y", node, prevValue.y,
+                                    node.localTransform.scale.vector[1], &node.localTransform.scale.vector[1])
                             );
                         }
                         incActionPush(action);
@@ -555,31 +517,11 @@ void incViewportTransformHandle() {
 
                     if (armedParam) {
                         GroupAction groupAction = null;
-                        GroupAction changeParameter(Node node, GroupAction action, Parameter param, string paramName, vec2u index, float prevValue, float newValue) {
-                            if (newValue == 0) {
-                                return action;
-                            }
-                            if (!action)
-                                action = new GroupAction();
-                            ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
-                            if (b is null) {
-                                b = cast(ValueParameterBinding)param.createBinding(node, paramName);
-                                param.addBinding(b);
-                                auto addAction = new ParameterBindingAddAction(param, b);
-                                action.addAction(addAction);
-                            }
-                            // Push action
-                            auto addAction = new ParameterBindingValueChangeAction!(float)(b.getName(), b, index.x, index.y);
-                            action.addAction(addAction);
-                            b.setValue(index, prevValue + newValue);
-                            addAction.updateNewState();
-                            return action;
-                        }
                         vec2 prevValue;
                         incGetDragPrevValueOnHandle(btn, name, prevValue);
                         float diffArg = newArg - origArg;
                         if (diffArg != 0) {
-                            groupAction = changeParameter(selectedNode, groupAction, armedParam, "transform.r.z", index, prevValue.x, diffArg);
+                            groupAction = changeParameter(selectedNode, groupAction, armedParam, "transform.r.z", index, prevValue.x + diffArg);
                         }
                         if (groupAction)
                             incActionPush(groupAction);                            
@@ -595,13 +537,8 @@ void incViewportTransformHandle() {
                         node.localTransform.rotation.vector[2] = prevValue.x + diffArg;
                         if (diffArg != 0) {
                             action.addAction(
-                                new NodeValueChangeAction!(Node, float)(
-                                    "Z",
-                                    node, 
-                                    prevValue.x,
-                                    node.localTransform.rotation.vector[2],
-                                    &node.localTransform.rotation.vector[2]
-                                )
+                                new NodeValueChangeAction!(Node, float)("Z", node, prevValue.x,
+                                    node.localTransform.rotation.vector[2], &node.localTransform.rotation.vector[2])
                             );
                         }
                         incActionPush(action);
