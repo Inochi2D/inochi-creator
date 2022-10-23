@@ -207,7 +207,6 @@ void incViewportModelDraw(Camera camera) {
                 if (incShowOrientation) selectedNode.drawOrientation();
                 if (incShowBounds) selectedNode.drawBounds();
 
-
                 if (Drawable selectedDraw = cast(Drawable)selectedNode) {
 
                     if (incShowVertices || incEditMode != EditMode.ModelEdit) {
