@@ -304,7 +304,8 @@ public:
                     foreach (uint y; 0..cast(uint)deformBinding.values[x].length) {
                         auto deform = deformBinding.values[x][y];
                         if (deformBinding.isSet(vec2u(x, y))) {
-                            auto newDeform = mesh.deformByDeformationBinding(deformBinding, vec2u(x, y), false);
+                            bool dump = deformBinding.parameter.axisPoints[0][x] ==0.5 && deformBinding.parameter.axisPoints[1][y] == 0.5;
+                            auto newDeform = mesh.deformByDeformationBinding(deformBinding, vec2u(x, y), false, dump);
                             if (newDeform) 
                                 deformBinding.values[x][y] = *newDeform;
                         }
