@@ -829,7 +829,7 @@ public:
         return newMesh;
     }
 
-    Deformation* deformByDeformationBinding(DeformationParameterBinding binding, vec2u index, bool flipHorz = false, bool dump = false) {
+    Deformation* deformByDeformationBinding(DeformationParameterBinding binding, vec2u index, bool flipHorz = false) {
         import std.stdio;
         if (!binding) {
             writeln("binding is null");
@@ -955,21 +955,7 @@ public:
             auto relPt = pt - p1;
             float arg = sign(axis0.y) * acos(axis0.x);
             vec2 result = (mat3.identity().rotateZ(-arg) * vec3(relPt, 1)).xy;
-//            vec2 result = (mat3([axis0.x, 0, 0, 0, -axis0.y, 0, 0, 0, 1]) * vec3(relPt, 1)).xy;
-            if (dump) {
-                writefln("Orig: %s", pt);
-                writefln("Arg: %f", arg);
-                writefln("Near Tri: %s, %s, %s", p1, p2, p3);
-                writefln("Near Axis: %s", axis0);
-                writefln("Rel:  %s", relPt);
-            }
             result.x /= axis0len;
-            if (dump) {
-                writefln("Result: %s", result);
-                vec2 axis1 = vec2(cos(arg + PI/2), sin(arg+PI/2));
-                vec2 reverse = axis1 * result.y + axis0 * result.x * axis0len + p1;
-                writefln("Reverse: %s", reverse);
-            }
             return result;
         }
 
@@ -979,8 +965,6 @@ public:
             assert(bindingMesh.vertices.length == deform.vertexOffsets.length);
             foreach (i, v; bindingMesh.vertices) {
                 result ~= v + deform.vertexOffsets[i];
-                if (dump)
-                    writefln("%s->%s", v, result[$-1]);
             }
             return result;
         }
@@ -1007,12 +991,6 @@ public:
             axis0 /= axis0len;
             float arg = sign(axis0.y) * acos(axis0.x);
             vec2 axis1 = vec2(cos(arg + PI/2), sin(arg+PI/2));
-            if (dump) {
-                writefln("Near Tri: %s, %s, %s", p1, p2, p3);
-                writefln("TNear Axis: %s, %s", axis0, axis1);
-                writefln("TRel:  %s", offset);
-                writefln("TResult: %s\n", p1 + axis0 * axis0len * offset.x + axis1 * offset.y);
-            }
            return p1 + axis0 * axis0len * offset.x + axis1 * offset.y;
         }
         
