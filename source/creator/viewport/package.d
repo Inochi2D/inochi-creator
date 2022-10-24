@@ -458,6 +458,11 @@ void incViewportTransformHandle() {
                             } else {
                                 status.lockOrientation(LockedOrientation.Horizontal);
                             }
+                            if (status.locked == LockedOrientation.Vertical) {
+                                newValueY = prevValue.y;
+                            } else if (status.locked == LockedOrientation.Horizontal) {
+                                newValueX = prevValue.x;
+                            }
                         }
                     } else {
                         status.lockOrientation(LockedOrientation.None);
@@ -469,12 +474,6 @@ void incViewportTransformHandle() {
                         newValueY = floor(newValueY * 10) / 10;
                     }
                     
-                    if (status.locked == LockedOrientation.Vertical) {
-                        newValueY = prevValue.y;
-                    } else if (status.locked == LockedOrientation.Horizontal) {
-                        newValueX = prevValue.x;
-                    }
-
                     if (armedParam) {
                         changeParameter(selectedNode, armedParam, "transform.s.x", index, newValueX);
                         changeParameter(selectedNode, armedParam, "transform.s.y", index, newValueY);
