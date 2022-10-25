@@ -173,7 +173,8 @@ protected:
                 incBeginViewportToolArea("ConfirmArea", ImGuiDir.Left, ImGuiDir.Down, false);
                     incViewportDrawConfirmBar();
                 incEndViewportToolArea();
-                incViewportTransformHandle();
+                if (incEditMode == EditMode.ModelEdit)
+                    incViewportTransformHandle();
             igPopStyleVar();
 
             lastSize = currSize;
