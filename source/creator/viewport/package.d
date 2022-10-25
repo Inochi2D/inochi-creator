@@ -470,8 +470,8 @@ void incViewportTransformHandle() {
 
                     // Snap
                     if (io.KeyCtrl) {
-                        newValueX = floor(newValueX * 10) / 10;
-                        newValueY = floor(newValueY * 10) / 10;
+                        newValueX = floor(newValueX * incViewportTransformSnap) / incViewportTransformSnap;
+                        newValueY = floor(newValueY * incViewportTransformSnap) / incViewportTransformSnap;
                     }
                     
                     if (armedParam) {
@@ -629,6 +629,11 @@ float incViewportTargetZoom = 1;
     The actual zoom of the viewport
 */
 float incViewportZoom = 1;
+
+/**
+    Snap value
+*/
+float incViewportTransformSnap = 10;
 
 /**
     Resets the viewport
