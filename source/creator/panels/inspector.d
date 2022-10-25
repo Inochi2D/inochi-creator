@@ -761,6 +761,12 @@ void incInspectorModelPart(Part node) {
         incText(_("Tint (Screen)"));
         igColorEdit3("###S_TINT", cast(float[3]*)node.screenTint.ptr);
 
+        incText(_("Emission Strength"));
+        float strengthPerc = node.emissionStrength*100;
+        if (igDragFloat("###S_EMISSION", &strengthPerc, 0.1, 0, float.max, "%.0f%%")) {
+            node.emissionStrength = strengthPerc*0.01;
+        }
+
         // Padding
         igSpacing();
         igSpacing();
@@ -1257,6 +1263,42 @@ void incInspectorDeformSliderFloat(string name, string paramName, float min, flo
     }
 }
 
+void incInspectorDeformDragFloat(string name, string paramName, float speed, float min, float max, const(char)* fmt, Node node, Parameter param, vec2u cursor) {
+    float value = incInspectorDeformGetValue(node, param, paramName, cursor);
+    if (igDragFloat(name.toStringz, &value, speed, min, max, fmt)) {
+        incInspectorDeformSetValue(node, param, paramName, cursor, value);
+    }
+}
+
+float incInspectorDeformGetValue(Node node, Parameter param, string paramName, vec2u cursor) {
+    float currFloat = node.getDefaultValue(paramName);
+    if (ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName)) {
+        currFloat = b.getValue(cursor);
+    }
+    return currFloat;
+}
+
+void incInspectorDeformSetValue(Node node, Parameter param, string paramName, vec2u cursor, float value) {
+        GroupAction groupAction = null;
+        ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
+        if (b is null) {
+            b = cast(ValueParameterBinding)param.createBinding(node, paramName);
+            param.addBinding(b);
+            groupAction = new GroupAction();
+            auto addAction = new ParameterBindingAddAction(param, b);
+            groupAction.addAction(addAction);
+        }
+        auto action = new ParameterBindingValueChangeAction!(float)(b.getName(), b, cursor.x, cursor.y);
+        b.setValue(cursor, value);
+        action.updateNewState();
+        if (groupAction) {
+            groupAction.addAction(action);
+            incActionPush(groupAction);
+        } else {
+            incActionPush(action);
+        }
+}
+
 void incInspectorDeformTRS(Node node, Parameter param, vec2u cursor) {
     if (incBeginCategory(__("Transform"))) {   
         float adjustSpeed = 1;
@@ -1381,6 +1423,12 @@ void incInspectorDeformPart(Part node, Parameter param, vec2u cursor) {
 
                     incText(_("Tint (Screen)"));
                     incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
+                    
+                    incText(_("Emission Strength"));
+                    float strengthPerc = incInspectorDeformGetValue(node, param, "emissionStrength", cursor)*100;
+                    if (igDragFloat("###S_EMISSION", &strengthPerc, 0.1, 0, float.max, "%.0f%%")) {
+                        incInspectorDeformSetValue(node, param, "emissionStrength", cursor, strengthPerc*0.01);
+                    }
 
                     // Padding
                     igSeparator();
