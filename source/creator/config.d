@@ -19,7 +19,13 @@ module creator.config;
 
     If you change the banner you SHOULD change this.
 */
-enum INC_BANNER_ARTIST_NAME = "ku-ini & いろは";
+enum INC_BANNER_ARTIST_NAME = "七乃ななせ";
+
+/**
+    Link to the artist's preferred social media,
+    or art posting page.
+*/
+enum INC_BANNER_ARTIST_PAGE = "https://twitter.com/nana_nono120";
 
 /**
     URI for bug reports, for unofficial builds this SHOULD be changed.

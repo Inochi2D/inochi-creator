@@ -197,6 +197,20 @@ void incMainMenu() {
                         }
                         incTooltip(_("Merge layers from Photoshop document"));
 
+                        if(igMenuItem(__("Image Files"), "", false, true)) {
+                            const TFD_Filter[] filters = [
+                                { ["*.png"], "Portable Network Graphics (*.png)" },
+                                { ["*.jpeg", "*.jpg"], "JPEG Image (*.jpeg)" },
+                                { ["*.tga"], "TARGA Graphics (*.tga)" }
+                            ];
+
+                            string path = incShowImportDialog(filters, _("Import..."), true);
+                            if (path) {
+                                incCreatePartsFromFiles(path.split("|"));
+                            }
+                        }
+                        incTooltip(_("Merges (adds) selected image files to project"));
+
                         if (igMenuItem(__("Inochi Creator Project"), "", false, true)) {
                             incPopWelcomeWindow();
                             // const TFD_Filter[] filters = [
@@ -234,7 +248,7 @@ void incMainMenu() {
 
                             if(igMenuItem(__("JPEG (*.jpeg)"), "", false, true)) {
                                 const TFD_Filter[] filters = [
-                                    { ["*.jpeg"], "JPEG Image (*.jpeg)" }
+                                    { ["*.jpeg", "*.jpg"], "JPEG Image (*.jpeg)" }
                                 ];
 
                                 string file = incShowSaveDialog(filters, "", _("Export..."));
@@ -398,6 +412,32 @@ void incMainMenu() {
 
                 if (igBeginMenu(__("Tools"), true)) {
                     import creator.utils.repair : incAttemptRepairPuppet, incRegenerateNodeIDs;
+
+                
+                    igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Puppet Data"));
+                    igSeparator();
+
+                    // Opens the directory where configuration resides in the user's file browser.
+                    if (igMenuItem(__("Import Inochi Session Data"), null, false, true)) {
+                        const TFD_Filter[] filters = [
+                            { ["*.inp"], "Inochi2D Puppet (*.inp)" }
+                        ];
+
+                        if (string path = incShowImportDialog(filters, _("Import..."))) {
+                            Puppet p = inLoadPuppet(path);
+
+                            if ("com.inochi2d.inochi-session.bindings" in p.extData) {
+                                incActivePuppet().extData["com.inochi2d.inochi-session.bindings"] = p.extData["com.inochi2d.inochi-session.bindings"].dup;
+                                incSetStatus(_("Successfully overwrote Inochi Session tracking data..."));
+                            } else {
+                                incDialog(__("Error"), _("There was no Inochi Session data to import!"));
+                            }
+
+                            destroy!false(p);
+                        }
+                    }
+                    incTooltip(_("Imports tracking data from an exported Inochi2D model which has been set up in Inochi Session."));
+                    
 
                     igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Puppet Texturing"));
                     igSeparator();

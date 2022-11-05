@@ -91,6 +91,16 @@ string incGetAppConfigPath() {
         if (!exists(fdir)) fdir = buildPath(appDataDir, APP_FOLDER_NAME);
         appDataDir = fdir;
         return appDataDir;
+    } else version(OSX) {
+
+        // On OSX we're using standard directories, prior we
+        // used .inochi-creator there, but that's not correct
+        // This code will ensure we still use old config if it's there.
+        // Otherwise we create config for the *correct* path
+        string fdir = buildPath(appDataDir, "."~APP_FOLDER_NAME);
+        if (!exists(fdir)) fdir = buildPath(appDataDir, APP_FOLDER_NAME);
+        appDataDir = fdir;
+        return appDataDir;
     } else {
 
         // On other platforms we go for .(app name)

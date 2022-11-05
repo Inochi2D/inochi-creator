@@ -9,6 +9,7 @@ private {
         bool badColor;
         bool isDark;
         ImVec4 contentBounds;
+        IncCategoryFlags flags;
     }
 
     void incGetCategoryColors(ImVec4 color, out ImVec4 hoverColor, out ImVec4 activeColor, out ImVec4 bgColor, out ImVec4 shadowColor, ref ImVec4 textColor, ref bool isDark) {
@@ -54,15 +55,21 @@ private {
     }
 }
 
+enum IncCategoryFlags {
+    None = 0,
+    NoCollapse = 1,
+    DefaultClosed = 2,
+}
+
 /**
     Begins a category using slightly darkened versions of the main UI colors
     
     Remember to call incEndCategory after!
 */
-bool incBeginCategory(const(char)* title) {
+bool incBeginCategory(const(char)* title, IncCategoryFlags flags = IncCategoryFlags.None) {
     ImVec4 col = igGetStyle().Colors[ImGuiCol.WindowBg];
     col = ImVec4(col.x-0.025, col.y-0.025, col.z-0.025, col.w);
-    return incBeginCategory(title, col);
+    return incBeginCategory(title, col, flags);
 }
 
 /**
@@ -70,7 +77,7 @@ bool incBeginCategory(const(char)* title) {
 
     Remember to call incEndCategory after!
 */
-bool incBeginCategory(const(char)* title, ImVec4 color) {
+bool incBeginCategory(const(char)* title, ImVec4 color, IncCategoryFlags flags = IncCategoryFlags.None) {
     import inmath : clamp;
 
     // We do not support transparency
@@ -109,6 +116,7 @@ bool incBeginCategory(const(char)* title, ImVec4 color) {
     }
 
     // Calculate some values for drawing our background color.
+    data.flags = flags;
     data.badColor = isDark != incGetDarkMode();
     data.isDark = isDark;
     data.contentBounds.x = igGetCursorPosX();
@@ -142,7 +150,18 @@ bool incBeginCategory(const(char)* title, ImVec4 color) {
     window.WorkRect.Min.x -= paddingX;
     igSetCursorPosX(igGetCursorPosX()+paddingX);
 
-    data.open = igTreeNodeEx(title, ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.NoTreePushOnOpen | ImGuiTreeNodeFlags.SpanAvailWidth);
+    if ((data.flags & IncCategoryFlags.NoCollapse) == IncCategoryFlags.NoCollapse) {
+        data.open = true;
+        igIndent();
+            igText(title);
+        igUnindent();
+    } else {
+        bool defaultClosed = (data.flags & IncCategoryFlags.DefaultClosed) == IncCategoryFlags.DefaultClosed;
+        data.open = igTreeNodeEx(title, defaultClosed ? 
+            ImGuiTreeNodeFlags.NoTreePushOnOpen | ImGuiTreeNodeFlags.SpanAvailWidth :
+            ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.NoTreePushOnOpen | ImGuiTreeNodeFlags.SpanAvailWidth
+        );
+    }
 
     window.ContentRegionRect.Min.x += paddingX;
     window.WorkRect.Min.x += paddingX;

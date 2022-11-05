@@ -15,6 +15,7 @@ import creator.viewport.common.spline;
 import creator.core.input;
 import creator.core.actionstack;
 import creator.actions;
+import creator.ext;
 import creator.widgets;
 import creator;
 import inochi2d;
@@ -56,6 +57,7 @@ private:
     bool deforming = false;
     CatmullSpline path;
     uint pathDragTarget;
+    float meshEditAOE = 4;
 
     MeshEditorDeformationAction deformAction = null;
 
@@ -137,6 +139,27 @@ private:
         MeshVertex *v = mesh.getVertexFromPoint(mirror(axis, vtx.position));
         if (v is vtx) return null;
         return v;
+    }
+
+    bool isOnMirror(vec2 pos, float aoe) {
+        return 
+            (mirrorVert && pos.y > -aoe && pos.y < aoe) ||
+            (mirrorHoriz && pos.x > -aoe && pos.x < aoe);
+    }
+
+    bool isOnMirrorCenter(vec2 pos, float aoe) {
+        return 
+            (mirrorVert && pos.y > -aoe && pos.y < aoe) &&
+            (mirrorHoriz && pos.x > -aoe && pos.x < aoe);
+    }
+
+    void placeOnMirror(vec2 pos, float aoe) {
+        if (isOnMirror(pos, aoe)) {
+            if (mirrorHoriz && mirrorVert && isOnMirrorCenter(pos, aoe)) pos = vec2(0, 0);
+            else if (mirrorVert) pos.y = 0;
+            else if (mirrorHoriz) pos.x = 0;
+            mesh.vertices ~= new MeshVertex(pos);
+        }
     }
 
     void foreachMirror(void delegate(uint axis) func) {
@@ -248,6 +271,9 @@ public:
     }
 
     void applyToTarget() {
+        // Apply the model
+        auto action = new DrawableChangeAction(target.name, target);
+
         // Export mesh
         MeshData data = mesh.export_();
         data.fixWinding();
@@ -269,22 +295,43 @@ public:
         if (data.vertices.length != target.vertices.length)
             vertexMapDirty = true;
 
-        // Apply the model
-        auto action = new DrawableChangeAction(target.name, target);
-        target.rebuffer(data);
-
         if (vertexMapDirty) {
-            // Remove incompatible Deforms
+            void alterDeform(ParameterBinding binding) {
+                auto deformBinding = cast(DeformationParameterBinding)binding;
+                if (!deformBinding)
+                    return;
+                foreach (uint x; 0..cast(uint)deformBinding.values.length) {
+                    foreach (uint y; 0..cast(uint)deformBinding.values[x].length) {
+                        auto deform = deformBinding.values[x][y];
+                        if (deformBinding.isSet(vec2u(x, y))) {
+                            auto newDeform = mesh.deformByDeformationBinding(deformBinding, vec2u(x, y), false);
+                            if (newDeform) 
+                                deformBinding.values[x][y] = *newDeform;
+                        }
+                    }
+                }
+                deformBinding.reInterpolate();
+            }
 
             foreach (param; incActivePuppet().parameters) {
-                ParameterBinding binding = param.getBinding(target, "deform");
-                if (binding) {
-                    param.removeBinding(binding);
-                    action.addBinding(param, binding);
+                if (auto group = cast(ExParameterGroup)param) {
+                    foreach(x, ref xparam; group.children) {
+                        ParameterBinding binding = xparam.getBinding(target, "deform");
+                        if (binding)
+                            action.addAction(new ParameterChangeBindingsAction("Deformation recalculation on mesh update", xparam, null));
+                        alterDeform(binding);
+                    }
+                } else {
+                    ParameterBinding binding = param.getBinding(target, "deform");
+                    if (binding)
+                        action.addAction(new ParameterChangeBindingsAction("Deformation recalculation on mesh update", param, null));
+                    alterDeform(binding);
                 }
             }
             vertexMapDirty = false;
         }
+
+        target.rebuffer(data);
 
         action.updateNewState();
         incActionPush(action);
@@ -402,13 +449,18 @@ public:
                         }
                     } else {
                         ulong off = mesh.vertices.length;
-                        foreachMirror((uint axis) {
-                            mesh.vertices ~= new MeshVertex(mirror(axis, mousePos));
-                        });
+                        if (isOnMirror(mousePos, meshEditAOE)) {
+                            placeOnMirror(mousePos, meshEditAOE);
+                        } else {
+                            foreachMirror((uint axis) {
+                                mesh.vertices ~= new MeshVertex(mirror(axis, mousePos));
+                            });
+                        }
                         refreshMesh();
                         vertexMapDirty = true;
                         changed = true;
-                        selectOne(mesh.vertices[off]);
+                        if (io.KeyCtrl) selectOne(mesh.vertices[$-1]);
+                        else selectOne(mesh.vertices[off]);
                     }
                 }
 

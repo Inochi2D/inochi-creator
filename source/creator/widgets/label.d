@@ -3,6 +3,7 @@ import bindbc.imgui;
 import creator.widgets.dummy;
 import creator.core.font;
 
+
 /**
     Render text
 */
@@ -48,24 +49,75 @@ void incTextShadowed(string text) {
 /**
     Renders text with a slight border
 */
-void incTextBordered(string text) {
+void incTextBordered(string text, ImVec4 borderColor = ImVec4(0, 0, 0, 1)) {
     
     ImVec2 origin;
     igGetCursorPos(&origin);
     
     // Shadow
     igSetCursorPos(ImVec2(origin.x+1, origin.y));
-    incTextColored(ImVec4(0.25, 0.25, 0.25, 0.8), text);
+    incTextColored(borderColor, text);
     igSetCursorPos(ImVec2(origin.x-1, origin.y));
-    incTextColored(ImVec4(0.25, 0.25, 0.25, 0.8), text);
+    incTextColored(borderColor, text);
     igSetCursorPos(ImVec2(origin.x, origin.y+1));
-    incTextColored(ImVec4(0.25, 0.25, 0.25, 0.8), text);
+    incTextColored(borderColor, text);
     igSetCursorPos(ImVec2(origin.x, origin.y-1));
-    incTextColored(ImVec4(0.25, 0.25, 0.25, 0.8), text);
+    incTextColored(borderColor, text);
 
     // Version String
     igSetCursorPos(origin);
     incText(text);
+}
+/**
+    Darkens an area and puts a label over it
+*/
+void incTextLabel(string text) {
+    auto dlist = igGetWindowDrawList();
+    auto style = igGetStyle();
+    ImVec2 origin;
+    ImVec2 textSize;
+
+    igGetCursorScreenPos(&origin);
+    textSize = incMeasureString(text);
+    float xPadding = style.FramePadding.x;
+    float yPadding = style.FramePadding.y;
+
+    ImVec2 tl = ImVec2(
+        origin.x, 
+        origin.y-yPadding
+    );
+    
+    ImVec2 br = ImVec2(
+        origin.x+textSize.x+(xPadding*2), 
+        origin.y+textSize.y+yPadding
+    );
+    
+    ImVec2 tls = ImVec2(
+        tl.x-1,
+        tl.y-1
+    );
+    
+    ImVec2 brs = ImVec2(
+        br.x+1,
+        br.y+1
+    );
+    
+    // Draw outline
+    ImDrawList_AddRectFilled(dlist, tls, brs, igGetColorU32(ImGuiCol.Text, 0.15), 4);
+
+    // Draw button
+    ImDrawList_AddRectFilled(dlist, tl, br, igGetColorU32(ImGuiCol.WindowBg), 4);
+
+    // Draw text
+    ImDrawList_AddText(dlist, 
+        ImVec2(
+            origin.x+xPadding,
+            origin.y,
+        ),
+        igGetColorU32(ImGuiCol.Text),
+        text.ptr,
+        text.ptr+text.length
+    );
 }
 
 /**

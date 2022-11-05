@@ -141,19 +141,19 @@ protected:
                     if (param.isVec2) {
 
                         // Skip start and end point
-                        if (incBeginCategory("X")) {
+                        if (incBeginCategory("X", IncCategoryFlags.NoCollapse)) {
                             axisPointList(0, ImVec2(avail.x, (avail.y/2)-42));
                         }
                         incEndCategory();
 
-                        if (incBeginCategory("Y")) {
+                        if (incBeginCategory("Y", IncCategoryFlags.NoCollapse)) {
                             axisPointList(1, ImVec2(avail.x, (avail.y/2)-42));
                         }
                         incEndCategory();
                     } else {
 
                         // Points where the user can set parameter values
-                        if (incBeginCategory(__("Breakpoints"))) {
+                        if (incBeginCategory(__("Breakpoints"), IncCategoryFlags.NoCollapse)) {
                             axisPointList(0, ImVec2(avail.x, avail.y-38));
                         }
                         incEndCategory();

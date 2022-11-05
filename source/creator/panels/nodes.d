@@ -92,13 +92,18 @@ protected:
                 if (igMenuItem(__("Delete"), "", false, !isRoot)) {
 
                     if (selected.length > 1) {
-                        foreach(sn; selected) {
-                            incDeleteChildWithHistory(sn);
-                        }
+                        incDeleteChildrenWithHistory(selected);
+                        incSelectNode(null);
                     } else {
+
+                        // Make sure we don't keep selecting a node we've removed
+                        if (incNodeInSelection(n)) {
+                            incSelectNode(null);
+                        }
+
                         incDeleteChildWithHistory(n);
                     }
-
+                    
                     // Make sure we don't keep selecting a node we've removed
                     incSelectNode(null);
                 }
@@ -217,20 +222,13 @@ protected:
                 if (payload !is null) {
                     Node payloadNode = *cast(Node*)payload.Data;
                     
-                    if (selectedNodes.length > 1) {
-                        foreach(sn; selectedNodes) {
-                            if (sn.canReparent(n)) {
-                                sn.setRelativeTo(n);
-                                sn.parent = n;
-                            }
-                        }
-                    } else {
-                        if (payloadNode.canReparent(n)) {
-                            payloadNode.setRelativeTo(n);
-                            payloadNode.parent = n;
-                        }
+                    try {
+                        if (selectedNodes.length > 1) incMoveChildrenWithHistory(selectedNodes, n, 0);
+                        else incMoveChildWithHistory(payloadNode, n, 0);
+                    } catch (Exception ex) {
+                        incDialog(__("Error"), ex.msg);
                     }
-                    
+
                     if (open) igTreePop();
                     igEndDragDropTarget();
                     return;
@@ -251,16 +249,8 @@ protected:
                         if (payload !is null) {
                             Node payloadNode = *cast(Node*)payload.Data;
                             
-                            if (payloadNode.canReparent(n)) {
-                                auto idx = payloadNode.getIndexInNode(n);
-                                if (idx >= 0) {
-                                    payloadNode.setRelativeTo(n);
-                                    payloadNode.insertInto(n, clamp(idx < i ? i-1 : i, 0, n.children.length));
-                                } else {
-                                    payloadNode.setRelativeTo(n);
-                                    payloadNode.insertInto(n, clamp(cast(ptrdiff_t)i, 0, n.children.length));
-                                }
-                            }
+                            if (selectedNodes.length > 1) incMoveChildrenWithHistory(selectedNodes, n, i);
+                            else incMoveChildWithHistory(payloadNode, n, i);
                             
                             igPopID();
                             igTreePop();
@@ -368,7 +358,7 @@ protected:
                     Node payloadNode = *cast(Node*)payload.Data;
 
                     if (selected.length > 1) {
-                        foreach(pn; selected) incDeleteChildWithHistory(pn);
+                        foreach(pn; selected) incDeleteChildrenWithHistory(selected);
                         incSelectNode(null);
                     } else {
 

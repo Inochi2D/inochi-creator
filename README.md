@@ -1,6 +1,6 @@
 # Inochi Creator
-![image](https://user-images.githubusercontent.com/7032834/189459431-f2fcbe64-ed8d-454e-8755-07a59f93f8ea.png)
-_Aka model by [seagetch](https://twitter.com/seagetch)_
+![Image of Inochi Creator](https://user-images.githubusercontent.com/7032834/194462402-74c4a3e0-50ca-4b50-8e8d-164d97371f5a.png)
+_Ada model by [ku-ini](https://twitter.com/duckmastah)_
 
 ----------------
 
@@ -34,6 +34,8 @@ You may request permission to use our branding assets in your package by submitt
 
 Barebones builds are more or less equivalent to official builds with the exception that branding is removed,  
 and that we don't accept support tickets unless a problem can be replicated on an official build.
+
+Links in `source/creator/config.d` should be updated to point to your package's issues list, as we do not accept issues from non-official builds.
 
 &nbsp;
 

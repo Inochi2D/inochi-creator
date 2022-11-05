@@ -11,44 +11,34 @@ import creator;
 import inochi2d;
 import std.format;
 import i18n;
+import std.exception;
 
 /**
     An action that happens when a node is changed
 */
-class NodeChangeAction : Action {
+class NodeMoveAction : Action {
 public:
+
     /**
-        Creates a new node change action
+        Descriptive name
     */
-    this(Node prev, Node self, Node new_, Transform prevPos, Transform newPos) {
-        this.prevParent = prev;
-        this.self = self;
-        this.newParent = new_;
-        this.originalTransform = prevPos;
-        this.newTransform = newPos;
-    }
+    string descrName;
     
     /**
-        Creates a new node change action
+        Which index in to the parent the nodes should be placed
     */
-    this(Node prev, Node self, Node new_) {
-        this.prevParent = prev;
-        this.self = self;
-        this.newParent = new_;
-
-        this.originalTransform = self.localTransform;
-        this.newTransform = self.localTransform;
-    }
+    size_t parentOffset;
 
     /**
         Previous parent of node
     */
-    Node prevParent;
+    Node[uint] prevParents;
+    size_t[uint] prevOffsets;
 
     /**
-        Node itself
+        Nodes that was moved
     */
-    Node self;
+    Node[] nodes;
 
     /**
         New parent of node
@@ -66,11 +56,48 @@ public:
     Transform newTransform;
 
     /**
+        Creates a new node change action
+    */
+    this(Node[] nodes, Node new_, size_t pOffset = 0) {
+        this.newParent = new_;
+        this.nodes = nodes;
+        this.parentOffset = pOffset;
+
+        // Enforce reparenting rules
+        foreach(sn; nodes) enforce(sn.canReparent(new_), _("%s can not be reparented in to %s due to a circular dependency.").format(sn.name, new_.name));
+        
+        // Reparent
+        foreach(ref sn; nodes) {
+            
+            // Store ref to prev parent
+            if (sn.parent) {
+                prevParents[sn.uuid] = sn.parent;
+                prevOffsets[sn.uuid] = sn.getIndexInParent();
+            }
+
+            // Set relative position
+            if (new_) {
+                sn.setRelativeTo(new_);
+                sn.insertInto(new_, pOffset);
+            } else sn.parent = null;
+        }
+        incActivePuppet().rescanNodes();
+    
+        // Set visual name
+        if (nodes.length == 1) descrName = nodes[0].name;
+        else descrName = _("nodes");
+    }
+
+    /**
         Rollback
     */
     void rollback() {
-        self.parent = prevParent;
-        self.localTransform = originalTransform;
+        foreach(ref sn; nodes) {
+            if (prevParents[sn.uuid]) {
+                if (!sn.lockToRoot()) sn.setRelativeTo(prevParents[sn.uuid]);
+                sn.insertInto(prevParents[sn.uuid], prevOffsets[sn.uuid]);
+            } else sn.parent = null;
+        }
         incActivePuppet().rescanNodes();
     }
 
@@ -78,8 +105,12 @@ public:
         Redo
     */
     void redo() {
-        self.parent = newParent;
-        self.localTransform = newTransform;
+        foreach(sn; nodes) {
+            if (newParent) {
+                if (!sn.lockToRoot()) sn.setRelativeTo(newParent);
+                sn.insertInto(newParent, parentOffset);
+            } else sn.parent = null;
+        }
         incActivePuppet().rescanNodes();
     }
 
@@ -87,17 +118,18 @@ public:
         Describe the action
     */
     string describe() {
-        if (prevParent is null) return "Created %s".format(self.name);
-        if (newParent is null) return "Deleted %s".format(self.name);
-        return _("Moved %s to %s").format(self.name, newParent.name);
+        if (prevParents.length == 0) return _("Created %s").format(descrName);
+        if (newParent is null) return _("Deleted %s").format(descrName);
+        return _("Moved %s to %s").format(descrName, newParent.name);
     }
 
     /**
         Describe the action
     */
     string describeUndo() {
-        if (prevParent is null) return "Created %s".format(self.name);
-        return _("Moved %s from %s").format(self.name, prevParent.name);
+        if (prevParents.length == 0) return _("Created %s").format(descrName);
+        if (nodes.length == 1 && prevParents.length == 1) return  _("Moved %s from %s").format(descrName, prevParents[nodes[0].uuid].name);
+        return _("Moved %s from origin").format(descrName);
     }
 
     /**
@@ -159,20 +191,22 @@ public:
 }
 
 /**
+    Moves multiple children with history
+*/
+void incMoveChildrenWithHistory(Node[] n, Node to, size_t offset) {
+    // Push action to stack
+    incActionPush(new NodeMoveAction(
+        n,
+        to,
+        offset
+    ));
+}
+
+/**
     Moves child with history
 */
-void incMoveChildWithHistory(Node n, Node to) {
-
-    // Calculate transforms
-    // Transform currentLocal = n.localTransform;
-    // // Push action to stack
-    // incActionPush(new NodeChangeAction(
-    //     n.parent,
-    //     n,
-    //     to,
-    //     currentLocal,
-    //     Transform(newPosition)
-    // ));
+void incMoveChildWithHistory(Node n, Node to, size_t offset) {
+    incMoveChildrenWithHistory([n], to, offset);
 }
 
 /**
@@ -182,9 +216,8 @@ void incAddChildWithHistory(Node n, Node to, string name=null) {
     if (to is null) to = incActivePuppet().root;
 
     // Push action to stack
-    incActionPush(new NodeChangeAction(
-        null,
-        n,
+    incActionPush(new NodeMoveAction(
+        [n],
         to
     ));
 
@@ -199,13 +232,24 @@ void incAddChildWithHistory(Node n, Node to, string name=null) {
 */
 void incDeleteChildWithHistory(Node n) {
     // Push action to stack
-    incActionPush(new NodeChangeAction(
-        n.parent,
+    incActionPush(new NodeMoveAction(
+        [n],
+        null
+    ));
+    
+    incActivePuppet().rescanNodes();
+}
+
+/**
+    Deletes child with history
+*/
+void incDeleteChildrenWithHistory(Node[] n) {
+    // Push action to stack
+    incActionPush(new NodeMoveAction(
         n,
         null
     ));
 
-    n.parent = null;
     incActivePuppet().rescanNodes();
 }
 
@@ -282,4 +326,89 @@ public:
         TSelf otherChange = cast(TSelf) other;
         return (otherChange !is null && otherChange.getName() == this.getName());
     }
+}
+
+class NodeRootBaseSetAction : Action {
+public:
+    alias TSelf = typeof(this);
+    Node node;
+    bool origState;
+    bool state;
+
+
+    this(Node n, bool state) {
+        this.node = n;
+        this.origState = n.lockToRoot;
+        this.state = state;
+
+        n.lockToRoot = this.state;
+    }
+
+    /**
+        Rollback
+    */
+    void rollback() {
+        this.node.lockToRoot = origState;
+    }
+
+    /**
+        Redo
+    */
+    void redo() {
+        this.node.lockToRoot = state;
+    }
+
+    /**
+        Describe the action
+    */
+    string describe() {
+        if (origState) return _("%s locked to root node").format(node.name);
+        else return _("%s unlocked from root node").format(node.name);
+    }
+
+    /**
+        Describe the action
+    */
+    string describeUndo() {
+        if (state) return _("%s locked to root node").format(node.name);
+        else return _("%s unlocked from root node").format(node.name);
+    }
+
+    /**
+        Gets name of this action
+    */
+    string getName() {
+        return this.stringof;
+    }
+    
+    /**
+        Merge
+    */
+    bool merge(Action other) {
+        if (this.canMerge(other)) {
+            this.node.lockToRoot = !state;
+            this.state = !state;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+        Gets whether this node can merge with an other
+    */
+    bool canMerge(Action other) {
+        TSelf otherChange = cast(TSelf) other;
+        return otherChange && otherChange.node == this.node;
+    }
+}
+
+/**
+    Locks to root node
+*/
+void incLockToRootNode(Node n) {
+    // Push action to stack
+    incActionPush(new NodeRootBaseSetAction(
+        n, 
+        !n.lockToRoot
+    ));
 }

@@ -40,6 +40,8 @@ protected:
         priorWindowPadding = igGetStyle().WindowPadding;
         igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(0, 2));
         igSetNextWindowDockID(incGetViewportDockSpace(), ImGuiCond.Always);
+
+        flags |= ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
         super.onBeginUpdate();
     }
 
@@ -85,8 +87,7 @@ protected:
                 incEndDragInViewport(btn);
             }
         }
-
-        if (igBeginChild("##ViewportView", ImVec2(0, -32))) {
+        if (igBeginChild("##ViewportView", ImVec2(0, -32), false, flags)) {
             igGetContentRegionAvail(&currSize);
             currSize = ImVec2(
                 clamp(currSize.x, 128, float.max), 
@@ -172,6 +173,8 @@ protected:
                 incBeginViewportToolArea("ConfirmArea", ImGuiDir.Left, ImGuiDir.Down, false);
                     incViewportDrawConfirmBar();
                 incEndViewportToolArea();
+                if (incEditMode == EditMode.ModelEdit)
+                    incViewportTransformHandle();
             igPopStyleVar();
 
             lastSize = currSize;
@@ -192,7 +195,6 @@ protected:
             2
         );
 
-
         // FILE DRAG & DROP
         if (igBeginDragDropTarget()) {
             const(ImGuiPayload)* payload = igAcceptDragDropPayload("__PARTS_DROP");
@@ -205,24 +207,7 @@ protected:
 
                     switch(fname.extension.toLower) {
                     case ".png", ".tga", ".jpeg", ".jpg":
-
-                        try {
-                            auto tex = new ShallowTexture(file);
-                            incColorBleedPixels(tex);
-                            inTexPremultiply(tex.data);
-                            incAddChildWithHistory(
-                                inCreateSimplePart(*tex, null, fname), 
-                                incSelectedNode(), 
-                                fname
-                            );
-                        } catch(Exception ex) {
-                            if (ex.msg[0..11] == "unsupported") {
-                                incDialog(__("Error"), _("%s is not supported").format(fname));
-                            } else incDialog(__("Error"), ex.msg);
-                        }
-
-                        // We've added new stuff, rescan nodes
-                        incActivePuppet().rescanNodes();
+                        incCreatePartsFromFiles([file]);
                         break;
 
                     // Allow dragging PSD in to main window

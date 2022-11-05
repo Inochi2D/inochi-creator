@@ -12,6 +12,7 @@ import creator.widgets;
 import creator.windows;
 import creator.core;
 import creator.actions;
+import creator.ext.param;
 import creator;
 import std.string;
 import inochi2d;
@@ -19,6 +20,7 @@ import i18n;
 import std.uni : toLower;
 import std.stdio;
 import creator.utils;
+import std.algorithm.searching : countUntil;
 import std.algorithm.sorting : sort;
 import std.algorithm.mutation : remove;
 
@@ -87,7 +89,7 @@ private {
                 float offX = param.axisPoints[0][x];
                 if (axis == 0 && (offX < min || offX > max)) continue;
                 foreach(y; 0..yCount) {
-                    float offY = param.axisPoints[1][x];
+                    float offY = param.axisPoints[1][y];
                     if (axis == 1 && (offY < min || offY > max)) continue;
 
                     vec2u index = vec2u(x, y);
@@ -175,6 +177,49 @@ private {
         refreshBindingList(param);
     }
 
+    void convertTo2D(Parameter param) {
+        auto action = new GroupAction();
+
+        Parameter newParam = new Parameter(param.name, true);
+        newParam.uuid = param.uuid;
+        newParam.min  = vec2(param.min.x, param.min.x);
+        newParam.max  = vec2(param.max.x, param.max.x);
+        long findIndex(T)(T[] array, T target) {
+            ptrdiff_t idx = array.countUntil(target);
+            return idx;
+        }
+        foreach (key; param.axisPoints[0]) {
+            if (key != 0 && key != 1) {
+                newParam.insertAxisPoint(0, key);
+            }
+            foreach(binding; param.bindings) {
+                ParameterBinding b = newParam.getOrAddBinding(binding.getTarget().node, binding.getName());
+                auto srcKeyIndex  = param.findClosestKeypoint(param.unmapValue(vec2(key, 0)));
+                auto destKeyIndex = newParam.findClosestKeypoint(newParam.unmapValue(vec2(key, newParam.min.y)));
+                binding.copyKeypointToBinding(srcKeyIndex, b, destKeyIndex);
+            }
+        }
+        auto index = incActivePuppet().parameters.countUntil(param);
+        if (index >= 0) {
+            action.addAction(new ParameterRemoveAction(param, &incActivePuppet().parameters));
+            action.addAction(new ParameterAddAction(newParam, &incActivePuppet().parameters));
+            incActivePuppet().parameters[index] = newParam;
+        } else {
+            foreach (idx, xparam; incActivePuppet().parameters) {
+                if (auto group = cast(ExParameterGroup)xparam) {
+                    index = group.children.countUntil(param);
+                    if (index >= 0) {
+                        action.addAction(new ParameterRemoveAction(param, &group.children));
+                        action.addAction(new ParameterAddAction(newParam, &group.children));
+                        group.children[index] = newParam;
+                        break;
+                    }
+                }
+            }
+        }
+        incActionPush(action);
+    }
+
     void keypointActions(Parameter param, ParameterBinding[] bindings) {
         if (igMenuItem(__("Unset"), "", false, true)) {
             auto action = new ParameterChangeBindingsValueAction("unset", param, bindings, cParamPoint.x, cParamPoint.y);
@@ -232,6 +277,25 @@ private {
                 incViewportNodeDeformNotifyParamValueChanged();
             }
             igEndMenu();
+        }
+        if (igMenuItem(__("Flip Deform"), "", false, true)) {
+            auto editor = incViewportModelDeformGetEditor();
+            if (editor) {
+                auto action = new ParameterChangeBindingsValueAction("Flip Deform", param, bindings, cParamPoint.x, cParamPoint.y);
+                foreach(binding; bindings) {
+                    auto deformBinding = cast(DeformationParameterBinding)binding;
+                    auto target = cast(Drawable)binding.getTarget().node;
+                    if (target) {
+                        editor.setTarget(target);
+                        auto newDeform = editor.getMesh().deformByDeformationBinding(deformBinding, cParamPoint, true);
+                        if (newDeform)
+                            deformBinding.setValue(cParamPoint, *newDeform);
+                    }
+                }
+                action.updateNewState();
+                incActionPush(action);
+                incViewportNodeDeformNotifyParamValueChanged();
+            }
         }
         if (param.isVec2) {
             if (igBeginMenu(__("Set from mirror"), true)) {
@@ -362,6 +426,12 @@ private {
                                 if (igMenuItem(__("Linear"), "", false, true)) {
                                     foreach(binding; cSelectedBindings.values) {
                                         binding.interpolateMode = InterpolateMode.Linear;
+                                    }
+                                    incViewportNodeDeformNotifyParamValueChanged();
+                                }
+                                if (igMenuItem(__("Cubic"), "", false, true)) {
+                                    foreach(binding; cSelectedBindings.values) {
+                                        binding.interpolateMode = InterpolateMode.Cubic;
                                     }
                                     incViewportNodeDeformNotifyParamValueChanged();
                                 }
@@ -517,11 +587,69 @@ private {
         return idx;
     }
     ParamDragDropData* dragDropData;
+
+    bool removeParameter(Parameter param) {
+        ExParameterGroup parent = null;
+        ptrdiff_t idx = -1;
+
+        mloop: foreach(i, iparam; incActivePuppet.parameters) {
+            if (iparam.uuid == param.uuid) {
+                idx = i;
+                break mloop;
+            }
+
+            if (ExParameterGroup group = cast(ExParameterGroup)iparam) {
+                foreach(x, ref xparam; group.children) {
+                    if (xparam.uuid == param.uuid) {
+                        idx = x;
+                        parent = group;
+                        break mloop;
+                    }
+                }
+            }
+        }
+
+        if (idx < 0) return false;
+
+        if (parent) {
+            if (parent.children.length > 1) parent.children = parent.children.remove(idx);
+            else parent.children.length = 0;
+        } else {
+            if (incActivePuppet().parameters.length > 1) incActivePuppet().parameters = incActivePuppet().parameters.remove(idx);
+            else incActivePuppet().parameters.length = 0;
+        } 
+
+        return true;
+    }
+
+    void moveParameter(Parameter from, ExParameterGroup to = null, int index = 0) {
+        if (!removeParameter(from)) return;
+        import std.array : insertInPlace;
+
+        // Map to bounds
+        if (index < 0) index = 0;
+        else if (to && index > to.children.length) index = cast(int)to.children.length-1;
+        else if (index > incActivePuppet().parameters.length) index = cast(int)incActivePuppet().parameters.length-1;
+
+        // Insert
+        if (to) to.children.insertInPlace(index, from);
+        else incActivePuppet().parameters.insertInPlace(index, from);
+    }
+
+    ExParameterGroup createParamGroup(int index = 0) {
+        import std.array : insertInPlace;
+
+        if (index < 0) index = 0;
+        else if (index > incActivePuppet().parameters.length) index = cast(int)incActivePuppet().parameters.length-1;
+
+        auto group = new ExParameterGroup(_("New Parameter Group"));
+        incActivePuppet().parameters.insertInPlace(index, group);
+        return group;
+    }
 }
 
 struct ParamDragDropData {
     Parameter param;
-    Parameter[]* paramArr;
 }
 
 /**
@@ -540,7 +668,6 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
         if (!dragDropData) dragDropData = new ParamDragDropData;
         
         dragDropData.param = param;
-        dragDropData.paramArr = &paramArr;
 
         igSetDragDropPayload("_PARAMETER", cast(void*)&dragDropData, (&dragDropData).sizeof, ImGuiCond.Always);
         incText(dragDropData.param.name);
@@ -556,10 +683,11 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                     
                     if (payload !is null) {
                         ParamDragDropData* payloadParam = *cast(ParamDragDropData**)payload.Data;
-                        ptrdiff_t idx2 = (*payloadParam.paramArr).findParamIndex(payloadParam.param);
-                        if (idx2 >= 0) {
-                            paramArr[idx] = new ExParameterGroup(_("New Parameter Group"), [param, payloadParam.param]);
-                            (*payloadParam.paramArr) = (*payloadParam.paramArr).remove(idx2);
+
+                        if (removeParameter(param)) {
+                            auto group = createParamGroup(cast(int)idx);
+                            group.children ~= param;
+                            moveParameter(payloadParam.param, group);
                         }
                     }
                     igEndDragDropTarget();
@@ -632,6 +760,10 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                         incPushWindowList(new ParamSplitWindow(idx, param));
                     }
 
+                    if (!param.isVec2 && igMenuItem(__("To 2D"), "", false, true)) {
+                        convertTo2D(param);
+                    }
+
                     if (param.isVec2) {
                         if (igMenuItem(__("Flip X"), "", false, true)) {
                             auto action = new ParameterChangeBindingsAction("Flip X", param, null);
@@ -675,11 +807,11 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                         }
                         if (param.isVec2) {
                             if (igMenuItem("", "", false, true)) {
-                                mirroredAutofill(param, 1, 0, 0.4999);
+                                mirroredAutofill(param, 1, 0.5001, 1);
                                 incViewportNodeDeformNotifyParamValueChanged();
                             }
                             if (igMenuItem("", "", false, true)) {
-                                mirroredAutofill(param, 1, 0.5001, 1);
+                                mirroredAutofill(param, 1, 0, 0.4999);
                                 incViewportNodeDeformNotifyParamValueChanged();
                             }
                         }
@@ -741,6 +873,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
         }
         if (groupColor.isFinite) popColorScheme();
     }
+    
     incEndCategory();
 }
 
@@ -914,11 +1047,7 @@ protected:
                                 
                                 if (payload !is null) {
                                     ParamDragDropData* payloadParam = *cast(ParamDragDropData**)payload.Data;
-                                    ptrdiff_t idx2 = (*payloadParam.paramArr).findParamIndex(payloadParam.param);
-                                    if (idx2 >= 0) {
-                                        (*payloadParam.paramArr) = (*payloadParam.paramArr).remove(idx2);
-                                        group.children = payloadParam.param ~ group.children;
-                                    }
+                                    moveParameter(payloadParam.param, group);
                                 }
                                 igEndDragDropTarget();
                             }
@@ -951,12 +1080,7 @@ protected:
             
             if (payload !is null) {
                 ParamDragDropData* payloadParam = *cast(ParamDragDropData**)payload.Data;
-                ptrdiff_t idx2 = (*payloadParam.paramArr).findParamIndex(payloadParam.param);
-                if (idx2 >= 0) {
-                    (*payloadParam.paramArr) = (*payloadParam.paramArr).remove(idx2);
-                }
-
-                incActivePuppet().parameters = payloadParam.param~parameters;
+                moveParameter(payloadParam.param, null);
             }
             igEndDragDropTarget();
         }

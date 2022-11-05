@@ -9,6 +9,7 @@ import i18n;
 import creator.viewport;
 import creator.viewport.common.mesh;
 import creator.viewport.common.mesheditor;
+import creator.viewport.common.automesh;
 import creator.core.input;
 import creator.widgets;
 import creator;
@@ -19,6 +20,10 @@ import bindbc.opengl;
 
 private {
     IncMeshEditor editor;
+    AutoMeshProcessor[] autoMeshProcessors = [
+        new ContourAutoMeshProcessor()
+    ];
+    AutoMeshProcessor activeProcessor = null;
 }
 
 void incViewportVertexInspector(Drawable node) {
@@ -91,6 +96,34 @@ void incViewportVertexOptions() {
             incTooltip(_("Triangulation Options"));
 
         igEndGroup();
+
+        igSameLine(0, 4);
+
+        igBeginGroup();
+            if (igButton("")) {
+                if (!activeProcessor)
+                    activeProcessor = autoMeshProcessors[0];
+                editor.mesh = activeProcessor.autoMesh(editor.getTarget(), editor.getMesh(), editor.mirrorHoriz, 0, editor.mirrorVert, 0);
+                editor.refreshMesh();
+            }
+            if (incBeginDropdownMenu("AUTOMESH_SETTINGS")) {
+                if (!activeProcessor)
+                    activeProcessor = autoMeshProcessors[0];
+                activeProcessor.configure();
+
+                // Button which bakes some auto generated content
+                // In this case, a mesh is baked from the triangulation.
+                if (igButton(__("Bake"),ImVec2(incAvailableSpace().x, 0))) {
+                    editor.mesh = activeProcessor.autoMesh(editor.getTarget(), editor.getMesh(), editor.mirrorHoriz, 0, editor.mirrorVert, 0);
+                    editor.refreshMesh();
+                }
+                incTooltip(_("Bakes the auto mesh."));
+                
+                incEndDropdownMenu();
+            }
+            incTooltip(_("Auto Meshing Options"));
+        igEndGroup();
+
     igPopStyleVar(2);
 }
 
@@ -184,11 +217,14 @@ void incVertexEditCopyMeshDataToTarget(MeshData data) {
 }
 
 bool incMeshEditGetIsApplySafe() {
+    /* Disabled temporary
     Drawable target = cast(Drawable)editor.getTarget();
     return !(
         editor.mesh.getVertexCount() != target.getMesh().vertices.length &&
         incActivePuppet().getIsNodeBound(target)
     );
+    */
+    return true;
 }
 
 /**
