@@ -4,39 +4,32 @@ import creator.widgets;
 import bindbc.imgui;
 
 enum MIN_TRACK_HEIGHT = 32;
-enum MIN_HEADER_WIDTH = 256;
+enum MIN_HEADER_WIDTH = 128;
+enum MAX_HEADER_WIDTH = MIN_HEADER_WIDTH*3;
+enum DEF_HEADER_WIDTH = MAX_HEADER_WIDTH*0.75;
 enum DRAG_SIZE = 4;
+enum KF_SIZE = 6;
+
+enum TIMELINE_MIN_ZOOM = 0.5;
+enum TIMELINE_MAX_ZOOM = 10;
 
 void incAnimationLaneHeader(ref AnimationLane lane, ref float width, ref float height) {
 
-    bool isNode = lane.target == AnimationLaneTarget.Node;
-    igPushID(isNode ? cast(void*)lane.nodeRef : cast(void*)lane.paramRef);
+    igPushID(cast(void*)lane.paramRef);
     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(4, 0));
     igPushStyleColor(ImGuiCol.ChildBg, ImVec4(0, 0, 0, 0.15));
         if (igBeginChild("HEADER", ImVec2(width, height), true)) {
 
             incDummy(ImVec2(0, 8));
             igIndent();
-                switch(lane.target) {
-                    
-                    case AnimationLaneTarget.Node:
-                        incText(lane.nodeRef.targetNode.name);
-                        igSameLine(0, 4);
-                        incTextLabel(lane.nodeRef.targetName);
-                        break;
-                    
-                    case AnimationLaneTarget.Parameter:
-                        incText(lane.paramRef.targetParam.name);
-                        igSameLine(0, 4);
-                        incTextLabel(lane.paramRef.targetAxis == 0 ? "X" : "Y");
-                        break;
-                    
-                    default: assert(0);
-                }
+                incText(lane.paramRef.targetParam.name);
+                igSameLine(0, 0);
+                incDummy(ImVec2(-24, 0));
+                igSameLine(0, 0);
+                incTextLabel(lane.paramRef.targetAxis == 0 ? "X" : "Y");
             igUnindent();
 
             incHeaderResizer(width, height, true);
-            incHeaderResizer(width, height, false);
         }
         igEndChild();
     igPopStyleColor();
@@ -108,7 +101,7 @@ void incHeaderResizer(ref float width, ref float height, bool side = false) {
                 height = clamp(mousePos.y-start.y, MIN_TRACK_HEIGHT, float.max);
                 igSetMouseCursor(ImGuiMouseCursor.ResizeNS);
             } else {
-                width = clamp(mousePos.x-start.x, MIN_HEADER_WIDTH, float.max);
+                width = clamp(mousePos.x-start.x, MIN_HEADER_WIDTH, MAX_HEADER_WIDTH);
                 igSetMouseCursor(ImGuiMouseCursor.ResizeEW);
             }
         } else {
@@ -138,4 +131,167 @@ void incHeaderResizer(ref float width, ref float height, bool side = false) {
             }
         }
     igPopID();
+}
+
+private {
+
+}
+
+enum FRAME_WIDTH = 16.0;
+
+void incTimelineLane(ref AnimationLane lane, ref Animation anim, float height, float zoom, int idx) {
+    auto window = igGetCurrentWindow();
+
+    // Skip items if need be
+    if (window.SkipItems) return;
+
+    auto id = igGetID(&lane);
+
+    float actualFrameSize = FRAME_WIDTH*zoom;
+    float fullSize = actualFrameSize*(cast(float)anim.length-1);
+
+    auto drawList = igGetWindowDrawList();
+    auto io = igGetIO();
+    auto storage = igGetStateStorage();
+
+    
+
+    ImVec2 start;
+    igGetCursorScreenPos(&start);
+
+    ImRect laneArea = ImRect(
+        ImVec2(start.x, start.y),
+        ImVec2(start.x+fullSize, start.y+height)
+    );
+
+    igPushStyleVar(ImGuiStyleVar.FrameBorderSize, 0);
+        igRenderFrame(laneArea.Min, laneArea.Max, igGetColorU32(idx % 2 == 0 ? ImGuiCol.TableRowBg : ImGuiCol.TableRowBgAlt));
+    igPopStyleVar();
+
+    auto lineColor = igGetColorU32(ImGuiCol.Separator);
+
+    igPushClipRect(laneArea.Min, laneArea.Max, true);
+        // DRAW CONTENTS
+        foreach(i; 0..anim.length) {
+            float offsetX = start.x+(actualFrameSize*cast(float)i);
+
+            ImDrawList_AddLine(drawList, ImVec2(offsetX, start.y), ImVec2(offsetX, start.y+height), lineColor);
+        }
+
+        float getKeyframeX(float value) {
+            return start.x+(actualFrameSize*value);
+        }
+
+        float getKeyframeY(float value) {
+            return (start.y+(height*(1-cast(float)value)));
+        }
+
+        if (lane.frames.length > 0) {
+            size_t frameMax = lane.frames.length-1;
+            size_t lastFrame = anim.length-1;
+
+            ImDrawList_PathClear(drawList);
+            foreach(i; 0..lane.frames.length) {
+                Keyframe* prev = &lane.frames[max(cast(ptrdiff_t)i-1, 0)];
+                Keyframe* curr = &lane.frames[i];
+                Keyframe* next1 = &lane.frames[min(cast(ptrdiff_t)i+1, frameMax)];
+                Keyframe* next2 = &lane.frames[min(cast(ptrdiff_t)i+2, frameMax)];
+
+                if (prev == curr && prev.frame != 0) {
+                    ImDrawList_PathLineTo(
+                        drawList,
+                        ImVec2(getKeyframeX(0), getKeyframeY(prev.value))
+                    );
+                }
+
+                switch(lane.interpolation) {
+                    case InterpolateMode.Stepped:
+                        if (prev != curr) {
+                            ImDrawList_PathLineTo(
+                                drawList,
+                                ImVec2(getKeyframeX(curr.frame), getKeyframeY(prev.value))
+                            );
+                        }
+                        ImDrawList_PathLineTo(
+                            drawList,
+                            ImVec2(getKeyframeX(curr.frame), getKeyframeY(curr.value)),
+                        );
+                        break;
+
+                    case InterpolateMode.Nearest:
+                        break;
+                    
+                    case InterpolateMode.Linear:
+                        if (prev != curr) {
+                            ImDrawList_AddLine(
+                                drawList,
+                                ImVec2(getKeyframeX(prev.frame), getKeyframeY(prev.value)),
+                                ImVec2(getKeyframeX(curr.frame), getKeyframeY(curr.value)),
+                                igGetColorU32(ImGuiCol.PlotLines),
+                                2
+                            );
+                        }
+                        break;
+
+                    case InterpolateMode.Cubic:
+                        if (i == 0) ImDrawList_PathLineTo(drawList, ImVec2(getKeyframeX(prev.frame), getKeyframeY(prev.value)));
+                        if (i % 4 == 1) {
+                            ImDrawList_PathBezierCubicCurveTo(
+                                drawList,
+                                ImVec2(getKeyframeX(curr.frame), getKeyframeY(curr.value)),
+                                ImVec2(getKeyframeX(next1.frame), getKeyframeY(next1.value)),
+                                ImVec2(getKeyframeX(next2.frame), getKeyframeY(next2.value)),
+                            );
+                        }
+                        break;
+
+                    case InterpolateMode.Bezier:
+                        break;
+
+                    default: assert(0);
+                }
+
+                if (curr == next1 && next1.frame < lastFrame) {
+                    ImDrawList_PathLineTo(
+                        drawList,
+                        ImVec2(getKeyframeX(lastFrame), getKeyframeY(next1.value)),
+                    );
+                }
+            }
+
+            ImDrawList_PathStroke(
+                drawList,
+                igGetColorU32(ImGuiCol.PlotLines),
+                ImDrawFlags.RoundCornersAll,
+                2
+            );
+
+            // Draw points after
+            foreach(frame; lane.frames) {
+                float kfX = getKeyframeX(frame.frame);
+                float kfY = getKeyframeY(frame.value);
+                ImDrawList_AddQuad(
+                    drawList,
+                    ImVec2(kfX, kfY-KF_SIZE),
+                    ImVec2(kfX+KF_SIZE, kfY),
+                    ImVec2(kfX, kfY+KF_SIZE),
+                    ImVec2(kfX-KF_SIZE, kfY),
+                    0xFF000000,
+                    2
+                );
+
+                ImDrawList_AddQuadFilled(
+                    drawList,
+                    ImVec2(kfX, kfY-KF_SIZE),
+                    ImVec2(kfX+KF_SIZE, kfY),
+                    ImVec2(kfX, kfY+KF_SIZE),
+                    ImVec2(kfX-KF_SIZE, kfY),
+                    0xFF0000FF
+                );
+            }
+        }
+    igPopClipRect();
+
+    igItemAdd(laneArea, id);
+    igItemSize(ImVec2(fullSize, height));
 }
