@@ -1,0 +1,1 @@
+dub run gitver -- --prefix INC --file source\creator\ver.d --mod creator.ver --appname "Inochi Creator" --itchfile version.txt
