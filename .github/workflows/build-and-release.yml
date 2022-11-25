@@ -71,7 +71,7 @@ jobs:
         dub add-local inochi2d/ "0.7.2"
         dub add-local facetrack-d/ "0.6.2"
         dub add-local i18n/ "1.0.1"
-        dub add-local dcv-i2d/ "~master"
+        dub add-local dcv-i2d/ "0.3.0"
 
     - name: 'Build Inochi Creator'
       run: |
@@ -129,7 +129,7 @@ jobs:
         dub add-local inochi2d/ "0.7.2"
         dub add-local facetrack-d/ "0.6.2"
         dub add-local i18n/ "1.0.1"
-        dub add-local dcv-i2d/ "~master"
+        dub add-local dcv-i2d/ "0.3.0"
 
     - name: 'Build Inochi Creator'
       run: |
@@ -232,7 +232,7 @@ jobs:
         dub add-local inochi2d/ "0.7.2"
         dub add-local facetrack-d/ "0.6.2"
         dub add-local i18n/ "1.0.1"
-        dub add-local dcv-i2d/ "~master"
+        dub add-local dcv-i2d/ "0.3.0"
 
     - name: 'Build Inochi Creator'
       run: |
