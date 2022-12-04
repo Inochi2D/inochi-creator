@@ -216,6 +216,9 @@ jobs:
 
     - name: 'Build Inochi Creator'
       run: |
+        # Set compiler sdk version
+        export MACOSX_DEPLOYMENT_TARGET=11
+
         # First build ARM64 version...
         echo "Building arm64 binary..."
         dub build --config=osx-full --arch=arm64-apple-macos
