@@ -152,6 +152,7 @@ jobs:
               }
           }
           Invoke-VSDevEnvironment
+          Remove-Item 'C:\Strawberry'
           dub build --compiler=ldc2 --config=win32-full --debug=InExperimental
 
     - name: Archive Zip
@@ -215,10 +216,10 @@ jobs:
         dub add-local dcv-i2d/ "0.3.0"
 
     - name: 'Build Inochi Creator'
+      env:
+        DFLAGS: "-g -preserve-dwarf-line-section=false"
       run: |
-        # Set compiler sdk version
-        export MACOSX_DEPLOYMENT_TARGET=11
-
+        
         # First build ARM64 version...
         echo "Building arm64 binary..."
         dub build --config=osx-full --arch=arm64-apple-macos
