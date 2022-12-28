@@ -115,6 +115,19 @@ private {
     ImVec4[ImGuiCol.COUNT] incDarkModeColors;
     ImVec4[ImGuiCol.COUNT] incLightModeColors;
 
+    SDL_Window* tryCreateWindow(string title, SDL_WindowFlags flags) {
+        auto w = SDL_CreateWindow(
+            title.toStringz, 
+            SDL_WINDOWPOS_UNDEFINED,
+            SDL_WINDOWPOS_UNDEFINED,
+            cast(uint)incSettingsGet!int("WinW", 1280), 
+            cast(uint)incSettingsGet!int("WinH", 800), 
+            flags
+        );
+        if (w) SDL_SetWindowMinimumSize(window, 960, 720);
+        return w;
+    }
+
 }
 
 bool incShowStatsForNerds;
@@ -238,15 +251,7 @@ void incOpenWindow() {
         else string WIN_TITLE = "Inochi Creator "~INC_VERSION;
     } else string WIN_TITLE = "Inochi Creator "~_("(Unsupported)");
     
-    window = SDL_CreateWindow(
-        WIN_TITLE.toStringz, 
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        cast(uint)incSettingsGet!int("WinW", 1280), 
-        cast(uint)incSettingsGet!int("WinH", 800), 
-        flags
-    );
-    SDL_SetWindowMinimumSize(window, 960, 720);
+    window = tryCreateWindow(WIN_TITLE, flags);
     
     // On Linux we want to check whether the window was created under wayland or x11
     version(linux) {
@@ -257,6 +262,16 @@ void incOpenWindow() {
 
     GLSupport support;
     gl_context = SDL_GL_CreateContext(window);
+    if (!gl_context) {
+        SDL_DestroyWindow(window);
+
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+        window = tryCreateWindow(WIN_TITLE, flags);
+        gl_context = SDL_GL_CreateContext(window);
+    }
+    enforce(gl_context !is null, "Failed to create GL 3.2 or 3.1 core context!");
     SDL_GL_SetSwapInterval(1);
 
     // Load GL 3
@@ -339,9 +354,6 @@ void incCreateContext() {
     // Setup IMGUI
     auto ctx = igCreateContext(null);
     io = igGetIO();
-    
-    // Setup font handling
-    incInitFonts();
 
     import std.file : exists;
     if (!exists(incGetAppImguiConfigFile())) {
@@ -377,6 +389,9 @@ void incCreateContext() {
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;                         // Enable Keyboard Navigation
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     incGLBackendInit(null);
+
+    // Setup font handling
+    incInitFonts();
 
     incInitStyling();
     incInitDialogs();

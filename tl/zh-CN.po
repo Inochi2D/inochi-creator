@@ -950,7 +950,7 @@ msgstr "设置起始位置"
 #: source/creator/panels/parameters.d:794
 #, fuzzy
 msgid "Arm Parameter"
-msgstr "手臂参数"
+msgstr "录制参数"
 
 #: source/creator/panels/parameters.d:825
 msgid "Add 1D Parameter (0..1)"
