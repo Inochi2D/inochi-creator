@@ -520,7 +520,7 @@ msgstr "使其自发光"
 
 #: source/creator/panels/inspector.d:666
 msgid "Size of given texture does not match the Albedo texture."
-msgstr "给定纹理的大小与反照率纹理不匹配"
+msgstr "给定纹理的大小与贴图纹理不匹配"
 
 #: source/creator/panels/inspector.d:677 source/creator/panels/inspector.d:688
 #: source/creator/panels/viewport.d:220 source/creator/panels/viewport.d:234
@@ -538,7 +538,7 @@ msgstr "无法检查没有网格的组件"
 
 #: source/creator/panels/inspector.d:721
 msgid "Albedo"
-msgstr "反照率"
+msgstr "贴图"
 
 #: source/creator/panels/inspector.d:723
 msgid "Emissive"
