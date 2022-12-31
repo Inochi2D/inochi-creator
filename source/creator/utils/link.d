@@ -12,10 +12,10 @@ import std.process;
 */
 void incOpenLink(string link) {
     version(Windows) {
-        spawnShell("start " ~ escapeShellCommand("", link));
+        browse(link);
     } else version(OSX) {
-        spawnShell("open " ~ escapeShellCommand(link));
+        browse(link);
     } else version(Posix) {
-        spawnShell("xdg-open " ~ escapeShellCommand(link));
+        browse(link);
     }
 }
