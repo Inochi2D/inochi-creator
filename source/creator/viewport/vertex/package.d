@@ -40,28 +40,36 @@ void incViewportVertexOptions() {
     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
     igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(4, 4));
         igBeginGroup();
-            if (igButton("")) editor.mesh.flipHorz();
+            if (igButton("")) {
+                foreach (d; incSelectedNodes) {
+                    editor.getEditorFor(cast(Drawable)d).mesh.flipHorz();
+                }
+            }
             incTooltip(_("Flip Horizontally"));
 
             igSameLine(0, 0);
 
-            if (igButton("")) editor.mesh.flipVert();
+            if (igButton("")) {
+                foreach (d; incSelectedNodes) {
+                    editor.getEditorFor(cast(Drawable)d).mesh.flipVert();
+                }
+            }
             incTooltip(_("Flip Vertically"));
         igEndGroup();
 
         igSameLine(0, 4);
 
         igBeginGroup();
-            if (incButtonColored("", ImVec2(0, 0), editor.mirrorHoriz ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-                editor.mirrorHoriz = !editor.mirrorHoriz;
+            if (incButtonColored("", ImVec2(0, 0), editor.getMirrorHoriz() ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                editor.setMirrorHoriz(!editor.getMirrorHoriz());
                 editor.refreshMesh();
             }
             incTooltip(_("Mirror Horizontally"));
 
             igSameLine(0, 0);
 
-            if (incButtonColored("", ImVec2(0, 0), editor.mirrorVert ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-                editor.mirrorVert = !editor.mirrorVert;
+            if (incButtonColored("", ImVec2(0, 0), editor.getMirrorVert() ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                editor.setMirrorVert(!editor.getMirrorVert());
                 editor.refreshMesh();
             }
             incTooltip(_("Mirror Vertically"));
@@ -71,8 +79,8 @@ void incViewportVertexOptions() {
 
         igBeginGroup();
             if (incButtonColored("", ImVec2(0, 0),
-                editor.previewTriangulate ? ImVec4(1, 1, 0, 1) : ImVec4.init)) {
-                editor.previewTriangulate = !editor.previewTriangulate;
+                editor.getPreviewTriangulate() ? ImVec4(1, 1, 0, 1) : ImVec4.init)) {
+                editor.setPreviewTriangulate(!editor.getPreviewTriangulate());
                 editor.refreshMesh();
             }
             incTooltip(_("Triangulate vertices"));
@@ -103,7 +111,10 @@ void incViewportVertexOptions() {
             if (igButton("")) {
                 if (!activeProcessor)
                     activeProcessor = autoMeshProcessors[0];
-                editor.mesh = activeProcessor.autoMesh(editor.getTarget(), editor.getMesh(), editor.mirrorHoriz, 0, editor.mirrorVert, 0);
+                foreach (drawable; editor.getTargets()) {
+                    auto e = editor.getEditorFor(drawable);
+                    e.mesh = activeProcessor.autoMesh(drawable, e.getMesh(), e.mirrorHoriz, 0, e.mirrorVert, 0);
+                }
                 editor.refreshMesh();
             }
             if (incBeginDropdownMenu("AUTOMESH_SETTINGS")) {
@@ -114,7 +125,10 @@ void incViewportVertexOptions() {
                 // Button which bakes some auto generated content
                 // In this case, a mesh is baked from the triangulation.
                 if (igButton(__("Bake"),ImVec2(incAvailableSpace().x, 0))) {
-                    editor.mesh = activeProcessor.autoMesh(editor.getTarget(), editor.getMesh(), editor.mirrorHoriz, 0, editor.mirrorVert, 0);
+                    foreach (drawable; editor.getTargets()) {
+                        auto e = editor.getEditorFor(drawable);
+                        e.mesh = activeProcessor.autoMesh(drawable, e.getMesh(), e.mirrorHoriz, 0, e.mirrorVert, 0);
+                    }
                     editor.refreshMesh();
                 }
                 incTooltip(_("Bakes the auto mesh."));
@@ -128,7 +142,7 @@ void incViewportVertexOptions() {
 }
 
 void incViewportVertexConfirmBar() {
-    Drawable target = editor.getTarget();
+    auto target = editor.getTargets();
     igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(16, 4));
         if (igButton(__(" Apply"), ImVec2(0, 26))) {
             if (incMeshEditGetIsApplySafe()) {
@@ -160,8 +174,10 @@ void incViewportVertexConfirmBar() {
             }
 
             incSetEditMode(EditMode.ModelEdit);
-            incSelectNode(target);
-            incFocusCamera(target);
+            foreach (d; target) {
+                incSelectNode(d);
+            }
+            incFocusCamera(target[0]);  /// FIX ME!
         }
         incTooltip(_("Cancel"));
     igPopStyleVar();
@@ -173,12 +189,14 @@ void incViewportVertexUpdate(ImGuiIO* io, Camera camera) {
 
 void incViewportVertexDraw(Camera camera) {
     // Draw the part that is currently being edited
-    auto target = editor.getTarget();
-    if (target !is null) {
-        if (Part part = cast(Part)target) {
+    auto targets = editor.getTargets();
+    if (targets.length > 0) {
+        foreach (target; targets) {
+            if (Part part = cast(Part)target) {
 
-            // Draw albedo texture at 0, 0
-            inDrawTextureAtPosition(part.textures[0], vec2(0, 0));
+                // Draw albedo texture at 0, 0
+                inDrawTextureAtPosition(part.textures[0], vec2(0, 0));
+            }
         }
     }
 
@@ -197,9 +215,11 @@ void incViewportVertexWithdraw() {
     editor = null;
 }
 
+/*
 Drawable incVertexEditGetTarget() {
     return editor.getTarget();
 }
+*/
 
 void incVertexEditStartEditing(Drawable target) {
     incSetEditMode(EditMode.VertexEdit);
@@ -212,8 +232,10 @@ void incVertexEditSetTarget(Drawable target) {
     editor.setTarget(target);
 }
 
-void incVertexEditCopyMeshDataToTarget(MeshData data) {
-    editor.importMesh(data);
+void incVertexEditCopyMeshDataToTarget(Drawable drawable, MeshData data) {
+    if (editor.getEditorFor(drawable)) {
+        editor.getEditorFor(drawable).importMesh(data);
+    }
 }
 
 bool incMeshEditGetIsApplySafe() {
@@ -231,7 +253,7 @@ bool incMeshEditGetIsApplySafe() {
     Applies the mesh edits
 */
 void incMeshEditApply() {
-    Node target = editor.getTarget();
+    auto target = editor.getTargets();
     
     // Automatically apply triangulation
     if (editor.previewingTriangulation()) {
@@ -239,9 +261,13 @@ void incMeshEditApply() {
         editor.refreshMesh();
     }
 
-    if (editor.mesh.getVertexCount() < 3 || editor.mesh.getEdgeCount() < 3) {
-        incDialog(__("Error"), _("Cannot apply invalid mesh\nAt least 3 vertices forming a triangle is needed."));
-        return;
+    foreach (d; target) {
+        if (Drawable drawable = cast(Drawable)d) {
+            if (editor.getEditorFor(drawable).mesh.getVertexCount() < 3 || editor.getEditorFor(drawable).mesh.getEdgeCount() < 3) {
+                incDialog(__("Error"), _("Cannot apply invalid mesh\nAt least 3 vertices forming a triangle is needed."));
+                return;
+            }
+        }
     }
 
     // Apply to target
@@ -249,15 +275,20 @@ void incMeshEditApply() {
 
     // Switch mode
     incSetEditMode(EditMode.ModelEdit);
-    incSelectNode(target);
-    incFocusCamera(target);
+    foreach (d; target) {
+        if (Drawable drawable = cast(Drawable)d)
+            incSelectNode(drawable);
+    }
+    incFocusCamera(target[0]); /// FIX ME
 }
 
 /**
     Resets the mesh edits
 */
 void incMeshEditClear() {
-    editor.mesh.clear();
+    foreach (d; editor.getTargets()) {
+        editor.getEditorFor(d).mesh.clear();
+    }
 }
 
 
@@ -265,5 +296,7 @@ void incMeshEditClear() {
     Resets the mesh edits
 */
 void incMeshEditReset() {
-    editor.mesh.reset();
+    foreach (d; editor.getTargets()) {
+        editor.getEditorFor(d).mesh.reset();
+    }
 }

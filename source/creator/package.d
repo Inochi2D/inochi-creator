@@ -415,7 +415,7 @@ void incSelectNode(Node n = null) {
     Adds node to selection
 */
 void incAddSelectNode(Node n) {
-    if (incArmedParameter()) return;
+//    if (incArmedParameter()) return;
     selectedNodes ~= n;
 }
 

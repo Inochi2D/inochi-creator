@@ -31,7 +31,7 @@ enum VertexToolMode {
     PathDeform,
 }
 
-class IncMeshEditor {
+class IncMeshEditorOneDrawable {
 private:
     bool deformOnly = false;
     bool vertexMapDirty = false;
@@ -357,10 +357,10 @@ public:
         if (deformAction is null || !deformAction.isApplyable()) {
             switch (toolMode) {
             case VertexToolMode.Points:
-                deformAction = new MeshEditorDeformationAction(target.name);
+                deformAction = new MeshEditorDeformationAction(target.name, target);
                 break;
             case VertexToolMode.PathDeform:
-                deformAction = new MeshEditorPathDeformAction(target.name);
+                deformAction = new MeshEditorPathDeformAction(target.name, target);
                 break;
             default:
             }
@@ -769,31 +769,182 @@ public:
         }
     }
 
+    CatmullSpline getPath() {
+        return path;
+    }
+
+    void setPath(CatmullSpline path) {
+        this.path = path;
+    }
+
+    void viewportTools(VertexToolMode mode) {
+        switch (mode) {
+        case VertexToolMode.Points:
+            setToolMode(VertexToolMode.Points);
+            path = null;
+            refreshMesh();
+            break;
+        case VertexToolMode.Connect:
+            setToolMode(VertexToolMode.Connect);
+            path = null;
+            refreshMesh();
+            break;
+        case VertexToolMode.PathDeform:
+            import std.stdio;
+            setToolMode(VertexToolMode.PathDeform);
+            path = new CatmullSpline;
+            deforming = false;
+            refreshMesh();
+            writefln("%s: %s", target.name, path);
+            break;
+        default:       
+        }
+    }
+
+}
+
+class IncMeshEditor {
+private:
+    IncMeshEditorOneDrawable[Drawable] editors;
+    bool previewTriangulate = false;
+    bool mirrorHoriz = false;
+    bool mirrorVert = false;
+    VertexToolMode toolMode = VertexToolMode.Points;
+
+public:
+    bool deformOnly;
+
+    this(bool deformOnly) {
+        this.deformOnly = deformOnly;
+    }
+
+    void setTarget(Drawable target) {
+        if (target is null) {
+        } else {
+            addTarget(target);
+        }
+    }
+
+    IncMeshEditorOneDrawable getEditorFor(Drawable drawing) {
+        if (drawing in editors)
+            return editors[drawing];
+        return null;
+    }
+
+    void addTarget(Drawable target) {
+        if (target in editors)
+            return;
+        IncMeshEditorOneDrawable subEditor = new IncMeshEditorOneDrawable(deformOnly);
+        subEditor.setTarget(target);
+        subEditor.mirrorHoriz = mirrorHoriz;
+        subEditor.mirrorVert  = mirrorVert;
+        subEditor.previewTriangulate = previewTriangulate;
+        editors[target] = subEditor;
+    }
+
+    void setTargets(Node[] targets) {
+        IncMeshEditorOneDrawable[Drawable] newEditors;
+        foreach (t; targets) {
+            Drawable drawable = cast(Drawable)t;
+            if (drawable) {
+                if (drawable in editors) {
+                    newEditors[drawable] = editors[drawable];
+                } else {
+                    IncMeshEditorOneDrawable subEditor = new IncMeshEditorOneDrawable(deformOnly);
+                    subEditor.setTarget(drawable);
+                    subEditor.mirrorHoriz = mirrorHoriz;
+                    subEditor.mirrorVert  = mirrorVert;
+                    subEditor.previewTriangulate = previewTriangulate;
+                    newEditors[drawable] = subEditor;
+                }
+            }
+        }
+        editors = newEditors;
+    }
+
+    void removeTarget(Drawable target) {
+        if (target in editors)
+            editors.remove(target);
+    }
+
+    Drawable[] getTargets() {
+        return editors.keys();
+    }
+
+    void refreshMesh() {
+        foreach (drawing, editor; editors) {
+            editor.refreshMesh();
+        }
+    }
+
+    void resetMesh() {
+        foreach (drawing, editor; editors) {
+            editor.resetMesh();
+        }
+    }
+
+    void applyPreview() {
+        foreach (drawing, editor; editors) {
+            editor.applyPreview();
+        }
+    }
+
+    void applyToTarget() {
+        foreach (drawing, editor; editors) {
+            editor.applyToTarget();
+        }
+    }
+
+    bool update(ImGuiIO* io, Camera camera) {
+        bool result = false;
+        foreach (drawing, editor; editors) {
+            result = editor.update(io, camera) || result;
+        }
+        return result;
+    }
+
+
+    void draw(Camera camera) {
+        foreach (drawing, editor; editors) {
+            editor.draw(camera);
+        }
+    }
+
+    void setToolMode(VertexToolMode toolMode) {
+        this.toolMode = toolMode;
+        foreach (drawing, editor; editors) {
+            editor.setToolMode(toolMode);
+        }
+    }
+
+    VertexToolMode getToolMode() {
+        return toolMode;
+    }
+
     void viewportTools() {
         igSetWindowFontScale(1.30);
             igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(1, 1));
             igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(8, 10));
                 if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Points ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
                     setToolMode(VertexToolMode.Points);
-                    path = null;
-                    refreshMesh();
+                    foreach (e; editors)
+                        e.viewportTools(VertexToolMode.Points);
                 }
                 incTooltip(_("Vertex Tool"));
 
                 if (!deformOnly) {
                     if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Connect ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
                         setToolMode(VertexToolMode.Connect);
-                        path = null;
-                        refreshMesh();
+                        foreach (e; editors)
+                            e.viewportTools(VertexToolMode.Connect);
                     }
                     incTooltip(_("Edge Tool"));
                 }
 
                 if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.PathDeform ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
                     setToolMode(VertexToolMode.PathDeform);
-                    path = new CatmullSpline;
-                    deforming = false;
-                    refreshMesh();
+                    foreach (e; editors)
+                        e.viewportTools(VertexToolMode.PathDeform);
                 }
                 incTooltip(_("Path Deform Tool"));
 
@@ -801,12 +952,46 @@ public:
         igSetWindowFontScale(1);
     }
 
-    CatmullSpline getPath() {
-        return path;
+    void setMirrorHoriz(bool mirrorHoriz) {
+        this.mirrorHoriz = mirrorHoriz;
+        foreach (e; editors) {
+            e.mirrorHoriz = mirrorHoriz;
+        }
     }
 
-    void setPath(CatmullSpline path) {
-        this.path = path;
-
+    bool getMirrorHoriz() {
+        return mirrorHoriz;
     }
+
+    void setMirrorVert(bool mirrorVert) {
+        this.mirrorVert = mirrorVert;
+        foreach (e; editors) {
+            e.mirrorHoriz = mirrorVert;
+        }
+    }
+
+    bool getMirrorVert() {
+        return mirrorVert;
+    }
+
+    void setPreviewTriangulate(bool previewTriangulate) {
+        this.mirrorVert = mirrorVert;
+        foreach (e; editors) {
+            e.previewTriangulate = previewTriangulate;
+        }
+    }
+
+    bool getPreviewTriangulate() {
+        return previewTriangulate;
+    }
+
+    bool previewingTriangulation() {
+        foreach (e; editors) {
+            if (!e.previewingTriangulation())
+                return false;
+        }
+        return true;
+    }
+
 }
+

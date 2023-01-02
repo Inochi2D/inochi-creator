@@ -34,8 +34,9 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     bool bindingAdded;
     bool undoable = true;
 
-    this(string name, void delegate() update = null) {
+    this(string name, Drawable target, void delegate() update = null) {
         this.name   = name;
+        this.target = target;
         this.bindingAdded = false;
         this.clear();
 
@@ -46,7 +47,8 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     }
 
     auto self() {
-        return incViewportModelDeformGetEditor();
+        IncMeshEditor editor = incViewportModelDeformGetEditor();
+        return editor? editor.getEditorFor(target): null;
     }
 
     void addVertex(MeshVertex* vertex) {
@@ -73,7 +75,7 @@ class MeshEditorDeformationAction  : LazyBoundAction {
             vertices     = null;
             isSet        = false;
         } else {
-            target       = self.getTarget();
+//            target       = self.getTarget();
             param        = incArmedParameter();
             keypoint     = param.findClosestKeypoint();
             vertices     = self.getOffsets();
@@ -207,8 +209,8 @@ public:
             return null;
     }
 
-    this(string name, void delegate() update = null) {
-        super(name, update);
+    this(string name, Drawable target, void delegate() update = null) {
+        super(name, target, update);
         if (path !is null)
             oldPathPoints = path.points.dup;
         else
