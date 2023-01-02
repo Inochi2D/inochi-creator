@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-02 09:43+0900\n"
-"PO-Revision-Date: 2023-01-02 11:19+0900\n"
+"PO-Revision-Date: 2023-01-02 11:38+0900\n"
 "Last-Translator: Nejikugi <63852665+scrwnl@users.noreply.github.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
@@ -573,7 +573,7 @@ msgstr "スクリーンを適用する色"
 
 #: source/creator/panels/inspector.d:764 source/creator/panels/inspector.d:1427
 msgid "Emission Strength"
-msgstr ""
+msgstr "発光の強さ"
 
 #. Header for the Blending options for Parts
 #: source/creator/panels/inspector.d:776 source/creator/panels/inspector.d:951
@@ -940,8 +940,9 @@ msgid "Split"
 msgstr "分割"
 
 #: source/creator/panels/parameters.d:763
+#, fuzzy
 msgid "To 2D"
-msgstr ""
+msgstr "2Dへ"
 
 #: source/creator/panels/parameters.d:768
 msgid "Flip X"
@@ -1159,23 +1160,23 @@ msgstr "通常パーツ"
 
 #: source/creator/viewport/common/automesh/contours.d:194
 msgid "Detailed mesh"
-msgstr ""
+msgstr "細かいメッシュ"
 
 #: source/creator/viewport/common/automesh/contours.d:202
 msgid "Large parts"
-msgstr ""
+msgstr "大きいパーツ"
 
 #: source/creator/viewport/common/automesh/contours.d:210
 msgid "Small parts"
-msgstr ""
+msgstr "小さいパーツ"
 
 #: source/creator/viewport/common/automesh/contours.d:219
 msgid "Thin and minimum parts"
-msgstr ""
+msgstr "薄いまたは極小パーツ"
 
 #: source/creator/viewport/common/automesh/contours.d:228
 msgid "Preserve edges"
-msgstr ""
+msgstr "エッジを保持する"
 
 #: source/creator/viewport/common/automesh/contours.d:242
 msgid "Details"
@@ -1183,12 +1184,11 @@ msgstr "詳細"
 
 #: source/creator/viewport/common/automesh/contours.d:245
 msgid "Sampling rate"
-msgstr ""
+msgstr "サンプリングレート"
 
 #: source/creator/viewport/common/automesh/contours.d:260
-#, fuzzy
 msgid "Mask threshold"
-msgstr "しきい値"
+msgstr "マスクのしきい値"
 
 #: source/creator/viewport/common/automesh/contours.d:273
 #, fuzzy
@@ -1370,7 +1370,7 @@ msgstr ""
 
 #: source/creator/viewport/vertex/package.d:124
 msgid "Auto Meshing Options"
-msgstr ""
+msgstr "自動メッシュのオプション"
 
 #: source/creator/viewport/vertex/package.d:133
 msgid " Apply"
@@ -1413,7 +1413,7 @@ msgstr ""
 
 #: source/creator/widgets/dialog.d:124
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: source/creator/widgets/dialog.d:132
 msgid "Yes"
@@ -1508,7 +1508,7 @@ msgstr "画像ファイル"
 
 #: source/creator/widgets/mainmenu.d:212
 msgid "Merges (adds) selected image files to project"
-msgstr ""
+msgstr "選択されている画像をプロジェクトに統合(追加)する。"
 
 #: source/creator/widgets/mainmenu.d:214
 msgid "Inochi Creator Project"
@@ -1533,15 +1533,15 @@ msgstr "画像"
 
 #: source/creator/widgets/mainmenu.d:240
 msgid "PNG (*.png)"
-msgstr ""
+msgstr "PNG画像 (*.png)"
 
 #: source/creator/widgets/mainmenu.d:249
 msgid "JPEG (*.jpeg)"
-msgstr ""
+msgstr "JPEG画像 (*.jpeg)"
 
 #: source/creator/widgets/mainmenu.d:258
 msgid "TARGA (*.tga)"
-msgstr ""
+msgstr "TARGA画像 (*.tga)"
 
 #: source/creator/widgets/mainmenu.d:269
 msgid "Video"
@@ -2099,7 +2099,7 @@ msgstr "ドキュメント"
 
 #: source/creator/windows/welcome.d:288
 msgid "Join our Discord"
-msgstr "Discordに参加"
+msgstr "私たちのDiscordに参加"
 
 #: source/creator/windows/welcome.d:294
 msgid "Patreon"
