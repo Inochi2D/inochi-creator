@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-02 09:43+0900\n"
-"PO-Revision-Date: 2023-01-02 11:38+0900\n"
+"PO-Revision-Date: 2023-01-02 14:36+0900\n"
 "Last-Translator: Nejikugi <63852665+scrwnl@users.noreply.github.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
@@ -137,12 +137,12 @@ msgstr "%s: %sが%sから元に戻されました"
 #: source/creator/actions/node.d:365 source/creator/actions/node.d:373
 #, fuzzy, c-format
 msgid "%s locked to root node"
-msgstr "ルートノードに固定"
+msgstr "%sがルートノードに固定されています。"
 
 #: source/creator/actions/node.d:366 source/creator/actions/node.d:374
 #, fuzzy, c-format
 msgid "%s unlocked from root node"
-msgstr "ルートノードに固定"
+msgstr "%sがルートノードから固定解除されています。"
 
 #: source/creator/actions/parameter.d:84
 #, c-format
