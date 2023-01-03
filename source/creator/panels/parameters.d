@@ -287,7 +287,7 @@ private {
                     auto target = cast(Drawable)binding.getTarget().node;
                     if (target) {
                         editor.setTarget(target);
-                        auto newDeform = editor.getMesh().deformByDeformationBinding(deformBinding, cParamPoint, true);
+                        auto newDeform = editor.getEditorFor(target).getMesh().deformByDeformationBinding(deformBinding, cParamPoint, true);
                         if (newDeform)
                             deformBinding.setValue(cParamPoint, *newDeform);
                     }

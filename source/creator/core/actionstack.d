@@ -11,6 +11,7 @@ import inochi2d;
 
 private {
     Action[] actions;
+    GroupAction currentGroup = null;
     size_t actionPointer;
     size_t actionIndex;
     size_t maxUndoHistory;
@@ -27,21 +28,26 @@ void incActionInit() {
     Pushes a new action to the stack
 */
 void incActionPush(Action action) {
-    
-    // Chop away entries outside undo history
-    if (actionPointer+1 > incActionGetUndoHistoryLength()) {
-        size_t toChop = (actionPointer+1)-incActionGetUndoHistoryLength();
-        actions = actions[toChop..$];
-        actionPointer -= toChop;
-    }
 
-    if (incActionTop() !is null && incActionTop().canMerge(action)) {
-        incActionTop().merge(action);
-        incActionNotifyTopChanged();
+    if (currentGroup !is null) {
+        currentGroup.addAction(action);
     } else {
-        // Add to the history
-        actions = actions[0..actionPointer]~action;
-        actionPointer++;
+    
+        // Chop away entries outside undo history
+        if (actionPointer+1 > incActionGetUndoHistoryLength()) {
+            size_t toChop = (actionPointer+1)-incActionGetUndoHistoryLength();
+            actions = actions[toChop..$];
+            actionPointer -= toChop;
+        }
+
+        if (incActionTop() !is null && incActionTop().canMerge(action)) {
+            incActionTop().merge(action);
+            incActionNotifyTopChanged();
+        } else {
+            // Add to the history
+            actions = actions[0..actionPointer]~action;
+            actionPointer++;
+        }
     }
 }
 
@@ -155,4 +161,23 @@ void incActionSetIndex(size_t index) {
 void incActionClearHistory() {
     actions.length = 0;
     actionPointer = 0;
+}
+
+/**
+    Push GroupAction to action stack.
+    Subsequent Action is added to GroupAction.
+    GroupAction is added to action stack when incActionPopGroup is called.
+*/
+void incActionPushGroup() {
+    if (!currentGroup)
+        currentGroup = new GroupAction();
+}
+
+void incActionPopGroup() {
+    if (currentGroup) {
+        auto group = currentGroup;
+        currentGroup = null;
+        if (group !is null && !group.empty())
+            incActionPush(group);
+    }
 }
