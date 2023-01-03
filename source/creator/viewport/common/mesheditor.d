@@ -917,9 +917,11 @@ public:
 
     bool update(ImGuiIO* io, Camera camera) {
         bool result = false;
+        incActionPushGroup();
         foreach (drawing, editor; editors) {
             result = editor.update(io, camera) || result;
         }
+        incActionPopGroup();
         return result;
     }
 
