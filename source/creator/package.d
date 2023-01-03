@@ -26,6 +26,7 @@ import creator.core.colorbleed;
 import std.file;
 import std.format;
 import i18n;
+import std.algorithm.searching;
 
 /**
     A project
@@ -415,8 +416,10 @@ void incSelectNode(Node n = null) {
     Adds node to selection
 */
 void incAddSelectNode(Node n) {
-//    if (incArmedParameter()) return;
+    if (selectedNodes.canFind(n))
+        return;
     selectedNodes ~= n;
+    incViewportModelNodeSelectionChanged();
 }
 
 /**
@@ -427,6 +430,7 @@ void incRemoveSelectNode(Node n) {
         if (n.uuid == nn.uuid) {
             import std.algorithm.mutation : remove;
             selectedNodes = selectedNodes.remove(i);
+            incViewportModelNodeSelectionChanged();
         }
     }
 }

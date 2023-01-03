@@ -30,6 +30,7 @@ void incViewportNodeDeformNotifyParamValueChanged() {
             if (drawables && drawables.length > 0) {
                 editor = new IncMeshEditor(true);
                 editor.setTargets(drawables);
+                writefln("incViewportNodeDeformNotifyParamValueChanged:drawables=%s", drawables);
             } else
                 return;
         } else {
@@ -52,6 +53,8 @@ void incViewportNodeDeformNotifyParamValueChanged() {
 
 void incViewportModelDeformNodeSelectionChanged() {
     editor = null;
+    writefln("incViewportModelDeformNodeSelectionChanged");
+    writefln("selected=%s", incSelectedNodes());
     incViewportNodeDeformNotifyParamValueChanged();
 }
 

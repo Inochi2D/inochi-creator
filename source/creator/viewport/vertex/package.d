@@ -175,7 +175,7 @@ void incViewportVertexConfirmBar() {
 
             incSetEditMode(EditMode.ModelEdit);
             foreach (d; target) {
-                incSelectNode(d);
+                incAddSelectNode(d);
             }
             incFocusCamera(target[0]);  /// FIX ME!
         }
@@ -277,7 +277,7 @@ void incMeshEditApply() {
     incSetEditMode(EditMode.ModelEdit);
     foreach (d; target) {
         if (Drawable drawable = cast(Drawable)d)
-            incSelectNode(drawable);
+            incAddSelectNode(drawable);
     }
     incFocusCamera(target[0]); /// FIX ME
 }
