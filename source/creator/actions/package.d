@@ -132,4 +132,6 @@ public:
     
     bool merge(Action other) { return false; }
     bool canMerge(Action other) { return false; }
+
+    bool empty() { return actions.length == 0; }
 }
