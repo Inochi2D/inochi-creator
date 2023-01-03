@@ -137,7 +137,7 @@ void incViewportModelConfirmBar() {
                         incSelectNode(node);
                         incVertexEditSetTarget(node);
                         incFocusCamera(node, vec2(0, 0));
-                        incVertexEditCopyMeshDataToTarget(payloadDrawable.getMesh());
+                        incVertexEditCopyMeshDataToTarget(payloadDrawable, payloadDrawable.getMesh());
                     }
                 }
                 igEndDragDropTarget();

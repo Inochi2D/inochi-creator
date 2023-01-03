@@ -15,7 +15,6 @@ import creator;
 import inochi2d;
 import bindbc.imgui;
 import i18n;
-import std.stdio;
 
 private {
     IncMeshEditor editor;
@@ -24,20 +23,29 @@ private {
 
 void incViewportNodeDeformNotifyParamValueChanged() {
     if (Parameter param = incArmedParameter()) {
+        auto drawables = incSelectedNodes();
+
         if (!editor) {
-            if (Drawable selectedDraw = cast(Drawable)incSelectedNode()) {
+            if (drawables && drawables.length > 0) {
                 editor = new IncMeshEditor(true);
-                editor.setTarget(selectedDraw);
-            } else {
+                editor.setTargets(drawables);
+            } else
                 return;
-            }
         } else {
+            editor.setTargets(drawables);
             editor.resetMesh();
         }
 
-        DeformationParameterBinding deform = cast(DeformationParameterBinding)param.getBinding(editor.getTarget(), "deform");
-        if (deform) {
-            editor.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);
+        foreach (d; drawables) {
+            if (Drawable drawable = cast(Drawable)d) {
+                DeformationParameterBinding deform = cast(DeformationParameterBinding)param.getBinding(drawable, "deform");
+                if (deform) {
+                    auto binding = deform.getValue(param.findClosestKeypoint());
+                    auto e = editor.getEditorFor(drawable);
+                    e.applyOffsets(binding.vertexOffsets);
+                    e.adjustPathTransform();
+                }
+            }
         }
     } else {
         editor = null;
@@ -53,8 +61,12 @@ void incViewportModelDeformUpdate(ImGuiIO* io, Camera camera, Parameter param) {
     if (!editor) return;
 
     if (editor.update(io, camera)) {
-        auto deform = cast(DeformationParameterBinding)param.getOrAddBinding(editor.getTarget(), "deform");
-        deform.update(param.findClosestKeypoint(), editor.getOffsets());
+        foreach (d; incSelectedNodes()) {
+            if (Drawable drawable = cast(Drawable)d) {
+                auto deform = cast(DeformationParameterBinding)param.getOrAddBinding(drawable, "deform");
+                deform.update(param.findClosestKeypoint(), editor.getEditorFor(drawable).getOffsets());
+            }
+        }
     }
 }
 
