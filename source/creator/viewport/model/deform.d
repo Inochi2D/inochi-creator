@@ -15,7 +15,6 @@ import creator;
 import inochi2d;
 import bindbc.imgui;
 import i18n;
-import std.stdio;
 
 private {
     IncMeshEditor editor;
@@ -30,7 +29,6 @@ void incViewportNodeDeformNotifyParamValueChanged() {
             if (drawables && drawables.length > 0) {
                 editor = new IncMeshEditor(true);
                 editor.setTargets(drawables);
-                writefln("incViewportNodeDeformNotifyParamValueChanged:drawables=%s", drawables);
             } else
                 return;
         } else {
@@ -42,7 +40,10 @@ void incViewportNodeDeformNotifyParamValueChanged() {
             if (Drawable drawable = cast(Drawable)d) {
                 DeformationParameterBinding deform = cast(DeformationParameterBinding)param.getBinding(drawable, "deform");
                 if (deform) {
-                    editor.getEditorFor(drawable).applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);
+                    auto binding = deform.getValue(param.findClosestKeypoint());
+                    auto e = editor.getEditorFor(drawable);
+                    e.applyOffsets(binding.vertexOffsets);
+                    e.adjustPathTransform();
                 }
             }
         }
@@ -53,8 +54,6 @@ void incViewportNodeDeformNotifyParamValueChanged() {
 
 void incViewportModelDeformNodeSelectionChanged() {
     editor = null;
-    writefln("incViewportModelDeformNodeSelectionChanged");
-    writefln("selected=%s", incSelectedNodes());
     incViewportNodeDeformNotifyParamValueChanged();
 }
 

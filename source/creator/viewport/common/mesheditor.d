@@ -44,6 +44,7 @@ private:
 
     vec2 lastMousePos;
     vec2 mousePos;
+    mat4 transform = mat4.identity;
 
     bool isDragging = false;
     bool isSelecting = false;
@@ -759,6 +760,7 @@ public:
             inDbgSetBuffer(axisLines);
             inDbgDrawLines(vec4(0.8, 0, 0.8, 1), trans);
         }
+        import std.stdio;
 
         if (path && path.target && deforming) {
             path.draw(trans, vec4(0, 0.6, 0.6, 1));
@@ -793,12 +795,30 @@ public:
             import std.stdio;
             setToolMode(VertexToolMode.PathDeform);
             path = new CatmullSpline;
+            transform = target ? target.transform.matrix : mat4.identity;
             deforming = false;
             refreshMesh();
-            writefln("%s: %s", target.name, path);
             break;
         default:       
         }
+    }
+
+    void adjustPathTransform() {
+        mat4 invTr = transform;
+        mat4 tr    = this.target.transform.matrix.inverse();
+        ref CatmullSpline doAdjust(ref CatmullSpline p) {
+            for (int i; i < p.points.length; i++) {
+                p.points[i].position = (tr * (invTr * vec4(p.points[i].position, 0, 1))).xy;
+            }
+            p.update();
+            return p;
+        }
+        if (path) {
+            if (path.target)
+                path.target = doAdjust(path.target);
+            path = doAdjust(path);
+        }
+        transform = this.target.transform.matrix;
     }
 
 }
