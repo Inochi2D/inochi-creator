@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-02 09:43+0900\n"
-"PO-Revision-Date: 2023-01-02 14:36+0900\n"
+"PO-Revision-Date: 2023-01-04 08:36+0900\n"
 "Last-Translator: Nejikugi <63852665+scrwnl@users.noreply.github.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
@@ -109,11 +109,11 @@ msgstr "%sを原点から移動しました。"
 
 #: source/creator/actions/node.d:172 source/creator/actions/node.d:179
 msgid "Enabled"
-msgstr "有効化"
+msgstr "有効"
 
 #: source/creator/actions/node.d:172 source/creator/actions/node.d:179
 msgid "Disabled"
-msgstr "無効化"
+msgstr "無効"
 
 #: source/creator/actions/node.d:179
 #, c-format
