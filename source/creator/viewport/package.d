@@ -689,7 +689,7 @@ private {
                         laction.updateNewState();
                     if (!groupAction)
                         groupAction = new GroupAction();
-                        groupAction.addAction(action);
+                    groupAction.addAction(action);
                 }
                 if (groupAction)
                     incActionPush(groupAction);

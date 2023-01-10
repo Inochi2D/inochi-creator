@@ -64,6 +64,7 @@ interface LazyBoundAction : Action {
      * Confirm 'redo' state from the current status of the target.
      */
     void updateNewState();
+    void clear();
 }
 
 
