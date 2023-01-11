@@ -1253,10 +1253,11 @@ public:
                 binding = cast(ValueParameterBinding)armedParam.createBinding(target, name);
                 armedParam.addBinding(binding);
                 groupAction.addAction(new ParameterBindingAddAction(armedParam, binding));
+
             }
             auto transAction = new ParameterBindingValueChangeAction!float(binding.getName(), binding, index.x, index.y);
             groupAction.addAction(transAction);
-        }
+            }
         if (reset)
             pushDeformAction();
         if (editorAction is null) {
