@@ -253,11 +253,11 @@ public:
         if (isApplyable()) {
             if (oldPathPoints !is null && oldPathPoints.length > 0 && path !is null) {
                 path.points = oldPathPoints.dup;
-                path.update();
+                path.update(); /// FIX ME: we need to recreate path object if needed.
             }
             if (oldTargetPathPoints !is null && oldTargetPathPoints.length > 0 && path !is null && path.target !is null) {
                 path.target.points = oldTargetPathPoints.dup;
-                path.target.update();
+                path.target.update(); /// FIX ME: we need to recreate path object if needed.
             }
         }
         super.rollback();

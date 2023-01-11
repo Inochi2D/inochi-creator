@@ -811,6 +811,7 @@ public:
                 p.points[i].position = (tr * (invTr * vec4(p.points[i].position, 0, 1))).xy;
             }
             p.update();
+            p.remapTarget(mesh);
             return p;
         }
         if (path) {

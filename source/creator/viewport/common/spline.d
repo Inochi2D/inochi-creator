@@ -84,11 +84,17 @@ public:
         target.points = points.dup;
         target.interpolate();
 
-        refMesh.length = 0;
-        foreach(ref MeshVertex* vtx; reference.vertices) {
-            refMesh ~= vtx.position;
+        remapTarget(reference);
+    }
+
+    void remapTarget(IncMesh reference) {
+        if (target !is null) {
+            refMesh.length = 0;
+            foreach(ref MeshVertex* vtx; reference.vertices) {
+                refMesh ~= vtx.position;
+            }
+            mapReference();
         }
-        mapReference();
     }
 
     void mapReference() {
