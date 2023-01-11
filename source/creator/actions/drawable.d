@@ -37,8 +37,10 @@ public:
     }
 
     override
-    void updateNewState() {
-    }
+    void updateNewState() {}
+
+    override
+    void clear() {}
 
     void addBinding(Parameter param, ParameterBinding binding) {
         addAction(new ParameterBindingRemoveAction(param, binding));

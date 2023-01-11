@@ -146,6 +146,8 @@ public:
         this.newValue = *valuePtr;
     }
 
+    void clear() { }
+
     /**
         Rollback
     */
@@ -235,6 +237,9 @@ public:
                 lazyAction.updateNewState();
         }
     }
+
+    override
+    void clear() {}
 
     /**
         Describe the action

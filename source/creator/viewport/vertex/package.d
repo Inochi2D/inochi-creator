@@ -42,7 +42,9 @@ void incViewportVertexOptions() {
         igBeginGroup();
             if (igButton("")) {
                 foreach (d; incSelectedNodes) {
-                    editor.getEditorFor(cast(Drawable)d).mesh.flipHorz();
+                    auto meshEditor = cast(IncMeshEditorOneDrawable)editor.getEditorFor(d);
+                    if (meshEditor)
+                        meshEditor.mesh.flipHorz();
                 }
             }
             incTooltip(_("Flip Horizontally"));
@@ -51,7 +53,9 @@ void incViewportVertexOptions() {
 
             if (igButton("")) {
                 foreach (d; incSelectedNodes) {
-                    editor.getEditorFor(cast(Drawable)d).mesh.flipVert();
+                    auto meshEditor = cast(IncMeshEditorOneDrawable)editor.getEditorFor(d);
+                    if (meshEditor)
+                        meshEditor.mesh.flipVert();
                 }
             }
             incTooltip(_("Flip Vertically"));
@@ -112,8 +116,9 @@ void incViewportVertexOptions() {
                 if (!activeProcessor)
                     activeProcessor = autoMeshProcessors[0];
                 foreach (drawable; editor.getTargets()) {
-                    auto e = editor.getEditorFor(drawable);
-                    e.mesh = activeProcessor.autoMesh(drawable, e.getMesh(), e.mirrorHoriz, 0, e.mirrorVert, 0);
+                    auto e = cast(IncMeshEditorOneDrawable)editor.getEditorFor(drawable);
+                    if (e !is null)
+                        e.mesh = activeProcessor.autoMesh(cast(Drawable)drawable, e.getMesh(), e.mirrorHoriz, 0, e.mirrorVert, 0);
                 }
                 editor.refreshMesh();
             }
@@ -126,8 +131,9 @@ void incViewportVertexOptions() {
                 // In this case, a mesh is baked from the triangulation.
                 if (igButton(__("Bake"),ImVec2(incAvailableSpace().x, 0))) {
                     foreach (drawable; editor.getTargets()) {
-                        auto e = editor.getEditorFor(drawable);
-                        e.mesh = activeProcessor.autoMesh(drawable, e.getMesh(), e.mirrorHoriz, 0, e.mirrorVert, 0);
+                        auto e = cast(IncMeshEditorOneDrawable)editor.getEditorFor(drawable);
+                        if (e !is null)
+                            e.mesh = activeProcessor.autoMesh(cast(Drawable)drawable, e.getMesh(), e.mirrorHoriz, 0, e.mirrorVert, 0);
                     }
                     editor.refreshMesh();
                 }
@@ -263,7 +269,8 @@ void incMeshEditApply() {
 
     foreach (d; target) {
         if (Drawable drawable = cast(Drawable)d) {
-            if (editor.getEditorFor(drawable).mesh.getVertexCount() < 3 || editor.getEditorFor(drawable).mesh.getEdgeCount() < 3) {
+            auto meshEditor = cast(IncMeshEditorOneDrawable)editor.getEditorFor(drawable);
+            if (meshEditor !is null && (meshEditor.mesh.getVertexCount() < 3 || meshEditor.mesh.getEdgeCount() < 3)) {
                 incDialog(__("Error"), _("Cannot apply invalid mesh\nAt least 3 vertices forming a triangle is needed."));
                 return;
             }
@@ -287,7 +294,9 @@ void incMeshEditApply() {
 */
 void incMeshEditClear() {
     foreach (d; editor.getTargets()) {
-        editor.getEditorFor(d).mesh.clear();
+        auto meshEditor = cast(IncMeshEditorOneDrawable)editor.getEditorFor(d);
+        if (meshEditor !is null)
+            meshEditor.mesh.clear();
     }
 }
 
@@ -297,6 +306,8 @@ void incMeshEditClear() {
 */
 void incMeshEditReset() {
     foreach (d; editor.getTargets()) {
-        editor.getEditorFor(d).mesh.reset();
+        auto meshEditor = cast(IncMeshEditorOneDrawable)editor.getEditorFor(d);
+        if (meshEditor !is null)
+            meshEditor.mesh.reset();
     }
 }

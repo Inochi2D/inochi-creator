@@ -123,8 +123,8 @@ class ParameterBindingAllValueChangeAction(T)  : LazyBoundAction {
         }
     }
 
-    void updateNewState() {
-    }
+    void updateNewState() {}
+    void clear() {}
 
     /**
         Rollback
@@ -202,6 +202,7 @@ class ParameterBindingValueChangeAction(T)  : LazyBoundAction {
     T    value;
     bool isSet;
     bool undoable;
+    bool _dirty;
 
     this(string name, TBinding self, int pointx, int pointy, void delegate() update = null) {
         this.name  = name;
@@ -211,13 +212,19 @@ class ParameterBindingValueChangeAction(T)  : LazyBoundAction {
         this.value  = self.values[pointx][pointy];
         this.isSet  = self.isSet_[pointx][pointy];
         this.undoable = true;
+        this._dirty = false;
         if (update !is null) {
             update();
             updateNewState();
         }
     }
 
-    void updateNewState() {
+    void markAsDirty() { _dirty = true; }
+    void updateNewState() {}
+    void clear() { _dirty = false; }
+
+    bool dirty() {
+        return _dirty;
     }
 
     /**
@@ -227,7 +234,6 @@ class ParameterBindingValueChangeAction(T)  : LazyBoundAction {
         if (undoable) {
             swap(self.values[pointx][pointy], value);
             swap(self.isSet_[pointx][pointy], isSet);
-            import std.stdio;
             self.reInterpolate();
             undoable = false;
         }

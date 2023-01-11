@@ -13,6 +13,7 @@ import creator.windows;
 import creator.core;
 import creator.actions;
 import creator.ext.param;
+import creator.viewport.common.mesheditor;
 import creator;
 import std.string;
 import inochi2d;
@@ -287,9 +288,12 @@ private {
                     auto target = cast(Drawable)binding.getTarget().node;
                     if (target) {
                         editor.setTarget(target);
-                        auto newDeform = editor.getEditorFor(target).getMesh().deformByDeformationBinding(deformBinding, cParamPoint, true);
-                        if (newDeform)
-                            deformBinding.setValue(cParamPoint, *newDeform);
+                        auto meshEditor = cast(IncMeshEditorOneDrawable)editor.getEditorFor(target);
+                        if (meshEditor) {
+                            auto newDeform = meshEditor.getMesh().deformByDeformationBinding(deformBinding, cParamPoint, true);
+                            if (newDeform)
+                                deformBinding.setValue(cParamPoint, *newDeform);
+                        }
                     }
                 }
                 action.updateNewState();

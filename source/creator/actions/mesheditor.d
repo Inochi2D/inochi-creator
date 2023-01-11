@@ -17,16 +17,16 @@ import inochi2d;
 import std.format;
 import std.range;
 import i18n;
+import std.stdio;
 
 /**
     Action for change of binding values at once
 */
-class MeshEditorDeformationAction  : LazyBoundAction {
-    alias  TSelf    = typeof(this);
+class DeformationAction  : LazyBoundAction {
     string name;
     bool dirty;
     Parameter      param;
-    Drawable       target;
+    Node       target;
     DeformationParameterBinding    deform;
     bool isSet;
     vec2[] vertices;
@@ -34,7 +34,7 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     bool bindingAdded;
     bool undoable = true;
 
-    this(string name, Drawable target, void delegate() update = null) {
+    this(string name, Node target, void delegate() update = null) {
         this.name   = name;
         this.target = target;
         this.bindingAdded = false;
@@ -75,7 +75,6 @@ class MeshEditorDeformationAction  : LazyBoundAction {
             vertices     = null;
             isSet        = false;
         } else {
-//            target       = self.getTarget();
             param        = incArmedParameter();
             keypoint     = param.findClosestKeypoint();
             vertices     = self.getOffsets();
@@ -117,8 +116,6 @@ class MeshEditorDeformationAction  : LazyBoundAction {
                         self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);            
                     }
                 }
-                if (self !is null)
-                    self.getCleanDeformAction();
             }
             undoable = false;
         }
@@ -148,8 +145,6 @@ class MeshEditorDeformationAction  : LazyBoundAction {
                         self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);
                     }
                 }
-                if (self !is null)
-                    self.getCleanDeformAction();
             }
             undoable = true;
         }
@@ -194,7 +189,135 @@ class MeshEditorDeformationAction  : LazyBoundAction {
     }
 };
 
-class MeshEditorPathDeformAction : MeshEditorDeformationAction {
+/**
+    Action for change of binding values at once
+*/
+class MeshEditorAction(T)  : LazyBoundAction {
+    alias  TSelf    = typeof(this);
+    Node target;
+    T action = null;
+    mat4 editorTransform = mat4.identity();
+    Parameter      param;
+    vec2u  keypoint;
+
+    this(Node target, T action = null) {
+        this.target = target;
+        this.clear();
+        this.action = action;
+    }
+
+    void setAction(T action) {
+        this.action = action;
+    }
+
+    auto self() {
+        IncMeshEditor editor = incViewportModelDeformGetEditor();
+        return editor? editor.getEditorFor(target): null;
+    }
+
+    void updateNewState() {
+        if (auto lazyAction = cast(LazyBoundAction)action)
+            lazyAction.updateNewState();
+        if (self !is null)
+            editorTransform = self.transform;
+    }
+
+    void clear() {
+        if (self is null) {
+            target       = null;
+            param        = null;
+        } else {
+            param        = incArmedParameter();
+            keypoint     = param.findClosestKeypoint();
+        }
+        if (auto lazyAction = cast(LazyBoundAction)action)
+            lazyAction.clear();
+    }
+
+    bool isApplyable() {
+        return self !is null && self.getTarget() == this.target && incArmedParameter() == this.param &&
+               incArmedParameter().findClosestKeypoint() == this.keypoint;
+    }
+
+    /**
+        Rollback
+    */
+    void rollback() {
+        if (action !is null) {
+            action.rollback();
+            if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
+                self.transform = editorTransform;
+            }
+            if (self !is null)
+                self.getCleanDeformAction();
+        }
+    }
+
+    /**
+        Redo
+    */
+    void redo() {
+        if (action !is null) {
+            action.redo();
+            if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
+                self.transform = editorTransform;
+            }
+            if (self !is null)
+                self.getCleanDeformAction();
+        }
+    }
+
+    /**
+        Describe the action
+    */
+    string describe() {
+        if (action !is null)
+            return action.describe();
+        return "";
+    }
+
+    /**
+        Describe the action
+    */
+    string describeUndo() {
+        if (action !is null)
+            return action.describeUndo();
+        return "";
+    }
+
+    /**
+        Gets name of this action
+    */
+    string getName() {
+        return this.stringof;
+    }
+    
+    /**
+        Merge
+    */
+    bool merge(Action other) {
+        if (action !is null)
+            return action.merge(other);
+        return false;
+    }
+
+    /**
+        Gets whether this node can merge with an other
+    */
+    bool canMerge(Action other) {
+        if (action !is null)
+            return action.canMerge(other);
+        return false;
+    }
+
+    bool dirty() {
+        if (action !is null)
+            return true;
+        return false;
+    }
+};
+
+class MeshEditorPathDeformAction(T) : MeshEditorAction!T {
 public:
 //    CatmullSpline path;
     SplinePoint[] oldPathPoints;
@@ -209,8 +332,8 @@ public:
             return null;
     }
 
-    this(string name, Drawable target, void delegate() update = null) {
-        super(name, target, update);
+    this(Node target, T action = null) {
+        super(target, action);
         if (path !is null)
             oldPathPoints = path.points.dup;
         else
@@ -227,7 +350,7 @@ public:
         if (path !is null)
         newPathPoints = path.points.dup;
         if (path !is null && path.target !is null) 
-            newTargetPathPoints = path.target.points.dup;
+            newTargetPathPoints = path.target.points.dup;        
     }
 
     override

@@ -7,12 +7,16 @@
 module creator.viewport.common.spline;
 import creator.viewport.common.mesh;
 import creator.viewport;
+import creator.actions;
+import creator.core.actionstack;
+import creator.core;
+import creator;
 import inochi2d;
 import inochi2d.core.dbg;
 import bindbc.opengl;
 import std.algorithm.mutation;
 import std.array;
-import std.math : isFinite;
+import std.math : isFinite, PI, atan2;
 import std.stdio;
 
 private {
@@ -70,6 +74,7 @@ private:
     vec3[] drawPoints;
     vec2[] refMesh;
     vec3[] refOffsets;
+    vec2[] initTangents;
 
 public:
     uint resolution = 40;
@@ -77,7 +82,9 @@ public:
     SplinePoint[] points;
     CatmullSpline target;
 
-    void createTarget(IncMesh reference) {
+    float origX, origY, origRotZ;
+
+    void createTarget(T)(T reference) {
         target = new CatmullSpline;
         target.resolution = resolution;
         target.selectRadius = selectRadius;
@@ -86,6 +93,8 @@ public:
 
         remapTarget(reference);
     }
+
+    void remapTarget(T)(T reference) {}
 
     void remapTarget(IncMesh reference) {
         if (target !is null) {
@@ -97,6 +106,28 @@ public:
         }
     }
 
+    void remapTarget(Node node) {
+        if (target !is null) {
+            refMesh.length = 0;
+            refMesh ~= vec2(node.getValue("transform.t.x"), node.getValue("transform.t.y"));
+            mapReference();
+
+            float getParameter(Node node, Parameter param, string paramName, vec2u index) {
+                ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
+                if (b is null) {
+                    return 0;
+                }
+                float result = b.getValue(index);
+                return result;
+            }
+            Parameter armedParam = incArmedParameter();
+            vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
+            origX = getParameter(node, armedParam, "transform.t.x", index);
+            origY = getParameter(node, armedParam, "transform.t.x", index);
+            origRotZ = getParameter(node, armedParam, "transform.r.z", index);
+        }
+    }
+
     void mapReference() {
         if (points.length < 2) {
             refOffsets.length = 0;
@@ -104,6 +135,7 @@ public:
         }
 //         writeln("mapReference");
         refOffsets.length = 0;
+        initTangents.length = 0;
 
         float epsilon = 0.0001;
         foreach(vtx; refMesh) {
@@ -125,24 +157,78 @@ public:
                 vtx.y * tangent.x - vtx.x * tangent.y,
                 off,
             );
+            initTangents ~= tangent;
 //             writefln("%s %s %s", vtx, rel, tangent);
             refOffsets ~= rel;
         }
     }
 
-    void resetTarget(IncMesh mesh) {
+    mat4 exportTarget(T)(ref T mesh, size_t i, ref vec2 vtx, vec2 tangent, vec2 initTangent) {
+        return mat4.identity();
+    }
+
+    mat4 exportTarget(ref IncMesh mesh, size_t i, ref vec2 vtx, vec2 tangent, vec2 initTangent) {
+        mesh.vertices[i].position = vtx;
+        return mat4.identity();
+    }
+
+    mat4 exportTarget(ref Node node, size_t i, ref vec2 vtx, vec2 tangent, vec2 initTangent) {
+        
+        auto curAngle = atan2(tangent.y, tangent.x);
+        auto origAngle = atan2(initTangent.y, initTangent.x);
+        auto angle = curAngle - origAngle + origRotZ;
+        float prevAngle;
+
+        float changeParameter(Node node, Parameter param, string paramName, vec2u index, float newValue) {
+            if (newValue == 0)
+                return newValue;
+            ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
+            if (b is null) {
+                b = cast(ValueParameterBinding)param.createBinding(node, paramName);
+                param.addBinding(b);
+//                incActionPush(new ParameterBindingAddAction(param, b));
+            }
+            // Push action
+//            incActionPush(new ParameterBindingValueChangeAction!(float)(b.getName(), b, index.x, index.y));
+            float result = b.getValue(index);
+            b.setValue(index, newValue);
+            return result;
+        }
+
+        Parameter armedParam = incArmedParameter();
+        vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
+        float old_x = 0; 
+        float old_y = 0;
+        if (armedParam) {
+            old_x = changeParameter(node, armedParam, "transform.t.x", index, vtx.x);
+            old_y = changeParameter(node, armedParam, "transform.t.y", index, vtx.y);
+            prevAngle = changeParameter(node, armedParam, "transform.r.z", index, angle);
+        } else {
+            old_x = node.getValue("transform.t.x");
+            old_y = node.getValue("transform.t.y");
+            prevAngle = node.getValue("transform.r.z");
+            node.setValue("transform.t.x", vtx.x);
+            node.setValue("transform.t.y", vtx.y);
+            node.setValue("transform.r.z", angle);
+        }
+        return mat4.identity;
+    }
+
+
+    void resetTarget(T)(T mesh) {
         foreach(i, vtx; refMesh) {
-            mesh.vertices[i].position = vtx;
+            exportTarget(mesh, i, vtx, vec2(0, 1), vec2(0, 1));
         }
     }
 
-    void updateTarget(IncMesh mesh) {
+    mat4 updateTarget(T)(T mesh) {
         if (points.length < 2) {
             resetTarget(mesh);
-            return;
+            return mat4.identity;
         }
 
         float epsilon = 0.0001;
+        mat4 result;
         foreach(i, rel; refOffsets) {
             if (!isFinite(rel.z)) continue;
 
@@ -157,8 +243,9 @@ public:
                 pt.y + rel.y * tangent.x + rel.x * tangent.y
             );
 //             writefln("%s %s %s", vtx, rel, tangent);
-            mesh.vertices[i].position = vtx;
+            result = exportTarget(mesh, i, vtx, tangent, initTangents[i]);
         }
+        return result;
     }
 
     void update() {
@@ -367,4 +454,10 @@ public:
         }
     }
 
+    void resetFloating() {
+        foreach (i, p; points) {
+            points[i].position = (vec4(p.position, 0, 1)).xy;
+        }
+        update();
+    }
 }
