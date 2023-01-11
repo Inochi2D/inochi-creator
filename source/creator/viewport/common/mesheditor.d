@@ -1256,10 +1256,7 @@ public:
             }
             auto transAction = new ParameterBindingValueChangeAction!float(binding.getName(), binding, index.x, index.y);
             groupAction.addAction(transAction);
-            p.update();
-            p.remapTarget(mesh);
-            return p;
-        }
+            }
         if (reset)
             pushDeformAction();
         if (editorAction is null) {
