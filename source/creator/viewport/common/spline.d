@@ -74,12 +74,12 @@ private:
     vec3[] drawPoints;
     vec2[] refMesh;
     vec3[] refOffsets;
-    vec2[] initTangents;
 
 public:
     uint resolution = 40;
     float selectRadius = 16f;
     SplinePoint[] points;
+    vec2[] initTangents;
     CatmullSpline target;
 
     float origX, origY, origRotZ;
@@ -131,9 +131,9 @@ public:
     void mapReference() {
         if (points.length < 2) {
             refOffsets.length = 0;
+            initTangents.length = 0;
             return;
         }
-//         writeln("mapReference");
         refOffsets.length = 0;
         initTangents.length = 0;
 
@@ -149,6 +149,7 @@ public:
             // FIXME: extrapolation...
             if (off <= 0 || off >= (points.length - 1)) {
                 refOffsets ~= vec3(0, 0, float());
+                initTangents ~= tangent;
                 continue;
             }
             vtx = vtx - pt;
@@ -157,9 +158,8 @@ public:
                 vtx.y * tangent.x - vtx.x * tangent.y,
                 off,
             );
-            initTangents ~= tangent;
-//             writefln("%s %s %s", vtx, rel, tangent);
             refOffsets ~= rel;
+            initTangents ~= tangent;
         }
     }
 
@@ -243,7 +243,7 @@ public:
                 pt.y + rel.y * tangent.x + rel.x * tangent.y
             );
 //             writefln("%s %s %s", vtx, rel, tangent);
-            result = exportTarget(mesh, i, vtx, tangent, initTangents[i]);
+            result = exportTarget(mesh, i, vtx, tangent, initTangents.length > i ? initTangents[i]: tangent);
         }
         return result;
     }

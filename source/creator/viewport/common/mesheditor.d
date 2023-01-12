@@ -732,24 +732,6 @@ public:
         }
     }
 
-    void updatePathTransformPosition(mat4 trans) {
-        ref CatmullSpline doAdjust(ref CatmullSpline p) {
-            for (int i; i < p.points.length; i++) {
-                p.points[i].position = (trans * vec4(p.points[i].position, 0, 1)).xy;
-            }
-            p.update();
-            return p;
-        }
-        if (path) {
-            if (path.target)
-                path.target = doAdjust(path.target);
-            path = doAdjust(path);
-        }
-        lastMousePos = (trans * vec4(lastMousePos, 0, 1)).xy;
-        transform = trans.inverse() * transform;
-
-    }
-
     override
     void adjustPathTransform() {
         mat4 invTr = transform;
