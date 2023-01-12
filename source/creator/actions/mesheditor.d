@@ -196,7 +196,8 @@ class MeshEditorAction(T)  : LazyBoundAction {
     alias  TSelf    = typeof(this);
     Node target;
     T action = null;
-    mat4 editorTransform = mat4.identity();
+    mat4 oldEditorTransform = mat4.identity();
+    mat4 newEditorTransform = mat4.identity();
     Parameter      param;
     vec2u  keypoint;
 
@@ -218,8 +219,9 @@ class MeshEditorAction(T)  : LazyBoundAction {
     void updateNewState() {
         if (auto lazyAction = cast(LazyBoundAction)action)
             lazyAction.updateNewState();
-        if (self !is null)
-            editorTransform = self.transform;
+        if (self !is null) {
+            newEditorTransform = self.transform;
+        }
     }
 
     void clear() {
@@ -229,6 +231,7 @@ class MeshEditorAction(T)  : LazyBoundAction {
         } else {
             param        = incArmedParameter();
             keypoint     = param.findClosestKeypoint();
+            oldEditorTransform = self.transform;
         }
         if (auto lazyAction = cast(LazyBoundAction)action)
             lazyAction.clear();
@@ -245,8 +248,8 @@ class MeshEditorAction(T)  : LazyBoundAction {
     void rollback() {
         if (action !is null) {
             action.rollback();
-            if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
-                self.transform = editorTransform;
+            if (isApplyable()) {
+                self.transform = oldEditorTransform;
             }
             if (self !is null)
                 self.getCleanDeformAction();
@@ -259,8 +262,8 @@ class MeshEditorAction(T)  : LazyBoundAction {
     void redo() {
         if (action !is null) {
             action.redo();
-            if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
-                self.transform = editorTransform;
+            if (isApplyable()) {
+                self.transform = newEditorTransform;
             }
             if (self !is null)
                 self.getCleanDeformAction();
@@ -324,7 +327,11 @@ public:
     SplinePoint[] oldTargetPathPoints;
     SplinePoint[] newPathPoints;
     SplinePoint[] newTargetPathPoints;
-
+    vec2[] oldInitTangents;
+    vec2[] newInitTangents;
+    float oldOrigX, oldOrigY, oldOrigRotZ;
+    float newOrigX, newOrigY, newOrigRotZ;
+    
     auto path() {
         if (self !is null)
             return self.getPath();
@@ -334,10 +341,19 @@ public:
 
     this(Node target, T action = null) {
         super(target, action);
-        if (path !is null)
+        if (path !is null) {
             oldPathPoints = path.points.dup;
-        else
+            oldInitTangents = path.initTangents.dup;
+            oldOrigX = path.origX;
+            oldOrigY = path.origY;
+            oldOrigRotZ = path.origRotZ;
+        } else {
             oldPathPoints = null;
+            oldInitTangents = null;
+            oldOrigX = 0;
+            oldOrigY = 0;
+            oldOrigRotZ = 0;
+        }
         if (this.path && this.path.target !is null)
             oldTargetPathPoints = this.path.target.points.dup;
         else
@@ -347,8 +363,13 @@ public:
     override
     void updateNewState() {
         super.updateNewState();
-        if (path !is null)
-        newPathPoints = path.points.dup;
+        if (path !is null) {
+            newPathPoints = path.points.dup;
+            newInitTangents = path.initTangents.dup;
+            newOrigX = path.origX;
+            newOrigY = path.origY;
+            newOrigRotZ = path.origRotZ;
+        }
         if (path !is null && path.target !is null) 
             newTargetPathPoints = path.target.points.dup;        
     }
@@ -356,10 +377,19 @@ public:
     override
     void clear() {
         super.clear();
-        if (path !is null)
+        if (path !is null) {
             oldPathPoints = path.points.dup;
-        else
+            oldInitTangents = path.initTangents.dup;
+            oldOrigX = path.origX;
+            oldOrigY = path.origY;
+            oldOrigRotZ = path.origRotZ;
+        } else {
             oldPathPoints = null;
+            oldInitTangents = null;
+            oldOrigX = 0;
+            oldOrigY = 0;
+            oldOrigRotZ = 0;
+        }
         if (path !is null && path.target !is null)
             oldTargetPathPoints = path.target.points.dup;
         else
@@ -373,9 +403,14 @@ public:
     */
     override
     void rollback() {
+        super.rollback();
         if (isApplyable()) {
             if (oldPathPoints !is null && oldPathPoints.length > 0 && path !is null) {
                 path.points = oldPathPoints.dup;
+                path.initTangents = oldInitTangents.dup;
+                path.origX = oldOrigX;
+                path.origY = oldOrigY;
+                path.origRotZ  = oldOrigRotZ;
                 path.update(); /// FIX ME: we need to recreate path object if needed.
             }
             if (oldTargetPathPoints !is null && oldTargetPathPoints.length > 0 && path !is null && path.target !is null) {
@@ -383,7 +418,6 @@ public:
                 path.target.update(); /// FIX ME: we need to recreate path object if needed.
             }
         }
-        super.rollback();
     }
 
     /**
@@ -391,9 +425,14 @@ public:
     */
     override
     void redo() {
+        super.redo();
          if (isApplyable()) {
             if (newPathPoints !is null && newPathPoints.length > 0 && path !is null) {
                 this.path.points = newPathPoints.dup;
+                path.initTangents = newInitTangents.dup;
+                path.origX = newOrigX;
+                path.origY = newOrigY;
+                path.origRotZ  = newOrigRotZ;
                 this.path.update();
             }
             if (newTargetPathPoints !is null && newTargetPathPoints.length > 0 && path !is null && path.target !is null) {
@@ -401,6 +440,5 @@ public:
                 this.path.target.update();
             }
         }
-        super.redo();
    }
 }
