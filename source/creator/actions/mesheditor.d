@@ -238,8 +238,7 @@ class MeshEditorAction(T)  : LazyBoundAction {
     }
 
     bool isApplyable() {
-        return self !is null && self.getTarget() == this.target && incArmedParameter() == this.param &&
-               incArmedParameter().findClosestKeypoint() == this.keypoint;
+        return self !is null && self.getTarget() == this.target;
     }
 
     /**

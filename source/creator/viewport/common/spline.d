@@ -72,44 +72,45 @@ private:
     vec2[] interpolated;
     vec3[] drawLines;
     vec3[] drawPoints;
-    vec2[] refMesh;
     vec3[] refOffsets;
 
 public:
     uint resolution = 40;
     float selectRadius = 16f;
     SplinePoint[] points;
+    vec2[] refMesh;
     vec2[] initTangents;
     CatmullSpline target;
 
     float origX, origY, origRotZ;
 
-    void createTarget(T)(T reference) {
+    void createTarget(T)(T reference, mat4 trans) {
         target = new CatmullSpline;
         target.resolution = resolution;
         target.selectRadius = selectRadius;
         target.points = points.dup;
         target.interpolate();
 
-        remapTarget(reference);
+        remapTarget(reference, trans);
     }
 
-    void remapTarget(T)(T reference) {}
+    void remapTarget(T)(T reference, mat4 trans = mat4.identity) {}
 
-    void remapTarget(IncMesh reference) {
+    void remapTarget(IncMesh reference, mat4 trans = mat4.identity) {
         if (target !is null) {
             refMesh.length = 0;
             foreach(ref MeshVertex* vtx; reference.vertices) {
-                refMesh ~= vtx.position;
+                refMesh ~= (trans * vec4(vtx.position, 0, 1)).xy;
             }
             mapReference();
         }
     }
 
-    void remapTarget(Node node) {
+    void remapTarget(Node node, mat4 trans = mat4.identity) {
         if (target !is null) {
             refMesh.length = 0;
-            refMesh ~= vec2(node.getValue("transform.t.x"), node.getValue("transform.t.y"));
+            vec2 local = vec2(node.getValue("transform.t.x"), node.getValue("transform.t.y"));
+            refMesh ~= (trans * vec4(local, 0, 1)).xy;
             mapReference();
 
             float getParameter(Node node, Parameter param, string paramName, vec2u index) {

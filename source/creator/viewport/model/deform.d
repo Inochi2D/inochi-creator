@@ -36,6 +36,20 @@ void incViewportNodeDeformNotifyParamValueChanged() {
             editor.resetMesh();
         }
 
+        foreach (node; editor.getTargets()) {
+            auto e = editor.getEditorFor(node);
+            DeformationParameterBinding deform = null;
+            if (auto drawable = cast(Drawable)node)
+                deform = cast(DeformationParameterBinding)param.getBinding(drawable, "deform");
+            if (e !is null) {
+                if (deform !is null) {
+                    auto binding = deform.getValue(param.findClosestKeypoint());
+                    e.applyOffsets(binding.vertexOffsets);
+                }
+                e.adjustPathTransform();
+            }
+        }
+        /*
         foreach (d; drawables) {
             if (Drawable drawable = cast(Drawable)d) {
                 DeformationParameterBinding deform = cast(DeformationParameterBinding)param.getBinding(drawable, "deform");
@@ -47,6 +61,7 @@ void incViewportNodeDeformNotifyParamValueChanged() {
                 }
             }
         }
+        */
     } else {
         editor = null;
     }
