@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-02 09:43+0900\n"
-"PO-Revision-Date: 2023-01-04 08:36+0900\n"
+"PO-Revision-Date: 2023-01-15 20:31+0900\n"
 "Last-Translator: Nejikugi <63852665+scrwnl@users.noreply.github.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
@@ -135,9 +135,9 @@ msgid "%s->%s changed from %s"
 msgstr "%s: %sが%sから元に戻されました"
 
 #: source/creator/actions/node.d:365 source/creator/actions/node.d:373
-#, fuzzy, c-format
+#, c-format
 msgid "%s locked to root node"
-msgstr "%sがルートノードに固定されています。"
+msgstr "%sがルートノードに固定されました。"
 
 #: source/creator/actions/node.d:366 source/creator/actions/node.d:374
 #, fuzzy, c-format
@@ -1508,7 +1508,7 @@ msgstr "画像ファイル"
 
 #: source/creator/widgets/mainmenu.d:212
 msgid "Merges (adds) selected image files to project"
-msgstr "選択されている画像をプロジェクトに統合(追加)する。"
+msgstr "選択されている画像をプロジェクトにマージ(追加)する。"
 
 #: source/creator/widgets/mainmenu.d:214
 msgid "Inochi Creator Project"
