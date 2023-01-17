@@ -120,6 +120,11 @@ public:
     rect[uint] mappings;
 
     /**
+        Lists containing counts of how many of a texture type is atlassed.
+    */
+    int[] packedIndices;
+
+    /**
         Constructs a new atlas with the specified size
     */
     this(size_t atlasSize, int padding, float scale) {
@@ -185,10 +190,16 @@ public:
         textureStartOffset.y *= p.textures[0].height * scale;
         textureEndOffset.x   *= p.textures[0].width  * scale;
         textureEndOffset.y   *= p.textures[0].height * scale;
+
+        packedIndices = new int[p.textures.length];
+        
         // Render textures in to our atlas
         foreach(i, ref Texture texture; p.textures) {
             if (texture) {
                 setCanvas(textures[i]);
+
+                packedIndices[i]++;
+
                 // where is the calculated texture boundary #2, specifying the area which texture is copied. (alsway between 0..1 in UV position)
                 rect where = rect(atlasArea.x+textureStartOffset.x+padding, atlasArea.y+textureStartOffset.y+padding, 
                                   atlasArea.z-(padding*2)-textureStartOffset.x - textureEndOffset.x, atlasArea.w-(padding*2)-textureStartOffset.y - textureEndOffset.y);

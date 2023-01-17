@@ -54,7 +54,10 @@ void incExportINP(Puppet origin, Atlas[] atlasses, string file) {
 
                 // Finally apply our atlas textures to the part
                 foreach(i; 0..TextureUsage.COUNT) {
-                    part.textures[i] = atlas.textures[i];
+                    
+                    // Skip textures that are not needed.
+                    if (atlas.packedIndices[i] == 0) part.textures[i] = null;
+                    else part.textures[i] = atlas.textures[i];
                 }
 
                 break;
