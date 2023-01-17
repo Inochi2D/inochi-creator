@@ -250,6 +250,7 @@ public:
     abstract void pushDeformAction();
     abstract Action getDeformAction();
     abstract Action getCleanDeformAction();
+    abstract void forceResetAction();
 
 
     abstract bool update(ImGuiIO* io, Camera camera);
@@ -1033,6 +1034,11 @@ public:
     }
 
     override
+    void forceResetAction() {
+        editorAction = null;
+    }
+
+    override
     void draw(Camera camera) {
         mat4 trans = mat4.identity;
         if (deformOnly) trans = target.transform.matrix();
@@ -1106,13 +1112,7 @@ public:
 
     override
     void adjustPathTransform() {
-//        mat4 invTr = transform;
-//        mat4 tr    = this.target.transform.matrix.inverse();
         ref CatmullSpline doAdjust(ref CatmullSpline p) {
-//            for (int i; i < p.points.length; i++) {
-//                p.points[i].position = (tr * (invTr * vec4(p.points[i].position, 0, 1))).xy;
-//            }
-//            p.update();
             remapPathTarget(p, mat4.identity);
             return p;
         }
@@ -1121,8 +1121,6 @@ public:
                 path.target = doAdjust(path.target);
             path = doAdjust(path);
         }
-//        lastMousePos = (tr * invTr * vec4(lastMousePos, 0, 1)).xy;
-//        transform = this.target.transform.matrix;
     }
 
 }
@@ -1232,6 +1230,7 @@ public:
     Action getDeformActionImpl(bool reset = false)() {
         auto armedParam = incArmedParameter();
         vec2u index = armedParam.findClosestKeypoint();
+
         void registerBinding(string name, GroupAction groupAction) {
             ValueParameterBinding binding = cast(ValueParameterBinding)armedParam.getBinding(target, name);
             if (binding is null) {
@@ -1242,7 +1241,8 @@ public:
             }
             auto transAction = new ParameterBindingValueChangeAction!float(binding.getName(), binding, index.x, index.y);
             groupAction.addAction(transAction);
-            }
+        }
+
         if (reset)
             pushDeformAction();
         if (editorAction is null) {
@@ -1279,6 +1279,11 @@ public:
     }
 
     override
+    void forceResetAction() {
+        editorAction = null;
+    }
+
+    override
     void pushDeformAction() {
         if (editorAction !is null) {
             bool dirty = false;
@@ -1291,6 +1296,7 @@ public:
                 }
             }
             if (dirty) {
+                writefln("pushDeformAction: %s", target.name);
                 editorAction.updateNewState();
                 foreach (a; editorAction.action.actions) {
                     if (auto laction = cast(LazyBoundAction)a)

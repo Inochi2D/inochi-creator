@@ -246,12 +246,13 @@ class MeshEditorAction(T)  : LazyBoundAction {
     */
     void rollback() {
         if (action !is null) {
+            writefln("undo: %s", target.name);
             action.rollback();
             if (isApplyable()) {
                 self.transform = oldEditorTransform;
             }
             if (self !is null)
-                self.getCleanDeformAction();
+                self.forceResetAction();
         }
     }
 
@@ -260,12 +261,13 @@ class MeshEditorAction(T)  : LazyBoundAction {
     */
     void redo() {
         if (action !is null) {
+            writefln("redo: %s", target.name);
             action.redo();
             if (isApplyable()) {
                 self.transform = newEditorTransform;
             }
             if (self !is null)
-                self.getCleanDeformAction();
+                self.forceResetAction();
         }
     }
 
