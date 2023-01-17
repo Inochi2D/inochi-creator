@@ -1120,6 +1120,7 @@ public:
                 path.target = doAdjust(path.target);
             path = doAdjust(path);
         }
+        forceResetAction();
     }
 
 }
@@ -1426,6 +1427,7 @@ public:
         }
         lastMousePos = (trans * vec4(lastMousePos, 0, 1)).xy;
         transform = this.target.transform.matrix;
+        forceResetAction();
     }
 
 }
