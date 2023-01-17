@@ -246,7 +246,6 @@ class MeshEditorAction(T)  : LazyBoundAction {
     */
     void rollback() {
         if (action !is null) {
-            writefln("undo: %s", target.name);
             action.rollback();
             if (isApplyable()) {
                 self.transform = oldEditorTransform;
@@ -261,7 +260,6 @@ class MeshEditorAction(T)  : LazyBoundAction {
     */
     void redo() {
         if (action !is null) {
-            writefln("redo: %s", target.name);
             action.redo();
             if (isApplyable()) {
                 self.transform = newEditorTransform;
