@@ -238,8 +238,7 @@ class MeshEditorAction(T)  : LazyBoundAction {
     }
 
     bool isApplyable() {
-        return self !is null && self.getTarget() == this.target && incArmedParameter() == this.param &&
-               incArmedParameter().findClosestKeypoint() == this.keypoint;
+        return self !is null && self.getTarget() == this.target;
     }
 
     /**
@@ -252,7 +251,7 @@ class MeshEditorAction(T)  : LazyBoundAction {
                 self.transform = oldEditorTransform;
             }
             if (self !is null)
-                self.getCleanDeformAction();
+                self.forceResetAction();
         }
     }
 
@@ -266,7 +265,7 @@ class MeshEditorAction(T)  : LazyBoundAction {
                 self.transform = newEditorTransform;
             }
             if (self !is null)
-                self.getCleanDeformAction();
+                self.forceResetAction();
         }
     }
 

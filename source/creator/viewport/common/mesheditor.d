@@ -245,11 +245,12 @@ public:
     abstract void createPathTarget();
     abstract mat4 updatePathTarget();
     abstract void resetPathTarget();
-    abstract void remapPathTarget(ref CatmullSpline p);
+    abstract void remapPathTarget(ref CatmullSpline p, mat4 trans);
 
     abstract void pushDeformAction();
     abstract Action getDeformAction();
     abstract Action getCleanDeformAction();
+    abstract void forceResetAction();
 
 
     abstract bool update(ImGuiIO* io, Camera camera);
@@ -724,35 +725,12 @@ public:
             import std.stdio;
             setToolMode(VertexToolMode.PathDeform);
             path = new CatmullSpline;
-            transform = target ? target.transform.matrix : mat4.identity;
             deforming = false;
             refreshMesh();
             break;
         default:       
         }
     }
-
-    override
-    void adjustPathTransform() {
-        mat4 invTr = transform;
-        mat4 tr    = this.target.transform.matrix.inverse();
-        ref CatmullSpline doAdjust(ref CatmullSpline p) {
-            for (int i; i < p.points.length; i++) {
-                p.points[i].position = (tr * (invTr * vec4(p.points[i].position, 0, 1))).xy;
-            }
-            p.update();
-            remapPathTarget(p);
-            return p;
-        }
-        if (path) {
-            if (path.target)
-                path.target = doAdjust(path.target);
-            path = doAdjust(path);
-        }
-        lastMousePos = (tr * invTr * vec4(lastMousePos, 0, 1)).xy;
-        transform = this.target.transform.matrix;
-    }
-
 }
 
 
@@ -780,6 +758,7 @@ public:
         if (drawable is null)
             return;
         super.setTarget(target);
+        transform = target ? target.transform.matrix : mat4.identity;
         mesh = new IncMesh(drawable.getMesh());
         refreshMesh();
     }
@@ -983,7 +962,7 @@ public:
 
     override
     void createPathTarget() {
-        path.createTarget(mesh);
+        path.createTarget(mesh, mat4.identity); //transform.inverse() * target.transform.matrix);
     }
 
     override
@@ -997,7 +976,7 @@ public:
     }
 
     override
-    void remapPathTarget(ref CatmullSpline p) {
+    void remapPathTarget(ref CatmullSpline p, mat4 trans) {
         p.remapTarget(mesh);
     }
 
@@ -1051,6 +1030,11 @@ public:
     override
     Action getCleanDeformAction() {
         return getDeformActionImpl!true();
+    }
+
+    override
+    void forceResetAction() {
+        editorAction = null;
     }
 
     override
@@ -1117,13 +1101,28 @@ public:
         }
 
         if (path && path.target && deforming) {
-            path.draw(trans, vec4(0, 0.6, 0.6, 1));
-            path.target.draw(trans, vec4(0, 1, 0, 1));
+            path.draw(transform, vec4(0, 0.6, 0.6, 1));
+            path.target.draw(transform, vec4(0, 1, 0, 1));
         } else if (path) {
-            if (path.target) path.target.draw(trans, vec4(0, 0.6, 0, 1));
-            path.draw(trans, vec4(0, 1, 1, 1));
+            if (path.target) path.target.draw(transform, vec4(0, 0.6, 0, 1));
+            path.draw(transform, vec4(0, 1, 1, 1));
         }
     }
+
+    override
+    void adjustPathTransform() {
+        ref CatmullSpline doAdjust(ref CatmullSpline p) {
+            remapPathTarget(p, mat4.identity);
+            return p;
+        }
+        if (path) {
+            if (path.target)
+                path.target = doAdjust(path.target);
+            path = doAdjust(path);
+        }
+        forceResetAction();
+    }
+
 }
 
 
@@ -1149,6 +1148,8 @@ public:
     override
     void setTarget(Node target) {
         super.setTarget(target);
+//        transform = (target && target.parent()) ? target.parent().transform.matrix : mat4.identity;
+        transform = target? target.transform.matrix : mat4.identity;
         refreshMesh();
     }
 
@@ -1229,6 +1230,7 @@ public:
     Action getDeformActionImpl(bool reset = false)() {
         auto armedParam = incArmedParameter();
         vec2u index = armedParam.findClosestKeypoint();
+
         void registerBinding(string name, GroupAction groupAction) {
             ValueParameterBinding binding = cast(ValueParameterBinding)armedParam.getBinding(target, name);
             if (binding is null) {
@@ -1239,7 +1241,8 @@ public:
             }
             auto transAction = new ParameterBindingValueChangeAction!float(binding.getName(), binding, index.x, index.y);
             groupAction.addAction(transAction);
-            }
+        }
+
         if (reset)
             pushDeformAction();
         if (editorAction is null) {
@@ -1276,6 +1279,11 @@ public:
     }
 
     override
+    void forceResetAction() {
+        editorAction = null;
+    }
+
+    override
     void pushDeformAction() {
         if (editorAction !is null) {
             bool dirty = false;
@@ -1288,6 +1296,7 @@ public:
                 }
             }
             if (dirty) {
+                writefln("pushDeformAction: %s", target.name);
                 editorAction.updateNewState();
                 foreach (a; editorAction.action.actions) {
                     if (auto laction = cast(LazyBoundAction)a)
@@ -1331,7 +1340,7 @@ public:
 
     override
     void createPathTarget() {
-        path.createTarget(target);
+        path.createTarget(target, mat4.identity);
     }
 
     override
@@ -1345,8 +1354,8 @@ public:
     }
 
     override
-    void remapPathTarget(ref CatmullSpline p) {
-        p.remapTarget(target);
+    void remapPathTarget(ref CatmullSpline p, mat4 trans) {
+        p.remapTarget(target, trans);
     }
 
     override
@@ -1379,8 +1388,6 @@ public:
 
     override
     void draw(Camera camera) {
-        mat4 trans = mat4.identity;
-        if (deformOnly) trans = target.transform.matrix();
 
         if (vtxAtMouse !is null && !isSelecting) {
             MeshVertex*[] one = [vtxAtMouse];
@@ -1400,6 +1407,29 @@ public:
             path.draw(transform, vec4(0, 1, 1, 1));
         }
     }
+
+
+    override
+    void adjustPathTransform() {
+        mat4 trans = (target? target.transform.matrix: transform).inverse * transform;
+        ref CatmullSpline doAdjust(ref CatmullSpline p) {
+            for (int i; i < p.points.length; i++) {
+                p.points[i].position = (trans * vec4(p.points[i].position, 0, 1)).xy;
+            }
+            p.update();
+            remapPathTarget(p, mat4.identity);
+            return p;
+        }
+        if (path) {
+            if (path.target)
+                path.target = doAdjust(path.target);
+            path = doAdjust(path);
+        }
+        lastMousePos = (trans * vec4(lastMousePos, 0, 1)).xy;
+        transform = this.target.transform.matrix;
+        forceResetAction();
+    }
+
 }
 
 
