@@ -6,6 +6,7 @@
 */
 module creator.panels.inspector;
 import creator.viewport.vertex;
+import creator.viewport.model.deform;
 import creator.core;
 import creator.panels;
 import creator.widgets;
@@ -1154,6 +1155,12 @@ void incInspectorDeformFloatDragVal(string name, string paramName, float adjustS
         } else {
             incActionPush(action);
         }
+
+        if (auto editor = incViewportModelDeformGetEditor()) {
+            if (auto e = editor.getEditorFor(node)) {
+                e.adjustPathTransform();
+            }
+        }
     }
 }
 
@@ -1296,6 +1303,12 @@ void incInspectorDeformSetValue(Node node, Parameter param, string paramName, ve
             incActionPush(groupAction);
         } else {
             incActionPush(action);
+        }
+
+        if (auto editor = incViewportModelDeformGetEditor()) {
+            if (auto e = editor.getEditorFor(node)) {
+                e.adjustPathTransform();
+            }
         }
 }
 

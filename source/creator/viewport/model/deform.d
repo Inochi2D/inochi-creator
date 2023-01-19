@@ -49,19 +49,6 @@ void incViewportNodeDeformNotifyParamValueChanged() {
                 e.adjustPathTransform();
             }
         }
-        /*
-        foreach (d; drawables) {
-            if (Drawable drawable = cast(Drawable)d) {
-                DeformationParameterBinding deform = cast(DeformationParameterBinding)param.getBinding(drawable, "deform");
-                if (deform) {
-                    auto binding = deform.getValue(param.findClosestKeypoint());
-                    auto e = editor.getEditorFor(drawable);
-                    e.applyOffsets(binding.vertexOffsets);
-                    e.adjustPathTransform();
-                }
-            }
-        }
-        */
     } else {
         editor = null;
     }

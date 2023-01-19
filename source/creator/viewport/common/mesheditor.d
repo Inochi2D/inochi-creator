@@ -422,7 +422,6 @@ public:
         mousePos = incInputGetMousePosition();
         if (deformOnly) {
             vec4 pIn = vec4(-mousePos.x, -mousePos.y, 0, 1);
-//            mat4 tr = target.transform.matrix().inverse();
             mat4 tr = transform.inverse();
             vec4 pOut = tr * pIn;
             mousePos = vec2(pOut.x, pOut.y);
@@ -894,7 +893,7 @@ public:
 
     override
     void removeVertexAt(vec2 vertex) {
-        mesh.removeVertexAt(vertex); // mirror(axis, mousePos)
+        mesh.removeVertexAt(vertex);
     }
 
     override
@@ -1111,7 +1110,12 @@ public:
 
     override
     void adjustPathTransform() {
+        mat4 trans = (target? target.transform.matrix: transform).inverse * transform;
         ref CatmullSpline doAdjust(ref CatmullSpline p) {
+            for (int i; i < p.points.length; i++) {
+                p.points[i].position = (trans * vec4(p.points[i].position, 0, 1)).xy;
+            }
+            p.update();
             remapPathTarget(p, mat4.identity);
             return p;
         }
@@ -1120,6 +1124,8 @@ public:
                 path.target = doAdjust(path.target);
             path = doAdjust(path);
         }
+        lastMousePos = (trans * vec4(lastMousePos, 0, 1)).xy;
+        transform = this.target.transform.matrix;
         forceResetAction();
     }
 
@@ -1148,7 +1154,6 @@ public:
     override
     void setTarget(Node target) {
         super.setTarget(target);
-//        transform = (target && target.parent()) ? target.parent().transform.matrix : mat4.identity;
         transform = target? target.transform.matrix : mat4.identity;
         refreshMesh();
     }
@@ -1391,7 +1396,6 @@ public:
 
         if (vtxAtMouse !is null && !isSelecting) {
             MeshVertex*[] one = [vtxAtMouse];
-//            mesh.drawPointSubset(one, vec4(1, 1, 1, 0.3), trans, 15);
         }
 
         if (isSelecting) {
