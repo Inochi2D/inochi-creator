@@ -12,6 +12,7 @@ import creator.core.input;
 import creator.actions;
 import creator.viewport;
 import creator.viewport.model;
+import creator.viewport.model.deform;
 import creator.viewport.vertex;
 import creator.viewport.anim;
 import creator.viewport.test;
@@ -338,6 +339,11 @@ void incViewportTransformHandle() {
                     b = cast(ValueParameterBinding)param.createBinding(node, paramName);
                     param.addBinding(b);
                     status.actions["Add"]= new ParameterBindingAddAction(param, b);
+                }
+                if (auto editor = incViewportModelDeformGetEditor()) {
+                    if (auto e = editor.getEditorFor(node)) {
+                        e.adjustPathTransform();
+                    }
                 }
                 // Push action
                 if (paramName !in status.actions)

@@ -1111,7 +1111,12 @@ public:
 
     override
     void adjustPathTransform() {
+        mat4 trans = (target? target.transform.matrix: transform).inverse * transform;
         ref CatmullSpline doAdjust(ref CatmullSpline p) {
+            for (int i; i < p.points.length; i++) {
+                p.points[i].position = (trans * vec4(p.points[i].position, 0, 1)).xy;
+            }
+            p.update();
             remapPathTarget(p, mat4.identity);
             return p;
         }
@@ -1120,6 +1125,8 @@ public:
                 path.target = doAdjust(path.target);
             path = doAdjust(path);
         }
+        lastMousePos = (trans * vec4(lastMousePos, 0, 1)).xy;
+        transform = this.target.transform.matrix;
         forceResetAction();
     }
 
