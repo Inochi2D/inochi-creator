@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-02 09:43+0900\n"
+"POT-Creation-Date: 2023-01-26 23:23+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -61,12 +61,12 @@ msgstr ""
 msgid "Drawable %s was changed"
 msgstr ""
 
-#: source/creator/actions/mesheditor.d:160
+#: source/creator/actions/mesheditor.d:162
 #, c-format
 msgid "%s->Edited deformation of %s."
 msgstr ""
 
-#: source/creator/actions/mesheditor.d:167
+#: source/creator/actions/mesheditor.d:169
 #, c-format
 msgid "%s->deformation of %s was edited."
 msgstr ""
@@ -193,12 +193,12 @@ msgid "%s failed to export with error (%s)..."
 msgstr ""
 
 #: source/creator/io/package.d:211 source/creator/io/package.d:212
-#: source/creator/io/psd.d:149 source/creator/package.d:184
-#: source/creator/package.d:220 source/creator/package.d:281
+#: source/creator/io/psd.d:149 source/creator/package.d:185
+#: source/creator/package.d:221 source/creator/package.d:282
 #: source/creator/panels/inspector.d:614 source/creator/panels/inspector.d:633
 #: source/creator/panels/inspector.d:634 source/creator/panels/inspector.d:644
 #: source/creator/panels/nodes.d:229 source/creator/panels/viewport.d:219
-#: source/creator/viewport/vertex/package.d:243
+#: source/creator/viewport/vertex/package.d:267
 #: source/creator/widgets/mainmenu.d:433 source/creator/windows/inpexport.d:249
 #: source/creator/windows/paramaxes.d:187
 #: source/creator/windows/paramprop.d:105
@@ -217,12 +217,12 @@ msgstr ""
 msgid "Import..."
 msgstr ""
 
-#: source/creator/io/psd.d:145 source/creator/package.d:278
+#: source/creator/io/psd.d:145 source/creator/package.d:279
 #, c-format
 msgid "%s was imported..."
 msgstr ""
 
-#: source/creator/io/psd.d:148 source/creator/package.d:282
+#: source/creator/io/psd.d:148 source/creator/package.d:283
 msgid "Import failed..."
 msgstr ""
 
@@ -237,41 +237,41 @@ msgstr ""
 msgid "Automatic selection"
 msgstr ""
 
-#: source/creator/package.d:201
+#: source/creator/package.d:202
 #, c-format
 msgid "%s opened successfully."
 msgstr ""
 
-#: source/creator/package.d:217
+#: source/creator/package.d:218
 #, c-format
 msgid "%s saved successfully."
 msgstr ""
 
-#: source/creator/package.d:219
+#: source/creator/package.d:220
 #, c-format
 msgid "Failed to save %s"
 msgstr ""
 
-#: source/creator/package.d:255
+#: source/creator/package.d:256
 #, c-format
 msgid ""
 "The following errors occured during file loading\n"
 "%s"
 msgstr ""
 
-#: source/creator/package.d:264
+#: source/creator/package.d:265
 msgid "Folder import completed with errors..."
 msgstr ""
 
-#: source/creator/package.d:265
+#: source/creator/package.d:266
 msgid "Folder import completed..."
 msgstr ""
 
-#: source/creator/package.d:307
+#: source/creator/package.d:308
 msgid "Mipmap generation completed."
 msgstr ""
 
-#: source/creator/package.d:322
+#: source/creator/package.d:323
 msgid "Texture bleeding completed."
 msgstr ""
 
@@ -1183,71 +1183,71 @@ msgid ""
 "specified, vertices are populated per scale factors."
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:426
-#: source/creator/viewport/common/mesheditor.d:428
-#: source/creator/viewport/common/mesheditor.d:568
+#: source/creator/viewport/common/mesheditor.d:427
+#: source/creator/viewport/common/mesheditor.d:429
+#: source/creator/viewport/common/mesheditor.d:569
 msgid "Select"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:426
-#: source/creator/viewport/common/mesheditor.d:428
-#: source/creator/viewport/common/mesheditor.d:568
-#: source/creator/viewport/common/mesheditor.d:570
-#: source/creator/viewport/common/mesheditor.d:613
+#: source/creator/viewport/common/mesheditor.d:427
+#: source/creator/viewport/common/mesheditor.d:429
+#: source/creator/viewport/common/mesheditor.d:569
+#: source/creator/viewport/common/mesheditor.d:571
+#: source/creator/viewport/common/mesheditor.d:614
 msgid "Left Mouse"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:429
+#: source/creator/viewport/common/mesheditor.d:430
 msgid "Create"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:429
+#: source/creator/viewport/common/mesheditor.d:430
 msgid "Ctrl+Left Mouse"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:570
+#: source/creator/viewport/common/mesheditor.d:571
 msgid "Connect/Disconnect"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:571
+#: source/creator/viewport/common/mesheditor.d:572
 msgid "Connect Multiple"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:571
+#: source/creator/viewport/common/mesheditor.d:572
 msgid "Shift+Left Mouse"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:613
+#: source/creator/viewport/common/mesheditor.d:614
 msgid "Deform"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:614
-#: source/creator/viewport/common/mesheditor.d:617
+#: source/creator/viewport/common/mesheditor.d:615
+#: source/creator/viewport/common/mesheditor.d:618
 msgid "Switch Mode"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:614
-#: source/creator/viewport/common/mesheditor.d:617
+#: source/creator/viewport/common/mesheditor.d:615
+#: source/creator/viewport/common/mesheditor.d:618
 msgid "TAB"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:616
+#: source/creator/viewport/common/mesheditor.d:617
 msgid "Create/Destroy"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:616
+#: source/creator/viewport/common/mesheditor.d:617
 msgid "Left Mouse (x2)"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:781
+#: source/creator/viewport/common/mesheditor.d:955
 msgid "Vertex Tool"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:789
+#: source/creator/viewport/common/mesheditor.d:963
 msgid "Edge Tool"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor.d:798
+#: source/creator/viewport/common/mesheditor.d:971
 msgid "Path Deform Tool"
 msgstr ""
 
@@ -1303,79 +1303,79 @@ msgstr ""
 msgid "No tool selected..."
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:44
+#: source/creator/viewport/vertex/package.d:48
 msgid "Flip Horizontally"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:49
+#: source/creator/viewport/vertex/package.d:57
 msgid "Flip Vertically"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:59
+#: source/creator/viewport/vertex/package.d:67
 msgid "Mirror Horizontally"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:67
+#: source/creator/viewport/vertex/package.d:75
 msgid "Mirror Vertically"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:78
+#: source/creator/viewport/vertex/package.d:86
 msgid "Triangulate vertices"
 msgstr ""
 
 #. Button which bakes some auto generated content
 #. In this case, a mesh is baked from the triangulation.
-#: source/creator/viewport/vertex/package.d:85
-#: source/creator/viewport/vertex/package.d:116
+#: source/creator/viewport/vertex/package.d:93
+#: source/creator/viewport/vertex/package.d:127
 msgid "Bake"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:92
+#: source/creator/viewport/vertex/package.d:100
 msgid "Bakes the triangulation, applying it to the mesh."
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:96
+#: source/creator/viewport/vertex/package.d:104
 msgid "Triangulation Options"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:120
+#: source/creator/viewport/vertex/package.d:134
 msgid "Bakes the auto mesh."
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:124
+#: source/creator/viewport/vertex/package.d:138
 msgid "Auto Meshing Options"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:133
+#: source/creator/viewport/vertex/package.d:147
 msgid " Apply"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:139
+#: source/creator/viewport/vertex/package.d:153
 msgid "Are you sure?"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:140
+#: source/creator/viewport/vertex/package.d:154
 msgid ""
 "The layout of the mesh has changed, all deformations to this mesh will be "
 "deleted if you continue."
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:151
+#: source/creator/viewport/vertex/package.d:165
 #: source/creator/windows/paramsplit.d:168
 msgid "Apply"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:155
+#: source/creator/viewport/vertex/package.d:169
 msgid " Cancel"
 msgstr ""
 
 #. Cancels the edited state for the axies points
-#: source/creator/viewport/vertex/package.d:166
+#: source/creator/viewport/vertex/package.d:182
 #: source/creator/widgets/dialog.d:116 source/creator/windows/paramaxes.d:169
 msgid "Cancel"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:243
+#: source/creator/viewport/vertex/package.d:267
 msgid ""
 "Cannot apply invalid mesh\n"
 "At least 3 vertices forming a triangle is needed."
