@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-02 09:43+0900\n"
-"PO-Revision-Date: 2023-01-15 20:31+0900\n"
+"PO-Revision-Date: 2023-01-29 23:05+0900\n"
 "Last-Translator: Nejikugi <63852665+scrwnl@users.noreply.github.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
@@ -1664,6 +1664,8 @@ msgid ""
 "Imports tracking data from an exported Inochi2D model which has been set up "
 "in Inochi Session."
 msgstr ""
+"Inochi Sessionでセットアップ後、エクスポートされたInochi2Dモデルからトラッキ"
+"ングデータをインポートします。"
 
 #: source/creator/widgets/mainmenu.d:442
 msgid "Puppet Texturing"
@@ -1844,7 +1846,7 @@ msgstr "余白"
 
 #: source/creator/windows/inpexport.d:221 source/creator/windows/settings.d:167
 msgid "No settings for this category."
-msgstr "このカテゴリには設定項目がありません"
+msgstr "このカテゴリには設定項目がありません。"
 
 #: source/creator/windows/inpexport.d:235
 msgid ""
@@ -1898,7 +1900,7 @@ msgstr "パラメータ設定"
 
 #: source/creator/windows/paramsplit.d:48
 msgid " (Split)"
-msgstr "(分割)"
+msgstr " (分割)"
 
 #: source/creator/windows/paramsplit.d:179
 msgid "Split Parameter"
