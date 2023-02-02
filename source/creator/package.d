@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -62,22 +62,27 @@ enum EditMode {
     /**
         Model editing mode
     */
-    ModelEdit,
+    ModelEdit = 0x1,
 
     /**
         Vertex Editing Mode
     */
-    VertexEdit,
+    VertexEdit = 0x2,
 
     /**
         Animation Editing Mode
     */
-    AnimEdit,
+    AnimEdit = 0x4,
 
     /**
         Model testing mode
     */
-    ModelTest
+    ModelTest = 0x8,
+
+    /**
+        Not real edit mode, contains all the combined modes
+    */
+    ALL = ModelEdit | VertexEdit | AnimEdit | ModelTest,
 }
 
 bool incShowVertices    = true; /// Show vertices of selected parts

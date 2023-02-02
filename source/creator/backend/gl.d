@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, ImGui & Inochi2D Project
+    Copyright © 2020-2023, ImGui & Inochi2D Project
     Distributed under the MIT, see ImGui LICENSE file.
     
     Authors: Luna Nielsen

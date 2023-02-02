@@ -4,14 +4,15 @@
     
     Authors: Luna Nielsen
 */
-module creator.panels.logger;
+module creator.panels.animlist;
 import creator.panels;
+import creator : EditMode;
 import i18n;
 
 /**
     The logger frame
 */
-class LoggerPanel : Panel {
+class AnimListPanel : Panel {
 private:
 
 protected:
@@ -22,13 +23,14 @@ protected:
 
 public:
     this() {
-        super("Logger", _("Logger"), false);
+        super("Animation List", _("Animation List"), false);
+        activeModes = EditMode.AnimEdit;
     }
 }
 
 /**
     Generate logger frame
 */
-mixin incPanel!LoggerPanel;
+mixin incPanel!AnimListPanel;
 
 

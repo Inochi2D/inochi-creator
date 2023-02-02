@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020,2022 Inochi2D Project
+    Copyright © 2020-2023,2022 Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
 */
 module creator.actions.drawable;
