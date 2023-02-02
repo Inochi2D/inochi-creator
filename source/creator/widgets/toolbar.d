@@ -96,7 +96,7 @@ void incToolbar() {
     igPopStyleColor();
 }
 
-bool incBeginInnerToolbar(float height, bool matchTitlebar=false) {
+bool incBeginInnerToolbar(float height, bool matchTitlebar=false, bool offset=true) {
 
     auto style = igGetStyle();
     auto window = igGetCurrentWindow();
@@ -115,8 +115,18 @@ bool incBeginInnerToolbar(float height, bool matchTitlebar=false) {
     igPushStyleColor(ImGuiCol.Button, barColor);
 
     if (!window.IsExplicitChild) {
-        igPushClipRect(ImVec2(window.OuterRectClipped.Max.x, window.OuterRectClipped.Max.y-1), ImVec2(window.OuterRectClipped.Min.x, window.OuterRectClipped.Min.y), false);
-        igSetCursorPosY(igGetCursorPosY()-1);
+        igPushClipRect(
+            ImVec2(
+                window.OuterRectClipped.Max.x, 
+                offset ? window.OuterRectClipped.Max.y-1 : window.OuterRectClipped.Max.y
+            ), 
+            ImVec2(
+                window.OuterRectClipped.Min.x, 
+                window.OuterRectClipped.Min.y
+            ), 
+            false
+        );
+        igSetCursorPosY(offset ? igGetCursorPosY()-1 : igGetCursorPosY());
     }
     
     bool visible = igBeginChild("###Toolbar", ImVec2(0, height), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
