@@ -343,10 +343,17 @@ void incMainMenu() {
                         // Skip panels that'll always be visible
                         if (panel.alwaysVisible) continue;
 
+                        if (!panel.isActive()) igBeginDisabled();
+
                         // Show menu item for panel
                         if(igMenuItem(panel.displayNameC, null, panel.visible, true)) {
                             panel.visible = !panel.visible;
                             incSettingsSet(panel.name~".visible", panel.visible);
+                        }
+
+                        if (!panel.isActive()) {
+                            igEndDisabled();
+                            incTooltip(_("Panel is not visible in current edit mode."));
                         }
                     }
 
