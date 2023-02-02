@@ -125,7 +125,8 @@ bool incBeginInnerToolbar(float height, bool matchTitlebar=false) {
 }
 
 void incEndInnerToolbar() {
-    igPopClipRect();
+    auto window = igGetCurrentWindow();
+    if (!window.IsExplicitChild) igPopClipRect();
 
     igEndChild();
     igPopStyleColor(2);
