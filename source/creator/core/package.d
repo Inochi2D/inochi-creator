@@ -695,7 +695,7 @@ void incEndLoop() {
 
     
     version(InBranding) {
-        import creator.core.egg;
+        import creator.core.egg : incAdaUpdate;
         incAdaUpdate();
     }
 

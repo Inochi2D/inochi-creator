@@ -51,7 +51,10 @@ version(InBranding) {
     // UwU
     void incAdaUpdate() {
         if (logoClickCounter >= CLICK_THRESH) {
+            float fbScale = igGetIO().DisplayFramebufferScale.x;
             float uiScale = incGetUIScale();
+
+            cam.scale = vec2(1*fbScale, 1*fbScale);
 
             int w, h;
             int ww, wh;
@@ -69,7 +72,7 @@ version(InBranding) {
             adaOffset -= adaVelocity*deltaTime();
             adaVelocity.y += 500.0*deltaTime();
 
-            inSetViewport(w, h);
+            inSetViewport(cast(int)(w*fbScale), cast(int)(h*fbScale));
             inDrawTextureAtRect(
                 incGetAda(), 
                 rect(adaOffset.x, halfHeight-adaOffset.y, ADA_SIZE*uiScale, ADA_SIZE*uiScale),
