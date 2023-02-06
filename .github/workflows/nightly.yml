@@ -76,7 +76,7 @@ jobs:
         git clone https://github.com/KitsunebiGames/i18n.git
         git clone https://github.com/Inochi2D/dcv-i2d
         dub add-local bindbc-imgui/ "0.7.0"
-        dub add-local inochi2d/ "0.7.2"
+        dub add-local inochi2d/ "0.8.0"
         dub add-local facetrack-d/ "0.6.2"
         dub add-local i18n/ "1.0.1"
         dub add-local dcv-i2d/ "0.3.0"
@@ -134,7 +134,7 @@ jobs:
         git clone https://github.com/KitsunebiGames/i18n.git
         git clone https://github.com/Inochi2D/dcv-i2d
         dub add-local bindbc-imgui/ "0.7.0"
-        dub add-local inochi2d/ "0.7.2"
+        dub add-local inochi2d/ "0.8.0"
         dub add-local facetrack-d/ "0.6.2"
         dub add-local i18n/ "1.0.1"
         dub add-local dcv-i2d/ "0.3.0"
@@ -210,7 +210,7 @@ jobs:
         git clone https://github.com/KitsunebiGames/i18n.git
         git clone https://github.com/Inochi2D/dcv-i2d
         dub add-local bindbc-imgui/ "0.7.0"
-        dub add-local inochi2d/ "0.7.2"
+        dub add-local inochi2d/ "0.8.0"
         dub add-local facetrack-d/ "0.6.2"
         dub add-local i18n/ "1.0.1"
         dub add-local dcv-i2d/ "0.3.0"
