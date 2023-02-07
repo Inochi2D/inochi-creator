@@ -13,6 +13,7 @@ import creator.viewport;
 import creator.viewport.common;
 import creator.viewport.common.mesh;
 import creator.viewport.common.mesheditor.base;
+import creator.viewport.common.mesheditor.impl;
 import creator.viewport.common.spline;
 import creator.core.input;
 import creator.core.actionstack;
