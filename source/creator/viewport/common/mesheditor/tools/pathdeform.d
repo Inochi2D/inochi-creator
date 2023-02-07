@@ -22,6 +22,15 @@ import std.stdio;
 
 class PathDeformTool : NodeSelect {
 
+    CatmullSpline path;
+    uint pathDragTarget;
+
+    override
+    void setToolMode(VertexToolMode toolMode, IncMeshEditorOne impl) {
+        pathDragTarget = -1;
+        super.setToolMode(toolMode, impl);
+    }
+
     override bool update(ImGuiIO* io, IncMeshEditorOne impl, out bool changed) {
         super.update(io, impl, changed);
         if (impl.deforming) {
@@ -35,7 +44,7 @@ class PathDeformTool : NodeSelect {
         impl.vtxAtMouse = null; // Do not need this in this mode
 
         if (incInputIsKeyPressed(ImGuiKey.Tab)) {
-            if (impl.path.target is null) {
+            if (path.target is null) {
                 impl.createPathTarget();
                 impl.getCleanDeformAction();
             } else {
@@ -53,33 +62,33 @@ class PathDeformTool : NodeSelect {
             changed = true;
         }
 
-        CatmullSpline editPath = impl.path;
+        CatmullSpline editPath = path;
         if (impl.deforming) {
             if (!impl.hasAction())
                 impl.getCleanDeformAction();
-            editPath = impl.path.target;
+            editPath = path.target;
         }
 
         if (igIsMouseDoubleClicked(ImGuiMouseButton.Left) && !impl.deforming) {
-            int idx = impl.path.findPoint(impl.mousePos);
-            if (idx != -1) impl.path.removePoint(idx);
-            else impl.path.addPoint(impl.mousePos);
-            impl.pathDragTarget = -1;
-            impl.path.mapReference();
+            int idx = path.findPoint(impl.mousePos);
+            if (idx != -1) path.removePoint(idx);
+            else path.addPoint(impl.mousePos);
+            pathDragTarget = -1;
+            path.mapReference();
         } else if (igIsMouseClicked(ImGuiMouseButton.Left)) {
-            impl.pathDragTarget = editPath.findPoint(impl.mousePos);
+            pathDragTarget = editPath.findPoint(impl.mousePos);
         }
 
         if (incDragStartedInViewport(ImGuiMouseButton.Left) && igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
-            if (impl.pathDragTarget != -1)  {
+            if (pathDragTarget != -1)  {
                 impl.isDragging = true;
                 impl.getDeformAction();
             }
         }
 
-        if (impl.isDragging && impl.pathDragTarget != -1) {
+        if (impl.isDragging && pathDragTarget != -1) {
             vec2 relTranslation = impl.mousePos - impl.lastMousePos;
-            editPath.points[impl.pathDragTarget].position += relTranslation;
+            editPath.points[pathDragTarget].position += relTranslation;
 
             editPath.update();
             if (impl.deforming) {
@@ -88,11 +97,25 @@ class PathDeformTool : NodeSelect {
                     impl.markActionDirty();
                 changed = true;
             } else {
-                impl.path.mapReference();
+                path.mapReference();
             }
         }
 
         if (changed) impl.refreshMesh();
         return changed;
     }
+
+    override
+    void draw(Camera camera, IncMeshEditorOne impl) {
+        super.draw(camera, impl);
+
+        if (path && path.target && impl.deforming) {
+            path.draw(impl.transform, vec4(0, 0.6, 0.6, 1));
+            path.target.draw(impl.transform, vec4(0, 1, 0, 1));
+        } else if (path) {
+            if (path.target) path.target.draw(impl.transform, vec4(0, 0.6, 0, 1));
+            path.draw(impl.transform, vec4(0, 1, 1, 1));
+        }
+    }
+
 }

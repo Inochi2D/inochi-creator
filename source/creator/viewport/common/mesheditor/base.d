@@ -73,8 +73,6 @@ public:
     IncMesh previewMesh;
 
     bool deforming = false;
-    CatmullSpline path;
-    uint pathDragTarget;
     float meshEditAOE = 4;
 
     bool isSelected(MeshVertex* vert) {
@@ -217,14 +215,7 @@ public:
         return toolMode;
     }
 
-    void setToolMode(VertexToolMode toolMode) {
-        assert(!deformOnly || toolMode != VertexToolMode.Connect);
-        this.toolMode = toolMode;
-        isDragging = false;
-        isSelecting = false;
-        pathDragTarget = -1;
-        deselectAll();
-    }
+    abstract void setToolMode(VertexToolMode toolMode);
 
     bool previewingTriangulation() {
          return previewTriangulate && toolMode == VertexToolMode.Points;
@@ -254,13 +245,9 @@ public:
     abstract bool update(ImGuiIO* io, Camera camera);
     abstract void draw(Camera camera);
 
-    CatmullSpline getPath() {
-        return path;
-    }
-
-    void setPath(CatmullSpline path) {
-        this.path = path;
-    }
+    // getPath / setPath is remained for compatibility. should be migrated to implementation of PathDeformTool
+    abstract CatmullSpline getPath();
+    abstract void setPath(CatmullSpline path);
 
     abstract void viewportTools(VertexToolMode mode);
 

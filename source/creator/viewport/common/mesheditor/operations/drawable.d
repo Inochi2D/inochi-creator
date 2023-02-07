@@ -256,17 +256,17 @@ public:
 
     override
     void createPathTarget() {
-        path.createTarget(mesh, mat4.identity); //transform.inverse() * target.transform.matrix);
+        getPath().createTarget(mesh, mat4.identity); //transform.inverse() * target.transform.matrix);
     }
 
     override
     mat4 updatePathTarget() {
-        return path.updateTarget(mesh);
+        return getPath().updateTarget(mesh);
     }
 
     override
     void resetPathTarget() {
-        path.resetTarget(mesh);
+        getPath().resetTarget(mesh);
     }
 
     override
@@ -394,13 +394,8 @@ public:
             inDbgDrawLines(vec4(0.8, 0, 0.8, 1), trans);
         }
 
-        if (path && path.target && deforming) {
-            path.draw(transform, vec4(0, 0.6, 0.6, 1));
-            path.target.draw(transform, vec4(0, 1, 0, 1));
-        } else if (path) {
-            if (path.target) path.target.draw(transform, vec4(0, 0.6, 0, 1));
-            path.draw(transform, vec4(0, 1, 1, 1));
-        }
+        if (toolMode in tools)
+            tools[toolMode].draw(camera, this);
     }
 
     override
@@ -414,10 +409,11 @@ public:
             remapPathTarget(p, mat4.identity);
             return p;
         }
-        if (path) {
-            if (path.target)
-                path.target = doAdjust(path.target);
-            path = doAdjust(path);
+        if (getPath()) {
+            if (getPath().target)
+                getPath().target = doAdjust(getPath().target);
+            auto path = getPath();
+            setPath(doAdjust(path));
         }
         lastMousePos = (trans * vec4(lastMousePos, 0, 1)).xy;
         transform = this.target.transform.matrix;

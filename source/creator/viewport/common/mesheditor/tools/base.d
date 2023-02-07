@@ -23,6 +23,8 @@ import std.stdio;
 
 interface Tool {
     bool update(ImGuiIO* io, IncMeshEditorOne impl, out bool changed);
+    void setToolMode(VertexToolMode toolMode, IncMeshEditorOne impl);
+    void draw(Camera camera, IncMeshEditorOne impl);
 }
 
 

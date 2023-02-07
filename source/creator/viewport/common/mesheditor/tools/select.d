@@ -23,6 +23,15 @@ import std.stdio;
 
 class NodeSelect : Tool, Draggable {
 
+    override
+    void setToolMode(VertexToolMode toolMode, IncMeshEditorOne impl) {
+        assert(!impl.deformOnly || toolMode != VertexToolMode.Connect);
+        impl.isDragging = false;
+        impl.isSelecting = false;
+        impl.deselectAll();
+    }
+
+
     override bool update(ImGuiIO* io, IncMeshEditorOne impl, out bool changed) {
         impl.lastMousePos = impl.mousePos;
 
@@ -100,5 +109,9 @@ class NodeSelect : Tool, Draggable {
         }
 
         return false;
+    }
+
+    override
+    void draw(Camera camera, IncMeshEditorOne impl) {
     }
 }

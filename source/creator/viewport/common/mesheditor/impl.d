@@ -46,6 +46,18 @@ public:
     }
 
     override
+    CatmullSpline getPath() {
+        auto pathTool = cast(PathDeformTool)(tools[VertexToolMode.PathDeform]);
+        return pathTool.path;
+    }
+
+    override
+    void setPath(CatmullSpline path) {
+        auto pathTool = cast(PathDeformTool)(tools[VertexToolMode.PathDeform]);
+        pathTool.path = path;
+    }
+
+    override
     bool update(ImGuiIO* io, Camera camera) {
         bool changed = false;
         if (toolMode in tools) {
@@ -68,22 +80,31 @@ public:
         switch (mode) {
         case VertexToolMode.Points:
             setToolMode(VertexToolMode.Points);
-            path = null;
+            setPath(null);
             refreshMesh();
             break;
         case VertexToolMode.Connect:
             setToolMode(VertexToolMode.Connect);
-            path = null;
+            setPath(null);
             refreshMesh();
             break;
         case VertexToolMode.PathDeform:
             import std.stdio;
             setToolMode(VertexToolMode.PathDeform);
-            path = new CatmullSpline;
+            setPath(new CatmullSpline);
             deforming = false;
             refreshMesh();
             break;
         default:       
         }
     }
+
+    override
+    void setToolMode(VertexToolMode toolMode) {
+        if (toolMode in tools) {
+            this.toolMode = toolMode;
+            tools[toolMode].setToolMode(toolMode, this);
+        }
+    }
+
 }
