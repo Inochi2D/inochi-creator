@@ -81,12 +81,12 @@ class PathDeformTool : NodeSelect {
 
         if (incDragStartedInViewport(ImGuiMouseButton.Left) && igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
             if (pathDragTarget != -1)  {
-                impl.isDragging = true;
+                isDragging = true;
                 impl.getDeformAction();
             }
         }
 
-        if (impl.isDragging && pathDragTarget != -1) {
+        if (isDragging && pathDragTarget != -1) {
             vec2 relTranslation = impl.mousePos - impl.lastMousePos;
             editPath.points[pathDragTarget].position += relTranslation;
 

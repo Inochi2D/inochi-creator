@@ -101,7 +101,7 @@ class PointTool : NodeSelect {
                 //TO:-------------should be updateDeformEdit --------------------
             }
         }
-        if (!impl.isDragging && !impl.isSelecting &&
+        if (!isDragging && !impl.isSelecting &&
             incInputIsMouseReleased(ImGuiMouseButton.Left) && impl.maybeSelectOne !is null) {
             impl.selectOne(impl.maybeSelectOne);
         }
@@ -166,7 +166,7 @@ class PointTool : NodeSelect {
                 impl.isSelecting = true;
             }
         }
-        if (!impl.isDragging && !impl.isSelecting &&
+        if (!isDragging && !impl.isSelecting &&
             incInputIsMouseReleased(ImGuiMouseButton.Left) && impl.maybeSelectOne !is null) {
             impl.selectOne(impl.maybeSelectOne);
         }

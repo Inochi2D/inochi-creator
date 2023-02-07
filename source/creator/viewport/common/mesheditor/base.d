@@ -63,7 +63,6 @@ public:
     vec2 lastMousePos;
     vec2 mousePos;
 
-    bool isDragging = false;
     bool isSelecting = false;
     bool mutateSelection = false;
     bool invertSelection = false;

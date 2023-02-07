@@ -22,11 +22,12 @@ import std.algorithm.searching;
 import std.stdio;
 
 class NodeSelect : Tool, Draggable {
+    bool isDragging = false;
 
     override
     void setToolMode(VertexToolMode toolMode, IncMeshEditorOne impl) {
         assert(!impl.deformOnly || toolMode != VertexToolMode.Connect);
-        impl.isDragging = false;
+        isDragging = false;
         impl.isSelecting = false;
         impl.deselectAll();
     }
@@ -57,7 +58,7 @@ class NodeSelect : Tool, Draggable {
 
     override bool onDragStart(vec2 mousePos, IncMeshEditorOne impl) {
         if (!impl.isSelecting) {
-            impl.isDragging = true;
+            isDragging = true;
             impl.getDeformAction();
             return true;
         }
@@ -65,7 +66,7 @@ class NodeSelect : Tool, Draggable {
     }
 
     override bool onDragEnd(vec2 mousePos, IncMeshEditorOne impl) {
-        impl.isDragging = false;
+        isDragging = false;
         if (impl.isSelecting) {
             if (impl.mutateSelection) {
                 if (!impl.invertSelection) {
@@ -94,7 +95,7 @@ class NodeSelect : Tool, Draggable {
     }
 
     override bool onDragUpdate(vec2 mousePos, IncMeshEditorOne impl) {
-        if (impl.isDragging) {
+        if (isDragging) {
             foreach(select; impl.selected) {
                 impl.foreachMirror((uint axis) {
                     MeshVertex *v = impl.mirrorVertex(axis, select);
@@ -104,6 +105,8 @@ class NodeSelect : Tool, Draggable {
                     v.position += impl.mirror(axis, mousePos - impl.lastMousePos);
                 });
             }
+            if (impl.selected.length > 0)
+                impl.maybeSelectOne = null;
             impl.refreshMesh();
             return true;
         }
