@@ -1,6 +1,6 @@
 module creator.viewport.common.mesheditor.tools.pathdeform;
 import creator.viewport.common.mesheditor.tools.select;
-import creator.viewport.common.mesheditor.base;
+import creator.viewport.common.mesheditor.operations;
 import i18n;
 import creator.viewport;
 import creator.viewport.common;

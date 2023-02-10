@@ -10,9 +10,7 @@ module creator.viewport.common.mesheditor;
 */
 import i18n;
 import creator.viewport;
-public import creator.viewport.common.mesheditor.base;
-public import creator.viewport.common.mesheditor.operations.drawable;
-public import creator.viewport.common.mesheditor.operations.node;
+public import creator.viewport.common.mesheditor.operations;
 import creator.viewport.common;
 import creator.viewport.common.mesh;
 import creator.viewport.common.spline;

@@ -10,6 +10,7 @@ public import creator.actions.parameter;
 public import creator.actions.binding;
 public import creator.actions.mesheditor;
 public import creator.actions.drawable;
+public import creator.actions.mesh;
 
 /**
     An undo/redo-able action

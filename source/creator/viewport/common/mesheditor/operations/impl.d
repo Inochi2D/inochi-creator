@@ -1,7 +1,7 @@
-module creator.viewport.common.mesheditor.impl;
+module creator.viewport.common.mesheditor.operations.impl;
 
 import creator.viewport.common.mesheditor.tools;
-import creator.viewport.common.mesheditor.base;
+import creator.viewport.common.mesheditor.operations.base;
 import i18n;
 import creator.viewport;
 import creator.viewport.common;

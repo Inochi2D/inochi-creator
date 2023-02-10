@@ -1,12 +1,11 @@
 module creator.viewport.common.mesheditor.tools.connect;
 
 import creator.viewport.common.mesheditor.tools.select;
-import creator.viewport.common.mesheditor.base;
+import creator.viewport.common.mesheditor.operations;
 import i18n;
 import creator.viewport;
 import creator.viewport.common;
 import creator.viewport.common.mesh;
-import creator.viewport.common.spline;
 import creator.core.input;
 import creator.core.actionstack;
 import creator.actions;
@@ -17,8 +16,6 @@ import inochi2d;
 import inochi2d.core.dbg;
 import bindbc.opengl;
 import bindbc.imgui;
-import std.algorithm.mutation;
-import std.algorithm.searching;
 import std.stdio;
 
 class ConnectTool : NodeSelect {
@@ -36,21 +33,35 @@ class ConnectTool : NodeSelect {
                 auto prev = impl.selectOne(impl.vtxAtMouse);
                 if (prev !is null) {
                     if (prev != impl.selected[$-1]) {
+                        auto implDrawable = cast(IncMeshEditorOneDrawable)(impl);
+                        auto mesh = implDrawable.getMesh();
 
                         // Connect or disconnect between previous and this node
                         if (!prev.isConnectedTo(impl.selected[$-1])) {
+                            auto action = new MeshConnectAction(impl.getTarget().name, impl, mesh);
                             impl.foreachMirror((uint axis) {
                                 MeshVertex *mPrev = impl.mirrorVertex(axis, prev);
                                 MeshVertex *mSel = impl.mirrorVertex(axis, impl.selected[$-1]);
-                                if (mPrev !is null && mSel !is null) mPrev.connect(mSel);
+                                if (mPrev !is null && mSel !is null) {
+                                    action.connect(mPrev, mSel);
+//                                    mPrev.connect(mSel);
+                                }
                             });
+                            action.updateNewState();
+                            incActionPush(action);
                             changed = true;
                         } else {
+                            auto action = new MeshDisconnectAction(impl.getTarget().name, impl, mesh);
                             impl.foreachMirror((uint axis) {
                                 MeshVertex *mPrev = impl.mirrorVertex(axis, prev);
                                 MeshVertex *mSel = impl.mirrorVertex(axis, impl.selected[$-1]);
-                                if (mPrev !is null && mSel !is null) mPrev.disconnect(mSel);
+                                if (mPrev !is null && mSel !is null) {
+                                    action.disconnect(mPrev, mSel);
+//                                    mPrev.disconnect(mSel);
+                                }
                             });
+                            action.updateNewState();
+                            incActionPush(action);
                             changed = true;
                         }
                         if (!io.KeyShift) impl.deselectAll();

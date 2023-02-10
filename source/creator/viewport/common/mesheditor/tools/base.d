@@ -4,7 +4,7 @@ import i18n;
 import creator.viewport;
 import creator.viewport.common;
 import creator.viewport.common.mesh;
-import creator.viewport.common.mesheditor.base;
+import creator.viewport.common.mesheditor.operations;
 import creator.viewport.common.spline;
 import creator.core.input;
 import creator.core.actionstack;
