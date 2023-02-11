@@ -78,6 +78,7 @@ class PointTool : NodeSelect {
         }
     }
 
+
     bool updateMeshEdit(ImGuiIO* io, IncMeshEditorOne impl, out bool changed) {
         incStatusTooltip(_("Select"), _("Left Mouse"));
         incStatusTooltip(_("Create"), _("Ctrl+Left Mouse"));
@@ -131,7 +132,6 @@ class PointTool : NodeSelect {
             }
         }
 
-        //FROM:-------------should be updateDeformEdit --------------------
         // Key actions
         if (incInputIsKeyPressed(ImGuiKey.Delete)) {
             auto action = new MeshRemoveAction(impl.getTarget().name, impl, mesh);
@@ -169,8 +169,8 @@ class PointTool : NodeSelect {
                     if (v2 !is null) {
                         if (moveAction is null) {
                             moveAction = new MeshMoveAction(implDrawable.getTarget().name, impl, mesh);
-                            moveAction.moveVertex(v2, v2.position + mDelta);
                         }
+                        moveAction.moveVertex(v2, v2.position + mDelta);
                     }
                 }
             });
@@ -192,7 +192,6 @@ class PointTool : NodeSelect {
             moveAction.updateNewState();
             incActionPush(moveAction);
         }
-        //TO:-------------should be updateDeformEdit --------------------
 
         // Left click selection
         if (igIsMouseClicked(ImGuiMouseButton.Left)) {
@@ -200,10 +199,7 @@ class PointTool : NodeSelect {
                 // Add/remove action
                 addOrRemoveVertex(false);
             } else {
-                //FROM:-------------should be updateDeformEdit --------------------
                 // Select / drag start
-//                        action = getCleanDeformAction();
-
                 if (impl.isPointOver(impl.mousePos)) {
                     if (io.KeyShift) impl.toggleSelect(impl.vtxAtMouse);
                     else if (!impl.isSelected(impl.vtxAtMouse))  impl.selectOne(impl.vtxAtMouse);
@@ -212,7 +208,6 @@ class PointTool : NodeSelect {
                     impl.selectOrigin = impl.mousePos;
                     impl.isSelecting = true;
                 }
-                //TO:-------------should be updateDeformEdit --------------------
             }
         }
         if (!isDragging && !impl.isSelecting &&
@@ -233,6 +228,7 @@ class PointTool : NodeSelect {
         onDragUpdate(impl.mousePos, impl);
         return true;
     }
+
 
     bool updateDeformEdit(ImGuiIO* io, IncMeshEditorOne impl, out bool changed) {
 
