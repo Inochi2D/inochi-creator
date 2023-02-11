@@ -238,6 +238,7 @@ class PointTool : NodeSelect {
 
         incStatusTooltip(_("Select"), _("Left Mouse"));
 
+        bool keyboardMoved = false;
         void shiftSelection(vec2 delta) {
             float magnitude = 10.0;
             if (io.KeyAlt) magnitude = 1.0;
@@ -248,6 +249,10 @@ class PointTool : NodeSelect {
                 vec2 mDelta = impl.mirrorDelta(axis, delta);
                 foreach(v; impl.selected) {
                     MeshVertex *v2 = impl.mirrorVertex(axis, v);
+                    impl.getDeformAction();
+                    impl.updateAddVertexAction(v);
+                    impl.markActionDirty();
+                    keyboardMoved = true;
                     if (v2 !is null) v2.position += mDelta;
                 }
             });
@@ -264,6 +269,8 @@ class PointTool : NodeSelect {
         } else if (incInputIsKeyPressed(ImGuiKey.UpArrow)) {
             shiftSelection(vec2(0, -1));
         }
+        if (keyboardMoved)
+            impl.pushDeformAction();
 
         // Left click selection
         if (igIsMouseClicked(ImGuiMouseButton.Left)) {
