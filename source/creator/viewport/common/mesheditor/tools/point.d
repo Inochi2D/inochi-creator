@@ -23,32 +23,33 @@ import std.stdio;
 
 class PointTool : NodeSelect {
     Action action;
-    void resetAction() {
-    }
-    void pushAction() {
-    }
 
     override bool onDragStart(vec2 mousePos, IncMeshEditorOne impl) {
-        if (!impl.deformOnly && !impl.isSelecting && !isDragging) {
-            auto implDrawable = cast(IncMeshEditorOneDrawable)impl;
-            auto mesh = implDrawable.getMesh();
+        if (!impl.deformOnly) {
+            if (!impl.isSelecting && !isDragging) {
+                auto implDrawable = cast(IncMeshEditorOneDrawable)impl;
+                auto mesh = implDrawable.getMesh();
 
-            isDragging = true;
-            action = new MeshMoveAction(impl.getTarget().name, impl, mesh);
-            return true;
-        }
-        return super.onDragStart(mousePos, impl);
+                isDragging = true;
+                action = new MeshMoveAction(impl.getTarget().name, impl, mesh);
+                return true;
+            }
+            return false;
+        } else
+            return super.onDragStart(mousePos, impl);
     }
 
     override bool onDragEnd(vec2 mousePos, IncMeshEditorOne impl) {
-        if (action !is null) {
-            if (auto meshAction = cast(MeshAction)(action)) {
-                if (meshAction.dirty) {
-                    meshAction.updateNewState();
-                    incActionPush(action);
+        if (!impl.deformOnly) {
+            if (action !is null) {
+                if (auto meshAction = cast(MeshAction)(action)) {
+                    if (meshAction.dirty) {
+                        meshAction.updateNewState();
+                        incActionPush(action);
+                    }
                 }
+                action = null;
             }
-            action = null;
         }
         return super.onDragEnd(mousePos, impl);
     }
@@ -72,9 +73,11 @@ class PointTool : NodeSelect {
                 return true;
             }
             return false;
-        } else
+        } else {
             return super.onDragUpdate(mousePos, impl);
+        }
     }
+
 
     bool updateMeshEdit(ImGuiIO* io, IncMeshEditorOne impl, out bool changed) {
         incStatusTooltip(_("Select"), _("Left Mouse"));
@@ -129,7 +132,6 @@ class PointTool : NodeSelect {
             }
         }
 
-        //FROM:-------------should be updateDeformEdit --------------------
         // Key actions
         if (incInputIsKeyPressed(ImGuiKey.Delete)) {
             auto action = new MeshRemoveAction(impl.getTarget().name, impl, mesh);
@@ -167,8 +169,8 @@ class PointTool : NodeSelect {
                     if (v2 !is null) {
                         if (moveAction is null) {
                             moveAction = new MeshMoveAction(implDrawable.getTarget().name, impl, mesh);
-                            moveAction.moveVertex(v2, v2.position + mDelta);
                         }
+                        moveAction.moveVertex(v2, v2.position + mDelta);
                     }
                 }
             });
@@ -190,7 +192,6 @@ class PointTool : NodeSelect {
             moveAction.updateNewState();
             incActionPush(moveAction);
         }
-        //TO:-------------should be updateDeformEdit --------------------
 
         // Left click selection
         if (igIsMouseClicked(ImGuiMouseButton.Left)) {
@@ -198,10 +199,7 @@ class PointTool : NodeSelect {
                 // Add/remove action
                 addOrRemoveVertex(false);
             } else {
-                //FROM:-------------should be updateDeformEdit --------------------
                 // Select / drag start
-//                        action = getCleanDeformAction();
-
                 if (impl.isPointOver(impl.mousePos)) {
                     if (io.KeyShift) impl.toggleSelect(impl.vtxAtMouse);
                     else if (!impl.isSelected(impl.vtxAtMouse))  impl.selectOne(impl.vtxAtMouse);
@@ -210,7 +208,6 @@ class PointTool : NodeSelect {
                     impl.selectOrigin = impl.mousePos;
                     impl.isSelecting = true;
                 }
-                //TO:-------------should be updateDeformEdit --------------------
             }
         }
         if (!isDragging && !impl.isSelecting &&
@@ -232,10 +229,12 @@ class PointTool : NodeSelect {
         return true;
     }
 
+
     bool updateDeformEdit(ImGuiIO* io, IncMeshEditorOne impl, out bool changed) {
 
         incStatusTooltip(_("Select"), _("Left Mouse"));
 
+        bool keyboardMoved = false;
         void shiftSelection(vec2 delta) {
             float magnitude = 10.0;
             if (io.KeyAlt) magnitude = 1.0;
@@ -246,6 +245,10 @@ class PointTool : NodeSelect {
                 vec2 mDelta = impl.mirrorDelta(axis, delta);
                 foreach(v; impl.selected) {
                     MeshVertex *v2 = impl.mirrorVertex(axis, v);
+                    impl.getDeformAction();
+                    impl.updateAddVertexAction(v);
+                    impl.markActionDirty();
+                    keyboardMoved = true;
                     if (v2 !is null) v2.position += mDelta;
                 }
             });
@@ -262,6 +265,8 @@ class PointTool : NodeSelect {
         } else if (incInputIsKeyPressed(ImGuiKey.UpArrow)) {
             shiftSelection(vec2(0, -1));
         }
+        if (keyboardMoved)
+            impl.pushDeformAction();
 
         // Left click selection
         if (igIsMouseClicked(ImGuiMouseButton.Left)) {
@@ -284,7 +289,7 @@ class PointTool : NodeSelect {
             onDragStart(impl.mousePos, impl);
         }
 
-        onDragUpdate(impl.mousePos, impl);
+        changed = onDragUpdate(impl.mousePos, impl) || changed;
         return true;
     }
 
