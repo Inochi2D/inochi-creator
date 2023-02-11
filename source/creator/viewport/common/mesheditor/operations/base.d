@@ -6,7 +6,7 @@
     - Luna Nielsen
     - Asahi Lina
 */
-module creator.viewport.common.mesheditor.base;
+module creator.viewport.common.mesheditor.operations.base;
 
 import creator.viewport.common.mesheditor.tools.base;
 import i18n;
