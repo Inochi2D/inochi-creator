@@ -23,32 +23,33 @@ import std.stdio;
 
 class PointTool : NodeSelect {
     Action action;
-    void resetAction() {
-    }
-    void pushAction() {
-    }
 
     override bool onDragStart(vec2 mousePos, IncMeshEditorOne impl) {
-        if (!impl.deformOnly && !impl.isSelecting && !isDragging) {
-            auto implDrawable = cast(IncMeshEditorOneDrawable)impl;
-            auto mesh = implDrawable.getMesh();
+        if (!impl.deformOnly) {
+            if (!impl.isSelecting && !isDragging) {
+                auto implDrawable = cast(IncMeshEditorOneDrawable)impl;
+                auto mesh = implDrawable.getMesh();
 
-            isDragging = true;
-            action = new MeshMoveAction(impl.getTarget().name, impl, mesh);
-            return true;
-        }
-        return super.onDragStart(mousePos, impl);
+                isDragging = true;
+                action = new MeshMoveAction(impl.getTarget().name, impl, mesh);
+                return true;
+            }
+            return false;
+        } else
+            return super.onDragStart(mousePos, impl);
     }
 
     override bool onDragEnd(vec2 mousePos, IncMeshEditorOne impl) {
-        if (action !is null) {
-            if (auto meshAction = cast(MeshAction)(action)) {
-                if (meshAction.dirty) {
-                    meshAction.updateNewState();
-                    incActionPush(action);
+        if (!impl.deformOnly) {
+            if (action !is null) {
+                if (auto meshAction = cast(MeshAction)(action)) {
+                    if (meshAction.dirty) {
+                        meshAction.updateNewState();
+                        incActionPush(action);
+                    }
                 }
+                action = null;
             }
-            action = null;
         }
         return super.onDragEnd(mousePos, impl);
     }
@@ -72,8 +73,9 @@ class PointTool : NodeSelect {
                 return true;
             }
             return false;
-        } else
+        } else {
             return super.onDragUpdate(mousePos, impl);
+        }
     }
 
     bool updateMeshEdit(ImGuiIO* io, IncMeshEditorOne impl, out bool changed) {
@@ -284,7 +286,7 @@ class PointTool : NodeSelect {
             onDragStart(impl.mousePos, impl);
         }
 
-        onDragUpdate(impl.mousePos, impl);
+        changed = onDragUpdate(impl.mousePos, impl) || changed;
         return true;
     }
 
