@@ -238,9 +238,13 @@ void incVertexEditSetTarget(Drawable target) {
     editor.setTarget(target);
 }
 
-void incVertexEditCopyMeshDataToTarget(Drawable drawable, MeshData data) {
-    if (editor.getEditorFor(drawable)) {
-        editor.getEditorFor(drawable).importMesh(data);
+void incVertexEditCopyMeshDataToTarget(Drawable target, Drawable drawable, MeshData data) {
+    if (editor.getEditorFor(target)) {
+        editor.getEditorFor(target).importMesh(data);
+    } else {
+        editor.addTarget(target);
+        assert(editor.getEditorFor(target));
+        editor.getEditorFor(target).importMesh(data);
     }
 }
 
