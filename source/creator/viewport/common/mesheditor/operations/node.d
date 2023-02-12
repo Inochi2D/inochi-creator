@@ -63,7 +63,7 @@ public:
         translation = vec2(target.getValue("transform.t.x"), target.getValue("transform.t.y"));
     }
 
-    override void importMesh(MeshData data) {}
+    override void importMesh(ref MeshData data) {}
 
     override
     void applyOffsets(vec2[] offsets) {

@@ -224,7 +224,7 @@ public:
     abstract void setTarget(Node target);
     abstract void resetMesh();
     abstract void refreshMesh();
-    abstract void importMesh(MeshData data);
+    abstract void importMesh(ref MeshData data);
     abstract void applyOffsets(vec2[] offsets);
     abstract vec2[] getOffsets();
 

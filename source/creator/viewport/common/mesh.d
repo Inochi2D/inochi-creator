@@ -69,7 +69,6 @@ private:
         // Iterate over flat mesh and extract it in to
         // vertices and "connections"
         MeshVertex*[] iVertices;
-
         iVertices.length = data.vertices.length;
         foreach(idx, vertex; data.vertices) {
             iVertices[idx] = new MeshVertex(vertex, []);
