@@ -77,7 +77,7 @@ public:
     }
 
     override
-    void importMesh(MeshData data) {
+    void importMesh(ref MeshData data) {
         mesh.import_(data);
         mesh.refresh();
     }

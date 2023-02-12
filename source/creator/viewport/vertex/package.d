@@ -238,7 +238,7 @@ void incVertexEditSetTarget(Drawable target) {
     editor.setTarget(target);
 }
 
-void incVertexEditCopyMeshDataToTarget(Drawable target, Drawable drawable, MeshData data) {
+void incVertexEditCopyMeshDataToTarget(Drawable target, Drawable drawable, ref MeshData data) {
     if (editor.getEditorFor(target)) {
         editor.getEditorFor(target).importMesh(data);
     } else {
