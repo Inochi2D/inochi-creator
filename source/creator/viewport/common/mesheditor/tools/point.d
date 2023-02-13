@@ -271,7 +271,7 @@ class PointTool : NodeSelect {
         }
         if (!isDragging && !impl.isSelecting &&
             incInputIsMouseReleased(ImGuiMouseButton.Left) && impl.maybeSelectOne !is null) {
-            return SelectActionID.SelectMaybeSelectOne; // SelectMaybeSelectOne
+            return SelectActionID.SelectMaybeSelectOne;
         }
 
 
@@ -334,6 +334,8 @@ class PointTool : NodeSelect {
         } else if (action == SelectActionID.SelectOne) {  
             if (impl.vtxAtMouse)
                 impl.selectOne(impl.vtxAtMouse);
+            else
+                impl.deselectAll();
         } else if (action == SelectActionID.MaybeSelectOne) {
             if (impl.vtxAtMouse)
                 impl.maybeSelectOne = impl.vtxAtMouse;
