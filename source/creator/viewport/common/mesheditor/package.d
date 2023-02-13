@@ -198,7 +198,7 @@ public:
     void setMirrorVert(bool mirrorVert) {
         this.mirrorVert = mirrorVert;
         foreach (e; editors) {
-            e.mirrorHoriz = mirrorVert;
+            e.mirrorVert = mirrorVert;
         }
     }
 
