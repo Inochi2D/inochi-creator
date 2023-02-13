@@ -83,6 +83,13 @@ class ConnectTool : NodeSelect {
 
     override bool update(ImGuiIO* io, IncMeshEditorOne impl, int action, out bool changed) {
         super.update(io, impl, action, changed);
+
+        if (incInputIsMouseReleased(ImGuiMouseButton.Left)) {
+            onDragEnd(impl.mousePos, impl);
+        }
+
+        if (igIsMouseClicked(ImGuiMouseButton.Left)) impl.maybeSelectOne = null;
+
         if (!impl.deformOnly)
             updateMeshEdit(io, impl, changed);
         return changed;
