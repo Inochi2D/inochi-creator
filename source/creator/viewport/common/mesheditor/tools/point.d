@@ -356,70 +356,7 @@ class PointTool : NodeSelect {
             changed = onDragUpdate(impl.mousePos, impl) || changed;
         return true;
     }
-    /*
-    bool updateDeformEdit(ImGuiIO* io, IncMeshEditorOne impl, out bool changed) {
 
-        incStatusTooltip(_("Select"), _("Left Mouse"));
-
-        bool keyboardMoved = false;
-        void shiftSelection(vec2 delta) {
-            float magnitude = 10.0;
-            if (io.KeyAlt) magnitude = 1.0;
-            else if (io.KeyShift) magnitude = 100.0;
-            delta *= magnitude;
-
-            impl.foreachMirror((uint axis) {
-                vec2 mDelta = impl.mirrorDelta(axis, delta);
-                foreach(v; impl.selected) {
-                    MeshVertex *v2 = impl.mirrorVertex(axis, v);
-                    impl.getDeformAction();
-                    impl.updateAddVertexAction(v);
-                    impl.markActionDirty();
-                    keyboardMoved = true;
-                    if (v2 !is null) v2.position += mDelta;
-                }
-            });
-            impl.refreshMesh();
-            changed = true;
-        }
-
-        if (incInputIsKeyPressed(ImGuiKey.LeftArrow)) {
-            shiftSelection(vec2(-1, 0));
-        } else if (incInputIsKeyPressed(ImGuiKey.RightArrow)) {
-            shiftSelection(vec2(1, 0));
-        } else if (incInputIsKeyPressed(ImGuiKey.DownArrow)) {
-            shiftSelection(vec2(0, 1));
-        } else if (incInputIsKeyPressed(ImGuiKey.UpArrow)) {
-            shiftSelection(vec2(0, -1));
-        }
-        if (keyboardMoved)
-            impl.pushDeformAction();
-
-        // Left click selection
-        if (igIsMouseClicked(ImGuiMouseButton.Left)) {
-            if (impl.isPointOver(impl.mousePos)) {
-                if (io.KeyShift) impl.toggleSelect(impl.vtxAtMouse);
-                else if (!impl.isSelected(impl.vtxAtMouse))  impl.selectOne(impl.vtxAtMouse);
-                else impl.maybeSelectOne = impl.vtxAtMouse;
-            } else {
-                impl.selectOrigin = impl.mousePos;
-                impl.isSelecting = true;
-            }
-        }
-        if (!isDragging && !impl.isSelecting &&
-            incInputIsMouseReleased(ImGuiMouseButton.Left) && impl.maybeSelectOne !is null) {
-            impl.selectOne(impl.maybeSelectOne);
-        }
-
-        // Dragging
-        if (incDragStartedInViewport(ImGuiMouseButton.Left) && igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
-            onDragStart(impl.mousePos, impl);
-        }
-
-        changed = onDragUpdate(impl.mousePos, impl) || changed;
-        return true;
-    }
-    */
     override int peek(ImGuiIO* io, IncMeshEditorOne impl) {
         super.peek(io, impl);
         if (impl.deformOnly)
