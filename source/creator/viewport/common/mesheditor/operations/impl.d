@@ -57,11 +57,25 @@ public:
         pathTool.path = path;
     }
 
+    override int peek(ImGuiIO* io, Camera camera) {
+        if (toolMode in tools) {
+            return tools[toolMode].peek(io, this);
+        }
+        assert(0);
+    }
+
+    override int unify(int[] actions) {
+        if (toolMode in tools) {
+            return tools[toolMode].unify(actions);
+        }
+        assert(0);
+    }
+
     override
-    bool update(ImGuiIO* io, Camera camera) {
+    bool update(ImGuiIO* io, Camera camera, int actions) {
         bool changed = false;
         if (toolMode in tools) {
-            tools[toolMode].update(io, this, changed);
+            tools[toolMode].update(io, this, actions, changed);
         } else {
             assert(0);
         }

@@ -32,8 +32,15 @@ class NodeSelect : Tool, Draggable {
         impl.deselectAll();
     }
 
+    override int peek(ImGuiIO* io, IncMeshEditorOne impl) {
+        return 0;
+    }
 
-    override bool update(ImGuiIO* io, IncMeshEditorOne impl, out bool changed) {
+    override int unify(int[] actions) {
+        return 0;
+    }
+
+    override bool update(ImGuiIO* io, IncMeshEditorOne impl, int action, out bool changed) {
         impl.lastMousePos = impl.mousePos;
 
         impl.mousePos = incInputGetMousePosition();

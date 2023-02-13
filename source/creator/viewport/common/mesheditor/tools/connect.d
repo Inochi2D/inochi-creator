@@ -81,8 +81,8 @@ class ConnectTool : NodeSelect {
         return true;
     }
 
-    override bool update(ImGuiIO* io, IncMeshEditorOne impl, out bool changed) {
-        super.update(io, impl, changed);
+    override bool update(ImGuiIO* io, IncMeshEditorOne impl, int action, out bool changed) {
+        super.update(io, impl, action, changed);
         if (!impl.deformOnly)
             updateMeshEdit(io, impl, changed);
         return changed;
