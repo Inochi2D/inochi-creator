@@ -54,7 +54,7 @@ public:
     override
     void setPath(CatmullSpline path) {
         auto pathTool = cast(PathDeformTool)(tools[VertexToolMode.PathDeform]);
-        pathTool.path = path;
+        pathTool.setPath(path);
     }
 
     override int peek(ImGuiIO* io, Camera camera) {

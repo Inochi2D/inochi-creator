@@ -441,7 +441,7 @@ public:
         interpolate();
     }
 
-    void draw(mat4 trans, vec4 color) {
+    void draw(mat4 trans, vec4 color, uint lockedPoint = -1) {
         if (drawLines.length > 0) {
             inDbgSetBuffer(drawLines);
             inDbgDrawLines(color, trans);
@@ -452,6 +452,11 @@ public:
             inDbgDrawPoints(vec4(0, 0, 0, 1), trans);
             inDbgPointsSize(6);
             inDbgDrawPoints(color, trans);
+        }
+        if (lockedPoint >= 0 && lockedPoint < drawPoints.length) {
+            inDbgSetBuffer([drawPoints[lockedPoint]]);
+            inDbgPointsSize(6);
+            inDbgDrawPoints(vec4(1, 0, 0, 1), trans);
         }
     }
 
