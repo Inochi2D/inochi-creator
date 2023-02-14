@@ -128,8 +128,15 @@ public:
     bool update(ImGuiIO* io, Camera camera) {
         bool result = false;
         incActionPushGroup();
+        int[] actions;
         foreach (drawing, editor; editors) {
-            result = editor.update(io, camera) || result;
+            actions ~= editor.peek(io, camera);
+        }
+        int action = 0;
+        if (editors.keys().length > 0)
+            action = editors[editors.keys()[0]].unify(actions);
+        foreach (drawing, editor; editors) {
+            result = editor.update(io, camera, action) || result;
         }
         incActionPopGroup();
         return result;
@@ -198,7 +205,7 @@ public:
     void setMirrorVert(bool mirrorVert) {
         this.mirrorVert = mirrorVert;
         foreach (e; editors) {
-            e.mirrorHoriz = mirrorVert;
+            e.mirrorVert = mirrorVert;
         }
     }
 

@@ -24,6 +24,17 @@ import std.stdio;
 class NodeSelect : Tool, Draggable {
     bool isDragging = false;
 
+    enum SelectActionID {
+        None = 0,
+        SelectArea = 1,
+        ToggleSelect,
+        SelectOne,
+        MaybeSelectOne,
+        SelectMaybeSelectOne,
+        StartDrag,
+        End
+    }
+
     override
     void setToolMode(VertexToolMode toolMode, IncMeshEditorOne impl) {
         assert(!impl.deformOnly || toolMode != VertexToolMode.Connect);
@@ -32,8 +43,7 @@ class NodeSelect : Tool, Draggable {
         impl.deselectAll();
     }
 
-
-    override bool update(ImGuiIO* io, IncMeshEditorOne impl, out bool changed) {
+    override int peek(ImGuiIO* io, IncMeshEditorOne impl) {
         impl.lastMousePos = impl.mousePos;
 
         impl.mousePos = incInputGetMousePosition();
@@ -48,11 +58,14 @@ class NodeSelect : Tool, Draggable {
 
         impl.vtxAtMouse = impl.getVertexFromPoint(impl.mousePos);
 
-        if (incInputIsMouseReleased(ImGuiMouseButton.Left)) {
-            onDragEnd(impl.mousePos, impl);
-        }
+        return 0;
+    }
 
-        if (igIsMouseClicked(ImGuiMouseButton.Left)) impl.maybeSelectOne = null;
+    override int unify(int[] actions) {
+        return 0;
+    }
+
+    override bool update(ImGuiIO* io, IncMeshEditorOne impl, int action, out bool changed) {
         return false;
     }
 

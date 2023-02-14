@@ -241,7 +241,9 @@ public:
     abstract void forceResetAction();
 
 
-    abstract bool update(ImGuiIO* io, Camera camera);
+    abstract int peek(ImGuiIO* io, Camera camera);
+    abstract int unify(int[] actions);
+    abstract bool update(ImGuiIO* io, Camera camera, int actions);
     abstract void draw(Camera camera);
 
     // getPath / setPath is remained for compatibility. should be migrated to implementation of PathDeformTool
