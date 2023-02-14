@@ -94,6 +94,12 @@ class PointTool : NodeSelect {
         incStatusTooltip(_("Select"), _("Left Mouse"));
         incStatusTooltip(_("Create"), _("Ctrl+Left Mouse"));
 
+        if (incInputIsMouseReleased(ImGuiMouseButton.Left)) {
+            onDragEnd(impl.mousePos, impl);
+        }
+
+        if (igIsMouseClicked(ImGuiMouseButton.Left)) impl.maybeSelectOne = null;
+
         auto implDrawable = cast(IncMeshEditorOneDrawable)impl;
         auto mesh = implDrawable.getMesh();
 
