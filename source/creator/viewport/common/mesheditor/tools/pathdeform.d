@@ -131,8 +131,8 @@ class PathDeformTool : NodeSelect {
                         editPath.points[i].position = (rotate * vec4(editPath.points[i].position, 0, 1)).xy;
                     }
                 } else if (io.KeyShift) {
-                    float off = editPath.findClosestPointOffset(impl.mousePos);
-                    vec2 pos  = editPath.eval(off);
+                    float off = path.findClosestPointOffset(impl.mousePos);
+                    vec2 pos  = path.eval(off);
                     editPath.points[pathDragTarget].position = pos;
                 } else {
                     vec2 relTranslation = impl.mousePos - impl.lastMousePos;
