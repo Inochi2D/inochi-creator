@@ -197,7 +197,6 @@ public:
                 }
             }
             if (dirty) {
-                writefln("push: %s", target.name);
                 editorAction.updateNewState();
                 foreach (a; editorAction.action.actions) {
                     if (auto laction = cast(LazyBoundAction)a)
