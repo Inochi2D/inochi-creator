@@ -174,6 +174,7 @@ public:
     override
     void pushDeformAction() {
         if (editorAction && editorAction.action.dirty) {
+            writefln("push: %s", target.name);
             editorAction.updateNewState();
             incActionPush(editorAction);
             editorAction = null;

@@ -159,6 +159,7 @@ public:
             }
         } else {
             if (reset) {
+                editorAction.clear();
                 editorAction.action.actions.length = 0;
                 registerBinding("transform.t.x", editorAction.action);
                 registerBinding("transform.t.y", editorAction.action);
@@ -196,6 +197,7 @@ public:
                 }
             }
             if (dirty) {
+                writefln("push: %s", target.name);
                 editorAction.updateNewState();
                 foreach (a; editorAction.action.actions) {
                     if (auto laction = cast(LazyBoundAction)a)
