@@ -159,6 +159,7 @@ public:
             }
         } else {
             if (reset) {
+                editorAction.clear();
                 editorAction.action.actions.length = 0;
                 registerBinding("transform.t.x", editorAction.action);
                 registerBinding("transform.t.y", editorAction.action);
