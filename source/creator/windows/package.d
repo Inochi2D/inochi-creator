@@ -23,6 +23,7 @@ public import creator.windows.psdmerge;
 public import creator.windows.welcome;
 public import creator.windows.rename;
 public import creator.windows.imgexport;
+public import creator.windows.flipconfig;
 
 version(NoUIScaling) private ImGuiWindowClass* windowClass;
 

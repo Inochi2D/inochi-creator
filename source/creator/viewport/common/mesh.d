@@ -839,7 +839,11 @@ public:
             writeln("part is null");
             return null;
         }
+        Deformation deform = binding.getValue(index);
+        return deformByDeformationBinding(part, deform, flipHorz);
+    }
 
+    Deformation* deformByDeformationBinding(Drawable part, Deformation deform, bool flipHorz = false) {
         auto origVertices = vertices.dup;
 
         // find triangle which covers specified point. 
@@ -994,7 +998,6 @@ public:
         }
         
         MeshData bindingMesh = part.getMesh();
-        Deformation deform = binding.getValue(index);
         Deformation* newDeform = new Deformation([]);
 
         auto targetMesh = transformMesh(bindingMesh, deform);
