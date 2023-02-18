@@ -137,32 +137,32 @@ private {
         }
     }
 
+    ParameterBinding getPairBindingFor(Parameter param, Node target, FlipPair pair, string name) {
+        Node pairNode;
+        if (pair is null)
+            return null;
+        if (pair.parts[0].uuid == target.uuid) {
+            pairNode = pair.parts[1];
+        } else {
+            pairNode = pair.parts[0];
+        }
+        if (pairNode is null)
+            return null;
+        foreach (ParameterBinding binding; param.bindings) {
+            if (binding.getTarget().node.uuid == pairNode.uuid && binding.getName() == name)
+                return binding;
+        }
+        return null;
+    }
+
     void mirroredAutofill(Parameter param, uint axis, float min, float max) {
         auto action = new ParameterChangeBindingsAction("Mirror Auto Fill", param, null);
-
-        ParameterBinding getPairBindingFor(Node target, FlipPair pair, string name) {
-            Node pairNode;
-            if (pair is null)
-                return null;
-            if (pair.parts[0].uuid == target.uuid) {
-                pairNode = pair.parts[1];
-            } else {
-                pairNode = pair.parts[0];
-            }
-            if (pairNode is null)
-                return null;
-            foreach (ParameterBinding binding; param.bindings) {
-                if (binding.getTarget().node.uuid == pairNode.uuid && binding.getName() == name)
-                    return binding;
-            }
-            return null;
-        }
 
         foreach(ParameterBinding binding; param.bindings) {
 
             Node target = binding.getTarget().node;
             auto pair = incGetFlipPairFor(target);
-            auto srcBinding = getPairBindingFor(target, pair, binding.getName());
+            auto srcBinding = getPairBindingFor(param, target, pair, binding.getName());
 
             uint xCount = param.axisPointCount(0);
             uint yCount = param.axisPointCount(1);
@@ -174,7 +174,6 @@ private {
                     if (axis == 1 && (offY < min || offY > max)) continue;
 
                     vec2u index = vec2u(x, y);
-
                     if (!binding.isSet(index)) autoFlipBinding(binding, srcBinding, index, axis);
                 }
             }
@@ -387,7 +386,10 @@ private {
                 if (igMenuItem(__("Horizontally"), "", false, true)) {
                     auto action = new ParameterChangeBindingsValueAction("set From Mirror (Horizontally)", param, bindings, cParamPoint.x, cParamPoint.y);
                     foreach(binding; bindings) {
-                        binding.extrapolateValueAt(cParamPoint, 0);
+                        Node target = binding.getTarget().node;
+                        auto pair = incGetFlipPairFor(target);
+                        auto srcBinding = getPairBindingFor(param, target, pair, binding.getName());
+                        autoFlipBinding(binding, srcBinding, cParamPoint, 0);
                     }
                     action.updateNewState();
                     incActionPush(action);
@@ -396,7 +398,10 @@ private {
                 if (igMenuItem(__("Vertically"), "", false, true)) {
                     auto action = new ParameterChangeBindingsValueAction("set From Mirror (Vertically)", param, bindings, cParamPoint.x, cParamPoint.y);
                     foreach(binding; bindings) {
-                        binding.extrapolateValueAt(cParamPoint, 1);
+                        Node target = binding.getTarget().node;
+                        auto pair = incGetFlipPairFor(target);
+                        auto srcBinding = getPairBindingFor(param, target, pair, binding.getName());
+                        autoFlipBinding(binding, srcBinding, cParamPoint, 1);
                     }
                     action.updateNewState();
                     incActionPush(action);
@@ -405,7 +410,10 @@ private {
                 if (igMenuItem(__("Diagonally"), "", false, true)) {
                     auto action = new ParameterChangeBindingsValueAction("set From Mirror (Diagonally)", param, bindings, cParamPoint.x, cParamPoint.y);
                     foreach(binding; bindings) {
-                        binding.extrapolateValueAt(cParamPoint, -1);
+                        Node target = binding.getTarget().node;
+                        auto pair = incGetFlipPairFor(target);
+                        auto srcBinding = getPairBindingFor(param, target, pair, binding.getName());
+                        autoFlipBinding(binding, srcBinding, cParamPoint, -1);
                     }
                     action.updateNewState();
                     incActionPush(action);
