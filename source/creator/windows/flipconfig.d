@@ -80,7 +80,7 @@ private:
             string targetName = node.name.replace(part1, part2);
             if (node.uuid in map) continue;
             foreach (ref Node node2; nodes) {
-                if (node2.name == targetName) {
+                if (node.name.indexOf(part1) >= 0 && node2.name == targetName) {
                     if (node2.uuid != node.uuid) {
                         pairs ~= new FlipPair([node, node2], "");
                         map[node.uuid] = pairs.length - 1;
