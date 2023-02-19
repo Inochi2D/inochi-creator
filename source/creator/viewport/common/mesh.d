@@ -904,33 +904,32 @@ public:
         }
         // Calculate offset of point in coordinates of triangle.
         vec2 calcOffsetInTriangleCoords(vec2 pt, ref MeshData bindingMesh, ref int[] triangle) {
-            if( (pt - bindingMesh.vertices[triangle[0]]).lengthSquared > (pt - bindingMesh.vertices[triangle[1]]).lengthSquared) {
-                swap(triangle[0], triangle[1]);
-            }
-            if( (pt - bindingMesh.vertices[triangle[0]]).lengthSquared > (pt - bindingMesh.vertices[triangle[2]]).lengthSquared) {
-                swap(triangle[0], triangle[2]);
-            }
             auto p1 = bindingMesh.vertices[triangle[0]];
             if (pt == p1)
                 return vec2(0, 0);
             auto p2 = bindingMesh.vertices[triangle[1]];
             auto p3 = bindingMesh.vertices[triangle[2]];
             vec2 axis0 = p2 - p1;
+            float axis0len = axis0.length;
             axis0 /= axis0.length;
             vec2 axis1 = p3 - p1;
+            float axis1len = axis1.length;
             axis1 /= axis1.length;
             vec3 raxis1 = mat3([axis0.x, axis0.y, 0, -axis0.y, axis0.x, 0, 0, 0, 1]) * vec3(axis1, 1);
             float cosA = raxis1.x;
             float sinA = raxis1.y;
-            mat3 H = mat3([1, -cosA/sinA, 0, 
-                            0, 1/sinA, 0, 
-                            0, 0, 1]) * 
-                     mat3([axis0.x, axis0.y, 0, 
-                            -axis0.y, axis0.x, 0, 
-                            0, 0, 1]) * 
+            mat3 H = mat3([axis0len > 0? 1/axis0len: 0,                           0, 0,
+                           0,                           axis1len > 0? 1/axis1len: 0, 0,
+                           0,                                                     0, 1]) * 
+                     mat3([1, -cosA/sinA, 0, 
+                           0,     1/sinA, 0, 
+                           0,          0, 1]) * 
+                     mat3([ axis0.x, axis0.y, 0, 
+                           -axis0.y, axis0.x, 0, 
+                                  0,       0, 1]) * 
                      mat3([1, 0, -(p1).x, 
-                            0, 1, -(p1).y, 
-                            0, 0, 1]);
+                           0, 1, -(p1).y, 
+                           0, 0,       1]);
             return (H * vec3(pt.x, pt.y, 1)).xy;
         }
 
@@ -950,9 +949,7 @@ public:
             auto p2 = vertices[triangle[1]];
             auto p3 = vertices[triangle[2]];
             vec2 axis0 = p2 - p1;
-            axis0 /= axis0.length;
             vec2 axis1 = p3 - p1;
-            axis1 /= axis1.length;
             return p1 + axis0 * offset.x + axis1 * offset.y;
         }
 
