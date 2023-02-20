@@ -40,10 +40,14 @@ class FlipPair {
 
 private {
     FlipPair[] flipPairs;
-
+    Puppet activePuppet = null;
 }
 
 FlipPair[] incGetFlipPairs() {
+    if (incActivePuppet() != activePuppet) {
+        activePuppet = incActivePuppet();
+        flipPairs.length = 0;
+    }
     return flipPairs;
 }
 
@@ -373,7 +377,7 @@ public:
     this() {
         auto puppet = incActivePuppet();
         nodes = puppet.findNodesType!Node(puppet.root);
-        pairs = flipPairs.dup;
+        pairs = incGetFlipPairs().dup;
         foreach (i, pair; pairs) {
             if (pair.parts[0] !is null)
                 map[pair.parts[0].uuid] = i;
