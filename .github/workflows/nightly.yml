@@ -180,6 +180,7 @@ jobs:
         compiler: ldc-latest
   
     - name: "Prepare for DMG packing"
+      continue-on-error: true
       run: |
         export HOMEBREW_NO_INSTALL_CLEANUP=1
         brew update
