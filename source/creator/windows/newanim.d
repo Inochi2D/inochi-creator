@@ -81,6 +81,13 @@ protected:
         incBeginCategory(__("Options"), IncCategoryFlags.NoCollapse);
             igCheckbox(__("Additive"), &newAnim.additive);
             igInputFloat(__("Weight"), &newAnim.animationWeight);
+            
+            if (igDragInt(__("Frames"), &newAnim.length, 1, 1, int.max)) {
+                newAnim.leadOut = newAnim.length;
+            }
+            igDragInt(__("Lead In"), &newAnim.leadIn, 1, 0, newAnim.length-1);
+            igDragInt(__("Lead Out"), &newAnim.leadOut, 1, 0, newAnim.length-1);
+
 
             if (igBeginCombo(__("Framerate"), fpsOptions[frameRateOption])) {
                 foreach(i; 0..fpsOptions.length) {
@@ -97,8 +104,6 @@ protected:
                 igInputFloat(__("Framerate"), &framerate);
                 timestep = 1.0/framerate;
             }
-            
-            igDragInt(__("Frames"), &newAnim.length, 1, 1, int.max);
 
             float time = timestep*newAnim.length;
             float s = cast(int)time;

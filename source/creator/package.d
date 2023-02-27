@@ -598,7 +598,7 @@ void incAnimationUpdate() {
                 incAnimationCurrent.play(true);
             } else {
                 if (igIsKeyDown(ImGuiKey.LeftCtrl) || igIsKeyDown(ImGuiKey.RightCtrl)) {
-                    incAnimationPlayer.stopAll(true);
+                    incAnimationPlayer.stopAll(igIsKeyDown(ImGuiKey.LeftShift) || igIsKeyDown(ImGuiKey.RightShift));
                 } else {
                     incAnimationCurrent.pause();
                 }

@@ -144,7 +144,7 @@ protected:
                 
                 igBeginDisabled(!anim);
                     if (incToolbarButton("", 32)) {
-                        anim.stop(true);
+                        anim.stop(igIsKeyDown(ImGuiKey.LeftShift) || igIsKeyDown(ImGuiKey.RightShift));
                     }
 
                     if (incToolbarButton(anim && !(!anim.playing || anim.paused) ? "" : "", 32)) {
