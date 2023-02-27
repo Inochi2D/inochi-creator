@@ -578,6 +578,13 @@ string[] incAnimationKeysGet() {
 /**
     Gets the current animation being edited
 */
+ref AnimationPlayer incAnimationPlayerGet() {
+    return incAnimationPlayer;
+}
+
+/**
+    Gets the current animation being edited
+*/
 AnimationPlaybackRef incAnimationGet() {
     return incAnimationCurrent;
 }

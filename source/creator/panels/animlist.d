@@ -31,10 +31,10 @@ protected:
             foreach(name, ref anim; incActivePuppet().getAnimations()) {
                 igPushID(name.ptr, name.ptr+name.length);
                     if (igBeginPopup("###OPTIONS")) {
-                        if (igSelectable(__("Edit..."))) {
+                        if (igMenuItem(__("Edit..."))) {
                             incPushWindow(new EditAnimationWindow(anim, name));
                         }
-                        if (igSelectable(__("Delete"))) {
+                        if (igMenuItem(__("Delete"))) {
                             incActivePuppet().getAnimations().remove(name);
                             igEndPopup();
                             igPopID();
