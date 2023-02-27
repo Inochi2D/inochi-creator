@@ -63,8 +63,45 @@ private:
             // Draw headers
             igPushStyleColor(ImGuiCol.ChildBg, origBG);
                 if (incAnimationGet()) {
-                    foreach(i, ref lane; incAnimationGet().animation().lanes) {
-                        incAnimationLaneHeader(lane, tlWidth, incAnimationGetTrackHeights()[i]);
+                    foreach(i; 0..incAnimationGet().animation().lanes.length) {
+                        AnimationLane* lane = &incAnimationGet().animation().lanes[i];
+
+                        igPushID(cast(int)i);
+                            if (igBeginPopup("###OPTIONS")) {
+                                if (igBeginMenu(__("Interpolation"))) {
+                                    if (igMenuItem(__("Nearest"), null, lane.interpolation == InterpolateMode.Nearest)) {
+                                        lane.interpolation = InterpolateMode.Nearest;
+                                    }
+                                    if (igMenuItem(__("Stepped"), null, lane.interpolation == InterpolateMode.Stepped)) {
+                                        lane.interpolation = InterpolateMode.Stepped;
+                                    }
+                                    if (igMenuItem(__("Linear"), null, lane.interpolation == InterpolateMode.Linear)) {
+                                        lane.interpolation = InterpolateMode.Linear;
+                                    }
+                                    if (igMenuItem(__("Cubic"), null, lane.interpolation == InterpolateMode.Cubic)) {
+                                        lane.interpolation = InterpolateMode.Cubic;
+                                    }
+                                    igEndMenu();
+                                }
+
+                                if (igMenuItem(__("Delete"))) {
+                                    import std.algorithm.mutation : remove;
+                                    incAnimationGet().animation().lanes = 
+                                        incAnimationGet().animation().lanes.remove(i);
+
+                                    // Whew, end early
+                                    igEndPopup();
+                                    igPopID();
+                                    igPopStyleColor();
+                                    igEndChild();
+                                    igPopStyleColor();
+                                    return;
+                                }
+                                igEndPopup();
+                            }
+                            incAnimationLaneHeader(*lane, tlWidth, incAnimationGetTrackHeights()[i]);
+                            igOpenPopupOnItemClick("###OPTIONS", ImGuiPopupFlags.MouseButtonRight);
+                        igPopID();
                     }
                 }
             igPopStyleColor();
@@ -142,7 +179,14 @@ protected:
             igBeginDisabled(!inAnimMode);
             if (incBeginInnerToolbar(24)) {
                 
+                
                 igBeginDisabled(!anim);
+                    auto player = incAnimationPlayerGet();
+                    if (incToolbarButton(player.snapToFramerate ? "" : "", 32)) {
+                        player.snapToFramerate = !player.snapToFramerate;
+                    }
+                    incTooltip(_("Lock playback to animation framerate"));
+
                     if (incToolbarButton("", 32)) {
                         anim.stop(igIsKeyDown(ImGuiKey.LeftShift) || igIsKeyDown(ImGuiKey.RightShift));
                     }
