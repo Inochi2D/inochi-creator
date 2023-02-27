@@ -29,9 +29,27 @@ protected:
 
         if (igBeginChild("ANIM_LIST", ImVec2(0, -32), true)) {
             foreach(name, ref anim; incActivePuppet().getAnimations()) {
-                if (igSelectable(name.toStringz, name == currAnimName)) {
-                    incAnimationChange(name);
-                }
+                igPushID(name.ptr, name.ptr+name.length);
+                    if (igBeginPopup("###OPTIONS")) {
+                        if (igSelectable(__("Edit..."))) {
+                            incPushWindow(new EditAnimationWindow(anim, name));
+                        }
+                        if (igSelectable(__("Delete"))) {
+                            incActivePuppet().getAnimations().remove(name);
+                            igEndPopup();
+                            igPopID();
+                            igEndChild();
+                            return;
+                        }
+                        igEndPopup();
+                    }
+
+                    if (igSelectable(name.toStringz, name == currAnimName)) {
+                        incAnimationChange(name);
+                    }
+
+                    igOpenPopupOnItemClick("###OPTIONS", ImGuiPopupFlags.MouseButtonRight);
+                igPopID();
             }
         }
         igEndChild();
@@ -44,7 +62,7 @@ protected:
             igSameLine(0, 0);
 
             if (igButton("", ImVec2(24, 24))) {
-                incPushWindow(new NewAnimationWindow());
+                incPushWindow(new EditAnimationWindow());
             }
         }
     }

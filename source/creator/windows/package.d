@@ -23,7 +23,7 @@ public import creator.windows.psdmerge;
 public import creator.windows.welcome;
 public import creator.windows.rename;
 public import creator.windows.imgexport;
-public import creator.windows.newanim;
+public import creator.windows.editanim;
 
 version(NoUIScaling) private ImGuiWindowClass* windowClass;
 
@@ -265,4 +265,25 @@ void incPopWelcomeWindow() {
             return;
         }
     }
+}
+
+/**
+    Gets the length of the window stack
+*/
+size_t incGetWindowStackSize() {
+    return windowStack.length;
+}
+
+/**
+    Gets the length of the window list
+*/
+size_t incGetWindowListSize() {
+    return windowList.length;
+}
+
+/**
+    Gets the amount of floating windows open
+*/
+size_t incGetWindowsOpen() {
+    return windowStack.length+windowList.length;
 }

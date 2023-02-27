@@ -4,7 +4,7 @@
     
     Authors: Luna Nielsen
 */
-module creator.windows.newanim;
+module creator.windows.editanim;
 import creator.widgets;
 import creator.windows;
 import creator.core;
@@ -15,8 +15,11 @@ import inochi2d;
 import i18n;
 import std.stdio;
 
-class NewAnimationWindow : Window {
+class EditAnimationWindow : Window {
 private:
+    bool isNew;
+    string originalName;
+
     string name;
     Animation newAnim;
 
@@ -36,7 +39,7 @@ private:
         }
 
         foreach(anim; incActivePuppet().getAnimations().keys) {
-            if (anim == name) {
+            if (!isNew && anim == name) {
                 incDialog(
                     "ERR_NAME_TAKEN", 
                     __("Invalid Name"), 
@@ -49,9 +52,14 @@ private:
         // Set framerate
         if (frameRateOption+1 == fpsOptions.length) newAnim.timestep = 1.0/framerate;
         else newAnim.timestep = 1.0/fpsOptionsFR[frameRateOption];
-        
-        incActivePuppet().getAnimations()[name] = newAnim;
-        incAnimationChange(name);
+    
+
+        string oname = name.dup;
+        if (!isNew && originalName != oname) {
+            incActivePuppet().getAnimations().remove(originalName);
+        }
+        incActivePuppet().getAnimations()[oname] = newAnim;
+        incAnimationChange(oname);
         this.close();
     }
 
@@ -113,26 +121,20 @@ protected:
         incEndCategory();
 
         // Done button
-        float doneLength = clamp(incMeasureString(_("Create")).x, 64, float.max);
+        string btnName = isNew ? _("Create") : _("Save");
+
+        float doneLength = clamp(incMeasureString(btnName).x, 64, float.max);
         avail = incAvailableSpace();
         incDummy(ImVec2(0, -24));
         incDummy(ImVec2(avail.x-(doneLength+8), 20));
         igSameLine(0, 0);
-        if (igButton(__("Create"), ImVec2(doneLength+8, 20))) {
+        if (igButton(btnName.toStringz, ImVec2(doneLength+8, 20))) {
             this.apply();
         }
     }
 
-public:
-    this() {
-        super(_("New Animation..."));
-        
-        newAnim.animationWeight = 1;
-        newAnim.additive = false;
-        
-        newAnim.leadIn = 0;
-        newAnim.leadOut = 0;
-        newAnim.length = 100;
+    final
+    void setupFPS() {
         fpsOptions = [
             __("120 FPS"),
             __("60 FPS"),
@@ -140,6 +142,7 @@ public:
             __("25 FPS"),
             __("Custom Framrate")
         ];
+
         fpsOptionsFR = [
             120,
             60,
@@ -147,5 +150,32 @@ public:
             25,
             60
         ];
+    }
+
+public:
+    this() {
+        super(_("New Animation..."));
+        isNew = true;
+        
+        newAnim.animationWeight = 1;
+        newAnim.additive = false;
+        
+        newAnim.leadIn = 0;
+        newAnim.leadOut = 0;
+        newAnim.length = 100;
+        setupFPS();
+    }
+
+    this(Animation anim, string name) {
+        super(_("Edit %s...").format(name));
+        isNew = false;
+
+        // Set up name stuff
+        this.originalName = name.dup;
+        this.name = cast(string)(name.dup~"\0");
+        this.name = this.name[0..$-1];
+
+        newAnim = anim;
+        setupFPS();
     }
 }
