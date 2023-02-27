@@ -343,9 +343,12 @@ void incTimelineLane(ref AnimationLane lane, ref Animation anim, float height, f
                 }
 
                 if (curr == next1 && next1.frame < lastFrame) {
-                    ImDrawList_PathLineTo(
+                    ImDrawList_AddLine(
                         drawList,
+                        ImVec2(getKeyframeX(curr.frame), getKeyframeY(param, axis, curr.value)),
                         ImVec2(getKeyframeX(lastFrame), getKeyframeY(param, axis, next1.value)),
+                        igGetColorU32(ImGuiCol.PlotLines),
+                        2
                     );
                 }
             }
