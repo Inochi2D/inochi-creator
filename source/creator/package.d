@@ -620,7 +620,7 @@ void incAnimationUpdate() {
             incAnimationCurrent.seek(incAnimationCurrent.frame+1);
         }
 
-        if (igIsKeyPressed(ImGuiKey.N, false)) {
+        if (igIsKeyPressed(ImGuiKey.N, false) || igIsKeyPressed(ImGuiKey.Insert, false)) {
             foreach(ref lane; incAnimationCurrent.animation.lanes) {
                 auto param = lane.paramRef.targetParam;
                 auto axis = lane.paramRef.targetAxis;
@@ -630,7 +630,7 @@ void incAnimationUpdate() {
             }
         }
 
-        if (igIsKeyPressed(ImGuiKey.R, false)) {
+        if (igIsKeyPressed(ImGuiKey.R, false) || igIsKeyPressed(ImGuiKey.Delete, false)) {
             foreach(ref lane; incAnimationCurrent.animation.lanes) {
                 auto param = lane.paramRef.targetParam;
                 auto axis = lane.paramRef.targetAxis;
