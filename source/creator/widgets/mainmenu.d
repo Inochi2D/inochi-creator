@@ -273,8 +273,8 @@ void incMainMenu() {
                                 { ["*.png"], "PNG Sequence (*.png)" }
                             ];
 
-                            // string file = incShowSaveDialog(filters, "", _("Export..."));
-                            // if (file) incPushWindow(new ImageExportWindow(file.setExtension("tga")));
+                            string file = incShowSaveDialog(filters, "", _("Export..."));
+                            if (file) incPushWindow(new VideoExportWindow(file));
                         }
                         igEndMenu();
                     }

@@ -37,8 +37,10 @@ private {
         foreach(line; lines) {
             string sline = strip(line);
             bool isVideoFormat = sline[2] == 'V';
+            bool supportsEncoding = sline[1] == 'E';
 
-            if (isVideoFormat) {
+            if (isVideoFormat && supportsEncoding) {
+
                 VideoCodec codec;
                 sline = sline[TAG_NAME_START..$];
 
@@ -56,6 +58,9 @@ private {
             }
         }
 
+        import std.algorithm.sorting;
+        sort!((a, b) => a.name < b.name)(codecs);
+
         codecs = VideoCodec("auto", _("Automatic selection"))~codecs;
 
         return true;
@@ -65,6 +70,11 @@ private {
         import std.conv : text;
         import std.format : format;
         string[] out_;
+
+        string[] transparency = [
+            "-pix_fmt", "yuva420p"
+        ];
+
 
         if (settings.codec == "auto") {
             out_ = [
@@ -93,10 +103,13 @@ private {
 
                 // No audio
                 "-an",
-            
-                // Output file
-                settings.file
             ];
+
+            // Transparency
+            if (settings.transparency) out_ ~= transparency;
+
+            // Output file
+            out_ ~= settings.file;
         } else {
             out_ = [
                 // Command
@@ -127,10 +140,13 @@ private {
                 
                 // Video codec
                 "-vcodec", settings.codec,
-                
-                // Output file
-                settings.file
             ];
+            
+            // Transparency
+            if (settings.transparency) out_ ~= transparency;
+
+            // Output file
+            out_ ~= settings.file;
         }
 
         // Adds additional user specified options if any
@@ -189,7 +205,12 @@ public:
             this.ffmpegPipes.stdin.rawWrite(rgbadata);
             encoded++;
         } catch(Exception ex) {
-            errors_ ~= ex.msg;
+            string err;
+            while(!this.ffmpegPipes.stderr.eof) {
+                string terr = this.ffmpegPipes.stderr.readln();
+                if (terr.length != 0) err = terr;
+            }
+            errors_ ~= err;
             isAlive = false;
         }
     }
@@ -223,6 +244,8 @@ struct VideoExportSettings {
 
     float width;
     float height;
+
+    bool transparency = false;
 
     string ffmpegOptions;
 }
