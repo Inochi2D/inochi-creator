@@ -29,6 +29,7 @@ private:
     float framerate = 60;
 
     void apply() {
+
         if (name.strip().length == 0) {
             incDialog(
                 "ERR_NAME_INVALID", 
@@ -39,7 +40,7 @@ private:
         }
 
         foreach(anim; incActivePuppet().getAnimations().keys) {
-            if (!isNew && anim == name) {
+            if ((isNew && anim == name) || (!isNew && originalName != name && anim == name)) {
                 incDialog(
                     "ERR_NAME_TAKEN", 
                     __("Invalid Name"), 
@@ -54,12 +55,11 @@ private:
         else newAnim.timestep = 1.0/fpsOptionsFR[frameRateOption];
     
 
-        string oname = name.dup;
-        if (!isNew && originalName != oname) {
+        if (!isNew && originalName != name) {
             incActivePuppet().getAnimations().remove(originalName);
         }
-        incActivePuppet().getAnimations()[oname] = newAnim;
-        incAnimationChange(oname);
+        incActivePuppet().getAnimations()[name] = newAnim;
+        incAnimationChange(name);
         this.close();
     }
 
@@ -93,8 +93,8 @@ protected:
             if (igDragInt(__("Frames"), &newAnim.length, 1, 1, int.max)) {
                 newAnim.leadOut = newAnim.length;
             }
-            igDragInt(__("Lead In"), &newAnim.leadIn, 1, 0, newAnim.length-1);
-            igDragInt(__("Lead Out"), &newAnim.leadOut, 1, 0, newAnim.length-1);
+            igDragInt(__("Lead In"), &newAnim.leadIn, 1, 0, newAnim.length);
+            igDragInt(__("Lead Out"), &newAnim.leadOut, 1, 0, newAnim.length);
 
 
             if (igBeginCombo(__("Framerate"), fpsOptions[frameRateOption])) {
