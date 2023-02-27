@@ -108,6 +108,7 @@ int main(string[] args)
 void incUpdate() {
 
     // Update Inochi2D
+    incAnimationUpdate();
     inUpdate();
 
     // Begin IMGUI loop
@@ -131,6 +132,7 @@ void incUpdate() {
 void incUpdateNoEv() {
 
     // Update Inochi2D
+    incAnimationUpdate();
     inUpdate();
     
     // Begin IMGUI loop

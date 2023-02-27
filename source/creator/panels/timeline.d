@@ -14,28 +14,18 @@ import creator;
 import inmath.noise;
 import creator.ext.param;
 import creator.ext;
+import inochi2d.core.animation.player;
 
 private {
-
-    float tlAnimTime_ = 0;
-    
-    Animation* currAnim_;
     float tlWidth_ = DEF_HEADER_WIDTH;
     float[] tlTrackHeights_;
 }
 
-void incAnimationSet(ref Animation anim) {
-    currAnim_ = &anim;
-    tlAnimTime_ = 0;
-    
+void incAnimationTimelineUpdate(ref Animation anim) {
     tlTrackHeights_.length = anim.lanes.length;
     foreach(i, track; anim.lanes) {
         tlTrackHeights_[i] = MIN_TRACK_HEIGHT;
     }
-}
-
-Animation* incAnimationGet() {
-    return currAnim_;
 }
 
 float incAnimationGetTimelineWidth() {
@@ -53,9 +43,6 @@ class TimelinePanel : Panel {
 private:
     float scroll = 0;
     float zoom = 1;
-
-    Animation* workingAnimation;
-    bool playing;
     float widgetHeight;
 
     void drawHeaders() {
@@ -76,7 +63,7 @@ private:
             // Draw headers
             igPushStyleColor(ImGuiCol.ChildBg, origBG);
                 if (incAnimationGet()) {
-                    foreach(i, ref lane; incAnimationGet().lanes) {
+                    foreach(i, ref lane; incAnimationGet().animation().lanes) {
                         incAnimationLaneHeader(lane, tlWidth, incAnimationGetTrackHeights()[i]);
                     }
                 }
@@ -96,14 +83,34 @@ private:
         igPushStyleColor(ImGuiCol.ChildBg, ImVec4(0, 0, 0, 0.033));
             if (igBeginChild("LANES_ROOT", ImVec2(0, widgetHeight), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)) {
                 
+                
                 // Set scroll
                 auto window = igGetCurrentWindow();
                 igSetScrollY(scroll);
                 
                 if (incAnimationGet()) {
-                    foreach(i, ref lane; incAnimationGet().lanes) {
-                        incTimelineLane(lane, *incAnimationGet(), incAnimationGetTrackHeights[i], zoom, cast(int)i);
-                    }
+                    incBeginTimelinePlayhead(*incAnimationGet().animation, zoom);
+                        foreach(i, ref lane; incAnimationGet().animation().lanes) {
+                            float frame;
+                            float offset;
+                            incTimelineLane(lane, *incAnimationGet().animation, incAnimationGetTrackHeights[i], zoom, cast(int)i, &frame, &offset);
+
+                            if (frame > -1) {
+                                int xframe = cast(int)round(frame);
+                                if (igIsMouseDown(ImGuiMouseButton.Left)) {
+                                    incAnimationGet().seek(xframe);
+                                }
+
+                                if (igIsMouseDoubleClicked(ImGuiMouseButton.Left)) {
+                                    auto param = lane.paramRef.targetParam;
+                                    auto axis = lane.paramRef.targetAxis;
+                                    auto value = param.unmapAxis(axis, offset);
+
+                                    if (!incAnimationKeyframeRemove(param, axis)) incAnimationKeyframeAdd(param, axis, value);
+                                }
+                            }
+                        }
+                    incEndTimelinePlayhead(*incAnimationGet().animation, zoom, incAnimationGet().hframe);
                 }
             }
             igEndChild();
@@ -129,72 +136,22 @@ protected:
     void onUpdate() {
         bool inAnimMode = incEditMode() == EditMode.AnimEdit;
 
+        AnimationPlaybackRef anim = incAnimationGet();
+
         igPushID("TopBar");
             igBeginDisabled(!inAnimMode);
             if (incBeginInnerToolbar(24)) {
                 
-                if (incToolbarButton("", 32)) {
-                    incActivePuppet().player.stopAll(true);
-                    playing = false;
-                }
-
-                if (incToolbarButton(playing ? "" : "", 32)) {
-                    if (!playing) incActivePuppet().player.play("TEST", true);
-                    else incActivePuppet().player.pause("TEST");
-                    playing = !playing;
-                }
-
-                if (incToolbarButton("DUMMY", 64)) {
-                    import std.random : uniform;
-
-                    AnimationLane[] newRandomLaneParam(Parameter param, InterpolateMode mode, int frames, int sep = 5) {
-                        int iter = param.isVec2 + 1;
-                        AnimationLane[] p;
-
-                        foreach(i; 0..iter) {
-                            p ~= AnimationLane(
-                                param.uuid,
-                                new AnimationParameterRef(param, i), 
-                                [], 
-                                mode
-                            );
-
-                            osseed(uniform(0, uint.max));
-                            foreach(x; 1..(frames-1)/sep) {
-                                p[i].frames ~= Keyframe(x*sep, (1+osnoise2(cast(float)x, 0))/2.0, 0);
-                            }
-                        }
-                        return p;
+                igBeginDisabled(!anim);
+                    if (incToolbarButton("", 32)) {
+                        anim.stop(true);
                     }
 
-                    Animation a = Animation(
-                        0.100, false, 1, [], 100, 0, 0
-                    );
-
-                    size_t i = 0;
-                    // foreach(ref param; incActivePuppet().parameters) {
-                    //     if (auto group = cast(ExParameterGroup)param) {
-                    //         foreach(ref child; group.children) {
-                    //             a.lanes ~= newRandomLaneParam(child, InterpolateMode.Cubic, 100);
-                    //         }
-                    //     } else a.lanes ~= newRandomLaneParam(param, InterpolateMode.Cubic, 100);
-                        
-                    // }
-
-                    ExPuppet expuppet = cast(ExPuppet)incActivePuppet();
-                    
-                    a.lanes ~= newRandomLaneParam(expuppet.findParameter("Head:: Roll"), InterpolateMode.Stepped, 100);
-                    a.lanes ~= newRandomLaneParam(expuppet.findParameter("Head:: Yaw-Pitch"), InterpolateMode.Stepped, 100);
-                    a.lanes ~= newRandomLaneParam(expuppet.findParameter("Body:: Roll"), InterpolateMode.Stepped, 100);
-                    a.lanes ~= newRandomLaneParam(expuppet.findParameter("Arm:: Left:: Move"), InterpolateMode.Stepped, 100);
-                    a.lanes ~= newRandomLaneParam(expuppet.findParameter("Arm:: Right:: Move"), InterpolateMode.Stepped, 100);
-                    a.lanes ~= newRandomLaneParam(expuppet.findParameter("Body:: X:: Move"), InterpolateMode.Stepped, 100);
-
-                    incActivePuppet().getAnimations()["TEST"] = a;
-                    incAnimationSet(incActivePuppet().getAnimations()["TEST"]);
-
-                    incActivePuppet().player.set("TEST", true);
-                }
+                    if (incToolbarButton(anim && !(!anim.playing || anim.paused) ? "" : "", 32)) {
+                        if (!anim.playing || anim.paused) anim.play(true);
+                        else anim.pause();
+                    }
+                igEndDisabled();
             }
             incEndInnerToolbar();
             igEndDisabled();
@@ -230,9 +187,11 @@ protected:
                 // Align text
                 igSetCursorPosY(6);
 
-                float t = incActivePuppet().player.getAnimTime();
-                int s = cast(int)t;
-                int ms = cast(int)((t-cast(float)s)*100);
+                int s, ms;
+                if (anim) {
+                    s = anim.seconds;
+                    ms = anim.miliseconds;
+                }
 
                 import std.format;
                 incText("%ss %sms".format(s, ms));
