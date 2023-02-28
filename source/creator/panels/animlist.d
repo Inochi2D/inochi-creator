@@ -65,6 +65,7 @@ protected:
                 incPushWindow(new EditAnimationWindow());
             }
         }
+        igEndChild();
     }
 
 public:
