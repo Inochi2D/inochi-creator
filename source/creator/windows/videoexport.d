@@ -110,8 +110,8 @@ protected:
         );
 
         ImVec2 uiSize = ImVec2(
-            512, 
-            256
+            720, 
+            420
         );
 
         igSetNextWindowPos(wpos, ImGuiCond.Appearing, ImVec2(0.5, 0.5));
@@ -207,8 +207,8 @@ protected:
 
         // Bottom buttons
         if (igBeginChild("ExportButtons", ImVec2(0, 0), false, ImGuiWindowFlags.NoScrollbar)) {
-            igProgressBar(vctx ? vctx.progress() : 0, ImVec2(-64, 0));
-            igSameLine(0, 0);
+            igProgressBar(vctx ? vctx.progress() : 0, ImVec2(-68, 24));
+            igSameLine(0, 4);
 
             if (!vctx) {
                 if (igButton(__("Export"), ImVec2(64, 24))) {
