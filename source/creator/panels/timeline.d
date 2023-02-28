@@ -15,6 +15,7 @@ import inmath.noise;
 import creator.ext.param;
 import creator.ext;
 import inochi2d.core.animation.player;
+import std.conv;
 
 private {
     float tlWidth_ = DEF_HEADER_WIDTH;
@@ -236,18 +237,22 @@ protected:
 
         igPushID("BottomBar");
             if (incBeginInnerToolbar(24, false, false)) {
-
-                // Align text
-                igSetCursorPosY(6);
+                import std.format : format;
 
                 int s, ms;
+                int f = 1, fs = 1;
+                int mx;
                 if (anim) {
                     s = anim.seconds;
                     ms = anim.miliseconds;
+                    f = anim.frame;
+                    fs = anim.frames;
+                    mx = max(1, cast(int)fs.text.length);
                 }
 
-                import std.format;
-                incText("%ss %sms".format(s, ms));
+                incToolbarText(("%0"~mx.text~"d/%0"~mx.text~"d").format(f, fs));
+                incToolbarSeparator();
+                incToolbarText("%ss %sms".format(s, ms));
             }
             incEndInnerToolbar();
         igPopID();
