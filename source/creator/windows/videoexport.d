@@ -186,9 +186,9 @@ protected:
 
                     igCheckbox(__("Lock to Animation Framerate"), &player.snapToFramerate);
 
-                    igText(__("File Format"));
+                    igText(__("Codec"));
                     igIndent();
-                        if (igBeginCombo("###FileFormat", codec.name.toStringz)) {
+                        if (igBeginCombo("###Codec", codec.name.toStringz)) {
                             foreach(cdc; incVideoCodecs()) {
                                 if (igMenuItem(cdc.name.toStringz)) {
                                     codec = cdc;
