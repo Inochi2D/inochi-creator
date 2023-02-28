@@ -59,6 +59,7 @@ private:
     AnimationPlaybackRef playback;
     int framerate = -1;
     float lengthFactor = 1;
+    float frametime = 0;
 
 
     void exportFrame() {
@@ -83,7 +84,7 @@ private:
         inUpdate();
         inBeginScene();
             incActivePuppet().update();
-            player.update(playback.animation.timestep/lengthFactor);
+            player.update(frametime);
             incActivePuppet().draw();
         inEndScene();
         if (postprocessing) inPostProcessScene();
@@ -215,8 +216,10 @@ protected:
                     playback = player.createOrGet(animToExport);
 
 
-                    if (framerate > 1 && framerate != playback.fps) {
+                    frametime = playback.animation.timestep;
+                    if (framerate >= 1 && framerate != playback.fps) {
                         lengthFactor = framerate/playback.fps;
+                        frametime = 1.0/framerate;
                     }
 
                     VideoExportSettings settings;
@@ -230,7 +233,7 @@ protected:
                     done = false;
 
                     vctx = new VideoEncodingContext(settings);
-                    incBeginExportVideo(playback.animation.timestep/lengthFactor);
+                    incBeginExportVideo(frametime);
                     playback.play(false, true);
                     player.prerenderAll();
                     incActivePuppet().resetDrivers();
