@@ -42,6 +42,7 @@ float[] incAnimationGetTrackHeights() {
 class TimelinePanel : Panel {
 private:
     float scroll = 0;
+    float hscroll = 0;
     float zoom = 1;
     float widgetHeight;
 
@@ -124,7 +125,9 @@ private:
                 // Set scroll
                 auto window = igGetCurrentWindow();
                 igSetScrollY(scroll);
-                
+                hscroll = clamp(hscroll, 0, igGetScrollMaxX());
+                igSetScrollX(hscroll);
+
                 if (incAnimationGet()) {
                     incBeginTimelinePlayhead(*incAnimationGet().animation, zoom);
                         foreach(i, ref lane; incAnimationGet().animation().lanes) {
@@ -208,6 +211,11 @@ protected:
         if (inAnimMode) {
             if (igIsWindowHovered(ImGuiHoveredFlags.ChildWindows)) {
 
+                if ((igGetIO().KeyMods & ImGuiModFlags.Shift) == ImGuiModFlags.Shift) {    
+                    float delta = (igGetIO().MouseWheel*1024*zoom)*deltaTime();
+                    version(osx) hscroll += delta;
+                    else hscroll -= delta;
+                } 
                 if ((igGetIO().KeyMods & ImGuiModFlags.Ctrl) == ImGuiModFlags.Ctrl) {
                     
                     float delta = (igGetIO().MouseWheel*2*zoom)*deltaTime();
@@ -215,7 +223,8 @@ protected:
                 } else {
 
                     float delta = (igGetIO().MouseWheel*1024)*deltaTime();
-                    scroll -= delta;
+                    version(osx) scroll += delta;
+                    else scroll -= delta;
                 }
             }
 
