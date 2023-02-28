@@ -20,7 +20,7 @@ import i18n;
 
 import std.string;
 import std.stdio;
-import std.path : setExtension;
+import std.path;
 
 private {
     bool dbgShowStyleEditor;
@@ -270,11 +270,17 @@ void incMainMenu() {
                             const TFD_Filter[] filters = [
                                 { ["*.mp4"], "H.264 Video (*.mp4)" },
                                 { ["*.avi"], "AVI Video (*.avi)" },
+                                { ["*.webm"], "WebM Video (*.webm)" },
                                 { ["*.png"], "PNG Sequence (*.png)" }
                             ];
 
                             string file = incShowSaveDialog(filters, "", _("Export..."));
-                            if (file) incPushWindow(new VideoExportWindow(file));
+                            if (file) {
+
+                                // Fallback to .mp4
+                                if (!extension(file)) file = file.setExtension("mp4");
+                                incPushWindow(new VideoExportWindow(file));
+                            }
                         }
                         igEndMenu();
                     }

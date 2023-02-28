@@ -11,6 +11,7 @@ import std.array;
 import std.uni;
 import std.stdio : writeln;
 import i18n;
+import std.path;
 
 private {
     bool hasffmpeg;
@@ -61,7 +62,7 @@ private {
         import std.algorithm.sorting;
         sort!((a, b) => a.name < b.name)(codecs);
 
-        codecs = VideoCodec("auto", _("Automatic selection"))~codecs;
+        codecs = VideoCodec("auto", _("Automatic"))~codecs;
 
         return true;
     }
@@ -70,11 +71,18 @@ private {
         import std.conv : text;
         import std.format : format;
         string[] out_;
-
-        string[] transparency = [
-            "-pix_fmt", "yuva420p"
-        ];
-
+        string file = settings.file;
+        switch(settings.codec) {
+            case "png":
+            case "jpeg":
+            case "jpg":
+            case "tga":
+                file = stripExtension(settings.file)~"-%d"~extension(settings.file);
+                break;
+            default: 
+                file = settings.file;
+            break;
+        }
 
         if (settings.codec == "auto") {
             out_ = [
@@ -103,13 +111,13 @@ private {
 
                 // No audio
                 "-an",
+
+                // Pixel format
+                "-pix_fmt", settings.transparency ? "yuva420p" : "yuv420p",
+
+                // Output file
+                file
             ];
-
-            // Transparency
-            if (settings.transparency) out_ ~= transparency;
-
-            // Output file
-            out_ ~= settings.file;
         } else {
             out_ = [
                 // Command
@@ -137,16 +145,15 @@ private {
 
                 // No audio
                 "-an",
+
+                "-pix_fmt", settings.transparency ? "yuva420p" : "yuv420p",
                 
                 // Video codec
                 "-vcodec", settings.codec,
-            ];
-            
-            // Transparency
-            if (settings.transparency) out_ ~= transparency;
 
-            // Output file
-            out_ ~= settings.file;
+                // Output file
+                file
+            ];
         }
 
         // Adds additional user specified options if any
