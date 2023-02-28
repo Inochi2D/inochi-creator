@@ -167,5 +167,14 @@ void incToolbarSpacer(float space) {
     Vertical separator for toolbar
 */
 void incToolbarSeparator() {
-    igSeparatorEx(ImGuiSeparatorFlags.Vertical);
+    igPushStyleColor(ImGuiCol.Separator, ImVec4(0.5, 0.5, 0.5, 1));
+        igSeparatorEx(ImGuiSeparatorFlags.Vertical);
+        igSameLine(0, 6);
+    igPopStyleColor();
+}
+
+void incToolbarText(string text) {
+    igSetCursorPosY(6);
+    incText(text);
+    igSameLine(0, 4);
 }

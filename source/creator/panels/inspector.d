@@ -1065,48 +1065,55 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
         igSpacing();
 
         igPushID("SimplePhysics");
+        
+        igPushID(-1);
+            igCheckbox(__("Local Transform Lock"), &node.localOnly);
+            incTooltip(_("Whether the physics system only listens to the movement of the physics node itself"));
+            igSpacing();
+            igSpacing();
+        igPopID();
 
         igPushID(0);
-        incText(_("Gravity scale"));
-        incDragFloat("gravity", &node.gravity, adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-        igSpacing();
-        igSpacing();
+            incText(_("Gravity scale"));
+            incDragFloat("gravity", &node.gravity, adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            igSpacing();
+            igSpacing();
         igPopID();
 
         igPushID(1);
-        incText(_("Length"));
-        incDragFloat("length", &node.length, adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-        igSpacing();
-        igSpacing();
+            incText(_("Length"));
+            incDragFloat("length", &node.length, adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            igSpacing();
+            igSpacing();
         igPopID();
 
         igPushID(2);
-        incText(_("Resonant frequency"));
-        incDragFloat("frequency", &node.frequency, adjustSpeed/100, 0.01, 30, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-        igSpacing();
-        igSpacing();
+            incText(_("Resonant frequency"));
+            incDragFloat("frequency", &node.frequency, adjustSpeed/100, 0.01, 30, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            igSpacing();
+            igSpacing();
         igPopID();
 
         igPushID(3);
-        incText(_("Damping"));
-        incDragFloat("damping_angle", &node.angleDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            incText(_("Damping"));
+            incDragFloat("damping_angle", &node.angleDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
         igPopID();
 
         igPushID(4);
-        incDragFloat("damping_length", &node.lengthDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-        igSpacing();
-        igSpacing();
+            incDragFloat("damping_length", &node.lengthDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            igSpacing();
+            igSpacing();
         igPopID();
 
         igPushID(5);
-        incText(_("Output scale"));
-        incDragFloat("output_scale.x", &node.outputScale.vector[0], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            incText(_("Output scale"));
+            incDragFloat("output_scale.x", &node.outputScale.vector[0], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
         igPopID();
 
         igPushID(6);
-        incDragFloat("output_scale.y", &node.outputScale.vector[1], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-        igSpacing();
-        igSpacing();
+            incDragFloat("output_scale.y", &node.outputScale.vector[1], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            igSpacing();
+            igSpacing();
         igPopID();
 
         // Padding

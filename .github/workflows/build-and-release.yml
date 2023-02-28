@@ -199,13 +199,21 @@ jobs:
         compiler: ldc-latest
   
     - name: "Prepare for DMG packing"
+      continue-on-error: true
       run: |
+        export HOMEBREW_NO_INSTALL_CLEANUP=1
         brew update
         brew install create-dmg gettext
 
+    - name: "Remove conflicting brew packages"
+      continue-on-error: true
+      run: |
         # Remove conflicting brew items
         brew remove --ignore-dependencies aom cairo composer curl fontconfig freetype gd ghostscript httpd imagemagick jpeg-xl libavif libheif libxft mongodb-community@5.0 mongosh node@16 openjpeg php r sox webp libpng brotli
 
+    - name: "Remove final conflicting files"
+      continue-on-error: true
+      run: |
         # Delete fake harfbuzz if need be
         if [ -f "/usr/local/lib/libharfbuzz.dylib" ]; then
           sudo rm -r /usr/local/lib/libharfbuzz.dylib

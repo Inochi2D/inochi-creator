@@ -14,28 +14,19 @@ import creator;
 import inmath.noise;
 import creator.ext.param;
 import creator.ext;
+import inochi2d.core.animation.player;
+import std.conv;
 
 private {
-
-    float tlAnimTime_ = 0;
-    
-    Animation* currAnim_;
     float tlWidth_ = DEF_HEADER_WIDTH;
     float[] tlTrackHeights_;
 }
 
-void incAnimationSet(ref Animation anim) {
-    currAnim_ = &anim;
-    tlAnimTime_ = 0;
-    
+void incAnimationTimelineUpdate(ref Animation anim) {
     tlTrackHeights_.length = anim.lanes.length;
     foreach(i, track; anim.lanes) {
         tlTrackHeights_[i] = MIN_TRACK_HEIGHT;
     }
-}
-
-Animation* incAnimationGet() {
-    return currAnim_;
 }
 
 float incAnimationGetTimelineWidth() {
@@ -52,10 +43,8 @@ float[] incAnimationGetTrackHeights() {
 class TimelinePanel : Panel {
 private:
     float scroll = 0;
+    float hscroll = 0;
     float zoom = 1;
-
-    Animation* workingAnimation;
-    bool playing;
     float widgetHeight;
 
     void drawHeaders() {
@@ -76,8 +65,45 @@ private:
             // Draw headers
             igPushStyleColor(ImGuiCol.ChildBg, origBG);
                 if (incAnimationGet()) {
-                    foreach(i, ref lane; incAnimationGet().lanes) {
-                        incAnimationLaneHeader(lane, tlWidth, incAnimationGetTrackHeights()[i]);
+                    foreach(i; 0..incAnimationGet().animation().lanes.length) {
+                        AnimationLane* lane = &incAnimationGet().animation().lanes[i];
+
+                        igPushID(cast(int)i);
+                            if (igBeginPopup("###OPTIONS")) {
+                                if (igBeginMenu(__("Interpolation"))) {
+                                    if (igMenuItem(__("Nearest"), null, lane.interpolation == InterpolateMode.Nearest)) {
+                                        lane.interpolation = InterpolateMode.Nearest;
+                                    }
+                                    if (igMenuItem(__("Stepped"), null, lane.interpolation == InterpolateMode.Stepped)) {
+                                        lane.interpolation = InterpolateMode.Stepped;
+                                    }
+                                    if (igMenuItem(__("Linear"), null, lane.interpolation == InterpolateMode.Linear)) {
+                                        lane.interpolation = InterpolateMode.Linear;
+                                    }
+                                    if (igMenuItem(__("Cubic"), null, lane.interpolation == InterpolateMode.Cubic)) {
+                                        lane.interpolation = InterpolateMode.Cubic;
+                                    }
+                                    igEndMenu();
+                                }
+
+                                if (igMenuItem(__("Delete"))) {
+                                    import std.algorithm.mutation : remove;
+                                    incAnimationGet().animation().lanes = 
+                                        incAnimationGet().animation().lanes.remove(i);
+
+                                    // Whew, end early
+                                    igEndPopup();
+                                    igPopID();
+                                    igPopStyleColor();
+                                    igEndChild();
+                                    igPopStyleColor();
+                                    return;
+                                }
+                                igEndPopup();
+                            }
+                            incAnimationLaneHeader(*lane, tlWidth, incAnimationGetTrackHeights()[i]);
+                            igOpenPopupOnItemClick("###OPTIONS", ImGuiPopupFlags.MouseButtonRight);
+                        igPopID();
                     }
                 }
             igPopStyleColor();
@@ -96,14 +122,36 @@ private:
         igPushStyleColor(ImGuiCol.ChildBg, ImVec4(0, 0, 0, 0.033));
             if (igBeginChild("LANES_ROOT", ImVec2(0, widgetHeight), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)) {
                 
+                
                 // Set scroll
                 auto window = igGetCurrentWindow();
                 igSetScrollY(scroll);
-                
+                hscroll = clamp(hscroll, 0, igGetScrollMaxX());
+                igSetScrollX(hscroll);
+
                 if (incAnimationGet()) {
-                    foreach(i, ref lane; incAnimationGet().lanes) {
-                        incTimelineLane(lane, *incAnimationGet(), incAnimationGetTrackHeights[i], zoom, cast(int)i);
-                    }
+                    incBeginTimelinePlayhead(*incAnimationGet().animation, zoom);
+                        foreach(i, ref lane; incAnimationGet().animation().lanes) {
+                            float frame;
+                            float offset;
+                            incTimelineLane(lane, *incAnimationGet().animation, incAnimationGetTrackHeights[i], zoom, cast(int)i, &frame, &offset);
+
+                            if (frame > -1) {
+                                int xframe = cast(int)round(frame);
+                                if (igIsMouseDown(ImGuiMouseButton.Left)) {
+                                    incAnimationGet().seek(xframe);
+                                }
+
+                                if (igIsMouseDoubleClicked(ImGuiMouseButton.Left)) {
+                                    auto param = lane.paramRef.targetParam;
+                                    auto axis = lane.paramRef.targetAxis;
+                                    auto value = param.unmapAxis(axis, offset);
+
+                                    if (!incAnimationKeyframeRemove(param, axis)) incAnimationKeyframeAdd(param, axis, value);
+                                }
+                            }
+                        }
+                    incEndTimelinePlayhead(*incAnimationGet().animation, zoom, incAnimationGet().hframe);
                 }
             }
             igEndChild();
@@ -129,72 +177,29 @@ protected:
     void onUpdate() {
         bool inAnimMode = incEditMode() == EditMode.AnimEdit;
 
+        AnimationPlaybackRef anim = incAnimationGet();
+
         igPushID("TopBar");
             igBeginDisabled(!inAnimMode);
             if (incBeginInnerToolbar(24)) {
                 
-                if (incToolbarButton("", 32)) {
-                    incActivePuppet().player.stopAll(true);
-                    playing = false;
-                }
+                
+                igBeginDisabled(!anim);
+                    auto player = incAnimationPlayerGet();
+                    if (incToolbarButton(player.snapToFramerate ? "" : "", 32)) {
+                        player.snapToFramerate = !player.snapToFramerate;
+                    }
+                    incTooltip(_("Lock playback to animation framerate"));
 
-                if (incToolbarButton(playing ? "" : "", 32)) {
-                    if (!playing) incActivePuppet().player.play("TEST", true);
-                    else incActivePuppet().player.pause("TEST");
-                    playing = !playing;
-                }
-
-                if (incToolbarButton("DUMMY", 64)) {
-                    import std.random : uniform;
-
-                    AnimationLane[] newRandomLaneParam(Parameter param, InterpolateMode mode, int frames, int sep = 5) {
-                        int iter = param.isVec2 + 1;
-                        AnimationLane[] p;
-
-                        foreach(i; 0..iter) {
-                            p ~= AnimationLane(
-                                param.uuid,
-                                new AnimationParameterRef(param, i), 
-                                [], 
-                                mode
-                            );
-
-                            osseed(uniform(0, uint.max));
-                            foreach(x; 1..(frames-1)/sep) {
-                                p[i].frames ~= Keyframe(x*sep, (1+osnoise2(cast(float)x, 0))/2.0, 0);
-                            }
-                        }
-                        return p;
+                    if (incToolbarButton("", 32)) {
+                        anim.stop(igIsKeyDown(ImGuiKey.LeftShift) || igIsKeyDown(ImGuiKey.RightShift));
                     }
 
-                    Animation a = Animation(
-                        0.100, false, 1, [], 100, 0, 0
-                    );
-
-                    size_t i = 0;
-                    // foreach(ref param; incActivePuppet().parameters) {
-                    //     if (auto group = cast(ExParameterGroup)param) {
-                    //         foreach(ref child; group.children) {
-                    //             a.lanes ~= newRandomLaneParam(child, InterpolateMode.Cubic, 100);
-                    //         }
-                    //     } else a.lanes ~= newRandomLaneParam(param, InterpolateMode.Cubic, 100);
-                        
-                    // }
-
-                    ExPuppet expuppet = cast(ExPuppet)incActivePuppet();
-                    
-                    a.lanes ~= newRandomLaneParam(expuppet.findParameter("Head:: Roll"), InterpolateMode.Stepped, 100);
-                    a.lanes ~= newRandomLaneParam(expuppet.findParameter("Head:: Yaw-Pitch"), InterpolateMode.Stepped, 100);
-                    a.lanes ~= newRandomLaneParam(expuppet.findParameter("Body:: Roll"), InterpolateMode.Stepped, 100);
-                    a.lanes ~= newRandomLaneParam(expuppet.findParameter("Arm:: Left:: Move"), InterpolateMode.Stepped, 100);
-                    a.lanes ~= newRandomLaneParam(expuppet.findParameter("Arm:: Right:: Move"), InterpolateMode.Stepped, 100);
-                    a.lanes ~= newRandomLaneParam(expuppet.findParameter("Body:: X:: Move"), InterpolateMode.Stepped, 100);
-
-                    incActivePuppet().getAnimations()["TEST"] = a;
-                    incAnimationSet(incActivePuppet().getAnimations()["TEST"]);
-
-                    incActivePuppet().player.set("TEST", true);
-                }
+                    if (incToolbarButton(anim && !(!anim.playing || anim.paused) ? "" : "", 32)) {
+                        if (!anim.playing || anim.paused) anim.play(true);
+                        else anim.pause();
+                    }
+                igEndDisabled();
             }
             incEndInnerToolbar();
             igEndDisabled();
@@ -207,6 +212,11 @@ protected:
         if (inAnimMode) {
             if (igIsWindowHovered(ImGuiHoveredFlags.ChildWindows)) {
 
+                if ((igGetIO().KeyMods & ImGuiModFlags.Shift) == ImGuiModFlags.Shift) {    
+                    float delta = (igGetIO().MouseWheel*1024*zoom)*deltaTime();
+                    version(osx) hscroll += delta;
+                    else hscroll -= delta;
+                } 
                 if ((igGetIO().KeyMods & ImGuiModFlags.Ctrl) == ImGuiModFlags.Ctrl) {
                     
                     float delta = (igGetIO().MouseWheel*2*zoom)*deltaTime();
@@ -214,7 +224,8 @@ protected:
                 } else {
 
                     float delta = (igGetIO().MouseWheel*1024)*deltaTime();
-                    scroll -= delta;
+                    version(osx) scroll += delta;
+                    else scroll -= delta;
                 }
             }
 
@@ -226,16 +237,22 @@ protected:
 
         igPushID("BottomBar");
             if (incBeginInnerToolbar(24, false, false)) {
+                import std.format : format;
 
-                // Align text
-                igSetCursorPosY(6);
+                int s, ms;
+                int f = 1, fs = 1;
+                int mx;
+                if (anim) {
+                    s = anim.seconds;
+                    ms = anim.miliseconds;
+                    f = anim.frame;
+                    fs = anim.frames;
+                    mx = max(1, cast(int)fs.text.length);
+                }
 
-                float t = incActivePuppet().player.getAnimTime();
-                int s = cast(int)t;
-                int ms = cast(int)((t-cast(float)s)*100);
-
-                import std.format;
-                incText("%ss %sms".format(s, ms));
+                incToolbarText(("%0"~mx.text~"d/%0"~mx.text~"d").format(f, fs));
+                incToolbarSeparator();
+                incToolbarText("%ss %sms".format(s, ms));
             }
             incEndInnerToolbar();
         igPopID();

@@ -11,6 +11,7 @@ import std.array;
 import std.uni;
 import std.stdio : writeln;
 import i18n;
+import std.path;
 
 private {
     bool hasffmpeg;
@@ -37,8 +38,10 @@ private {
         foreach(line; lines) {
             string sline = strip(line);
             bool isVideoFormat = sline[2] == 'V';
+            bool supportsEncoding = sline[1] == 'E';
 
-            if (isVideoFormat) {
+            if (isVideoFormat && supportsEncoding) {
+
                 VideoCodec codec;
                 sline = sline[TAG_NAME_START..$];
 
@@ -56,7 +59,10 @@ private {
             }
         }
 
-        codecs = VideoCodec("auto", _("Automatic selection"))~codecs;
+        import std.algorithm.sorting;
+        sort!((a, b) => a.name < b.name)(codecs);
+
+        codecs = VideoCodec("auto", _("Automatic"))~codecs;
 
         return true;
     }
@@ -65,6 +71,18 @@ private {
         import std.conv : text;
         import std.format : format;
         string[] out_;
+        string file = settings.file;
+        switch(settings.codec) {
+            case "png":
+            case "jpeg":
+            case "jpg":
+            case "tga":
+                file = stripExtension(settings.file)~"-%d"~extension(settings.file);
+                break;
+            default: 
+                file = settings.file;
+            break;
+        }
 
         if (settings.codec == "auto") {
             out_ = [
@@ -93,9 +111,12 @@ private {
 
                 // No audio
                 "-an",
-            
+
+                // Pixel format
+                "-pix_fmt", settings.transparency ? "yuva420p" : "yuv420p",
+
                 // Output file
-                settings.file
+                file
             ];
         } else {
             out_ = [
@@ -124,12 +145,14 @@ private {
 
                 // No audio
                 "-an",
+
+                "-pix_fmt", settings.transparency ? "yuva420p" : "yuv420p",
                 
                 // Video codec
                 "-vcodec", settings.codec,
-                
+
                 // Output file
-                settings.file
+                file
             ];
         }
 
@@ -189,7 +212,12 @@ public:
             this.ffmpegPipes.stdin.rawWrite(rgbadata);
             encoded++;
         } catch(Exception ex) {
-            errors_ ~= ex.msg;
+            string err;
+            while(!this.ffmpegPipes.stderr.eof) {
+                string terr = this.ffmpegPipes.stderr.readln();
+                if (terr.length != 0) err = terr;
+            }
+            errors_ ~= err;
             isAlive = false;
         }
     }
@@ -223,6 +251,8 @@ struct VideoExportSettings {
 
     float width;
     float height;
+
+    bool transparency = false;
 
     string ffmpegOptions;
 }
