@@ -150,7 +150,7 @@ private:
                     incText(node.name);
                     // Calculate render size
                     if (auto part = cast(Part)node) {
-                        vec4 bounds = previewImage(part, ImVec2(PreviewSize/2, PreviewSize/2), PreviewSize);
+                        previewImage(part, ImVec2(PreviewSize/2, PreviewSize/2), PreviewSize);
                     }
                 igEndTooltip();
             }
@@ -172,11 +172,11 @@ private:
             igTableNextRow();
             igTableNextColumn();
             igPushStyleColor(ImGuiCol.FrameBg, ImVec4(0.5, 0.5, 0.5, 0));
-            igSelectable("##%s".format(pair.parts[0].cName).toStringz, active == &pair, ImGuiSelectableFlags.SpanAllColumns);
-            if (igIsItemClicked()) {
-                active = &pair;
-            }
-            igSetItemAllowOverlap();
+                igSelectable("##%s".format(pair.parts[0].cName).toStringz, active == &pair, ImGuiSelectableFlags.SpanAllColumns, ImVec2(0, 16));
+                if (igIsItemClicked()) {
+                    active = &pair;
+                }
+                igSetItemAllowOverlap();
             igPopStyleColor();
             igSameLine();
             igText(pair.parts[0].cName);
@@ -193,7 +193,7 @@ private:
                             break;
                         }
                     }
-                    writefln("parts[0]: flippable set=%s, node=%s", targetPair, node);
+                    debug writefln("parts[0]: flippable set=%s, node=%s", targetPair, node);
                     if (targetPair !is null && targetPair != &pair) {
                         if ((*targetPair).parts[0].uuid == node.uuid) {
                             (*targetPair).parts[0] = null;
@@ -204,7 +204,7 @@ private:
                     pair.parts[0] = node;
                     map[node.uuid] = i;
                     pair.update();
-                    writefln("set parts[0]: name=%s", pair.name);
+                    debug writefln("set parts[0]: name=%s", pair.name);
 
                     igEndDragDropTarget();
                     igPopID();
@@ -214,7 +214,7 @@ private:
             }
 
             igTableNextColumn();
-            igText(pair.parts[1]? pair.parts[1].cName: "<< Not assigned >>");
+            igText(pair.parts[1] ? pair.parts[1].cName : __("<< Not assigned >>"));
             // Only allow reparenting one node
             if(igBeginDragDropTarget()) {
                 const(ImGuiPayload)* payload = igAcceptDragDropPayload("__PAIRING");
@@ -228,7 +228,7 @@ private:
                             break;
                         }
                     }
-                    writefln("pair: flippable set=%s, node=%s", targetPair, node);
+                    debug writefln("pair: flippable set=%s, node=%s", targetPair, node);
                     if (targetPair !is null && targetPair != &pair) {
                         if ((*targetPair).parts[0].uuid == node.uuid) {
                             (*targetPair).parts[0] = null;
@@ -239,7 +239,7 @@ private:
                     pair.parts[1] = node;
                     map[node.uuid] = i;
                     pair.update();
-                    writefln("set parts[1]: name=%s", pair.name);
+                    debug writefln("set parts[1]: name=%s", pair.name);
 
                     igEndDragDropTarget();
                     igPopID();
@@ -248,12 +248,18 @@ private:
                 igEndDragDropTarget();
             }
             igSameLine(0, 0);
-            incDummy(ImVec2(-16, 12));
+            incDummy(ImVec2(-14, 12));
             igSameLine(0, 0);
             igPushID(cast(int)(i + pairs.length));
-            if (igButton("-", ImVec2(16, 16))) {
-                deleted = cast(int)i;
-            }
+            
+            igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
+            igPushStyleVar(ImGuiStyleVar.FrameBorderSize, 0);
+                igSetWindowFontScale(0.55);
+                    if (igButton("", ImVec2(16, 16))) {
+                        deleted = cast(int)i;
+                    }
+                igSetWindowFontScale(1);
+            igPopStyleVar(2);
             igPopID();
             igPopID();
 
@@ -287,7 +293,7 @@ protected:
         float gapspace = 8;
         float childWidth = (space.x/2);
         float previewSize = min(space.x/3, space.y/3);
-        float childHeight = space.y-(28)-(previewSize+gapspace+4);
+        float childHeight = floor(space.y-(28)-(previewSize+gapspace+6));
         float filterWidgetHeight = 26;
         float optionsListHeight = 26;
 
@@ -302,15 +308,16 @@ protected:
             );
 
             // Preview
-            if (igBeginChild("###Preview", ImVec2(previewSize, previewSize), true)) {
-                vec4 bounds;               
+            if (igBeginChild("###Preview", ImVec2(previewSize, previewSize), true, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)) {
+                vec4 bounds;
+                float psize = previewSize / 4;
                 if (active !is null) {
                     igGetCursorPos(&tl);
                     if ((*active).parts[0] && cast(Part)(active.parts[0]))
-                        bounds = previewImage(cast(Part)(active.parts[0]), ImVec2(childWidth / 2, childHeight / 2), previewSize, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 0.6));
+                        bounds = previewImage(cast(Part)(active.parts[0]), ImVec2(psize, psize*2), previewSize, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 0.6));
                     igSetCursorPos(tl);
                     if ((*active).parts[1] && cast(Part)(active.parts[1]))
-                        previewImage(cast(Part)(active.parts[1]), ImVec2(childWidth / 2, childHeight / 2), previewSize, ImVec2(1, 0), ImVec2(0, 1), ImVec4(1, 1, 1, 0.6));
+                        previewImage(cast(Part)(active.parts[1]), ImVec2(psize*3, psize*2), previewSize, ImVec2(1, 0), ImVec2(0, 1), ImVec4(1, 1, 1, 0.6));
                 }
 
             }
@@ -341,32 +348,32 @@ protected:
                 if (igBeginChild("###PairList", ImVec2(childWidth, childHeight-optionsListHeight))) {
                     igBeginTable("###PairsTable", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders, ImVec2(childWidth-gapspace, childHeight-optionsListHeight));
                         igTableHeader("###PairsTableHeader");
-                        igTableSetupColumn("Part 1", ImGuiTableColumnFlags.WidthStretch);
-                        igTableSetupColumn("Part 2", ImGuiTableColumnFlags.WidthStretch);
+                        igTableSetupColumn(__("Part 1"), ImGuiTableColumnFlags.WidthStretch);
+                        igTableSetupColumn(__("Part 2"), ImGuiTableColumnFlags.WidthStretch);
                         igTableHeadersRow();
                         pairView();
                     igEndTable();
-                    if(igBeginDragDropTarget()) {
-                        const(ImGuiPayload)* payload = igAcceptDragDropPayload("__PAIRING");
-                        if (payload !is null) {
-                            Node node = *cast(Node*)payload.Data;
-                            FlipPair* targetPair = null;
-                            foreach (pair; pairs) {
-                                if (pair.parts[0].uuid == node.uuid || pair.parts[1] !is null && pair.parts[1].uuid == node.uuid) {
-                                    targetPair = &pair;
-                                    break;
-                                }
-                            }
-
-                            if (targetPair is null) {
-                                pairs ~= new FlipPair([node, null], null);
-                                map[node.uuid] = pairs.length - 1;
-                            }
-                        }
-                        igEndDragDropTarget();
-                    }
                 }
                 igEndChild();
+                if(igBeginDragDropTarget()) {
+                    const(ImGuiPayload)* payload = igAcceptDragDropPayload("__PAIRING");
+                    if (payload !is null) {
+                        Node node = *cast(Node*)payload.Data;
+                        FlipPair* targetPair = null;
+                        foreach (pair; pairs) {
+                            if (pair.parts[0].uuid == node.uuid || pair.parts[1] !is null && pair.parts[1].uuid == node.uuid) {
+                                targetPair = &pair;
+                                break;
+                            }
+                        }
+
+                        if (targetPair is null) {
+                            pairs ~= new FlipPair([node, null], null);
+                            map[node.uuid] = pairs.length - 1;
+                        }
+                    }
+                    igEndDragDropTarget();
+                }
 
             }
             igEndChild();

@@ -270,6 +270,13 @@ void incPopWelcomeWindow() {
 }
 
 /**
+    Gets whether the welcome window is on top
+*/
+bool incWelcomeWindowOnTop() {
+    return cast(WelcomeWindow)incGetTopWindow() !is null;
+}
+
+/**
     Gets the length of the window stack
 */
 size_t incGetWindowStackSize() {
