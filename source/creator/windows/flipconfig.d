@@ -259,6 +259,11 @@ private:
         }
 
         if (deleted >= 0) {
+            FlipPair pair = pairs[deleted];
+            if (pair.parts[0] !is null)
+                map.remove(pair.parts[0].uuid);
+            if (pair.parts[1] !is null)
+                map.remove(pair.parts[1].uuid);
             pairs = pairs.remove(deleted);
         }
 
