@@ -122,7 +122,7 @@ public:
     /**
         Lists containing counts of how many of a texture type is atlassed.
     */
-    int[] packedIndices;
+    int[TextureUsage.COUNT] packedIndices;
 
     /**
         Constructs a new atlas with the specified size
@@ -131,6 +131,7 @@ public:
         this.padding = padding;
         this.scale = scale;
         this.resize(atlasSize);
+        packedIndices = new int[TextureUsage.COUNT];
     }
 
     /**
@@ -191,8 +192,6 @@ public:
         textureStartOffset.y *= p.textures[0].height * fscale;
         textureEndOffset.x   *= p.textures[0].width  * fscale;
         textureEndOffset.y   *= p.textures[0].height * fscale;
-
-        packedIndices = new int[p.textures.length];
         
         // Render textures in to our atlas
         foreach(i, ref Texture texture; p.textures) {
@@ -246,5 +245,6 @@ public:
     void clear() {
         mappings.clear();
         packer.clear();
+        packedIndices = new int[TextureUsage.COUNT];
     }
 }
