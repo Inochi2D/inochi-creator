@@ -425,7 +425,10 @@ private {
             if (igMenuItem(__("Set from mirror"), "", false, true)) {
                 auto action = new ParameterChangeBindingsValueAction("set From Mirror", param, bindings, cParamPoint.x, cParamPoint.y);
                 foreach(binding; bindings) {
-                    binding.extrapolateValueAt(cParamPoint, 0);
+                    Node target = binding.getTarget().node;
+                    auto pair = incGetFlipPairFor(target);
+                    auto srcBinding = getPairBindingFor(param, target, pair, binding.getName());
+                    autoFlipBinding(binding, srcBinding, cParamPoint, 0);
                 }
                 action.updateNewState();
                 incActionPush(action);
