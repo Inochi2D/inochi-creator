@@ -276,7 +276,7 @@ protected:
 
     override
     void onBeginUpdate() {
-        igSetNextWindowSizeConstraints(ImVec2(960, 480), ImVec2(float.max, float.max));
+        igSetNextWindowSizeConstraints(ImVec2(480, 480), ImVec2(float.max, float.max));
         super.onBeginUpdate();
     }
 
@@ -284,12 +284,40 @@ protected:
     void onUpdate() {
         ImVec2 space = incAvailableSpace();
         float gapspace = 8;
-        float childWidth = (space.x/3);
-        float childHeight = space.y-(24);
-        float filterWidgetHeight = 24;
-        float optionsListHeight = 24;
+        float childWidth = (space.x/2);
+        float previewSize = min(space.x/3, space.y/3);
+        float childHeight = space.y-(28)-(previewSize+gapspace+4);
+        float filterWidgetHeight = 26;
+        float optionsListHeight = 26;
 
         igBeginGroup();
+            ImVec2 tl;
+            igGetCursorPos(&tl);
+            igSetCursorPos(
+                ImVec2(
+                    tl.x+(childWidth-(previewSize/2)),
+                    tl.y
+                )
+            );
+
+            // Preview
+            if (igBeginChild("###Preview", ImVec2(previewSize, previewSize), true)) {
+                vec4 bounds;               
+                if (active !is null) {
+                    igGetCursorPos(&tl);
+                    if ((*active).parts[0] && cast(Part)(active.parts[0]))
+                        bounds = previewImage(cast(Part)(active.parts[0]), ImVec2(childWidth / 2, childHeight / 2), previewSize, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 0.6));
+                    igSetCursorPos(tl);
+                    if ((*active).parts[1] && cast(Part)(active.parts[1]))
+                        previewImage(cast(Part)(active.parts[1]), ImVec2(childWidth / 2, childHeight / 2), previewSize, ImVec2(1, 0), ImVec2(0, 1), ImVec4(1, 1, 1, 0.6));
+                }
+
+            }
+            igEndChild();
+
+            igDummy(ImVec2(0, gapspace));
+
+            // Selection
             if (igBeginChild("###Nodes", ImVec2(childWidth, childHeight))) {
                 incInputText("##", childWidth, nodeFilter);
 
@@ -312,13 +340,12 @@ protected:
                 if (igBeginChild("###PairList", ImVec2(childWidth, childHeight-optionsListHeight))) {
                     igBeginTable("###PairsTable", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders, ImVec2(childWidth-gapspace, childHeight-optionsListHeight));
                         igTableHeader("###PairsTableHeader");
-                        igTableSetupColumn("part 1", ImGuiTableColumnFlags.WidthStretch);
-                        igTableSetupColumn("part 2", ImGuiTableColumnFlags.WidthStretch);
+                        igTableSetupColumn("Part 1", ImGuiTableColumnFlags.WidthStretch);
+                        igTableSetupColumn("Part 2", ImGuiTableColumnFlags.WidthStretch);
                         igTableHeadersRow();
                         pairView();
                     igEndTable();
                     if(igBeginDragDropTarget()) {
-                        import std.stdio;
                         const(ImGuiPayload)* payload = igAcceptDragDropPayload("__PAIRING");
                         if (payload !is null) {
                             Node node = *cast(Node*)payload.Data;
@@ -329,7 +356,7 @@ protected:
                                     break;
                                 }
                             }
-                            writefln("flippable set=%s, node=%s", targetPair, node);
+
                             if (targetPair is null) {
                                 pairs ~= new FlipPair([node, null], null);
                                 map[node.uuid] = pairs.length - 1;
@@ -343,29 +370,11 @@ protected:
             }
             igEndChild();
 
-            igSameLine(0, gapspace);
-
-            if (igBeginChild("###Preview", ImVec2(childWidth, childHeight))) {
-                vec4 bounds;               
-                if (active !is null) {
-                    float previewSize = min(childWidth, childHeight);
-                    ImVec2 tl;
-                    igGetCursorPos(&tl);
-                    if ((*active).parts[0] && cast(Part)(active.parts[0]))
-                        bounds = previewImage(cast(Part)(active.parts[0]), ImVec2(childWidth / 2, childHeight / 2), previewSize, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 0.6));
-                    igSetCursorPos(tl);
-                    if ((*active).parts[1] && cast(Part)(active.parts[1]))
-                        previewImage(cast(Part)(active.parts[1]), ImVec2(childWidth / 2, childHeight / 2), previewSize, ImVec2(1, 0), ImVec2(0, 1), ImVec4(1, 1, 1, 0.6));
-                }
-
-            }
-            igEndChild();
-
         igEndGroup();
 
 
         igBeginGroup();
-            incDummy(ImVec2(-200, 0));
+            incDummy(ImVec2(-192, 0));
             igSameLine(0, 0);
             // 
             if (igButton(__("Cancel"), ImVec2(96, 24))) {
