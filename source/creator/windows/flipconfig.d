@@ -307,10 +307,10 @@ protected:
                 if (active !is null) {
                     igGetCursorPos(&tl);
                     if ((*active).parts[0] && cast(Part)(active.parts[0]))
-                        bounds = previewImage(cast(Part)(active.parts[0]), ImVec2(childWidth / 2, childHeight / 2), previewSize, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 0.6));
+                        bounds = previewImage(cast(Part)(active.parts[0]), ImVec2(previewSize / 2, previewSize / 2), previewSize, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 0.6));
                     igSetCursorPos(tl);
                     if ((*active).parts[1] && cast(Part)(active.parts[1]))
-                        previewImage(cast(Part)(active.parts[1]), ImVec2(childWidth / 2, childHeight / 2), previewSize, ImVec2(1, 0), ImVec2(0, 1), ImVec4(1, 1, 1, 0.6));
+                        previewImage(cast(Part)(active.parts[1]), ImVec2(previewSize / 2, previewSize / 2), previewSize, ImVec2(1, 0), ImVec2(0, 1), ImVec4(1, 1, 1, 0.6));
                 }
 
             }
