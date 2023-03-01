@@ -86,6 +86,19 @@ private:
                                     igEndMenu();
                                 }
 
+                                if (igBeginMenu(__("Merge Mode"))) {
+                                    if (igMenuItem(__("Additive"), null, lane.mergeMode == ParamMergeMode.Additive)) {
+                                        lane.mergeMode = ParamMergeMode.Additive;
+                                    }
+                                    if (igMenuItem(__("Multiplicative"), null, lane.mergeMode == ParamMergeMode.Multiplicative)) {
+                                        lane.mergeMode = ParamMergeMode.Multiplicative;
+                                    }
+                                    if (igMenuItem(__("Forced"), null, lane.mergeMode == ParamMergeMode.Forced)) {
+                                        lane.mergeMode = ParamMergeMode.Forced;
+                                    }
+                                    igEndMenu();
+                                }
+
                                 if (igMenuItem(__("Delete"))) {
                                     import std.algorithm.mutation : remove;
                                     incAnimationGet().animation().lanes = 
@@ -216,8 +229,7 @@ protected:
                     float delta = (igGetIO().MouseWheel*1024*zoom)*deltaTime();
                     version(osx) hscroll += delta;
                     else hscroll -= delta;
-                } 
-                if ((igGetIO().KeyMods & ImGuiModFlags.Ctrl) == ImGuiModFlags.Ctrl) {
+                } else if ((igGetIO().KeyMods & ImGuiModFlags.Ctrl) == ImGuiModFlags.Ctrl) {
                     
                     float delta = (igGetIO().MouseWheel*2*zoom)*deltaTime();
                     zoom = clamp(zoom+delta, TIMELINE_MIN_ZOOM, TIMELINE_MAX_ZOOM);
@@ -227,6 +239,8 @@ protected:
                     version(osx) scroll += delta;
                     else scroll -= delta;
                 }
+
+                
             }
 
             drawHeaders();

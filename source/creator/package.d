@@ -273,6 +273,8 @@ void incImportFolder(string folder) {
     puppet.rescanNodes();
     puppet.populateTextureSlots();
     incActiveProject().puppet = puppet;
+    incAnimationPlayer = new AnimationPlayer(puppet);
+    incAnimationCurrent = null;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
 
@@ -298,6 +300,8 @@ void incImportINP(string file) {
         return;
     }
     incActiveProject().puppet = puppet;
+    incAnimationPlayer = new AnimationPlayer(puppet);
+    incAnimationCurrent = null;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
 }
@@ -594,6 +598,9 @@ AnimationPlaybackRef incAnimationGet() {
 */
 void incAnimationUpdate() {
     incAnimationPlayer.update(deltaTime());
+    if (incAnimationCurrent && !incAnimationCurrent.isRunning() && !incAnimationCurrent.isPlayingLeadOut() && !incAnimationCurrent.paused) {
+        incAnimationCurrent.render();
+    }
 
     if (incEditMode() == EditMode.AnimEdit && incAnimationCurrent && incGetWindowsOpen() == 0) {
         if (igIsKeyPressed(ImGuiKey.Space, false)) {

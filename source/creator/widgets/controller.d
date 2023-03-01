@@ -185,8 +185,8 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
             }
 
             // OFFSET VALUE
-            fScaleX = ((param.value.x+param.ivalue.x) - param.min.x) / sDeltaX;
-            fScaleY = 1 - ((param.value.y+param.ivalue.y) - param.min.y) / sDeltaY;
+            fScaleX = ((param.lastInternal.x) - param.min.x) / sDeltaX;
+            fScaleY = 1 - ((param.lastInternal.y) - param.min.y) / sDeltaY;
             vCursorPos = ImVec2(
                 (oRect.Max.x - oRect.Min.x) * fScaleX + oRect.Min.x, 
                 (oRect.Max.y - oRect.Min.y) * fScaleY + oRect.Min.y
@@ -325,7 +325,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
             }
 
             // OFFSET VALUE
-            fScaleX = ((param.value.x+param.ivalue.x) - param.min.x) / sDeltaX;
+            fScaleX = ((param.lastInternal.x) - param.min.x) / sDeltaX;
             vCursorPos = ImVec2(
                 (oRect.Max.x - oRect.Min.x) * fScaleX + oRect.Min.x, 
                 fYCenter

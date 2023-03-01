@@ -74,6 +74,16 @@ void incExportINP(Puppet origin, Atlas[] atlasses, string file) {
     }
     editable.parameters = params;
 
+    // Discard invalid lanes
+    foreach(ref Animation animation; editable.getAnimations()) {
+        animation.finalize(editable);
+        AnimationLane[] workingLanes;
+        foreach(ref AnimationLane lane; animation.lanes) {
+            if (lane.paramRef.targetParam) workingLanes ~= lane;
+        }
+        animation.lanes = workingLanes;
+    }
+
     // Remove cameras
     foreach(ref camera; editable.findNodesType!ExCamera(editable.root)) {
         camera.parent = null;
