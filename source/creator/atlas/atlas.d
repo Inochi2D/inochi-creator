@@ -139,10 +139,11 @@ public:
 
         UVs should be stretched to cover this area.
     */
-    bool pack(Part p) {
+    bool pack(Part p, float fscale=1) {
         auto mesh = p.getMesh();
         vec2 textureStartOffset = vec2(0, 0);
         vec2 textureEndOffset   = vec2(0, 0);
+        fscale = fscale*scale;
 
         // Calculate how much of the texture is actually used in UV coordinates
         vec4 uvArea = vec4(1, 1, 0, 0);
@@ -176,8 +177,8 @@ public:
                                    uvArea.z - uvArea.x + textureStartOffset.x + textureEndOffset.x, uvArea.w - uvArea.y + textureStartOffset.y + textureEndOffset.y);
 
         vec2i size = vec2i(
-            cast(int)((p.textures[0].width*boundingUVRect.width)*scale)+(padding*2), 
-            cast(int)((p.textures[0].height*boundingUVRect.height)*scale)+(padding*2)
+            cast(int)((p.textures[0].width*boundingUVRect.width)*fscale)+(padding*2), 
+            cast(int)((p.textures[0].height*boundingUVRect.height)*fscale)+(padding*2)
         );
 
         // Get a slot for the texture in the atlas
@@ -186,10 +187,10 @@ public:
         // Could not fit texture, return false
         if (atlasArea == vec4i(0, 0, 0, 0)) return false;
 
-        textureStartOffset.x *= p.textures[0].width  * scale;
-        textureStartOffset.y *= p.textures[0].height * scale;
-        textureEndOffset.x   *= p.textures[0].width  * scale;
-        textureEndOffset.y   *= p.textures[0].height * scale;
+        textureStartOffset.x *= p.textures[0].width  * fscale;
+        textureStartOffset.y *= p.textures[0].height * fscale;
+        textureEndOffset.x   *= p.textures[0].width  * fscale;
+        textureEndOffset.y   *= p.textures[0].height * fscale;
 
         packedIndices = new int[p.textures.length];
         

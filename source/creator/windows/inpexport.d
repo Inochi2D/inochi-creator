@@ -31,6 +31,7 @@ struct ExportOptions {
     size_t atlasResolution = 2048;
     const(char)* atlasResolutionString = "2048x2048";
     
+    bool nonLinearScaling = false;
     float resolutionScale = 1;
     const(char)* resolutionScaleString = "100%";
 
@@ -59,9 +60,20 @@ private:
     }
 
     void regenPreview() {
+        forcedScale = false;
         Part[] parts = incActivePuppet().getAllParts();
 
+        // Resize and clear atlas
+        preview.resize(options.atlasResolution);
+        preview.clear();
+
+        if (options.nonLinearScaling) {
+            preview.scale = 1;
+            preview.padding = options.padding;
+        }
+
         // Force things to fit.
+        float rscale = 1;
         foreach(part; parts) {
             vec2 size = vec2(
                 (part.bounds.z-part.bounds.x)+preview.padding, 
@@ -69,20 +81,24 @@ private:
             );
             float xRatio = ((size.x*options.resolutionScale)/cast(float)options.atlasResolution)+0.01;
             float yRatio = ((size.y*options.resolutionScale)/cast(float)options.atlasResolution)+0.01;
-            if (xRatio > 1.0) options.resolutionScale = cast(float)(options.atlasResolution/size.x)-0.01;
-            if (yRatio > 1.0) options.resolutionScale = cast(float)(options.atlasResolution/size.y)-0.01;
-
-            forcedScale = true;
+            if (xRatio > 1.0) rscale = cast(float)(options.atlasResolution/size.x)-0.01;
+            if (yRatio > 1.0) rscale = cast(float)(options.atlasResolution/size.y)-0.01;
+            if (!options.nonLinearScaling) {
+                options.resolutionScale = rscale;
+                forcedScale = true;
+            } else {
+                preview.pack(part, rscale);
+            }
         }
 
-        preview.scale = options.resolutionScale;
-        preview.padding = options.padding;
+        if (!options.nonLinearScaling) {
+            preview.scale = options.resolutionScale;
+            preview.padding = options.padding;
 
-        preview.resize(options.atlasResolution);
-        preview.clear();
+            int i = 0;
+            while (i < parts.length && preview.pack(parts[i++])) { }
+        }
 
-        int i = 0;
-        while (i < parts.length && preview.pack(parts[i++])) { }
         preview.finalize();
     }
 
@@ -109,7 +125,24 @@ private:
             foreach(part; parts) {
                 if (taken[part] == true) continue;
 
-                if (atlasses[$-1].pack(part)) {
+                if (options.nonLinearScaling) {
+                    vec2 size = vec2(
+                        (part.bounds.z-part.bounds.x)+preview.padding, 
+                        (part.bounds.w-part.bounds.y)+preview.padding
+                    );
+
+                    float rscale = 1;
+                    float xRatio = ((size.x*options.resolutionScale)/cast(float)options.atlasResolution)+0.01;
+                    float yRatio = ((size.y*options.resolutionScale)/cast(float)options.atlasResolution)+0.01;
+                    if (xRatio > 1.0) rscale = cast(float)(options.atlasResolution/size.x)-0.01;
+                    if (yRatio > 1.0) rscale = cast(float)(options.atlasResolution/size.y)-0.01;
+                    if (atlasses[$-1].pack(part, rscale)) {
+                        taken[part] = true;
+                        partsLeft--;
+                        failed = false;
+                        continue mwhile;
+                    }
+                } else if (atlasses[$-1].pack(part)) {
                     taken[part] = true;
                     partsLeft--;
                     failed = false;
@@ -203,11 +236,13 @@ protected:
                             }
                             igEndCombo();
                         }
-                        
+
+                        igCheckbox(__("Non-linear Scaling"), &options.nonLinearScaling);
+                        incTooltip(_("Whether too large parts should individually be scaled down instead of all parts being scaled down uniformly."));
+
                         int resScaleInt = cast(int)(options.resolutionScale*100);
                         if (igInputInt(__("Texture Scale"), &resScaleInt, 1, 10)) {
-                            if (resScaleInt < 25) resScaleInt = 25;
-                            if (resScaleInt > 200) resScaleInt = 200;
+                            resScaleInt = clamp(resScaleInt, 25, 200);
                             options.resolutionScale = (cast(float)resScaleInt/100.0);
                             this.regenPreview();
                         }
