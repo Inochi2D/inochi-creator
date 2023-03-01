@@ -61,7 +61,12 @@ private:
 
     void regenPreview() {
         forcedScale = false;
-        Part[] parts = incActivePuppet().getAllParts();
+        Part[] parts = incActivePuppet().getAllParts().dup;
+        
+        parts.sort!(
+            (a, b) => a.textures[0].width+a.textures[0].height > b.textures[0].width+b.textures[0].height, 
+            SwapStrategy.stable
+        )();
 
         // Resize and clear atlas
         preview.resize(options.atlasResolution);
