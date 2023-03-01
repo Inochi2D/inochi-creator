@@ -172,7 +172,8 @@ private:
             igTableNextRow();
             igTableNextColumn();
             igPushStyleColor(ImGuiCol.FrameBg, ImVec4(0.5, 0.5, 0.5, 0));
-            if (igSelectable("##%s".format(pair.parts[0].cName).toStringz, active == &pair, ImGuiSelectableFlags.SpanAllColumns)) {
+            igSelectable("##%s".format(pair.parts[0].cName).toStringz, active == &pair, ImGuiSelectableFlags.SpanAllColumns);
+            if (igIsItemClicked()) {
                 active = &pair;
             }
             igSetItemAllowOverlap();
