@@ -839,7 +839,11 @@ public:
             writeln("part is null");
             return null;
         }
+        Deformation deform = binding.getValue(index);
+        return deformByDeformationBinding(part, deform, flipHorz);
+    }
 
+    Deformation* deformByDeformationBinding(Drawable part, Deformation deform, bool flipHorz = false) {
         auto origVertices = vertices.dup;
 
         // find triangle which covers specified point. 
@@ -900,13 +904,9 @@ public:
         }
         // Calculate offset of point in coordinates of triangle.
         vec2 calcOffsetInTriangleCoords(vec2 pt, ref MeshData bindingMesh, ref int[] triangle) {
-            if( (pt - bindingMesh.vertices[triangle[0]]).lengthSquared > (pt - bindingMesh.vertices[triangle[1]]).lengthSquared) {
-                swap(triangle[0], triangle[1]);
-            }
-            if( (pt - bindingMesh.vertices[triangle[0]]).lengthSquared > (pt - bindingMesh.vertices[triangle[2]]).lengthSquared) {
-                swap(triangle[0], triangle[2]);
-            }
             auto p1 = bindingMesh.vertices[triangle[0]];
+            if (pt == p1)
+                return vec2(0, 0);
             auto p2 = bindingMesh.vertices[triangle[1]];
             auto p3 = bindingMesh.vertices[triangle[2]];
             vec2 axis0 = p2 - p1;
@@ -915,47 +915,22 @@ public:
             vec2 axis1 = p3 - p1;
             float axis1len = axis1.length;
             axis1 /= axis1.length;
-
-            auto relPt = pt - p1;
-            if (relPt.lengthSquared == 0)
-                return vec2(0, 0);
-            float cosA = dot(axis0, axis1);
-            if (cosA == 0) {
-                return vec2(dot(relPt, axis0), dot(relPt, axis1));
-            } else {
-                float argA = acos(cosA);
-                float sinA = sin(argA);
-                float tanA = tan(argA);
-                float cosB = dot(axis0, relPt) / relPt.length;
-                float argB = acos(cosB);
-                float sinB = sin(argB);
-                
-                vec2 ortPt = vec2(relPt.length * cosB, relPt.length * sinB);
-                
-                mat2 H = mat2([1, -1/tanA, 0, 1/sinA]);
-                auto result = H * ortPt;
-
-                return result;
-            }
-        }
-        vec2 calcDistanceFromNearestLine(vec2 pt, ref MeshData bindingMesh, ref int[] triangle) {
-            if( (pt - bindingMesh.vertices[triangle[0]]).lengthSquared > (pt - bindingMesh.vertices[triangle[1]]).lengthSquared) {
-                swap(triangle[0], triangle[1]);
-            }
-            if( (pt - bindingMesh.vertices[triangle[0]]).lengthSquared > (pt - bindingMesh.vertices[triangle[2]]).lengthSquared) {
-                swap(triangle[0], triangle[2]);
-            }
-            auto p1 = bindingMesh.vertices[triangle[0]];
-            auto p2 = bindingMesh.vertices[triangle[1]];
-            auto p3 = bindingMesh.vertices[triangle[2]];
-            vec2 axis0 = p2 - p1;
-            float axis0len = axis0.length;
-            axis0 /= axis0len;
-            auto relPt = pt - p1;
-            float arg = sign(axis0.y) * acos(axis0.x);
-            vec2 result = (mat3.identity().rotateZ(-arg) * vec3(relPt, 1)).xy;
-            result.x /= axis0len;
-            return result;
+            vec3 raxis1 = mat3([axis0.x, axis0.y, 0, -axis0.y, axis0.x, 0, 0, 0, 1]) * vec3(axis1, 1);
+            float cosA = raxis1.x;
+            float sinA = raxis1.y;
+            mat3 H = mat3([axis0len > 0? 1/axis0len: 0,                           0, 0,
+                           0,                           axis1len > 0? 1/axis1len: 0, 0,
+                           0,                                                     0, 1]) * 
+                     mat3([1, -cosA/sinA, 0, 
+                           0,     1/sinA, 0, 
+                           0,          0, 1]) * 
+                     mat3([ axis0.x, axis0.y, 0, 
+                           -axis0.y, axis0.x, 0, 
+                                  0,       0, 1]) * 
+                     mat3([1, 0, -(p1).x, 
+                           0, 1, -(p1).y, 
+                           0, 0,       1]);
+            return (H * vec3(pt.x, pt.y, 1)).xy;
         }
 
         // Apply transform for mesh
@@ -974,27 +949,11 @@ public:
             auto p2 = vertices[triangle[1]];
             auto p3 = vertices[triangle[2]];
             vec2 axis0 = p2 - p1;
-            axis0 /= axis0.length;
             vec2 axis1 = p3 - p1;
-            axis1 /= axis1.length;
             return p1 + axis0 * offset.x + axis1 * offset.y;
         }
 
-        // Calculate position of the vertex using coordinates of the triangle.      
-        vec2 transformPointToLine(vec2 pt, vec2 offset, vec2[] vertices, ref int[] triangle) {
-            auto p1 = vertices[triangle[0]];
-            auto p2 = vertices[triangle[1]];
-            auto p3 = vertices[triangle[2]];
-            vec2 axis0 = p2 - p1;
-            float axis0len = axis0.length;
-            axis0 /= axis0len;
-            float arg = sign(axis0.y) * acos(axis0.x);
-            vec2 axis1 = vec2(cos(arg + PI/2), sin(arg+PI/2));
-           return p1 + axis0 * axis0len * offset.x + axis1 * offset.y;
-        }
-        
         MeshData bindingMesh = part.getMesh();
-        Deformation deform = binding.getValue(index);
         Deformation* newDeform = new Deformation([]);
 
         auto targetMesh = transformMesh(bindingMesh, deform);
@@ -1004,14 +963,10 @@ public:
                 pt.x = -pt.x;
             int[] triangle = findSurroundingTriangle(pt, bindingMesh);
             vec2 newPos;
-            if (triangle !is null) {
-                vec2 ofs = calcOffsetInTriangleCoords(pt, bindingMesh, triangle);
-                newPos = transformPointInTriangleCoords(pt, ofs, targetMesh, triangle);
-            } else {
+            if (triangle is null)
                 triangle = findNearestTriangle(pt, bindingMesh);
-                vec2 ofs = calcDistanceFromNearestLine(pt, bindingMesh, triangle);
-                newPos = transformPointToLine(pt, ofs, targetMesh, triangle);
-            }
+            vec2 ofs = calcOffsetInTriangleCoords(pt, bindingMesh, triangle);
+            newPos = transformPointInTriangleCoords(pt, ofs, targetMesh, triangle);
             if (flipHorz)
                 newPos.x = -newPos.x;
             newDeform.vertexOffsets ~= newPos - origVertices[i].position;

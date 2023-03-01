@@ -426,6 +426,10 @@ void incMainMenu() {
                 if (igBeginMenu(__("Tools"), true)) {
                     import creator.utils.repair : incAttemptRepairPuppet, incRegenerateNodeIDs;
 
+                    if(igMenuItem(__("Model flip configuration..."), "", false, true)) {
+                        incPopWelcomeWindow();
+                        incPushWindow(new FlipPairWindow());
+                    }
                 
                     igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Puppet Data"));
                     igSeparator();
