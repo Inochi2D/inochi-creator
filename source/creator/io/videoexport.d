@@ -176,13 +176,17 @@ private:
     string errors_;
     int encoded;
 
-
 public:
     this(VideoExportSettings settings) {
         this.settings = settings;
         this.ffmpegLaunchOptions = incBuildFFmpegCommand(settings);
         try {
-            this.ffmpegPipes = pipeProcess(this.ffmpegLaunchOptions);
+            this.ffmpegPipes = pipeProcess(
+                this.ffmpegLaunchOptions, 
+                Redirect.stdin, 
+                null,
+                Config(Config.Flags.suppressConsole)
+            );
             isAlive = true;
         } catch (Exception ex) {
             errors_ ~= ex.msg;
@@ -201,7 +205,7 @@ public:
         Gets whether ffmpeg is in a good state
     */
     bool checkState() {
-        return isAlive && !ffmpegPipes.stdout.eof && !ffmpegPipes.stdin.error;
+        return isAlive && !ffmpegPipes.stdin.error;
     }
 
     /**
@@ -209,15 +213,13 @@ public:
     */
     void encodeFrame(ubyte[] rgbadata) {
         try {
+
+            // Discard stdout
             this.ffmpegPipes.stdin.rawWrite(rgbadata);
+            this.ffmpegPipes.stdin.flush();
             encoded++;
         } catch(Exception ex) {
-            string err;
-            while(!this.ffmpegPipes.stderr.eof) {
-                string terr = this.ffmpegPipes.stderr.readln();
-                if (terr.length != 0) err = terr;
-            }
-            errors_ ~= err;
+            errors_ ~= ex.msg;
             isAlive = false;
         }
     }
