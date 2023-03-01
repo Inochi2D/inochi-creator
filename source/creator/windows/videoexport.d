@@ -25,7 +25,7 @@ private {
     float forcedTimestep = 1;
 
     double exportDeltaTime() {
-        return acc += forcedTimestep;
+        return acc;
     }
 
     void incEndExportVideo() {
@@ -34,8 +34,11 @@ private {
     }
 
     void incBeginExportVideo(float timestep) {
+        acc = 0;
         forcedTimestep = timestep;
         inSetTimingFunc(&exportDeltaTime);
+        inUpdate();
+        incActivePuppet().resetDrivers();
     }
 }
 
@@ -60,6 +63,7 @@ private:
     int framerate = -1;
     float lengthFactor = 1;
     float frametime = 0;
+    int loops = 0;
 
 
     void exportFrame() {
@@ -81,6 +85,7 @@ private:
         }
 
         // Render viewport
+        acc += forcedTimestep;
         inUpdate();
         inBeginScene();
             incActivePuppet().update();
@@ -88,6 +93,11 @@ private:
             incActivePuppet().draw();
         inEndScene();
         if (postprocessing) inPostProcessScene();
+        
+        // Handle ending loop
+        if (loops > 0) {
+            if (playback.looped+1 >= loops) playback.stop(false);
+        }
 
         // Dump to file
         ubyte[] data = new ubyte[inViewportDataLength()];
@@ -178,6 +188,10 @@ protected:
                         igEndCombo();
                     }
 
+                    
+                    igDragInt(__("Loops"), &loops, 1, 0, int.max);
+                    incTooltip(_("How many times the animation should loop"));
+
                     igDragInt(__("Framerate"), &framerate, 1, -1, 240);
                     if (framerate < 1) {
                         igSameLine(0, 4);
@@ -217,13 +231,20 @@ protected:
 
 
                     frametime = playback.animation.timestep;
+                    lengthFactor = 1;
                     if (framerate >= 1 && framerate != playback.fps) {
                         lengthFactor = framerate/playback.fps;
                         frametime = 1.0/framerate;
                     }
 
+                    int beginLen = cast(int)ceil(cast(float)playback.loopPointBegin*lengthFactor);
+                    int endLen = cast(int)ceil((cast(float)playback.animation.length-cast(float)playback.loopPointEnd)*lengthFactor);
+                    int loopLen = cast(int)ceil((cast(float)playback.loopPointEnd-cast(float)playback.loopPointBegin)*lengthFactor);
+
+                    int realLength = beginLen+(loopLen*(loops+2))+endLen;
+
                     VideoExportSettings settings;
-                    settings.frames = cast(int)(playback.animation.length*lengthFactor);
+                    settings.frames = cast(int)(realLength);
                     settings.framerate = framerate < 1 ? playback.fps : framerate;
                     settings.codec = codec.tag;
                     settings.width = selectedCamera.getViewport().x;
@@ -233,10 +254,9 @@ protected:
                     done = false;
 
                     vctx = new VideoEncodingContext(settings);
-                    incBeginExportVideo(frametime);
-                    playback.play(false, true);
+                    incBeginExportVideo(frametime/lengthFactor);
+                    playback.play(loops > 0, true);
                     player.prerenderAll();
-                    incActivePuppet().resetDrivers();
                 }
             } else {
                 if (!done) {
