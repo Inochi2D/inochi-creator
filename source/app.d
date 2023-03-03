@@ -94,7 +94,11 @@ int main(string[] args)
         incFinalize();
     } catch(Throwable ex) {
         debug {
-            throw ex;
+            version(Windows) {
+                crashdump(ex);
+            } else {
+                throw ex;
+            }
         } else {
             crashdump(ex);
         }
