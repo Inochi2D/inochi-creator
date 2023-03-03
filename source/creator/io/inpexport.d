@@ -74,6 +74,9 @@ void incExportINP(Puppet origin, Atlas[] atlasses, string file) {
     }
     editable.parameters = params;
 
+    // Apply all deformation of mesh groups to its children.
+    editable.applyDeformToChildren();
+
     // Discard invalid lanes
     foreach(ref Animation animation; editable.getAnimations()) {
         animation.finalize(editable);
