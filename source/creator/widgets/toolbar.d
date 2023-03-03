@@ -8,6 +8,7 @@ module creator.widgets.toolbar;
 import creator.viewport;
 import creator.widgets;
 import creator.core;
+import creator.windows;
 import creator;
 import i18n;
 
@@ -32,26 +33,35 @@ void incToolbar() {
                 // Render toolbar
                 igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(0, 0));
                 igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
+                    igBeginDisabled(incWelcomeWindowOnTop());
 
-                    if (incButtonColored("", ImVec2(32, 32), incActivePuppet().enableDrivers ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
-                        incActivePuppet().enableDrivers = !incActivePuppet().enableDrivers;
-                    }
-                    incTooltip(_("Enable physics"));
+                        if (incButtonColored("", ImVec2(32, 32), incActivePuppet().enableDrivers ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
+                            incActivePuppet().enableDrivers = !incActivePuppet().enableDrivers;
+                        }
+                        incTooltip(_("Enable physics"));
 
-                    igSameLine(0, 0);
+                        igSameLine(0, 0);
 
-                    if (incButtonColored("", ImVec2(32, 32), incShouldPostProcess ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
-                        incShouldPostProcess = !incShouldPostProcess;
-                    }
-                    incTooltip(_("Enable post processing"));
+                        if (incButtonColored("", ImVec2(32, 32), incShouldPostProcess ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
+                            incShouldPostProcess = !incShouldPostProcess;
+                        }
+                        incTooltip(_("Enable post processing"));
 
-                    if (incButtonColored("", ImVec2(32, 32), ImVec4.init)) {
-                        incActivePuppet().resetDrivers();
-                    }
-                    incTooltip(_("Reset physics"));
+                        if (incButtonColored("", ImVec2(32, 32), ImVec4.init)) {
+                            incActivePuppet().resetDrivers();
+                        }
+                        incTooltip(_("Reset physics"));
 
-                    // Draw the toolbar relevant for that viewport
-                    incViewportToolbar();
+                        igSameLine(0, 0);
+
+                        if (incButtonColored("", ImVec2(32, 32), ImVec4.init)) {
+                            incPushWindow(new FlipPairWindow());
+                        }
+                        incTooltip(_("Configure Flip Pairings"));
+
+                        // Draw the toolbar relevant for that viewport
+                        incViewportToolbar();
+                    igEndDisabled();
                 igPopStyleVar(2);
 
                 // Render mode switch buttons
@@ -167,5 +177,14 @@ void incToolbarSpacer(float space) {
     Vertical separator for toolbar
 */
 void incToolbarSeparator() {
-    igSeparatorEx(ImGuiSeparatorFlags.Vertical);
+    igPushStyleColor(ImGuiCol.Separator, ImVec4(0.5, 0.5, 0.5, 1));
+        igSeparatorEx(ImGuiSeparatorFlags.Vertical);
+        igSameLine(0, 6);
+    igPopStyleColor();
+}
+
+void incToolbarText(string text) {
+    igSetCursorPosY(6);
+    incText(text);
+    igSameLine(0, 4);
 }

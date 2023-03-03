@@ -98,6 +98,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
             ImDrawList* drawList = igGetWindowDrawList();
             
             ImS32 uDotColor = igGetColorU32(ImVec4(1f, 0f, 0f, 1f));
+            ImS32 uDotColorOff = igGetColorU32(ImVec4(0.5f, 0.2f, 0.2f, 1f));
             ImS32 uLineColor = igGetColorU32(style.Colors[ImGuiCol.Text]);
             ImS32 uDotKeyColor = igGetColorU32(style.Colors[ImGuiCol.TextDisabled]);
             ImS32 uDotKeyPartial = igGetColorU32(ImVec4(1f, 1f, 0f, 1f));
@@ -183,6 +184,16 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
                 }
             }
 
+            // OFFSET VALUE
+            fScaleX = ((param.lastInternal.x) - param.min.x) / sDeltaX;
+            fScaleY = 1 - ((param.lastInternal.y) - param.min.y) / sDeltaY;
+            vCursorPos = ImVec2(
+                (oRect.Max.x - oRect.Min.x) * fScaleX + oRect.Min.x, 
+                (oRect.Max.y - oRect.Min.y) * fScaleY + oRect.Min.y
+            );
+            
+            ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotColorOff, 16);
+
             // PARAM VALUE
             fScaleX = (param.value.x - param.min.x) / sDeltaX;
             fScaleY = 1 - (param.value.y - param.min.y) / sDeltaY;
@@ -266,6 +277,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
             ImDrawList* drawList = igGetWindowDrawList();
             
             ImS32 uDotColor = igGetColorU32(ImVec4(1f, 0f, 0f, 1f));
+            ImS32 uDotColorOff = igGetColorU32(ImVec4(0.8f, 0f, 0f, 1f));
             ImS32 uLineColor = igGetColorU32(style.Colors[ImGuiCol.Text]);
             ImS32 uDotKeyColor = igGetColorU32(style.Colors[ImGuiCol.TextDisabled]);
             ImS32 uDotKeyFilled = igGetColorU32(ImVec4(0f, 1f, 0f, 1f));
@@ -311,6 +323,15 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
                     }
                 }
             }
+
+            // OFFSET VALUE
+            fScaleX = ((param.lastInternal.x) - param.min.x) / sDeltaX;
+            vCursorPos = ImVec2(
+                (oRect.Max.x - oRect.Min.x) * fScaleX + oRect.Min.x, 
+                fYCenter
+            );
+            
+            ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotColorOff, 16);
 
             // PARAM VALUE
             fScaleX = (param.value.x - param.min.x) / sDeltaX;

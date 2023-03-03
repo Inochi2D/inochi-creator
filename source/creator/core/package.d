@@ -612,9 +612,10 @@ void incSetDefaultLayout() {
     igDockBuilderRemoveNodeChildNodes(viewportDock);
     ImGuiID 
         dockMainID, dockIDNodes, dockIDInspector, dockIDHistory, dockIDParams,
-        dockIDToolSettings, dockIDLoggerAndTextureSlots, dockIDTimeline;
+        dockIDToolSettings, dockIDLoggerAndTextureSlots, dockIDTimeline, dockIDAnimList;
 
     dockMainID = viewportDock;
+    dockIDAnimList = igDockBuilderSplitNode(dockMainID, ImGuiDir.Left, 0.10f, null, &dockMainID);
     dockIDNodes = igDockBuilderSplitNode(dockMainID, ImGuiDir.Left, 0.10f, null, &dockMainID);
     dockIDInspector = igDockBuilderSplitNode(dockIDNodes, ImGuiDir.Down, 0.60f, null, &dockIDNodes);
     dockIDToolSettings = igDockBuilderSplitNode(dockMainID, ImGuiDir.Right, 0.10f, null, &dockMainID);
@@ -629,6 +630,7 @@ void incSetDefaultLayout() {
     igDockBuilderDockWindow("###Scene", dockIDHistory);
     debug(InExperimental) igDockBuilderDockWindow("###Tracking", dockIDHistory);
     igDockBuilderDockWindow("###Timeline", dockIDTimeline);
+    igDockBuilderDockWindow("###Animation List", dockIDAnimList);
     igDockBuilderDockWindow("###Logger", dockIDTimeline);
     igDockBuilderDockWindow("###Parameters", dockIDParams);
     igDockBuilderDockWindow("###Texture Slots", dockIDLoggerAndTextureSlots);

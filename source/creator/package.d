@@ -27,6 +27,7 @@ import std.file;
 import std.format;
 import i18n;
 import std.algorithm.searching;
+import inochi2d.core.animation.player;
 
 /**
     A project
@@ -53,6 +54,9 @@ private {
     size_t armedParamIdx;
     string currProjectPath;
     string[] prevProjects;
+
+    AnimationPlayer incAnimationPlayer;
+    AnimationPlaybackRef incAnimationCurrent;
 }
 
 /**
@@ -156,6 +160,8 @@ void incNewProject() {
 
     activeProject = new Project;
     activeProject.puppet = new ExPuppet;
+    incAnimationPlayer = new AnimationPlayer(activeProject.puppet);
+    incAnimationCurrent = null;
     incFocusCamera(activeProject.puppet.root);
     incSelectNode(null);
     incDisarmParameter();
@@ -203,6 +209,9 @@ void incOpenProject(string path) {
     incActiveProject().puppet = puppet;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
+
+    incAnimationPlayer = new AnimationPlayer(puppet);
+    incAnimationCurrent = null;
 
     incSetStatus(_("%s opened successfully.").format(currProjectPath));
 }
@@ -264,6 +273,8 @@ void incImportFolder(string folder) {
     puppet.rescanNodes();
     puppet.populateTextureSlots();
     incActiveProject().puppet = puppet;
+    incAnimationPlayer = new AnimationPlayer(puppet);
+    incAnimationCurrent = null;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
 
@@ -289,6 +300,8 @@ void incImportINP(string file) {
         return;
     }
     incActiveProject().puppet = puppet;
+    incAnimationPlayer = new AnimationPlayer(puppet);
+    incAnimationCurrent = null;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
 }
@@ -546,4 +559,156 @@ void incSetEditMode(EditMode editMode, bool unselect = true) {
     editMode_ = editMode;
 
     incViewportPresentMode(editMode_);
+}
+
+/**
+    Sets the current animation being edited
+*/
+void incAnimationChange(string name) {
+    incAnimationPlayer.stopAll(true);
+    incAnimationCurrent = incAnimationPlayer.createOrGet(name);
+    
+    import creator.panels.timeline : incAnimationTimelineUpdate;
+    incAnimationTimelineUpdate(*incAnimationCurrent.animation);
+}
+
+/**
+    Gets a list of editable animations
+*/
+string[] incAnimationKeysGet() {
+    return incActivePuppet().getAnimations().keys;
+}
+
+/**
+    Gets the current animation being edited
+*/
+ref AnimationPlayer incAnimationPlayerGet() {
+    return incAnimationPlayer;
+}
+
+/**
+    Gets the current animation being edited
+*/
+AnimationPlaybackRef incAnimationGet() {
+    return incAnimationCurrent;
+}
+
+/**
+    Updates the current animation being edited
+*/
+void incAnimationUpdate() {
+    incAnimationPlayer.update(deltaTime());
+    if (incAnimationCurrent && !incAnimationCurrent.isRunning() && !incAnimationCurrent.isPlayingLeadOut() && !incAnimationCurrent.paused) {
+        incAnimationCurrent.render();
+    }
+
+    if (incEditMode() == EditMode.AnimEdit && incAnimationCurrent && incGetWindowsOpen() == 0) {
+        if (igIsKeyPressed(ImGuiKey.Space, false)) {
+            if (!incAnimationCurrent.playing || incAnimationCurrent.paused){
+                if (igIsKeyDown(ImGuiKey.LeftCtrl) || igIsKeyDown(ImGuiKey.RightCtrl) && incAnimationCurrent.frame != 0) {
+                    incAnimationCurrent.seek(0);
+                }
+                
+                incAnimationCurrent.play(true);
+            } else {
+                if (igIsKeyDown(ImGuiKey.LeftCtrl) || igIsKeyDown(ImGuiKey.RightCtrl)) {
+                    incAnimationPlayer.stopAll(igIsKeyDown(ImGuiKey.LeftShift) || igIsKeyDown(ImGuiKey.RightShift));
+                } else {
+                    incAnimationCurrent.pause();
+                }
+            }
+        }
+
+        if (igIsKeyPressed(ImGuiKey.LeftArrow, true) && incAnimationCurrent.frame > 0) {
+            incAnimationCurrent.seek(incAnimationCurrent.frame-1);
+        }
+
+        if (igIsKeyPressed(ImGuiKey.RightArrow, true) && incAnimationCurrent.frame+1 < incAnimationCurrent.frames) {
+            incAnimationCurrent.seek(incAnimationCurrent.frame+1);
+        }
+
+        if (igIsKeyPressed(ImGuiKey.N, false) || igIsKeyPressed(ImGuiKey.Insert, false)) {
+            foreach(ref lane; incAnimationCurrent.animation.lanes) {
+                auto param = lane.paramRef.targetParam;
+                auto axis = lane.paramRef.targetAxis;
+                auto value = param.value.vector[axis];
+
+                incAnimationKeyframeAdd(param, axis, value);
+            }
+        }
+
+        if (igIsKeyPressed(ImGuiKey.R, false) || igIsKeyPressed(ImGuiKey.Delete, false)) {
+            foreach(ref lane; incAnimationCurrent.animation.lanes) {
+                auto param = lane.paramRef.targetParam;
+                auto axis = lane.paramRef.targetAxis;
+                auto value = param.value.vector[axis];
+
+                incAnimationKeyframeRemove(param, axis);
+            }
+        }
+    }
+}
+
+/**
+    Adds a keyframe to the current animation
+*/
+void incAnimationKeyframeAdd(ref Parameter param, int axis, float value) {
+    foreach(ref lane; incAnimationCurrent.animation.lanes) {
+        if (lane.paramRef.targetParam == param && axis == lane.paramRef.targetAxis) {
+
+            // Try editing current frame
+            foreach(ref frame; lane.frames) {
+                if (frame.frame == incAnimationCurrent.frame) {
+                    frame.value = value;
+                    return;
+                }
+            }
+
+            // Try adding a new keyframe
+            lane.frames ~= Keyframe(
+                incAnimationCurrent.frame,
+                value,
+                0.5
+            );
+            lane.updateFrames();
+            return;
+        }
+    }
+
+    incAnimationCurrent.animation.lanes ~= AnimationLane(
+        param.uuid,
+        new AnimationParameterRef(param, axis),
+        [
+            Keyframe(
+                incAnimationCurrent.frame,
+                value,
+                0.5
+            ),
+        ],
+        InterpolateMode.Linear
+    );
+    
+    import creator.panels.timeline : incAnimationTimelineUpdate;
+    incAnimationTimelineUpdate(*incAnimationCurrent.animation);
+}
+
+/**
+    Removes a keyframe to the current animation
+*/
+bool incAnimationKeyframeRemove(ref Parameter param, int axis) {
+    import std.algorithm.mutation : remove;
+    foreach(ref lane; incAnimationCurrent.animation.lanes) {
+        if (lane.paramRef.targetParam == param && axis == lane.paramRef.targetAxis) {
+
+            // Try editing current frame
+            foreach(i; 0..lane.frames.length) {
+                if (lane.frames[i].frame == incAnimationCurrent.frame) {
+                    lane.frames = lane.frames.remove(i);
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }
