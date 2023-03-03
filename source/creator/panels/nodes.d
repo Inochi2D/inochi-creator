@@ -71,6 +71,10 @@ protected:
                 igSameLine(0, 2);
                 if (igMenuItem(__("Camera"), "", false, true)) incAddChildWithHistory(new ExCamera(n), n);
 
+                incText(incTypeIdToIcon("MeshGroup"));
+                igSameLine(0, 2);
+                if (igMenuItem(__("MeshGroup"), "", false, true)) incAddChildWithHistory(new MeshGroup(n), n);
+
                 igEndMenu();
             }
 

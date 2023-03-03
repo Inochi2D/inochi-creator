@@ -199,9 +199,16 @@ void incViewportVertexDraw(Camera camera) {
     if (targets.length > 0) {
         foreach (target; targets) {
             if (Part part = cast(Part)target) {
-
                 // Draw albedo texture at 0, 0
                 inDrawTextureAtPosition(part.textures[0], vec2(0, 0));
+            } else if (MeshGroup mgroup = cast(MeshGroup)target) {
+                Transform transform = mgroup.globalTransform;
+                transform.translation.x *= -1;
+                transform.translation.y *= -1;
+                transform.update();
+                mgroup.setOneTimeTransform(&transform);
+                mgroup.draw();
+                mgroup.setOneTimeTransform(null);
             }
         }
     }

@@ -95,6 +95,11 @@ protected:
                             if (SimplePhysics part = cast(SimplePhysics)node) {
                                 incInspectorModelSimplePhysics(part);
                             }
+
+                            // Node MeshGroup Section
+                            if (MeshGroup group = cast(MeshGroup)node) {
+                                incInspectorModelMeshGroup(group);
+                            }
                         }
                     
                     break;
@@ -1122,6 +1127,24 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
 
         igPopID();
         }
+    incEndCategory();
+}
+
+
+void incInspectorModelMeshGroup(MeshGroup node) {
+    if (incBeginCategory(__("MeshGroup"))) {
+        
+
+        igSpacing();
+
+        bool dynamic = node.dynamic;
+        if (igCheckbox(__("Use post-processing mode (slower)"), &dynamic)) {
+            node.switchMode(dynamic);
+        }
+
+        // Padding
+        igSpacing();
+    }
     incEndCategory();
 }
 

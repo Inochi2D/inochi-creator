@@ -77,8 +77,7 @@ public:
 
             // Set relative position
             if (new_) {
-                sn.setRelativeTo(new_);
-                sn.insertInto(new_, pOffset);
+                sn.reparent(new_, pOffset);
             } else sn.parent = null;
         }
         incActivePuppet().rescanNodes();
