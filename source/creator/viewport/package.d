@@ -373,6 +373,7 @@ void incViewportTransformHandle() {
     }
 
     // Move dragging
+    bool groupingAction = false;
     foreach(selectedNode; incSelectedNodes) {
         auto obounds = totalBounds;
 
@@ -429,12 +430,20 @@ void incViewportTransformHandle() {
                                 selectedNode.localTransform.translation.vector[1], &selectedNode.localTransform.translation.vector[1]);
                     }
                 }
+                if (incSelectedNodes.length > 1 && !groupingAction) {
+                    groupingAction = true;
+                    incActionPushGroup();
+                }
                 status.commitActions();
 
                 incEndDragOnHandle(btn, name);
                 incEndDrag(btn);
             }
         }
+    }
+    if (groupingAction) {
+        groupingAction = false;
+        incActionPopGroup();
     }
     // Move handle
     incBeginViewportToolArea(name, ImVec2(bounds.x - 32, bounds.y - 32));
@@ -540,12 +549,20 @@ void incViewportTransformHandle() {
                                 selectedNode.localTransform.scale.vector[1], &selectedNode.localTransform.scale.vector[1]);
                     }
                 } 
+                if (incSelectedNodes.length > 1 && !groupingAction) {
+                    groupingAction = true;
+                    incActionPushGroup();
+                }
                 status.commitActions();
 
                 incEndDrag(btn);
                 incEndDragOnHandle(btn, name);
             }
         }
+    }
+    if (groupingAction) {
+        groupingAction = false;
+        incActionPopGroup();
     }
     // Scale handle
     if (incSelectedNodes.length == 1) {
@@ -621,12 +638,20 @@ void incViewportTransformHandle() {
                                 selectedNode.localTransform.rotation.vector[2], &selectedNode.localTransform.rotation.vector[2]);
                     }
                 }
+                if (incSelectedNodes.length > 1 && !groupingAction) {
+                    groupingAction = true;
+                    incActionPushGroup();
+                }
                 status.commitActions();
 
                 incEndDrag(btn);
                 incEndDragOnHandle(btn, name);
             }
         }
+    }
+    if (groupingAction) {
+        groupingAction = false;
+        incActionPopGroup();
     }
     // Rotation handle
     if (incSelectedNodes.length == 1) {
