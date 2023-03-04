@@ -19,6 +19,7 @@ import creator.viewport.test;
 import creator.widgets.viewport;
 import bindbc.imgui;
 import std.algorithm.sorting;
+import std.algorithm.searching;
 import std.stdio;
 
 /**
@@ -361,6 +362,16 @@ void incViewportTransformHandle() {
         b.setValue(index, newValue);
     }
 
+    bool isOwned(Node node, Node[] selectedNodes) {
+        while (node.parent !is null) {
+            if (selectedNodes.countUntil(node.parent) >= 0) {
+                return true;
+            }
+            node = node.parent;
+        }
+        return false;
+    }
+
     // Move dragging
     foreach(selectedNode; incSelectedNodes) {
         auto obounds = totalBounds;
@@ -430,6 +441,9 @@ void incViewportTransformHandle() {
     igButton("", ImVec2(32, 32));
     if (igIsItemHovered() && igIsMouseDown(btn)) {
         foreach (selectedNode; incSelectedNodes) {
+            if (isOwned(selectedNode, incSelectedNodes))
+                continue;
+
             name = selectedNode.name ~ "move";
             vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
 
@@ -539,6 +553,9 @@ void incViewportTransformHandle() {
         igButton("", ImVec2(32, 32));
         if (igIsItemHovered() && igIsMouseDown(btn)) {
             foreach (selectedNode; incSelectedNodes) {
+                if (isOwned(selectedNode, incSelectedNodes))
+                    continue;
+
                 name = selectedNode.name ~ "scale";
                 vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
 
@@ -617,6 +634,9 @@ void incViewportTransformHandle() {
         igButton("", ImVec2(32, 32));
         if (igIsItemHovered() && igIsMouseDown(btn)) {
             foreach (selectedNode; incSelectedNodes) {
+                if (isOwned(selectedNode, incSelectedNodes))
+                    continue;
+
                 name = selectedNode.name ~ "rotate";
                 vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
 
