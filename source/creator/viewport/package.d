@@ -320,9 +320,10 @@ void incViewportTransformHandle() {
     Parameter param = incArmedParameter();
     if (incSelectedNodes.length > 0) {
         foreach(selectedNode; incSelectedNodes) {
-            if (cast(Part)selectedNode is null) continue; 
-
-            auto obounds=(cast(Part)selectedNode).bounds;
+            auto obounds = selectedNode.getCombinedBounds();
+            if (auto part = cast(Part)selectedNode) {
+                obounds = part.bounds;
+            }
             auto bounds = vec4(WorldToViewport(obounds.x, obounds.y), WorldToViewport(obounds.z, obounds.w));
 
             Parameter armedParam = incArmedParameter();
@@ -351,7 +352,7 @@ void incViewportTransformHandle() {
                 b.setValue(index, newValue);
             }
 
-            if (incSelectedNodes.length == 1) {
+            /*if (incSelectedNodes.length == 1)*/ {
                 // Move
                 name = selectedNode.name ~ "move";
                 vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
