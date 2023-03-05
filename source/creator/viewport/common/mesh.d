@@ -104,6 +104,20 @@ private:
             vertices ~= vertex;
         }
 
+        axes = [];
+        import std.stdio;
+        if (data.isGrid()) {
+            writefln("Import grid mesh %s", data.gridAxes);
+            foreach (axis; data.gridAxes) {
+                float[] newAxis;
+                foreach (axValue; axis) {
+                    newAxis ~= axValue;
+                }
+                axes ~= newAxis;
+            }
+        }
+        writefln("axes=%s", axes);
+
         refresh();
     }
 
@@ -217,6 +231,14 @@ private:
             }
         }
 
+        import std.stdio;
+        if (axes.length >= 2) {
+            writefln("Export grid mesh %s", newData.gridAxes);
+            newData.gridAxes = axes[];
+        }
+        newData.clearGridIsDirty();
+        writefln("IsGrid: %d", newData.isGrid());
+
         // Save the data as the new data and refresh
         data = newData;
         reset();
@@ -226,6 +248,7 @@ private:
     vec3[] points;
     vec3[] lines;
     vec3[] wlines;
+    float[][] axes;
     void regen() {
         points.length = 0;
         
@@ -972,5 +995,9 @@ public:
             newDeform.vertexOffsets ~= newPos - origVertices[i].position;
         }
         return newDeform;
+    }
+
+    void copyFromMeshData(MeshData data) {
+        mImport(data);
     }
 }

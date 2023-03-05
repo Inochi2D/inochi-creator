@@ -32,6 +32,7 @@ enum VertexToolMode {
     Points,
     Connect,
     PathDeform,
+    Grid,
 }
 
 

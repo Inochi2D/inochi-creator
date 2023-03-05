@@ -187,6 +187,15 @@ public:
                 }
                 incTooltip(_("Path Deform Tool"));
 
+                if (!deformOnly) {
+                    if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Grid ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                        setToolMode(VertexToolMode.Grid);
+                        foreach (e; editors)
+                            e.viewportTools(VertexToolMode.Grid);
+                    }
+                    incTooltip(_("Grid Vertex Tool"));
+                }
+
             igPopStyleVar(2);
         igSetWindowFontScale(1);
     }
