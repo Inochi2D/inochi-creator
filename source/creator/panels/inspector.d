@@ -1138,9 +1138,10 @@ void incInspectorModelMeshGroup(MeshGroup node) {
         igSpacing();
 
         bool dynamic = node.dynamic;
-        if (igCheckbox(__("Use post-processing mode (slower)"), &dynamic)) {
+        if (igCheckbox(__("Dynamic Deformation (slower)"), &dynamic)) {
             node.switchMode(dynamic);
         }
+        incTooltip(_("Whether the MeshGroup should dynamically deform children,\nthis is an expensive operation and should not be overused."));
 
         // Padding
         igSpacing();

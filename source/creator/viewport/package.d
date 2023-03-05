@@ -19,6 +19,7 @@ import creator.viewport.test;
 import creator.widgets.viewport;
 import bindbc.imgui;
 import std.algorithm.sorting;
+import std.algorithm.searching;
 import std.stdio;
 
 /**
@@ -318,301 +319,365 @@ void incViewportTransformHandle() {
     Camera camera = inGetCamera();
     auto io = igGetIO();
     Parameter param = incArmedParameter();
-    if (incSelectedNodes.length > 0) {
-        foreach(selectedNode; incSelectedNodes) {
-            if (cast(Part)selectedNode is null) continue; 
+    if (incSelectedNodes.length == 0)
+        return;
+        
+    vec4 totalBounds = incSelectedNodes[0].getCombinedBounds();
+    if (auto part = cast(Part)incSelectedNodes[0]) {
+        totalBounds = part.bounds;
+    }
+    foreach(selectedNode; incSelectedNodes) {
+        auto obounds = selectedNode.getCombinedBounds();
+        if (auto part = cast(Part)selectedNode) {
+            obounds = part.bounds;
+        }
+        totalBounds = vec4(min(totalBounds.x, obounds.x), min(totalBounds.y, obounds.y),
+                            max(totalBounds.z, obounds.z), max(totalBounds.w, obounds.w));
+    }
+    auto bounds = vec4(WorldToViewport(totalBounds.x, totalBounds.y), WorldToViewport(totalBounds.z, totalBounds.w));
 
-            auto obounds=(cast(Part)selectedNode).bounds;
-            auto bounds = vec4(WorldToViewport(obounds.x, obounds.y), WorldToViewport(obounds.z, obounds.w));
+    Parameter armedParam = incArmedParameter();
 
-            Parameter armedParam = incArmedParameter();
+    string name;
+    ImGuiMouseButton btn = ImGuiMouseButton.Left;
 
-            string name;
-            ImGuiMouseButton btn = ImGuiMouseButton.Left;
+    void changeParameter(Node node, Parameter param, string paramName, vec2u index, float newValue) {
+        if (newValue == 0)
+            return;
+        ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
+        DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
+        if (b is null) {
+            b = cast(ValueParameterBinding)param.createBinding(node, paramName);
+            param.addBinding(b);
+            status.actions["Add"]= new ParameterBindingAddAction(param, b);
+        }
+        if (auto editor = incViewportModelDeformGetEditor()) {
+            if (auto e = editor.getEditorFor(node)) {
+                e.adjustPathTransform();
+            }
+        }
+        // Push action
+        if (paramName !in status.actions)
+            status.actions[paramName] = new ParameterBindingValueChangeAction!(float)(b.getName(), b, index.x, index.y);
+        b.setValue(index, newValue);
+    }
 
-            void changeParameter(Node node, Parameter param, string paramName, vec2u index, float newValue) {
-                if (newValue == 0)
-                    return;
-                ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
-                DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
-                if (b is null) {
-                    b = cast(ValueParameterBinding)param.createBinding(node, paramName);
-                    param.addBinding(b);
-                    status.actions["Add"]= new ParameterBindingAddAction(param, b);
+    bool isOwned(Node node, Node[] selectedNodes) {
+        while (node.parent !is null) {
+            if (selectedNodes.countUntil(node.parent) >= 0) {
+                return true;
+            }
+            node = node.parent;
+        }
+        return false;
+    }
+
+    // Move dragging
+    bool groupingAction = false;
+    foreach(selectedNode; incSelectedNodes) {
+        auto obounds = totalBounds;
+
+        // Move
+        name = selectedNode.name ~ "move";
+        vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
+        if (incDragStartedOnHandle(btn, name)) {
+            vec2 prevValue;
+            incGetDragPrevValueOnHandle(btn, name, prevValue);
+            DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
+
+            if (igIsMouseDown(btn)) {
+                vec2 mpos, origPos;
+                incGetDragOriginOnHandle(btn, name, origPos);
+                mpos = incInputGetMousePosition();
+                auto relPos = -(mpos - origPos);
+                float newValueX = prevValue.x + relPos.x;
+                float newValueY = prevValue.y + relPos.y;
+                if (io.KeyCtrl) {
+                    newValueX = round(newValueX / 5) * 5;
+                    newValueY = round(newValueY / 5) * 5;
                 }
-                if (auto editor = incViewportModelDeformGetEditor()) {
-                    if (auto e = editor.getEditorFor(node)) {
-                        e.adjustPathTransform();
+                if (io.KeyShift) {
+                    if (abs(relPos.x) > abs(relPos.y))
+                        status.lockOrientation(LockedOrientation.Vertical);
+                    else
+                        status.lockOrientation(LockedOrientation.Horizontal);
+                } else {
+                    status.lockOrientation(LockedOrientation.None);
+                }
+                if (status.locked == LockedOrientation.Vertical)
+                    newValueY = prevValue.y;
+                if (status.locked == LockedOrientation.Horizontal)
+                    newValueX = prevValue.x;
+
+                if (armedParam) {
+                    changeParameter(selectedNode, armedParam, "transform.t.x", index, newValueX);
+                    changeParameter(selectedNode, armedParam, "transform.t.y", index, newValueY);
+                } else {
+                    selectedNode.localTransform.translation.vector[0] = newValueX;
+                    selectedNode.localTransform.translation.vector[1] = newValueY;
+                }
+            } else {
+                if (!armedParam) {
+                    if (selectedNode.localTransform.translation.vector[0] != prevValue.x) {
+                        status.actions["X"] =
+                            new NodeValueChangeAction!(Node, float)("X", selectedNode, prevValue.x,
+                                selectedNode.localTransform.translation.vector[0], &selectedNode.localTransform.translation.vector[0]
+                            );
+                    }
+                    if (selectedNode.localTransform.translation.vector[1] != prevValue.y) {
+                        status.actions["Y"] =
+                            new NodeValueChangeAction!(Node, float)("Y", selectedNode, prevValue.y,
+                                selectedNode.localTransform.translation.vector[1], &selectedNode.localTransform.translation.vector[1]);
                     }
                 }
-                // Push action
-                if (paramName !in status.actions)
-                    status.actions[paramName] = new ParameterBindingValueChangeAction!(float)(b.getName(), b, index.x, index.y);
-                b.setValue(index, newValue);
+                if (incSelectedNodes.length > 1 && !groupingAction) {
+                    groupingAction = true;
+                    incActionPushGroup();
+                }
+                status.commitActions();
+
+                incEndDragOnHandle(btn, name);
+                incEndDrag(btn);
             }
+        }
+    }
+    if (groupingAction) {
+        groupingAction = false;
+        incActionPopGroup();
+    }
+    // Move handle
+    incBeginViewportToolArea(name, ImVec2(bounds.x - 32, bounds.y - 32));
+    igButton("", ImVec2(32, 32));
+    if (igIsItemHovered() && igIsMouseDown(btn)) {
+        foreach (selectedNode; incSelectedNodes) {
+            if (isOwned(selectedNode, incSelectedNodes))
+                continue;
 
-            if (incSelectedNodes.length == 1) {
-                // Move
-                name = selectedNode.name ~ "move";
-                vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
-                if (incDragStartedOnHandle(btn, name)) {
-                    vec2 prevValue;
-                    incGetDragPrevValueOnHandle(btn, name, prevValue);
-                    DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
+            name = selectedNode.name ~ "move";
+            vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
 
-                    if (igIsMouseDown(btn)) {
-                        vec2 mpos, origPos;
-                        incGetDragOriginOnHandle(btn, name, origPos);
-                        mpos = incInputGetMousePosition();
-                        auto relPos = -(mpos - origPos);
-                        float newValueX = prevValue.x + relPos.x;
-                        float newValueY = prevValue.y + relPos.y;
-                        if (io.KeyCtrl) {
-                            newValueX = round(newValueX / 5) * 5;
-                            newValueY = round(newValueY / 5) * 5;
-                        }
-                        if (io.KeyShift) {
-                            if (abs(relPos.x) > abs(relPos.y))
-                                status.lockOrientation(LockedOrientation.Vertical);
-                            else
-                                status.lockOrientation(LockedOrientation.Horizontal);
+            if (!incDragStartedOnHandle(btn, name)) {
+                incBeginDrag(btn);
+                if (armedParam) {
+                    ValueParameterBinding b;
+                    b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.t.x");
+                    auto origX = (b !is null)? b.getValue(index) : 0;
+                    b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.t.y");
+                    auto origY = (b !is null)? b.getValue(index) : 0;
+                    incBeginDragOnHandle(btn, name, vec2(origX, origY));
+                } else
+                    incBeginDragOnHandle(btn, name, vec2(selectedNode.localTransform.translation.vector[0], selectedNode.localTransform.translation.vector[1]));
+            }
+        }
+    }
+    incEndViewportToolArea();
+
+    // Scaling dragging
+    foreach(selectedNode; incSelectedNodes) {
+        auto obounds = totalBounds;
+
+        name = selectedNode.name ~ "scale";
+        vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
+
+        if (incDragStartedOnHandle(btn, name)) {
+            vec2 prevValue;
+            incGetDragPrevValueOnHandle(btn, name, prevValue);
+            DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
+
+            if (igIsMouseDown(btn)) {
+                vec2 mpos, origPos;
+                incGetDragOriginOnHandle(btn, name, origPos);
+                mpos = incInputGetMousePosition();
+                auto origin = -(obounds.xy + obounds.zw) / 2;
+                mpos -= origin;
+                origPos -= origin;
+                origPos = (mat3.identity.rotateZ(selectedNode.localTransform.rotation.vector[2]) * vec3(origPos.x, origPos.y, 1)).xy;
+                mpos = (mat3.identity.rotateZ(selectedNode.localTransform.rotation.vector[2]) * vec3(mpos.x, mpos.y, 1)).xy;
+                float ratioX = origPos.x == 0 ? 0 : mpos.x / origPos.x;
+                float ratioY = origPos.y == 0 ? 0 : mpos.y / origPos.y;
+                float newValueX = prevValue.x * ratioX;
+                float newValueY = prevValue.y * ratioY;
+                if (io.KeyShift) {
+                    if (io.KeyAlt) {
+
+                        // Keep Ratio
+                        float nScale = sqrt((mpos.x^^2) + (mpos.y^^2)) / sqrt((origPos.x^^2) + (origPos.y^^2));
+                        newValueX = prevValue.x * nScale;
+                        newValueY = prevValue.y * nScale;
+
+                    } else {
+
+                        // Lock to axis
+                        if (abs(ratioX) > abs(ratioY)) {
+                            status.lockOrientation(LockedOrientation.Vertical);
                         } else {
-                            status.lockOrientation(LockedOrientation.None);
+                            status.lockOrientation(LockedOrientation.Horizontal);
                         }
-                        if (status.locked == LockedOrientation.Vertical)
+                        if (status.locked == LockedOrientation.Vertical) {
                             newValueY = prevValue.y;
-                        if (status.locked == LockedOrientation.Horizontal)
+                        } else if (status.locked == LockedOrientation.Horizontal) {
                             newValueX = prevValue.x;
-
-                        if (armedParam) {
-                            changeParameter(selectedNode, armedParam, "transform.t.x", index, newValueX);
-                            changeParameter(selectedNode, armedParam, "transform.t.y", index, newValueY);
-                        } else {
-                            selectedNode.localTransform.translation.vector[0] = newValueX;
-                            selectedNode.localTransform.translation.vector[1] = newValueY;
                         }
-                    } else {
-                        if (!armedParam) {
-                            if (selectedNode.localTransform.translation.vector[0] != prevValue.x) {
-                                status.actions["X"] =
-                                    new NodeValueChangeAction!(Node, float)("X", selectedNode, prevValue.x,
-                                        selectedNode.localTransform.translation.vector[0], &selectedNode.localTransform.translation.vector[0]
-                                    );
-                            }
-                            if (selectedNode.localTransform.translation.vector[1] != prevValue.y) {
-                                status.actions["Y"] =
-                                    new NodeValueChangeAction!(Node, float)("Y", selectedNode, prevValue.y,
-                                        selectedNode.localTransform.translation.vector[1], &selectedNode.localTransform.translation.vector[1]);
-                            }
-                        }
-                        status.commitActions();
-
-                        incEndDragOnHandle(btn, name);
-                        incEndDrag(btn);
-                    }
-                }
-                incBeginViewportToolArea(name, ImVec2(bounds.x - 32, bounds.y - 32));
-                igButton("", ImVec2(32, 32));
-                if (igIsItemHovered() && igIsMouseDown(btn)) {
-                    if (!incDragStartedOnHandle(btn, name)) {
-                        incBeginDrag(btn);
-                        if (armedParam) {
-                            ValueParameterBinding b;
-                            b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.t.x");
-                            auto origX = (b !is null)? b.getValue(index) : 0;
-                            b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.t.y");
-                            auto origY = (b !is null)? b.getValue(index) : 0;
-                            incBeginDragOnHandle(btn, name, vec2(origX, origY));
-                        } else
-                            incBeginDragOnHandle(btn, name, vec2(selectedNode.localTransform.translation.vector[0], selectedNode.localTransform.translation.vector[1]));
-                    }
-                }
-                incEndViewportToolArea();
-
-                // Scaling
-                name = selectedNode.name ~ "scale";
-                if (incDragStartedOnHandle(btn, name)) {
-                    vec2 prevValue;
-                    incGetDragPrevValueOnHandle(btn, name, prevValue);
-                    DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
-
-                    if (igIsMouseDown(btn)) {
-                        vec2 mpos, origPos;
-                        incGetDragOriginOnHandle(btn, name, origPos);
-                        mpos = incInputGetMousePosition();
-                        auto origin = -(obounds.xy + obounds.zw) / 2;
-                        mpos -= origin;
-                        origPos -= origin;
-                        origPos = (mat3.identity.rotateZ(selectedNode.localTransform.rotation.vector[2]) * vec3(origPos.x, origPos.y, 1)).xy;
-                        mpos = (mat3.identity.rotateZ(selectedNode.localTransform.rotation.vector[2]) * vec3(mpos.x, mpos.y, 1)).xy;
-                        float ratioX = origPos.x == 0 ? 0 : mpos.x / origPos.x;
-                        float ratioY = origPos.y == 0 ? 0 : mpos.y / origPos.y;
-                        float newValueX = prevValue.x * ratioX;
-                        float newValueY = prevValue.y * ratioY;
-                        if (io.KeyShift) {
-                            if (io.KeyAlt) {
-
-                                // Keep Ratio
-                                float nScale = sqrt((mpos.x^^2) + (mpos.y^^2)) / sqrt((origPos.x^^2) + (origPos.y^^2));
-                                newValueX = prevValue.x * nScale;
-                                newValueY = prevValue.y * nScale;
-
-                            } else {
-
-                                // Lock to axis
-                                if (abs(ratioX) > abs(ratioY)) {
-                                    status.lockOrientation(LockedOrientation.Vertical);
-                                } else {
-                                    status.lockOrientation(LockedOrientation.Horizontal);
-                                }
-                                if (status.locked == LockedOrientation.Vertical) {
-                                    newValueY = prevValue.y;
-                                } else if (status.locked == LockedOrientation.Horizontal) {
-                                    newValueX = prevValue.x;
-                                }
-                            }
-                        } else {
-                            status.lockOrientation(LockedOrientation.None);
-                        }
-
-                        // Snap
-                        if (io.KeyCtrl) {
-                            newValueX = floor(newValueX * incViewportTransformSnap) / incViewportTransformSnap;
-                            newValueY = floor(newValueY * incViewportTransformSnap) / incViewportTransformSnap;
-                        }
-                        
-                        if (armedParam) {
-                            changeParameter(selectedNode, armedParam, "transform.s.x", index, newValueX);
-                            changeParameter(selectedNode, armedParam, "transform.s.y", index, newValueY);
-                        } else {
-                            selectedNode.localTransform.scale.vector[0] = newValueX;
-                            selectedNode.localTransform.scale.vector[1] = newValueY;
-                        }
-                    } else {
-                        if (!armedParam) {
-                            if (selectedNode.localTransform.scale.vector[0] != prevValue.x) {
-                                status.actions["X"] =
-                                    new NodeValueChangeAction!(Node, float)("X", selectedNode, prevValue.x,
-                                        selectedNode.localTransform.scale.vector[0], &selectedNode.localTransform.scale.vector[0]);
-                            }
-                            if (selectedNode.localTransform.scale.vector[1] != prevValue.y) {
-                                status.actions["Y"] = 
-                                    new NodeValueChangeAction!(Node, float)("Y", selectedNode, prevValue.y,
-                                        selectedNode.localTransform.scale.vector[1], &selectedNode.localTransform.scale.vector[1]);
-                            }
-                        } 
-                        status.commitActions();
-
-                        incEndDrag(btn);
-                        incEndDragOnHandle(btn, name);
-                    }
-                }
-                incBeginViewportToolArea(name, ImVec2(bounds.x - 32, bounds.w));
-                igButton("", ImVec2(32, 32));
-                if (igIsItemHovered() && igIsMouseDown(btn)) {
-                    if (!incDragStartedOnHandle(btn, name)) {
-                        incBeginDrag(btn);
-                        if (armedParam) {
-                            ValueParameterBinding b;
-                            b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.s.x");
-                            auto origX = (b !is null)? b.getValue(index) : 1;
-                            b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.s.y");
-                            auto origY = (b !is null)? b.getValue(index) : 1;
-                            incBeginDragOnHandle(btn, name, vec2(origX, origY));
-                        } else
-                            incBeginDragOnHandle(btn, name, vec2(selectedNode.localTransform.scale.vector[0], selectedNode.localTransform.scale.vector[1]));
-                    }
-                }
-                incEndViewportToolArea();
-
-                // Rotation
-                name = selectedNode.name ~ "rotate";
-                if (incDragStartedOnHandle(btn, name)) {
-                    vec2 prevValue;
-                    incGetDragPrevValueOnHandle(btn, name, prevValue);
-                    DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
-
-                    if (igIsMouseDown(btn)) {
-                        vec2 mpos, origPos;
-                        incGetDragOriginOnHandle(btn, name, origPos);
-                        mpos = incInputGetMousePosition();
-                        auto origin = -(obounds.xy + obounds.zw) / 2;
-                        mpos -= origin;
-                        origPos -= origin;
-
-                        float getArg(vec2 p) {
-                            float arg = acos(p.length == 0 ? 0: p.x / p.length);
-                            if (p.y < 0)
-                                arg *= -1;
-                            return arg;
-                        }
-                        float origArg = getArg(origPos);
-                        float newArg  = getArg(mpos);
-                        float diffArg = newArg - origArg;
-                        float newValue = prevValue.x + diffArg;
-                        if (io.KeyCtrl) {
-                            newValue = radians(round(degrees(newValue) / 5) * 5);
-                        }
-
-                        if (armedParam) {
-                            changeParameter(selectedNode, armedParam, "transform.r.z", index, newValue);
-                        } else {
-                            selectedNode.localTransform.rotation.vector[2] = newValue;
-                        }
-                    } else {
-                        if (!armedParam) {
-                            if (selectedNode.localTransform.rotation.vector[2] != prevValue.x) {
-                                status.actions["Z"] =
-                                    new NodeValueChangeAction!(Node, float)("Z", selectedNode, prevValue.x,
-                                        selectedNode.localTransform.rotation.vector[2], &selectedNode.localTransform.rotation.vector[2]);
-                            }
-                        }
-                        status.commitActions();
-
-                        incEndDrag(btn);
-                        incEndDragOnHandle(btn, name);
-                    }
-                }
-                incBeginViewportToolArea(name, ImVec2(bounds.z, bounds.y - 32));
-                igButton("", ImVec2(32, 32));
-                if (igIsItemHovered() && igIsMouseDown(btn)) {
-                    if (!incDragStartedOnHandle(btn, name)) {
-                        incBeginDrag(btn);
-                        if (armedParam) {
-                            ValueParameterBinding b;
-                            b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.r.z");
-                            auto origZ = (b !is null)? b.getValue(index) : 1;
-                            incBeginDragOnHandle(btn, name, vec2(origZ, 0));
-                        } else
-                            incBeginDragOnHandle(btn, name, vec2(selectedNode.localTransform.rotation.vector[2], 0));
-                    }
-                }
-                incEndViewportToolArea();
-            }
-            /*
-            name = selectedNode.name ~ "sort";
-            if (incDragStartedOnHandle(btn, name)) {
-                if (igIsMouseDown(btn)) {
-                    if (armedParam) {
-
-                    } else {
                     }
                 } else {
-                    incEndDrag(btn);
-                    incEndDragOnHandle(btn, name);
+                    status.lockOrientation(LockedOrientation.None);
                 }
+
+                // Snap
+                if (io.KeyCtrl) {
+                    newValueX = floor(newValueX * incViewportTransformSnap) / incViewportTransformSnap;
+                    newValueY = floor(newValueY * incViewportTransformSnap) / incViewportTransformSnap;
+                }
+                
+                if (armedParam) {
+                    changeParameter(selectedNode, armedParam, "transform.s.x", index, newValueX);
+                    changeParameter(selectedNode, armedParam, "transform.s.y", index, newValueY);
+                } else {
+                    selectedNode.localTransform.scale.vector[0] = newValueX;
+                    selectedNode.localTransform.scale.vector[1] = newValueY;
+                }
+            } else {
+                if (!armedParam) {
+                    if (selectedNode.localTransform.scale.vector[0] != prevValue.x) {
+                        status.actions["X"] =
+                            new NodeValueChangeAction!(Node, float)("X", selectedNode, prevValue.x,
+                                selectedNode.localTransform.scale.vector[0], &selectedNode.localTransform.scale.vector[0]);
+                    }
+                    if (selectedNode.localTransform.scale.vector[1] != prevValue.y) {
+                        status.actions["Y"] = 
+                            new NodeValueChangeAction!(Node, float)("Y", selectedNode, prevValue.y,
+                                selectedNode.localTransform.scale.vector[1], &selectedNode.localTransform.scale.vector[1]);
+                    }
+                } 
+                if (incSelectedNodes.length > 1 && !groupingAction) {
+                    groupingAction = true;
+                    incActionPushGroup();
+                }
+                status.commitActions();
+
+                incEndDrag(btn);
+                incEndDragOnHandle(btn, name);
             }
-            incBeginViewportToolArea(name, ImVec2(bounds.z, bounds.w));
-            igButton("", ImVec2(32, 32));
-            if (igIsItemHovered() && igIsMouseDown(btn)) {
+        }
+    }
+    if (groupingAction) {
+        groupingAction = false;
+        incActionPopGroup();
+    }
+    // Scale handle
+    if (incSelectedNodes.length == 1) {
+        incBeginViewportToolArea(name, ImVec2(bounds.x - 32, bounds.w));
+        igButton("", ImVec2(32, 32));
+        if (igIsItemHovered() && igIsMouseDown(btn)) {
+            foreach (selectedNode; incSelectedNodes) {
+                if (isOwned(selectedNode, incSelectedNodes))
+                    continue;
+
+                name = selectedNode.name ~ "scale";
+                vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
+
                 if (!incDragStartedOnHandle(btn, name)) {
                     incBeginDrag(btn);
-                    incBeginDragOnHandle(btn, name);
+                    if (armedParam) {
+                        ValueParameterBinding b;
+                        b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.s.x");
+                        auto origX = (b !is null)? b.getValue(index) : 1;
+                        b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.s.y");
+                        auto origY = (b !is null)? b.getValue(index) : 1;
+                        incBeginDragOnHandle(btn, name, vec2(origX, origY));
+                    } else
+                        incBeginDragOnHandle(btn, name, vec2(selectedNode.localTransform.scale.vector[0], selectedNode.localTransform.scale.vector[1]));
                 }
             }
-            incEndViewportToolArea();
-            */
         }
+        incEndViewportToolArea();
+    }
+
+    // Rotation dragging
+    foreach(selectedNode; incSelectedNodes) {
+        auto obounds = totalBounds;
+        name = selectedNode.name ~ "rotate";
+        vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
+        if (incDragStartedOnHandle(btn, name)) {
+            vec2 prevValue;
+            incGetDragPrevValueOnHandle(btn, name, prevValue);
+            DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
+
+            if (igIsMouseDown(btn)) {
+                vec2 mpos, origPos;
+                incGetDragOriginOnHandle(btn, name, origPos);
+                mpos = incInputGetMousePosition();
+                auto origin = -(obounds.xy + obounds.zw) / 2;
+                mpos -= origin;
+                origPos -= origin;
+
+                float getArg(vec2 p) {
+                    float arg = acos(p.length == 0 ? 0: p.x / p.length);
+                    if (p.y < 0)
+                        arg *= -1;
+                    return arg;
+                }
+                float origArg = getArg(origPos);
+                float newArg  = getArg(mpos);
+                float diffArg = newArg - origArg;
+                float newValue = prevValue.x + diffArg;
+                if (io.KeyCtrl) {
+                    newValue = radians(round(degrees(newValue) / 5) * 5);
+                }
+
+                if (armedParam) {
+                    changeParameter(selectedNode, armedParam, "transform.r.z", index, newValue);
+                } else {
+                    selectedNode.localTransform.rotation.vector[2] = newValue;
+                }
+            } else {
+                if (!armedParam) {
+                    if (selectedNode.localTransform.rotation.vector[2] != prevValue.x) {
+                        status.actions["Z"] =
+                            new NodeValueChangeAction!(Node, float)("Z", selectedNode, prevValue.x,
+                                selectedNode.localTransform.rotation.vector[2], &selectedNode.localTransform.rotation.vector[2]);
+                    }
+                }
+                if (incSelectedNodes.length > 1 && !groupingAction) {
+                    groupingAction = true;
+                    incActionPushGroup();
+                }
+                status.commitActions();
+
+                incEndDrag(btn);
+                incEndDragOnHandle(btn, name);
+            }
+        }
+    }
+    if (groupingAction) {
+        groupingAction = false;
+        incActionPopGroup();
+    }
+    // Rotation handle
+    if (incSelectedNodes.length == 1) {
+        incBeginViewportToolArea(name, ImVec2(bounds.z, bounds.y - 32));
+        igButton("", ImVec2(32, 32));
+        if (igIsItemHovered() && igIsMouseDown(btn)) {
+            foreach (selectedNode; incSelectedNodes) {
+                if (isOwned(selectedNode, incSelectedNodes))
+                    continue;
+
+                name = selectedNode.name ~ "rotate";
+                vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
+
+                if (!incDragStartedOnHandle(btn, name)) {
+                    incBeginDrag(btn);
+                    if (armedParam) {
+                        ValueParameterBinding b;
+                        b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.r.z");
+                        auto origZ = (b !is null)? b.getValue(index) : 1;
+                        incBeginDragOnHandle(btn, name, vec2(origZ, 0));
+                    } else
+                        incBeginDragOnHandle(btn, name, vec2(selectedNode.localTransform.rotation.vector[2], 0));
+                }
+            }
+        }
+        incEndViewportToolArea();
     }
 }
 
