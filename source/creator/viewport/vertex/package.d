@@ -202,10 +202,7 @@ void incViewportVertexDraw(Camera camera) {
                 // Draw albedo texture at 0, 0
                 inDrawTextureAtPosition(part.textures[0], vec2(0, 0));
             } else if (MeshGroup mgroup = cast(MeshGroup)target) {
-                Transform transform = mgroup.transform;
-                transform.translation.x *= -1;
-                transform.translation.y *= -1;
-                transform.update();
+                mat4 transform = mgroup.transform.matrix.inverse;
                 mgroup.setOneTimeTransform(&transform);
                 Drawable[] subParts;
                 void findSubDrawable(Node n) {
