@@ -202,12 +202,33 @@ void incViewportVertexDraw(Camera camera) {
                 // Draw albedo texture at 0, 0
                 inDrawTextureAtPosition(part.textures[0], vec2(0, 0));
             } else if (MeshGroup mgroup = cast(MeshGroup)target) {
-                Transform transform = mgroup.globalTransform;
+                Transform transform = mgroup.transform;
                 transform.translation.x *= -1;
                 transform.translation.y *= -1;
                 transform.update();
                 mgroup.setOneTimeTransform(&transform);
-                mgroup.draw();
+                Drawable[] subParts;
+                void findSubDrawable(Node n) {
+                    if (auto m = cast(MeshGroup)n) {
+                        foreach (child; n.children)
+                            findSubDrawable(child);
+                    } else if (auto d = cast(Drawable)n) {
+                        subParts ~= d;
+                        foreach (child; n.children)
+                            findSubDrawable(child);
+                    }
+                }
+                findSubDrawable(mgroup);
+                import std.algorithm.sorting;
+                import std.algorithm.mutation : SwapStrategy;
+                import std.math : cmp;
+                sort!((a, b) => cmp(
+                    a.zSort, 
+                    b.zSort) > 0, SwapStrategy.stable)(subParts);
+
+                foreach (part; subParts) {
+                    part.drawOne();
+                }
                 mgroup.setOneTimeTransform(null);
             }
         }
