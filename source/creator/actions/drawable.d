@@ -55,6 +55,8 @@ public:
             MeshData tmpMesh;
             copy(self.getMesh(), tmpMesh);
             self.rebuffer(mesh);
+            if (auto mgroup = cast(MeshGroup)self)
+                mgroup.clearCache();
             mesh = tmpMesh;
             undoable = false;
         }
@@ -70,6 +72,8 @@ public:
             MeshData tmpMesh;
             copy(self.getMesh(), tmpMesh);
             self.rebuffer(mesh);
+            if (auto mgroup = cast(MeshGroup)self)
+                mgroup.clearCache();
             mesh = tmpMesh;
             undoable = true;
         }
