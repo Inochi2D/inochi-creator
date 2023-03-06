@@ -105,9 +105,7 @@ private:
         }
 
         axes = [];
-        import std.stdio;
         if (data.isGrid()) {
-            writefln("Import grid mesh %s", data.gridAxes);
             foreach (axis; data.gridAxes) {
                 float[] newAxis;
                 foreach (axValue; axis) {
@@ -248,7 +246,6 @@ private:
     vec3[] points;
     vec3[] lines;
     vec3[] wlines;
-    float[][] axes;
     void regen() {
         points.length = 0;
         
@@ -298,6 +295,7 @@ private:
 public:
     float selectRadius = 16f;
     MeshVertex*[] vertices;
+    float[][] axes;
     bool changed;
 
     /**
