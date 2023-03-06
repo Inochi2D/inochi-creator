@@ -158,6 +158,10 @@ public:
             vertexMapDirty = false;
         }
 
+        if (auto mgroup = cast(MeshGroup)target) {
+            mgroup.clearCache();
+        }
+
         target.rebuffer(data);
 
         action.updateNewState();
