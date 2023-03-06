@@ -114,7 +114,6 @@ private:
                 axes ~= newAxis;
             }
         }
-        writefln("axes=%s", axes);
 
         refresh();
     }
