@@ -1462,13 +1462,16 @@ void incInspectorDeformPart(Part node, Parameter param, vec2u cursor) {
                 // Header for texture options    
                 if (incBeginCategory(__("Textures")))  {
 
-                    incText(_("Tint (Multiply)"));
+                    igPushID(0);
+                        incText(_("Tint (Multiply)"));
+                        incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
+                    igPopID();
 
-                    incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
+                    igPushID(1);
+                        incText(_("Tint (Screen)"));
+                        incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
+                    igPopID();
 
-                    incText(_("Tint (Screen)"));
-                    incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
-                    
                     incText(_("Emission Strength"));
                     float strengthPerc = incInspectorDeformGetValue(node, param, "emissionStrength", cursor)*100;
                     if (igDragFloat("###S_EMISSION", &strengthPerc, 0.1, 0, float.max, "%.0f%%")) {
@@ -1504,13 +1507,16 @@ void incInspectorDeformComposite(Composite node, Parameter param, vec2u cursor) 
                 // Header for texture options    
                 if (incBeginCategory(__("Textures")))  {
 
-                    incText(_("Tint (Multiply)"));
-
-                    incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
-
-                    incText(_("Tint (Screen)"));
-
-                    incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
+                    igPushID(0);
+                        incText(_("Tint (Multiply)"));
+                        incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
+                    igPopID();
+                    
+                    igPushID(1);
+                        incText(_("Tint (Screen)"));
+                        incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
+                    igPopID();
+                    
 
                     // Padding
                     igSeparator();
