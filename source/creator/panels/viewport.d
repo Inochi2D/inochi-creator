@@ -114,20 +114,48 @@ protected:
             }
 
             auto style = igGetStyle();
-            inSetClearColor(style.Colors[ImGuiCol.WindowBg].x, style.Colors[ImGuiCol.WindowBg].y, style.Colors[ImGuiCol.WindowBg].z, 1);
             incViewportDraw();
 
             int width, height;
             inGetViewport(width, height);
 
+            ImVec4 color;
+            inGetClearColor(color.x, color.y, color.z, color.w);
+            color.w = 1;
+
+            // Render background color
+            ImDrawList_AddRectFilled(drawList,
+                ImVec2(
+                    window.InnerRect.Max.x-1,
+                    window.InnerRect.Max.y,
+                ),
+                ImVec2(
+                    window.InnerRect.Min.x+1,
+                    window.InnerRect.Max.y+currSize.y,
+                ),
+                igGetColorU32(color),
+            );
+
             // Render our viewport
-            igImage(
-                cast(void*)inGetRenderImage(), 
-                ImVec2(ceil(width/incGetUIScale()), ceil(height/incGetUIScale())), 
+            ImDrawList_AddImage(
+                drawList,
+                cast(void*)inGetRenderImage(),
+                ImVec2(
+                    window.InnerRect.Max.x-1,
+                    window.InnerRect.Max.y,
+                ),
+                ImVec2(
+                    window.InnerRect.Min.x+1,
+                    window.InnerRect.Max.y+currSize.y,
+                ),
                 ImVec2((0.5/width), 1-(0.5/height)), 
                 ImVec2(1-(0.5/width), (0.5/height)), 
-                ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0)
+                0xFFFFFFFF,
             );
+            // igImage(
+            //     ImVec2(ceil(width/incGetUIScale()), ceil(height/incGetUIScale())), 
+            //     ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0)
+            // );
 
             // Popup right click menu
             igPushStyleVar(ImGuiStyleVar.WindowPadding, priorWindowPadding);

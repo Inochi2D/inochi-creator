@@ -176,6 +176,36 @@ void incViewportModelOptions() {
                 }
                 incTooltip(incShowOrientation ? _("Hide Orientation Gizmo") : _("Show Orientation Gizmo"));
 
+                // DropdownMenu is silly, so
+                igSameLine(0, 0);
+                incDummy(ImVec2(4, 0));
+                igSameLine(0, 0);
+                if(incBeginDropdownMenu("COLOR", "", ImVec2(128, 0), ImVec2(float.max, float.max))) {
+                    import inochi2d : inSetClearColor, inGetClearColor;
+
+                    // Get clear color
+                    vec3 clearColor;
+                    float a = 1;
+                    inGetClearColor(clearColor.r, clearColor.g, clearColor.b, a);
+
+                    // Set clear color
+                    igColorPicker3(__("COLOR"), &clearColor.vector, 
+                        ImGuiColorEditFlags.NoSidePreview | 
+                        ImGuiColorEditFlags.NoLabel |
+                        ImGuiColorEditFlags.NoSmallPreview |
+                        ImGuiColorEditFlags.NoBorder
+                    );
+                    ImVec2 space = incAvailableSpace();
+
+                    inSetClearColor(clearColor.r, clearColor.g, clearColor.b, a);
+                    incDummy(ImVec2(0, 4));
+
+                    if (igButton(__("Reset"), ImVec2(space.x, 0))) incResetClearColor();
+                    
+                    incEndDropdownMenu();
+                }
+                incTooltip("Background Color");
+
                 incEndDropdownMenu();
             }
             incTooltip(_("Gizmos"));

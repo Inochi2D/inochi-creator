@@ -130,7 +130,7 @@ private {
     }
 }
 
-bool incBeginDropdownMenu(string idStr, string icon="") {
+bool incBeginDropdownMenu(string idStr, string icon="", ImVec2 cMin=ImVec2(192, 0), ImVec2 cMax=ImVec2(192, float.max)) {
     auto storage = igGetStateStorage();
     auto window = igGetCurrentWindow();
     auto id = igGetID(idStr.ptr, idStr.ptr+idStr.length);
@@ -154,7 +154,7 @@ bool incBeginDropdownMenu(string idStr, string icon="") {
     if (window) pos.x = clamp(pos.x, window.OuterRectClipped.Max.x, window.OuterRectClipped.Min.x-192);
 
     // Dropdown menu
-    igSetNextWindowSizeConstraints(ImVec2(192, 0), ImVec2(192, float.max));
+    igSetNextWindowSizeConstraints(cMin, cMax);
     igSetNextWindowPos(ImVec2(pos.x, pos.y+4), ImGuiCond.Always, ImVec2(0, 0));
     menuData.wasOpen = igBeginPopup("DROPDOWN_CONTENT");
     if (!menuData.wasOpen) igPopID();
