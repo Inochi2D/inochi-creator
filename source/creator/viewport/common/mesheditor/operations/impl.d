@@ -33,6 +33,7 @@ public:
         tools[VertexToolMode.Points] = new PointTool;
         tools[VertexToolMode.Connect] = new ConnectTool;
         tools[VertexToolMode.PathDeform] = new PathDeformTool;
+        tools[VertexToolMode.Grid] = new GridTool;
     }
 
     override
@@ -106,6 +107,13 @@ public:
             import std.stdio;
             setToolMode(VertexToolMode.PathDeform);
             setPath(new CatmullSpline);
+            deforming = false;
+            refreshMesh();
+            break;
+        case VertexToolMode.Grid:
+            import std.stdio;
+            setToolMode(VertexToolMode.Grid);
+            setPath(null);
             deforming = false;
             refreshMesh();
             break;

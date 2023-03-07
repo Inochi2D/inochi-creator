@@ -5,3 +5,4 @@ public import creator.viewport.common.mesheditor.tools.select;
 public import creator.viewport.common.mesheditor.tools.point;
 public import creator.viewport.common.mesheditor.tools.connect;
 public import creator.viewport.common.mesheditor.tools.pathdeform;
+public import creator.viewport.common.mesheditor.tools.grid;
