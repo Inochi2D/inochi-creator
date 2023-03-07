@@ -122,6 +122,7 @@ public:
         if (data.vertices.length != target.vertices.length)
             vertexMapDirty = true;
 
+        DeformationParameterBinding[] deformers;
         if (vertexMapDirty) {
             void alterDeform(ParameterBinding binding) {
                 auto deformBinding = cast(DeformationParameterBinding)binding;
@@ -134,10 +135,12 @@ public:
                             auto newDeform = mesh.deformByDeformationBinding(deformBinding, vec2u(x, y), false);
                             if (newDeform) 
                                 deformBinding.values[x][y] = *newDeform;
+                        } else {
+                            deformBinding.values[x][y].vertexOffsets.length = data.vertices.length;
                         }
+                        deformers ~= deformBinding;
                     }
                 }
-                deformBinding.reInterpolate();
             }
 
             foreach (param; incActivePuppet().parameters) {
@@ -155,14 +158,19 @@ public:
                     alterDeform(binding);
                 }
             }
+            incActivePuppet().resetDrivers();
             vertexMapDirty = false;
         }
 
         if (auto mgroup = cast(MeshGroup)target) {
             mgroup.clearCache();
         }
-
         target.rebuffer(data);
+
+        // reInterpolate MUST be called after rebuffer is called.
+        foreach (deformBinding; deformers) {
+            deformBinding.reInterpolate();
+        }
 
         action.updateNewState();
         incActionPush(action);
