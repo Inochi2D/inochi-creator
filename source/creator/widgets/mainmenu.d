@@ -405,6 +405,7 @@ void incMainMenu() {
                             ubyte[] textureData = new ubyte[inViewportDataLength()];
                             inDumpViewport(textureData);
                             inTexUnPremuliply(textureData);
+                            incResetClearColor();
                             
                             // Write to texture
                             outTexture.setData(textureData);

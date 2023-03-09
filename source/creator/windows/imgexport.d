@@ -127,6 +127,11 @@ protected:
         igEndChild();
     }
 
+    override
+    void onClose() {
+        incResetClearColor();
+    }
+
 public:
     this(string outFile) {
         super(_("Export Image..."));
