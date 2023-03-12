@@ -5,7 +5,7 @@ import inochi2d.core.animation.player;
 import creator.widgets;
 import bindbc.imgui;
 
-enum MIN_TRACK_HEIGHT = 32;
+enum MIN_TRACK_HEIGHT = 26;
 enum MIN_HEADER_WIDTH = 128;
 enum MAX_HEADER_WIDTH = MIN_HEADER_WIDTH*3;
 enum DEF_HEADER_WIDTH = MAX_HEADER_WIDTH*0.75;
@@ -30,8 +30,6 @@ void incAnimationLaneHeader(ref AnimationLane lane, ref float width, ref float h
                 igSameLine(0, 0);
                 incTextLabel(lane.paramRef.targetAxis == 0 ? "X" : "Y");
             igUnindent();
-
-            incHeaderResizer(width, height, true);
         }
         igEndChild();
     igPopStyleColor();
@@ -42,7 +40,7 @@ void incAnimationLaneHeader(ref AnimationLane lane, ref float width, ref float h
 /**
     Draws resizer for header
 */
-void incHeaderResizer(ref float width, ref float height, bool side = false) {
+void incHeaderResizer(ref float width, bool side = false) {
     igPushID(side ? "LEFT_RESIZE" : "RIGHT_RESIZE");
         auto window = igGetCurrentWindow();
         auto drawList = igGetWindowDrawList();
@@ -50,6 +48,7 @@ void incHeaderResizer(ref float width, ref float height, bool side = false) {
         auto storage = igGetStateStorage();
         auto isResizingID = igGetID("IsResizing");
         auto resizeDirectionID = igGetID("ResizeDirection");
+        float height = MIN_TRACK_HEIGHT;
 
         auto isResizing = ImGuiStorage_GetBool(storage, isResizingID, false);
         auto resizeDir = ImGuiStorage_GetBool(storage, resizeDirectionID, false);
@@ -213,7 +212,7 @@ void incEndTimelinePlayhead(ref Animation anim, float zoom, float frame) {
     igSetCursorScreenPos(start);
 }
 
-void incTimelineLane(ref AnimationLane lane, ref Animation anim, float height, float zoom, int idx, float* hoveredFrame, float* hoveredValue) {
+void incTimelineLane(ref AnimationLane lane, ref Animation anim, float zoom, int idx, float* hoveredFrame, float* hoveredValue) {
     auto window = igGetCurrentWindow();
 
     // Skip items if need be
@@ -227,6 +226,8 @@ void incTimelineLane(ref AnimationLane lane, ref Animation anim, float height, f
     auto drawList = igGetWindowDrawList();
     auto io = igGetIO();
     auto storage = igGetStateStorage();
+
+    int height = MIN_TRACK_HEIGHT;
 
     
 
@@ -276,94 +277,11 @@ void incTimelineLane(ref AnimationLane lane, ref Animation anim, float height, f
         auto axis  = lane.paramRef.targetAxis;
 
         if (lane.frames.length > 0) {
-            size_t frameMax = lane.frames.length-1;
-            size_t lastFrame = anim.length-1;
 
-            ImDrawList_PathClear(drawList);
-            foreach(i; 0..lane.frames.length) {
-
-                Keyframe* prev  = &lane.frames[max(cast(ptrdiff_t)i-1, 0)];
-                Keyframe* curr  = &lane.frames[i];
-                Keyframe* next1 = &lane.frames[min(cast(ptrdiff_t)i+1, frameMax)];
-                Keyframe* next2 = &lane.frames[min(cast(ptrdiff_t)i+2, frameMax)];
-                
-
-                if (prev == curr && prev.frame != 0) {
-                    ImDrawList_PathLineTo(
-                        drawList,
-                        ImVec2(getKeyframeX(0), getKeyframeY(param, axis, prev.value))
-                    );
-                }
-
-                switch(lane.interpolation) {
-                    case InterpolateMode.Stepped:
-                        if (prev != curr) {
-                            ImDrawList_PathLineTo(
-                                drawList,
-                                ImVec2(getKeyframeX(curr.frame), getKeyframeY(param, axis, prev.value))
-                            );
-                        }
-                        ImDrawList_PathLineTo(
-                            drawList,
-                            ImVec2(getKeyframeX(curr.frame), getKeyframeY(param, axis, curr.value)),
-                        );
-                        break;
-
-                    case InterpolateMode.Nearest:
-                        break;
-                    
-                    case InterpolateMode.Linear:
-                        if (prev != curr) {
-                            ImDrawList_AddLine(
-                                drawList,
-                                ImVec2(getKeyframeX(prev.frame), getKeyframeY(param, axis, prev.value)),
-                                ImVec2(getKeyframeX(curr.frame), getKeyframeY(param, axis, curr.value)),
-                                igGetColorU32(ImGuiCol.PlotLines),
-                                2
-                            );
-                        }
-                        break;
-
-                    case InterpolateMode.Cubic:
-                        if (i == 0) ImDrawList_PathLineTo(drawList, ImVec2(getKeyframeX(prev.frame), getKeyframeY(param, axis, prev.value)));
-                        if (i % 4 == 1) {
-                            ImDrawList_PathBezierCubicCurveTo(
-                                drawList,
-                                ImVec2(getKeyframeX(curr.frame), getKeyframeY(param, axis, curr.value)),
-                                ImVec2(getKeyframeX(next1.frame), getKeyframeY(param, axis, next1.value)),
-                                ImVec2(getKeyframeX(next2.frame), getKeyframeY(param, axis, next2.value)),
-                            );
-                        }
-                        break;
-
-                    case InterpolateMode.Bezier:
-                        break;
-
-                    default: assert(0);
-                }
-
-                if (curr == next1 && next1.frame < lastFrame) {
-                    ImDrawList_AddLine(
-                        drawList,
-                        ImVec2(getKeyframeX(curr.frame), getKeyframeY(param, axis, curr.value)),
-                        ImVec2(getKeyframeX(lastFrame), getKeyframeY(param, axis, next1.value)),
-                        igGetColorU32(ImGuiCol.PlotLines),
-                        2
-                    );
-                }
-            }
-
-            ImDrawList_PathStroke(
-                drawList,
-                igGetColorU32(ImGuiCol.PlotLines),
-                ImDrawFlags.RoundCornersAll,
-                2
-            );
-
-            // Draw points after
+            // Draw points
             foreach(frame; lane.frames) {
                 float kfX = getKeyframeX(frame.frame);
-                float kfY = getKeyframeY(param, axis, frame.value);
+                float kfY = start.y+(height/2.0);
                 ImDrawList_AddQuad(
                     drawList,
                     ImVec2(kfX, kfY-KF_SIZE),
