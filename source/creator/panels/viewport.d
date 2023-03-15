@@ -123,8 +123,7 @@ protected:
             inGetClearColor(color.x, color.y, color.z, color.w);
             color.w = 1;
 
-            // Render background color
-            ImDrawList_AddRectFilled(drawList,
+            ImRect rect = ImRect(
                 ImVec2(
                     window.InnerRect.Max.x-1,
                     window.InnerRect.Max.y,
@@ -133,6 +132,12 @@ protected:
                     window.InnerRect.Min.x+1,
                     window.InnerRect.Max.y+currSize.y,
                 ),
+            );
+
+            // Render background color
+            ImDrawList_AddRectFilled(drawList,
+                rect.Min,
+                rect.Max,
                 igGetColorU32(color),
             );
 
@@ -140,23 +145,14 @@ protected:
             ImDrawList_AddImage(
                 drawList,
                 cast(void*)inGetRenderImage(),
-                ImVec2(
-                    window.InnerRect.Max.x-1,
-                    window.InnerRect.Max.y,
-                ),
-                ImVec2(
-                    window.InnerRect.Min.x+1,
-                    window.InnerRect.Max.y+currSize.y,
-                ),
+                rect.Min,
+                rect.Max,
                 ImVec2((0.5/width), 1-(0.5/height)), 
                 ImVec2(1-(0.5/width), (0.5/height)), 
                 0xFFFFFFFF,
             );
-            // igImage(
-            //     ImVec2(ceil(width/incGetUIScale()), ceil(height/incGetUIScale())), 
-            //     ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0)
-            // );
-
+            igItemAdd(rect, igGetID("###VIEWPORT_DISP"));
+            
             // Popup right click menu
             igPushStyleVar(ImGuiStyleVar.WindowPadding, priorWindowPadding);
             if (incViewportHasMenu()) {
