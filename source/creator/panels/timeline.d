@@ -123,7 +123,7 @@ private:
 
 
             float headerHeight = window.ClipRect.Min.y-window.ClipRect.Max.y;
-            incHeaderResizer(tlWidth, headerHeight, false);
+            incHeaderResizer(tlWidth, false);
         }
         igEndChild();
         igPopStyleColor();
@@ -147,7 +147,7 @@ private:
                         foreach(i, ref lane; incAnimationGet().animation().lanes) {
                             float frame;
                             float offset;
-                            incTimelineLane(lane, *incAnimationGet().animation, incAnimationGetTrackHeights[i], zoom, cast(int)i, &frame, &offset);
+                            incTimelineLane(lane, *incAnimationGet().animation, zoom, cast(int)i, &frame, &offset);
 
                             if (frame > -1) {
                                 int xframe = cast(int)round(frame);

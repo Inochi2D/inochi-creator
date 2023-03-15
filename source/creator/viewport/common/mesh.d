@@ -230,11 +230,9 @@ private:
 
         import std.stdio;
         if (axes.length >= 2) {
-            writefln("Export grid mesh %s", newData.gridAxes);
             newData.gridAxes = axes[];
         }
         newData.clearGridIsDirty();
-        writefln("IsGrid: %d", newData.isGrid());
 
         // Save the data as the new data and refresh
         data = newData;
