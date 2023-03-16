@@ -12,6 +12,7 @@ import creator.widgets;
 import creator.windows;
 import creator.core;
 import creator.actions;
+import creator.ext;
 import creator.ext.param;
 import creator.viewport.common.mesheditor;
 import creator.viewport.common.mesh;
@@ -718,17 +719,7 @@ private {
     }
 
     void moveParameter(Parameter from, ExParameterGroup to = null, int index = 0) {
-        if (!removeParameter(from)) return;
-        import std.array : insertInPlace;
-
-        // Map to bounds
-        if (index < 0) index = 0;
-        else if (to && index > to.children.length) index = cast(int)to.children.length-1;
-        else if (index > incActivePuppet().parameters.length) index = cast(int)incActivePuppet().parameters.length-1;
-
-        // Insert
-        if (to) to.children.insertInPlace(index, from);
-        else incActivePuppet().parameters.insertInPlace(index, from);
+        (cast(ExParameter)from).setParent(to);
     }
 
     ExParameterGroup createParamGroup(int index = 0) {
@@ -738,7 +729,7 @@ private {
         else if (index > incActivePuppet().parameters.length) index = cast(int)incActivePuppet().parameters.length-1;
 
         auto group = new ExParameterGroup(_("New Parameter Group"));
-        incActivePuppet().parameters.insertInPlace(index, group);
+        (cast(ExPuppet)incActivePuppet()).addGroup(group);
         return group;
     }
 }
@@ -1003,6 +994,7 @@ protected:
         }
 
         auto parameters = incActivePuppet().parameters;
+        auto groups = (cast(ExPuppet)incActivePuppet()).groups;
 
         if (igBeginPopup("###AddParameter")) {
             if (igMenuItem(__("Add 1D Parameter (0..1)"), "", false, true)) {
@@ -1078,109 +1070,116 @@ protected:
             }
 
             // Render other parameters
-            foreach(i, ref param; parameters) {
-                if (incArmedParameter() == param) continue;
-                import std.algorithm.searching : canFind;
-                ExParameterGroup group = cast(ExParameterGroup)param;
-                bool found = filter.length == 0 || param.indexableName.canFind(filter);
-                if (group) {
-                    foreach (ix, ref child; group.children) {
-                        if (incArmedParameter() == child) continue;
-                        if (child.indexableName.canFind(filter))
-                            found = true;
-                    }
-                }
-                if (found) {
+            void displayParameters(Parameter[] targetParams, bool hideChildren) {
+                foreach(i, ref param; targetParams) {
+                    if (incArmedParameter() == param) continue;
+                    if (hideChildren && (cast(ExParameter)param).parent !is null) continue;
+                    import std.algorithm.searching : canFind;
+                    ExParameterGroup group = cast(ExParameterGroup)param;
+                    bool found = filter.length == 0 || param.indexableName.canFind(filter);
                     if (group) {
-                        igPushID(group.uuid);
+                        foreach (ix, ref child; group.children) {
+                            if (incArmedParameter() == child) continue;
+                            if (child.indexableName.canFind(filter))
+                                found = true;
+                        }
+                    }
+                    if (found) {
+                        if (group) {
+                            igPushID(group.uuid);
 
-                            bool open;
-                            if (group.color.isFinite) open = incBeginCategory(group.name.toStringz, ImVec4(group.color.r, group.color.g, group.color.b, 1));
-                            else open = incBeginCategory(group.name.toStringz);
-                            
-                            if (igIsItemClicked(ImGuiMouseButton.Right)) {
-                                igOpenPopup("###CategorySettings");
-                            }
-
-                            // Popup
-                            if (igBeginPopup("###CategorySettings")) {
-                                if (igMenuItem(__("Rename"))) {
-                                    incPushWindow(new RenameWindow(group.name));
-                                }
-
-                                if (igBeginMenu(__("Colors"))) {
-                                    auto flags = ImGuiColorEditFlags.NoLabel | ImGuiColorEditFlags.NoTooltip;
-                                    ImVec2 swatchSize = ImVec2(24, 24);
-
-                                    // COLOR SWATCHES
-                                    if (igColorButton("NONE", ImVec4(0, 0, 0, 0), flags | ImGuiColorEditFlags.AlphaPreview, swatchSize)) group.color = vec3(float.nan, float.nan, float.nan);
-                                    igSameLine(0, 4);
-                                    if (igColorButton("RED", ImVec4(1, 0, 0, 1), flags, swatchSize)) group.color = vec3(0.25, 0.15, 0.15);
-                                    igSameLine(0, 4);
-                                    if (igColorButton("GREEN", ImVec4(0, 1, 0, 1), flags, swatchSize)) group.color = vec3(0.15, 0.25, 0.15);
-                                    igSameLine(0, 4);
-                                    if (igColorButton("BLUE", ImVec4(0, 0, 1, 1), flags, swatchSize)) group.color = vec3(0.15, 0.15, 0.25);
-                                    igSameLine(0, 4);
-                                    if (igColorButton("PURPLE", ImVec4(1, 0, 1, 1), flags, swatchSize)) group.color = vec3(0.25, 0.15, 0.25);
-                                    igSameLine(0, 4);
-                                    if (igColorButton("CYAN", ImVec4(0, 1, 1, 1), flags, swatchSize)) group.color = vec3(0.15, 0.25, 0.25);
-                                    igSameLine(0, 4);
-                                    if (igColorButton("YELLOW", ImVec4(1, 1, 0, 1), flags, swatchSize)) group.color = vec3(0.25, 0.25, 0.15);
-                                    igSameLine(0, 4);
-                                    if (igColorButton("WHITE", ImVec4(1, 1, 1, 1), flags, swatchSize)) group.color = vec3(0.25, 0.25, 0.25);
-                                    
-                                    igSpacing();
-
-                                    // CUSTOM COLOR PICKER
-                                    // Allows user to select a custom color for parameter group.
-                                    igColorPicker3(__("Custom Color"), &group.color.vector, ImGuiColorEditFlags.InputRGB | ImGuiColorEditFlags.DisplayHSV);
-                                    igEndMenu();
-                                }
-
-                                if (igMenuItem(__("Delete"))) {
-                                    if (i == 0) incActivePuppet().parameters = group.children ~ parameters[i+1..$];
-                                    else if (i+1 == parameters.length) incActivePuppet().parameters = parameters[0..$-1] ~ group.children;
-                                    else incActivePuppet().parameters = parameters[0..i] ~ group.children ~ parameters[i+1..$];
-                                    
-                                    // End early.
-                                    igEndPopup();
-                                    incEndCategory();
-                                    igPopID();
-                                    continue;
-                                }
-                                igEndPopup();
-                            }
-
-                            // Allow drag/drop in to the category
-                            if (igBeginDragDropTarget()) {
-                                auto payload = igAcceptDragDropPayload("_PARAMETER");
+                                bool open;
+                                if (group.color.isFinite) open = incBeginCategory(group.name.toStringz, ImVec4(group.color.r, group.color.g, group.color.b, 1));
+                                else open = incBeginCategory(group.name.toStringz);
                                 
-                                if (payload !is null) {
-                                    ParamDragDropData* payloadParam = *cast(ParamDragDropData**)payload.Data;
-                                    moveParameter(payloadParam.param, group);
+                                if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                                    igOpenPopup("###CategorySettings");
                                 }
-                                igEndDragDropTarget();
-                            }
 
-                            // Render children if open
-                            if (open) {
-                                foreach(ix, ref child; group.children) {
+                                // Popup
+                                if (igBeginPopup("###CategorySettings")) {
+                                    if (igMenuItem(__("Rename"))) {
+                                        incPushWindow(new RenameWindow(group.name));
+                                    }
 
-                                    // Skip armed param
-                                    if (incArmedParameter() == child) continue;
-                                    if (child.indexableName.canFind(filter)) {
-                                        // Otherwise render it
-                                        incParameterView(ix, child, &grabParam, false, group.children, group.color);
+                                    if (igBeginMenu(__("Colors"))) {
+                                        auto flags = ImGuiColorEditFlags.NoLabel | ImGuiColorEditFlags.NoTooltip;
+                                        ImVec2 swatchSize = ImVec2(24, 24);
+
+                                        // COLOR SWATCHES
+                                        if (igColorButton("NONE", ImVec4(0, 0, 0, 0), flags | ImGuiColorEditFlags.AlphaPreview, swatchSize)) group.color = vec3(float.nan, float.nan, float.nan);
+                                        igSameLine(0, 4);
+                                        if (igColorButton("RED", ImVec4(1, 0, 0, 1), flags, swatchSize)) group.color = vec3(0.25, 0.15, 0.15);
+                                        igSameLine(0, 4);
+                                        if (igColorButton("GREEN", ImVec4(0, 1, 0, 1), flags, swatchSize)) group.color = vec3(0.15, 0.25, 0.15);
+                                        igSameLine(0, 4);
+                                        if (igColorButton("BLUE", ImVec4(0, 0, 1, 1), flags, swatchSize)) group.color = vec3(0.15, 0.15, 0.25);
+                                        igSameLine(0, 4);
+                                        if (igColorButton("PURPLE", ImVec4(1, 0, 1, 1), flags, swatchSize)) group.color = vec3(0.25, 0.15, 0.25);
+                                        igSameLine(0, 4);
+                                        if (igColorButton("CYAN", ImVec4(0, 1, 1, 1), flags, swatchSize)) group.color = vec3(0.15, 0.25, 0.25);
+                                        igSameLine(0, 4);
+                                        if (igColorButton("YELLOW", ImVec4(1, 1, 0, 1), flags, swatchSize)) group.color = vec3(0.25, 0.25, 0.15);
+                                        igSameLine(0, 4);
+                                        if (igColorButton("WHITE", ImVec4(1, 1, 1, 1), flags, swatchSize)) group.color = vec3(0.25, 0.25, 0.25);
+                                        
+                                        igSpacing();
+
+                                        // CUSTOM COLOR PICKER
+                                        // Allows user to select a custom color for parameter group.
+                                        igColorPicker3(__("Custom Color"), &group.color.vector, ImGuiColorEditFlags.InputRGB | ImGuiColorEditFlags.DisplayHSV);
+                                        igEndMenu();
+                                    }
+
+                                    if (igMenuItem(__("Delete"))) {
+                                        foreach(child; group.children) {
+                                            auto exChild = cast(ExParameter)child;
+                                            exChild.setParent(null);
+                                        }
+                                        (cast(ExPuppet)incActivePuppet()).removeGroup(group);
+                                        
+                                        // End early.
+                                        igEndPopup();
+                                        incEndCategory();
+                                        igPopID();
+                                        continue;
+                                    }
+                                    igEndPopup();
+                                }
+
+                                // Allow drag/drop in to the category
+                                if (igBeginDragDropTarget()) {
+                                    auto payload = igAcceptDragDropPayload("_PARAMETER");
+                                    
+                                    if (payload !is null) {
+                                        ParamDragDropData* payloadParam = *cast(ParamDragDropData**)payload.Data;
+                                        moveParameter(payloadParam.param, group);
+                                    }
+                                    igEndDragDropTarget();
+                                }
+
+                                // Render children if open
+                                if (open) {
+                                    foreach(ix, ref child; group.children) {
+
+                                        // Skip armed param
+                                        if (incArmedParameter() == child) continue;
+                                        if (child.indexableName.canFind(filter)) {
+                                            // Otherwise render it
+                                            incParameterView(ix, child, &grabParam, false, group.children, group.color);
+                                        }
                                     }
                                 }
-                            }
-                            incEndCategory();
-                        igPopID();
-                    } else {
-                        incParameterView(i, param, &grabParam, true, incActivePuppet().parameters);
+                                incEndCategory();
+                            igPopID();
+                        } else {
+                            incParameterView(i, param, &grabParam, true, incActivePuppet().parameters);
+                        }
                     }
                 }
             }
+            displayParameters(cast(Parameter[])groups, false);
+            displayParameters(parameters, true);
         }
         igEndChild();
         

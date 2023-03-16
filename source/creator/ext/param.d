@@ -3,8 +3,23 @@ import inochi2d;
 import inochi2d.fmt;
 import inmath;
 import creator;
+import creator.ext;
+
+import std.algorithm.searching;
+import std.algorithm.mutation;
 
 class ExParameterGroup : Parameter {
+protected:
+    override
+    void serializeSelf(ref InochiSerializer serializer) {
+        serializer.putKey("groupUUID");
+        serializer.putValue(uuid);
+        serializer.putKey("name");
+        serializer.putValue(name);
+        serializer.putKey("color");
+        serializer.serializeValue(color.vector);
+    }
+
 public:
     vec3 color = vec3(0.15, 0.15, 0.15);
     Parameter[] children;
@@ -17,45 +32,100 @@ public:
     }
 
     override
-    void update() {
-        // This only gets called as the initiap part of the update step, and it should
-        // skip driven parameters, which are updated later.
-        auto enableDrivers = incActivePuppet().enableDrivers;
-        auto parameterDrivers = incActivePuppet().getParameterDrivers();
-        foreach(ref child; children) {
-            if (!enableDrivers || child !in parameterDrivers)
-                child.update();
-        }
-    }
-
-    override
     FghjException deserializeFromFghj(Fghj data) {
         data["groupUUID"].deserializeValue(this.uuid);
         if (!data["name"].isEmpty) data["name"].deserializeValue(this.name);
         if (!data["color"].isEmpty) data["color"].deserializeValue(this.color.vector);
-        if (!data["children"].isEmpty) data["children"].deserializeValue(this.children);
+        if (!data["children"].isEmpty)
+            foreach (childData; data["children"].byElement) {
+                auto child = inParameterCreate(childData);
+                children ~= child;
+            }
         return null;
     }
 
     override
-    void serialize(ref InochiSerializer serializer) {
-        auto state = serializer.objectBegin;
-            serializer.putKey("groupUUID");
-            serializer.putValue(uuid);
-            serializer.putKey("name");
-            serializer.putValue(name);
-            serializer.putKey("color");
-            serializer.serializeValue(color.vector);
-            serializer.putKey("children");
-            serializer.serializeValue(children);
-        serializer.objectEnd(state);
+    void restructure(Puppet _puppet) {
+        auto puppet = cast(ExPuppet)_puppet;
+        assert(puppet !is null);
+        foreach (child; children) {
+            if (auto exparam = cast(ExParameter)child) {
+                exparam.parent = this;
+                exparam.parentUUID = uuid;
+            }
+            if (puppet.findParameter(name) is null)
+                puppet.parameters ~= child;
+        }
+        auto test = puppet.findParameter(uuid);
+        if (test !is null) {
+            puppet.removeParameter(this);
+            puppet.addGroup(this);
+        }
+        super.restructure(_puppet);
+    }
+
+}
+
+class ExParameter : Parameter {
+    ExParameterGroup parent;
+    uint parentUUID = InInvalidUUID;
+public:
+    this() { 
+        super(); 
+        parent = null; 
+    }
+    this(string name) { 
+        super(name, false); 
+        parent = null;
+    }
+    this(string name, ExParameterGroup parent) { 
+        super(name, false); 
+        this.parent = parent;
+    }
+    override
+    FghjException deserializeFromFghj(Fghj data) {
+        if (!data["parentUUID"].isEmpty)
+            data["parentUUID"].deserializeValue(this.parentUUID);
+        return super.deserializeFromFghj(data);
     }
 
     override
-    void finalize(Puppet puppet) {
-        foreach(child; children) {
-            child.finalize(puppet);
+    void serializeSelf(ref InochiSerializer serializer) {
+        if (parent !is null) {
+            serializer.putKey("parentUUID");
+            serializer.putValue(parent.uuid);
         }
+        super.serializeSelf(serializer);
+    }
+
+    ExParameterGroup getParent() { return parent; }
+
+    void setParent(ExParameterGroup newParent) {
+        if (parent !is null && parent != newParent) {
+            auto index = parent.children.countUntil(this);
+            if (index > 0)
+                parent.children = parent.children.remove(index);
+        }
+        auto oldParent = parent;
+        parent = newParent;
+        if (parent !is null) {
+            parentUUID = parent.uuid;
+            if (oldParent != parent)
+                parent.children ~= this;
+        } else {
+            parentUUID = InInvalidUUID;
+        }
+    }
+
+    override
+    void finalize(Puppet _puppet) {
+        auto puppet = cast(ExPuppet)_puppet;
+        assert(puppet !is null);
+        import std.stdio;
+        if (parent is null && parentUUID != InInvalidUUID) {
+            setParent(puppet.findGroup(parentUUID));
+        }
+        super.finalize(puppet);
     }
 }
 
@@ -67,8 +137,9 @@ void incRegisterExParameter() {
             return group;
         }
 
-        Parameter param = new Parameter;
+        Parameter param = new ExParameter;
         data.deserializeValue(param);
         return param;
     });
 }
+
