@@ -45,7 +45,7 @@ public:
     }
 
     override
-    void restructure(Puppet _puppet) {
+    void restruct(Puppet _puppet) {
         auto puppet = cast(ExPuppet)_puppet;
         assert(puppet !is null);
         foreach (child; children) {
@@ -61,7 +61,7 @@ public:
             puppet.removeParameter(this);
             puppet.addGroup(this);
         }
-        super.restructure(_puppet);
+        super.restruct(_puppet);
     }
 
 }
