@@ -360,27 +360,26 @@ private {
             igEndMenu();
         }
         if (igMenuItem(__("Flip Deform"), "", false, true)) {
-            auto editor = incViewportModelDeformGetEditor();
-            if (editor) {
-                auto action = new ParameterChangeBindingsValueAction("Flip Deform", param, bindings, cParamPoint.x, cParamPoint.y);
-                foreach(binding; bindings) {
-                    auto deformBinding = cast(DeformationParameterBinding)binding;
-                    auto target = cast(Drawable)binding.getTarget().node;
-                    if (target) {
-                        editor.setTarget(target);
-                        auto meshEditor = cast(IncMeshEditorOneDrawable)editor.getEditorFor(target);
-                        if (meshEditor) {
-                            auto newDeform = meshEditor.getMesh().deformByDeformationBinding(deformBinding, cParamPoint, true);
-                            if (newDeform)
-                                deformBinding.setValue(cParamPoint, *newDeform);
-                        }
-                    }
+
+            auto action = new ParameterChangeBindingsValueAction("Flip Deform", param, bindings, cParamPoint.x, cParamPoint.y);
+            foreach(binding; bindings) {
+                auto deformBinding = cast(DeformationParameterBinding)binding;  
+                if (deformBinding is null)
+                    continue;
+                Drawable drawable = cast(Drawable)deformBinding.getTarget().node;
+                auto mesh = new IncMesh(drawable.getMesh());
+                if (deformBinding.getIsSet()[cParamPoint.x][cParamPoint.y]) {
+                    auto deform = deformBinding.getValue(cParamPoint);
+                    auto newDeform = mesh.deformByDeformationBinding(drawable, deform, true);
+                    if (newDeform)
+                        deformBinding.setValue(cParamPoint, *newDeform);
                 }
-                action.updateNewState();
-                incActionPush(action);
-                incViewportNodeDeformNotifyParamValueChanged();
             }
+            action.updateNewState();
+            incActionPush(action);
+            incViewportNodeDeformNotifyParamValueChanged();
         }
+
         if (param.isVec2) {
             if (igBeginMenu(__("Set from mirror"), true)) {
                 if (igMenuItem(__("Horizontally"), "", false, true)) {
