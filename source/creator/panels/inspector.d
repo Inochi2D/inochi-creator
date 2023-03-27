@@ -995,6 +995,92 @@ void incInspectorModelComposite(Composite node) {
         
         igSpacing();
 
+        // The sources that the part gets masked by. Depending on the masking mode
+        // either the sources will cut out things that don't overlap, or cut out
+        // things that do.
+        incText(_("Mask Sources"));
+        if (igBeginListBox("###MaskSources", ImVec2(0, 128))) {
+            if (node.masks.length == 0) {
+                incText(_("(Drag a Part or Mask Here)"));
+            }
+
+            foreach(i; 0..node.masks.length) {
+                MaskBinding* masker = &node.masks[i];
+                igPushID(cast(int)i);
+                    if (igBeginPopup("###MaskSettings")) {
+                        if (igBeginMenu(__("Mode"))) {
+                            if (igMenuItem(__("Mask"), null, masker.mode == MaskingMode.Mask)) masker.mode = MaskingMode.Mask;
+                            if (igMenuItem(__("Dodge"), null, masker.mode == MaskingMode.DodgeMask)) masker.mode = MaskingMode.DodgeMask;
+                            
+                            igEndMenu();
+                        }
+
+                        if (igMenuItem(__("Delete"))) {
+                            import std.algorithm.mutation : remove;
+                            node.masks = node.masks.remove(i);
+                            igEndPopup();
+                            igPopID();
+                            igEndListBox();
+                            incEndCategory();
+                            return;
+                        }
+
+                        igEndPopup();
+                    }
+
+                    if (masker.mode == MaskingMode.Mask) igSelectable(_("%s (Mask)").format(masker.maskSrc.name).toStringz);
+                    else igSelectable(_("%s (Dodge)").format(masker.maskSrc.name).toStringz);
+
+                    
+                    if(igBeginDragDropTarget()) {
+                        const(ImGuiPayload)* payload = igAcceptDragDropPayload("_MASKITEM");
+                        if (payload !is null) {
+                            if (MaskBinding* binding = cast(MaskBinding*)payload.Data) {
+                                ptrdiff_t maskIdx = node.getMaskIdx(binding.maskSrcUUID);
+                                if (maskIdx >= 0) {
+                                    import std.algorithm.mutation : remove;
+
+                                    node.masks = node.masks.remove(maskIdx);
+                                    if (i == 0) node.masks = *binding ~ node.masks;
+                                    else if (i+1 >= node.masks.length) node.masks ~= *binding;
+                                    else node.masks = node.masks[0..i] ~ *binding ~ node.masks[i+1..$];
+                                }
+                            }
+                        }
+                        
+                        igEndDragDropTarget();
+                    }
+
+                    // TODO: We really should account for left vs. right handedness
+                    if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                        igOpenPopup("###MaskSettings");
+                    }
+
+                    if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
+                        igSetDragDropPayload("_MASKITEM", cast(void*)masker, MaskBinding.sizeof, ImGuiCond.Always);
+                        incText(masker.maskSrc.name);
+                        igEndDragDropSource();
+                    }
+                igPopID();
+            }
+            igEndListBox();
+        }
+
+        if(igBeginDragDropTarget()) {
+            const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+            if (payload !is null) {
+                if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
+
+                    // Make sure we don't mask against ourselves as well as don't double mask
+                    if (payloadDrawable != node && !node.isMaskedBy(payloadDrawable)) {
+                        node.masks ~= MaskBinding(payloadDrawable.uuid, MaskingMode.Mask, payloadDrawable);
+                    }
+                }
+            }
+            
+            igEndDragDropTarget();
+        }
+
         // Padding
         igSpacing();
         igSpacing();
