@@ -146,10 +146,10 @@ public:
     }
 
     override
-    void restruct() {
-        super.restruct();
+    void reconstruct() {
+        super.reconstruct();
         foreach(group; groups.dup) {
-            group.restruct(this);
+            group.reconstruct(this);
         }
     }
 
