@@ -120,6 +120,8 @@ void incUpdate() {
     incAnimationUpdate();
     inUpdate();
 
+    checkAutosave();
+
     // Begin IMGUI loop
     incBeginLoop();
         if (incShouldProcess()) {

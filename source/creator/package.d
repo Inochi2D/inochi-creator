@@ -24,10 +24,13 @@ public import creator.io;
 import creator.core.colorbleed;
 
 import std.file;
+import std.path;
 import std.format;
 import i18n;
 import std.algorithm.searching;
 import inochi2d.core.animation.player;
+import std.datetime;
+import std.datetime.stopwatch : benchmark, StopWatch;
 
 /**
     A project
@@ -54,6 +57,7 @@ private {
     size_t armedParamIdx;
     string currProjectPath;
     string[] prevProjects;
+    StopWatch autosaveTimer;
 
     void function(Puppet)[] loadCallbacks;
     void function(Puppet)[] saveCallbacks;
@@ -131,6 +135,77 @@ string incProjectPath() {
 }
 
 /**
+    Autosave the project if enough time has passed since last autosave.
+*/
+void checkAutosave() {
+    if (incProjectPath.length == 0) {
+        //Do nothing, there's nothing to autosave.
+        return;
+    }
+    
+    auto elapsedSeconds = autosaveTimer.peek().total!"seconds";
+    if (elapsedSeconds >= 300) {
+        //TODO: Add a user setting instead of hardcoding.
+        autosaveProject(incProjectPath);
+        autosaveTimer.reset();
+    }
+}
+
+/**
+    Create a backup save path string.
+*/
+string bakFilename(string path, int bakNum) {
+    string bakName = format("%.2s", bakNum);
+    string numberedFilename = path ~ "-bak" ~ bakName;
+    return numberedFilename;
+}
+
+/**
+    Save the project as a rolling backup.
+    Don't overwrite the main save file.
+*/
+void autosaveProject(string path) {
+    //We'll add the extension back later when we need it.
+    path = path.stripExtension;
+
+    string pathBaseName = path.baseName;
+    string leadingDir = path.dirName;
+
+    string backupDir = buildPath(leadingDir, (pathBaseName ~ "-backups"));
+    mkdirRecurse(backupDir);
+    path = buildPath(backupDir, pathBaseName);
+
+    int bakNum = 1;
+    rollBackup(path, bakNum);
+
+    // Leave off the .inx extension because it's added by incSaveProject.
+    string bakPath = path.bakFilename(bakNum);
+    incSaveProject(bakPath, true);
+}
+
+/**
+    Recursively move backup files to clear the way for backup number bakNum.
+*/
+void rollBackup(string path, int bakNum) {
+    import std.path : setExtension;
+
+    string bakFinalPath = path.bakFilename(bakNum).setExtension(".inx");
+    if (!bakFinalPath.exists) {
+        //This file name is available, so we don't need to clear the way.
+        return;
+    }
+
+    if (bakNum >= 10) {
+        //TODO: Add a user setting instead of hardcoding.
+        //Maximum backups reached, so just delete it to get it out of the way.
+        bakFinalPath.remove;
+    } else {
+        rollBackup(path, bakNum+1);
+        rename(bakFinalPath, path.bakFilename(bakNum+1).setExtension(".inx"));
+    }
+}
+
+/**
     Return a list of prior projects
 */
 string[] incGetPrevProjects() {
@@ -188,6 +263,8 @@ void incNewProject() {
 
     incViewportPresentMode(editMode_);
     incSetWindowTitle(_("New Project"));
+
+    autosaveTimer.start();
 }
 
 void incResetRootNode(ref Puppet puppet) {
@@ -232,12 +309,14 @@ void incOpenProject(string path) {
     incSetWindowTitle(currProjectPath.baseName);
 }
 
-void incSaveProject(string path) {
+void incSaveProject(string path, bool autosave = false) {
     import std.path : setExtension, baseName;
     try {
         string finalPath = path.setExtension(".inx");
-        currProjectPath = path;
-        incAddPrevProject(finalPath);
+        if (!autosave) {
+            currProjectPath = path;
+            incAddPrevProject(finalPath);
+        }
 
         // Remember to populate texture slots otherwise things will break real bad!
         incActivePuppet().populateTextureSlots();
