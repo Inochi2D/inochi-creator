@@ -27,13 +27,6 @@ public:
     override
     Parameter findParameter(uint uuid) {
         foreach(ref parameter; parameters) {
-            /*
-            if (auto group = cast(ExParameterGroup)parameter) {
-                foreach(ref child; group.children) {
-                    if (child.uuid == uuid) return child;
-                }
-            } else
-            */
             if (parameter.uuid == uuid) return parameter;
         }
         return null;
@@ -41,17 +34,10 @@ public:
     
 
     /**
-        Returns a parameter by UUID
+        Returns a parameter by name
     */
     Parameter findParameter(string name) {
         foreach(ref parameter; parameters) {
-            /*            
-            if (auto group = cast(ExParameterGroup)parameter) {
-                foreach(ref child; group.children) {
-                    if (child.name == name) return child;
-                }
-            } else
-            */
             if (parameter.name == name) return parameter;
         }
         return null;
@@ -84,6 +70,8 @@ public:
         ptrdiff_t idx = parameters.countUntil(param);
         if (idx >= 0) {
             parameters = parameters.remove(idx);
+            if (auto exParam = cast(ExParameter)param)
+                exParam.setParent(null);
             return;
         }
 

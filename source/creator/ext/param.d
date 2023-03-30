@@ -103,7 +103,7 @@ public:
     void setParent(ExParameterGroup newParent) {
         if (parent !is null && parent != newParent) {
             auto index = parent.children.countUntil(this);
-            if (index > 0)
+            if (index >= 0)
                 parent.children = parent.children.remove(index);
         }
         auto oldParent = parent;
