@@ -44,7 +44,7 @@ void incViewportVertexOptions() {
                 foreach (d; incSelectedNodes) {
                     auto meshEditor = cast(IncMeshEditorOneDrawable)editor.getEditorFor(d);
                     if (meshEditor)
-                        meshEditor.mesh.flipHorz();
+                        meshEditor.getMesh().flipHorz();
                 }
             }
             incTooltip(_("Flip Horizontally"));
@@ -55,7 +55,7 @@ void incViewportVertexOptions() {
                 foreach (d; incSelectedNodes) {
                     auto meshEditor = cast(IncMeshEditorOneDrawable)editor.getEditorFor(d);
                     if (meshEditor)
-                        meshEditor.mesh.flipVert();
+                        meshEditor.getMesh().flipVert();
                 }
             }
             incTooltip(_("Flip Vertically"));
@@ -118,7 +118,7 @@ void incViewportVertexOptions() {
                 foreach (drawable; editor.getTargets()) {
                     auto e = cast(IncMeshEditorOneDrawable)editor.getEditorFor(drawable);
                     if (e !is null)
-                        e.mesh = activeProcessor.autoMesh(cast(Drawable)drawable, e.getMesh(), e.mirrorHoriz, 0, e.mirrorVert, 0);
+                        e.setMesh(activeProcessor.autoMesh(cast(Drawable)drawable, e.getMesh(), e.mirrorHoriz, 0, e.mirrorVert, 0));
                 }
                 editor.refreshMesh();
             }
@@ -133,7 +133,7 @@ void incViewportVertexOptions() {
                     foreach (drawable; editor.getTargets()) {
                         auto e = cast(IncMeshEditorOneDrawable)editor.getEditorFor(drawable);
                         if (e !is null)
-                            e.mesh = activeProcessor.autoMesh(cast(Drawable)drawable, e.getMesh(), e.mirrorHoriz, 0, e.mirrorVert, 0);
+                            e.setMesh(activeProcessor.autoMesh(cast(Drawable)drawable, e.getMesh(), e.mirrorHoriz, 0, e.mirrorVert, 0));
                     }
                     editor.refreshMesh();
                 }
@@ -299,7 +299,7 @@ void incMeshEditApply() {
     foreach (d; target) {
         if (Drawable drawable = cast(Drawable)d) {
             auto meshEditor = cast(IncMeshEditorOneDrawable)editor.getEditorFor(drawable);
-            if (meshEditor !is null && (meshEditor.mesh.getVertexCount() < 3 || meshEditor.mesh.getEdgeCount() < 3)) {
+            if (meshEditor !is null && (meshEditor.getMesh().getVertexCount() < 3 || meshEditor.getMesh().getEdgeCount() < 3)) {
                 incDialog(__("Error"), _("Cannot apply invalid mesh\nAt least 3 vertices forming a triangle is needed."));
                 return;
             }
@@ -325,7 +325,7 @@ void incMeshEditClear() {
     foreach (d; editor.getTargets()) {
         auto meshEditor = cast(IncMeshEditorOneDrawable)editor.getEditorFor(d);
         if (meshEditor !is null)
-            meshEditor.mesh.clear();
+            meshEditor.getMesh().clear();
     }
 }
 
@@ -337,6 +337,6 @@ void incMeshEditReset() {
     foreach (d; editor.getTargets()) {
         auto meshEditor = cast(IncMeshEditorOneDrawable)editor.getEditorFor(d);
         if (meshEditor !is null)
-            meshEditor.mesh.reset();
+            meshEditor.getMesh().reset();
     }
 }

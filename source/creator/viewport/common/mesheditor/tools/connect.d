@@ -26,7 +26,7 @@ class ConnectTool : NodeSelect {
             onDragEnd(impl.mousePos, impl);
         }
 
-        if (igIsMouseClicked(ImGuiMouseButton.Left)) impl.maybeSelectOne = null;
+        if (igIsMouseClicked(ImGuiMouseButton.Left)) impl.maybeSelectOne = ulong(-1);
 
         if (impl.selected.length == 0) {
             incStatusTooltip(_("Select"), _("Left Mouse"));
@@ -36,19 +36,22 @@ class ConnectTool : NodeSelect {
         }
 
         if (igIsMouseClicked(ImGuiMouseButton.Left)) {
-            if (impl.vtxAtMouse !is null) {
-                auto prev = impl.selectOne(impl.vtxAtMouse);
+            if (impl.vtxAtMouse != ulong(-1)) {
+                auto prevIndex = impl.selectOne(impl.vtxAtMouse);
+                auto prev = impl.getVerticesByIndex([prevIndex])[0];
+                auto lastSelected = impl.getVerticesByIndex([impl.selected[$-1]])[0];
                 if (prev !is null) {
-                    if (prev != impl.selected[$-1]) {
+                    if (prevIndex != impl.selected[$-1]) {
                         auto implDrawable = cast(IncMeshEditorOneDrawable)(impl);
                         auto mesh = implDrawable.getMesh();
 
                         // Connect or disconnect between previous and this node
-                        if (!prev.isConnectedTo(impl.selected[$-1])) {
+                        if (!prev.isConnectedTo(lastSelected)) {
                             auto action = new MeshConnectAction(impl.getTarget().name, impl, mesh);
                             impl.foreachMirror((uint axis) {
-                                MeshVertex *mPrev = impl.mirrorVertex(axis, prev);
-                                MeshVertex *mSel = impl.mirrorVertex(axis, impl.selected[$-1]);
+                                MeshVertex*[] mPrevSel = impl.getVerticesByIndex([impl.mirrorVertex(axis, prevIndex), impl.mirrorVertex(axis, impl.selected[$-1])]);
+                                MeshVertex* mPrev = mPrevSel[0];
+                                MeshVertex* mSel  = mPrevSel[1];
                                 if (mPrev !is null && mSel !is null) {
                                     action.connect(mPrev, mSel);
 //                                    mPrev.connect(mSel);
@@ -60,8 +63,9 @@ class ConnectTool : NodeSelect {
                         } else {
                             auto action = new MeshDisconnectAction(impl.getTarget().name, impl, mesh);
                             impl.foreachMirror((uint axis) {
-                                MeshVertex *mPrev = impl.mirrorVertex(axis, prev);
-                                MeshVertex *mSel = impl.mirrorVertex(axis, impl.selected[$-1]);
+                                MeshVertex*[] mPrevSel = impl.getVerticesByIndex([impl.mirrorVertex(axis, prevIndex), impl.mirrorVertex(axis, impl.selected[$-1])]);
+                                MeshVertex* mPrev = mPrevSel[0];
+                                MeshVertex* mSel  = mPrevSel[1];
                                 if (mPrev !is null && mSel !is null) {
                                     action.disconnect(mPrev, mSel);
 //                                    mPrev.disconnect(mSel);

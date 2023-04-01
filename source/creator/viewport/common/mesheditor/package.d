@@ -60,7 +60,11 @@ public:
     void addTarget(Node target) {
         if (target in editors)
             return;
-        IncMeshEditorOneDrawable subEditor = new IncMeshEditorOneDrawable(deformOnly);
+        IncMeshEditorOneDrawable subEditor;
+        if (deformOnly) 
+            subEditor = new IncMeshEditorOneDrawableDeform();
+        else
+            subEditor = new IncMeshEditorOneDrawableVertex();
         subEditor.setTarget(target);
         subEditor.mirrorHoriz = mirrorHoriz;
         subEditor.mirrorVert  = mirrorVert;
@@ -77,7 +81,10 @@ public:
                 Drawable drawable = cast(Drawable)t;
                 IncMeshEditorOne subEditor = null;
                 if (drawable) {
-                    subEditor = new IncMeshEditorOneDrawable(deformOnly);
+                    if (deformOnly)
+                        subEditor = new IncMeshEditorOneDrawableDeform();
+                    else
+                        subEditor = new IncMeshEditorOneDrawableVertex();
                     (cast(IncMeshEditorOneDrawable)subEditor).setTarget(drawable);
                 } else {
                     subEditor = new IncMeshEditorOneNode(deformOnly);

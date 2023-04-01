@@ -100,7 +100,6 @@ class NodeSelect : Tool, Draggable {
                 impl.newSelected = [];
                 impl.updateMirrorSelected();
             }
-
             impl.isSelecting = false;
         }
         impl.pushDeformAction();
@@ -111,7 +110,7 @@ class NodeSelect : Tool, Draggable {
         if (isDragging) {
             foreach(select; impl.selected) {
                 impl.foreachMirror((uint axis) {
-                    MeshVertex *v = impl.mirrorVertex(axis, select);
+                    MeshVertex *v = impl.getVerticesByIndex([impl.mirrorVertex(axis, select)])[0];
                     if (v is null) return;
                     impl.updateAddVertexAction(v);
                     impl.markActionDirty();
@@ -119,7 +118,7 @@ class NodeSelect : Tool, Draggable {
                 });
             }
             if (impl.selected.length > 0)
-                impl.maybeSelectOne = null;
+                impl.maybeSelectOne = ulong(-1);
             impl.refreshMesh();
             return true;
         }

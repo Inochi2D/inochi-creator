@@ -49,7 +49,7 @@ class PathDeformTool : NodeSelect {
             onDragEnd(impl.mousePos, impl);
         }
 
-        if (igIsMouseClicked(ImGuiMouseButton.Left)) impl.maybeSelectOne = null;
+        if (igIsMouseClicked(ImGuiMouseButton.Left)) impl.maybeSelectOne = ulong(-1);
         
         if (impl.deforming) {
             incStatusTooltip(_("Deform"), _("Left Mouse"));
@@ -61,7 +61,7 @@ class PathDeformTool : NodeSelect {
         incStatusTooltip(_("Toggle locked point"), _("Ctrl"));
         incStatusTooltip(_("Move point along with the path"), _("Shift"));
         
-        impl.vtxAtMouse = null; // Do not need this in this mode
+        impl.vtxAtMouse = ulong(-1); // Do not need this in this mode
 
         if (incInputIsKeyPressed(ImGuiKey.Tab)) {
             if (path.target is null) {

@@ -88,12 +88,14 @@ class GridTool : NodeSelect {
         assert(implDrawable !is null);
         auto mesh = implDrawable.getMesh();
 
-        if (impl.vtxAtMouse) {
+        auto vtxAtMouse = impl.getVerticesByIndex([impl.vtxAtMouse])[0];
+        if (vtxAtMouse) {
             if (mesh.axes.length != 2)
                 return false;
 
             currentAction = mesh.axes.length == 2 ? GridActionID.TranslateFree : GridActionID.End;
-            dragOrigin = impl.vtxAtMouse.position;
+            vtxAtMouse = impl.getVerticesByIndex([impl.vtxAtMouse])[0];
+            dragOrigin = vtxAtMouse.position;
 
             float threshold = selectRadius/incViewportZoom;
             float xValue, yValue;
@@ -114,11 +116,11 @@ class GridTool : NodeSelect {
                 }
             }
             if (!foundX) {
-                dragTargetXIndex = cast(int)mesh.axes[1].countUntil(impl.vtxAtMouse.position.x);
+                dragTargetXIndex = cast(int)mesh.axes[1].countUntil(vtxAtMouse.position.x);
                 assert(dragTargetXIndex >= 0);
             }
             if (!foundY) {
-                dragTargetYIndex = cast(int)mesh.axes[0].countUntil(impl.vtxAtMouse.position.y);
+                dragTargetYIndex = cast(int)mesh.axes[0].countUntil(vtxAtMouse.position.y);
                 assert(dragTargetXIndex >= 0);
             }
 
@@ -219,22 +221,23 @@ class GridTool : NodeSelect {
             isDragging = false;
         }
 
-        if (igIsMouseClicked(ImGuiMouseButton.Left)) impl.maybeSelectOne = null;
+        if (igIsMouseClicked(ImGuiMouseButton.Left)) impl.maybeSelectOne = ulong(-1);
 
         incStatusTooltip(_("Drag to define 2x2 mesh"), _("Left Mouse"));
         incStatusTooltip(_("Add remove key points to axes"), _("Left Mouse"));
         incStatusTooltip(_("Change key point position in the axis"), _("Left Mouse"));
 
-        if (!isDragging && incInputIsMouseReleased(ImGuiMouseButton.Left) && impl.maybeSelectOne !is null) {
+        if (!isDragging && incInputIsMouseReleased(ImGuiMouseButton.Left) && impl.maybeSelectOne != ulong(-1)) {
             impl.selectOne(impl.maybeSelectOne);
         }
 
         // Left double click action
         if (igIsMouseDoubleClicked(ImGuiMouseButton.Left)) {
-            if (impl.vtxAtMouse !is null) {
+            auto vtxAtMouse = impl.getVerticesByIndex([impl.vtxAtMouse])[0];
+            if (vtxAtMouse !is null) {
                 // Remove axis point from gridAxes
-                float x = impl.vtxAtMouse.position.x;
-                float y = impl.vtxAtMouse.position.y;
+                float x = vtxAtMouse.position.x;
+                float y = vtxAtMouse.position.y;
                 if (mesh.axes.length == 2) {
                     auto ycount = mesh.axes[0].countUntil(y);
                     auto xcount = mesh.axes[1].countUntil(x);
