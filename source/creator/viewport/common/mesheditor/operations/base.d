@@ -98,6 +98,7 @@ public:
         if (selected.length > 0) {
             lastSel = selected[$-1];
         }
+        selected = [vertIndex];
         auto vert = getVerticesByIndex([vertIndex])[0];
         updateAddVertexAction(vert);
         if (lastSel != ulong(-1))

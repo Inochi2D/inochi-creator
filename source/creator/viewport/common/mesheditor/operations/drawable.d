@@ -625,7 +625,11 @@ public:
     bool hasAction() { return editorAction !is null; }
 
     override
-    void updateAddVertexAction(MeshVertex* vertex) { }
+    void updateAddVertexAction(MeshVertex* vertex) { 
+        if (editorAction) {
+            editorAction.action.addVertex(vertex);
+        }
+    }
 
     override
     void clearAction() {

@@ -229,7 +229,6 @@ class PointTool : NodeSelect {
                 } else {
                     impl.selectOrigin = impl.mousePos;
                     impl.isSelecting = true;
-                    writefln("start selecting, mousePos=%s", impl.mousePos);
                 }
             }
         }
@@ -343,15 +342,15 @@ class PointTool : NodeSelect {
 
         // Left click selection
         if (action == SelectActionID.ToggleSelect) {
-            if (impl.vtxAtMouse)
+            if (impl.vtxAtMouse != ulong(-1))
                 impl.toggleSelect(impl.vtxAtMouse);
-        } else if (action == SelectActionID.SelectOne) {  
-            if (impl.vtxAtMouse)
+        } else if (action == SelectActionID.SelectOne) {
+            if (impl.vtxAtMouse != ulong(-1))
                 impl.selectOne(impl.vtxAtMouse);
             else
                 impl.deselectAll();
         } else if (action == SelectActionID.MaybeSelectOne) {
-            if (impl.vtxAtMouse)
+            if (impl.vtxAtMouse != ulong(-1))
                 impl.maybeSelectOne = impl.vtxAtMouse;
         } else if (action == SelectActionID.SelectArea) {
             impl.selectOrigin = impl.mousePos;
