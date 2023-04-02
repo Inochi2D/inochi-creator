@@ -39,7 +39,7 @@ enum VertexToolMode {
 class IncMeshEditorOne {
 public:
     abstract void substituteMeshVertices(MeshVertex* meshVertex);
-    abstract MeshVertex* getVertexFromPoint(vec2 mousePos);
+    abstract ulong getVertexFromPoint(vec2 mousePos);
     abstract void removeVertexAt(vec2 vertex);
     abstract bool removeVertex(ImGuiIO* io, bool selectedOnly);
     abstract bool addVertex(ImGuiIO* io);
@@ -47,7 +47,8 @@ public:
     abstract void removeMeshVertex(MeshVertex* v2);
     
     abstract bool isPointOver(vec2 mousePos);
-    abstract MeshVertex*[] getInRect(vec2 min, vec2 max);
+    abstract ulong[] getInRect(vec2 min, vec2 max);
+    abstract MeshVertex*[] getVerticesByIndex(ulong[] indices);
     abstract bool hasAction();
     abstract void updateAddVertexAction(MeshVertex* vertex);
     abstract void clearAction();
@@ -57,9 +58,9 @@ public:
     bool vertexMapDirty = false;
 
     VertexToolMode toolMode = VertexToolMode.Points;
-    MeshVertex*[] selected;
-    MeshVertex*[] mirrorSelected;
-    MeshVertex*[] newSelected;
+    ulong[] selected;
+    ulong[] mirrorSelected;
+    ulong[] newSelected;
 
     vec2 lastMousePos;
     vec2 mousePos;
@@ -67,39 +68,40 @@ public:
     bool isSelecting = false;
     bool mutateSelection = false;
     bool invertSelection = false;
-    MeshVertex* maybeSelectOne;
-    MeshVertex* vtxAtMouse;
+    ulong maybeSelectOne;
+    ulong vtxAtMouse;
     vec2 selectOrigin;
     IncMesh previewMesh;
 
     bool deforming = false;
     float meshEditAOE = 4;
 
-    bool isSelected(MeshVertex* vert) {
+    bool isSelected(ulong vertIndex) {
         import std.algorithm.searching : canFind;
-        return selected.canFind(vert);
+        return selected.canFind(vertIndex);
     }
 
-    void toggleSelect(MeshVertex* vert) {
+    void toggleSelect(ulong vertIndex) {
         import std.algorithm.searching : countUntil;
         import std.algorithm.mutation : remove;
-        auto idx = selected.countUntil(vert);
-        if (isSelected(vert)) {
+        auto idx = selected.countUntil(vertIndex);
+        if (isSelected(vertIndex)) {
             selected = selected.remove(idx);
         } else {
-            selected ~= vert;
+            selected ~= vertIndex;
         }
         updateMirrorSelected();
     }
 
-    MeshVertex* selectOne(MeshVertex* vert) {
-        MeshVertex* lastSel = null;
+    ulong selectOne(ulong vertIndex) {
+        ulong lastSel = -1;
         if (selected.length > 0) {
             lastSel = selected[$-1];
         }
-        selected = [vert];
+        selected = [vertIndex];
+        auto vert = getVerticesByIndex([vertIndex])[0];
         updateAddVertexAction(vert);
-        if (lastSel)
+        if (lastSel != ulong(-1))
             updateMirrorSelected();
         return lastSel;
     }
@@ -142,11 +144,12 @@ public:
         }
     }
 
-    MeshVertex *mirrorVertex(uint axis, MeshVertex *vtx) {
-        if (axis == 0) return vtx;
-        MeshVertex *v = getVertexFromPoint(mirror(axis, vtx.position));
-        if (v is vtx) return null;
-        return v;
+    ulong mirrorVertex(uint axis, ulong vtxIndex) {
+        if (axis == 0) return vtxIndex;
+        auto vtx = getVerticesByIndex([vtxIndex])[0];
+        ulong vInd = getVertexFromPoint(mirror(axis, vtx.position));
+        if (vInd == vtxIndex) return -1;
+        return vInd;
     }
 
     bool isOnMirror(vec2 pos, float aoe) {
@@ -182,21 +185,22 @@ public:
         if (!mirrorHoriz && !mirrorVert) return;
 
         // Avoid duplicate selections...
-        MeshVertex*[] tmpSelected;
+        ulong[] tmpSelected;
         foreach(v; selected) {
             if (mirrorSelected.canFind(v)) continue;
             tmpSelected ~= v;
 
             foreachMirror((uint axis) {
-                MeshVertex *v2 = mirrorVertex(axis, v);
-                if (v2 is null) return;
+                ulong v2 = mirrorVertex(axis, v);
+                if (v2 == ulong(-1)) return;
                 if (axis != 0) {
                     if (!tmpSelected.canFind(v2) && !mirrorSelected.canFind(v2))
                         mirrorSelected ~= v2;
                 }
             });
         }
-        foreach (v; mirrorSelected) {
+        auto mirrorSelectedVertices = getVerticesByIndex(mirrorSelected);
+        foreach (v; mirrorSelectedVertices) {
             updateAddVertexAction(v);
         }
         selected = tmpSelected;

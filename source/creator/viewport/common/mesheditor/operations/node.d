@@ -209,9 +209,9 @@ public:
     }
 
     override
-    MeshVertex* getVertexFromPoint(vec2 mousePos) {
-        if (abs(translation.distance(mousePos)) < selectRadius/incViewportZoom) return new MeshVertex(translation, []);
-        return null;
+    ulong getVertexFromPoint(vec2 mousePos) {
+        if (abs(translation.distance(mousePos)) < selectRadius/incViewportZoom) return 0;
+        return -1;
     }
 
     override void removeVertexAt(vec2 vertex) {}
@@ -227,7 +227,7 @@ public:
     }
 
     override
-    MeshVertex*[] getInRect(vec2 min, vec2 max) { 
+    ulong[] getInRect(vec2 min, vec2 max) { 
         if (min.x > max.x) swap(min.x, max.x);
         if (min.y > max.y) swap(min.y, max.y);
 
@@ -235,7 +235,19 @@ public:
         if (min.y > translation.y) return [];
         if (max.x < translation.x) return [];
         if (max.y < translation.y) return [];
-        return [new MeshVertex(translation)];
+        return [0];
+    }
+
+    override 
+    MeshVertex*[] getVerticesByIndex(ulong[] indices) {
+        MeshVertex*[] result;
+        foreach (idx; indices) {
+            if (idx == 0)
+                result ~= new MeshVertex(translation);
+            else
+                result ~= null;
+        }
+        return result;
     }
 
     override
@@ -288,10 +300,6 @@ public:
 
     override
     void draw(Camera camera) {
-
-        if (vtxAtMouse !is null && !isSelecting) {
-            MeshVertex*[] one = [vtxAtMouse];
-        }
 
         if (isSelecting) {
             vec3[] rectLines = incCreateRectBuffer(selectOrigin, mousePos);

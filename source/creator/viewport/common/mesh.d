@@ -421,11 +421,11 @@ public:
         }
     }
 
-    MeshVertex* getVertexFromPoint(vec2 point) {
-        foreach(ref vert; vertices) {
-            if (abs(vert.position.distance(point)) < selectRadius/incViewportZoom) return vert;
+    ulong getVertexFromPoint(vec2 point) {
+        foreach(idx, ref vert; vertices) {
+            if (abs(vert.position.distance(point)) < selectRadius/incViewportZoom) return idx;
         }
-        return null;
+        return -1;
     }
 
     void remove(MeshVertex* vert) {
@@ -502,17 +502,17 @@ public:
         }
     }
 
-    MeshVertex*[] getInRect(vec2 min, vec2 max) {
+    ulong[] getInRect(vec2 min, vec2 max) {
         if (min.x > max.x) swap(min.x, max.x);
         if (min.y > max.y) swap(min.y, max.y);
 
-        MeshVertex*[] matching;
+        ulong[] matching;
         foreach(idx, vertex; vertices) {
             if (min.x > vertex.position.x) continue;
             if (min.y > vertex.position.y) continue;
             if (max.x < vertex.position.x) continue;
             if (max.y < vertex.position.y) continue;
-            matching ~= vertex;
+            matching ~= idx;
         }
 
         return matching;
