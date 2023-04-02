@@ -849,12 +849,10 @@ public:
     Deformation* deformByDeformationBinding(DeformationParameterBinding binding, vec2u index, bool flipHorz = false) {
         import std.stdio;
         if (!binding) {
-            writeln("binding is null");
             return null;
         }
         Drawable part = cast(Drawable)binding.getTarget().node;
         if (!part) {
-            writeln("part is null");
             return null;
         }
         Deformation deform = binding.getValue(index);

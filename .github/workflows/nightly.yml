@@ -225,7 +225,7 @@ jobs:
 
     - name: 'Build Inochi Creator'
       env:
-        DFLAGS: "-g -preserve-dwarf-line-section=false"
+        DFLAGS: "-g -force-dwarf-frame-section=false"
       run: |
 
         # First build ARM64 version...

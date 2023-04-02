@@ -447,14 +447,14 @@ private {
         if (igMenuItem(__("Paste"), "", false,  true)) {
             if (bindings.length == 1 && cClipboardBindings.length == 1 &&
                 bindings[0].isCompatibleWithNode(cClipboardBindings.values[0].getNode())) {
-                auto action = new ParameterChangeBindingsValueAction("set From Mirror", param, bindings,cParamPoint.x, cParamPoint.y);
+                auto action = new ParameterChangeBindingsValueAction("paste", param, bindings,cParamPoint.x, cParamPoint.y);
                 cClipboardBindings.values[0].copyKeypointToBinding(cClipboardPoint, bindings[0], cParamPoint);
                 action.updateNewState();
                 incActionPush(action);
             } else {
                 foreach(binding; bindings) {
                     if (binding.getTarget() in cClipboardBindings) {
-                        auto action = new ParameterChangeBindingsValueAction("set From Mirror", param, bindings, cParamPoint.x, cParamPoint.y);
+                        auto action = new ParameterChangeBindingsValueAction("paste", param, bindings, cParamPoint.x, cParamPoint.y);
                         ParameterBinding origBinding = cClipboardBindings[binding.getTarget()];
                         origBinding.copyKeypointToBinding(cClipboardPoint, binding, cParamPoint);
                     }
@@ -1073,7 +1073,7 @@ protected:
             void displayParameters(Parameter[] targetParams, bool hideChildren) {
                 foreach(i, ref param; targetParams) {
                     if (incArmedParameter() == param) continue;
-                    if (hideChildren && (cast(ExParameter)param).parent !is null) continue;
+                    if (hideChildren && (cast(ExParameter)param) && (cast(ExParameter)param).parent) continue;
                     import std.algorithm.searching : canFind;
                     ExParameterGroup group = cast(ExParameterGroup)param;
                     bool found = filter.length == 0 || param.indexableName.canFind(filter);
