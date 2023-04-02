@@ -1073,7 +1073,7 @@ protected:
             void displayParameters(Parameter[] targetParams, bool hideChildren) {
                 foreach(i, ref param; targetParams) {
                     if (incArmedParameter() == param) continue;
-                    if (hideChildren && (cast(ExParameter)param).parent !is null) continue;
+                    if (hideChildren && (cast(ExParameter)param) && (cast(ExParameter)param).parent) continue;
                     import std.algorithm.searching : canFind;
                     ExParameterGroup group = cast(ExParameterGroup)param;
                     bool found = filter.length == 0 || param.indexableName.canFind(filter);
