@@ -55,7 +55,7 @@ configuration "osx-full" {
 	targetType "executable"
 	targetPath "out/Inochi Creator.app/Contents/MacOS"
 	subConfiguration "bindbc-imgui" "dynamic_dynamicCRT"
-	dflags "-preserve-dwarf-line-section=false"
+	dflags "-force-dwarf-frame-section=false"
 	lflags "-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
 	versions "InBranding"
 
