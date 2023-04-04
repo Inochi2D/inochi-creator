@@ -47,19 +47,20 @@ public:
     override
     void reconstruct(Puppet _puppet) {
         auto puppet = cast(ExPuppet)_puppet;
-        assert(puppet !is null);
-        foreach (child; children) {
-            if (auto exparam = cast(ExParameter)child) {
-                exparam.parent = this;
-                exparam.parentUUID = uuid;
+        if (puppet !is null) {
+            foreach (child; children) {
+                if (auto exparam = cast(ExParameter)child) {
+                    exparam.parent = this;
+                    exparam.parentUUID = uuid;
+                }
+                if (puppet.findParameter(name) is null)
+                    puppet.parameters ~= child;
             }
-            if (puppet.findParameter(name) is null)
-                puppet.parameters ~= child;
-        }
-        auto test = puppet.findParameter(uuid);
-        if (test !is null) {
-            puppet.removeParameter(this);
-            puppet.addGroup(this);
+            auto test = puppet.findParameter(uuid);
+            if (test !is null) {
+                puppet.removeParameter(this);
+                puppet.addGroup(this);
+            }
         }
         super.reconstruct(_puppet);
     }
@@ -120,12 +121,11 @@ public:
     override
     void finalize(Puppet _puppet) {
         auto puppet = cast(ExPuppet)_puppet;
-        assert(puppet !is null);
         import std.stdio;
-        if (parent is null && parentUUID != InInvalidUUID) {
+        if (puppet !is null && parent is null && parentUUID != InInvalidUUID) {
             setParent(puppet.findGroup(parentUUID));
         }
-        super.finalize(puppet);
+        super.finalize(_puppet);
     }
 }
 
