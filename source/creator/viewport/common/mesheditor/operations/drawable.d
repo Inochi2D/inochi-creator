@@ -474,6 +474,15 @@ protected:
     }
     MeshEditorAction!DeformationAction editorAction = null;
 
+    void updateTarget() {
+        auto drawable = cast(Drawable)target;
+        transform = drawable.getDynamicMatrix();
+        vertices.length = drawable.vertices.length;
+        foreach (i, vert; drawable.vertices) {
+            vertices[i] = drawable.vertices[i] + drawable.deformation[i]; // FIXME: should handle origin
+        }
+    }
+
 public:
     vec2[] vertices;
 
@@ -487,11 +496,7 @@ public:
         if (drawable is null)
             return;
         super.setTarget(target);
-        transform = drawable.getDynamicMatrix();
-        vertices.length = drawable.vertices.length;
-        foreach (i, vert; drawable.vertices) {
-            vertices[i] = vert + drawable.deformation[i]; // FIXME: should handle origin
-        }
+        updateTarget();
         mesh = new IncMesh(drawable.getMesh());
         refreshMesh();
     }
@@ -681,12 +686,8 @@ public:
     override
     void draw(Camera camera) {
         auto drawable = cast(Drawable)target;
-        auto trans = drawable.getDynamicMatrix();
-
-        vertices.length = drawable.vertices.length;
-        foreach (i, vert; drawable.vertices) {
-            vertices[i] = vert + drawable.deformation[i]; // FIXME: should handle origin
-        }
+        updateTarget();
+        auto trans = transform;
 
         MeshVertex*[] _getVerticesByIndex(ulong[] indices) {
             MeshVertex*[] result;
@@ -792,12 +793,7 @@ public:
             setPath(doAdjust(path));
         }
         lastMousePos = (trans * vec4(lastMousePos, 0, 1)).xy;
-        transform = drawable.getDynamicMatrix();
-
-        vertices.length = drawable.vertices.length;
-        foreach (i, vert; drawable.vertices) {
-            vertices[i] = vert + drawable.deformation[i]; // FIXME: should handle origin
-        }
+        updateTarget();
 
         forceResetAction();
     }
