@@ -34,13 +34,13 @@ protected:
         }
     }
 
-    void adjustNodeOrigin(Node node, bool recursive = true) {
+    void recalculateNodeOrigin(Node node, bool recursive = true) {
         auto mgroup = cast(MeshGroup)node;
         auto drawable = cast(Drawable)node;
 
         if (recursive) {
             foreach (child; node.children) {
-                adjustNodeOrigin(child, recursive);
+                recalculateNodeOrigin(child, recursive);
             }
         }
         if (mgroup !is null || drawable is null) {
@@ -183,8 +183,8 @@ protected:
                     igEndMenu();
                 }
 
-                if (igMenuItem(__("Adjust origin"), "", false, true)) {
-                    adjustNodeOrigin(n, true);
+                if (igMenuItem(__("Recalculate origin"), "", false, true)) {
+                    recalculateNodeOrigin(n, true);
                 }
             }
             igEndPopup();
