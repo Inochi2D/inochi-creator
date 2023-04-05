@@ -34,6 +34,52 @@ protected:
         }
     }
 
+    void adjustNodeOrigin(Node node, bool recursive = true) {
+        auto mgroup = cast(MeshGroup)node;
+        auto drawable = cast(Drawable)node;
+
+        if (recursive) {
+            foreach (child; node.children) {
+                adjustNodeOrigin(child, recursive);
+            }
+        }
+        if (mgroup !is null || drawable is null) {
+            vec4 bounds;
+            vec4[] childTranslations;
+            if (node.children.length > 0) {
+                bounds = node.children[0].getCombinedBounds();
+                foreach (child; node.children) {
+                    auto cbounds = child.getCombinedBounds();
+                    bounds.x = min(bounds.x, cbounds.x);
+                    bounds.y = min(bounds.y, cbounds.y);
+                    bounds.z = max(bounds.z, cbounds.z);
+                    bounds.w = max(bounds.w, cbounds.w);
+                    childTranslations ~= child.transform.matrix() * vec4(0, 0, 0, 1);
+                }
+            } else {
+                bounds = node.transform.translation.xyxy;
+            }
+            vec2 center = (bounds.xy + bounds.zw) / 2;
+            if (node.parent !is null) {
+                center = (node.parent.transform.matrix.inverse * vec4(center, 0, 1)).xy;
+            }
+            auto diff = center - node.localTransform.translation.xy;
+            node.localTransform.translation.x = center.x;
+            node.localTransform.translation.y = center.y;
+            node.transformChanged();
+            if (mgroup !is null) {
+                foreach (ref v; mgroup.vertices) {
+                    v -= diff;
+                }
+                mgroup.clearCache();
+            }
+            foreach (i, child; node.children) {
+                child.localTransform.translation = (node.transform.matrix.inverse * childTranslations[i]).xyz;
+                child.transformChanged();
+            }
+        }
+    }
+
     void nodeActionsPopup(bool isRoot = false)(Node n) {
         if (igIsItemClicked(ImGuiMouseButton.Right)) {
             igOpenPopup("NodeActionsPopup");
@@ -135,6 +181,10 @@ protected:
                     }
 
                     igEndMenu();
+                }
+
+                if (igMenuItem(__("Adjust origin"), "", false, true)) {
+                    adjustNodeOrigin(n, true);
                 }
             }
             igEndPopup();
