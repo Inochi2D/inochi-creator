@@ -387,7 +387,8 @@ public:
 
         // Updates all point positions
         foreach(vtx; subset) {
-            subPoints ~= vec3(vtx.position, 0);
+            if (vtx !is null)
+                subPoints ~= vec3(vtx.position, 0);
         }
         inDbgSetBuffer(subPoints);
         inDbgPointsSize(size);

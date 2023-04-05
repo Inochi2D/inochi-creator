@@ -48,7 +48,7 @@ public:
     
     abstract bool isPointOver(vec2 mousePos);
     abstract ulong[] getInRect(vec2 min, vec2 max);
-    abstract MeshVertex*[] getVerticesByIndex(ulong[] indices);
+    abstract MeshVertex*[] getVerticesByIndex(ulong[] indices, bool removeNull = false);
     abstract bool hasAction();
     abstract void updateAddVertexAction(MeshVertex* vertex);
     abstract void clearAction();
