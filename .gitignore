@@ -1,3 +1,4 @@
+ls
 .dub
 docs.json
 __dummy.html
@@ -34,3 +35,4 @@ settings.json
 source/creator/ver.d
 
 .DS_Store
+.idea
