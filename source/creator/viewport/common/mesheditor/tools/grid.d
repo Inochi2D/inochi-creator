@@ -258,6 +258,7 @@ class GridTool : NodeSelect {
                     meshData.regenerateGrid();
                     mesh.copyFromMeshData(meshData);
                     impl.refreshMesh();
+                    impl.vtxAtMouse = ulong(-1);
                 }
 
             } else {
