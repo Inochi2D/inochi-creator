@@ -113,11 +113,14 @@ class PointTool : NodeSelect {
                 auto action = new MeshRemoveAction(impl.getTarget().name, impl, mesh);
 
                 if (!selectedOnly || impl.isSelected(impl.vtxAtMouse)) {
+                    MeshVertex*[] removingVertices;
                     impl.foreachMirror((uint axis) {
                         ulong index = mesh.getVertexFromPoint(impl.mirror(axis, impl.mousePos));
                         MeshVertex* vertex = impl.getVerticesByIndex([index])[0];
-                        action.removeVertex(vertex);
+                        removingVertices ~= vertex;
                     });
+                    foreach (vertex; removingVertices)
+                        action.removeVertex(vertex);
                     impl.refreshMesh();
                     impl.vertexMapDirty = true;
                     impl.selected.length = 0;

@@ -239,12 +239,12 @@ public:
     }
 
     override 
-    MeshVertex*[] getVerticesByIndex(ulong[] indices) {
+    MeshVertex*[] getVerticesByIndex(ulong[] indices, bool removeNull = false) {
         MeshVertex*[] result;
         foreach (idx; indices) {
             if (idx == 0)
                 result ~= new MeshVertex(translation);
-            else
+            else if (!removeNull)
                 result ~= null;
         }
         return result;

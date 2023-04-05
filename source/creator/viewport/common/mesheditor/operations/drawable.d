@@ -275,12 +275,12 @@ public:
         return mesh.getInRect(selectOrigin, mousePos);
     }
     override 
-    MeshVertex*[] getVerticesByIndex(ulong[] indices) {
+    MeshVertex*[] getVerticesByIndex(ulong[] indices, bool removeNull = false) {
         MeshVertex*[] result;
         foreach (idx; indices) {
             if (idx < mesh.vertices.length)
                 result ~= mesh.vertices[idx];
-            else
+            else if (!removeNull)
                 result ~= null;
         }
         return result;
@@ -368,7 +368,7 @@ public:
         mat4 trans = mat4.identity;
 
         if (vtxAtMouse != ulong(-1) && !isSelecting) {
-            MeshVertex*[] one = getVerticesByIndex([vtxAtMouse]);
+            MeshVertex*[] one = getVerticesByIndex([vtxAtMouse], true);
             mesh.drawPointSubset(one, vec4(1, 1, 1, 0.3), trans, 15);
         }
 
@@ -381,17 +381,17 @@ public:
 
         if (selected.length) {
             if (isSelecting && !mutateSelection) {
-                auto selectedVertices = getVerticesByIndex(selected);
+                auto selectedVertices = getVerticesByIndex(selected, true);
                 mesh.drawPointSubset(selectedVertices, vec4(0.6, 0, 0, 1), trans);
             }
             else {
-                auto selectedVertices = getVerticesByIndex(selected);
+                auto selectedVertices = getVerticesByIndex(selected, true);
                 mesh.drawPointSubset(selectedVertices, vec4(1, 0, 0, 1), trans);
             }
         }
 
         if (mirrorSelected.length) {
-            auto mirroredVertices = getVerticesByIndex(mirrorSelected);
+            auto mirroredVertices = getVerticesByIndex(mirrorSelected, true);
             mesh.drawPointSubset(mirroredVertices, vec4(1, 0, 1, 1), trans);
         }
 
@@ -404,11 +404,11 @@ public:
 
             if (newSelected.length) {
                 if (mutateSelection && invertSelection) {
-                    auto newSelectedVertices = getVerticesByIndex(newSelected);
+                    auto newSelectedVertices = getVerticesByIndex(newSelected, true);
                     mesh.drawPointSubset(newSelectedVertices, vec4(1, 0, 1, 1), trans);
                 }
                 else {
-                    auto newSelectedVertices = getVerticesByIndex(newSelected);
+                    auto newSelectedVertices = getVerticesByIndex(newSelected, true);
                     mesh.drawPointSubset(newSelectedVertices, vec4(1, 0, 0, 1), trans);
                 }
             }
@@ -595,12 +595,12 @@ public:
     }
 
     override 
-    MeshVertex*[] getVerticesByIndex(ulong[] indices) {
+    MeshVertex*[] getVerticesByIndex(ulong[] indices, bool removeNull = false) {
         MeshVertex*[] result;
         foreach (idx; indices) {
             if (idx < mesh.vertices.length)
                 result ~= mesh.vertices[idx];
-            else
+            else if (!removeNull)
                 result ~= null;
         }
         return result;
@@ -692,7 +692,8 @@ public:
         MeshVertex*[] _getVerticesByIndex(ulong[] indices) {
             MeshVertex*[] result;
             foreach (idx; indices) {
-                result ~= new MeshVertex(vertices[idx]);
+                if (idx < vertices.length)
+                    result ~= new MeshVertex(vertices[idx]);
             }
             return result;
         }
