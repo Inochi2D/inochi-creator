@@ -147,6 +147,9 @@ public:
     ulong mirrorVertex(uint axis, ulong vtxIndex) {
         if (axis == 0) return vtxIndex;
         auto vtx = getVerticesByIndex([vtxIndex])[0];
+        if (vtx is null) {
+            return -1;
+        }
         ulong vInd = getVertexFromPoint(mirror(axis, vtx.position));
         if (vInd == vtxIndex) return -1;
         return vInd;
