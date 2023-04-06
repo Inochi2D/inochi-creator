@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build-resources:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     
     steps:
     - uses: actions/checkout@v3
@@ -44,7 +44,7 @@ jobs:
         retention-days: 1
 
   linux-appimage:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v3
