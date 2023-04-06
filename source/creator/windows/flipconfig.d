@@ -81,6 +81,7 @@ private:
 
 
     void autoPair(string part1, string part2) {
+        // FIXME: this code sometimes doesn't work well with multi-byte utf-8 charset.
         string truncate(string str) {
             int i;
             for (i = (cast(int)str.length) - 1; i >= 0; i --) {
