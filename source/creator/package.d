@@ -14,8 +14,10 @@ import creator.viewport.model.deform;
 import creator.core;
 import creator.core.actionstack;
 import creator.windows;
+import creator.windows.autosave;
 import creator.atlas;
 import creator.ext;
+import creator.io.autosave;
 import creator.widgets.dialog;
 
 public import creator.ver;
@@ -23,14 +25,12 @@ public import creator.atlas;
 public import creator.io;
 import creator.core.colorbleed;
 
-import std.file;
 import std.path;
 import std.format;
 import i18n;
 import std.algorithm.searching;
 import inochi2d.core.animation.player;
-import std.datetime;
-import std.datetime.stopwatch : benchmark, StopWatch;
+
 
 /**
     A project
@@ -56,8 +56,6 @@ private {
     Parameter armedParam;
     size_t armedParamIdx;
     string currProjectPath;
-    string[] prevProjects;
-    StopWatch autosaveTimer;
 
     void function(Puppet)[] loadCallbacks;
     void function(Puppet)[] saveCallbacks;
@@ -135,77 +133,6 @@ string incProjectPath() {
 }
 
 /**
-    Autosave the project if enough time has passed since last autosave.
-*/
-void checkAutosave() {
-    if (incProjectPath.length == 0) {
-        //Do nothing, there's nothing to autosave.
-        return;
-    }
-    
-    auto elapsedSeconds = autosaveTimer.peek().total!"seconds";
-    if (elapsedSeconds >= 300) {
-        //TODO: Add a user setting instead of hardcoding.
-        autosaveProject(incProjectPath);
-        autosaveTimer.reset();
-    }
-}
-
-/**
-    Create a backup save path string.
-*/
-string bakFilename(string path, int bakNum) {
-    string bakName = format("%.2s", bakNum);
-    string numberedFilename = path ~ "-bak" ~ bakName;
-    return numberedFilename;
-}
-
-/**
-    Save the project as a rolling backup.
-    Don't overwrite the main save file.
-*/
-void autosaveProject(string path) {
-    //We'll add the extension back later when we need it.
-    path = path.stripExtension;
-
-    string pathBaseName = path.baseName;
-    string leadingDir = path.dirName;
-
-    string backupDir = buildPath(leadingDir, (pathBaseName ~ "-backups"));
-    mkdirRecurse(backupDir);
-    path = buildPath(backupDir, pathBaseName);
-
-    int bakNum = 1;
-    rollBackup(path, bakNum);
-
-    // Leave off the .inx extension because it's added by incSaveProject.
-    string bakPath = path.bakFilename(bakNum);
-    incSaveProject(bakPath, true);
-}
-
-/**
-    Recursively move backup files to clear the way for backup number bakNum.
-*/
-void rollBackup(string path, int bakNum) {
-    import std.path : setExtension;
-
-    string bakFinalPath = path.bakFilename(bakNum).setExtension(".inx");
-    if (!bakFinalPath.exists) {
-        //This file name is available, so we don't need to clear the way.
-        return;
-    }
-
-    if (bakNum >= 10) {
-        //TODO: Add a user setting instead of hardcoding.
-        //Maximum backups reached, so just delete it to get it out of the way.
-        bakFinalPath.remove;
-    } else {
-        rollBackup(path, bakNum+1);
-        rename(bakFinalPath, path.bakFilename(bakNum+1).setExtension(".inx"));
-    }
-}
-
-/**
     Return a list of prior projects
 */
 string[] incGetPrevProjects() {
@@ -264,7 +191,7 @@ void incNewProject() {
     incViewportPresentMode(editMode_);
     incSetWindowTitle(_("New Project"));
 
-    autosaveTimer.start();
+    startAutosaveTimer();
 }
 
 void incResetRootNode(ref Puppet puppet) {
@@ -274,6 +201,21 @@ void incResetRootNode(ref Puppet puppet) {
 }
 
 void incOpenProject(string path) {
+    if (incCheckLockfile(path)) {
+        incPushWindow(new RestoreSaveWindow(path));
+        //Answering that window is the new trigger for loading the project.
+        return;
+    } else {
+        incOpenProject(path, "");
+    }
+}
+
+/**
+    mainPath is the canonical project path that the user normally saves to.
+    backupPath is the inx file to load all the data from, but is empty string
+    when just loading a normal mainsave project file.
+*/
+void incOpenProject(string mainPath, string backupPath) {
     import std.path : setExtension, baseName;
     incClearImguiData();
     
@@ -281,7 +223,11 @@ void incOpenProject(string path) {
 
     // Load the puppet from file
     try {
-        puppet = inLoadPuppet!ExPuppet(path);
+        if (backupPath.length > 0) {
+            puppet = inLoadPuppet!ExPuppet(backupPath);
+        } else {
+            puppet = inLoadPuppet!ExPuppet(mainPath);
+        }
     } catch (Exception ex) {
         incDialog(__("Error"), ex.msg);
         return;
@@ -291,8 +237,8 @@ void incOpenProject(string path) {
     incNewProject();
 
     // Set the path
-    currProjectPath = path;
-    incAddPrevProject(path);
+    currProjectPath = mainPath;
+    incAddPrevProject(mainPath);
 
     incResetRootNode(puppet);
 
@@ -309,11 +255,18 @@ void incOpenProject(string path) {
     incSetWindowTitle(currProjectPath.baseName);
 }
 
-void incSaveProject(string path, bool autosave = false) {
+void incSaveProject(string path, string autosaveStamp = "") {
     import std.path : setExtension, baseName;
     try {
-        string finalPath = path.setExtension(".inx");
-        if (!autosave) {
+        string finalPath;
+        bool isAutosave = autosaveStamp.length > 0 ? true : false;
+        if (isAutosave) {
+            string pathBaseName = path.baseName;
+            path ~= "_" ~ autosaveStamp;
+            finalPath = path.setExtension(".inx");
+            incAddPrevAutosave(finalPath);
+        } else {
+            finalPath = path.setExtension(".inx");
             currProjectPath = path;
             incAddPrevProject(finalPath);
         }
@@ -325,6 +278,8 @@ void incSaveProject(string path, bool autosave = false) {
 
         // Write the puppet to file
         inWriteINPPuppet(incActivePuppet(), finalPath);
+
+        if (!isAutosave) incReleaseLockfile();
 
         incSetStatus(_("%s saved successfully.").format(currProjectPath));
         incSetWindowTitle(currProjectPath.baseName);

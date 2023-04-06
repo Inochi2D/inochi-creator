@@ -12,6 +12,7 @@ import creator.core;
 import creator.core.input;
 import creator.utils.link;
 import creator.config;
+import creator.io.autosave;
 import creator;
 import inochi2d;
 import inochi2d.core.dbg;
@@ -134,9 +135,27 @@ void incMainMenu() {
                     }
 
                     string[] prevProjects = incGetPrevProjects();
+                    string[] prevAutosaves = incGetPrevAutosaves();
                     if (igBeginMenu(__("Recent"), prevProjects.length > 0)) {
+                        import std.path : baseName;
+                        if (igBeginMenu(__("Autosaves"), prevAutosaves.length > 0)) {
+                            foreach(autosave; prevAutosaves) {
+                                if (igMenuItem(autosave.baseName.toStringz, "", false, true)) {
+                                    /**
+                                        TODO: we want to open autosaves a special way.
+                                        A way that opens that file up,
+                                        but sets the main project file properly.
+                                        To do this, we first need to store
+                                        autosaves as a tuple to contain the original
+                                        main project path.
+                                    */
+                                }
+                                incTooltip(autosave);
+                            }
+                            igEndMenu();
+                        }
+
                         foreach(project; incGetPrevProjects) {
-                            import std.path : baseName;
                             if (igMenuItem(project.baseName.toStringz, "", false, true)) {
                                 incPopWelcomeWindow();
                                 incOpenProject(project);
