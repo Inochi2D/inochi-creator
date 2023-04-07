@@ -135,22 +135,20 @@ void incMainMenu() {
                     }
 
                     string[] prevProjects = incGetPrevProjects();
-                    string[] prevAutosaves = incGetPrevAutosaves();
+                    AutosaveRecord[] prevAutosaves = incGetPrevAutosaves();
                     if (igBeginMenu(__("Recent"), prevProjects.length > 0)) {
                         import std.path : baseName;
                         if (igBeginMenu(__("Autosaves"), prevAutosaves.length > 0)) {
-                            foreach(autosave; prevAutosaves) {
-                                if (igMenuItem(autosave.baseName.toStringz, "", false, true)) {
-                                    /**
-                                        TODO: we want to open autosaves a special way.
-                                        A way that opens that file up,
-                                        but sets the main project file properly.
-                                        To do this, we first need to store
-                                        autosaves as a tuple to contain the original
-                                        main project path.
-                                    */
+                            foreach(saveRecord; prevAutosaves) {
+                                auto autosavePath = saveRecord.autosavePath.baseName.toStringz;
+                                if (igMenuItem(autosavePath, "", false, true)) {
+                                    incPopWelcomeWindow();
+                                    incOpenProject(
+                                        saveRecord.mainsavePath,
+                                        saveRecord.autosavePath
+                                    );
                                 }
-                                incTooltip(autosave);
+                                incTooltip(saveRecord.autosavePath);
                             }
                             igEndMenu();
                         }

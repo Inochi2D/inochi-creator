@@ -55,28 +55,49 @@ void incSetAutosaveEnabled(bool enabled) {
     incSettingsSet("AutosaveEnabled", enabled);
 }
 
-string[] incGetPrevAutosaves() {
-    return incSettingsGet!(string[])("prev_autosaves");
+struct AutosaveRecord {
+    string autosavePath;
+    string mainsavePath;
 }
 
-void incAddPrevAutosave(string path) {
+AutosaveRecord[] incGetPrevAutosaves() {
+    AutosaveRecord[] saveRecords;
+    string[] autosavePaths = incSettingsGet!(string[])("prev_autosaves");
+    string[] mainsavePaths = incSettingsGet!(string[])("prev_autosave_mainpaths");
+    foreach (i, autosavePath; autosavePaths) {
+        string mainsavePath = "";
+        if (i < mainsavePaths.length) {
+            mainsavePath = mainsavePaths[i];
+        }
+        saveRecords ~= AutosaveRecord(autosavePath, mainsavePath);
+    }
+    return saveRecords;
+}
+
+void incAddPrevAutosave(string autosavePath) {
     import std.algorithm.searching : countUntil;
     import std.algorithm.mutation : remove;
-    string[] autosaves = incGetPrevAutosaves();
+    AutosaveRecord[] saveRecords = incGetPrevAutosaves();
 
-    ptrdiff_t idx = autosaves.countUntil(path);
+    ptrdiff_t idx = saveRecords.countUntil!"a.autosavePath == b"(autosavePath);
     if (idx >= 0) {
-        autosaves = autosaves.remove(idx);
+        saveRecords = saveRecords.remove(idx);
     }
 
     // Put project to the start of the "previous" list and
     // limit to 10 elements
-    autosaves = path.dup ~ autosaves;
-    //(currProjectPath)
-    if(autosaves.length > 10) autosaves.length = 10;
+    saveRecords = AutosaveRecord(autosavePath, incProjectPath()) ~ saveRecords;
+    if(saveRecords.length > 10) saveRecords.length = 10;
 
     // Then save.
-    incSettingsSet("prev_autosaves", autosaves);
+    string[] autosavePaths;
+    string[] mainsavePaths;
+    foreach (saveRecord; saveRecords) {
+        autosavePaths ~= saveRecord.autosavePath;
+        mainsavePaths ~= saveRecord.mainsavePath;
+    }
+    incSettingsSet("prev_autosaves", autosavePaths);
+    incSettingsSet("prev_autosave_mainpaths", mainsavePaths);
     incSettingsSave();
 }
 
