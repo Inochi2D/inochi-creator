@@ -73,10 +73,11 @@ private {
     Puppet activePuppet = null;
 }
 
+static string FlipConfigPath = "com.inochi2d.creator.FlipConfig";
 
 void incLoadFlipConfig(Puppet puppet) {
-    if ("FlipConfig" in puppet.extData && puppet.extData["FlipConfig"].length > 0) {
-        auto jsonData = parseJson(cast(string)puppet.extData["FlipConfig"]);
+    if (FlipConfigPath in puppet.extData && puppet.extData[FlipConfigPath].length > 0) {
+        auto jsonData = parseJson(cast(string)puppet.extData[FlipConfigPath]);
         flipPairs.length = 0;
         activePuppet = puppet;
         foreach (pair; jsonData.byElement) {
@@ -102,7 +103,7 @@ void incDumpFlipConfig(Puppet puppet) {
         }
         serializer.arrayEnd(i);
         serializer.flush();
-        puppet.extData["FlipConfig"] = cast(ubyte[])app.data;
+        puppet.extData[FlipConfigPath] = cast(ubyte[])app.data;
 
     }
 }
