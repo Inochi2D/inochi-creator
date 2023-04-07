@@ -150,11 +150,24 @@ private:
 
 
     void autoPair(string part1, string part2) {
+        // FIXME: this code sometimes doesn't work well with multi-byte utf-8 charset.
+        string truncate(string str) {
+            int i;
+            for (i = (cast(int)str.length) - 1; i >= 0; i --) {
+                if (str[i] != '\0')
+                    break;
+            }
+            if (i >= 0) {
+                return str[0..i];
+            }
+            return "";
+        }
+
         foreach(i, ref Node node; nodes) {
             string targetName = node.name.replace(part1, part2);
             if (node.uuid in map) continue;
             foreach (ref Node node2; nodes) {
-                if (node.name.indexOf(part1) >= 0 && node2.name == targetName) {
+                if (node.name.indexOf(part1) >= 0 && truncate(node2.name) == truncate(targetName)) {
                     if (node2.uuid != node.uuid) {
                         pairs ~= new FlipPair([node, node2], "");
                         map[node.uuid] = pairs.length - 1;

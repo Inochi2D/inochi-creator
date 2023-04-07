@@ -38,6 +38,7 @@ private {
     vec2u cParamPoint;
     vec2u cClipboardPoint;
     ParameterBinding[BindTarget] cClipboardBindings;
+    Parameter cClipboardParameter = null;
 
     void refreshBindingList(Parameter param) {
         // Filter selection to remove anything that went away
@@ -84,7 +85,25 @@ private {
         incActionPush(action);
     }
 
-    void autoFlipBinding(ParameterBinding binding, ParameterBinding srcBinding, vec2u index, uint axis) {
+    /** 
+     * autoFlipBinding: flipping or paste binding from srcBinding.
+     * if extrapolation is set to true, this function copies deformation from mirrored position, otherwise, deformation is copied from same index.
+     * if axis is set other than 2, data is flipped in any direction.
+     * Usage:
+     * 1. set from mirror / mirrrored auto-fill:
+     *    extrapolation = true, axis is in one of {0, 1, -1}, srcBinding should be taken from same parameters
+     * 2. copy deformation from other binding / parameters
+     *    extrapolation = false, axis is in one of {0, 1, -1}, srcBinding should be taken from other parameters
+     * 3. copy deformation from other parts.
+     *    extrapolation = false, axis = 2
+     * Params:
+     *   binding = destination binding
+     *   srcBinding = source binding to be copied
+     *   index = target index of binding
+     *   axis = 0: flip horizontally, 1: flip vertically, -1: flip diagonally, 2: not flipped
+     *   extrapolation = specifying source index is selected in mirroered position or not.
+     */
+    void autoFlipBinding(ParameterBinding binding, ParameterBinding srcBinding, vec2u index, uint axis, bool extrapolation = true) {
 
         T extrapolateValueAt(T)(ParameterBindingImpl!T binding, vec2u index, uint axis) {
             vec2 offset = binding.parameter.getKeypointOffset(index);
@@ -93,6 +112,7 @@ private {
                 case -1: offset = vec2(1, 1) - offset; break;
                 case 0: offset.x = 1 - offset.x; break;
                 case 1: offset.y = 1 - offset.y; break;
+                case 2: break; // Just paste from srcBinding
                 default: assert(false, "bad axis");
             }
 
@@ -100,6 +120,13 @@ private {
             vec2 subOffset;
             binding.parameter.findOffset(offset, srcIndex, subOffset);
 
+            return binding.interpolate(srcIndex, subOffset);            
+        }
+        T interpolateValueAt(T)(ParameterBindingImpl!T binding, vec2u index, uint axis) {
+            vec2 offset = binding.parameter.getKeypointOffset(index);
+            vec2u srcIndex;
+            vec2 subOffset;
+            binding.parameter.findOffset(offset, srcIndex, subOffset);
             return binding.interpolate(srcIndex, subOffset);            
         }
 
@@ -110,48 +137,63 @@ private {
                 auto srcDeformBinding = cast(DeformationParameterBinding)srcBinding;
                 Drawable srcDrawable = cast(Drawable)srcDeformBinding.getTarget().node;
                 auto mesh = new IncMesh(drawable.getMesh());
-                auto deform = extrapolateValueAt!Deformation(srcDeformBinding, index, axis);
-                auto newDeform = mesh.deformByDeformationBinding(srcDrawable, deform, true);
+                Deformation deform = extrapolation? extrapolateValueAt!Deformation(srcDeformBinding, index, axis):
+                                                    interpolateValueAt!Deformation(srcDeformBinding, index, axis);
+                auto newDeform = mesh.deformByDeformationBinding(srcDrawable, deform, extrapolation || axis < 1);
                 if (newDeform)
                     deformBinding.setValue(index, *newDeform);
 
             } else {
                 auto srcValueBinding = cast(ValueParameterBinding)srcBinding;
-                auto value = extrapolateValueAt!float(srcValueBinding, index, axis);
+                float value;
+                value = extrapolation? extrapolateValueAt!float(srcValueBinding, index, axis):
+                                       interpolateValueAt!float(srcValueBinding, index, axis);
 
                 auto valueBinding = cast(ValueParameterBinding)binding;
                 valueBinding.setValue(index, value);
-                valueBinding.scaleValueAt(index, axis, -1);
+                if (axis < 2)
+                    valueBinding.scaleValueAt(index, axis, -1);
             }
 
         } else {
             if (deformBinding !is null) {
                 Drawable drawable = cast(Drawable)deformBinding.getTarget().node;
                 auto mesh = new IncMesh(drawable.getMesh());
-                Deformation deform = extrapolateValueAt!Deformation(deformBinding, index, axis);
-                auto newDeform = mesh.deformByDeformationBinding(drawable, deform, true);
+                Deformation deform = extrapolation? extrapolateValueAt!Deformation(deformBinding, index, axis):
+                                                    interpolateValueAt!Deformation(deformBinding, index, axis);
+                auto newDeform = mesh.deformByDeformationBinding(drawable, deform, extrapolation || axis < 1);
                 if (newDeform)
                     deformBinding.setValue(index, *newDeform);
             } else {
-                binding.extrapolateValueAt(index, axis);
+                if (extrapolation)
+                    binding.extrapolateValueAt(index, axis);
             }
         }
     }
 
-    ParameterBinding getPairBindingFor(Parameter param, Node target, FlipPair pair, string name) {
+    ParameterBinding getPairBindingFor(Parameter param, Node target, FlipPair pair, string name, bool forceCreate = false) {
         Node pairNode;
-        if (pair is null)
-            return null;
-        if (pair.parts[0].uuid == target.uuid) {
+        ParameterBinding result = null;
+        if (pair !is null && pair.parts[0] !is null && pair.parts[0].uuid == target.uuid) {
             pairNode = pair.parts[1];
-        } else {
+        } else if (pair !is null) {
             pairNode = pair.parts[0];
         }
-        if (pairNode is null)
-            return null;
-        foreach (ParameterBinding binding; param.bindings) {
-            if (binding.getTarget().node.uuid == pairNode.uuid && binding.getName() == name)
-                return binding;
+        if (pairNode is null && forceCreate) {
+            pairNode = target;
+        }
+        if (pairNode !is null) {
+            foreach (ParameterBinding binding; param.bindings) {
+                if (binding.getTarget().node.uuid == pairNode.uuid && binding.getName() == name)
+                    return binding;
+            }
+        }
+        if (forceCreate) {
+            result = param.createBinding(pairNode, name);
+            param.addBinding(result);
+            auto action = new ParameterBindingAddAction(param, result);
+            incActionPush(action);
+            return result;
         }
         return null;
     }
@@ -181,6 +223,34 @@ private {
         }
         action.updateNewState();
         incActionPush(action);
+    }
+
+    void pasteParameter(Parameter param, uint axis) {
+        if (cClipboardParameter is null)
+            return;
+        incActionPushGroup();
+        auto action = new ParameterChangeBindingsAction("Paste", param, null);
+
+        foreach(ParameterBinding srcBinding; cClipboardParameter.bindings) {
+
+            Node target = srcBinding.getTarget().node;
+            FlipPair pair = null;
+            if (axis != 2)
+                pair = incGetFlipPairFor(target);
+            auto binding = getPairBindingFor(param, target, pair, srcBinding.getName(), true);
+            uint xCount = param.axisPointCount(0);
+            uint yCount = param.axisPointCount(1);
+            foreach(x; 0..xCount) {
+                foreach(y; 0..yCount) {
+                    vec2u index = vec2u(x, y);
+                    autoFlipBinding(binding, srcBinding, index, axis, false);
+                }
+            }
+        }
+        action.updateNewState();
+        incActionPush(action);
+        incActionPopGroup();
+        cClipboardParameter = null;
     }
 
     void fixScales(Parameter param) {
@@ -906,6 +976,18 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
 
                         igNewLine();
                         igSeparator();
+
+                        if (igMenuItem(__("Copy"), "", false, true)) {
+                            cClipboardParameter = param.dup;
+                        }
+                        if (igMenuItem(__("Paste"), "", false, true)) {
+                            pasteParameter(param, 2);
+                            incViewportNodeDeformNotifyParamValueChanged();
+                        }
+                        if (igMenuItem(__("Paste and Horiontal Flip"), "", false, true)) {
+                            pasteParameter(param, 0);
+                            incViewportNodeDeformNotifyParamValueChanged();
+                        }
 
                         if (igMenuItem(__("Duplicate"), "", false, true)) {
                             Parameter newParam = param.dup;
