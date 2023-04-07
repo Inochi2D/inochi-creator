@@ -4,11 +4,13 @@ import creator.windows.autosave;
 import creator.core;
 import creator;
 import i18n;
+import inmath : clamp;
 
 import std.file;
 import std.path;
 import std.datetime;
 import std.datetime.stopwatch : benchmark, StopWatch;
+import std.conv;
 
 private {
     StopWatch autosaveTimer;
@@ -17,6 +19,40 @@ private {
 
 public void startAutosaveTimer() {
     autosaveTimer.start();
+}
+
+/**
+    The time in minutes between autosaves.
+*/
+int incGetAutosaveInterval() {
+    int interval = incSettingsGet!int("AutosaveInterval", 5);
+    return interval;
+}
+
+void incSetAutosaveInterval(int interval) {
+    // Limit the setting to 24 hours.
+    interval = clamp(interval, 1, 1440);
+    incSettingsSet("AutosaveInterval", interval);
+}
+
+int incGetAutosaveFileLimit() {
+    int fileLimit = incSettingsGet!int("AutosaveFileLimit", 3);
+    return fileLimit;
+}
+
+void incSetAutosaveFileLimit(int fileLimit) {
+    // Limit the setting to 1000 files.
+    fileLimit = clamp(fileLimit, 1, 1000);
+    incSettingsSet("AutosaveFileLimit", fileLimit);
+}
+
+bool incGetAutosaveEnabled() {
+    bool enabled = incSettingsGet!bool("AutosaveEnabled", true);
+    return enabled;
+}
+
+void incSetAutosaveEnabled(bool enabled) {
+    incSettingsSet("AutosaveEnabled", enabled);
 }
 
 string[] incGetPrevAutosaves() {
@@ -49,13 +85,18 @@ void incAddPrevAutosave(string path) {
 */
 void incCheckAutosave() {
     if (incProjectPath.length == 0) {
-        //Do nothing, there's nothing to autosave.
+        // Do nothing, there's nothing to autosave.
+        return;
+    }
+
+    if (false == incGetAutosaveEnabled()) {
+        // User has disabled autosaving.
         return;
     }
     
-    auto elapsedSeconds = autosaveTimer.peek().total!"seconds";
-    if (elapsedSeconds >= 300) {
-        //TODO: Add a user setting instead of hardcoding.
+    long interval = incGetAutosaveInterval();
+    long elapsedMinutes = autosaveTimer.peek().total!"minutes";
+    if (elapsedMinutes >= interval) {
         incAutosaveProject(incProjectPath);
         autosaveTimer.reset();
     }
@@ -66,7 +107,7 @@ void incCheckAutosave() {
     Doesn't overwrite the main save file.
 */
 void incAutosaveProject(string path) {
-    //We'll add the extension back later when we need it.
+    // We'll add the extension back later when we need it.
     path = path.stripExtension;
 
     string pathBaseName = path.baseName;
@@ -76,8 +117,8 @@ void incAutosaveProject(string path) {
     path = buildPath(backupDir, pathBaseName);
 
     auto entries = currentBackups(backupDir);
-    while (entries.length >= 10) {
-        //TODO: Add a user setting instead of hardcoding.
+    int fileLimit = incGetAutosaveFileLimit();
+    while (entries.length >= fileLimit) {
         std.file.remove(entries[0]);
         entries = currentBackups(backupDir);
     }
