@@ -17,6 +17,7 @@ import creator.core.i18n;
 import creator.io;
 import creator.atlas.atlas : incInitAtlassing;
 import creator.ext;
+import creator.windows.flipconfig;
 import inochi2d;
 import creator;
 import i18n;
@@ -67,6 +68,8 @@ int main(string[] args)
 
         // Initialize node overrides
         incInitExt();
+
+        incInitFlipConfig();
 
         // Initialize video exporting
         incInitVideoExport();

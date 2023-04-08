@@ -55,8 +55,19 @@ private {
     string currProjectPath;
     string[] prevProjects;
 
+    void function(Puppet)[] loadCallbacks;
+    void function(Puppet)[] saveCallbacks;
+
     AnimationPlayer incAnimationPlayer;
     AnimationPlaybackRef incAnimationCurrent;
+}
+
+void incRegisterLoadFunc(void function(Puppet) func) {
+    loadCallbacks ~= func;
+}
+
+void incRegisterSaveFunc(void function(Puppet) func) {
+    saveCallbacks ~= func;
 }
 
 /**
@@ -207,6 +218,8 @@ void incOpenProject(string path) {
     incResetRootNode(puppet);
 
     incActiveProject().puppet = puppet;
+    foreach (func; loadCallbacks)
+        func(puppet);
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
 
@@ -225,6 +238,8 @@ void incSaveProject(string path) {
 
         // Remember to populate texture slots otherwise things will break real bad!
         incActivePuppet().populateTextureSlots();
+        foreach (func; saveCallbacks)
+            func(incActivePuppet());
 
         // Write the puppet to file
         inWriteINPPuppet(incActivePuppet(), finalPath);

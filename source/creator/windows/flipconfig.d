@@ -20,14 +20,18 @@ import std.stdio : File;
 import std.string;
 import std.algorithm.searching : canFind, countUntil;
 import std.algorithm.mutation : remove;
-
+import std.array : appender, Appender;
+import std.stdio;
 /**
     Binding between layer and node
 */
-
-class FlipPair {
+@TypeId("FlipPair")
+class FlipPair : ISerializable {
     Node[2] parts;
+    uint[2] uuids;
     string name;
+    this() {
+    }
     this(Node[2] parts, string name) {
         this.parts = parts;
         this.name = name;
@@ -37,11 +41,76 @@ class FlipPair {
     void update () {
         name = "%s <-> %s".format((parts[0] !is null)? parts[0].name: "", (parts[1] !is null)? parts[1].name: "");
     }
+
+    void serialize(S)(ref S serializer) {
+        auto state = serializer.objectBegin();
+            serializer.putKey("uuid1");
+            serializer.putValue(parts[0]? parts[0].uuid: InInvalidUUID);
+            serializer.putKey("uuid2");
+            serializer.putValue(parts[1]? parts[1].uuid: InInvalidUUID);
+        serializer.objectEnd(state);
+    }
+
+    SerdeException deserializeFromFghj(Fghj data) {
+        if (auto exc = data["uuid1"].deserializeValue(this.uuids[0])) return exc;
+        if (auto exc = data["uuid2"].deserializeValue(this.uuids[1])) return exc;
+        return null;
+    }
+
+    void reconstruct(Puppet puppet) { }
+
+    void finalize(Puppet puppet) {
+        if (auto exPuppet = cast(ExPuppet)puppet) {
+            parts[0] = puppet.find!Node(uuids[0]);
+            parts[1] = puppet.find!Node(uuids[1]);
+        }
+    }
+
 };
 
 private {
     FlipPair[] flipPairs;
     Puppet activePuppet = null;
+}
+
+static string FlipConfigPath = "com.inochi2d.creator.FlipConfig";
+
+void incLoadFlipConfig(Puppet puppet) {
+    if (FlipConfigPath in puppet.extData && puppet.extData[FlipConfigPath].length > 0) {
+        auto jsonData = parseJson(cast(string)puppet.extData[FlipConfigPath]);
+        flipPairs.length = 0;
+        activePuppet = puppet;
+        foreach (pair; jsonData.byElement) {
+            flipPairs ~= deserialize!FlipPair(pair);
+        }
+        foreach (pair; flipPairs) {
+            pair.reconstruct(puppet);
+        }
+        foreach (pair; flipPairs) {
+            pair.finalize(puppet);
+        }
+    }
+}
+
+void incDumpFlipConfig(Puppet puppet) {
+    if (flipPairs.length > 0) {
+        auto app = appender!(char[]);
+        auto serializer = inCreateSerializer(app);
+        auto i = serializer.arrayBegin();
+        foreach (pair; flipPairs) {
+            serializer.elemBegin;
+            serializer.serializeValue(pair);
+        }
+        serializer.arrayEnd(i);
+        serializer.flush();
+        puppet.extData[FlipConfigPath] = cast(ubyte[])app.data;
+
+    }
+}
+
+void incInitFlipConfig() {
+    incRegisterLoadFunc(&incLoadFlipConfig);
+    incRegisterSaveFunc(&incDumpFlipConfig);
 }
 
 FlipPair[] incGetFlipPairs() {
