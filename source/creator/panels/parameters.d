@@ -1076,7 +1076,8 @@ protected:
         }
 
         auto parameters = incActivePuppet().parameters;
-        auto groups = (cast(ExPuppet)incActivePuppet()).groups;
+        auto exPuppet = cast(ExPuppet)incActivePuppet();
+        auto groups = (exPuppet !is null)? exPuppet.groups: [];
 
         if (igBeginPopup("###AddParameter")) {
             if (igMenuItem(__("Add 1D Parameter (0..1)"), "", false, true)) {
