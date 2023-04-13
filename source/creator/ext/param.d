@@ -6,7 +6,7 @@ import creator;
 import creator.ext;
 
 import std.algorithm.searching;
-import std.algorithm.mutation;
+import std.algorithm.mutation: remove;
 
 class ExParameterGroup : Parameter {
 protected:
@@ -104,8 +104,9 @@ public:
     void setParent(ExParameterGroup newParent) {
         if (parent !is null && parent != newParent) {
             auto index = parent.children.countUntil(this);
-            if (index >= 0)
+            if (index >= 0) {
                 parent.children = parent.children.remove(index);
+            }
         }
         auto oldParent = parent;
         parent = newParent;
