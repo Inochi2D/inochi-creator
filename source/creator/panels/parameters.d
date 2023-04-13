@@ -778,12 +778,11 @@ private {
         if (idx < 0) return false;
 
         if (parent) {
-            if (parent.children.length > 1) parent.children = parent.children.remove(idx);
+            if (parent.children.length > 0) parent.children = parent.children.remove(idx);
             else parent.children.length = 0;
-        } else {
-            if (incActivePuppet().parameters.length > 1) incActivePuppet().parameters = incActivePuppet().parameters.remove(idx);
-            else incActivePuppet().parameters.length = 0;
-        } 
+        }
+        if (incActivePuppet().parameters.length > 1) incActivePuppet().parameters = incActivePuppet().parameters.remove(idx);
+        else incActivePuppet().parameters.length = 0;
 
         return true;
     }
@@ -840,11 +839,9 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                     if (payload !is null) {
                         ParamDragDropData* payloadParam = *cast(ParamDragDropData**)payload.Data;
 
-                        if (removeParameter(param)) {
-                            auto group = createParamGroup(cast(int)idx);
-                            group.children ~= param;
-                            moveParameter(payloadParam.param, group);
-                        }
+                        auto group = createParamGroup(cast(int)idx);
+                        moveParameter(param, group);
+                        moveParameter(payloadParam.param, group);
                     }
                     igEndDragDropTarget();
                 }
