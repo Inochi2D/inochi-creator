@@ -70,8 +70,8 @@ public:
         foreach(ref sn; nodes) {
             
             // Store ref to prev parent
+            prevParents[sn.uuid] = sn.parent;
             if (sn.parent) {
-                prevParents[sn.uuid] = sn.parent;
                 prevOffsets[sn.uuid] = sn.getIndexInParent();
             }
 
