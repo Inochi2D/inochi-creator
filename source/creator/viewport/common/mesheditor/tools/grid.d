@@ -90,8 +90,10 @@ class GridTool : NodeSelect {
 
         auto vtxAtMouse = impl.getVerticesByIndex([impl.vtxAtMouse])[0];
         if (vtxAtMouse) {
-            if (mesh.axes.length != 2)
+            if (mesh.axes.length != 2) {
+                currentAction = GridActionID.End;
                 return false;
+            }
 
             currentAction = mesh.axes.length == 2 ? GridActionID.TranslateFree : GridActionID.End;
             vtxAtMouse = impl.getVerticesByIndex([impl.vtxAtMouse])[0];
@@ -106,6 +108,10 @@ class GridTool : NodeSelect {
                 dragOrigin.y = yValue;
                 if (!foundX) {
                     currentAction = GridActionID.TranslateX;
+                } else {
+                    dragTargetXIndex = cast(int)mesh.axes[1].countUntil(vtxAtMouse.position.x);
+                    if (dragTargetXIndex < 0)
+                        currentAction = GridActionID.End;
                 }
             }
 
@@ -113,15 +119,21 @@ class GridTool : NodeSelect {
                 dragOrigin.x = xValue;
                 if (!foundY) {
                     currentAction = GridActionID.TranslateY;
+                } else {
+                    dragTargetYIndex = cast(int)mesh.axes[0].countUntil(vtxAtMouse.position.y);
+                    if (dragTargetYIndex < 0)
+                        currentAction = GridActionID.End;
                 }
             }
             if (!foundX) {
                 dragTargetXIndex = cast(int)mesh.axes[1].countUntil(vtxAtMouse.position.x);
-                assert(dragTargetXIndex >= 0);
+                if (dragTargetXIndex < 0)
+                    currentAction = GridActionID.End;
             }
             if (!foundY) {
                 dragTargetYIndex = cast(int)mesh.axes[0].countUntil(vtxAtMouse.position.y);
-                assert(dragTargetXIndex >= 0);
+                if (dragTargetYIndex < 0)
+                    currentAction = GridActionID.End;
             }
 
             return true;
