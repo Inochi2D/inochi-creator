@@ -158,13 +158,20 @@ class MeshRemoveAction  : MeshAction {
         super(name, editor, mesh, update);
     }
 
-    void removeVertex(MeshVertex* vertex) {
+    void removeVertex(MeshVertex* vertex, bool executeAction = true) {
         vertices ~= vertex;
         foreach (con; vertex.connections) {
             connections ~= Connection(vertex, con);
         }
-        mesh.remove(vertex);
+        if (executeAction)
+            mesh.remove(vertex);
         dirty = true;
+    }
+
+    void removeVertices() {
+        foreach (v; vertices) {
+            mesh.remove(v);
+        }
     }
 
     override
