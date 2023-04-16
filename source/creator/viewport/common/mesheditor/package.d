@@ -64,6 +64,7 @@ public:
         if (deformOnly) 
             subEditor = new IncMeshEditorOneDrawableDeform();
         else {
+            incActionPushStack();
             subEditor = new IncMeshEditorOneDrawableVertex();
             if (auto drawable = cast(Drawable)target) {
                 if (drawable.getMesh().isGrid()) {
@@ -90,8 +91,10 @@ public:
                 if (drawable) {
                     if (deformOnly)
                         subEditor = new IncMeshEditorOneDrawableDeform();
-                    else
+                    else {
+                        incActionPushStack();
                         subEditor = new IncMeshEditorOneDrawableVertex();
+                    }
                     (cast(IncMeshEditorOneDrawable)subEditor).setTarget(drawable);
                 } else {
                     subEditor = new IncMeshEditorOneNode(deformOnly);
