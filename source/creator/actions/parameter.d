@@ -12,6 +12,7 @@ import creator;
 import inochi2d;
 import std.format;
 import i18n;
+import std.algorithm.searching: countUntil;
 
 /**
     Action to add parameter to active puppet.
@@ -59,7 +60,7 @@ public:
         auto exParam = cast(ExParameter)self;
         if (exParam !is null) {
             originalParent = exParam.getParent();
-            indexInGroup = originalParent? originalParent.countUntil(exParam): -1;
+            indexInGroup = originalParent? originalParent.children.countUntil(exParam): -1;
         }
         if (!added) {
             incActivePuppet().parameters ~= self;
@@ -87,7 +88,7 @@ public:
         auto exParam = cast(ExParameter)self;
         if (exParam !is null) {
             originalParent = exParam.getParent();
-            indexInGroup = originalParent? originalParent.countUntil(exParam): -1;
+            indexInGroup = originalParent? originalParent.children.countUntil(exParam): -1;
         }
         if (added) {
             incActivePuppet().parameters ~= self;
