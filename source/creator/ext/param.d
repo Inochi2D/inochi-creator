@@ -79,8 +79,16 @@ public:
         super(name, false); 
         parent = null;
     }
+    this(string name, bool isVec2) { 
+        super(name, isVec2); 
+        parent = null;
+    }
     this(string name, ExParameterGroup parent) { 
         super(name, false); 
+        this.parent = parent;
+    }
+    this(string name, bool isVec2, ExParameterGroup parent) { 
+        super(name, isVec2); 
         this.parent = parent;
     }
     override
