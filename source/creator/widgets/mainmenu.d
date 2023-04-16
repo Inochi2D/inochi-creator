@@ -206,7 +206,11 @@ void incMainMenu() {
 
                             string path = incShowImportDialog(filters, _("Import..."), true);
                             if (path) {
-                                incCreatePartsFromFiles(path.split("|"));
+                                try {
+                                    incCreatePartsFromFiles(path.split("|"));
+                                } catch (Exception ex) {
+                                    incDialog(__("Error"), ex.msg);
+                                }
                             }
                         }
                         incTooltip(_("Merges (adds) selected image files to project"));

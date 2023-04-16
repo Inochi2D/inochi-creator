@@ -63,8 +63,15 @@ public:
         IncMeshEditorOneDrawable subEditor;
         if (deformOnly) 
             subEditor = new IncMeshEditorOneDrawableDeform();
-        else
+        else {
             subEditor = new IncMeshEditorOneDrawableVertex();
+            if (auto drawable = cast(Drawable)target) {
+                if (drawable.getMesh().isGrid()) {
+                    subEditor.toolMode = VertexToolMode.Grid;
+                    toolMode           = VertexToolMode.Grid;
+                }
+            }
+        }
         subEditor.setTarget(target);
         subEditor.mirrorHoriz = mirrorHoriz;
         subEditor.mirrorVert  = mirrorVert;

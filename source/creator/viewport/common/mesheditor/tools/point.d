@@ -164,11 +164,11 @@ class PointTool : NodeSelect {
                     ulong vInd2 = impl.mirrorVertex(axis, v);
                     if (vInd2 != ulong(-1)) {
                         MeshVertex* v2 = impl.getVerticesByIndex([vInd2])[0];
-                        action.removeVertex(v2);
+                        action.removeVertex(v2, false);
                     }
                 }
             });
-
+            action.removeVertices();
             action.updateNewState();
             incActionPush(action);
 

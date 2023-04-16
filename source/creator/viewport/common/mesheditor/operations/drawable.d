@@ -133,44 +133,43 @@ public:
             vertexMapDirty = true;
 
         DeformationParameterBinding[] deformers;
-        if (vertexMapDirty) {
-            void alterDeform(ParameterBinding binding) {
-                auto deformBinding = cast(DeformationParameterBinding)binding;
-                if (!deformBinding)
-                    return;
-                foreach (uint x; 0..cast(uint)deformBinding.values.length) {
-                    foreach (uint y; 0..cast(uint)deformBinding.values[x].length) {
-                        auto deform = deformBinding.values[x][y];
-                        if (deformBinding.isSet(vec2u(x, y))) {
-                            auto newDeform = mesh.deformByDeformationBinding(deformBinding, vec2u(x, y), false);
-                            if (newDeform) 
-                                deformBinding.values[x][y] = *newDeform;
-                        } else {
-                            deformBinding.values[x][y].vertexOffsets.length = data.vertices.length;
-                        }
-                        deformers ~= deformBinding;
+
+        void alterDeform(ParameterBinding binding) {
+            auto deformBinding = cast(DeformationParameterBinding)binding;
+            if (!deformBinding)
+                return;
+            foreach (uint x; 0..cast(uint)deformBinding.values.length) {
+                foreach (uint y; 0..cast(uint)deformBinding.values[x].length) {
+                    auto deform = deformBinding.values[x][y];
+                    if (deformBinding.isSet(vec2u(x, y))) {
+                        auto newDeform = mesh.deformByDeformationBinding(deformBinding, vec2u(x, y), false);
+                        if (newDeform) 
+                            deformBinding.values[x][y] = *newDeform;
+                    } else {
+                        deformBinding.values[x][y].vertexOffsets.length = data.vertices.length;
                     }
+                    deformers ~= deformBinding;
                 }
             }
+        }
 
-            foreach (param; incActivePuppet().parameters) {
-                if (auto group = cast(ExParameterGroup)param) {
-                    foreach(x, ref xparam; group.children) {
-                        ParameterBinding binding = xparam.getBinding(target, "deform");
-                        if (binding)
-                            action.addAction(new ParameterChangeBindingsAction("Deformation recalculation on mesh update", xparam, null));
-                        alterDeform(binding);
-                    }
-                } else {
-                    ParameterBinding binding = param.getBinding(target, "deform");
+        foreach (param; incActivePuppet().parameters) {
+            if (auto group = cast(ExParameterGroup)param) {
+                foreach(x, ref xparam; group.children) {
+                    ParameterBinding binding = xparam.getBinding(target, "deform");
                     if (binding)
-                        action.addAction(new ParameterChangeBindingsAction("Deformation recalculation on mesh update", param, null));
+                        action.addAction(new ParameterChangeBindingsAction("Deformation recalculation on mesh update", xparam, null));
                     alterDeform(binding);
                 }
+            } else {
+                ParameterBinding binding = param.getBinding(target, "deform");
+                if (binding)
+                    action.addAction(new ParameterChangeBindingsAction("Deformation recalculation on mesh update", param, null));
+                alterDeform(binding);
             }
-            incActivePuppet().resetDrivers();
-            vertexMapDirty = false;
         }
+        incActivePuppet().resetDrivers();
+        vertexMapDirty = false;
 
         if (auto mgroup = cast(MeshGroup)target) {
             mgroup.clearCache();

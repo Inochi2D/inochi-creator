@@ -1229,6 +1229,12 @@ void incInspectorModelMeshGroup(MeshGroup node) {
         }
         incTooltip(_("Whether the MeshGroup should dynamically deform children,\nthis is an expensive operation and should not be overused."));
 
+        bool translateChildren = node.getTranslateChildren();
+        if (igCheckbox(__("Translate origins"), &translateChildren)) {
+            node.setTranslateChildren(translateChildren);
+        }
+        incTooltip(_("Translate origin of child nodes for non-Drawable object."));
+
         // Padding
         igSpacing();
     }
