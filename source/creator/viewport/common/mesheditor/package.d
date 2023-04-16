@@ -66,9 +66,7 @@ public:
         else {
             subEditor = new IncMeshEditorOneDrawableVertex();
             if (auto drawable = cast(Drawable)target) {
-                writefln("Target %s is drawable", drawable.name);
                 if (drawable.getMesh().isGrid()) {
-                    writefln("toolMode is Grid");
                     subEditor.toolMode = VertexToolMode.Grid;
                     toolMode           = VertexToolMode.Grid;
                 }
