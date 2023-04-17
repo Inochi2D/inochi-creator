@@ -187,6 +187,7 @@ void incNewProject() {
     incFreeMemory();
 
     incViewportPresentMode(editMode_);
+    incSetWindowTitle(_("New Project"));
 }
 
 void incResetRootNode(ref Puppet puppet) {
@@ -196,6 +197,7 @@ void incResetRootNode(ref Puppet puppet) {
 }
 
 void incOpenProject(string path) {
+    import std.path : setExtension, baseName;
     incClearImguiData();
     
     Puppet puppet;
@@ -227,10 +229,11 @@ void incOpenProject(string path) {
     incAnimationCurrent = null;
 
     incSetStatus(_("%s opened successfully.").format(currProjectPath));
+    incSetWindowTitle(currProjectPath.baseName);
 }
 
 void incSaveProject(string path) {
-    import std.path : setExtension;
+    import std.path : setExtension, baseName;
     try {
         string finalPath = path.setExtension(".inx");
         currProjectPath = path;
@@ -245,6 +248,7 @@ void incSaveProject(string path) {
         inWriteINPPuppet(incActivePuppet(), finalPath);
 
         incSetStatus(_("%s saved successfully.").format(currProjectPath));
+        incSetWindowTitle(currProjectPath.baseName);
     } catch(Exception ex) {
         incSetStatus(_("Failed to save %s").format(currProjectPath));
         incDialog(__("Error"), ex.msg);
@@ -302,12 +306,15 @@ void incImportFolder(string folder) {
     Imports an Inochi2D puppet
 */
 void incImportINP(string file) {
+    import std.path : baseName;
+    
     incNewProject();
     Puppet puppet;
     try {
 
         puppet = inLoadPuppet(file);
         incSetStatus(_("%s was imported...".format(file)));
+        incSetWindowTitle(file.baseName);
     } catch(Exception ex) {
         
         incDialog(__("Error"), ex.msg);
@@ -614,7 +621,6 @@ AnimationPlaybackRef incAnimationGet() {
     Updates the current animation being edited
 */
 void incAnimationUpdate() {
-    incAnimationPlayer.update(deltaTime());
     if (incAnimationCurrent && !incAnimationCurrent.isRunning() && !incAnimationCurrent.isPlayingLeadOut() && !incAnimationCurrent.paused) {
         incAnimationCurrent.render();
     }

@@ -810,3 +810,8 @@ void incHandleShortcuts() {
         incActionUndo();
     }
 }
+
+void incSetWindowTitle(string subtitle) {
+    if (subtitle.length > 0) SDL_SetWindowTitle(window, ("Inochi Creator - "~subtitle).toStringz);
+    else SDL_SetWindowTitle(window, "Inochi Creator");
+}
