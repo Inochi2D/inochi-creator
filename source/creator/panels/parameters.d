@@ -515,13 +515,17 @@ private {
                 action.updateNewState();
                 incActionPush(action);
             } else {
+                incActionPushGroup();
                 foreach(binding; bindings) {
                     if (binding.getTarget() in cClipboardBindings) {
                         auto action = new ParameterChangeBindingsValueAction("paste", param, bindings, cParamPoint.x, cParamPoint.y);
                         ParameterBinding origBinding = cClipboardBindings[binding.getTarget()];
                         origBinding.copyKeypointToBinding(cClipboardPoint, binding, cParamPoint);
+                        action.updateNewState();
+                        incActionPush(action);
                     }
                 }
+                incActionPopGroup();
             }
         }
 
