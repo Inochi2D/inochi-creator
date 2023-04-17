@@ -18,6 +18,10 @@ private {
     size_t maxUndoHistory;
 }
 
+enum ActionStackClear {
+    All, CurrentLevel
+};
+
 /**
     Initialize actions system
 */
@@ -163,9 +167,25 @@ void incActionSetIndex(size_t index) {
 /**
     Clears action history
 */
-void incActionClearHistory() {
-    actions[currentLevel].length = 0;
-    actionPointer[currentLevel] = 0;
+void incActionClearHistory(ActionStackClear target = ActionStackClear.All) {
+    switch (target) {
+    case ActionStackClear.All:
+        currentLevel = 0;
+        actions.length = currentLevel + 1;
+        actionPointer.length = currentLevel + 1;
+        actionIndex.length = currentLevel + 1;
+        currentGroup.length = currentLevel + 1;
+        actions[currentLevel].length = 0;
+        actionPointer[currentLevel] = 0;
+        currentGroup[currentLevel] = null;
+        break;
+    case ActionStackClear.CurrentLevel:
+        actions[currentLevel].length = 0;
+        actionPointer[currentLevel] = 0;
+        currentGroup[currentLevel] = null;
+        break;
+    default:
+    }
 }
 
 /**

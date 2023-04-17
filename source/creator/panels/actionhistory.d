@@ -54,7 +54,7 @@ protected:
         igSeparator();
         igSpacing();
         if (igButton(__("Clear History"), ImVec2(0, 0))) {
-            incActionClearHistory();
+            incActionClearHistory(ActionStackClear.CurrentLevel);
         }
         igSameLine(0, 0);
 
