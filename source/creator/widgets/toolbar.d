@@ -58,6 +58,16 @@ void incToolbar() {
                             incPushWindow(new FlipPairWindow());
                         }
                         incTooltip(_("Configure Flip Pairings"));
+                        
+                        if (incButtonColored("", ImVec2(32, 32), ImVec4.init)) {
+                            if (incActivePuppet()) {
+                                foreach(ref parameter; incActivePuppet().parameters) {
+                                    parameter.value = parameter.defaults;
+                                }
+                            }
+                        }
+                        incTooltip(_("Reset parameters"));
+                        
 
                         // Draw the toolbar relevant for that viewport
                         incViewportToolbar();
