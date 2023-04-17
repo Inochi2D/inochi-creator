@@ -982,6 +982,9 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                         if (igMenuItem(__("Duplicate"), "", false, true)) {
                             Parameter newParam = param.dup;
                             incActivePuppet().parameters ~= newParam;
+                            if (auto exParam = cast(ExParameter)newParam) {
+                                exParam.setParent((cast(ExParameter)param).getParent());
+                            }
                             incActionPush(new ParameterAddAction(newParam, &paramArr));
                         }
 
