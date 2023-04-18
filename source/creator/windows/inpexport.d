@@ -282,6 +282,9 @@ protected:
 
             if (igButton(__("Export"), ImVec2(64, 24))) {
                 try {
+                    // Apply bindings before saving
+                    incActiveProject().applyBindings();
+
                     // Write the puppet to file
                     incExportINP(incActivePuppet(), generateAtlasses(), outFile);
                     incSetStatus(_("%s was exported...".format(outFile)));

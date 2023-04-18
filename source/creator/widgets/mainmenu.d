@@ -443,8 +443,7 @@ void incMainMenu() {
                         if (string path = incShowImportDialog(filters, _("Import..."))) {
                             Puppet p = inLoadPuppet(path);
 
-                            if ("com.inochi2d.inochi-session.bindings" in p.extData) {
-                                incActivePuppet().extData["com.inochi2d.inochi-session.bindings"] = p.extData["com.inochi2d.inochi-session.bindings"].dup;
+                            if (incActiveProject().mergeBindings(p)) {
                                 incSetStatus(_("Successfully overwrote Inochi Session tracking data..."));
                             } else {
                                 incDialog(__("Error"), _("There was no Inochi Session data to import!"));

@@ -909,6 +909,20 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                             incPushWindowList(new ParamAxesWindow(param));
                         }
                         
+                        if(param.isVec2) {
+                            if (igMenuItem(__("Set Tracking Binding (X)"), "", false, true)) {
+                                incPushWindowList(new TrackBindingWindow(param, 0));
+                            }
+                            if (igMenuItem(__("Set Tracking Binding (Y)"), "", false, true)) {
+                                incPushWindowList(new TrackBindingWindow(param, 1));
+                            }
+                        }
+                        else {
+                            if (igMenuItem(__("Set Tracking Binding"), "", false, true)) {
+                                incPushWindowList(new TrackBindingWindow(param));
+                            }
+                        }
+                        
                         if (igMenuItem(__("Split"), "", false, true)) {
                             incPushWindowList(new ParamSplitWindow(idx, param));
                         }

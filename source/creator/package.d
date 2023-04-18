@@ -29,6 +29,8 @@ import i18n;
 import std.algorithm.searching;
 import inochi2d.core.animation.player;
 
+import creator.tracking;
+
 /**
     A project
 */
@@ -39,11 +41,93 @@ class Project {
     Puppet puppet;
 
     /**
+        Tracking bindings
+    */
+    TrackingBinding[] bindings;
+
+    /**
         Textures for use in the puppet
 
         Can be rearranged
     */
     Texture[] textures;
+
+    TrackingBinding findBindingByParam(Parameter param, uint axis=0) {
+        foreach(ref binding; bindings) {
+            if(binding.param.uuid == param.uuid) {
+                if (param.isVec2) {
+                    if(binding.axis == axis){
+                        return binding;
+                    }
+                }
+                else {
+                    return binding;
+                }
+            }
+        }
+        return null;
+    }
+
+    void addBinding(ref TrackingBinding binding) {
+        bindings ~= binding;
+    }
+
+    void removeBinding(TrackingBinding binding) {
+        import std.algorithm.mutation : remove;
+
+        for(long i = bindings.length; i-- > 0 ; ) {
+            if(binding.name == bindings[i].name) {
+                bindings = bindings.remove(i);
+                return;
+            }
+        }
+    }
+
+    void applyBindings() {
+        // Save only the ones that have actual parameters defined
+        puppet.extData["com.inochi2d.inochi-session.bindings"] = cast(ubyte[])serializeToJson(bindings);
+    }
+
+    void tryLoadBindings() {
+        if ("com.inochi2d.inochi-session.bindings" in puppet.extData) {
+            TrackingBinding[] preBindings = deserialize!(TrackingBinding[])(
+                cast(string)puppet.extData["com.inochi2d.inochi-session.bindings"]);
+
+            // finalize the loading
+            bindings = [];
+            foreach(ref binding; preBindings) {
+                if (binding.finalize(puppet)) {
+                    bindings ~= binding;
+                }
+            }
+        }
+    }
+
+    bool mergeBindings(Puppet other){
+        import std.algorithm.mutation : remove;
+
+        if ("com.inochi2d.inochi-session.bindings" in other.extData) {
+            TrackingBinding[] preBindings = deserialize!(TrackingBinding[])(
+                cast(string)other.extData["com.inochi2d.inochi-session.bindings"]);
+
+            // merge them, don't reset them
+            foreach(ref binding; preBindings) {
+                if (binding.finalize(puppet)) {
+                    // Delete existing
+                    for(long i = bindings.length; i-- > 0 ; ) {
+                        if(binding.param.uuid == bindings[i].param.uuid && binding.axis == bindings[i].axis) {
+                            bindings = bindings.remove(i);
+                        }
+                    }
+                    bindings ~= binding;
+                }
+            }
+            return true;
+
+        }
+        return false;
+    }
+
 }
 
 private {
@@ -222,6 +306,10 @@ void incOpenProject(string path) {
     incActiveProject().puppet = puppet;
     foreach (func; loadCallbacks)
         func(puppet);
+
+    // Load bindings
+    incActiveProject().tryLoadBindings();
+
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
 
@@ -243,6 +331,9 @@ void incSaveProject(string path) {
         incActivePuppet().populateTextureSlots();
         foreach (func; saveCallbacks)
             func(incActivePuppet());
+
+        // Apply bindings before saving
+        incActiveProject().applyBindings();
 
         // Write the puppet to file
         inWriteINPPuppet(incActivePuppet(), finalPath);
@@ -322,6 +413,9 @@ void incImportINP(string file) {
         return;
     }
     incActiveProject().puppet = puppet;
+    // Load bindings
+    incActiveProject().tryLoadBindings();
+
     incAnimationPlayer = new AnimationPlayer(puppet);
     incAnimationCurrent = null;
     incFocusCamera(incActivePuppet().root);
