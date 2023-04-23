@@ -51,13 +51,6 @@ jobs:
     - uses: dlang-community/setup-dlang@4c99aa991ce7d19dd3064de0a4f2f6b2f152e2d7
       with:
         compiler: ldc-latest
-  
-    - name: "Prepare for AppImage packing"
-      run: |
-        sudo apt update
-        sudo apt install -y python3-pip python3-setuptools patchelf desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse
-        sudo wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O /usr/local/bin/appimagetool.AppImage
-        sudo chmod +x /usr/local/bin/appimagetool.AppImage
     
     - name: "Get build dependencies"
       run: |
@@ -85,12 +78,6 @@ jobs:
       run: |
         # Build the project, with its main file included, without unittests
         dub build --compiler=ldc2 --config=full --debug=InExperimental
-
-    - name: 'Build AppImage'
-      run: |
-        # Build the AppImage
-        sudo chmod +x BuildAppImage.sh
-        ./BuildAppImage.sh
           
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
@@ -106,7 +93,6 @@ jobs:
         name: 'Nightly Build'
         tag_name: nightly
         files: |
-          build/inochi-creator-x86_64.AppImage
           out/inochi-creator-linux-x86_64.zip
         generate_release_notes: true
 
