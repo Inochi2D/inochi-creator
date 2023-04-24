@@ -89,6 +89,8 @@ int main(string[] args)
             incPushWindow(new WelcomeWindow());
         }
 
+        version(InNightly) incDialog("NIGHTLY_WARN", __("Inochi Creator (Nightly)"), _("You're running a nightly build of Inochi Creator!\nInochi Creator may crash unexpectedly and you will likely encounter bugs.\nMake sure to save and back up your work often!"), DialogLevel.Warning);
+
         // Update loop
         while(!incIsCloseRequested()) {
             incUpdate();

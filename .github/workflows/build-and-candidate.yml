@@ -2,13 +2,13 @@
 # They are provided by a third-party and are governed by
 # separate terms of service, privacy policy, and support
 # documentation.
-name: Nightly
+name: Build & Release RC
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
-  workflow_dispatch:
-
+  push:
+    # Push all release candidates
+    tags:
+      - '*-rc*'
 
 permissions:
   contents: write
@@ -43,7 +43,7 @@ jobs:
         path: otl/*
         retention-days: 1
 
-  linux-appimage:
+  linux-build:
     runs-on: ubuntu-20.04
 
     steps:
@@ -80,8 +80,8 @@ jobs:
         dub --config=meta
 
         # Build the project, with its main file included, without unittests
-        dub build --compiler=ldc2 --config=linux-nightly --debug=InExperimental
-          
+        dub build --compiler=ldc2 --build=release --config=linux-full
+
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
       with:
@@ -90,16 +90,13 @@ jobs:
         directory: 'out/'
         path: '*'
 
-    - name: Release to nightly tag
+    - name: 'Release ZIP'
       uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        name: 'Nightly Build'
-        tag_name: nightly
-        files: |
-          out/inochi-creator-linux-x86_64.zip
-        generate_release_notes: true
+          files: 'out/inochi-creator-linux-x86_64.zip'
 
-  windows-zip:
+  windows-build:
     runs-on: windows-latest
     needs: build-resources
 
@@ -141,13 +138,12 @@ jobs:
             }
         }
         Invoke-VSDevEnvironment
-        Remove-Item 'C:/Strawberry' -Recurse
-
+        
         # Build metadata (like version information and icons)
         dub --config=meta
 
         # Build the project, with its main file included, without unittests
-        dub build --compiler=ldc2 --config=win32-nightly --debug=InExperimental
+        dub build --compiler=ldc2 --build=release --config=win32-full
 
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
@@ -157,14 +153,13 @@ jobs:
         directory: 'out/'
         path: '*'
 
-    - name: Release to nightly tag
+    - name: Release
       uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        name: 'Nightly Build'
-        tag_name: nightly
-        files: 'out/inochi-creator-win32-x86_64.zip'
+          files: out/inochi-creator-win32-x86_64.zip
 
-  macOS-dmg:
+  macOS-build:
     runs-on: macos-12
 
     steps:
@@ -219,20 +214,19 @@ jobs:
 
     - name: 'Build Inochi Creator'
       env:
-        DFLAGS: "-g -force-dwarf-frame-section=false"
+        DFLAGS: "-force-dwarf-frame-section=false"
       run: |
-
         # Build metadata (like version information and icons)
         dub --config=meta
-
+        
         # First build ARM64 version...
         echo "Building arm64 binary..."
-        dub build --config=osx-nightly --arch=arm64-apple-macos
+        dub build --build=release --config=osx-full --arch=arm64-apple-macos
         mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
 
         # Then the X86_64 version...
         echo "Building x86_64 binary..."
-        dub build --config=osx-nightly --arch=x86_64-apple-macos
+        dub build --build=release --config=osx-full --arch=x86_64-apple-macos
         mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64"
 
         # Glue them together with lipo
@@ -248,13 +242,20 @@ jobs:
         rm "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
         ./osxbundle.sh
 
+    - name: Archive Zip
+      uses: thedoctor0/zip-release@main
+      with:
+        type: 'zip'
+        filename: 'inochi-creator-macOS.zip'
+        directory: 'out/'
+        path: '*'
+
     - name: 'Build DMG'
       run: |
         ./gendmg.sh
 
-    - name: Release to nightly tag
+    - name: Release
       uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        name: 'Nightly Build'
-        tag_name: nightly
-        files: 'out/Install_Inochi_Creator.dmg'
+          files: out/Install_Inochi_Creator.dmg
