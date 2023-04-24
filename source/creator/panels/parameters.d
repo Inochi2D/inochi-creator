@@ -1078,7 +1078,7 @@ protected:
 
         if (igBeginPopup("###AddParameter")) {
             if (igMenuItem(__("Add 1D Parameter (0..1)"), "", false, true)) {
-                Parameter param = new Parameter(
+                Parameter param = new ExParameter(
                     "Param #%d\0".format(parameters.length),
                     false
                 );
@@ -1086,7 +1086,7 @@ protected:
                 incActionPush(new ParameterAddAction(param, &incActivePuppet().parameters));
             }
             if (igMenuItem(__("Add 1D Parameter (-1..1)"), "", false, true)) {
-                Parameter param = new Parameter(
+                Parameter param = new ExParameter(
                     "Param #%d\0".format(parameters.length),
                     false
                 );
@@ -1097,7 +1097,7 @@ protected:
                 incActionPush(new ParameterAddAction(param, &incActivePuppet().parameters));
             }
             if (igMenuItem(__("Add 2D Parameter (0..1)"), "", false, true)) {
-                Parameter param = new Parameter(
+                Parameter param = new ExParameter(
                     "Param #%d\0".format(parameters.length),
                     true
                 );
@@ -1105,7 +1105,7 @@ protected:
                 incActionPush(new ParameterAddAction(param, &incActivePuppet().parameters));
             }
             if (igMenuItem(__("Add 2D Parameter (-1..+1)"), "", false, true)) {
-                Parameter param = new Parameter(
+                Parameter param = new ExParameter(
                     "Param #%d\0".format(parameters.length),
                     true
                 );
@@ -1117,7 +1117,7 @@ protected:
                 incActionPush(new ParameterAddAction(param, &incActivePuppet().parameters));
             }
             if (igMenuItem(__("Add Mouth Shape"), "", false, true)) {
-                Parameter param = new Parameter(
+                Parameter param = new ExParameter(
                     "Mouth #%d\0".format(parameters.length),
                     true
                 );
