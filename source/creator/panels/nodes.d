@@ -93,33 +93,33 @@ protected:
 
                 incText(incTypeIdToIcon("Node"));
                 igSameLine(0, 2);
-                if (igMenuItem(__("Node"), "", false, true)) incAddChildWithHistory(new Node(n), n);
+                if (igMenuItem(__("Node"), "", false, true)) incAddChildWithHistory(new Node(cast(Node)null), n);
                 
                 incText(incTypeIdToIcon("Mask"));
                 igSameLine(0, 2);
                 if (igMenuItem(__("Mask"), "", false, true)) {
                     MeshData empty;
-                    incAddChildWithHistory(new Mask(empty, n), n);
+                    incAddChildWithHistory(new Mask(empty, cast(Node)null), n);
                 }
                 
                 incText(incTypeIdToIcon("Composite"));
                 igSameLine(0, 2);
                 if (igMenuItem(__("Composite"), "", false, true)) {
-                    incAddChildWithHistory(new Composite(n), n);
+                    incAddChildWithHistory(new Composite(cast(Node)null), n);
                 }
                 
                 incText(incTypeIdToIcon("SimplePhysics"));
                 igSameLine(0, 2);
-                if (igMenuItem(__("Simple Physics"), "", false, true)) incAddChildWithHistory(new SimplePhysics(n), n);
+                if (igMenuItem(__("Simple Physics"), "", false, true)) incAddChildWithHistory(new SimplePhysics(cast(Node)null), n);
 
                 
                 incText(incTypeIdToIcon("Camera"));
                 igSameLine(0, 2);
-                if (igMenuItem(__("Camera"), "", false, true)) incAddChildWithHistory(new ExCamera(n), n);
+                if (igMenuItem(__("Camera"), "", false, true)) incAddChildWithHistory(new ExCamera(cast(Node)null), n);
 
                 incText(incTypeIdToIcon("MeshGroup"));
                 igSameLine(0, 2);
-                if (igMenuItem(__("MeshGroup"), "", false, true)) incAddChildWithHistory(new MeshGroup(n), n);
+                if (igMenuItem(__("MeshGroup"), "", false, true)) incAddChildWithHistory(new MeshGroup(cast(Node)null), n);
 
                 igEndMenu();
             }

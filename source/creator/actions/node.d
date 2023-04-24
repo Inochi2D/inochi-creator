@@ -70,9 +70,9 @@ public:
         foreach(ref sn; nodes) {
             
             // Store ref to prev parent
-            prevParents[sn.uuid] = sn.parent;
-            originalTransform[sn.uuid] = sn.localTransform;
             if (sn.parent) {
+                originalTransform[sn.uuid] = sn.localTransform;
+                prevParents[sn.uuid] = sn.parent;
                 prevOffsets[sn.uuid] = sn.getIndexInParent();
             }
 
@@ -95,7 +95,7 @@ public:
     */
     void rollback() {
         foreach(ref sn; nodes) {
-            if (prevParents[sn.uuid]) {
+            if (sn.uuid in prevParents && prevParents[sn.uuid]) {
                 if (!sn.lockToRoot()) sn.setRelativeTo(prevParents[sn.uuid]);
                 sn.reparent(prevParents[sn.uuid], prevOffsets[sn.uuid]);
                 sn.localTransform = originalTransform[sn.uuid];
@@ -134,7 +134,7 @@ public:
     */
     string describeUndo() {
         if (prevParents.length == 0) return _("Created %s").format(descrName);
-        if (nodes.length == 1 && prevParents.length == 1) return  _("Moved %s from %s").format(descrName, prevParents[nodes[0].uuid].name);
+        if (nodes.length == 1 && prevParents.length == 1 && prevParents.values[0]) return  _("Moved %s from %s").format(descrName, prevParents[nodes[0].uuid].name);
         return _("Moved %s from origin").format(descrName);
     }
 
