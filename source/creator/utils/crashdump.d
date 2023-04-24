@@ -56,8 +56,17 @@ version(Windows) {
 }
 
 version(Posix) {
-    void crashdump(T...)(Throwable throwable, T state) {
-        write(expandTilde("~/inochi-creator-crashdump.txt"), genCrashDump!T(throwable, state));
-        writeln(_("\n\n\n===   Inochi Creator has crashed   ===\nPlease send us the inochi-creator-crashdump.txt file in your home folder\nAttach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/issues"));
-    }
+	version(OSX) { 
+		// MacOS puts app logs in ~/Library/Logs
+		write(expandTilde("~/Library/Logs/inochi-creator-crashdump.txt"), genCrashDump!T(throwable, state));
+		writeln(_("\n\n\n===   Inochi Creator has crashed   ===\nPlease send us the inochi-creator-crashdump.txt file in ~/Library/Logs\nAttach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/issues"));
+	}
+
+        version(linux) {
+		// Lets put the log files in the appropriate XDG base directory on Linux: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
+		write(expandTilde("$XDG_STATE_HOME/inochi-creator-crashdump.txt"), genCrashDump!T(throwable, state));
+		writeln(_("\n\n\n===   Inochi Creator has crashed   ===\nPlease send us the inochi-creator-crashdump.txt file in your log directory, XDG_STATE_HOME. For Flatpak, this is in ~/.var/app/com.inochi2d.inochi-creator.\nAttach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/issues"));
+	}
+     }
+
 }
