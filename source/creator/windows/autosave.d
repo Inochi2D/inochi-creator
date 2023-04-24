@@ -1,3 +1,11 @@
+/*
+    Copyright © 2020-2023, Inochi2D Project
+    Distributed under the 2-Clause BSD License, see LICENSE file.
+    
+    Authors:
+        PanzerKern
+        Luna Nielsen
+*/
 module creator.windows.autosave;
 
 import creator;
@@ -8,6 +16,7 @@ import creator.widgets.label : incText;
 import creator.io.autosave;
 import i18n;
 import std.path : stripExtension;
+import bindbc.imgui;
 
 class RestoreSaveWindow : Window {
 private:
@@ -28,10 +37,14 @@ protected:
 
     override
     void onUpdate() {
+        // TODO: Add ada error icon
+
         float availX = incAvailableSpace().x;
         if (igBeginChild("RestoreSaveMessage", ImVec2(0, -28), true)) {
-            incText(_("Previous Inochi Creator session closed unexpectedly."));
-            incText(_("Restore unsaved data?"));
+            igPushTextWrapPos(availX);
+                incText(_("Inochi Creator closed unexpectedly while editing this file."));
+                incText(_("Restore data from a backup?"));
+            igPopTextWrapPos();
         }
         igEndChild();
 
@@ -39,14 +52,14 @@ protected:
             incDummy(ImVec2(-128, 0));
             igSameLine(0, 0);
 
-            if (igButton(__("No"), ImVec2(64, 24))) {
+            if (igButton(__("Discard"), ImVec2(64, 24))) {
                 incOpenProject(projectPath, "");
                 this.close();
                 incPopWelcomeWindow();
             }
             igSameLine(0, 0);
 
-            if (igButton(__("Yes"), ImVec2(64, 24))) {
+            if (igButton(__("Restore"), ImVec2(64, 24))) {
                 string backupDir = getAutosaveDir(projectPath.stripExtension);
                 auto entries = currentBackups(backupDir);
                 incOpenProject(projectPath, entries[$-1]);
