@@ -12,6 +12,7 @@ import creator.core;
 import creator.core.input;
 import creator.utils.link;
 import creator.config;
+import creator.io.autosave;
 import creator;
 import inochi2d;
 import inochi2d.core.dbg;
@@ -134,9 +135,25 @@ void incMainMenu() {
                     }
 
                     string[] prevProjects = incGetPrevProjects();
+                    AutosaveRecord[] prevAutosaves = incGetPrevAutosaves();
                     if (igBeginMenu(__("Recent"), prevProjects.length > 0)) {
+                        import std.path : baseName;
+                        if (igBeginMenu(__("Autosaves"), prevAutosaves.length > 0)) {
+                            foreach(saveRecord; prevAutosaves) {
+                                auto autosavePath = saveRecord.autosavePath.baseName.toStringz;
+                                if (igMenuItem(autosavePath, "", false, true)) {
+                                    incPopWelcomeWindow();
+                                    incOpenProject(
+                                        saveRecord.mainsavePath,
+                                        saveRecord.autosavePath
+                                    );
+                                }
+                                incTooltip(saveRecord.autosavePath);
+                            }
+                            igEndMenu();
+                        }
+
                         foreach(project; incGetPrevProjects) {
-                            import std.path : baseName;
                             if (igMenuItem(project.baseName.toStringz, "", false, true)) {
                                 incPopWelcomeWindow();
                                 incOpenProject(project);

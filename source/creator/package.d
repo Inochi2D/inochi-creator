@@ -14,8 +14,10 @@ import creator.viewport.model.deform;
 import creator.core;
 import creator.core.actionstack;
 import creator.windows;
+import creator.windows.autosave;
 import creator.atlas;
 import creator.ext;
+import creator.io.autosave;
 import creator.widgets.dialog;
 
 public import creator.ver;
@@ -23,11 +25,12 @@ public import creator.atlas;
 public import creator.io;
 import creator.core.colorbleed;
 
-import std.file;
+import std.path;
 import std.format;
 import i18n;
 import std.algorithm.searching;
 import inochi2d.core.animation.player;
+
 
 /**
     A project
@@ -53,7 +56,6 @@ private {
     Parameter armedParam;
     size_t armedParamIdx;
     string currProjectPath;
-    string[] prevProjects;
 
     void function(Puppet)[] loadCallbacks;
     void function(Puppet)[] saveCallbacks;
@@ -188,6 +190,8 @@ void incNewProject() {
 
     incViewportPresentMode(editMode_);
     incSetWindowTitle(_("New Project"));
+
+    startAutosaveTimer();
 }
 
 void incResetRootNode(ref Puppet puppet) {
@@ -197,6 +201,21 @@ void incResetRootNode(ref Puppet puppet) {
 }
 
 void incOpenProject(string path) {
+    if (incCheckLockfile(path)) {
+        incPushWindow(new RestoreSaveWindow(path));
+        //Answering that window is the new trigger for loading the project.
+        return;
+    } else {
+        incOpenProject(path, "");
+    }
+}
+
+/**
+    mainPath is the canonical project path that the user normally saves to.
+    backupPath is the inx file to load all the data from, but is empty string
+    when just loading a normal mainsave project file.
+*/
+void incOpenProject(string mainPath, string backupPath) {
     import std.path : setExtension, baseName;
     incClearImguiData();
     
@@ -204,7 +223,11 @@ void incOpenProject(string path) {
 
     // Load the puppet from file
     try {
-        puppet = inLoadPuppet!ExPuppet(path);
+        if (backupPath.length > 0) {
+            puppet = inLoadPuppet!ExPuppet(backupPath);
+        } else {
+            puppet = inLoadPuppet!ExPuppet(mainPath);
+        }
     } catch (Exception ex) {
         incDialog(__("Error"), ex.msg);
         return;
@@ -214,8 +237,8 @@ void incOpenProject(string path) {
     incNewProject();
 
     // Set the path
-    currProjectPath = path;
-    incAddPrevProject(path);
+    currProjectPath = mainPath;
+    incAddPrevProject(mainPath);
 
     incResetRootNode(puppet);
 
@@ -232,12 +255,21 @@ void incOpenProject(string path) {
     incSetWindowTitle(currProjectPath.baseName);
 }
 
-void incSaveProject(string path) {
+void incSaveProject(string path, string autosaveStamp = "") {
     import std.path : setExtension, baseName;
     try {
-        string finalPath = path.setExtension(".inx");
-        currProjectPath = path;
-        incAddPrevProject(finalPath);
+        string finalPath;
+        bool isAutosave = autosaveStamp.length > 0 ? true : false;
+        if (isAutosave) {
+            string pathBaseName = path.baseName;
+            path ~= "_" ~ autosaveStamp;
+            finalPath = path.setExtension(".inx");
+            incAddPrevAutosave(finalPath);
+        } else {
+            finalPath = path.setExtension(".inx");
+            currProjectPath = path;
+            incAddPrevProject(finalPath);
+        }
 
         // Remember to populate texture slots otherwise things will break real bad!
         incActivePuppet().populateTextureSlots();
@@ -246,6 +278,8 @@ void incSaveProject(string path) {
 
         // Write the puppet to file
         inWriteINPPuppet(incActivePuppet(), finalPath);
+
+        if (!isAutosave) incReleaseLockfile();
 
         incSetStatus(_("%s saved successfully.").format(currProjectPath));
         incSetWindowTitle(currProjectPath.baseName);

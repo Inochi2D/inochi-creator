@@ -14,6 +14,7 @@ import creator.utils.link;
 import creator;
 import creator.widgets.dialog;
 import creator.backend.gl;
+import creator.io.autosave;
 
 import std.exception;
 
@@ -765,6 +766,7 @@ void incExit() {
     incSettingsSet("WinW", w);
     incSettingsSet("WinH", h);
     incSettingsSet!bool("WinMax", (flags & SDL_WINDOW_MAXIMIZED) > 0);
+    incReleaseLockfile();
 }
 
 /**

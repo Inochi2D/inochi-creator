@@ -15,6 +15,7 @@ import creator.widgets;
 import creator.core.actionstack;
 import creator.core.i18n;
 import creator.io;
+import creator.io.autosave;
 import creator.atlas.atlas : incInitAtlassing;
 import creator.ext;
 import creator.windows.flipconfig;
@@ -119,6 +120,8 @@ void incUpdate() {
     // Update Inochi2D
     incAnimationUpdate();
     inUpdate();
+
+    incCheckAutosave();
 
     // Begin IMGUI loop
     incBeginLoop();
