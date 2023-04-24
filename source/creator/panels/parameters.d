@@ -332,7 +332,7 @@ private {
     void convertTo2D(Parameter param) {
         auto action = new GroupAction();
 
-        Parameter newParam = new Parameter(param.name, true);
+        auto newParam = new ExParameter(param.name, true);
         newParam.uuid = param.uuid;
         newParam.min  = vec2(param.min.x, param.min.x);
         newParam.max  = vec2(param.max.x, param.max.x);
@@ -356,17 +356,10 @@ private {
             action.addAction(new ParameterRemoveAction(param, &incActivePuppet().parameters));
             action.addAction(new ParameterAddAction(newParam, &incActivePuppet().parameters));
             incActivePuppet().parameters[index] = newParam;
-        } else {
-            foreach (idx, xparam; incActivePuppet().parameters) {
-                if (auto group = cast(ExParameterGroup)xparam) {
-                    index = group.children.countUntil(param);
-                    if (index >= 0) {
-                        action.addAction(new ParameterRemoveAction(param, &group.children));
-                        action.addAction(new ParameterAddAction(newParam, &group.children));
-                        group.children[index] = newParam;
-                        break;
-                    }
-                }
+            if (auto prevParam = cast(ExParameter)param) {
+                auto parent = prevParam.getParent();
+                prevParam.setParent(null);
+                newParam.setParent(parent);
             }
         }
         incActionPush(action);
@@ -522,13 +515,17 @@ private {
                 action.updateNewState();
                 incActionPush(action);
             } else {
+                incActionPushGroup();
                 foreach(binding; bindings) {
                     if (binding.getTarget() in cClipboardBindings) {
                         auto action = new ParameterChangeBindingsValueAction("paste", param, bindings, cParamPoint.x, cParamPoint.y);
                         ParameterBinding origBinding = cClipboardBindings[binding.getTarget()];
                         origBinding.copyKeypointToBinding(cClipboardPoint, binding, cParamPoint);
+                        action.updateNewState();
+                        incActionPush(action);
                     }
                 }
+                incActionPopGroup();
             }
         }
 
@@ -989,6 +986,9 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                         if (igMenuItem(__("Duplicate"), "", false, true)) {
                             Parameter newParam = param.dup;
                             incActivePuppet().parameters ~= newParam;
+                            if (auto exParam = cast(ExParameter)newParam) {
+                                exParam.setParent((cast(ExParameter)param).getParent());
+                            }
                             incActionPush(new ParameterAddAction(newParam, &paramArr));
                         }
 
@@ -996,8 +996,8 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                             if (incArmedParameter() == param) {
                                 incDisarmParameter();
                             }
-                            incActivePuppet().removeParameter(param);
                             incActionPush(new ParameterRemoveAction(param, &paramArr));
+                            incActivePuppet().removeParameter(param);
                         }
 
                         igNewLine();

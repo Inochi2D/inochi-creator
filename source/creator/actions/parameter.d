@@ -6,11 +6,13 @@ module creator.actions.parameter;
 
 import creator.core.actionstack;
 import creator.actions;
+import creator.ext;
 import creator.actions.binding;
 import creator;
 import inochi2d;
 import std.format;
 import i18n;
+import std.algorithm.searching: countUntil;
 
 /**
     Action to add parameter to active puppet.
@@ -20,10 +22,16 @@ public:
     Parameter self;
     Driver[] drivers;
     Parameter[]* parentList;
+    ExParameterGroup originalParent;
+    long indexInGroup;
 
     this(Parameter self, Parameter[]* parentList) {
         this.self = self;
         this.parentList = parentList;
+
+        auto exParam = cast(ExParameter)self;
+        originalParent = (exParam !is null)? exParam.getParent(): null;
+        indexInGroup = -1;
 
         // Find drivers
         foreach(ref driver; incActivePuppet().getDrivers()) {
@@ -42,14 +50,26 @@ public:
         }
     }
 
+    import std.stdio;
     /**
         Rollback
     */
     void rollback() {
-        if (!added) 
+        auto newParent = originalParent;
+        auto newIndex = indexInGroup;
+        auto exParam = cast(ExParameter)self;
+        if (exParam !is null) {
+            originalParent = exParam.getParent();
+            indexInGroup = originalParent? originalParent.children.countUntil(exParam): -1;
+        }
+        if (!added) {
             incActivePuppet().parameters ~= self;
-        else
+            if (exParam !is null)
+                exParam.setParent(newParent);
+        } else {
+
             incActivePuppet().removeParameter(self);
+        }
             
         // Re-apply drivers
         foreach(ref driver; drivers) {
@@ -63,10 +83,20 @@ public:
         Redo
     */
     void redo() {
-        if (added)
+        auto newParent = originalParent;
+        auto newIndex = indexInGroup;
+        auto exParam = cast(ExParameter)self;
+        if (exParam !is null) {
+            originalParent = exParam.getParent();
+            indexInGroup = originalParent? originalParent.children.countUntil(exParam): -1;
+        }
+        if (added) {
             incActivePuppet().parameters ~= self;
-        else
+            if (exParam !is null)
+                exParam.setParent(newParent);
+        } else {
             incActivePuppet().removeParameter(self);
+        }
             
         // Empty drivers
         foreach(ref driver; drivers) {

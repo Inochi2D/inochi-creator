@@ -11,6 +11,7 @@ import creator.viewport.common.mesh;
 import creator.viewport.common.mesheditor;
 import creator.viewport.common.automesh;
 import creator.core.input;
+import creator.core.actionstack;
 import creator.widgets;
 import creator;
 import inochi2d;
@@ -178,7 +179,7 @@ void incViewportVertexConfirmBar() {
             } else {
                 incMeshEditClear();
             }
-
+            incActionPopStack();
             incSetEditMode(EditMode.ModelEdit);
             foreach (d; target) {
                 incAddSelectNode(d);
@@ -306,6 +307,7 @@ void incMeshEditApply() {
         }
     }
 
+    incActionPopStack();
     // Apply to target
     editor.applyToTarget();
 

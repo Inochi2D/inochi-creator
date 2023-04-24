@@ -79,8 +79,16 @@ public:
         super(name, false); 
         parent = null;
     }
+    this(string name, bool isVec2) { 
+        super(name, isVec2); 
+        parent = null;
+    }
     this(string name, ExParameterGroup parent) { 
         super(name, false); 
+        this.parent = parent;
+    }
+    this(string name, bool isVec2, ExParameterGroup parent) { 
+        super(name, isVec2); 
         this.parent = parent;
     }
     override
@@ -127,6 +135,35 @@ public:
             setParent(puppet.findGroup(parentUUID));
         }
         super.finalize(_puppet);
+    }
+
+    /**
+        Clone this parameter
+    */
+    override
+    Parameter dup() {
+        Parameter newParam = new ExParameter(name ~ " (Copy)", isVec2);
+
+        newParam.min = min;
+        newParam.max = max;
+        newParam.axisPoints = axisPoints.dup;
+
+        foreach(binding; bindings) {
+            ParameterBinding newBinding = newParam.createBinding(
+                binding.getNode(),
+                binding.getName(),
+                false
+            );
+            newBinding.interpolateMode = binding.interpolateMode;
+            foreach(x; 0..axisPointCount(0)) {
+                foreach(y; 0..axisPointCount(1)) {
+                    binding.copyKeypointToBinding(vec2u(x, y), newBinding, vec2u(x, y));
+                }
+            }
+            newParam.addBinding(newBinding);
+        }
+
+        return newParam;
     }
 }
 
