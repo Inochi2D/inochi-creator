@@ -17,6 +17,7 @@ import inochi2d;
 import inochi2d.core.dbg;
 import tinyfiledialogs;
 import i18n;
+import creator.ext;
 
 import std.string;
 import std.stdio;
@@ -441,7 +442,7 @@ void incMainMenu() {
                         ];
 
                         if (string path = incShowImportDialog(filters, _("Import..."))) {
-                            Puppet p = inLoadPuppet(path);
+                            Puppet p = inLoadPuppet!ExPuppet(path);
 
                             if ("com.inochi2d.inochi-session.bindings" in p.extData) {
                                 incActivePuppet().extData["com.inochi2d.inochi-session.bindings"] = p.extData["com.inochi2d.inochi-session.bindings"].dup;

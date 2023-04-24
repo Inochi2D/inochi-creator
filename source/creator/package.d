@@ -312,7 +312,7 @@ void incImportINP(string file) {
     Puppet puppet;
     try {
 
-        puppet = inLoadPuppet(file);
+        puppet = inLoadPuppet!ExPuppet(file);
         incSetStatus(_("%s was imported...".format(file)));
         incSetWindowTitle(file.baseName);
     } catch(Exception ex) {
@@ -622,6 +622,7 @@ AnimationPlaybackRef incAnimationGet() {
 */
 void incAnimationUpdate() {
     if (incAnimationCurrent && !incAnimationCurrent.isRunning() && !incAnimationCurrent.isPlayingLeadOut() && !incAnimationCurrent.paused) {
+        incAnimationPlayer.update(deltaTime());
         incAnimationCurrent.render();
     }
 
