@@ -14,7 +14,7 @@ import std.conv;
 
 private {
     StopWatch autosaveTimer;
-    immutable string projectLockfile = "creator-project.lock";
+    enum InProjectLockfile = "creator-project.lock";
 }
 
 public void startAutosaveTimer() {
@@ -128,6 +128,8 @@ void incCheckAutosave() {
     Doesn't overwrite the main save file.
 */
 void incAutosaveProject(string path) {
+    string lockpath = path;
+
     // We'll add the extension back later when we need it.
     path = path.stripExtension;
 
@@ -146,14 +148,14 @@ void incAutosaveProject(string path) {
 
     // Leave off the .inx extension because it's added by incSaveProject.
     incSaveProject(path, bakStampString());
-    incCreateLockfile(path);
+    incCreateLockfile(lockpath);
 }
 
 /**
     Create a backup save path string.
 */
 string bakStampString() {
-    string bakName = Clock.currTime.toISOExtString();
+    string bakName = Clock.currTime.toUnixTime.text();
     return bakName;
 }
 
@@ -185,7 +187,7 @@ auto currentBackups(string projectAutosaveDir) {
 void incCreateLockfile(string projectPath) {
     projectPath = projectPath.stripExtension;
     string lockfileDir = getAutosaveDir(projectPath);
-    string lockfile = buildPath(lockfileDir, projectLockfile);
+    string lockfile = buildPath(lockfileDir, InProjectLockfile);
     mkdirRecurse(lockfileDir);
     write(lockfile, "");
 }
@@ -199,7 +201,7 @@ void incReleaseLockfile() {
     string projectPath = incProjectPath.stripExtension;
     if (projectPath.length == 0) return;
     string lockfileDir = getAutosaveDir(projectPath);
-    string lockfile = buildPath(lockfileDir, projectLockfile);
+    string lockfile = buildPath(lockfileDir, InProjectLockfile);
     if (lockfile.exists) {
         lockfile.remove;
     }
@@ -215,6 +217,6 @@ void incReleaseLockfile() {
 bool incCheckLockfile(string projectPath) {
     projectPath = projectPath.stripExtension;
     string lockfileDir = getAutosaveDir(projectPath);
-    string lockfile = buildPath(lockfileDir, projectLockfile);
+    string lockfile = buildPath(lockfileDir, InProjectLockfile);
     return lockfile.exists;
 }

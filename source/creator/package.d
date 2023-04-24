@@ -261,9 +261,7 @@ void incSaveProject(string path, string autosaveStamp = "") {
         string finalPath;
         bool isAutosave = autosaveStamp.length > 0 ? true : false;
         if (isAutosave) {
-            string pathBaseName = path.baseName;
-            path ~= "_" ~ autosaveStamp;
-            finalPath = path.setExtension(".inx");
+            finalPath = path ~ "_" ~ autosaveStamp ~ ".inx";
             incAddPrevAutosave(finalPath);
         } else {
             finalPath = path.setExtension(".inx");
