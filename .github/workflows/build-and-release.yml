@@ -80,7 +80,7 @@ jobs:
     - name: 'Build Inochi Creator'
       run: |
         # Build metadata (like version information and icons)
-        dub --config=meta
+        dub build --config=meta
 
         # Build the project, with its main file included, without unittests
         dub build --compiler=ldc2 --build=release --config=linux-full
@@ -153,7 +153,7 @@ jobs:
         Invoke-VSDevEnvironment
         
         # Build metadata (like version information and icons)
-        dub --config=meta
+        dub build --config=meta
 
         # Build the project, with its main file included, without unittests
         dub build --compiler=ldc2 --build=release --config=win32-full
@@ -259,7 +259,7 @@ jobs:
         DFLAGS: "-force-dwarf-frame-section=false"
       run: |
         # Build metadata (like version information and icons)
-        dub --config=meta
+        dub build --config=meta
         
         # First build ARM64 version...
         echo "Building arm64 binary..."
