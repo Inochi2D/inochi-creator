@@ -43,7 +43,7 @@ jobs:
         path: otl/*
         retention-days: 1
 
-  linux-appimage:
+  linux-zip:
     runs-on: ubuntu-20.04
 
     steps:
