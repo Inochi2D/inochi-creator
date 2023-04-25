@@ -163,6 +163,9 @@ void incAddPrevProject(string path) {
     Creates a new project
 */
 void incNewProject() {
+
+    // Release lockfile, etc. from prev project
+    if (currProjectPath.length > 0) incReleaseLockfile();
     incClearImguiData();
 
     currProjectPath = "";
@@ -203,11 +206,13 @@ void incResetRootNode(ref Puppet puppet) {
 void incOpenProject(string path) {
     if (incCheckLockfile(path)) {
         incPushWindow(new RestoreSaveWindow(path));
+
         //Answering that window is the new trigger for loading the project.
         return;
-    } else {
-        incOpenProject(path, "");
     }
+
+    // Usual case
+    incOpenProject(path, "");
 }
 
 /**
