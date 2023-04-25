@@ -96,7 +96,7 @@ private:
         
         // Handle ending loop
         if (loops > 0) {
-            if (playback.looped+1 >= loops) playback.stop(false);
+            if (playback.looped >= loops) playback.stop(false);
         }
 
         // Dump to file
@@ -241,7 +241,7 @@ protected:
                     int endLen = cast(int)ceil((cast(float)playback.animation.length-cast(float)playback.loopPointEnd)*lengthFactor);
                     int loopLen = cast(int)ceil((cast(float)playback.loopPointEnd-cast(float)playback.loopPointBegin)*lengthFactor);
 
-                    int realLength = beginLen+(loopLen*(loops+2))+endLen;
+                    int realLength = beginLen+(loopLen*loops)+endLen;
 
                     VideoExportSettings settings;
                     settings.frames = cast(int)(realLength);
