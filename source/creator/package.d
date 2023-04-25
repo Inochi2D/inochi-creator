@@ -654,8 +654,9 @@ AnimationPlaybackRef incAnimationGet() {
     Updates the current animation being edited
 */
 void incAnimationUpdate() {
-    if (incAnimationCurrent && !incAnimationCurrent.isRunning() && !incAnimationCurrent.isPlayingLeadOut() && !incAnimationCurrent.paused) {
-        incAnimationPlayer.update(deltaTime());
+    incAnimationPlayer.update(deltaTime());
+
+    if (incAnimationCurrent && (incAnimationCurrent.isRunning() || incAnimationCurrent.isPlayingLeadOut()) && !incAnimationCurrent.paused) {
         incAnimationCurrent.render();
     }
 
@@ -678,10 +679,12 @@ void incAnimationUpdate() {
 
         if (igIsKeyPressed(ImGuiKey.LeftArrow, true) && incAnimationCurrent.frame > 0) {
             incAnimationCurrent.seek(incAnimationCurrent.frame-1);
+            incAnimationCurrent.render();
         }
 
         if (igIsKeyPressed(ImGuiKey.RightArrow, true) && incAnimationCurrent.frame+1 < incAnimationCurrent.frames) {
             incAnimationCurrent.seek(incAnimationCurrent.frame+1);
+            incAnimationCurrent.render();
         }
 
         if (igIsKeyPressed(ImGuiKey.N, false) || igIsKeyPressed(ImGuiKey.Insert, false)) {
