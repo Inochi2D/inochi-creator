@@ -614,6 +614,7 @@ void incSetEditMode(EditMode editMode, bool unselect = true) {
 
     incViewportPresentMode(editMode_);
     incAnimationPlayer.stopAll(true);
+    incAnimationPlayer.destroyAll();
     incAnimationCurrent = null;
 }
 
