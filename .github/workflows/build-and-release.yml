@@ -10,7 +10,7 @@ on:
     tags:
       - '*'
     # Ignore release candidates!
-    tags-ingore:
+    tags-ignore:
       - '*-rc*'
 
 permissions:
