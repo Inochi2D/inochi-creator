@@ -7,11 +7,10 @@ name: Build & Release
 on:
   push:
     # Push all normally versioned tags
+    # Ignore release candidates!
     tags:
       - '*'
-    # Ignore release candidates!
-    tags-ignore:
-      - '*-rc*'
+      - '!*-rc*'
 
 permissions:
   contents: write
