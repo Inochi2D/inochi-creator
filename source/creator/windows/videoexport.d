@@ -229,6 +229,7 @@ protected:
                 if (igButton(__("Export"), ImVec2(64, 24))) {
                     playback = player.createOrGet(animToExport);
 
+                    loops = clamp(loops, 1, int.max);
 
                     frametime = playback.animation.timestep;
                     lengthFactor = 1;
