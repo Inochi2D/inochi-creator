@@ -87,12 +87,17 @@ private:
                                 }
 
                                 if (igBeginMenu(__("Merge Mode"))) {
-                                    if (igMenuItem(__("Additive"), null, lane.mergeMode == ParamMergeMode.Additive)) {
-                                        lane.mergeMode = ParamMergeMode.Additive;
-                                    }
-                                    if (igMenuItem(__("Multiplicative"), null, lane.mergeMode == ParamMergeMode.Multiplicative)) {
-                                        lane.mergeMode = ParamMergeMode.Multiplicative;
-                                    }
+
+                                    // TODO: These merge modes are broken, disable setting them.
+                                    igBeginDisabled(true);
+                                        if (igMenuItem(__("Additive"), null, lane.mergeMode == ParamMergeMode.Additive)) {
+                                            lane.mergeMode = ParamMergeMode.Additive;
+                                        }
+                                        if (igMenuItem(__("Multiplicative"), null, lane.mergeMode == ParamMergeMode.Multiplicative)) {
+                                            lane.mergeMode = ParamMergeMode.Multiplicative;
+                                        }
+                                    igEndDisabled();
+
                                     if (igMenuItem(__("Forced"), null, lane.mergeMode == ParamMergeMode.Forced)) {
                                         lane.mergeMode = ParamMergeMode.Forced;
                                     }
