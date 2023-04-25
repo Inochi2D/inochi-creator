@@ -97,6 +97,7 @@ private {
     ImGuiIO* io;
     bool done = false;
     ImGuiID viewportDock;
+    bool firstFrame = true;
 
     version (InBranding) {
         Texture incLogoI2D;
@@ -604,7 +605,9 @@ void incBeginLoopNoEv() {
         incSettingsSet("firstrun_complete", true);
     }
 
-    incRenderDialogs();
+    // HACK: ImGui Crashes if a popup is rendered on the first frame, let's avoid that.
+    if (firstFrame) firstFrame = false;
+    else incRenderDialogs();
     incStatusUpdate();
 }
 
