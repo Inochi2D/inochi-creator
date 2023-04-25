@@ -158,7 +158,7 @@ private:
                                 int xframe = cast(int)round(frame);
                                 if (igIsMouseDown(ImGuiMouseButton.Left)) {
                                     incAnimationGet().seek(xframe);
-                                    incAnimationGet.render();
+                                    incAnimationRender();
                                 }
 
                                 if (igIsMouseDoubleClicked(ImGuiMouseButton.Left)) {

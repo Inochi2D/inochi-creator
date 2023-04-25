@@ -656,14 +656,18 @@ AnimationPlaybackRef incAnimationGet() {
     return incAnimationCurrent;
 }
 
+void incAnimationRender() {
+    incAnimationPlayer.update(deltaTime());
+    if (incAnimationCurrent) incAnimationCurrent.render();
+}
+
 /**
     Updates the current animation being edited
 */
 void incAnimationUpdate() {
-    incAnimationPlayer.update(deltaTime());
 
     if (incAnimationCurrent && (incAnimationCurrent.isRunning() || incAnimationCurrent.isPlayingLeadOut()) && !incAnimationCurrent.paused) {
-        incAnimationCurrent.render();
+        incAnimationRender();
     }
 
     if (incEditMode() == EditMode.AnimEdit && incAnimationCurrent && incGetWindowsOpen() == 0) {
@@ -685,12 +689,12 @@ void incAnimationUpdate() {
 
         if (igIsKeyPressed(ImGuiKey.LeftArrow, true) && incAnimationCurrent.frame > 0) {
             incAnimationCurrent.seek(incAnimationCurrent.frame-1);
-            incAnimationCurrent.render();
+            incAnimationRender();
         }
 
         if (igIsKeyPressed(ImGuiKey.RightArrow, true) && incAnimationCurrent.frame+1 < incAnimationCurrent.frames) {
             incAnimationCurrent.seek(incAnimationCurrent.frame+1);
-            incAnimationCurrent.render();
+            incAnimationRender();
         }
 
         if (igIsKeyPressed(ImGuiKey.N, false) || igIsKeyPressed(ImGuiKey.Insert, false)) {
