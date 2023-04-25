@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-21 03:22+0200\n"
+"POT-Creation-Date: 2023-01-26 23:23+0900\n"
 "PO-Revision-Date: 2022-10-05 00:03+0200\n"
 "Last-Translator: adryzz <adryzz@vignetteapp.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -61,93 +61,129 @@ msgstr "Modificata la griglia disegnabile di %s"
 msgid "Drawable %s was changed"
 msgstr "Il disegnabile %s è stato cambiato"
 
-#: source/creator/actions/mesheditor.d:160
+#: source/creator/actions/mesheditor.d:162
 #, c-format
 msgid "%s->Edited deformation of %s."
 msgstr "%s->Modificata deformazione  di %s."
 
-#: source/creator/actions/mesheditor.d:167
+#: source/creator/actions/mesheditor.d:169
 #, c-format
 msgid "%s->deformation of %s was edited."
 msgstr "%s->La deformazione di %s è stata modificata."
 
-#: source/creator/actions/node.d:92
+#. Enforce reparenting rules
+#: source/creator/actions/node.d:67
+#, c-format
+msgid "%s can not be reparented in to %s due to a circular dependency."
+msgstr "%s non può essere reimpostato in %s a causa di una dipendenza circolare."
+
+#: source/creator/actions/node.d:88
+#, fuzzy
+msgid "nodes"
+msgstr "nodi"
+
+#: source/creator/actions/node.d:121 source/creator/actions/node.d:130
+#, fuzzy, c-format
+msgid "Created %s"
+msgstr "Crea %s"
+
+#: source/creator/actions/node.d:122
+#, fuzzy, c-format
+msgid "Deleted %s"
+msgstr "Cancellato %s"
+
+#: source/creator/actions/node.d:123
 #, c-format
 msgid "Moved %s to %s"
 msgstr "Spostato %s a %s"
 
-#: source/creator/actions/node.d:100
+#: source/creator/actions/node.d:131
 #, c-format
 msgid "Moved %s from %s"
 msgstr "Spostato %s da %s"
 
-#: source/creator/actions/node.d:140 source/creator/actions/node.d:147
+#: source/creator/actions/node.d:132
+#, fuzzy, c-format
+msgid "Moved %s from origin"
+msgstr "Spostato %s da %s"
+
+#: source/creator/actions/node.d:172 source/creator/actions/node.d:179
 msgid "Enabled"
 msgstr "Attivato"
 
-#: source/creator/actions/node.d:140 source/creator/actions/node.d:147
+#: source/creator/actions/node.d:172 source/creator/actions/node.d:179
 #, fuzzy
 msgid "Disabled"
 msgstr "Disattivato"
 
-#: source/creator/actions/node.d:147
+#: source/creator/actions/node.d:179
 #, c-format
 msgid "%s was %s"
 msgstr "%s era %s"
 
-#: source/creator/actions/node.d:192
+#: source/creator/actions/node.d:225
 msgid "Unnamed "
 msgstr "Senza nome "
 
-#: source/creator/actions/node.d:250 source/creator/actions/parameter.d:170
+#: source/creator/actions/node.d:294 source/creator/actions/parameter.d:170
 #, c-format
 msgid "%s->%s changed to %s"
 msgstr "%s->%s è cambiato a %s"
 
-#: source/creator/actions/node.d:257 source/creator/actions/parameter.d:180
+#: source/creator/actions/node.d:301 source/creator/actions/parameter.d:180
 #, c-format
 msgid "%s->%s changed from %s"
-msgstr "%s-> è cambiato da %s"
+msgstr "%s->%s è cambiato da %s"
+
+#: source/creator/actions/node.d:365 source/creator/actions/node.d:373
+#, fuzzy, c-format
+msgid "%s locked to root node"
+msgstr "%s bloccato sul nodo radice"
+
+#: source/creator/actions/node.d:366 source/creator/actions/node.d:374
+#, fuzzy, c-format
+msgid "%s unlocked from root node"
+msgstr "%s sbloccato sul nodo radice"
 
 #: source/creator/actions/parameter.d:84
 #, fuzzy, c-format
 msgid "Added parameter %s"
-msgstr "Aggiungi Parametro"
+msgstr "Aggiunto il parametro %s"
 
 #: source/creator/actions/parameter.d:86
 #, fuzzy, c-format
 msgid "Removed parameter %s"
-msgstr "Parametro braccio"
+msgstr "Rimosso il parametro %s"
 
 #: source/creator/actions/parameter.d:94
 #, fuzzy, c-format
 msgid "Parameter %s was removed"
-msgstr "Nome Parametro"
+msgstr "Il parametro %s è stato rimosso"
 
 #: source/creator/actions/parameter.d:96
 #, fuzzy, c-format
 msgid "Parameter %s was added"
-msgstr "Nome Parametro"
+msgstr "È stato aggiunto il parametro %s"
 
-#: source/creator/core/dpi.d:51 source/creator/core/dpi.d:55
+#: source/creator/core/dpi.d:54 source/creator/core/dpi.d:58
 msgid "100% (Locked)"
 msgstr "100% (Bloccato)"
 
 #. The name of the language this translation is a translation to
 #. in the native script of the language (for the region)
 #. Eg. this would be "Dansk" for Danish and "日本語" for Japanese.
-#: source/creator/core/i18n.d:16
+#: source/creator/core/i18n.d:18
 msgid "LANG_NAME"
 msgstr "Italiano"
 
-#: source/creator/core/package.d:237
+#: source/creator/core/package.d:250
 #, fuzzy
 msgid "(Debug Mode)"
 msgstr " (Modalità Debug)"
 
-#: source/creator/core/package.d:239
+#: source/creator/core/package.d:252
 msgid "(Unsupported)"
-msgstr " (Non supportato)"
+msgstr "(Non supportato)"
 
 #: source/creator/io/imageexport.d:13 source/creator/windows/inpexport.d:247
 #, c-format
@@ -159,34 +195,41 @@ msgstr "%s è stato esportato..."
 msgid "%s failed to export with error (%s)..."
 msgstr "%s non è riuscito ad esportare con l'errore (%s)..."
 
-#: source/creator/io/package.d:80 source/creator/widgets/mainmenu.d:168
-#: source/creator/widgets/mainmenu.d:192
+#: source/creator/io/package.d:211 source/creator/io/package.d:212
+#: source/creator/io/psd.d:149 source/creator/package.d:185
+#: source/creator/package.d:221 source/creator/package.d:282
+#: source/creator/panels/inspector.d:614 source/creator/panels/inspector.d:633
+#: source/creator/panels/inspector.d:634 source/creator/panels/inspector.d:644
+#: source/creator/panels/nodes.d:229 source/creator/panels/viewport.d:219
+#: source/creator/viewport/vertex/package.d:267
+#: source/creator/widgets/mainmenu.d:433 source/creator/windows/inpexport.d:249
+#: source/creator/windows/paramaxes.d:187
+#: source/creator/windows/paramprop.d:105
+#, fuzzy
+msgid "Error"
+msgstr "Errore"
+
+#: source/creator/io/package.d:211 source/creator/panels/inspector.d:633
+#: source/creator/panels/inspector.d:644 source/creator/panels/viewport.d:219
+#, c-format
+msgid "%s is not supported"
+msgstr "%s non è supportato"
+
+#: source/creator/io/psd.d:25 source/creator/panels/inspector.d:676
+#: source/creator/widgets/mainmenu.d:168 source/creator/widgets/mainmenu.d:192
+#: source/creator/widgets/mainmenu.d:207 source/creator/widgets/mainmenu.d:426
 msgid "Import..."
 msgstr "Importa..."
 
-#: source/creator/io/psd.d:145 source/creator/package.d:278
+#: source/creator/io/psd.d:145 source/creator/package.d:279
 #, c-format
 msgid "%s was imported..."
 msgstr "%s è stato importato..."
 
-#: source/creator/io/psd.d:148 source/creator/package.d:282
+#: source/creator/io/psd.d:148 source/creator/package.d:283
 #, fuzzy
 msgid "Import failed..."
-msgstr "Importa..."
-
-#: source/creator/io/psd.d:149 source/creator/package.d:184
-#: source/creator/package.d:220 source/creator/package.d:281
-#: source/creator/panels/inspector.d:666 source/creator/panels/inspector.d:677
-#: source/creator/panels/inspector.d:678 source/creator/panels/inspector.d:688
-#: source/creator/panels/viewport.d:220 source/creator/panels/viewport.d:221
-#: source/creator/panels/viewport.d:234
-#: source/creator/viewport/vertex/package.d:207
-#: source/creator/windows/inpexport.d:249
-#: source/creator/windows/paramaxes.d:187
-#: source/creator/windows/paramprop.d:106
-#, fuzzy
-msgid "Error"
-msgstr "Specchia"
+msgstr "Importazione fallita..."
 
 #: source/creator/io/psd.d:149
 #, c-format
@@ -201,22 +244,22 @@ msgstr ""
 msgid "Automatic selection"
 msgstr "Selezione automatica"
 
-#: source/creator/package.d:201
+#: source/creator/package.d:202
 #, c-format
 msgid "%s opened successfully."
 msgstr "Aperto %s con successo."
 
-#: source/creator/package.d:217
+#: source/creator/package.d:218
 #, c-format
 msgid "%s saved successfully."
 msgstr "Salvato %s con successo."
 
-#: source/creator/package.d:219
+#: source/creator/package.d:220
 #, c-format
 msgid "Failed to save %s"
 msgstr "Impossibile salvare %s"
 
-#: source/creator/package.d:255
+#: source/creator/package.d:256
 #, c-format
 msgid ""
 "The following errors occured during file loading\n"
@@ -225,24 +268,24 @@ msgstr ""
 "Si sono verificati i seguenti errori durante il caricamento dei file\n"
 "%s"
 
-#: source/creator/package.d:264
+#: source/creator/package.d:265
 msgid "Folder import completed with errors..."
 msgstr "Importazione della cartella completata con errori..."
 
-#: source/creator/package.d:265
+#: source/creator/package.d:266
 msgid "Folder import completed..."
 msgstr "Importazione della cartella completata..."
 
-#: source/creator/package.d:307
+#: source/creator/package.d:308
 msgid "Mipmap generation completed."
 msgstr "Generazione Mipmap completata."
 
-#: source/creator/package.d:322
+#: source/creator/package.d:323
 msgid "Texture bleeding completed."
 msgstr "Scioglimento colore delle texture completato."
 
 #: source/creator/panels/actionhistory.d:26
-#: source/creator/windows/settings.d:137
+#: source/creator/windows/settings.d:140
 #, fuzzy
 msgid "Undo History"
 msgstr "Dimensione cronologia passaggi"
@@ -262,8 +305,8 @@ msgstr "%d di %d"
 msgid "History"
 msgstr "Cronologia"
 
-#: source/creator/panels/inspector.d:41 source/creator/panels/nodes.d:294
-#: source/creator/panels/parameters.d:759
+#: source/creator/panels/inspector.d:41 source/creator/panels/nodes.d:284
+#: source/creator/panels/parameters.d:891
 msgid "In vertex edit mode..."
 msgstr "In modalità modifica vertici..."
 
@@ -280,7 +323,7 @@ msgid "Inspector"
 msgstr "Ispettore"
 
 #. Selectable
-#: source/creator/panels/inspector.d:157 source/creator/panels/nodes.d:182
+#: source/creator/panels/inspector.d:157 source/creator/panels/nodes.d:187
 msgid "Puppet"
 msgstr "Pupazzo"
 
@@ -293,102 +336,106 @@ msgid "General Info"
 msgstr "Informazioni Generali"
 
 #: source/creator/panels/inspector.d:183
+msgid "Part Count"
+msgstr "Conteggio parti"
+
+#: source/creator/panels/inspector.d:189
 msgid "Name"
 msgstr "Nome"
 
-#: source/creator/panels/inspector.d:184
+#: source/creator/panels/inspector.d:190
 msgid "Name of the puppet"
 msgstr "Nome del pupazzo"
 
-#: source/creator/panels/inspector.d:190
+#: source/creator/panels/inspector.d:196
 msgid "Artist(s)"
 msgstr "Artista/i"
 
-#: source/creator/panels/inspector.d:191
+#: source/creator/panels/inspector.d:197
 msgid "Artists who've drawn the puppet, seperated by comma"
 msgstr "Artisti che hanno disegnato il pupazzo, separati con una virgola"
 
 # In italian, "Rigger" => "Rigattiere", but that word isn't used and more people use the english word instead.
-#: source/creator/panels/inspector.d:197
+#: source/creator/panels/inspector.d:203
 msgid "Rigger(s)"
 msgstr "Rigger(s)"
 
-#: source/creator/panels/inspector.d:198
+#: source/creator/panels/inspector.d:204
 msgid "Riggers who've rigged the puppet, seperated by comma"
 msgstr "Riggers che hanno truccato il pupazzo, separati da virgola"
 
-#: source/creator/panels/inspector.d:204
+#: source/creator/panels/inspector.d:210
 msgid "Contact"
 msgstr "Contatta"
 
-#: source/creator/panels/inspector.d:205
+#: source/creator/panels/inspector.d:211
 msgid "Where to contact the main author of the puppet"
 msgstr "Dove contattare l' autore principale del pupazzo"
 
-#: source/creator/panels/inspector.d:211
+#: source/creator/panels/inspector.d:217
 #, fuzzy
 msgid "Licensing"
 msgstr "Informazioni licenza"
 
-#: source/creator/panels/inspector.d:213
+#: source/creator/panels/inspector.d:219
 msgid "License URL"
 msgstr "URL licenza"
 
-#: source/creator/panels/inspector.d:214
-msgid "Link/URL to license"
-msgstr "Link/URL licenza"
-
 #: source/creator/panels/inspector.d:220
+msgid "Link/URL to license"
+msgstr "Link/URL alla licenza"
+
+#: source/creator/panels/inspector.d:226
 msgid "Copyright"
 msgstr "Copyright"
 
-#: source/creator/panels/inspector.d:221
-msgid "Copyright holder information of the puppet"
-msgstr "Informazioni del Copyright del pupazzo"
-
 #: source/creator/panels/inspector.d:227
+msgid "Copyright holder information of the puppet"
+msgstr "Informazioni sul titolare del copyright del pupazzo"
+
+#: source/creator/panels/inspector.d:233
 msgid "Origin"
 msgstr "Origine"
 
-#: source/creator/panels/inspector.d:228
+#: source/creator/panels/inspector.d:234
 msgid "Where the model comes from on the internet."
 msgstr "Da dove proviene il modello da internet."
 
-#: source/creator/panels/inspector.d:234
+#: source/creator/panels/inspector.d:240
 msgid "Physics Globals"
 msgstr "Fisica Globale"
 
-#: source/creator/panels/inspector.d:236
+#: source/creator/panels/inspector.d:242
 msgid "Pixels per meter"
 msgstr "Pixel per metro"
 
-#: source/creator/panels/inspector.d:237
+#: source/creator/panels/inspector.d:243
 msgid "Number of pixels that correspond to 1 meter in the physics engine."
 msgstr "Numero di pixel che corrispondono ad 1 metro nel motore di fisica."
 
-#: source/creator/panels/inspector.d:243
+#: source/creator/panels/inspector.d:249
 msgid "Gravity"
 msgstr "Gravità"
 
-#: source/creator/panels/inspector.d:244
+#: source/creator/panels/inspector.d:250
 msgid "Acceleration due to gravity, in m/s². Earth gravity is 9.8."
 msgstr "Accelerazione di gravità, in m/s². La gravità della Terra è 9.8."
 
-#: source/creator/panels/inspector.d:245
+#: source/creator/panels/inspector.d:251
 #, c-format
 msgid "%.2f m/s²"
 msgstr "%.2f m/s²"
 
-#: source/creator/panels/inspector.d:250
+#: source/creator/panels/inspector.d:256
 #, fuzzy
 msgid "Rendering Settings"
-msgstr "Impostazioni"
+msgstr "Impostazioni di rendering"
 
-#: source/creator/panels/inspector.d:252
+#: source/creator/panels/inspector.d:258
 msgid "Use Point Filtering"
 msgstr "Usa il Filtraggio dei Punti"
 
-#: source/creator/panels/inspector.d:256
+#: source/creator/panels/inspector.d:262
 msgid ""
 "Makes Inochi2D model use point filtering, removing blur for low-resolution "
 "models."
@@ -396,7 +443,7 @@ msgstr ""
 "Fa sì che il modello Inochi2D utilizzi il filtraggio dei punti, eliminando "
 "la sfocatura per i modelli a bassa risoluzione."
 
-#: source/creator/panels/inspector.d:276 source/creator/panels/inspector.d:1233
+#: source/creator/panels/inspector.d:282 source/creator/panels/inspector.d:1303
 #, fuzzy
 msgid "Transform"
 msgstr "Trasformazione"
@@ -405,14 +452,14 @@ msgstr "Trasformazione"
 #. Translation
 #.
 #. Translation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:292 source/creator/panels/inspector.d:1248
+#: source/creator/panels/inspector.d:298 source/creator/panels/inspector.d:1318
 msgid "Translation"
 msgstr "Traslazione"
 
 #. Button which locks all transformation to be based off the root node
 #. of the puppet, this more or less makes the item stay in place
 #. even if the parent moves.
-#: source/creator/panels/inspector.d:354 source/creator/panels/inspector.d:355
+#: source/creator/panels/inspector.d:360 source/creator/panels/inspector.d:361
 msgid "Lock to Root Node"
 msgstr "Blocca al Nodo Radice"
 
@@ -420,7 +467,7 @@ msgstr "Blocca al Nodo Radice"
 #. Button which locks all transformation to be based off the root node
 #. of the puppet, this more or less makes the item stay in place
 #. even if the parent moves.
-#: source/creator/panels/inspector.d:369
+#: source/creator/panels/inspector.d:373
 msgid ""
 "Makes so that the translation of this node is based off the root node, "
 "making it stay in place even if its parent moves."
@@ -429,39 +476,39 @@ msgstr ""
 "rimane fermo anche se il nodo padre si muove."
 
 #. Rotation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:384 source/creator/panels/inspector.d:1285
+#: source/creator/panels/inspector.d:388 source/creator/panels/inspector.d:1355
 msgid "Rotation"
 msgstr "Rotazione"
 
-#: source/creator/panels/inspector.d:396
+#: source/creator/panels/inspector.d:400
 msgid "Rotation X"
 msgstr "Rotazione asse X"
 
-#: source/creator/panels/inspector.d:416
+#: source/creator/panels/inspector.d:420
 msgid "Rotation Y"
 msgstr "Rotazione asse Y"
 
-#: source/creator/panels/inspector.d:436
+#: source/creator/panels/inspector.d:440
 msgid "Rotation Z"
 msgstr "Rotazione asse Z"
 
 #. Scaling portion of the transformation matrix.
-#: source/creator/panels/inspector.d:456 source/creator/panels/inspector.d:1317
+#: source/creator/panels/inspector.d:460 source/creator/panels/inspector.d:1387
 msgid "Scale"
 msgstr "Scala"
 
-#: source/creator/panels/inspector.d:464
+#: source/creator/panels/inspector.d:468
 msgid "Scale X"
 msgstr "Scala asse X"
 
-#: source/creator/panels/inspector.d:481
+#: source/creator/panels/inspector.d:485
 msgid "Scale Y"
 msgstr "Scala asse Y"
 
 #. An option in which positions will be snapped to whole integer values.
 #. In other words texture will always be on a pixel.
-#: source/creator/panels/inspector.d:498 source/creator/panels/inspector.d:499
-#: source/creator/panels/inspector.d:504
+#: source/creator/panels/inspector.d:502 source/creator/panels/inspector.d:503
+#: source/creator/panels/inspector.d:508
 msgid "Snap to Pixel"
 msgstr "Aggancia al pixel"
 
@@ -469,123 +516,127 @@ msgstr "Aggancia al pixel"
 #. Parts to draw in the user specified order.
 #. negative values = closer to camera
 #. positive values = further away from camera
-#: source/creator/panels/inspector.d:521 source/creator/panels/inspector.d:1337
+#: source/creator/panels/inspector.d:525 source/creator/panels/inspector.d:1407
 #, fuzzy
 msgid "Sorting"
 msgstr "Ordine"
 
 #. The main type of anything that can be drawn to the screen
 #. in Inochi2D.
-#: source/creator/panels/inspector.d:533
+#: source/creator/panels/inspector.d:537
 msgid "Drawable"
 msgstr "Disegnabile"
 
-#: source/creator/panels/inspector.d:538
+#: source/creator/panels/inspector.d:542
 #, fuzzy
 msgid "Texture Offset"
 msgstr "Slot Texture"
 
+#: source/creator/panels/inspector.d:614
+msgid "Size of given texture does not match the Albedo texture."
+msgstr "La dimensione della texture data non corrisponde alla texture Albedo."
+
 #. Allow saving texture to file
-#: source/creator/panels/inspector.d:591
+#: source/creator/panels/inspector.d:655
 #, fuzzy
 msgid "Save to File"
-msgstr "Aggancia al pixel"
+msgstr "Salva su file"
 
-#: source/creator/panels/inspector.d:605 source/creator/panels/parameters.d:343
+#. Allow saving texture to file
+#: source/creator/panels/inspector.d:669
+#, fuzzy
+msgid "Load from File"
+msgstr "Carica da file"
+
+#: source/creator/panels/inspector.d:683 source/creator/panels/parameters.d:407
 msgid "Remove"
 msgstr "Rimuovi"
 
 #. Option which causes the Albedo color to be the emission color.
 #. The item will glow the same color as it, itself is.
-#: source/creator/panels/inspector.d:614
+#: source/creator/panels/inspector.d:692
 msgid "Make Emissive"
-msgstr ""
+msgstr "Rendi emissivo"
 
-#: source/creator/panels/inspector.d:666
-msgid "Size of given texture does not match the Albedo texture."
-msgstr ""
-
-#: source/creator/panels/inspector.d:677 source/creator/panels/inspector.d:688
-#: source/creator/panels/viewport.d:220 source/creator/panels/viewport.d:234
-#, c-format
-msgid "%s is not supported"
-msgstr "%s non è supportato"
-
-#: source/creator/panels/inspector.d:704 source/creator/panels/inspector.d:1344
+#: source/creator/panels/inspector.d:732 source/creator/panels/inspector.d:1414
 msgid "Part"
 msgstr "Parte"
 
-#: source/creator/panels/inspector.d:708
+#: source/creator/panels/inspector.d:736
 msgid "Cannot inspect an unmeshed part"
 msgstr "Impossibile ispezionare una parte senza griglia"
 
-#: source/creator/panels/inspector.d:721
+#: source/creator/panels/inspector.d:749
 msgid "Albedo"
-msgstr ""
+msgstr "Albedo"
 
-#: source/creator/panels/inspector.d:723
+#: source/creator/panels/inspector.d:751
 msgid "Emissive"
 msgstr "Emissivo"
 
-#: source/creator/panels/inspector.d:725
+#: source/creator/panels/inspector.d:753
 msgid "Bumpmap"
-msgstr ""
+msgstr "Mappa dei rilievi"
 
-#: source/creator/panels/inspector.d:730 source/creator/panels/inspector.d:910
-#: source/creator/panels/inspector.d:1350
-#: source/creator/panels/inspector.d:1386
+#: source/creator/panels/inspector.d:758 source/creator/panels/inspector.d:944
+#: source/creator/panels/inspector.d:1420
+#: source/creator/panels/inspector.d:1462
 #, fuzzy
 msgid "Tint (Multiply)"
-msgstr "Moltiplica"
+msgstr "Tinta (moltiplica)"
 
-#: source/creator/panels/inspector.d:733 source/creator/panels/inspector.d:913
-#: source/creator/panels/inspector.d:1354
-#: source/creator/panels/inspector.d:1390
+#: source/creator/panels/inspector.d:761 source/creator/panels/inspector.d:947
+#: source/creator/panels/inspector.d:1424
+#: source/creator/panels/inspector.d:1466
 #, fuzzy
 msgid "Tint (Screen)"
-msgstr "Schermo"
+msgstr "Tinta (schermo)"
+
+#: source/creator/panels/inspector.d:764 source/creator/panels/inspector.d:1427
+msgid "Emission Strength"
+msgstr "Forza di emissione"
 
 #. Header for the Blending options for Parts
-#: source/creator/panels/inspector.d:742 source/creator/panels/inspector.d:917
+#: source/creator/panels/inspector.d:776 source/creator/panels/inspector.d:951
 msgid "Blending"
 msgstr "Sfumatura"
 
 #. Normal blending mode as used in Photoshop, generally
 #. the default blending mode photoshop starts a layer out as.
-#: source/creator/panels/inspector.d:747 source/creator/panels/inspector.d:922
+#: source/creator/panels/inspector.d:781 source/creator/panels/inspector.d:956
 msgid "Normal"
 msgstr "Normale"
 
 #. Multiply blending mode, in which this texture's color data
 #. will be multiplied with the color data already in the framebuffer.
-#: source/creator/panels/inspector.d:751 source/creator/panels/inspector.d:926
+#: source/creator/panels/inspector.d:785 source/creator/panels/inspector.d:960
 msgid "Multiply"
 msgstr "Moltiplica"
 
 # Sounds weird but there's no other way
 #. Color Dodge blending mode
-#: source/creator/panels/inspector.d:754 source/creator/panels/inspector.d:929
+#: source/creator/panels/inspector.d:788 source/creator/panels/inspector.d:963
 #, fuzzy
 msgid "Color Dodge"
 msgstr "Fuga Colore"
 
 #. Linear Dodge blending mode
-#: source/creator/panels/inspector.d:757 source/creator/panels/inspector.d:932
+#: source/creator/panels/inspector.d:791 source/creator/panels/inspector.d:966
 msgid "Linear Dodge"
 msgstr "Fuga Lineare"
 
 #. Screen blending mode
-#: source/creator/panels/inspector.d:760 source/creator/panels/inspector.d:935
+#: source/creator/panels/inspector.d:794 source/creator/panels/inspector.d:969
 msgid "Screen"
 msgstr "Schermo"
 
 # Also sounds very weird, but there's no other way i found
 #. Clip to Lower blending mode
-#: source/creator/panels/inspector.d:763
+#: source/creator/panels/inspector.d:797
 msgid "Clip to Lower"
 msgstr "Clip per Abbassare"
 
-#: source/creator/panels/inspector.d:764
+#: source/creator/panels/inspector.d:798
 msgid ""
 "Special blending mode that causes (while respecting transparency) the part "
 "to be clipped to everything underneath"
@@ -594,11 +645,11 @@ msgstr ""
 "partevenga ritagliata su tutto ciò che sta sotto."
 
 #. Slice from Lower blending mode
-#: source/creator/panels/inspector.d:767
+#: source/creator/panels/inspector.d:801
 msgid "Slice from Lower"
 msgstr "Ritaglia dal basso"
 
-#: source/creator/panels/inspector.d:768
+#: source/creator/panels/inspector.d:802
 msgid ""
 "Special blending mode that causes (while respecting transparency) the part "
 "to be slice by everything underneath.\n"
@@ -608,147 +659,148 @@ msgstr ""
 "partevenga ritagliata da tutto ciò che sta sotto\n"
 "Essenzialmente l' opposto di Clip per Abbassare"
 
-#: source/creator/panels/inspector.d:775 source/creator/panels/inspector.d:942
-#: source/creator/panels/inspector.d:1366
-#: source/creator/panels/inspector.d:1403
+#: source/creator/panels/inspector.d:809 source/creator/panels/inspector.d:976
+#: source/creator/panels/inspector.d:1442
+#: source/creator/panels/inspector.d:1479
 msgid "Opacity"
 msgstr "Opacità"
 
-#: source/creator/panels/inspector.d:780 source/creator/panels/inspector.d:947
+#: source/creator/panels/inspector.d:814 source/creator/panels/inspector.d:981
 msgid "Masks"
 msgstr "Maschere"
 
 #. Threshold slider name for adjusting how transparent a pixel can be
 #. before it gets discarded.
-#: source/creator/panels/inspector.d:785 source/creator/panels/inspector.d:952
-#: source/creator/panels/inspector.d:1373
+#: source/creator/panels/inspector.d:819 source/creator/panels/inspector.d:986
+#: source/creator/panels/inspector.d:1449
 msgid "Threshold"
 msgstr "Soglia"
 
 #. The sources that the part gets masked by. Depending on the masking mode
 #. either the sources will cut out things that don't overlap, or cut out
 #. things that do.
-#: source/creator/panels/inspector.d:793
+#: source/creator/panels/inspector.d:827
 msgid "Mask Sources"
 msgstr "Fonti maschera"
 
-#: source/creator/panels/inspector.d:796
+#: source/creator/panels/inspector.d:830
 msgid "(Drag a Part or Mask Here)"
 msgstr "(Trascina qui una parte o maschera)"
 
-#: source/creator/panels/inspector.d:803
+#: source/creator/panels/inspector.d:837
 msgid "Mode"
 msgstr "Modalità"
 
-#: source/creator/panels/inspector.d:804 source/creator/panels/nodes.d:54
+#: source/creator/panels/inspector.d:838 source/creator/panels/nodes.d:54
 msgid "Mask"
 msgstr "Maschera"
 
-#: source/creator/panels/inspector.d:805
+#: source/creator/panels/inspector.d:839
 msgid "Dodge"
 msgstr "Fuga"
 
-#: source/creator/panels/inspector.d:810 source/creator/panels/nodes.d:92
-#: source/creator/panels/parameters.d:698
-#: source/creator/panels/parameters.d:898
+#: source/creator/panels/inspector.d:844 source/creator/panels/nodes.d:92
+#: source/creator/panels/parameters.d:830
+#: source/creator/panels/parameters.d:1030
 msgid "Delete"
 msgstr "Cancella"
 
-#: source/creator/panels/inspector.d:823
+#: source/creator/panels/inspector.d:857
 #, fuzzy, c-format
 msgid "%s (Mask)"
 msgstr "%s (Maschera)"
 
-#: source/creator/panels/inspector.d:824
+#: source/creator/panels/inspector.d:858
 #, c-format
 msgid "%s (Dodge)"
 msgstr "%s (Fuga)"
 
-#: source/creator/panels/inspector.d:884 source/creator/panels/nodes.d:72
+#: source/creator/panels/inspector.d:918 source/creator/panels/nodes.d:72
 #: source/creator/windows/imgexport.d:97
 msgid "Camera"
 msgstr "Fotocamera"
 
-#: source/creator/panels/inspector.d:886 source/creator/panels/viewport.d:296
-#: source/creator/windows/settings.d:82
+#: source/creator/panels/inspector.d:920 source/creator/panels/viewport.d:281
+#: source/creator/windows/settings.d:81
 msgid "Viewport"
 msgstr "Punto di vista"
 
-#: source/creator/panels/inspector.d:900 source/creator/panels/inspector.d:1380
+#: source/creator/panels/inspector.d:934 source/creator/panels/inspector.d:1456
 #: source/creator/panels/nodes.d:61
 msgid "Composite"
 msgstr "Composito"
 
-#: source/creator/panels/inspector.d:965
+#: source/creator/panels/inspector.d:999
 msgid "SimplePhysics"
 msgstr "Fisica Semplice"
 
-#: source/creator/panels/inspector.d:977 source/creator/windows/psdmerge.d:276
+# This is really hard
+#: source/creator/panels/inspector.d:1011 source/creator/windows/psdmerge.d:276
 msgid "Unmap"
-msgstr ""
+msgstr "Dis-imposta"
 
-#: source/creator/panels/inspector.d:982
+#: source/creator/panels/inspector.d:1016
 #, fuzzy
 msgid "Unassigned"
-msgstr "(non assegnato)"
+msgstr "Non assegnato"
 
-#: source/creator/panels/inspector.d:988 source/creator/windows/trkbind.d:47
+#: source/creator/panels/inspector.d:1022 source/creator/windows/trkbind.d:47
 #, fuzzy
 msgid "Parameter"
 msgstr "Parametro"
 
-#: source/creator/panels/inspector.d:989
+#: source/creator/panels/inspector.d:1023
 msgid "(unassigned)"
 msgstr "(non assegnato)"
 
-#: source/creator/panels/inspector.d:1007
+#: source/creator/panels/inspector.d:1041
 msgid "Type"
 msgstr "Tipo"
 
-#: source/creator/panels/inspector.d:1010
+#: source/creator/panels/inspector.d:1044
 msgid "Pendulum"
 msgstr "Pendolo"
 
-#: source/creator/panels/inspector.d:1012
+#: source/creator/panels/inspector.d:1046
 msgid "SpringPendulum"
 msgstr "Pendolo a molla"
 
-#: source/creator/panels/inspector.d:1019
+#: source/creator/panels/inspector.d:1053
 msgid "Mapping mode"
 msgstr "Modalità di mappatura"
 
-#: source/creator/panels/inspector.d:1022
+#: source/creator/panels/inspector.d:1056
 msgid "AngleLength"
 msgstr "Lunghezza Angolo"
 
-#: source/creator/panels/inspector.d:1024
+#: source/creator/panels/inspector.d:1058
 msgid "XY"
 msgstr "XY"
 
-#: source/creator/panels/inspector.d:1034
+#: source/creator/panels/inspector.d:1068
 msgid "Gravity scale"
 msgstr "Scala Gravità"
 
-#: source/creator/panels/inspector.d:1041
+#: source/creator/panels/inspector.d:1075
 msgid "Length"
 msgstr "Lunghezza"
 
-#: source/creator/panels/inspector.d:1048
+#: source/creator/panels/inspector.d:1082
 msgid "Resonant frequency"
 msgstr "Frequenza di risonanza"
 
-#: source/creator/panels/inspector.d:1055
+#: source/creator/panels/inspector.d:1089
 msgid "Damping"
 msgstr "Ammortizzazione"
 
 # Could also be "Scala di Uscita", but as i said many times here, in italian lots of english words are used, and this is a better fit.
-#: source/creator/panels/inspector.d:1066
+#: source/creator/panels/inspector.d:1100
 msgid "Output scale"
 msgstr "Scala di Output"
 
 #. Header for texture options
-#: source/creator/panels/inspector.d:1348
-#: source/creator/panels/inspector.d:1384
+#: source/creator/panels/inspector.d:1418
+#: source/creator/panels/inspector.d:1460
 #, fuzzy
 msgid "Textures"
 msgstr "Slot Texture"
@@ -764,7 +816,7 @@ msgstr "Aggiungi"
 #: source/creator/panels/nodes.d:50
 #, fuzzy
 msgid "Node"
-msgstr "Nodi"
+msgstr "Nodo"
 
 #: source/creator/panels/nodes.d:67
 msgid "Simple Physics"
@@ -773,7 +825,7 @@ msgstr "Fisica Semplice"
 #. Switches Inochi Creator over to Mesh Edit mode
 #. and selects the mesh that you had selected previously
 #. in Model Edit mode.
-#: source/creator/panels/nodes.d:82 source/creator/viewport/model/package.d:148
+#: source/creator/panels/nodes.d:82 source/creator/viewport/model/package.d:150
 msgid "Edit Mesh"
 msgstr "Modifica griglia"
 
@@ -787,209 +839,223 @@ msgstr "Nascondi"
 msgid "Show"
 msgstr "Mostra"
 
-#: source/creator/panels/nodes.d:107
+#: source/creator/panels/nodes.d:112
 msgid "More Info"
 msgstr "Più info"
 
 #. %s is the name of the node in the More Info menu
 #. %u is the UUID of the node in the More Info menu
-#: source/creator/panels/nodes.d:113
+#: source/creator/panels/nodes.d:118
 #, fuzzy, c-format
 msgid "%s ID: %u"
 msgstr "%s ID: %lu"
 
-#: source/creator/panels/nodes.d:116
+#: source/creator/panels/nodes.d:121
 #, c-format
 msgid "%s Layer: %s"
 msgstr "%s Livello: %s"
 
 #. %u is the UUID of the node in the More Info menu
-#: source/creator/panels/nodes.d:121
+#: source/creator/panels/nodes.d:126
 #, fuzzy, c-format
 msgid "ID: %u"
 msgstr "ID: %lu"
 
-#: source/creator/panels/nodes.d:124
+#: source/creator/panels/nodes.d:129
 #, c-format
 msgid "Layer: %s"
 msgstr "Livello: %s"
 
-#: source/creator/panels/nodes.d:395
+#: source/creator/panels/nodes.d:385
 msgid "Nodes"
 msgstr "Nodi"
 
-#: source/creator/panels/parameters.d:179
+#: source/creator/panels/parameters.d:224
 msgid "Unset"
 msgstr "Dis-imposta"
 
-#: source/creator/panels/parameters.d:188
+#: source/creator/panels/parameters.d:233
 #, fuzzy
 msgid "Set to current"
-msgstr "Imposta ne"
+msgstr "Imposta su corrente"
 
-#: source/creator/panels/parameters.d:197
+#: source/creator/panels/parameters.d:242
 msgid "Reset"
 msgstr "Reset"
 
-#: source/creator/panels/parameters.d:206 source/creator/windows/trkbind.d:110
+#: source/creator/panels/parameters.d:251 source/creator/windows/trkbind.d:110
 msgid "Invert"
 msgstr "Inverti"
 
-#: source/creator/panels/parameters.d:215
-#: source/creator/panels/parameters.d:656
+#: source/creator/panels/parameters.d:260
+#: source/creator/panels/parameters.d:788
 msgid "Mirror"
 msgstr "Specchia"
 
-#: source/creator/panels/parameters.d:216
-#: source/creator/panels/parameters.d:238
-#: source/creator/panels/parameters.d:657
+#: source/creator/panels/parameters.d:261
+#: source/creator/panels/parameters.d:302
+#: source/creator/panels/parameters.d:789
 msgid "Horizontally"
 msgstr "Orizontalmente"
 
-#: source/creator/panels/parameters.d:225
-#: source/creator/panels/parameters.d:247
-#: source/creator/panels/parameters.d:661
+#: source/creator/panels/parameters.d:270
+#: source/creator/panels/parameters.d:311
+#: source/creator/panels/parameters.d:793
 msgid "Vertically"
 msgstr "Verticalmente"
 
-#: source/creator/panels/parameters.d:237
-#: source/creator/panels/parameters.d:268
+#: source/creator/panels/parameters.d:281
+#, fuzzy
+msgid "Flip Deform"
+msgstr "Deforma capovolgendo"
+
+#: source/creator/panels/parameters.d:301
+#: source/creator/panels/parameters.d:332
 msgid "Set from mirror"
 msgstr "Imposta da specchio"
 
-#: source/creator/panels/parameters.d:256
+#: source/creator/panels/parameters.d:320
 msgid "Diagonally"
 msgstr "Diagonalmente"
 
-#: source/creator/panels/parameters.d:279 source/creator/widgets/mainmenu.d:291
+#: source/creator/panels/parameters.d:343 source/creator/widgets/mainmenu.d:305
 msgid "Copy"
 msgstr "Copia"
 
-#: source/creator/panels/parameters.d:287 source/creator/widgets/mainmenu.d:292
+#: source/creator/panels/parameters.d:351 source/creator/widgets/mainmenu.d:306
 msgid "Paste"
 msgstr "Incolla"
 
-#: source/creator/panels/parameters.d:308
+# also very very hard
+#: source/creator/panels/parameters.d:372
 #, fuzzy
 msgid "Bindings"
-msgstr "Sfumatura"
+msgstr "Attacchi"
 
-#: source/creator/panels/parameters.d:355
+#: source/creator/panels/parameters.d:419
 msgid "Interpolation Mode"
 msgstr "Modalità Interpolazione"
 
-#: source/creator/panels/parameters.d:356
+#: source/creator/panels/parameters.d:420
 msgid "Nearest"
-msgstr "Campionamento a punti"
+msgstr "Più vicino"
 
-#: source/creator/panels/parameters.d:362
+#: source/creator/panels/parameters.d:426
 msgid "Linear"
 msgstr "Lineare"
 
-#: source/creator/panels/parameters.d:372
+#: source/creator/panels/parameters.d:432
+msgid "Cubic"
+msgstr "Cubico"
+
+#: source/creator/panels/parameters.d:442
 #, fuzzy
 msgid "Copy to"
 msgstr "Copia in"
 
-#: source/creator/panels/parameters.d:380
+#: source/creator/panels/parameters.d:450
 msgid "Swap with"
 msgstr "Scambia con"
 
-#: source/creator/panels/parameters.d:561
+#: source/creator/panels/parameters.d:645
 #, fuzzy
 msgid "New Parameter Group"
 msgstr "Proprietà parametro"
 
-#: source/creator/panels/parameters.d:623
+#: source/creator/panels/parameters.d:751
 msgid "Edit Properties"
 msgstr "Modifica Proprietà"
 
-#: source/creator/panels/parameters.d:627
+#: source/creator/panels/parameters.d:755
 msgid "Edit Axes Points"
 msgstr "Modifica punti degli assi"
 
-#: source/creator/panels/parameters.d:631
+#: source/creator/panels/parameters.d:759
 msgid "Split"
 msgstr "Dividi"
 
-#: source/creator/panels/parameters.d:636
+#: source/creator/panels/parameters.d:763
+msgid "To 2D"
+msgstr "A 2D"
+
+#: source/creator/panels/parameters.d:768
 msgid "Flip X"
 msgstr "Capovolgi X"
 
-#: source/creator/panels/parameters.d:642
+#: source/creator/panels/parameters.d:774
 msgid "Flip Y"
 msgstr "Capovolgi Y"
 
-#: source/creator/panels/parameters.d:649
+#: source/creator/panels/parameters.d:781
 msgid "Flip"
 msgstr "Capovolgi"
 
 # Could also translate to "Ricarica Automatica a Specchio", but the english word "Autofill" is also very used and a better fit here.
-#: source/creator/panels/parameters.d:667
+#: source/creator/panels/parameters.d:799
 msgid "Mirrored Autofill"
 msgstr "Autofill a Specchio"
 
-#: source/creator/panels/parameters.d:692
+#: source/creator/panels/parameters.d:824
 msgid "Duplicate"
 msgstr "Duplica"
 
 #. Sets the default value of the param
-#: source/creator/panels/parameters.d:710
+#: source/creator/panels/parameters.d:842
 msgid "Set Starting Position"
 msgstr "Imposta Posizione Iniziale"
 
 #. Arms the parameter for recording values.
-#: source/creator/panels/parameters.d:735
+#: source/creator/panels/parameters.d:867
 #, fuzzy
 msgid "Arm Parameter"
-msgstr "Parametro braccio"
+msgstr "Parametro Braccio"
 
-#: source/creator/panels/parameters.d:766
+#: source/creator/panels/parameters.d:898
 msgid "Add 1D Parameter (0..1)"
 msgstr "Aggiungi Parametro 1D (0..1)"
 
-#: source/creator/panels/parameters.d:774
+#: source/creator/panels/parameters.d:906
 msgid "Add 1D Parameter (-1..1)"
 msgstr "Aggiungi Parametro 1D (-1..1)"
 
-#: source/creator/panels/parameters.d:785
+#: source/creator/panels/parameters.d:917
 msgid "Add 2D Parameter (0..1)"
 msgstr "Aggiungi Parametro 2D (0..1)"
 
-#: source/creator/panels/parameters.d:793
+#: source/creator/panels/parameters.d:925
 msgid "Add 2D Parameter (-1..+1)"
 msgstr "Aggiungi Parametro 2D (-1..+1)"
 
-#: source/creator/panels/parameters.d:805
+#: source/creator/panels/parameters.d:937
 msgid "Add Mouth Shape"
 msgstr "Aggiungi forma della bocca"
 
-#: source/creator/panels/parameters.d:827
+#: source/creator/panels/parameters.d:959
 msgid "Filter, search for specific parameters"
 msgstr "Filtra, cerca per parametri specifici"
 
 #. Textbox
-#: source/creator/panels/parameters.d:865 source/creator/windows/rename.d:42
+#: source/creator/panels/parameters.d:997 source/creator/windows/rename.d:42
 #: source/creator/windows/rename.d:57
 msgid "Rename"
 msgstr "Rinomina"
 
-#: source/creator/panels/parameters.d:869
+#: source/creator/panels/parameters.d:1001
 msgid "Colors"
 msgstr "Colori"
 
 #. CUSTOM COLOR PICKER
 #. Allows user to select a custom color for parameter group.
-#: source/creator/panels/parameters.d:894
+#: source/creator/panels/parameters.d:1026
 msgid "Custom Color"
-msgstr "Colori Personalizzati"
+msgstr "Colore Personalizzato"
 
-#: source/creator/panels/parameters.d:974
+#: source/creator/panels/parameters.d:1097
 #, fuzzy
 msgid "Add Parameter"
 msgstr "Aggiungi Parametro"
 
-#: source/creator/panels/parameters.d:979
+#: source/creator/panels/parameters.d:1102
 msgid "Parameters"
 msgstr "Parametri"
 
@@ -1001,7 +1067,12 @@ msgstr "Luce Ambientale"
 msgid "Scene"
 msgstr "Scena"
 
-#: source/creator/panels/timeline.d:50
+#: source/creator/panels/timeline.d:208
+#, fuzzy
+msgid "Not in Animation Edit mode..."
+msgstr "Non in modalità di modifica dell'animazione..."
+
+#: source/creator/panels/timeline.d:233
 msgid "Timeline"
 msgstr "Linea del tempo"
 
@@ -1017,38 +1088,37 @@ msgstr "Impostazioni Strumento"
 msgid "%s Receiver"
 msgstr "Ricevitore %s"
 
-#: source/creator/panels/tracking.d:59
+#: source/creator/panels/tracking.d:60
 msgid "A reciever which uses your phone and associated app to track your body"
-msgstr ""
-"Un ricevitore che usa il tuo telefono e app associata per tracciare il tuo "
-"corpo"
+msgstr "Un ricevitore che usa il tuo telefono e app associata per tracciare il tuo Non in modalità Modifica animazione..."
 
-#: source/creator/panels/tracking.d:63
+#: source/creator/panels/tracking.d:64
 msgid "Bind Address"
 msgstr "Lega Indirizzo"
 
-#: source/creator/panels/tracking.d:72
+#: source/creator/panels/tracking.d:73
 msgid ""
 "The IP address that the VMC binding server should listen on, default 0.0.0.0"
-msgstr "L' indirizzo IP dove server VMC deve ascoltare, predefinito 0.0.0.0"
+msgstr ""
+"L' indirizzo IP dove server VMC deve ascoltare, predefinito 0.0.0.0"
 
-#: source/creator/panels/tracking.d:75
+#: source/creator/panels/tracking.d:76
 msgid "Port"
 msgstr "Porta"
 
-#: source/creator/panels/tracking.d:84
+#: source/creator/panels/tracking.d:85
 msgid "The port that the VMC binding server should listen on, default 39540"
 msgstr "La porta dove il server VMC deve ascoltare, predefinita 39540"
 
-#: source/creator/panels/tracking.d:87
+#: source/creator/panels/tracking.d:88
 msgid "A reciever which uses the VTubeStudio iOS app"
 msgstr "Un ricevitore che usa l' iOS app VTubeStudio"
 
-#: source/creator/panels/tracking.d:90
+#: source/creator/panels/tracking.d:91
 msgid "iPhone IP"
 msgstr "IP iPhone"
 
-#: source/creator/panels/tracking.d:99
+#: source/creator/panels/tracking.d:100
 msgid ""
 "The IP Address of your iPhone,\n"
 "You can find it in the VSeeFace Config panel in VTube Studio"
@@ -1056,35 +1126,35 @@ msgstr ""
 "L' indirizzo IP del tuo iPhone,\n"
 "Lo puoi trovare nel pannello di configurazione VSeeFace in VTube Studio"
 
-#: source/creator/panels/tracking.d:102
+#: source/creator/panels/tracking.d:103
 #, fuzzy
 msgid "A receiver which uses OpenSeeFace application"
 msgstr "Un ricevitore che usa l' iOS app VTubeStudio"
 
-#: source/creator/panels/tracking.d:104
+#: source/creator/panels/tracking.d:105
 #, fuzzy
 msgid "OSF Bind Address"
-msgstr "Lega Indirizzo"
+msgstr "Indirizzo di collegamento OSF"
 
-#: source/creator/panels/tracking.d:115
+#: source/creator/panels/tracking.d:116
 msgid "OSF Listen Port"
 msgstr "Porta di ascolto OSF"
 
-#: source/creator/panels/tracking.d:127
+#: source/creator/panels/tracking.d:128
 #, fuzzy
 msgid "Tracking Bindings"
-msgstr "Tracciamento"
+msgstr "Attacchi di tracciamento"
 
-#: source/creator/panels/tracking.d:132
+#: source/creator/panels/tracking.d:133
 #, fuzzy, c-format
 msgid "%s bound to %s"
-msgstr "%s->%s è cambiato a %s"
+msgstr "%s vincolato a %s"
 
-#: source/creator/panels/tracking.d:147
+#: source/creator/panels/tracking.d:148
 msgid "Not in Test Mode..."
 msgstr "Non in Modalità Test..."
 
-#: source/creator/panels/tracking.d:153
+#: source/creator/panels/tracking.d:154
 msgid "Tracking"
 msgstr "Tracciamento"
 
@@ -1123,75 +1193,140 @@ msgstr ""
 "Allega il file come un problema git @ https://github.com/Inochi2D/inochi-"
 "creator/issues"
 
-#: source/creator/viewport/common/mesheditor.d:379
-#: source/creator/viewport/common/mesheditor.d:381
-#: source/creator/viewport/common/mesheditor.d:516
+#: source/creator/viewport/common/automesh/contours.d:183
+#: source/creator/viewport/common/automesh/contours.d:185
+#, fuzzy
+msgid "Presets"
+msgstr "Preset"
+
+#: source/creator/viewport/common/automesh/contours.d:186
+#, fuzzy
+msgid "Normal parts"
+msgstr "Parti normali"
+
+#: source/creator/viewport/common/automesh/contours.d:194
+msgid "Detailed mesh"
+msgstr "Griglia dettagliata"
+
+#: source/creator/viewport/common/automesh/contours.d:202
+msgid "Large parts"
+msgstr "Parti grandi"
+
+#: source/creator/viewport/common/automesh/contours.d:210
+msgid "Small parts"
+msgstr "Parti piccole"
+
+#: source/creator/viewport/common/automesh/contours.d:219
+msgid "Thin and minimum parts"
+msgstr "Parti sottili e minime"
+
+#: source/creator/viewport/common/automesh/contours.d:228
+msgid "Preserve edges"
+msgstr "Preserva gli spigoli"
+
+#: source/creator/viewport/common/automesh/contours.d:242
+msgid "Details"
+msgstr "Dettagli"
+
+#: source/creator/viewport/common/automesh/contours.d:245
+msgid "Sampling rate"
+msgstr "Frequenza di campionamento"
+
+#: source/creator/viewport/common/automesh/contours.d:260
+#, fuzzy
+msgid "Mask threshold"
+msgstr "Soglia di maschera"
+
+#: source/creator/viewport/common/automesh/contours.d:273
+#, fuzzy
+msgid "Distance between vertices"
+msgstr "Distanza tra i vertici"
+
+#: source/creator/viewport/common/automesh/contours.d:275
+msgid "Minimum"
+msgstr "Minimo"
+
+#: source/creator/viewport/common/automesh/contours.d:289
+msgid "Maximum"
+msgstr "Massimo"
+
+#: source/creator/viewport/common/automesh/contours.d:357
+msgid ""
+"Specifying scaling factor to apply for contours. If multiple scales are "
+"specified, vertices are populated per scale factors."
+msgstr ""
+"Specificare il fattore di scala da applicare ai contorni. Se vengono specificate più scale,"
+"i vertici vengono popolati per fattori di scala."
+
+#: source/creator/viewport/common/mesheditor.d:427
+#: source/creator/viewport/common/mesheditor.d:429
+#: source/creator/viewport/common/mesheditor.d:569
 msgid "Select"
 msgstr "Seleziona"
 
-#: source/creator/viewport/common/mesheditor.d:379
-#: source/creator/viewport/common/mesheditor.d:381
-#: source/creator/viewport/common/mesheditor.d:516
-#: source/creator/viewport/common/mesheditor.d:518
-#: source/creator/viewport/common/mesheditor.d:561
+#: source/creator/viewport/common/mesheditor.d:427
+#: source/creator/viewport/common/mesheditor.d:429
+#: source/creator/viewport/common/mesheditor.d:569
+#: source/creator/viewport/common/mesheditor.d:571
+#: source/creator/viewport/common/mesheditor.d:614
 msgid "Left Mouse"
 msgstr "Pulsante sinistro del mouse"
 
-#: source/creator/viewport/common/mesheditor.d:382
+#: source/creator/viewport/common/mesheditor.d:430
 msgid "Create"
 msgstr "Crea"
 
-#: source/creator/viewport/common/mesheditor.d:382
+#: source/creator/viewport/common/mesheditor.d:430
 msgid "Ctrl+Left Mouse"
 msgstr "Ctrl+Pulsante sinistro del Mouse"
 
-#: source/creator/viewport/common/mesheditor.d:518
+#: source/creator/viewport/common/mesheditor.d:571
 msgid "Connect/Disconnect"
 msgstr "Connetti/Disconnetti"
 
-#: source/creator/viewport/common/mesheditor.d:519
+#: source/creator/viewport/common/mesheditor.d:572
 #, fuzzy
 msgid "Connect Multiple"
-msgstr "Moltiplica"
+msgstr "Collegamenti multipli"
 
-#: source/creator/viewport/common/mesheditor.d:519
+#: source/creator/viewport/common/mesheditor.d:572
 msgid "Shift+Left Mouse"
-msgstr ""
+msgstr "Shift+Pulsante sinistro del Mouse""
 
-#: source/creator/viewport/common/mesheditor.d:561
+#: source/creator/viewport/common/mesheditor.d:614
 msgid "Deform"
 msgstr "Deforma"
 
-#: source/creator/viewport/common/mesheditor.d:562
-#: source/creator/viewport/common/mesheditor.d:565
+#: source/creator/viewport/common/mesheditor.d:615
+#: source/creator/viewport/common/mesheditor.d:618
 msgid "Switch Mode"
 msgstr "Cambia Modalità"
 
-#: source/creator/viewport/common/mesheditor.d:562
-#: source/creator/viewport/common/mesheditor.d:565
+#: source/creator/viewport/common/mesheditor.d:615
+#: source/creator/viewport/common/mesheditor.d:618
 msgid "TAB"
 msgstr "TAB"
 
-#: source/creator/viewport/common/mesheditor.d:564
+#: source/creator/viewport/common/mesheditor.d:617
 msgid "Create/Destroy"
 msgstr "Crea/Distruggi"
 
-#: source/creator/viewport/common/mesheditor.d:564
+#: source/creator/viewport/common/mesheditor.d:617
 msgid "Left Mouse (x2)"
 msgstr "Tasto sinistro del mouse (x2)"
 
-#: source/creator/viewport/common/mesheditor.d:729
+#: source/creator/viewport/common/mesheditor.d:955
 msgid "Vertex Tool"
 msgstr "Strumento Vertici"
 
-#: source/creator/viewport/common/mesheditor.d:737
+#: source/creator/viewport/common/mesheditor.d:963
 msgid "Edge Tool"
 msgstr "Strumento Angoli"
 
-#: source/creator/viewport/common/mesheditor.d:746
+#: source/creator/viewport/common/mesheditor.d:971
 #, fuzzy
 msgid "Path Deform Tool"
-msgstr "Deforma percorso"
+msgstr "Strumento Deformazione percorso"
 
 #: source/creator/viewport/model/package.d:56
 msgid "Focus Selected"
@@ -1203,122 +1338,136 @@ msgstr "Nessuna parte trovata"
 
 #: source/creator/viewport/model/package.d:123
 #, fuzzy
-msgid " Edit Mesh"
-msgstr " Modifica griglia"
+msgid " Copy Mesh"
+msgstr " Copia Griglia"
 
-#: source/creator/viewport/model/package.d:129
+#: source/creator/viewport/model/package.d:123
+#, fuzzy
+msgid " Edit Mesh"
+msgstr " Modifica Griglia"
+
+#: source/creator/viewport/model/package.d:131
 msgid "Copy Mesh Data"
 msgstr "Copia Dati Griglia"
 
-#: source/creator/viewport/model/package.d:163
+#: source/creator/viewport/model/package.d:165
 #, fuzzy
 msgid "Hide Vertices"
-msgstr "Nascondi vertici"
+msgstr "Nascondi Vertici"
 
-#: source/creator/viewport/model/package.d:163
+#: source/creator/viewport/model/package.d:165
 #, fuzzy
 msgid "Show Vertices"
-msgstr "Mostra vertici"
+msgstr "Mostra Vertici"
 
-#: source/creator/viewport/model/package.d:169
+#: source/creator/viewport/model/package.d:171
 #, fuzzy
 msgid "Hide Bounds"
-msgstr "Nascondi bordi"
+msgstr "Nascondi Bordi"
 
-#: source/creator/viewport/model/package.d:169
+#: source/creator/viewport/model/package.d:171
 #, fuzzy
 msgid "Show Bounds"
-msgstr "Mostra bordi"
+msgstr "Mostra Bordi"
 
-#: source/creator/viewport/model/package.d:175
+#: source/creator/viewport/model/package.d:177
 #, fuzzy
 msgid "Hide Orientation Gizmo"
 msgstr "Nascondi orientamento Gizmo"
 
-#: source/creator/viewport/model/package.d:175
+#: source/creator/viewport/model/package.d:177
 #, fuzzy
 msgid "Show Orientation Gizmo"
 msgstr "Mostra orientamento Gizmo"
 
-#: source/creator/viewport/model/package.d:179
+#: source/creator/viewport/model/package.d:181
 msgid "Gizmos"
 msgstr "Gizmo"
 
-#: source/creator/viewport/package.d:255
+#: source/creator/viewport/package.d:260
 #, fuzzy
 msgid "No tool selected..."
 msgstr "Nessun nodo selezionato..."
 
-#: source/creator/viewport/vertex/package.d:39
+#: source/creator/viewport/vertex/package.d:48
 msgid "Flip Horizontally"
 msgstr "Capovolgi Orizontalmente"
 
-#: source/creator/viewport/vertex/package.d:44
+#: source/creator/viewport/vertex/package.d:57
 msgid "Flip Vertically"
 msgstr "Capovolgi Verticalmente"
 
-#: source/creator/viewport/vertex/package.d:54
+#: source/creator/viewport/vertex/package.d:67
 msgid "Mirror Horizontally"
 msgstr "Specchia Orizontalmente"
 
-#: source/creator/viewport/vertex/package.d:62
+#: source/creator/viewport/vertex/package.d:75
 msgid "Mirror Vertically"
 msgstr "Specchia Verticalmente"
 
-#: source/creator/viewport/vertex/package.d:73
+#: source/creator/viewport/vertex/package.d:86
 #, fuzzy
 msgid "Triangulate vertices"
 msgstr "Triangola vertici"
 
 #. Button which bakes some auto generated content
 #. In this case, a mesh is baked from the triangulation.
-#: source/creator/viewport/vertex/package.d:80
+#: source/creator/viewport/vertex/package.d:93
+#: source/creator/viewport/vertex/package.d:127
 msgid "Bake"
 msgstr "Cucina"
 
-#: source/creator/viewport/vertex/package.d:87
+#: source/creator/viewport/vertex/package.d:100
 msgid "Bakes the triangulation, applying it to the mesh."
 msgstr "Cuoce la triangolazione, applicandola alla griglia."
 
-#: source/creator/viewport/vertex/package.d:91
+#: source/creator/viewport/vertex/package.d:104
 #, fuzzy
 msgid "Triangulation Options"
-msgstr "Triangola"
+msgstr "Opzioni di triangolazione"
 
-#: source/creator/viewport/vertex/package.d:100
+#: source/creator/viewport/vertex/package.d:134
+msgid "Bakes the auto mesh."
+msgstr "Cucina la griglia automatica."
+
+#: source/creator/viewport/vertex/package.d:138
+msgid "Auto Meshing Options"
+msgstr "Opzioni generazione Griglia automatica"
+
+#: source/creator/viewport/vertex/package.d:147
 #, fuzzy
 msgid " Apply"
-msgstr " Applica"
+msgstr " Applica"
 
-#: source/creator/viewport/vertex/package.d:106
+#: source/creator/viewport/vertex/package.d:153
 msgid "Are you sure?"
-msgstr " Sei sicuro?"
+msgstr "Sei sicuro?"
 
-#: source/creator/viewport/vertex/package.d:107
+#: source/creator/viewport/vertex/package.d:154
 msgid ""
 "The layout of the mesh has changed, all deformations to this mesh will be "
 "deleted if you continue."
 msgstr ""
-"Il layout della griglia è cambiato, tutte le deformazioni di questa griglia saranno "
-"cancellate se si continua."
+"Il layout della griglia è cambiato, tutte le deformazioni di questa griglia "
+"saranno cancellate se si continua."
 
-#: source/creator/viewport/vertex/package.d:118
+#: source/creator/viewport/vertex/package.d:165
 #: source/creator/windows/paramsplit.d:168
 msgid "Apply"
 msgstr "Applica"
 
-#: source/creator/viewport/vertex/package.d:122
+#: source/creator/viewport/vertex/package.d:169
 #, fuzzy
 msgid " Cancel"
-msgstr " Annulla"
+msgstr " Annulla"
 
 #. Cancels the edited state for the axies points
-#: source/creator/viewport/vertex/package.d:133
+#: source/creator/viewport/vertex/package.d:182
 #: source/creator/widgets/dialog.d:116 source/creator/windows/paramaxes.d:169
 msgid "Cancel"
 msgstr "Annulla"
 
-#: source/creator/viewport/vertex/package.d:207
+#: source/creator/viewport/vertex/package.d:267
 msgid ""
 "Cannot apply invalid mesh\n"
 "At least 3 vertices forming a triangle is needed."
@@ -1339,8 +1488,8 @@ msgstr "Sì"
 msgid "No"
 msgstr "No"
 
-#: source/creator/widgets/mainmenu.d:42 source/creator/windows/welcome.d:216
-#: source/creator/windows/welcome.d:221
+#: source/creator/widgets/mainmenu.d:42 source/creator/windows/welcome.d:230
+#: source/creator/windows/welcome.d:235
 #, fuzzy
 msgid "Open..."
 msgstr "Apri..."
@@ -1376,7 +1525,7 @@ msgstr "Recenti"
 #. it here.
 #: source/creator/widgets/mainmenu.d:148 source/creator/windows/imgexport.d:122
 #: source/creator/windows/paramaxes.d:176
-#: source/creator/windows/paramprop.d:103 source/creator/windows/trkbind.d:129
+#: source/creator/windows/paramprop.d:102 source/creator/windows/trkbind.d:129
 msgid "Save"
 msgstr "Salva"
 
@@ -1392,7 +1541,7 @@ msgstr "Documento Photoshop"
 msgid "Import a standard Photoshop PSD file."
 msgstr "Importa uno standard file PSD di Photoshop."
 
-#: source/creator/widgets/mainmenu.d:163 source/creator/widgets/mainmenu.d:217
+#: source/creator/widgets/mainmenu.d:163 source/creator/widgets/mainmenu.d:231
 msgid "Inochi2D Puppet"
 msgstr "Pupazzo Inochi2D"
 
@@ -1424,150 +1573,185 @@ msgstr "Documento Photoshop"
 
 #: source/creator/widgets/mainmenu.d:200
 #, fuzzy
+msgid "Image Files"
+msgstr "Cartella immagine"
+
+#: source/creator/widgets/mainmenu.d:212
+msgid "Merges (adds) selected image files to project"
+msgstr "Unisce (aggiunge) i file immagine selezionati al progetto"
+
+#: source/creator/widgets/mainmenu.d:214
+#, fuzzy
 msgid "Inochi Creator Project"
 msgstr "Crashdump di Inochi Creator"
 
-#: source/creator/widgets/mainmenu.d:211
+#: source/creator/widgets/mainmenu.d:225
 msgid "Merge another Inochi Creator project in to this one"
 msgstr "Unire un altro progetto Inochi Creator a questo"
 
-#: source/creator/widgets/mainmenu.d:216 source/creator/windows/inpexport.d:243
+#: source/creator/widgets/mainmenu.d:230 source/creator/windows/inpexport.d:243
 msgid "Export"
 msgstr "Esporta"
 
-#: source/creator/widgets/mainmenu.d:222 source/creator/widgets/mainmenu.d:231
-#: source/creator/widgets/mainmenu.d:240 source/creator/widgets/mainmenu.d:249
+#: source/creator/widgets/mainmenu.d:236 source/creator/widgets/mainmenu.d:245
+#: source/creator/widgets/mainmenu.d:254 source/creator/widgets/mainmenu.d:263
 msgid "Export..."
 msgstr "Esporta..."
 
-#: source/creator/widgets/mainmenu.d:225
+#: source/creator/widgets/mainmenu.d:239
 msgid "Image"
 msgstr "Immagine"
 
-#: source/creator/widgets/mainmenu.d:226
+#: source/creator/widgets/mainmenu.d:240
 msgid "PNG (*.png)"
 msgstr "PNG (*.png)"
 
-#: source/creator/widgets/mainmenu.d:235
+#: source/creator/widgets/mainmenu.d:249
 msgid "JPEG (*.jpeg)"
 msgstr "JPEG (*.jpeg)"
 
-#: source/creator/widgets/mainmenu.d:244
+#: source/creator/widgets/mainmenu.d:258
 msgid "TARGA (*.tga)"
 msgstr "TARGA (*.tga)"
 
-#: source/creator/widgets/mainmenu.d:255
+#: source/creator/widgets/mainmenu.d:269
 msgid "Video"
 msgstr "Video"
 
 #. Close Project option
-#: source/creator/widgets/mainmenu.d:269
+#: source/creator/widgets/mainmenu.d:283
 msgid "Close Project"
 msgstr "Chiudi il progetto"
 
 #. Quit option
-#: source/creator/widgets/mainmenu.d:281
+#: source/creator/widgets/mainmenu.d:295
 msgid "Quit"
 msgstr "Esci"
 
-#: source/creator/widgets/mainmenu.d:285
+#: source/creator/widgets/mainmenu.d:299
 msgid "Edit"
 msgstr "Modifica"
 
-#: source/creator/widgets/mainmenu.d:286
+#: source/creator/widgets/mainmenu.d:300
 msgid "Undo"
 msgstr "Annulla"
 
-#: source/creator/widgets/mainmenu.d:287
+#: source/creator/widgets/mainmenu.d:301
 msgid "Redo"
 msgstr "Rifai"
 
-#: source/creator/widgets/mainmenu.d:290
+#: source/creator/widgets/mainmenu.d:304
 msgid "Cut"
 msgstr "Taglia"
 
-#: source/creator/widgets/mainmenu.d:295 source/creator/windows/settings.d:199
+#: source/creator/widgets/mainmenu.d:309 source/creator/windows/settings.d:203
 msgid "Settings"
 msgstr "Impostazioni"
 
-#: source/creator/widgets/mainmenu.d:303
+#: source/creator/widgets/mainmenu.d:317
 #, fuzzy
 msgid "ImGui Debugging"
 msgstr "Debugger ImGui"
 
-#: source/creator/widgets/mainmenu.d:306
+#: source/creator/widgets/mainmenu.d:320
 msgid "Style Editor"
 msgstr "Editore stile"
 
-#: source/creator/widgets/mainmenu.d:307
+#: source/creator/widgets/mainmenu.d:321
 msgid "ImGui Debugger"
 msgstr "Debugger ImGui"
 
-#: source/creator/widgets/mainmenu.d:308
+#: source/creator/widgets/mainmenu.d:322
 msgid "ImGui Metrics"
 msgstr "Metriche ImGui"
 
-#: source/creator/widgets/mainmenu.d:309
+#: source/creator/widgets/mainmenu.d:323
 msgid "ImGui Stack Tool"
 msgstr "Strumento ImGui Stack"
 
-#: source/creator/widgets/mainmenu.d:314
+#: source/creator/widgets/mainmenu.d:328
 msgid "View"
 msgstr "Visualizza"
 
-#: source/creator/widgets/mainmenu.d:315
+#: source/creator/widgets/mainmenu.d:329
 msgid "Reset Layout"
 msgstr "Ripristina la disposizione"
 
-#: source/creator/widgets/mainmenu.d:324
+#: source/creator/widgets/mainmenu.d:338
 msgid "Panels"
 msgstr "Pannelli"
 
-#: source/creator/widgets/mainmenu.d:343
+#: source/creator/widgets/mainmenu.d:357
 msgid "Configuration"
 msgstr "Configurazione"
 
 #. Opens the directory where configuration resides in the user's file browser.
-#: source/creator/widgets/mainmenu.d:346
+#: source/creator/widgets/mainmenu.d:360
 msgid "Open Configuration Folder"
 msgstr "Apri la Cartella di Configurazione"
 
-#: source/creator/widgets/mainmenu.d:355
+#: source/creator/widgets/mainmenu.d:369
 msgid "Extras"
 msgstr "Extra"
 
-#: source/creator/widgets/mainmenu.d:358
+#: source/creator/widgets/mainmenu.d:372
 msgid "Save Screenshot"
 msgstr "Salva Screenshot"
 
-#: source/creator/widgets/mainmenu.d:363
+#: source/creator/widgets/mainmenu.d:377
 #, fuzzy
 msgid "Save Screenshot..."
 msgstr "Salva screenshot"
 
-#: source/creator/widgets/mainmenu.d:388
+#: source/creator/widgets/mainmenu.d:402
 msgid "Saves screenshot as PNG of the editor framebuffer."
 msgstr "Salva screenshot in formato PNG del framebuffer dell' editor."
 
-#: source/creator/widgets/mainmenu.d:390
+#: source/creator/widgets/mainmenu.d:404
 msgid "Show Stats for Nerds"
 msgstr "Mostra statistiche per Nerd"
 
-#: source/creator/widgets/mainmenu.d:399
+#: source/creator/widgets/mainmenu.d:413
 msgid "Tools"
 msgstr "Strumenti"
 
-#: source/creator/widgets/mainmenu.d:402
+#: source/creator/widgets/mainmenu.d:417
+#, fuzzy
+msgid "Puppet Data"
+msgstr "Pupazzo"
+
+#. Opens the directory where configuration resides in the user's file browser.
+#: source/creator/widgets/mainmenu.d:421
+msgid "Import Inochi Session Data"
+msgstr "Importa dati di Inochi Session"
+
+#: source/creator/widgets/mainmenu.d:431
+msgid "Successfully overwrote Inochi Session tracking data..."
+msgstr "Sovrascritto i dati di tracciamento do Inochi Session con successo."
+
+#: source/creator/widgets/mainmenu.d:433
+msgid "There was no Inochi Session data to import!"
+msgstr "Non ci sono dati di Inochi Session da importare!"
+
+#: source/creator/widgets/mainmenu.d:439
+msgid ""
+"Imports tracking data from an exported Inochi2D model which has been set up "
+"in Inochi Session."
+msgstr ""
+"Importa i dati di tracciamento da un modello Inochi2D esportato che è stato impostato "
+"in Inochi Session".
+
+#: source/creator/widgets/mainmenu.d:442
 msgid "Puppet Texturing"
 msgstr "Texturing Pupazzo"
 
 #. Premultiply textures, causing every pixel value in every texture to
 #. be multiplied by their Alpha (transparency) component
-#: source/creator/widgets/mainmenu.d:407
+#: source/creator/widgets/mainmenu.d:447
 msgid "Premultiply textures"
 msgstr "Pre-moltiplica le texture"
 
-#: source/creator/widgets/mainmenu.d:411
+#: source/creator/widgets/mainmenu.d:451
 msgid ""
 "Premultiplies textures by their alpha component.\n"
 "\n"
@@ -1579,11 +1763,11 @@ msgstr ""
 "Da usare solo se le texture appaiono confuse dopo l'importazione di file da "
 "una vecchia versione di Inochi Creator."
 
-#: source/creator/widgets/mainmenu.d:413
+#: source/creator/widgets/mainmenu.d:453
 msgid "Bleed textures..."
 msgstr "Disciogli colore delle texture..."
 
-#: source/creator/widgets/mainmenu.d:416
+#: source/creator/widgets/mainmenu.d:456
 msgid ""
 "Causes color to bleed out in to fully transparent pixels, this solves "
 "outlines on straight alpha compositing.\n"
@@ -1596,32 +1780,32 @@ msgstr ""
 "Da usare solo se il motore di gioco non può usare la componente alfa "
 "premoltiplicata."
 
-#: source/creator/widgets/mainmenu.d:418
+#: source/creator/widgets/mainmenu.d:458
 msgid "Generate Mipmaps..."
 msgstr "Genera Mipmap..."
 
-#: source/creator/widgets/mainmenu.d:421
+#: source/creator/widgets/mainmenu.d:461
 msgid "Regenerates the puppet's mipmaps."
 msgstr "Rigenera le mipmap del pupazzo."
 
-#: source/creator/widgets/mainmenu.d:423
+#: source/creator/widgets/mainmenu.d:463
 msgid "Generate fake layer name info..."
 msgstr "Genera informazioni false sul nome del livello..."
 
-#: source/creator/widgets/mainmenu.d:433
+#: source/creator/widgets/mainmenu.d:473
 msgid "Generates fake layer info based on node names"
 msgstr "Genera informazioni false sui livelli in base ai nomi dei nodi"
 
-#: source/creator/widgets/mainmenu.d:439
+#: source/creator/widgets/mainmenu.d:479
 msgid "Puppet Recovery"
 msgstr "Recupera Pupazzo"
 
 #. FULL REPAIR
-#: source/creator/widgets/mainmenu.d:443
+#: source/creator/widgets/mainmenu.d:483
 msgid "Attempt full repair..."
 msgstr "Prova riparazione completa..."
 
-#: source/creator/widgets/mainmenu.d:446
+#: source/creator/widgets/mainmenu.d:486
 msgid ""
 "Attempts all the recovery and repair methods below on the currently loaded "
 "model"
@@ -1630,54 +1814,54 @@ msgstr ""
 "corrente"
 
 #. REGEN NODE IDs
-#: source/creator/widgets/mainmenu.d:449
+#: source/creator/widgets/mainmenu.d:489
 msgid "Regenerate Node IDs"
 msgstr "Rigenera ID nodi"
 
-#: source/creator/widgets/mainmenu.d:453
+#: source/creator/widgets/mainmenu.d:493
 msgid "Regenerates all the unique IDs for the model"
 msgstr "Rigenera tutti gli ID unici per il modello"
 
-#: source/creator/widgets/mainmenu.d:459
+#: source/creator/widgets/mainmenu.d:499
 msgid "Verify INP File..."
 msgstr "Verifica file INP..."
 
-#: source/creator/widgets/mainmenu.d:462
+#: source/creator/widgets/mainmenu.d:502
 msgid "Attempts to verify and repair INP files"
 msgstr "Prova a verificare e riparare file IMP"
 
-#: source/creator/widgets/mainmenu.d:467
+#: source/creator/widgets/mainmenu.d:507
 msgid "Help"
 msgstr "Aiuto"
 
-#: source/creator/widgets/mainmenu.d:469
+#: source/creator/widgets/mainmenu.d:509
 msgid "Online Documentation"
 msgstr "Documentazione online"
 
-#: source/creator/widgets/mainmenu.d:473
+#: source/creator/widgets/mainmenu.d:513
 msgid "Inochi2D Documentation"
 msgstr "Documentazione Inochi2D"
 
-#: source/creator/widgets/mainmenu.d:481
+#: source/creator/widgets/mainmenu.d:521
 msgid "Report a Bug"
 msgstr "Riporta un Problema"
 
-#: source/creator/widgets/mainmenu.d:484
+#: source/creator/widgets/mainmenu.d:524
 msgid "Request a Feature"
 msgstr "Richiedi una nuova funzione"
 
-#: source/creator/widgets/mainmenu.d:492 source/creator/windows/about.d:133
+#: source/creator/widgets/mainmenu.d:532 source/creator/windows/about.d:133
 msgid "About"
 msgstr "Informazioni su"
 
 #. Donate button
 #. NOTE: Is this too obstructive in the UI?
-#: source/creator/widgets/mainmenu.d:506 source/creator/widgets/mainmenu.d:522
+#: source/creator/widgets/mainmenu.d:546 source/creator/widgets/mainmenu.d:562
 #: source/creator/windows/about.d:124
 msgid "Donate"
 msgstr "Dona"
 
-#: source/creator/widgets/mainmenu.d:525
+#: source/creator/widgets/mainmenu.d:565
 msgid "Support development via Patreon"
 msgstr "Supporta lo sviluppo via Patreon"
 
@@ -1697,7 +1881,7 @@ msgstr "Ripristina Fisica"
 #: source/creator/widgets/toolbar.d:69
 #, fuzzy
 msgid "Edit Puppet"
-msgstr "Pupazzo"
+msgstr "Modifica Pupazzo"
 
 #: source/creator/widgets/toolbar.d:74
 msgid "Edit Animation"
@@ -1706,12 +1890,12 @@ msgstr "Modifica Animazione"
 #: source/creator/widgets/toolbar.d:79
 #, fuzzy
 msgid "Test Puppet"
-msgstr "Pupazzo"
+msgstr "Prova Pupazzo"
 
 #: source/creator/windows/imgexport.d:93
 #, fuzzy
 msgid "Export Settings"
-msgstr "Impostazioni Strumento"
+msgstr "Impostazioni di Esportazione"
 
 #: source/creator/windows/imgexport.d:110
 msgid "Allow Transparency"
@@ -1719,12 +1903,12 @@ msgstr "Consentire la Trasparenza"
 
 #: source/creator/windows/imgexport.d:111
 msgid "Use Post Processing"
-msgstr ""
+msgstr "Usa la Post-Elaborazione"
 
 #: source/creator/windows/imgexport.d:132
 #, fuzzy
 msgid "Export Image..."
-msgstr "Esporta..."
+msgstr "Esporta Immagine..."
 
 #: source/creator/windows/inpexport.d:161
 msgid "Atlassing"
@@ -1744,7 +1928,7 @@ msgstr "Slot Texture"
 msgid "Padding"
 msgstr "Imbottitura"
 
-#: source/creator/windows/inpexport.d:221 source/creator/windows/settings.d:163
+#: source/creator/windows/inpexport.d:221 source/creator/windows/settings.d:167
 msgid "No settings for this category."
 msgstr "Nessuna impostazione per questa categoria."
 
@@ -1753,8 +1937,8 @@ msgid ""
 "A texture was too large to fit the texture atlas, the textures have been "
 "scaled down."
 msgstr ""
-"Una texture era troppo grande per adattarsi all'atlante delle texture, "
-"le texture sono state ridimensionate."
+"Una texture era troppo grande per adattarsi all'atlante delle texture, le "
+"texture sono state ridimensionate."
 
 #: source/creator/windows/inpexport.d:250
 #, fuzzy
@@ -1785,22 +1969,22 @@ msgstr "Uno o più punti degli assi si sovrappongono, questo non è consentito."
 msgid "Parameter Axes Points"
 msgstr "Parametro Punti Assi"
 
-#: source/creator/windows/paramprop.d:44
+#: source/creator/windows/paramprop.d:43
 #, fuzzy
 msgid "Parameter Name"
 msgstr "Nome Parametro"
 
-#: source/creator/windows/paramprop.d:49
+#: source/creator/windows/paramprop.d:48
 #, fuzzy
 msgid "Parameter Constraints"
 msgstr "Limiti Parametro"
 
-#: source/creator/windows/paramprop.d:106
+#: source/creator/windows/paramprop.d:105
 msgid "Name is already taken"
 msgstr "Il nome è già in uso"
 
 #. Title for the parameter properties window.
-#: source/creator/windows/paramprop.d:139
+#: source/creator/windows/paramprop.d:138
 #, fuzzy
 msgid "Parameter Properties"
 msgstr "Proprietà parametro"
@@ -1854,7 +2038,8 @@ msgstr "Trasla di nuovo"
 msgid ""
 "Moves all nodes so that they visually match their position in the canvas."
 msgstr ""
-"Sposta tutti i nodi in modo che corrispondano visivamente alla loro posizione nella tela."
+"Sposta tutti i nodi in modo che corrispondano visivamente alla loro "
+"posizione nella tela."
 
 #: source/creator/windows/psdmerge.d:451
 msgid "PSD Merging"
@@ -1865,59 +2050,66 @@ msgstr "Unione PSD"
 msgid "Rename %s..."
 msgstr "Rinomina %s..."
 
-#: source/creator/windows/settings.d:78
+#: source/creator/windows/settings.d:77 source/creator/windows/settings.d:104
 msgid "Look and Feel"
 msgstr "Aspetto e Percezione"
 
-#: source/creator/windows/settings.d:86
+#: source/creator/windows/settings.d:85
 #, fuzzy
 msgid "Accessbility"
 msgstr "Accessibilità"
 
-#: source/creator/windows/settings.d:107 source/creator/windows/welcome.d:164
+#: source/creator/windows/settings.d:105 source/creator/windows/welcome.d:173
 msgid "Color Theme"
 msgstr "Tema"
 
-#: source/creator/windows/settings.d:107 source/creator/windows/settings.d:108
-#: source/creator/windows/welcome.d:164 source/creator/windows/welcome.d:165
+#: source/creator/windows/settings.d:105 source/creator/windows/settings.d:106
+#: source/creator/windows/welcome.d:173 source/creator/windows/welcome.d:174
 msgid "Dark"
 msgstr "Scuro"
 
-#: source/creator/windows/settings.d:107 source/creator/windows/settings.d:109
-#: source/creator/windows/welcome.d:164 source/creator/windows/welcome.d:166
+#: source/creator/windows/settings.d:105 source/creator/windows/settings.d:107
+#: source/creator/windows/welcome.d:173 source/creator/windows/welcome.d:175
 msgid "Light"
 msgstr "Chiaro"
 
-#: source/creator/windows/settings.d:115 source/creator/windows/welcome.d:150
+#: source/creator/windows/settings.d:113 source/creator/windows/welcome.d:159
 msgid "Language"
 msgstr "Lingua"
 
-#: source/creator/windows/settings.d:130 source/creator/windows/welcome.d:172
+#: source/creator/windows/settings.d:132 source/creator/windows/welcome.d:185
 #, fuzzy
 msgid "UI Scale"
 msgstr "Scala Interfaccia"
 
-#: source/creator/windows/settings.d:139
+#: source/creator/windows/settings.d:142
 msgid "Max Undo History"
 msgstr "Dimensione cronologia passaggi"
 
-#: source/creator/windows/settings.d:145
+#: source/creator/windows/settings.d:148
 msgid "Linux Tweaks"
 msgstr "Tweak per Linux"
 
-#: source/creator/windows/settings.d:147
+#: source/creator/windows/settings.d:150
 msgid "Disable Compositor"
 msgstr "Disattiva Compositor"
 
-#: source/creator/windows/settings.d:155
+#: source/creator/windows/settings.d:157
+#, fuzzy
+msgid "Accessibility"
+msgstr "Accessibilità"
+
+#: source/creator/windows/settings.d:159
 msgid "Use OpenDyslexic Font"
 msgstr "Usa il font OpenDyslexic"
 
-#: source/creator/windows/settings.d:176 source/creator/windows/welcome.d:183
+#: source/creator/windows/settings.d:180 source/creator/windows/welcome.d:197
 msgid "Inochi Creator needs to be restarted for some changes to take effect."
-msgstr "Per rendere effettive alcune modifiche, è necessario riavviare Inochi Creator."
+msgstr ""
+"Per rendere effettive alcune modifiche, è necessario riavviare Inochi "
+"Creator."
 
-#: source/creator/windows/settings.d:184
+#: source/creator/windows/settings.d:188
 msgid "Done"
 msgstr "Fatto"
 
@@ -1982,66 +2174,64 @@ msgstr "Lega Tracciamento al Parametro"
 msgid "Unsupported"
 msgstr "Non supportato"
 
-#. Banner Artist Name
-#: source/creator/windows/welcome.d:121
-#, c-format
-msgid "Art by %s"
-msgstr "Art di %s"
-
-#: source/creator/windows/welcome.d:139
+#: source/creator/windows/welcome.d:148
 msgid "Quick Setup"
 msgstr "Impostazione Rapida"
 
-#: source/creator/windows/welcome.d:196
+#: source/creator/windows/welcome.d:210
 msgid "Next"
 msgstr "Prossimo"
 
-#: source/creator/windows/welcome.d:208
+#: source/creator/windows/welcome.d:222
 msgid "Create Project"
 msgstr "Crea Progetto"
 
-#: source/creator/windows/welcome.d:211
+#: source/creator/windows/welcome.d:225
 msgid "New..."
 msgstr "Nuovo..."
 
-#: source/creator/windows/welcome.d:229
+#: source/creator/windows/welcome.d:243
 #, fuzzy
 msgid "Import PSD..."
 msgstr "Importa PSD..."
 
-#: source/creator/windows/welcome.d:238
+#: source/creator/windows/welcome.d:252
 msgid "Recent Projects"
 msgstr "Progetti Recenti"
 
-#: source/creator/windows/welcome.d:262
+#: source/creator/windows/welcome.d:276
 msgid "On the Web"
 msgstr "Sul Web"
 
-#: source/creator/windows/welcome.d:266
+#: source/creator/windows/welcome.d:280
 msgid "Website"
 msgstr "Sito Web"
 
-#: source/creator/windows/welcome.d:270
+#: source/creator/windows/welcome.d:284
 #, fuzzy
 msgid "Documentation"
 msgstr "Documentazione"
 
-#: source/creator/windows/welcome.d:274
+#: source/creator/windows/welcome.d:288
 msgid "Join our Discord"
 msgstr "Unisciti al nostro Discord"
 
-#: source/creator/windows/welcome.d:280
+#: source/creator/windows/welcome.d:294
 msgid "Patreon"
 msgstr "Patreon"
 
-#: source/creator/windows/welcome.d:283
+#: source/creator/windows/welcome.d:297
 msgid "Github Sponsors"
 msgstr "Sponsor Github"
 
-#: source/creator/windows/welcome.d:310
+#: source/creator/windows/welcome.d:324
 #, fuzzy
 msgid "Inochi Creator Start"
 msgstr "Avvio Inochi Creator"
+
+#, c-format
+#~ msgid "Art by %s"
+#~ msgstr "Art di %s"
 
 #~ msgid "Automatically connects vertices"
 #~ msgstr "Connetti vertici automaticamente"
