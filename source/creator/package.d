@@ -278,6 +278,7 @@ void incSaveProject(string path, string autosaveStamp = "") {
         inWriteINPPuppet(incActivePuppet(), finalPath);
 
         if (!isAutosave) incReleaseLockfile();
+        incActivePuppet().resetDrivers();
 
         incSetStatus(_("%s saved successfully.").format(currProjectPath));
         incSetWindowTitle(currProjectPath.baseName);
