@@ -66,6 +66,10 @@ protected:
                                 incInspectorDeformComposite(composite, param, cursor);
                             }
 
+                            if (SimplePhysics phys = cast(SimplePhysics)node) {
+                                incInspectorDeformSimplePhysics(phys, param, cursor);
+                            }
+
                         } else {
                             incModelModeHeader(node);
                             incInspectorModelTRS(node);
@@ -1623,6 +1627,63 @@ void incInspectorDeformComposite(Composite node, Parameter param, vec2u cursor) 
         incInspectorDeformSliderFloat("###Opacity", "opacity", 0, 1f, node, param, cursor);
         igSpacing();
         igSpacing();
+    }
+    incEndCategory();
+}
+
+void incInspectorDeformSimplePhysics(SimplePhysics node, Parameter param, vec2u cursor) {
+    if (incBeginCategory(__("Simple Physics"))) {
+        float adjustSpeed = 1;
+        igPushID("SimplePhysics");
+
+            igPushID(0);
+                incText(_("Gravity scale"));
+                incInspectorDeformDragFloat("###Gravity", "gravity", adjustSpeed/100, -float.max, float.max, "%.2f", node, param, cursor);
+                igSpacing();
+                igSpacing();
+            igPopID();
+
+            igPushID(1);
+                incText(_("Length"));
+                incInspectorDeformDragFloat("###Length", "length", adjustSpeed/100, 0, float.max, "%.2f", node, param, cursor);
+                igSpacing();
+                igSpacing();
+            igPopID();
+
+            igPushID(2);
+                incText(_("Resonant frequency"));
+                incInspectorDeformDragFloat("###ResFreq", "frequency", adjustSpeed/100, 0.01, 30, "%.2f", node, param, cursor);
+                igSpacing();
+                igSpacing();
+            igPopID();
+
+            igPushID(3);
+                incText(_("Damping"));
+                incInspectorDeformDragFloat("###AngleDamp", "angleDamping", adjustSpeed/100, 0, 5, "%.2f", node, param, cursor);
+            igPopID();
+
+            igPushID(4);
+                incInspectorDeformDragFloat("###Length", "lengthDamping", adjustSpeed/100, 0, 5, "%.2f", node, param, cursor);
+                igSpacing();
+                igSpacing();
+            igPopID();
+
+            igPushID(5);
+                incText(_("Output scale"));
+                incInspectorDeformDragFloat("###OutScaleX", "outputScale.x", adjustSpeed/100, 0, float.max, "%.2f", node, param, cursor);
+            igPopID();
+
+            igPushID(6);
+                incInspectorDeformDragFloat("###OutScaleY", "outputScale.y", adjustSpeed/100, 0, float.max, "%.2f", node, param, cursor);
+                igSpacing();
+                igSpacing();
+            igPopID();
+
+            // Padding
+            igSpacing();
+            igSpacing();
+
+        igPopID();
     }
     incEndCategory();
 }
