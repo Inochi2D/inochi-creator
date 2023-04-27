@@ -64,6 +64,9 @@ private:
     void regenPreview() {
         preview = incINPExportGenPreview(incActivePuppet(), settings);
         wasScaledForced = preview.outputScale != 1;
+        if (wasScaledForced) {
+            settings.scale = preview.outputScale;
+        }
     }
 
     void setBlending(BlendMode mode) {
@@ -134,36 +137,45 @@ protected:
                             incTextureSlotUntitled("PREVIEW0", preview.preview, ImVec2(previewSize, previewSize), 64);
                         igIndent();
 
-                        if (igBeginCombo(__("Resolution"), atlasResolutionString)) {
+                        incText(_("Atlas Settings"));
+                        igIndent();
+                            if (igBeginCombo(__("Resolution"), atlasResolutionString)) {
 
-                            size_t size = 1024;
-                            foreach(i; 0..3) {
-                                size <<= 1;
+                                size_t size = 1024;
+                                foreach(i; 0..3) {
+                                    size <<= 1;
 
-                                const(char)* sizestr = "%1$sx%1$s".format(size.text).toStringz;
-                                if (igMenuItem(sizestr, null, settings.atlasResolution == size)) {
-                                    settings.atlasResolution = size;
-                                    atlasResolutionString = sizestr;
-                                    this.regenPreview();
+                                    const(char)* sizestr = "%1$sx%1$s".format(size.text).toStringz;
+                                    if (igMenuItem(sizestr, null, settings.atlasResolution == size)) {
+                                        settings.atlasResolution = size;
+                                        atlasResolutionString = sizestr;
+                                        this.regenPreview();
+                                    }
                                 }
+                                igEndCombo();
                             }
-                            igEndCombo();
-                        }
 
-                        igCheckbox(__("Non-linear Scaling"), &settings.nonLinearScaling);
-                        incTooltip(_("Whether too large parts should individually be scaled down instead of all parts being scaled down uniformly."));
+                            igCheckbox(__("Non-linear Scaling"), &settings.nonLinearScaling);
+                            incTooltip(_("Whether too large parts should individually be scaled down instead of all parts being scaled down uniformly."));
 
-                        int resScaleInt = cast(int)(settings.scale*100);
-                        if (igInputInt(__("Texture Scale"), &resScaleInt, 1, 10)) {
-                            resScaleInt = clamp(resScaleInt, 25, 200);
-                            settings.scale = (cast(float)resScaleInt/100.0);
-                            this.regenPreview();
-                        }
+                            int resScaleInt = cast(int)(settings.scale*100);
+                            if (igInputInt(__("Texture Scale"), &resScaleInt, 1, 10)) {
+                                resScaleInt = clamp(resScaleInt, 25, 200);
+                                settings.scale = (cast(float)resScaleInt/100.0);
+                                this.regenPreview();
+                            }
 
-                        if (igInputInt(__("Padding"), &settings.padding, 1, 10)) {
+                            if (igInputInt(__("Padding"), &settings.padding, 1, 10)) {
                             settings.padding = clamp(settings.padding, 0, int.max);
                             this.regenPreview();
                         }
+                        igUnindent();
+                        
+                        incText(_("Optimizations"));
+                        igIndent();
+                            igCheckbox(__("Prune unused nodes"), &settings.optimizePruneUnused);
+                            incTooltip(_("Prune nodes which have been disabled from the export."));
+                        igUnindent();
                         break;
 
                     case ExportOptionsPane.Decoration:
