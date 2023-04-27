@@ -294,6 +294,11 @@ protected:
                                 if (igDragInt("###LOOPS", cast(int*)&settings.decorateWatermarkLoops, 1, 1, 1000)) this.regenPreview();
                             igUnindent();
 
+                            incText(_("Opacity"));
+                            igIndent();
+                                if (igDragFloat("###OPACITY", &settings.decorateWatermarkOpacity, 0.01, 0, 1)) this.regenPreview();
+                            igUnindent();
+
                         igEndDisabled();                        
                         break;
                     default:

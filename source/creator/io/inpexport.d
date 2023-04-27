@@ -120,6 +120,11 @@ struct IncINPExportSettings {
     Texture decorateWatermark;
 
     /**
+        Watermark opacity
+    */
+    float decorateWatermarkOpacity = 1;
+
+    /**
         Blending mode to use for the watermark
     */
     BlendMode decorateWatermarkBlendMode = BlendMode.ClipToLower;
@@ -202,7 +207,8 @@ void incINPExportDecorateWatermark(ref Atlas atlas, ref IncINPExportSettings set
             settings.decorateWatermark, 
             rect(0, 0, cast(float)settings.atlasResolution, cast(float)settings.atlasResolution), 
             rect(0, 0, loops, loops),
-            settings.decorateWatermarkBlendMode
+            settings.decorateWatermarkBlendMode,
+            settings.decorateWatermarkOpacity
         );
     }
 }

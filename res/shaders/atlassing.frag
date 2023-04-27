@@ -9,7 +9,8 @@ in vec2 texUVs;
 out vec4 outAlbedo;
 
 uniform sampler2D albedo;
+uniform float opacity;
 
 void main() {
-    outAlbedo = texture(albedo, texUVs);
+    outAlbedo = texture(albedo, texUVs) * opacity;
 }

@@ -16,6 +16,7 @@ private {
     GLuint writeVBO;
 
     GLint atlasMVP;
+    GLint atlasRenderOpacity;
     Shader atlasShader;
     Texture currCanvas;
 
@@ -28,7 +29,7 @@ private {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void renderToTexture(ref Texture toWrite, rect where, rect uvs, BlendMode blendMode = BlendMode.Normal) {
+    void renderToTexture(ref Texture toWrite, rect where, rect uvs, BlendMode blendMode = BlendMode.Normal, float opacity = 1) {
         glBindVertexArray(writeVAO);
         glBindFramebuffer(GL_FRAMEBUFFER, writeFBO);
 
@@ -63,6 +64,7 @@ private {
             glVertexAttribPointer(1, 2, GL_FLOAT, false, vec2.sizeof*2, cast(void*)vec2.sizeof);
 
             atlasShader.use();
+            atlasShader.setUniform(atlasRenderOpacity, opacity);
             atlasShader.setUniform(atlasMVP, mat4.orthographic(
                 0, currCanvas.width, currCanvas.height, 0, 0, 2
             ) * mat4.scaling(1, -1, 1) * mat4.translation(0, -currCanvas.height, -1));
@@ -87,6 +89,7 @@ void incInitAtlassing() {
 
     atlasShader = new Shader(import("shaders/atlassing.vert"), import("shaders/atlassing.frag"));
     atlasMVP = atlasShader.getUniformLocation("mvp");
+    atlasRenderOpacity = atlasShader.getUniformLocation("opacity");
 }
 
 /**
@@ -210,10 +213,10 @@ public:
         return true;
     }
 
-    void renderOnTop(uint atlasIdx, Texture texture, rect where, rect uvs, BlendMode blendMode) {
+    void renderOnTop(uint atlasIdx, Texture texture, rect where, rect uvs, BlendMode blendMode, float opacity) {
         if (texture && atlasIdx < textures.length) {
             setCanvas(textures[atlasIdx]);
-            renderToTexture(texture, where, uvs, blendMode);
+            renderToTexture(texture, where, uvs, blendMode, opacity);
         }
     }
 
