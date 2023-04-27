@@ -28,7 +28,7 @@ private {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void renderToTexture(ref Texture toWrite, rect where, rect uvs) {
+    void renderToTexture(ref Texture toWrite, rect where, rect uvs, BlendMode blendMode = BlendMode.Normal) {
         glBindVertexArray(writeVAO);
         glBindFramebuffer(GL_FRAMEBUFFER, writeFBO);
 
@@ -37,7 +37,7 @@ private {
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
 
-            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+            inSetBlendMode(blendMode);
 
             vec2[] bufData = [
                 vec2(where.left,    where.top),
@@ -200,7 +200,7 @@ public:
 
                 packedIndices[i]++;
 
-                // where is the calculated texture boundary #2, specifying the area which texture is copied. (alsway between 0..1 in UV position)
+                // where is the calculated texture boundary #2, specifying the area which texture is copied. (always between 0..1 in UV position)
                 rect where = rect(atlasArea.x+textureStartOffset.x+padding, atlasArea.y+textureStartOffset.y+padding, 
                                   atlasArea.z-(padding*2)-textureStartOffset.x - textureEndOffset.x, atlasArea.w-(padding*2)-textureStartOffset.y - textureEndOffset.y);
                 mappings[p.uuid] = rect(atlasArea.x+padding, atlasArea.y+padding, atlasArea.z-padding*2, atlasArea.w-padding*2);
@@ -208,6 +208,13 @@ public:
             }
         }
         return true;
+    }
+
+    void renderOnTop(uint atlasIdx, Texture texture, rect where, rect uvs, BlendMode blendMode) {
+        if (texture && atlasIdx < textures.length) {
+            setCanvas(textures[atlasIdx]);
+            renderToTexture(texture, where, uvs, blendMode);
+        }
     }
 
     /**

@@ -12,7 +12,7 @@ import creator.widgets.dialog;
 import creator.widgets.texture;
 import creator.windows;
 import creator.core;
-import creator.io;
+import creator.io.inpexport;
 import creator;
 import std.string;
 import creator.utils.link;
@@ -24,16 +24,15 @@ import std.algorithm.sorting;
 import std.algorithm.mutation;
 
 enum ExportOptionsPane {
-    Atlassing = "Atlassing"
+    Atlassing = "Atlassing",
+    Decoration = "Decoration"
 }
 
 struct ExportOptions {
     size_t atlasResolution = 2048;
-    const(char)* atlasResolutionString = "2048x2048";
     
     bool nonLinearScaling = false;
     float resolutionScale = 1;
-    const(char)* resolutionScaleString = "100%";
 
     int padding = 16;
 }
@@ -42,11 +41,14 @@ class ExportWindow : Window {
 private:
     string outFile;
     ExportOptionsPane pane = ExportOptionsPane.Atlassing;
-    ExportOptions options;
-    
-    Atlas preview;
+    IncINPPreviewInfo preview;
 
-    bool forcedScale;
+    bool wasScaledForced;
+    IncINPExportSettings settings;
+
+    const(char)* resolutionScaleString = "100%";
+    const(char)* atlasResolutionString = "2048x2048";
+
 
     void beginSection(string title) {
         incText(title);
@@ -60,113 +62,15 @@ private:
     }
 
     void regenPreview() {
-        forcedScale = false;
-        Part[] parts = incActivePuppet().getAllParts().dup;
-        
-        parts.sort!(
-            (a, b) => a.textures[0].width+a.textures[0].height > b.textures[0].width+b.textures[0].height, 
-            SwapStrategy.stable
-        )();
-
-        // Resize and clear atlas
-        preview.resize(options.atlasResolution);
-        preview.clear();
-
-        if (options.nonLinearScaling) {
-            preview.scale = 1;
-            preview.padding = options.padding;
-        }
-
-        // Force things to fit.
-        float rscale = 1;
-        foreach(part; parts) {
-            vec2 size = vec2(
-                (part.bounds.z-part.bounds.x)+preview.padding, 
-                (part.bounds.w-part.bounds.y)+preview.padding
-            );
-            float xRatio = ((size.x*options.resolutionScale)/cast(float)options.atlasResolution)+0.01;
-            float yRatio = ((size.y*options.resolutionScale)/cast(float)options.atlasResolution)+0.01;
-            if (xRatio > 1.0) rscale = cast(float)(options.atlasResolution/size.x)-0.01;
-            if (yRatio > 1.0) rscale = cast(float)(options.atlasResolution/size.y)-0.01;
-            if (!options.nonLinearScaling) {
-                options.resolutionScale = rscale;
-                forcedScale = true;
-            } else {
-                preview.pack(part, rscale);
-            }
-        }
-
-        if (!options.nonLinearScaling) {
-            preview.scale = options.resolutionScale;
-            preview.padding = options.padding;
-
-            int i = 0;
-            while (i < parts.length && preview.pack(parts[i++])) { }
-        }
-
-        preview.finalize();
+        preview = incINPExportGenPreview(incActivePuppet(), settings);
+        wasScaledForced = preview.outputScale != 1;
     }
 
-    Atlas[] generateAtlasses() {
-        Atlas[] atlasses = [new Atlas(options.atlasResolution, options.padding, options.resolutionScale)];
-
-        Part[] parts = incActivePuppet().getAllParts();
-        size_t partsLeft = parts.length;
-        bool[Part] taken;
-
-        bool failed = false;
-
-        // Fill out taken list
-        foreach(part; parts) taken[part] = false;
-
-        // Sort parts by size
-        import std.math : cmp;
-        parts.sort!(
-            (a, b) => a.textures[0].width+a.textures[0].height > b.textures[0].width+b.textures[0].height, 
-            SwapStrategy.stable
-        )();
-
-        mwhile: while(partsLeft > 0) {
-            foreach(part; parts) {
-                if (taken[part] == true) continue;
-
-                if (options.nonLinearScaling) {
-                    vec2 size = vec2(
-                        (part.bounds.z-part.bounds.x)+preview.padding, 
-                        (part.bounds.w-part.bounds.y)+preview.padding
-                    );
-
-                    float rscale = 1;
-                    float xRatio = ((size.x*options.resolutionScale)/cast(float)options.atlasResolution)+0.01;
-                    float yRatio = ((size.y*options.resolutionScale)/cast(float)options.atlasResolution)+0.01;
-                    if (xRatio > 1.0) rscale = cast(float)(options.atlasResolution/size.x)-0.01;
-                    if (yRatio > 1.0) rscale = cast(float)(options.atlasResolution/size.y)-0.01;
-                    if (atlasses[$-1].pack(part, rscale)) {
-                        taken[part] = true;
-                        partsLeft--;
-                        failed = false;
-                        continue mwhile;
-                    }
-                } else if (atlasses[$-1].pack(part)) {
-                    taken[part] = true;
-                    partsLeft--;
-                    failed = false;
-                    continue mwhile;
-                }
-            }
-
-            // Prevent memory leak
-            if (failed) throw new Exception("A texture is too big for the atlas.");
-
-            // Failed putting elements in to atlas, create new empty atlas
-            failed = true;
-            atlasses[$-1].finalize();
-            atlasses ~= new Atlas(options.atlasResolution, options.padding, options.resolutionScale);
-        }
-
-        return atlasses;
+    void setBlending(BlendMode mode) {
+        settings.decorateWatermarkBlendMode = mode;
+        this.regenPreview();
     }
-    
+
 protected:
 
     override
@@ -199,6 +103,10 @@ protected:
                 if (igSelectable(__("Atlassing"), pane == ExportOptionsPane.Atlassing)) {
                     pane = ExportOptionsPane.Atlassing;
                 }
+
+                if (igSelectable(__("Decoration"), pane == ExportOptionsPane.Decoration)) {
+                    pane = ExportOptionsPane.Decoration;
+                }
             igPopTextWrapPos();
         }
         igEndChild();
@@ -223,39 +131,158 @@ protected:
                         igUnindent();
                             incDummy(ImVec2((avail.x/2)-(previewSize/2), previewSize));
                             igSameLine();
-                            incTextureSlotUntitled("PREVIEW0", preview.textures[0], ImVec2(previewSize, previewSize), 64);
+                            incTextureSlotUntitled("PREVIEW0", preview.preview, ImVec2(previewSize, previewSize), 64);
                         igIndent();
 
-                        if (igBeginCombo(__("Resolution"), options.atlasResolutionString)) {
+                        if (igBeginCombo(__("Resolution"), atlasResolutionString)) {
 
                             size_t size = 1024;
                             foreach(i; 0..3) {
                                 size <<= 1;
 
                                 const(char)* sizestr = "%1$sx%1$s".format(size.text).toStringz;
-                                if (igMenuItem(sizestr, null, options.atlasResolution == size)) {
-                                    options.atlasResolution = size;
-                                    options.atlasResolutionString = sizestr;
+                                if (igMenuItem(sizestr, null, settings.atlasResolution == size)) {
+                                    settings.atlasResolution = size;
+                                    atlasResolutionString = sizestr;
                                     this.regenPreview();
                                 }
                             }
                             igEndCombo();
                         }
 
-                        igCheckbox(__("Non-linear Scaling"), &options.nonLinearScaling);
+                        igCheckbox(__("Non-linear Scaling"), &settings.nonLinearScaling);
                         incTooltip(_("Whether too large parts should individually be scaled down instead of all parts being scaled down uniformly."));
 
-                        int resScaleInt = cast(int)(options.resolutionScale*100);
+                        int resScaleInt = cast(int)(settings.scale*100);
                         if (igInputInt(__("Texture Scale"), &resScaleInt, 1, 10)) {
                             resScaleInt = clamp(resScaleInt, 25, 200);
-                            options.resolutionScale = (cast(float)resScaleInt/100.0);
+                            settings.scale = (cast(float)resScaleInt/100.0);
                             this.regenPreview();
                         }
 
-                        if (igInputInt(__("Padding"), &options.padding, 1, 10)) {
-                            if (options.padding < 0) options.padding = 0;
+                        if (igInputInt(__("Padding"), &settings.padding, 1, 10)) {
+                            settings.padding = clamp(settings.padding, 0, int.max);
                             this.regenPreview();
                         }
+                        break;
+
+                    case ExportOptionsPane.Decoration:
+                        float previewSize = min(avail.x/2, avail.y/2);
+                        float offset = previewSize*2 >= avail.x ? 0 : avail.x/2;
+
+                        // Funky tricks to center preview
+                        igUnindent();
+                            if (offset > 0) {
+                                incDummy(ImVec2((avail.x/2)-previewSize, previewSize));
+
+                                igSameLine(0, 0);
+                            }
+
+                            incTextureSlot(_("Watermark"), settings.decorateWatermark, ImVec2(previewSize, previewSize));
+                            
+                            // Right click menu
+                            igOpenPopupOnItemClick("TEX_OPTIONS");
+                            if (igBeginPopup("TEX_OPTIONS")) {
+
+                                // Allow saving texture to file
+                                if (igMenuItem(__("Load"))) {
+                                    TFD_Filter[] filters = [
+                                        { ["*.png"], "Portable Network Graphics (*.png)" },
+                                        { ["*.jpeg", "*.jpg"], "JPEG Image (*.jpeg)" },
+                                        { ["*.tga"], "TARGA Graphics (*.tga)" }
+                                    ];
+
+                                    string file = incShowImportDialog(filters, _("Import..."));
+                                    if (file) {
+                                        try {
+                                            auto tex = ShallowTexture(file, 4);
+                                            inTexPremultiply(tex.data);
+                                            settings.decorateWatermark = new Texture(tex);
+                                            settings.decorateWatermark.setWrapping(Wrapping.Repeat);
+                                            
+                                            this.regenPreview();
+                                        } catch (Exception ex) {
+                                            incDialog("WRONG_TEX_FMT", __("Error"), ex.msg);
+                                        }
+                                    }
+                                }
+
+                                if (igMenuItem(__("Remove"), null, false, settings.decorateWatermark !is null)) {
+                                    settings.decorateWatermark = null;
+                                    this.regenPreview();
+                                }
+
+                                igEndPopup();
+                            }
+                            
+
+                            // FILE DRAG & DROP
+                            if (igBeginDragDropTarget()) {
+                                const(ImGuiPayload)* payload = igAcceptDragDropPayload("__PARTS_DROP");
+                                if (payload !is null) {
+                                    string[] files = *cast(string[]*)payload.Data;
+                                    if (files.length > 0) {
+                                        try {
+                                            auto tex = ShallowTexture(files[0], 4);
+                                            inTexPremultiply(tex.data);
+                                            settings.decorateWatermark = new Texture(tex);
+                                            settings.decorateWatermark.setWrapping(Wrapping.Repeat);
+                                            this.regenPreview();
+                                        } catch (Exception ex) {
+                                            incDialog("WRONG_TEX_FMT", __("Error"), ex.msg);
+                                        }
+                                    }
+
+                                    // Finish the file drag
+                                    incFinishFileDrag();
+                                }
+                            }
+                            igEndDragDropTarget();
+
+                            igSameLine();
+
+                            incTextureSlot(_("Preview"), preview.preview, ImVec2(previewSize, previewSize), 64);
+                        igIndent();
+                        
+
+                        igBeginDisabled(settings.decorateWatermark is null);
+                            incText(_("Blending"));
+                            igIndent();
+
+                                // Header for the Blending options for Parts
+                                if (igBeginCombo("###Blending", __(settings.decorateWatermarkBlendMode.text))) {
+
+                                    // Normal blending mode as used in Photoshop, generally
+                                    // the default blending mode photoshop starts a layer out as.
+                                    if (igSelectable(__("Normal"), settings.decorateWatermarkBlendMode == BlendMode.Normal)) this.setBlending(BlendMode.Normal);
+                                    
+                                    // Multiply blending mode, in which this texture's color data
+                                    // will be multiplied with the color data already in the framebuffer.
+                                    if (igSelectable(__("Multiply"), settings.decorateWatermarkBlendMode == BlendMode.Multiply)) this.setBlending(BlendMode.Multiply);
+                                            
+                                    // Color Dodge blending mode
+                                    if (igSelectable(__("Color Dodge"), settings.decorateWatermarkBlendMode == BlendMode.ColorDodge)) this.setBlending(BlendMode.ColorDodge);
+                                            
+                                    // Linear Dodge blending mode
+                                    if (igSelectable(__("Linear Dodge"), settings.decorateWatermarkBlendMode == BlendMode.LinearDodge)) this.setBlending(BlendMode.LinearDodge);
+                                                    
+                                    // Screen blending mode
+                                    if (igSelectable(__("Screen"), settings.decorateWatermarkBlendMode == BlendMode.Screen)) this.setBlending(BlendMode.Screen);
+                                                    
+                                    // Clip to Lower blending mode
+                                    if (igSelectable(__("Clip to Lower"), settings.decorateWatermarkBlendMode == BlendMode.ClipToLower)) this.setBlending(BlendMode.ClipToLower);
+                                    incTooltip(_("Special blending mode that causes (while respecting transparency) the part to be clipped to everything underneath"));
+                                                    
+                                    igEndCombo();
+                                }
+                            igUnindent();
+
+                            incText(_("Loops"));
+                            igIndent();
+                                if (igDragInt("###LOOPS", cast(int*)&settings.decorateWatermarkLoops, 1, 1, 1000)) this.regenPreview();
+                            igUnindent();
+
+                        igEndDisabled();                        
                         break;
                     default:
                         incText(_("No settings for this category."));
@@ -268,7 +295,7 @@ protected:
         // Bottom buttons
         if (igBeginChild("SettingsButtons", ImVec2(0, 0), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)) {
             availX = incAvailableSpace().x;
-            if (forcedScale) {
+            if (wasScaledForced) {
                 igPushTextWrapPos(availX-128);
                     incTextColored(
                         ImVec4(0.8, 0.2, 0.2, 1), 
@@ -282,16 +309,17 @@ protected:
 
             if (igButton(__("Export"), ImVec2(64, 24))) {
                 try {
+
                     // Write the puppet to file
-                    incExportINP(incActivePuppet(), generateAtlasses(), outFile);
+                    incINPExport(incActivePuppet(), settings, outFile);
                     incSetStatus(_("%s was exported...".format(outFile)));
+                    this.close();
                 } catch(Exception ex) {
+
+                    // Write error
                     incDialog(__("Error"), ex.msg);
                     incSetStatus(_("Export failed..."));
                 }
-
-                // TODO: Show error in export window?
-                this.close();
             }
         }
         igEndChild();
@@ -302,7 +330,6 @@ public:
         super(_("Export Options"));
         this.outFile = outFile;
 
-        preview = new Atlas(2048, 16, 1);
         this.regenPreview();
     }
 }
