@@ -785,7 +785,7 @@ void incInspectorModelPart(Part node) {
 
         // Header for the Blending options for Parts
         incText(_("Blending"));
-        if (igBeginCombo("###Blending", __(node.blendingMode.text))) {
+        if (igBeginCombo("###Blending", __(node.blendingMode.text), ImGuiComboFlags.HeightLarge)) {
 
             // Normal blending mode as used in Photoshop, generally
             // the default blending mode photoshop starts a layer out as.
@@ -794,15 +794,46 @@ void incInspectorModelPart(Part node) {
             // Multiply blending mode, in which this texture's color data
             // will be multiplied with the color data already in the framebuffer.
             if (igSelectable(__("Multiply"), node.blendingMode == BlendMode.Multiply)) node.blendingMode = BlendMode.Multiply;
+                            
+            // Screen blending mode
+            if (igSelectable(__("Screen"), node.blendingMode == BlendMode.Screen)) node.blendingMode = BlendMode.Screen;
+
+            // Overlay blending mode
+            if (igSelectable(__("Overlay"), node.blendingMode == BlendMode.Overlay)) node.blendingMode = BlendMode.Overlay;
+
+            // Darken blending mode
+            if (igSelectable(__("Darken"), node.blendingMode == BlendMode.Darken)) node.blendingMode = BlendMode.Darken;
+
+            // Lighten blending mode
+            if (igSelectable(__("Lighten"), node.blendingMode == BlendMode.Lighten)) node.blendingMode = BlendMode.Lighten;
                     
             // Color Dodge blending mode
             if (igSelectable(__("Color Dodge"), node.blendingMode == BlendMode.ColorDodge)) node.blendingMode = BlendMode.ColorDodge;
                     
             // Linear Dodge blending mode
             if (igSelectable(__("Linear Dodge"), node.blendingMode == BlendMode.LinearDodge)) node.blendingMode = BlendMode.LinearDodge;
+                    
+            // Color Burn blending mode
+            if (igSelectable(__("Color Burn"), node.blendingMode == BlendMode.ColorBurn)) node.blendingMode = BlendMode.ColorBurn;
+                    
+            // Hard Light blending mode
+            if (igSelectable(__("Hard Light"), node.blendingMode == BlendMode.HardLight)) node.blendingMode = BlendMode.HardLight;
+                    
+            // Soft Light blending mode
+            if (igSelectable(__("Soft Light"), node.blendingMode == BlendMode.SoftLight)) node.blendingMode = BlendMode.SoftLight;
                             
-            // Screen blending mode
-            if (igSelectable(__("Screen"), node.blendingMode == BlendMode.Screen)) node.blendingMode = BlendMode.Screen;
+            // Subtract blending mode
+            if (igSelectable(__("Subtract"), node.blendingMode == BlendMode.Subtract)) node.blendingMode = BlendMode.Subtract;
+                            
+            // Difference blending mode
+            if (igSelectable(__("Difference"), node.blendingMode == BlendMode.Difference)) node.blendingMode = BlendMode.Difference;
+                            
+            // Exclusion blending mode
+            if (igSelectable(__("Exclusion"), node.blendingMode == BlendMode.Exclusion)) node.blendingMode = BlendMode.Exclusion;
+                            
+            // Inverse blending mode
+            if (igSelectable(__("Inverse"), node.blendingMode == BlendMode.Inverse)) node.blendingMode = BlendMode.Inverse;
+            incTooltip(_("Inverts the color by a factor of the overlying color"));
                             
             // Clip to Lower blending mode
             if (igSelectable(__("Clip to Lower"), node.blendingMode == BlendMode.ClipToLower)) node.blendingMode = BlendMode.ClipToLower;
