@@ -66,7 +66,7 @@ private:
 protected:
     override
     void onBeginUpdate() {
-        enum WIDTH = 320;
+        enum WIDTH = 480;
         enum HEIGHT = 320;
         igSetNextWindowSize(ImVec2(WIDTH, HEIGHT), ImGuiCond.Appearing);
         igSetNextWindowSizeConstraints(ImVec2(WIDTH, HEIGHT), ImVec2(float.max, HEIGHT));
@@ -109,7 +109,7 @@ protected:
             // Custom FPS
             float timestep = 1.0/fpsOptionsFR[frameRateOption];
             if (frameRateOption+1 == fpsOptions.length) {
-                igInputFloat(__("Framerate"), &framerate);
+                igInputFloat(__("Custom Framerate"), &framerate);
                 timestep = 1.0/framerate;
             }
 
