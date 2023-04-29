@@ -15,7 +15,6 @@ import psd;
 import i18n;
 import std.format;
 import creator.io;
-import std.xml;
 
 private {
 
