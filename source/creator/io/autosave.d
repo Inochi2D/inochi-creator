@@ -154,9 +154,36 @@ void incAutosaveProject(string path) {
         entries = currentBackups(backupDir);
     }
 
+    // Prune autosave list
+    incPruneAutosaveList();
+
     // Leave off the .inx extension because it's added by incSaveProject.
     incSaveProject(path, bakStampString());
     incCreateLockfile(lockpath);
+}
+
+void incPruneAutosaveList() {
+    AutosaveRecord[] saveRecords = incGetPrevAutosaves();
+    AutosaveRecord[] newRecords;
+    
+    import std.algorithm.mutation : remove;
+
+    // Remove save records for invalid indices
+    foreach(i; 0..saveRecords.length) {
+        if (saveRecords[i].autosavePath.exists()) newRecords ~= saveRecords[i];
+    }
+
+    // Then save.
+    string[] autosavePaths;
+    string[] mainsavePaths;
+    foreach (saveRecord; newRecords) {
+        autosavePaths ~= saveRecord.autosavePath;
+        mainsavePaths ~= saveRecord.mainsavePath;
+    }
+
+    incSettingsSet("prev_autosaves", autosavePaths);
+    incSettingsSet("prev_autosave_mainpaths", mainsavePaths);
+    incSettingsSave();
 }
 
 /**
