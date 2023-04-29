@@ -271,16 +271,47 @@ protected:
                                     // Multiply blending mode, in which this texture's color data
                                     // will be multiplied with the color data already in the framebuffer.
                                     if (igSelectable(__("Multiply"), settings.decorateWatermarkBlendMode == BlendMode.Multiply)) this.setBlending(BlendMode.Multiply);
+                                                    
+                                    // Screen blending mode
+                                    if (igSelectable(__("Screen"), settings.decorateWatermarkBlendMode == BlendMode.Screen)) this.setBlending(BlendMode.Screen);
+
+                                    // Overlay blending mode
+                                    if (igSelectable(__("Overlay"), settings.decorateWatermarkBlendMode == BlendMode.Overlay)) this.setBlending(BlendMode.Overlay);
+
+                                    // Darken blending mode
+                                    if (igSelectable(__("Darken"), settings.decorateWatermarkBlendMode == BlendMode.Darken)) this.setBlending(BlendMode.Darken);
+
+                                    // Lighten blending mode
+                                    if (igSelectable(__("Lighten"), settings.decorateWatermarkBlendMode == BlendMode.Lighten)) this.setBlending(BlendMode.Lighten);
                                             
                                     // Color Dodge blending mode
                                     if (igSelectable(__("Color Dodge"), settings.decorateWatermarkBlendMode == BlendMode.ColorDodge)) this.setBlending(BlendMode.ColorDodge);
                                             
                                     // Linear Dodge blending mode
                                     if (igSelectable(__("Linear Dodge"), settings.decorateWatermarkBlendMode == BlendMode.LinearDodge)) this.setBlending(BlendMode.LinearDodge);
+                                            
+                                    // Color Burn blending mode
+                                    if (igSelectable(__("Color Burn"), settings.decorateWatermarkBlendMode == BlendMode.ColorBurn)) this.setBlending(BlendMode.ColorBurn);
+                                            
+                                    // Hard Light blending mode
+                                    if (igSelectable(__("Hard Light"), settings.decorateWatermarkBlendMode == BlendMode.HardLight)) this.setBlending(BlendMode.HardLight);
+                                            
+                                    // Soft Light blending mode
+                                    if (igSelectable(__("Soft Light"), settings.decorateWatermarkBlendMode == BlendMode.SoftLight)) this.setBlending(BlendMode.SoftLight);
                                                     
-                                    // Screen blending mode
-                                    if (igSelectable(__("Screen"), settings.decorateWatermarkBlendMode == BlendMode.Screen)) this.setBlending(BlendMode.Screen);
+                                    // Subtract blending mode
+                                    if (igSelectable(__("Subtract"), settings.decorateWatermarkBlendMode == BlendMode.Subtract)) this.setBlending(BlendMode.Subtract);
                                                     
+                                    // Difference blending mode
+                                    if (igSelectable(__("Difference"), settings.decorateWatermarkBlendMode == BlendMode.Difference)) this.setBlending(BlendMode.Difference);
+                                                    
+                                    // Exclusion blending mode
+                                    if (igSelectable(__("Exclusion"), settings.decorateWatermarkBlendMode == BlendMode.Exclusion)) this.setBlending(BlendMode.Exclusion);
+                                                    
+                                    // Inverse blending mode
+                                    if (igSelectable(__("Inverse"), settings.decorateWatermarkBlendMode == BlendMode.Inverse)) this.setBlending(BlendMode.Inverse);
+                                    incTooltip(_("Inverts the color by a factor of the overlying color"));
+
                                     // Clip to Lower blending mode
                                     if (igSelectable(__("Clip to Lower"), settings.decorateWatermarkBlendMode == BlendMode.ClipToLower)) this.setBlending(BlendMode.ClipToLower);
                                     incTooltip(_("Special blending mode that causes (while respecting transparency) the part to be clipped to everything underneath"));
