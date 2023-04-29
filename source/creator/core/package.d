@@ -745,8 +745,7 @@ void incDebugImGuiState(string msg, int indent = 0) {
     Resets the clear color
 */
 void incResetClearColor() {
-    auto style = igGetStyle();
-    inSetClearColor(style.Colors[ImGuiCol.WindowBg].x, style.Colors[ImGuiCol.WindowBg].y, style.Colors[ImGuiCol.WindowBg].z, 1);
+    inSetClearColor(0, 0, 0, 0);
 }
 
 /**

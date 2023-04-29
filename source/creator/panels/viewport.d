@@ -121,7 +121,6 @@ protected:
 
             ImVec4 color;
             inGetClearColor(color.x, color.y, color.z, color.w);
-            color.w = 1;
 
             ImRect rect = ImRect(
                 ImVec2(
