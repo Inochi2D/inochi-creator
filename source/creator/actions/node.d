@@ -228,6 +228,7 @@ void incAddChildWithHistory(Node n, Node to, string name=null) {
     ));
 
     n.insertInto(to, Node.OFFSET_START);
+    n.localTransform.clear();
     if (name is null) n.name = _("Unnamed ")~_(n.typeId());
     else n.name = name;
     incActivePuppet().rescanNodes();
