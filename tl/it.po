@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-29 20:13+0200\n"
+"POT-Creation-Date: 2023-04-30 14:03+0200\n"
 "PO-Revision-Date: 2022-10-05 00:03+0200\n"
 "Last-Translator: Lena <me@lena.place>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -29,8 +29,9 @@ msgid ""
 "Make sure to save and back up your work often!"
 msgstr ""
 "Stai usando una build nightly di Inochi Creator!\n"
-"Inochi Creator potrebbe bloccarsi inaspettatamente e probabilmente incontrerai dei bug.\n"
-"Assicurati di salvare e fare un backup del tuo lavoro spesso!".
+"Inochi Creator potrebbe bloccarsi inaspettatamente e probabilmente "
+"incontrerai dei bug.\n"
+"Assicurati di salvare e fare un backup del tuo lavoro spesso!."
 
 #: source/creator/actions/binding.d:74
 #, c-format
@@ -228,7 +229,7 @@ msgstr "(Modalità Debug)"
 msgid "(Unsupported)"
 msgstr "(Non supportato)"
 
-#: source/creator/io/imageexport.d:13 source/creator/windows/inpexport.d:332
+#: source/creator/io/imageexport.d:13 source/creator/windows/inpexport.d:363
 #, c-format
 msgid "%s was exported..."
 msgstr "%s è stato esportato..."
@@ -245,7 +246,7 @@ msgstr "Una texture è troppo grande per l'atlante delle texture."
 
 #. Write error
 #: source/creator/io/package.d:211 source/creator/io/package.d:212
-#: source/creator/io/psd.d:222 source/creator/package.d:237
+#: source/creator/io/psd.d:237 source/creator/package.d:237
 #: source/creator/package.d:292 source/creator/package.d:358
 #: source/creator/panels/inspector.d:625 source/creator/panels/inspector.d:644
 #: source/creator/panels/inspector.d:645 source/creator/panels/inspector.d:655
@@ -255,7 +256,7 @@ msgstr "Una texture è troppo grande per l'atlante delle texture."
 #: source/creator/windows/imgexport.d:144
 #: source/creator/windows/inpexport.d:217
 #: source/creator/windows/inpexport.d:244
-#: source/creator/windows/inpexport.d:337
+#: source/creator/windows/inpexport.d:368
 #: source/creator/windows/paramaxes.d:187
 #: source/creator/windows/paramprop.d:105
 #: source/creator/windows/videoexport.d:148
@@ -272,24 +273,24 @@ msgstr "Errore"
 msgid "%s is not supported"
 msgstr "%s non è supportato"
 
-#: source/creator/io/psd.d:25 source/creator/panels/inspector.d:687
+#: source/creator/io/psd.d:26 source/creator/panels/inspector.d:687
 #: source/creator/widgets/mainmenu.d:186 source/creator/widgets/mainmenu.d:210
 #: source/creator/widgets/mainmenu.d:225 source/creator/widgets/mainmenu.d:461
 #: source/creator/windows/inpexport.d:207
 msgid "Import..."
 msgstr "Importa..."
 
-#: source/creator/io/psd.d:218 source/creator/package.d:354
+#: source/creator/io/psd.d:233 source/creator/package.d:354
 #, c-format
 msgid "%s was imported..."
 msgstr "%s è stato importato..."
 
-#: source/creator/io/psd.d:221 source/creator/package.d:359
+#: source/creator/io/psd.d:236 source/creator/package.d:359
 #, fuzzy
 msgid "Import failed..."
 msgstr "Importazione fallita..."
 
-#: source/creator/io/psd.d:222
+#: source/creator/io/psd.d:237
 #, c-format
 msgid ""
 "An error occured during PSD import:\n"
@@ -376,8 +377,8 @@ msgstr "Modifica"
 
 #: source/creator/panels/animlist.d:37 source/creator/panels/inspector.d:886
 #: source/creator/panels/inspector.d:1084 source/creator/panels/nodes.d:142
-#: source/creator/panels/parameters.d:995
-#: source/creator/panels/parameters.d:1214 source/creator/panels/timeline.d:107
+#: source/creator/panels/parameters.d:1008
+#: source/creator/panels/parameters.d:1227 source/creator/panels/timeline.d:107
 msgid "Delete"
 msgstr "Cancella"
 
@@ -387,7 +388,7 @@ msgid "Animation List"
 msgstr "Modifica Animazione"
 
 #: source/creator/panels/inspector.d:42 source/creator/panels/nodes.d:338
-#: source/creator/panels/parameters.d:1071
+#: source/creator/panels/parameters.d:1084
 msgid "In vertex edit mode..."
 msgstr "In modalità modifica vertici..."
 
@@ -629,7 +630,7 @@ msgstr "Salva su file"
 msgid "Load from File"
 msgstr "Carica da file"
 
-#: source/creator/panels/inspector.d:694 source/creator/panels/parameters.d:570
+#: source/creator/panels/inspector.d:694 source/creator/panels/parameters.d:583
 #: source/creator/windows/inpexport.d:222
 msgid "Remove"
 msgstr "Rimuovi"
@@ -700,91 +701,102 @@ msgstr "Moltiplica"
 
 #. Screen blending mode
 #: source/creator/panels/inspector.d:799 source/creator/panels/inspector.d:1005
-#: source/creator/windows/inpexport.d:282
+#: source/creator/windows/inpexport.d:276
 msgid "Screen"
 msgstr "Schermo"
 
 #. Overlay blending mode
 #: source/creator/panels/inspector.d:802 source/creator/panels/inspector.d:1008
+#: source/creator/windows/inpexport.d:279
 msgid "Overlay"
 msgstr ""
 
 #. Darken blending mode
 #: source/creator/panels/inspector.d:805 source/creator/panels/inspector.d:1011
+#: source/creator/windows/inpexport.d:282
 #, fuzzy
 msgid "Darken"
 msgstr "Scuro"
 
 #. Lighten blending mode
 #: source/creator/panels/inspector.d:808 source/creator/panels/inspector.d:1014
+#: source/creator/windows/inpexport.d:285
 #, fuzzy
 msgid "Lighten"
-msgstr "Chiaro"
+msgstr "Schiara"
 
 # Sounds weird but there's no other way
 #. Color Dodge blending mode
 #: source/creator/panels/inspector.d:811 source/creator/panels/inspector.d:1017
-#: source/creator/windows/inpexport.d:276
+#: source/creator/windows/inpexport.d:288
 #, fuzzy
 msgid "Color Dodge"
 msgstr "Fuga Colore"
 
 #. Linear Dodge blending mode
 #: source/creator/panels/inspector.d:814 source/creator/panels/inspector.d:1020
-#: source/creator/windows/inpexport.d:279
+#: source/creator/windows/inpexport.d:291
 msgid "Linear Dodge"
 msgstr "Fuga Lineare"
 
 #. Color Burn blending mode
 #: source/creator/panels/inspector.d:817 source/creator/panels/inspector.d:1023
+#: source/creator/windows/inpexport.d:294
 #, fuzzy
 msgid "Color Burn"
-msgstr "Colori"
+msgstr "Brucia Colore"
 
 #. Hard Light blending mode
 #: source/creator/panels/inspector.d:820 source/creator/panels/inspector.d:1026
+#: source/creator/windows/inpexport.d:297
 #, fuzzy
 msgid "Hard Light"
-msgstr "Chiaro"
+msgstr "Luce Dura"
 
 #. Soft Light blending mode
 #: source/creator/panels/inspector.d:823 source/creator/panels/inspector.d:1029
+#: source/creator/windows/inpexport.d:300
 #, fuzzy
 msgid "Soft Light"
-msgstr "Chiaro"
+msgstr "Luce Morbida"
 
 #. Subtract blending mode
 #: source/creator/panels/inspector.d:826 source/creator/panels/inspector.d:1032
+#: source/creator/windows/inpexport.d:303
 msgid "Subtract"
 msgstr "Sottrai"
 
 #. Difference blending mode
 #: source/creator/panels/inspector.d:829 source/creator/panels/inspector.d:1035
+#: source/creator/windows/inpexport.d:306
 msgid "Difference"
 msgstr "Differenza"
 
 #. Exclusion blending mode
 #: source/creator/panels/inspector.d:832 source/creator/panels/inspector.d:1038
+#: source/creator/windows/inpexport.d:309
 msgid "Exclusion"
 msgstr "Esclusione"
 
 #. Inverse blending mode
 #: source/creator/panels/inspector.d:835 source/creator/panels/inspector.d:1041
+#: source/creator/windows/inpexport.d:312
 #, fuzzy
 msgid "Inverse"
 msgstr "Inverti"
 
 #: source/creator/panels/inspector.d:836 source/creator/panels/inspector.d:1042
+#: source/creator/windows/inpexport.d:313
 msgid "Inverts the color by a factor of the overlying color"
 msgstr "Inverte il colore per un fattore del colore sovrastante"
 
 # Also sounds very weird, but there's no other way i found
 #. Clip to Lower blending mode
-#: source/creator/panels/inspector.d:839 source/creator/windows/inpexport.d:285
+#: source/creator/panels/inspector.d:839 source/creator/windows/inpexport.d:316
 msgid "Clip to Lower"
 msgstr "Clip per Abbassare"
 
-#: source/creator/panels/inspector.d:840 source/creator/windows/inpexport.d:286
+#: source/creator/panels/inspector.d:840 source/creator/windows/inpexport.d:317
 msgid ""
 "Special blending mode that causes (while respecting transparency) the part "
 "to be clipped to everything underneath"
@@ -810,7 +822,7 @@ msgstr ""
 #: source/creator/panels/inspector.d:851 source/creator/panels/inspector.d:1049
 #: source/creator/panels/inspector.d:1648
 #: source/creator/panels/inspector.d:1688
-#: source/creator/windows/inpexport.d:297
+#: source/creator/windows/inpexport.d:328
 msgid "Opacity"
 msgstr "Opacità"
 
@@ -931,8 +943,7 @@ msgstr "Trasformazione"
 msgid ""
 "Whether the physics system only listens to the movement of the physics node "
 "itself"
-msgstr ""
-"Se il sistema fisico ascolta solo il movimento del nodo fisico stesso"
+msgstr "Se il sistema fisico ascolta solo il movimento del nodo fisico stesso"
 
 #: source/creator/panels/inspector.d:1234
 #: source/creator/panels/inspector.d:1702
@@ -974,7 +985,8 @@ msgid ""
 "this is an expensive operation and should not be overused."
 msgstr ""
 "Se il MeshGroup deve deformare dinamicamente i suoi figli,\n"
-"Questa è un'operazione impegnativa e non dovrebbe essere utilizzata in modo eccessivo".
+"Questa è un'operazione impegnativa e non dovrebbe essere utilizzata in modo "
+"eccessivo."
 
 #: source/creator/panels/inspector.d:1299
 #, fuzzy
@@ -1062,204 +1074,214 @@ msgstr "Ricalcola l'origine"
 msgid "Nodes"
 msgstr "Nodi"
 
-#: source/creator/panels/parameters.d:369
+#: source/creator/panels/parameters.d:372
 msgid "Unset"
 msgstr "Dis-imposta"
 
-#: source/creator/panels/parameters.d:378
+#: source/creator/panels/parameters.d:381
 #, fuzzy
 msgid "Set to current"
 msgstr "Imposta su corrente"
 
-#: source/creator/panels/parameters.d:387
+#: source/creator/panels/parameters.d:390
 #: source/creator/viewport/model/package.d:203
 msgid "Reset"
 msgstr "Reset"
 
-#: source/creator/panels/parameters.d:396 source/creator/windows/trkbind.d:110
+#: source/creator/panels/parameters.d:399 source/creator/windows/trkbind.d:110
 msgid "Invert"
 msgstr "Inverti"
 
-#: source/creator/panels/parameters.d:405
-#: source/creator/panels/parameters.d:938
+#: source/creator/panels/parameters.d:408
+#: source/creator/panels/parameters.d:951
 msgid "Mirror"
 msgstr "Specchia"
 
-#: source/creator/panels/parameters.d:406
-#: source/creator/panels/parameters.d:449
-#: source/creator/panels/parameters.d:939
+#: source/creator/panels/parameters.d:409
+#: source/creator/panels/parameters.d:452
+#: source/creator/panels/parameters.d:952
 msgid "Horizontally"
 msgstr "Orizontalmente"
 
-#: source/creator/panels/parameters.d:415
-#: source/creator/panels/parameters.d:461
-#: source/creator/panels/parameters.d:943
+#: source/creator/panels/parameters.d:418
+#: source/creator/panels/parameters.d:464
+#: source/creator/panels/parameters.d:956
 msgid "Vertically"
 msgstr "Verticalmente"
 
-#: source/creator/panels/parameters.d:426
+#: source/creator/panels/parameters.d:429
 #, fuzzy
 msgid "Flip Deform"
 msgstr "Deforma capovolgendo"
 
-#: source/creator/panels/parameters.d:448
-#: source/creator/panels/parameters.d:488
+#: source/creator/panels/parameters.d:451
+#: source/creator/panels/parameters.d:491
 msgid "Set from mirror"
 msgstr "Imposta da specchio"
 
-#: source/creator/panels/parameters.d:473
+#: source/creator/panels/parameters.d:476
 msgid "Diagonally"
 msgstr "Diagonalmente"
 
-#: source/creator/panels/parameters.d:502
-#: source/creator/panels/parameters.d:974 source/creator/widgets/mainmenu.d:333
+#: source/creator/panels/parameters.d:505
+#: source/creator/panels/parameters.d:987 source/creator/widgets/mainmenu.d:333
 msgid "Copy"
 msgstr "Copia"
 
-#: source/creator/panels/parameters.d:510
-#: source/creator/panels/parameters.d:977 source/creator/widgets/mainmenu.d:334
+#: source/creator/panels/parameters.d:513
+#: source/creator/panels/parameters.d:990 source/creator/widgets/mainmenu.d:334
 msgid "Paste"
 msgstr "Incolla"
 
 # also very very hard
-#: source/creator/panels/parameters.d:535
+#: source/creator/panels/parameters.d:538
 #, fuzzy
 msgid "Bindings"
 msgstr "Attacchi"
 
-#: source/creator/panels/parameters.d:582
+#: source/creator/panels/parameters.d:546
+#, fuzzy
+msgid "Show only selected nodes"
+msgstr "Mostra solo i nodi selezionati"
+
+#: source/creator/panels/parameters.d:546
+#, fuzzy
+msgid "Show all nodes"
+msgstr "Mostra tutti i nodi"
+
+#: source/creator/panels/parameters.d:595
 msgid "Interpolation Mode"
 msgstr "Modalità Interpolazione"
 
-#: source/creator/panels/parameters.d:583 source/creator/panels/timeline.d:74
+#: source/creator/panels/parameters.d:596 source/creator/panels/timeline.d:74
 msgid "Nearest"
 msgstr "Più vicino"
 
-#: source/creator/panels/parameters.d:589 source/creator/panels/timeline.d:80
+#: source/creator/panels/parameters.d:602 source/creator/panels/timeline.d:80
 msgid "Linear"
 msgstr "Lineare"
 
-#: source/creator/panels/parameters.d:595 source/creator/panels/timeline.d:83
+#: source/creator/panels/parameters.d:608 source/creator/panels/timeline.d:83
 msgid "Cubic"
 msgstr "Cubico"
 
-#: source/creator/panels/parameters.d:605
+#: source/creator/panels/parameters.d:618
 #, fuzzy
 msgid "Copy to"
 msgstr "Copia in"
 
-#: source/creator/panels/parameters.d:613
+#: source/creator/panels/parameters.d:626
 msgid "Swap with"
 msgstr "Scambia con"
 
-#: source/creator/panels/parameters.d:797
+#: source/creator/panels/parameters.d:810
 #, fuzzy
 msgid "New Parameter Group"
 msgstr "Proprietà parametro"
 
-#: source/creator/panels/parameters.d:901
+#: source/creator/panels/parameters.d:914
 msgid "Edit Properties"
 msgstr "Modifica Proprietà"
 
-#: source/creator/panels/parameters.d:905
+#: source/creator/panels/parameters.d:918
 msgid "Edit Axes Points"
 msgstr "Modifica punti degli assi"
 
-#: source/creator/panels/parameters.d:909
+#: source/creator/panels/parameters.d:922
 msgid "Split"
 msgstr "Dividi"
 
-#: source/creator/panels/parameters.d:913
+#: source/creator/panels/parameters.d:926
 msgid "To 2D"
 msgstr "A 2D"
 
-#: source/creator/panels/parameters.d:918
+#: source/creator/panels/parameters.d:931
 msgid "Flip X"
 msgstr "Capovolgi X"
 
-#: source/creator/panels/parameters.d:924
+#: source/creator/panels/parameters.d:937
 msgid "Flip Y"
 msgstr "Capovolgi Y"
 
-#: source/creator/panels/parameters.d:931
+#: source/creator/panels/parameters.d:944
 msgid "Flip"
 msgstr "Capovolgi"
 
 # Could also translate to "Ricarica Automatica a Specchio", but the english word "Autofill" is also very used and a better fit here.
-#: source/creator/panels/parameters.d:949
+#: source/creator/panels/parameters.d:962
 msgid "Mirrored Autofill"
 msgstr "Autofill a Specchio"
 
-#: source/creator/panels/parameters.d:981
+#: source/creator/panels/parameters.d:994
 msgid "Paste and Horiontal Flip"
 msgstr "Incolla e Capovolgi Orizzontalmente"
 
-#: source/creator/panels/parameters.d:986
+#: source/creator/panels/parameters.d:999
 msgid "Duplicate"
 msgstr "Duplica"
 
 #. Sets the default value of the param
-#: source/creator/panels/parameters.d:1007
+#: source/creator/panels/parameters.d:1020
 msgid "Set Starting Position"
 msgstr "Imposta Posizione Iniziale"
 
 #. Arms the parameter for recording values.
-#: source/creator/panels/parameters.d:1032
+#: source/creator/panels/parameters.d:1045
 #, fuzzy
 msgid "Arm Parameter"
 msgstr "Parametro Braccio"
 
-#: source/creator/panels/parameters.d:1045
+#: source/creator/panels/parameters.d:1058
 #, fuzzy
 msgid "Add Keyframe"
 msgstr "Aggiungi Parametro"
 
-#: source/creator/panels/parameters.d:1080
+#: source/creator/panels/parameters.d:1093
 msgid "Add 1D Parameter (0..1)"
 msgstr "Aggiungi Parametro 1D (0..1)"
 
-#: source/creator/panels/parameters.d:1088
+#: source/creator/panels/parameters.d:1101
 msgid "Add 1D Parameter (-1..1)"
 msgstr "Aggiungi Parametro 1D (-1..1)"
 
-#: source/creator/panels/parameters.d:1099
+#: source/creator/panels/parameters.d:1112
 msgid "Add 2D Parameter (0..1)"
 msgstr "Aggiungi Parametro 2D (0..1)"
 
-#: source/creator/panels/parameters.d:1107
+#: source/creator/panels/parameters.d:1120
 msgid "Add 2D Parameter (-1..+1)"
 msgstr "Aggiungi Parametro 2D (-1..+1)"
 
-#: source/creator/panels/parameters.d:1119
+#: source/creator/panels/parameters.d:1132
 msgid "Add Mouth Shape"
 msgstr "Aggiungi forma della bocca"
 
-#: source/creator/panels/parameters.d:1141
+#: source/creator/panels/parameters.d:1154
 msgid "Filter, search for specific parameters"
 msgstr "Filtra, cerca per parametri specifici"
 
 #. Textbox
-#: source/creator/panels/parameters.d:1181 source/creator/windows/rename.d:42
+#: source/creator/panels/parameters.d:1194 source/creator/windows/rename.d:42
 #: source/creator/windows/rename.d:57
 msgid "Rename"
 msgstr "Rinomina"
 
-#: source/creator/panels/parameters.d:1185
+#: source/creator/panels/parameters.d:1198
 msgid "Colors"
 msgstr "Colori"
 
 #. CUSTOM COLOR PICKER
 #. Allows user to select a custom color for parameter group.
-#: source/creator/panels/parameters.d:1210
+#: source/creator/panels/parameters.d:1223
 msgid "Custom Color"
 msgstr "Colore Personalizzato"
 
-#: source/creator/panels/parameters.d:1286
+#: source/creator/panels/parameters.d:1299
 #, fuzzy
 msgid "Add Parameter"
 msgstr "Aggiungi Parametro"
 
-#: source/creator/panels/parameters.d:1291
+#: source/creator/panels/parameters.d:1304
 msgid "Parameters"
 msgstr "Parametri"
 
@@ -1571,7 +1593,8 @@ msgid "Drag to define 2x2 mesh"
 msgstr "Trascina per definire la maglia 2x2"
 
 #: source/creator/viewport/common/mesheditor/tools/grid.d:239
-msgid "Add remove key points to axes"
+#, fuzzy
+msgid "Add/remove key points to axes"
 msgstr "Aggiungi/Rimuovi punti chiave agli assi"
 
 #: source/creator/viewport/common/mesheditor/tools/grid.d:240
@@ -1829,7 +1852,7 @@ msgstr "Recenti"
 #: source/creator/windows/settings.d:173
 #, fuzzy
 msgid "Autosaves"
-msgstr "Rinomina automaticamente"
+msgstr "Salvataggi Automatici"
 
 #. Actually saves the edited state for the axies points
 #. Settings are autosaved, but in case the user
@@ -1866,7 +1889,7 @@ msgstr "Importa file pupazzo esistente"
 
 #: source/creator/widgets/mainmenu.d:194
 msgid "Image Folder"
-msgstr "Cartella immagine"
+msgstr "Cartella immagini"
 
 #: source/creator/widgets/mainmenu.d:195
 msgid "Select a Folder..."
@@ -1888,7 +1911,7 @@ msgstr "Documento Photoshop"
 #: source/creator/widgets/mainmenu.d:218
 #, fuzzy
 msgid "Image Files"
-msgstr "Cartella immagine"
+msgstr "File immagine"
 
 #: source/creator/widgets/mainmenu.d:234
 msgid "Merges (adds) selected image files to project"
@@ -1901,9 +1924,9 @@ msgstr "Crashdump di Inochi Creator"
 
 #: source/creator/widgets/mainmenu.d:247
 msgid "Merge another Inochi Creator project in to this one"
-msgstr "Unire un altro progetto Inochi Creator a questo"
+msgstr "Unsci un altro progetto Inochi Creator a questo"
 
-#: source/creator/widgets/mainmenu.d:252 source/creator/windows/inpexport.d:327
+#: source/creator/widgets/mainmenu.d:252 source/creator/windows/inpexport.d:358
 #: source/creator/windows/videoexport.d:229
 msgid "Export"
 msgstr "Esporta"
@@ -1999,7 +2022,7 @@ msgstr "Pannelli"
 
 #: source/creator/widgets/mainmenu.d:384
 msgid "Panel is not visible in current edit mode."
-msgstr ""
+msgstr "Il pannello non è visibile nella modalità di modifica corrente."
 
 #: source/creator/widgets/mainmenu.d:392
 msgid "Configuration"
@@ -2038,7 +2061,7 @@ msgstr "Strumenti"
 #: source/creator/widgets/mainmenu.d:452
 #, fuzzy
 msgid "Puppet Data"
-msgstr "Pupazzo"
+msgstr "Dati Pupazzo"
 
 #. Opens the directory where configuration resides in the user's file browser.
 #: source/creator/widgets/mainmenu.d:456
@@ -2224,7 +2247,9 @@ msgstr "Prova Pupazzo"
 
 #: source/creator/windows/autosave.d:45
 msgid "Inochi Creator closed unexpectedly while editing this file."
-msgstr "Inochi Creator si è chiuso inaspettatamente durante la modifica di questo file."
+msgstr ""
+"Inochi Creator si è chiuso inaspettatamente durante la modifica di questo "
+"file."
 
 #: source/creator/windows/autosave.d:46
 msgid "Restore data from a backup?"
@@ -2358,7 +2383,7 @@ msgstr "Impostazioni di Esportazione"
 #: source/creator/windows/imgexport.d:110
 #: source/creator/windows/videoexport.d:174
 msgid "Allow Transparency"
-msgstr "Consentire la Trasparenza"
+msgstr "Consenti la Trasparenza"
 
 #: source/creator/windows/imgexport.d:111
 #: source/creator/windows/videoexport.d:175
@@ -2373,7 +2398,9 @@ msgstr "Esporta Immagine..."
 #: source/creator/windows/imgexport.d:144
 #: source/creator/windows/videoexport.d:294
 msgid "No cameras to export from in Scene, please add a Camera."
-msgstr "Non ci sono telecamere da cui esportare nella Scena, aggiungere una telecamera."
+msgstr ""
+"Non ci sono telecamere da cui esportare nella Scena, aggiungere una "
+"telecamera."
 
 #: source/creator/windows/inpexport.d:106
 msgid "Atlassing"
@@ -2404,7 +2431,7 @@ msgid ""
 "parts being scaled down uniformly."
 msgstr ""
 "Se le parti troppo grandi debbano essere ridimensionate individualmente "
-"invece di ridimensionare tutte le parti in modo uniforme".
+"invece di ridimensionare tutte le parti in modo uniforme."
 
 #: source/creator/windows/inpexport.d:162
 #, fuzzy
@@ -2440,16 +2467,16 @@ msgstr "Carica"
 msgid "Preview"
 msgstr "Anteprima"
 
-#: source/creator/windows/inpexport.d:292
+#: source/creator/windows/inpexport.d:323
 #: source/creator/windows/videoexport.d:192
 msgid "Loops"
 msgstr "Cicli"
 
-#: source/creator/windows/inpexport.d:305 source/creator/windows/settings.d:191
+#: source/creator/windows/inpexport.d:336 source/creator/windows/settings.d:191
 msgid "No settings for this category."
 msgstr "Nessuna impostazione per questa categoria."
 
-#: source/creator/windows/inpexport.d:319
+#: source/creator/windows/inpexport.d:350
 msgid ""
 "A texture was too large to fit the texture atlas, the textures have been "
 "scaled down."
@@ -2457,12 +2484,12 @@ msgstr ""
 "Una texture era troppo grande per adattarsi all'atlante delle texture, le "
 "texture sono state ridimensionate."
 
-#: source/creator/windows/inpexport.d:338
+#: source/creator/windows/inpexport.d:369
 #, fuzzy
 msgid "Export failed..."
 msgstr "Esportazione fallita..."
 
-#: source/creator/windows/inpexport.d:347
+#: source/creator/windows/inpexport.d:378
 #, fuzzy
 msgid "Export Options"
 msgstr "Opzioni Esportazione"
@@ -2729,7 +2756,7 @@ msgstr "Blocca al Framerate dell' Animazione"
 
 #: source/creator/windows/videoexport.d:204
 msgid "Codec"
-msgstr "Codec"PEG was not found, please install FFMPEG to export video.
+msgstr "Codec"
 
 #: source/creator/windows/videoexport.d:270
 msgid "Close"
@@ -2746,7 +2773,9 @@ msgstr "FFMPEG non è stato trovato, installa FFMPEG per esportare il video."
 
 #: source/creator/windows/videoexport.d:302
 msgid "No animations are defined for this model, please add an animation."
-msgstr "Non sono state definite animazioni per questo modello, per favore aggiungi un'animazione."
+msgstr ""
+"Non sono state definite animazioni per questo modello, per favore aggiungi "
+"un'animazione."
 
 #: source/creator/windows/welcome.d:112
 msgid "Unsupported"
