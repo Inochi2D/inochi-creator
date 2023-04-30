@@ -15,6 +15,7 @@ import psd;
 import i18n;
 import std.format;
 import creator.io;
+import mir.serde;
 
 private {
 
@@ -37,11 +38,16 @@ class IncPSDLayer {
     bool hidden;
     bool isLayerGroup;
     BlendMode blendMode;
+
+    @serdeIgnore
     Layer psdLayerRef;
 
+    @serdeIgnore
     int index;
 
+    @serdeIgnore
     IncPSDLayer parent;
+
     IncPSDLayer[] children;
 
     this(Layer layer, bool isGroup, IncPSDLayer parent = null, int index = 0) {
@@ -103,6 +109,7 @@ IncPSDLayer[] incPSDBuildLayerLayout(PSD document) {
                 groupStack.length--;
                 continue;
             } else if (groupStack.length > 1) {
+                groupStack[$-2].children ~= groupStack[$-1];
                 groupStack.length--;
                 continue;
             }
@@ -119,13 +126,13 @@ IncPSDLayer[] incPSDBuildLayerLayout(PSD document) {
         );
 
         // Add output layers in
-        if (groupStack.length > 0) {
+        if (curLayer.isLayerGroup) groupStack ~= curLayer;
+        else if (groupStack.length > 0) {
             groupStack[$-1].children ~= curLayer;
         } else {
             outLayers ~= curLayer;
         }
 
-        if (curLayer.isLayerGroup) groupStack ~= curLayer;
     }
 
     return outLayers;
@@ -183,6 +190,7 @@ void incImportPSD(string file, IncPSDImportSettings settings = IncPSDImportSetti
 
                 part.enabled = (layer.psdLayerRef.flags & LayerFlags.Visible) == 0;
                 part.opacity = (cast(float)layer.psdLayerRef.opacity)/255;
+                part.blendingMode = layer.blendMode;
 
                 child = part;
             }
@@ -196,13 +204,20 @@ void incImportPSD(string file, IncPSDImportSettings settings = IncPSDImportSetti
             // Add children
             foreach(sublayer; layer.children) {
                 if (settings.keepStructure) {
+
+                    // Normal adding
                     recurseAdd(child, sublayer);
                 } else {
+
                     if (auto composite = cast(Composite)child) {
+                    
+                        // Composite child iteration
                         recurseAdd(composite, sublayer);
-                        continue;
+                    } else {
+
+                        // Non-composite child iteration
+                        recurseAdd(n, sublayer);
                     }
-                    recurseAdd(n, sublayer);
                 }
             }
         }
