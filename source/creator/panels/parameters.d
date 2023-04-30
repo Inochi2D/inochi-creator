@@ -202,6 +202,7 @@ private {
     }
 
     void mirroredAutofill(Parameter param, uint axis, float min, float max) {
+        incActionPushGroup();
         auto action = new ParameterChangeBindingsAction("Mirror Auto Fill", param, null);
 
         foreach(ParameterBinding binding; param.bindings) {
@@ -225,6 +226,7 @@ private {
         }
         action.updateNewState();
         incActionPush(action);
+        incActionPopGroup();
     }
 
     void pasteParameter(Parameter param, uint axis) {
@@ -449,6 +451,7 @@ private {
         if (param.isVec2) {
             if (igBeginMenu(__("Set from mirror"), true)) {
                 if (igMenuItem(__("Horizontally"), "", false, true)) {
+                    incActionPushGroup();
                     auto action = new ParameterChangeBindingsValueAction("set From Mirror (Horizontally)", param, bindings, cParamPoint.x, cParamPoint.y);
                     foreach(binding; bindings) {
                         Node target = binding.getTarget().node;
@@ -458,9 +461,11 @@ private {
                     }
                     action.updateNewState();
                     incActionPush(action);
+                    incActionPopGroup();
                     incViewportNodeDeformNotifyParamValueChanged();
                 }
                 if (igMenuItem(__("Vertically"), "", false, true)) {
+                    incActionPushGroup();
                     auto action = new ParameterChangeBindingsValueAction("set From Mirror (Vertically)", param, bindings, cParamPoint.x, cParamPoint.y);
                     foreach(binding; bindings) {
                         Node target = binding.getTarget().node;
@@ -470,9 +475,11 @@ private {
                     }
                     action.updateNewState();
                     incActionPush(action);
+                    incActionPopGroup();
                     incViewportNodeDeformNotifyParamValueChanged();
                 }
                 if (igMenuItem(__("Diagonally"), "", false, true)) {
+                    incActionPushGroup();
                     auto action = new ParameterChangeBindingsValueAction("set From Mirror (Diagonally)", param, bindings, cParamPoint.x, cParamPoint.y);
                     foreach(binding; bindings) {
                         Node target = binding.getTarget().node;
@@ -482,12 +489,14 @@ private {
                     }
                     action.updateNewState();
                     incActionPush(action);
+                    incActionPopGroup();
                     incViewportNodeDeformNotifyParamValueChanged();
                 }
                 igEndMenu();
             }
         } else {
             if (igMenuItem(__("Set from mirror"), "", false, true)) {
+                incActionPushGroup();
                 auto action = new ParameterChangeBindingsValueAction("set From Mirror", param, bindings, cParamPoint.x, cParamPoint.y);
                 foreach(binding; bindings) {
                     Node target = binding.getTarget().node;
@@ -497,6 +506,7 @@ private {
                 }
                 action.updateNewState();
                 incActionPush(action);
+                incActionPopGroup();
                 incViewportNodeDeformNotifyParamValueChanged();
             }
         }
