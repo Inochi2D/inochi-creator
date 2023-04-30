@@ -2308,7 +2308,7 @@ msgstr "<添加新行>"
 
 #: source/creator/windows/flipconfig.d:425
 msgid "Pair"
-msgstr ""
+msgstr "配对"
 
 #: source/creator/windows/flipconfig.d:433
 #, fuzzy
@@ -2322,7 +2322,7 @@ msgstr "组件"
 
 #: source/creator/windows/flipconfig.d:508
 msgid "Flip Pairing"
-msgstr ""
+msgstr "翻转配对"
 
 #: source/creator/windows/imgexport.d:93
 #: source/creator/windows/videoexport.d:157
