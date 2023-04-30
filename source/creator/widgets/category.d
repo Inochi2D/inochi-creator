@@ -66,10 +66,10 @@ enum IncCategoryFlags {
     
     Remember to call incEndCategory after!
 */
-bool incBeginCategory(const(char)* title, IncCategoryFlags flags = IncCategoryFlags.None) {
+bool incBeginCategory(const(char)* title, IncCategoryFlags flags = IncCategoryFlags.None, void function(float w, float h) callback = null) {
     ImVec4 col = igGetStyle().Colors[ImGuiCol.WindowBg];
     col = ImVec4(col.x-0.025, col.y-0.025, col.z-0.025, col.w);
-    return incBeginCategory(title, col, flags);
+    return incBeginCategory(title, col, flags, callback);
 }
 
 /**
@@ -77,7 +77,7 @@ bool incBeginCategory(const(char)* title, IncCategoryFlags flags = IncCategoryFl
 
     Remember to call incEndCategory after!
 */
-bool incBeginCategory(const(char)* title, ImVec4 color, IncCategoryFlags flags = IncCategoryFlags.None) {
+bool incBeginCategory(const(char)* title, ImVec4 color, IncCategoryFlags flags = IncCategoryFlags.None, void function(float w, float h) callback = null) {
     import inmath : clamp;
 
     // We do not support transparency
@@ -150,6 +150,9 @@ bool incBeginCategory(const(char)* title, ImVec4 color, IncCategoryFlags flags =
     window.WorkRect.Min.x -= paddingX;
     igSetCursorPosX(igGetCursorPosX()+paddingX);
 
+    if (callback !is null)
+        callback(data.contentBounds.z, data.contentBounds.w);
+
     if ((data.flags & IncCategoryFlags.NoCollapse) == IncCategoryFlags.NoCollapse) {
         data.open = true;
         igIndent();
@@ -158,8 +161,8 @@ bool incBeginCategory(const(char)* title, ImVec4 color, IncCategoryFlags flags =
     } else {
         bool defaultClosed = (data.flags & IncCategoryFlags.DefaultClosed) == IncCategoryFlags.DefaultClosed;
         data.open = igTreeNodeEx(title, defaultClosed ? 
-            ImGuiTreeNodeFlags.NoTreePushOnOpen | ImGuiTreeNodeFlags.SpanAvailWidth :
-            ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.NoTreePushOnOpen | ImGuiTreeNodeFlags.SpanAvailWidth
+            ImGuiTreeNodeFlags.NoTreePushOnOpen | ImGuiTreeNodeFlags.SpanAvailWidth | ImGuiTreeNodeFlags.AllowItemOverlap:
+            ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.NoTreePushOnOpen | ImGuiTreeNodeFlags.SpanAvailWidth | ImGuiTreeNodeFlags.AllowItemOverlap
         );
     }
 
