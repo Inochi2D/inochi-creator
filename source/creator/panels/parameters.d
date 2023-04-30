@@ -39,16 +39,19 @@ private {
     vec2u cClipboardPoint;
     ParameterBinding[BindTarget] cClipboardBindings;
     Parameter cClipboardParameter = null;
+    bool selectedOnly = false;
 
-    void refreshBindingList(Parameter param) {
+    void refreshBindingList(Parameter param, bool selectedOnly = false) {
         // Filter selection to remove anything that went away
         ParameterBinding[BindTarget] newSelectedBindings;
 
+        auto selected = selectedOnly? incSelectedNodes() : [];
         cParamBindingEntriesAll.clear();
         foreach(ParameterBinding binding; param.bindings) {
             BindTarget target = binding.getTarget();
             if (target in cSelectedBindings) newSelectedBindings[target] = binding;
-            cParamBindingEntriesAll[binding.getNode()] ~= binding;
+            if (!selectedOnly || selected.countUntil(target.node) >= 0)
+                cParamBindingEntriesAll[binding.getNode()] ~= binding;
         }
         cAllBoundNodes = cParamBindingEntriesAll.keys.dup;
         cAllBoundNodes.sort!((x, y) => x.name < y.name);
@@ -532,8 +535,18 @@ private {
     }
 
     void bindingList(Parameter param) {
-        if (incBeginCategory(__("Bindings"))) {
-            refreshBindingList(param);
+        if (incBeginCategory(__("Bindings"),IncCategoryFlags.None, (float w, float h) {
+            if (selectedOnly)
+                igText("");
+            else
+                igTextDisabled("");
+            if (igIsItemClicked()) {
+                selectedOnly = !selectedOnly;
+            }
+            incTooltip(selectedOnly? _("Show only selected nodes"): _("Show all nodes"));
+            igSameLine();
+        })) {
+            refreshBindingList(param, selectedOnly);
 
             auto io = igGetIO();
             auto style = igGetStyle();
