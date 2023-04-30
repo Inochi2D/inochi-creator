@@ -9,19 +9,18 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-04-30 14:03+0200\n"
-"PO-Revision-Date: 2023-01-29 23:05+0900\n"
+"PO-Revision-Date: 2023-05-01 04:28+0900\n"
 "Last-Translator: Nejikugi <63852665+scrwnl@users.noreply.github.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 2.3\n"
 
 #: source/app.d:93
-#, fuzzy
 msgid "Inochi Creator (Nightly)"
-msgstr "Inochi Creatorを開始"
+msgstr "Inochi Creator (夜間ビルド)"
 
 #: source/app.d:93
 msgid ""
@@ -29,6 +28,9 @@ msgid ""
 "Inochi Creator may crash unexpectedly and you will likely encounter bugs.\n"
 "Make sure to save and back up your work often!"
 msgstr ""
+"Inochi Creatorの開発版(夜間ビルド)を実行しています。\n"
+"このバージョンは不意にクラッシュしたりバグを踏んでしまう場合があります。\n"
+"バックアップをと保存をこまめにするようにしてください！"
 
 #: source/creator/actions/binding.d:74
 #, c-format
@@ -77,29 +79,29 @@ msgstr "ドローアブル%sの変更が元に戻されました"
 #: source/creator/actions/mesh.d:58
 #, c-format
 msgid "Mesh %s change is restored."
-msgstr ""
+msgstr "%sのメッシュへの変更を元に戻しました。"
 
 #: source/creator/actions/mesh.d:65
-#, fuzzy, c-format
+#, c-format
 msgid "Mesh %s was edited."
-msgstr "%sをエクスポートしました。"
+msgstr "%sのメッシュが変更されました。"
 
 #: source/creator/actions/mesh.d:133 source/creator/actions/mesh.d:234
-#, fuzzy, c-format
+#, c-format
 msgid "%s: vertex was added."
-msgstr "パラメータ(%s)が再度追加されました。"
+msgstr "%sに頂点が追加されました。"
 
 #: source/creator/actions/mesh.d:141 source/creator/actions/mesh.d:226
-#, fuzzy, c-format
+#, c-format
 msgid "%s: vertex was removed."
-msgstr "パラメータ(%s)が再度削除されました"
+msgstr "%sの頂点が削除されました"
 
 #: source/creator/actions/mesh.d:315 source/creator/actions/mesh.d:323
 #: source/creator/actions/mesh.d:402 source/creator/actions/mesh.d:410
 #: source/creator/actions/mesh.d:489 source/creator/actions/mesh.d:497
 #, c-format
 msgid "%s: vertex was translated."
-msgstr ""
+msgstr "%sの頂点が移動されました。"
 
 #: source/creator/actions/mesheditor.d:157
 #, c-format
@@ -179,9 +181,9 @@ msgid "%s locked to root node"
 msgstr "%sがルートノードに固定されました。"
 
 #: source/creator/actions/node.d:373 source/creator/actions/node.d:381
-#, fuzzy, c-format
+#, c-format
 msgid "%s unlocked from root node"
-msgstr "%sがルートノードから固定解除されています。"
+msgstr "%sがルートノードから固定解除されました"
 
 #: source/creator/actions/parameter.d:114
 #, c-format
@@ -289,14 +291,12 @@ msgid ""
 msgstr "PSDファイルのマージ中にエラーが発生しました：%s"
 
 #: source/creator/io/videoexport.d:65
-#, fuzzy
 msgid "Automatic"
-msgstr "自動選択"
+msgstr "自動"
 
 #: source/creator/package.d:195
-#, fuzzy
 msgid "New Project"
-msgstr "プロジェクトを閉じる"
+msgstr "新規プロジェクト"
 
 #: source/creator/package.d:259
 #, c-format
@@ -356,9 +356,8 @@ msgid "History"
 msgstr "履歴"
 
 #: source/creator/panels/animlist.d:34
-#, fuzzy
 msgid "Edit..."
-msgstr "編集"
+msgstr "編集..."
 
 #: source/creator/panels/animlist.d:37 source/creator/panels/inspector.d:886
 #: source/creator/panels/inspector.d:1084 source/creator/panels/nodes.d:142
@@ -368,9 +367,8 @@ msgid "Delete"
 msgstr "削除"
 
 #: source/creator/panels/animlist.d:73
-#, fuzzy
 msgid "Animation List"
-msgstr "アニメーション編集"
+msgstr "アニメーションリスト"
 
 #: source/creator/panels/inspector.d:42 source/creator/panels/nodes.d:338
 #: source/creator/panels/parameters.d:1084
@@ -404,7 +402,7 @@ msgstr "基本情報"
 
 #: source/creator/panels/inspector.d:194
 msgid "Part Count"
-msgstr ""
+msgstr "パーツ数"
 
 #: source/creator/panels/inspector.d:200
 msgid "Name"
@@ -683,21 +681,19 @@ msgstr "スクリーン"
 #: source/creator/panels/inspector.d:802 source/creator/panels/inspector.d:1008
 #: source/creator/windows/inpexport.d:279
 msgid "Overlay"
-msgstr ""
+msgstr "オーバーレイ"
 
 #. Darken blending mode
 #: source/creator/panels/inspector.d:805 source/creator/panels/inspector.d:1011
 #: source/creator/windows/inpexport.d:282
-#, fuzzy
 msgid "Darken"
-msgstr "ダーク"
+msgstr "比較（暗）"
 
 #. Lighten blending mode
 #: source/creator/panels/inspector.d:808 source/creator/panels/inspector.d:1014
 #: source/creator/windows/inpexport.d:285
-#, fuzzy
 msgid "Lighten"
-msgstr "ライト"
+msgstr "比較（明）"
 
 #. Color Dodge blending mode
 #: source/creator/panels/inspector.d:811 source/creator/panels/inspector.d:1017
@@ -714,53 +710,49 @@ msgstr "加算"
 #. Color Burn blending mode
 #: source/creator/panels/inspector.d:817 source/creator/panels/inspector.d:1023
 #: source/creator/windows/inpexport.d:294
-#, fuzzy
 msgid "Color Burn"
-msgstr "色を選択"
+msgstr "焼き込み"
 
 #. Hard Light blending mode
 #: source/creator/panels/inspector.d:820 source/creator/panels/inspector.d:1026
 #: source/creator/windows/inpexport.d:297
-#, fuzzy
 msgid "Hard Light"
-msgstr "ライト"
+msgstr "ハードライト"
 
 #. Soft Light blending mode
 #: source/creator/panels/inspector.d:823 source/creator/panels/inspector.d:1029
 #: source/creator/windows/inpexport.d:300
-#, fuzzy
 msgid "Soft Light"
-msgstr "ライト"
+msgstr "ソフトライト"
 
 #. Subtract blending mode
 #: source/creator/panels/inspector.d:826 source/creator/panels/inspector.d:1032
 #: source/creator/windows/inpexport.d:303
 msgid "Subtract"
-msgstr ""
+msgstr "減算"
 
 #. Difference blending mode
 #: source/creator/panels/inspector.d:829 source/creator/panels/inspector.d:1035
 #: source/creator/windows/inpexport.d:306
 msgid "Difference"
-msgstr ""
+msgstr "差分"
 
 #. Exclusion blending mode
 #: source/creator/panels/inspector.d:832 source/creator/panels/inspector.d:1038
 #: source/creator/windows/inpexport.d:309
 msgid "Exclusion"
-msgstr ""
+msgstr "除外"
 
 #. Inverse blending mode
 #: source/creator/panels/inspector.d:835 source/creator/panels/inspector.d:1041
 #: source/creator/windows/inpexport.d:312
-#, fuzzy
 msgid "Inverse"
 msgstr "反転"
 
 #: source/creator/panels/inspector.d:836 source/creator/panels/inspector.d:1042
 #: source/creator/windows/inpexport.d:313
 msgid "Inverts the color by a factor of the overlying color"
-msgstr ""
+msgstr "レイヤーの上にある色に従って色を反転します。"
 
 #. Clip to Lower blending mode
 #: source/creator/panels/inspector.d:839 source/creator/windows/inpexport.d:316
@@ -903,9 +895,8 @@ msgid "XY"
 msgstr "X/Y座標"
 
 #: source/creator/panels/inspector.d:1227
-#, fuzzy
 msgid "Local Transform Lock"
-msgstr "変形"
+msgstr "ローカルトランスフォームの固定"
 
 #: source/creator/panels/inspector.d:1228
 msgid ""
