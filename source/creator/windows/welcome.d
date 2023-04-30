@@ -286,25 +286,33 @@ protected:
                         incDummy(ImVec2(0, 2));
                         igIndent();
 
-                            if (incTextLinkWithIcon("", _("Website"))) {
-                                incOpenLink("https://inochi2d.com");
+                            static if (INC_INFO_WEBSITE_URI.length > 0) {
+                                if (incTextLinkWithIcon("", _("Website"))) {
+                                    incOpenLink(INC_INFO_WEBSITE_URI);
+                                }
                             }
 
-                            if (incTextLinkWithIcon("", _("Documentation"))) {
-                                incOpenLink("https://github.com/Inochi2D/Inochi-creator/wiki");
+                            static if (INC_INFO_DOCS_URI.length > 0) {
+                                if (incTextLinkWithIcon("", _("Documentation"))) {
+                                    incOpenLink(INC_INFO_DOCS_URI);
+                                }
+                            }
+                            
+                            static if (INC_INFO_DISCORD_URI.length > 0) {
+                                if (incTextLinkWithIcon("", _("Join our Discord"))) {
+                                    incOpenLink(INC_INFO_DISCORD_URI);
+                                }
                             }
 
-                            if (incTextLinkWithIcon("", _("Join our Discord"))) {
-                                incOpenLink("https://discord.com/invite/abnxwN6r9v");
-                            }
-
-                            igNewLine();
-                            igNewLine();
-                            if (incTextLinkWithIcon("", _("Patreon"))) {
-                                incOpenLink("https://www.patreon.com/LunaFoxgirlVT");
-                            }
-                            if (incTextLinkWithIcon("", _("Github Sponsors"))) {
-                                incOpenLink("https://github.com/sponsors/LunaTheFoxgirl/");
+                            static if (INC_INFO_SHOW_DONATE_LINKS) {
+                                igNewLine();
+                                igNewLine();
+                                if (incTextLinkWithIcon("", _("Patreon"))) {
+                                    incOpenLink("https://www.patreon.com/LunaFoxgirlVT");
+                                }
+                                if (incTextLinkWithIcon("", _("Github Sponsors"))) {
+                                    incOpenLink("https://github.com/sponsors/LunaTheFoxgirl/");
+                                }
                             }
                         igUnindent();
                     }
