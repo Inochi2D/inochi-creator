@@ -203,7 +203,7 @@ void incResetRootNode(ref Puppet puppet) {
     puppet.root.localTransform.scale = vec2(1, 1);
 }
 
-void incOpenProject(string path) {
+void incOpenProject(bool handleError=true)(string path) {
     if (incCheckLockfile(path)) {
         incPushWindow(new RestoreSaveWindow(path));
 
@@ -212,7 +212,7 @@ void incOpenProject(string path) {
     }
 
     // Usual case
-    incOpenProject(path, "");
+    incOpenProject!(handleError)(path, "");
 }
 
 /**
@@ -220,7 +220,7 @@ void incOpenProject(string path) {
     backupPath is the inx file to load all the data from, but is empty string
     when just loading a normal mainsave project file.
 */
-void incOpenProject(string mainPath, string backupPath) {
+void incOpenProject(bool handleError=true)(string mainPath, string backupPath) {
     import std.path : setExtension, baseName;
     incClearImguiData();
     
@@ -234,8 +234,12 @@ void incOpenProject(string mainPath, string backupPath) {
             puppet = inLoadPuppet!ExPuppet(mainPath);
         }
     } catch (Exception ex) {
-        incDialog(__("Error"), ex.msg);
-        return;
+        static if (handleError) {
+            incDialog(__("Error"), ex.msg);
+            return;
+        } else {
+            throw ex;
+        }
     }
 
     // Clear out stuff by creating a new project
