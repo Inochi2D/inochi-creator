@@ -40,7 +40,7 @@ jobs:
     - name: 'Build and Test'
       run: |
         # Build the project, with its main file included, without unittests
-        dub build --compiler=ldc2 --build=release --config=full
+        dub build --compiler=ldc2 --build=release --config=linux-full
 
     - name: "Upload Artifacts"  
       if: success()
