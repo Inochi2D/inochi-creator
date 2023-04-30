@@ -311,6 +311,9 @@ protected:
                                     // Inverse blending mode
                                     if (igSelectable(__("Inverse"), settings.decorateWatermarkBlendMode == BlendMode.Inverse)) this.setBlending(BlendMode.Inverse);
                                     incTooltip(_("Inverts the color by a factor of the overlying color"));
+                            
+                                    // Destination In blending mode
+                                    if (igSelectable(__("Destination In"), node.blendingMode == BlendMode.DestinationIn)) node.blendingMode = BlendMode.DestinationIn;
 
                                     // Clip to Lower blending mode
                                     if (igSelectable(__("Clip to Lower"), settings.decorateWatermarkBlendMode == BlendMode.ClipToLower)) this.setBlending(BlendMode.ClipToLower);
