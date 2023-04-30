@@ -18,6 +18,7 @@ import creator.ver;
 import creator.io;
 import creator;
 import creator.config;
+import creator.widgets.dialog;
 
 import creator.widgets.shadow;
 
@@ -234,8 +235,12 @@ protected:
 
                                 string file = incShowOpenDialog(filters, _("Open..."));
                                 if (file) {
-                                    incOpenProject(file);
-                                    this.close();
+                                    try {
+                                        incOpenProject!false(file);
+                                        this.close();
+                                    } catch(Exception ex) {
+                                        incDialog(__("Error"), ex.msg);
+                                    }
                                 }
                             }
 
@@ -258,8 +263,12 @@ protected:
 
                                     import std.path : baseName;
                                     if (incTextLinkWithIcon("", recent.baseName)) {
-                                        incOpenProject(recent);
-                                        this.close();
+                                        try {
+                                            incOpenProject!false(recent);
+                                            this.close();
+                                        } catch(Exception ex) {
+                                            incDialog(__("Error"), ex.msg);
+                                        }
                                     }
                                 }
                             } else {
