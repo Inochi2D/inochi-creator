@@ -325,6 +325,31 @@ public:
     }
 
     final
+    bool hasInvalidGeometry() {
+        foreach(vertex; vertices) {
+
+            // Vertex has no possibility of having triangles if it has less than 2 connections
+            if (vertex.connections.length < 2) return true;
+            
+            bool madeValidConnection;
+            foreach(ref connA; vertex.connections) {
+                foreach(ref connB; vertex.connections) {
+
+                    // We don't count connections to one self.
+                    if (connA == connB) continue;
+
+                    // Check if we have a triangle
+                    if (connA.isConnectedTo(connB)) madeValidConnection = true;
+                }
+            }
+
+            if (!madeValidConnection) return true;
+        }
+
+        return false;
+    }
+
+    final
     size_t getTriCount() {
         size_t tris;
 
