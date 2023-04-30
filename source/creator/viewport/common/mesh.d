@@ -325,6 +325,37 @@ public:
     }
 
     final
+    size_t getTriCount() {
+        size_t tris;
+
+        MeshVertex*[] visited;
+
+        size_t vtxidx;
+        MeshVertex* vtx = vertices[0];
+        import std.algorithm.searching : canFind;
+
+        while(vtxidx+1 < vertices.length) {
+            if (vtx.connections.length > 1) {
+                foreach(ref connA; vtx.connections) {
+                    foreach(ref connB; vtx.connections) {
+                        if (connA == connB) continue;
+
+                        if (connA.isConnectedTo(connB) && !visited.canFind(connA) && !visited.canFind(connB)) {
+                            tris++;
+                        }
+                    }
+                }
+            }
+
+            vtxidx++;
+            vtx = vertices[vtxidx];
+            visited ~= vtx;
+        }
+        
+        return tris;
+    }
+
+    final
     size_t getVertexCount() {
         return vertices.length;
     }

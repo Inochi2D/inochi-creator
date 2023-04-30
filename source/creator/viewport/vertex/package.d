@@ -300,7 +300,7 @@ void incMeshEditApply() {
     foreach (d; target) {
         if (Drawable drawable = cast(Drawable)d) {
             auto meshEditor = cast(IncMeshEditorOneDrawable)editor.getEditorFor(drawable);
-            if (meshEditor !is null && (meshEditor.getMesh().getVertexCount() < 3 || meshEditor.getMesh().getEdgeCount() < 3)) {
+            if (meshEditor !is null && (meshEditor.getMesh().getTriCount() < 1)) {
                 incDialog(__("Error"), _("Cannot apply invalid mesh\nAt least 3 vertices forming a triangle is needed."));
                 return;
             }
