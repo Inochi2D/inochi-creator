@@ -208,8 +208,7 @@ private {
 
             Node target = binding.getTarget().node;
             auto pair = incGetFlipPairFor(target);
-            auto srcBinding = getPairBindingFor(param, target, pair, binding.getName());
-
+            auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), true);
             uint xCount = param.axisPointCount(0);
             uint yCount = param.axisPointCount(1);
             foreach(x; 0..xCount) {
@@ -220,7 +219,7 @@ private {
                     if (axis == 1 && (offY < min || offY > max)) continue;
 
                     vec2u index = vec2u(x, y);
-                    if (!binding.isSet(index)) autoFlipBinding(binding, srcBinding, index, axis);
+                    if (!targetBinding.isSet(index)) autoFlipBinding(targetBinding, binding, index, axis);
                 }
             }
         }
@@ -454,8 +453,8 @@ private {
                     foreach(binding; bindings) {
                         Node target = binding.getTarget().node;
                         auto pair = incGetFlipPairFor(target);
-                        auto srcBinding = getPairBindingFor(param, target, pair, binding.getName());
-                        autoFlipBinding(binding, srcBinding, cParamPoint, 0);
+                        auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), true);
+                        autoFlipBinding(targetBinding, binding, cParamPoint, 0);
                     }
                     action.updateNewState();
                     incActionPush(action);
@@ -466,8 +465,8 @@ private {
                     foreach(binding; bindings) {
                         Node target = binding.getTarget().node;
                         auto pair = incGetFlipPairFor(target);
-                        auto srcBinding = getPairBindingFor(param, target, pair, binding.getName());
-                        autoFlipBinding(binding, srcBinding, cParamPoint, 1);
+                        auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), true);
+                        autoFlipBinding(targetBinding, binding, cParamPoint, 1);
                     }
                     action.updateNewState();
                     incActionPush(action);
@@ -478,8 +477,8 @@ private {
                     foreach(binding; bindings) {
                         Node target = binding.getTarget().node;
                         auto pair = incGetFlipPairFor(target);
-                        auto srcBinding = getPairBindingFor(param, target, pair, binding.getName());
-                        autoFlipBinding(binding, srcBinding, cParamPoint, -1);
+                        auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), true);
+                        autoFlipBinding(targetBinding, binding, cParamPoint, -1);
                     }
                     action.updateNewState();
                     incActionPush(action);
@@ -493,8 +492,8 @@ private {
                 foreach(binding; bindings) {
                     Node target = binding.getTarget().node;
                     auto pair = incGetFlipPairFor(target);
-                    auto srcBinding = getPairBindingFor(param, target, pair, binding.getName());
-                    autoFlipBinding(binding, srcBinding, cParamPoint, 0);
+                    auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), true);
+                    autoFlipBinding(targetBinding, binding, cParamPoint, 0);
                 }
                 action.updateNewState();
                 incActionPush(action);
