@@ -236,7 +236,7 @@ class GridTool : NodeSelect {
         if (igIsMouseClicked(ImGuiMouseButton.Left)) impl.maybeSelectOne = ulong(-1);
 
         incStatusTooltip(_("Drag to define 2x2 mesh"), _("Left Mouse"));
-        incStatusTooltip(_("Add remove key points to axes"), _("Left Mouse"));
+        incStatusTooltip(_("Add/remove key points to axes"), _("Left Mouse"));
         incStatusTooltip(_("Change key point position in the axis"), _("Left Mouse"));
 
         if (!isDragging && incInputIsMouseReleased(ImGuiMouseButton.Left) && impl.maybeSelectOne != ulong(-1)) {
