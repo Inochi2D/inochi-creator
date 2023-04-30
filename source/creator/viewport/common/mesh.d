@@ -336,11 +336,25 @@ public:
 
         while(vtxidx+1 < vertices.length) {
             if (vtx.connections.length > 1) {
+                
+                // Array is cleared every iteration
+                MeshVertex*[2][] mutual;
                 foreach(ref connA; vtx.connections) {
-                    foreach(ref connB; vtx.connections) {
+                    bloop: foreach(ref connB; vtx.connections) {
+
+                        // We don't count connections to one self.
                         if (connA == connB) continue;
 
+                        // If we already know a set of points together with vtx creates a triangle,
+                        // don't count it twice!
+                        foreach(m; mutual) {
+                            if ((m[0] == connA || m[0] == connB) && (m[1] == connA || m[1] == connB)) continue bloop;
+                        }
+
+                        // Check whether vtx->A and vtx->B are mutually connected in to a triangle
+                        // And that they aren't already visited.
                         if (connA.isConnectedTo(connB) && !visited.canFind(connA) && !visited.canFind(connB)) {
+                            mutual ~= [connA, connB];
                             tris++;
                         }
                     }
