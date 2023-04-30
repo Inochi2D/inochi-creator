@@ -835,6 +835,9 @@ void incInspectorModelPart(Part node) {
             if (igSelectable(__("Inverse"), node.blendingMode == BlendMode.Inverse)) node.blendingMode = BlendMode.Inverse;
             incTooltip(_("Inverts the color by a factor of the overlying color"));
                             
+            // Destination In blending mode
+            if (igSelectable(__("Destination In"), node.blendingMode == BlendMode.DestinationIn)) node.blendingMode = BlendMode.DestinationIn;
+                            
             // Clip to Lower blending mode
             if (igSelectable(__("Clip to Lower"), node.blendingMode == BlendMode.ClipToLower)) node.blendingMode = BlendMode.ClipToLower;
             incTooltip(_("Special blending mode that causes (while respecting transparency) the part to be clipped to everything underneath"));
@@ -1040,6 +1043,9 @@ void incInspectorModelComposite(Composite node) {
             // Inverse blending mode
             if (igSelectable(__("Inverse"), node.blendingMode == BlendMode.Inverse)) node.blendingMode = BlendMode.Inverse;
             incTooltip(_("Inverts the color by a factor of the overlying color"));
+                            
+            // Destination In blending mode
+            if (igSelectable(__("Destination In"), node.blendingMode == BlendMode.DestinationIn)) node.blendingMode = BlendMode.DestinationIn;
             
             igEndCombo();
         }
