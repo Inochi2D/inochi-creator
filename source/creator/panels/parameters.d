@@ -543,7 +543,7 @@ private {
             if (igIsItemClicked()) {
                 selectedOnly = !selectedOnly;
             }
-            incTooltip(selectedOnly? _("Show only selected nodes"): _("Show all nodes"));
+            incTooltip(selectedOnly ? _("Show all nodes") : _("Show only selected nodes"));
             igSameLine();
         })) {
             refreshBindingList(param, selectedOnly);
