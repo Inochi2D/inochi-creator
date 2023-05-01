@@ -69,7 +69,6 @@ private:
         // Iterate over flat mesh and extract it in to
         // vertices and "connections"
         MeshVertex*[] iVertices;
-
         iVertices.length = data.vertices.length;
         foreach(idx, vertex; data.vertices) {
             iVertices[idx] = new MeshVertex(vertex, []);
@@ -103,6 +102,17 @@ private:
         foreach(i, vertex; iVertices) {
             printConnections(vertex);
             vertices ~= vertex;
+        }
+
+        axes = [];
+        if (data.isGrid()) {
+            foreach (axis; data.gridAxes) {
+                float[] newAxis;
+                foreach (axValue; axis) {
+                    newAxis ~= axValue;
+                }
+                axes ~= newAxis;
+            }
         }
 
         refresh();
@@ -218,6 +228,12 @@ private:
             }
         }
 
+        import std.stdio;
+        if (axes.length >= 2) {
+            newData.gridAxes = axes[];
+        }
+        newData.clearGridIsDirty();
+
         // Save the data as the new data and refresh
         data = newData;
         reset();
@@ -276,6 +292,7 @@ private:
 public:
     float selectRadius = 16f;
     MeshVertex*[] vertices;
+    float[][] axes;
     bool changed;
 
     /**
@@ -305,6 +322,76 @@ public:
             regenConnections();
         }
         return lines.length;
+    }
+
+    final
+    bool hasInvalidGeometry() {
+        foreach(vertex; vertices) {
+
+            // Vertex has no possibility of having triangles if it has less than 2 connections
+            if (vertex.connections.length < 2) return true;
+            
+            bool madeValidConnection;
+            foreach(ref connA; vertex.connections) {
+                foreach(ref connB; vertex.connections) {
+
+                    // We don't count connections to one self.
+                    if (connA == connB) continue;
+
+                    // Check if we have a triangle
+                    if (connA.isConnectedTo(connB)) madeValidConnection = true;
+                }
+            }
+
+            if (!madeValidConnection) return true;
+        }
+
+        return false;
+    }
+
+    final
+    size_t getTriCount() {
+        size_t tris;
+
+        MeshVertex*[] visited;
+
+        size_t vtxidx;
+        MeshVertex* vtx = vertices[0];
+        import std.algorithm.searching : canFind;
+
+        while(vtxidx+1 < vertices.length) {
+            if (vtx.connections.length > 1) {
+                
+                // Array is cleared every iteration
+                MeshVertex*[2][] mutual;
+                foreach(ref connA; vtx.connections) {
+                    bloop: foreach(ref connB; vtx.connections) {
+
+                        // We don't count connections to one self.
+                        if (connA == connB) continue;
+
+                        // If we already know a set of points together with vtx creates a triangle,
+                        // don't count it twice!
+                        foreach(m; mutual) {
+                            if ((m[0] == connA || m[0] == connB) && (m[1] == connA || m[1] == connB)) continue bloop;
+                        }
+
+                        // Check whether vtx->A and vtx->B are mutually connected in to a triangle
+                        // And that they aren't already visited.
+                        if (connA.isConnectedTo(connB) && !visited.canFind(connA) && !visited.canFind(connB)) {
+                            mutual ~= [connA, connB];
+                            tris++;
+                        }
+                    }
+                }
+            }
+
+            vtxidx++;
+            vtx = vertices[vtxidx];
+            visited ~= vtx;
+        }
+        
+        return tris;
     }
 
     final
@@ -370,7 +457,8 @@ public:
 
         // Updates all point positions
         foreach(vtx; subset) {
-            subPoints ~= vec3(vtx.position, 0);
+            if (vtx !is null)
+                subPoints ~= vec3(vtx.position, 0);
         }
         inDbgSetBuffer(subPoints);
         inDbgPointsSize(size);
@@ -404,11 +492,11 @@ public:
         }
     }
 
-    MeshVertex* getVertexFromPoint(vec2 point) {
-        foreach(ref vert; vertices) {
-            if (abs(vert.position.distance(point)) < selectRadius/incViewportZoom) return vert;
+    ulong getVertexFromPoint(vec2 point) {
+        foreach(idx, ref vert; vertices) {
+            if (abs(vert.position.distance(point)) < selectRadius/incViewportZoom) return idx;
         }
-        return null;
+        return -1;
     }
 
     void remove(MeshVertex* vert) {
@@ -485,17 +573,17 @@ public:
         }
     }
 
-    MeshVertex*[] getInRect(vec2 min, vec2 max) {
+    ulong[] getInRect(vec2 min, vec2 max) {
         if (min.x > max.x) swap(min.x, max.x);
         if (min.y > max.y) swap(min.y, max.y);
 
-        MeshVertex*[] matching;
+        ulong[] matching;
         foreach(idx, vertex; vertices) {
             if (min.x > vertex.position.x) continue;
             if (min.y > vertex.position.y) continue;
             if (max.x < vertex.position.x) continue;
             if (max.y < vertex.position.y) continue;
-            matching ~= vertex;
+            matching ~= idx;
         }
 
         return matching;
@@ -832,20 +920,22 @@ public:
     Deformation* deformByDeformationBinding(DeformationParameterBinding binding, vec2u index, bool flipHorz = false) {
         import std.stdio;
         if (!binding) {
-            writeln("binding is null");
             return null;
         }
         Drawable part = cast(Drawable)binding.getTarget().node;
         if (!part) {
-            writeln("part is null");
             return null;
         }
+        Deformation deform = binding.getValue(index);
+        return deformByDeformationBinding(part, deform, flipHorz);
+    }
 
+    Deformation* deformByDeformationBinding(Drawable part, Deformation deform, bool flipHorz = false) {
         auto origVertices = vertices.dup;
 
         // find triangle which covers specified point. 
         // If no triangl is found, nearest triangl for the point is selected.
-        int[] findNearestTriangle(vec2 pt, ref MeshData bindingMesh) {
+        int[] findSurroundingTriangle(vec2 pt, ref MeshData bindingMesh) {
             bool isPointInTriangle(vec2 pt, int[] triangle) {
                 float sign (ref vec2 p1, ref vec2 p2, ref vec2 p3) {
                     return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
@@ -865,18 +955,26 @@ public:
             }
             int i = 0;
             int[] triangle = [0, 1, 2];
+            while (i < bindingMesh.indices.length) {
+                triangle[0] = bindingMesh.indices[i];
+                triangle[1] = bindingMesh.indices[i+1];
+                triangle[2] = bindingMesh.indices[i+2];
+                if (isPointInTriangle(pt, triangle)) {
+                    return triangle;
+                }
+                i += 3;
+            }
+            return null;
+        }
+        int[] findNearestTriangle(vec2 pt, ref MeshData bindingMesh) {
+            int i = 0;
+            int[] triangle = [0, 1, 2];
             float nearestDistance = -1;
             int nearestIndex = 0;
             while (i < bindingMesh.indices.length) {
                 triangle[0] = bindingMesh.indices[i];
                 triangle[1] = bindingMesh.indices[i+1];
                 triangle[2] = bindingMesh.indices[i+2];
-                if (isPointInTriangle(pt, triangle)) {
-                    vec2 p1 = bindingMesh.vertices[triangle[0]];
-                    vec2 p2 = bindingMesh.vertices[triangle[1]];
-                    vec2 p3 = bindingMesh.vertices[triangle[2]];
-                    return triangle;
-                }
                 auto d1 = (pt - bindingMesh.vertices[triangle[0]]).lengthSquared;
                 auto d2 = (pt - bindingMesh.vertices[triangle[1]]).lengthSquared;
                 auto d3 = (pt - bindingMesh.vertices[triangle[2]]).lengthSquared;
@@ -891,43 +989,35 @@ public:
                     bindingMesh.indices[nearestIndex + 1], 
                     bindingMesh.indices[nearestIndex + 2]];
         }
-
         // Calculate offset of point in coordinates of triangle.
         vec2 calcOffsetInTriangleCoords(vec2 pt, ref MeshData bindingMesh, ref int[] triangle) {
-            if( (pt - bindingMesh.vertices[triangle[0]]).lengthSquared > (pt - bindingMesh.vertices[triangle[1]]).lengthSquared) {
-                swap(triangle[0], triangle[1]);
-            }
-            if( (pt - bindingMesh.vertices[triangle[0]]).lengthSquared > (pt - bindingMesh.vertices[triangle[2]]).lengthSquared) {
-                swap(triangle[0], triangle[2]);
-            }
-            vec2 axis0 = bindingMesh.vertices[triangle[1]] - bindingMesh.vertices[triangle[0]];
+            auto p1 = bindingMesh.vertices[triangle[0]];
+            if (pt == p1)
+                return vec2(0, 0);
+            auto p2 = bindingMesh.vertices[triangle[1]];
+            auto p3 = bindingMesh.vertices[triangle[2]];
+            vec2 axis0 = p2 - p1;
             float axis0len = axis0.length;
             axis0 /= axis0.length;
-            vec2 axis1 = bindingMesh.vertices[triangle[2]] - bindingMesh.vertices[triangle[0]];
+            vec2 axis1 = p3 - p1;
             float axis1len = axis1.length;
             axis1 /= axis1.length;
-
-            auto relPt = pt - bindingMesh.vertices[triangle[0]];
-            if (relPt.lengthSquared == 0)
-                return vec2(0, 0);
-            float cosA = dot(axis0, axis1);
-            if (cosA == 0) {
-                return vec2(dot(relPt, axis0), dot(relPt, axis1));
-            } else {
-                float argA = acos(cosA);
-                float sinA = sin(argA);
-                float tanA = tan(argA);
-                float cosB = dot(axis0, relPt) / relPt.length;
-                float argB = acos(cosB);
-                float sinB = sin(argB);
-                
-                vec2 ortPt = vec2(relPt.length * cosB, relPt.length * sinB);
-                
-                mat2 H = mat2([1, -1/tanA, 0, 1/sinA]);
-                auto result = H * ortPt;
-
-                return result;
-            }
+            vec3 raxis1 = mat3([axis0.x, axis0.y, 0, -axis0.y, axis0.x, 0, 0, 0, 1]) * vec3(axis1, 1);
+            float cosA = raxis1.x;
+            float sinA = raxis1.y;
+            mat3 H = mat3([axis0len > 0? 1/axis0len: 0,                           0, 0,
+                           0,                           axis1len > 0? 1/axis1len: 0, 0,
+                           0,                                                     0, 1]) * 
+                     mat3([1, -cosA/sinA, 0, 
+                           0,     1/sinA, 0, 
+                           0,          0, 1]) * 
+                     mat3([ axis0.x, axis0.y, 0, 
+                           -axis0.y, axis0.x, 0, 
+                                  0,       0, 1]) * 
+                     mat3([1, 0, -(p1).x, 
+                           0, 1, -(p1).y, 
+                           0, 0,       1]);
+            return (H * vec3(pt.x, pt.y, 1)).xy;
         }
 
         // Apply transform for mesh
@@ -941,33 +1031,37 @@ public:
         }
 
         // Calculate position of the vertex using coordinates of the triangle.      
-        vec2 transformPoint(vec2 pt, vec2 offset, vec2[] vertices, ref int[] triangle) {
+        vec2 transformPointInTriangleCoords(vec2 pt, vec2 offset, vec2[] vertices, ref int[] triangle) {
             auto p1 = vertices[triangle[0]];
             auto p2 = vertices[triangle[1]];
             auto p3 = vertices[triangle[2]];
             vec2 axis0 = p2 - p1;
-            axis0 /= axis0.length;
             vec2 axis1 = p3 - p1;
-            axis1 /= axis1.length;
             return p1 + axis0 * offset.x + axis1 * offset.y;
         }
-        
+
         MeshData bindingMesh = part.getMesh();
-        Deformation deform = binding.getValue(index);
         Deformation* newDeform = new Deformation([]);
 
+        auto targetMesh = transformMesh(bindingMesh, deform);
         foreach (i, v; vertices) {
             vec2 pt = v.position;
             if (flipHorz)
                 pt.x = -pt.x;
-            int[] triangle = findNearestTriangle(pt, bindingMesh);
+            int[] triangle = findSurroundingTriangle(pt, bindingMesh);
+            vec2 newPos;
+            if (triangle is null)
+                triangle = findNearestTriangle(pt, bindingMesh);
             vec2 ofs = calcOffsetInTriangleCoords(pt, bindingMesh, triangle);
-            auto targetMesh = transformMesh(bindingMesh, deform);
-            vec2 newPos = transformPoint(pt, ofs, targetMesh, triangle);
+            newPos = transformPointInTriangleCoords(pt, ofs, targetMesh, triangle);
             if (flipHorz)
                 newPos.x = -newPos.x;
             newDeform.vertexOffsets ~= newPos - origVertices[i].position;
         }
         return newDeform;
+    }
+
+    void copyFromMeshData(MeshData data) {
+        mImport(data);
     }
 }

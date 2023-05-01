@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -34,6 +34,52 @@ protected:
         }
     }
 
+    void recalculateNodeOrigin(Node node, bool recursive = true) {
+        auto mgroup = cast(MeshGroup)node;
+        auto drawable = cast(Drawable)node;
+
+        if (recursive) {
+            foreach (child; node.children) {
+                recalculateNodeOrigin(child, recursive);
+            }
+        }
+        if (mgroup !is null || drawable is null) {
+            vec4 bounds;
+            vec4[] childTranslations;
+            if (node.children.length > 0) {
+                bounds = node.children[0].getCombinedBounds();
+                foreach (child; node.children) {
+                    auto cbounds = child.getCombinedBounds();
+                    bounds.x = min(bounds.x, cbounds.x);
+                    bounds.y = min(bounds.y, cbounds.y);
+                    bounds.z = max(bounds.z, cbounds.z);
+                    bounds.w = max(bounds.w, cbounds.w);
+                    childTranslations ~= child.transform.matrix() * vec4(0, 0, 0, 1);
+                }
+            } else {
+                bounds = node.transform.translation.xyxy;
+            }
+            vec2 center = (bounds.xy + bounds.zw) / 2;
+            if (node.parent !is null) {
+                center = (node.parent.transform.matrix.inverse * vec4(center, 0, 1)).xy;
+            }
+            auto diff = center - node.localTransform.translation.xy;
+            node.localTransform.translation.x = center.x;
+            node.localTransform.translation.y = center.y;
+            node.transformChanged();
+            if (mgroup !is null) {
+                foreach (ref v; mgroup.vertices) {
+                    v -= diff;
+                }
+                mgroup.clearCache();
+            }
+            foreach (i, child; node.children) {
+                child.localTransform.translation = (node.transform.matrix.inverse * childTranslations[i]).xyz;
+                child.transformChanged();
+            }
+        }
+    }
+
     void nodeActionsPopup(bool isRoot = false)(Node n) {
         if (igIsItemClicked(ImGuiMouseButton.Right)) {
             igOpenPopup("NodeActionsPopup");
@@ -47,29 +93,33 @@ protected:
 
                 incText(incTypeIdToIcon("Node"));
                 igSameLine(0, 2);
-                if (igMenuItem(__("Node"), "", false, true)) incAddChildWithHistory(new Node(n), n);
+                if (igMenuItem(__("Node"), "", false, true)) incAddChildWithHistory(new Node(cast(Node)null), n);
                 
                 incText(incTypeIdToIcon("Mask"));
                 igSameLine(0, 2);
                 if (igMenuItem(__("Mask"), "", false, true)) {
                     MeshData empty;
-                    incAddChildWithHistory(new Mask(empty, n), n);
+                    incAddChildWithHistory(new Mask(empty, cast(Node)null), n);
                 }
                 
                 incText(incTypeIdToIcon("Composite"));
                 igSameLine(0, 2);
                 if (igMenuItem(__("Composite"), "", false, true)) {
-                    incAddChildWithHistory(new Composite(n), n);
+                    incAddChildWithHistory(new Composite(cast(Node)null), n);
                 }
                 
                 incText(incTypeIdToIcon("SimplePhysics"));
                 igSameLine(0, 2);
-                if (igMenuItem(__("Simple Physics"), "", false, true)) incAddChildWithHistory(new SimplePhysics(n), n);
+                if (igMenuItem(__("Simple Physics"), "", false, true)) incAddChildWithHistory(new SimplePhysics(cast(Node)null), n);
 
                 
                 incText(incTypeIdToIcon("Camera"));
                 igSameLine(0, 2);
-                if (igMenuItem(__("Camera"), "", false, true)) incAddChildWithHistory(new ExCamera(n), n);
+                if (igMenuItem(__("Camera"), "", false, true)) incAddChildWithHistory(new ExCamera(cast(Node)null), n);
+
+                incText(incTypeIdToIcon("MeshGroup"));
+                igSameLine(0, 2);
+                if (igMenuItem(__("MeshGroup"), "", false, true)) incAddChildWithHistory(new MeshGroup(cast(Node)null), n);
 
                 igEndMenu();
             }
@@ -131,6 +181,10 @@ protected:
                     }
 
                     igEndMenu();
+                }
+
+                if (igMenuItem(__("Recalculate origin"), "", false, true)) {
+                    recalculateNodeOrigin(n, true);
                 }
             }
             igEndPopup();
@@ -384,6 +438,7 @@ public:
     this() {
         super("Nodes", _("Nodes"), true);
         flags |= ImGuiWindowFlags.NoScrollbar;
+        activeModes = EditMode.ModelEdit;
     }
 }
 

@@ -3,15 +3,15 @@ description "Inochi2D rigging application"
 authors "Inochi2D Project"
 copyright "Copyright © 2020, Inochi2D Project"
 license "BSD 2-clause"
-dependency "inochi2d" version="~>0.7.2"
+dependency "inochi2d" version="~>0.8.0"
 dependency "tinyfiledialogs" version="~>0.10.1"
-dependency "facetrack-d" version="~>0.6.2"
+dependency "facetrack-d" version="~>0.7.6"
 dependency "bindbc-sdl" version="~>1.1.2"
 dependency "bindbc-imgui" version="~>0.7.0"
-dependency "i18n-d" version="~>1.0.1"
+dependency "i18n-d" version="~>1.0.2"
 dependency "psd-d" version="~>0.6.1"
-dependency "inmath" version="~>1.0.1"
-dependency "dcv:core" version="~master"
+dependency "inmath" version="~>1.0.5"
+dependency "dcv:core" version="~>0.3.0"
 targetPath "out/"
 workingDirectory "out/"
 dflags "-mscrtlib=msvcrt" platform="windows-ldc"
@@ -20,6 +20,7 @@ versions "GL_32" "USE_SDL2" "USE_GL" "SDL_208" "USE_OpenGL3" "UseUIScaling"
 stringImportPaths "res/" "./"
 
 
+// Barebones build
 configuration "barebones" {
 	platforms "linux"
 	targetType "executable"
@@ -29,15 +30,15 @@ configuration "barebones" {
 	dependency "dportals" version="~>0.1.0"
 }
 
-configuration "win32-barebones" {
-	platforms "windows"
-	targetType "executable"
-	subConfiguration "bindbc-imgui" "static_staticCRT"
-	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows-dmd"
-	copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/OpenDyslexic-LICENSE" "LICENSE"
+// Metadata generation
+configuration "meta" {
+	targetType "none"
+	preGenerateCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
+	preGenerateCommands "rc.exe /v res\\inochi-creator.rc" platform="windows"
 }
 
-configuration "full" {
+// Linux build
+configuration "linux-full" {
 
 	platforms "linux"
 	targetType "executable"
@@ -45,23 +46,20 @@ configuration "full" {
 	versions "InBranding"
 	
 	dependency "dportals" version="~>0.1.0"
-	
-	preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
 }
 
-
+// macOS build
 configuration "osx-full" {
 	platforms "osx"
 	targetType "executable"
 	targetPath "out/Inochi Creator.app/Contents/MacOS"
 	subConfiguration "bindbc-imgui" "dynamic_dynamicCRT"
-	dflags "-preserve-dwarf-line-section=false"
+	dflags "-force-dwarf-frame-section=false"
 	lflags "-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
 	versions "InBranding"
-
-	preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
 }
 
+// Windows build
 configuration "win32-full" {
 	platforms "windows"
 	targetType "executable"
@@ -70,13 +68,36 @@ configuration "win32-full" {
 	sourceFiles "res\\inochi-creator.res"
 	versions "InBranding"
 	preBuildCommands "rc.exe /v res\\inochi-creator.rc"
-
-	preBuildCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
 }
 
-configuration "win32-lite" {
+// Linux nightly build
+configuration "linux-nightly" {
+
+	platforms "linux"
+	targetType "executable"
+	subConfiguration "bindbc-imgui" "static_dynamicCRT"
+	versions "InBranding" "InNightly"
+	
+	dependency "dportals" version="~>0.1.0"
+}
+
+// macOS nightly build
+configuration "osx-nightly" {
+	platforms "osx"
+	targetType "executable"
+	targetPath "out/Inochi Creator.app/Contents/MacOS"
+	subConfiguration "bindbc-imgui" "dynamic_dynamicCRT"
+	dflags "-force-dwarf-frame-section=false"
+	lflags "-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
+	versions "InBranding" "InNightly"
+}
+
+// Windows nightly build
+configuration "win32-nightly" {
 	platforms "windows"
 	targetType "executable"
 	subConfiguration "bindbc-imgui" "static_staticCRT"
-	versions "InBranding" "InLite"
+	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows-dmd"
+	sourceFiles "res\\inochi-creator.res"
+	versions "InBranding" "InNightly"
 }

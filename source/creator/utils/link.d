@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -12,10 +12,10 @@ import std.process;
 */
 void incOpenLink(string link) {
     version(Windows) {
-        spawnShell("start " ~ escapeShellCommand("", link));
+        browse(link);
     } else version(OSX) {
-        spawnShell("open " ~ escapeShellCommand(link));
+        browse(link);
     } else version(Posix) {
-        spawnShell("xdg-open " ~ escapeShellCommand(link));
+        browse(link);
     }
 }

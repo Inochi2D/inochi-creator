@@ -127,6 +127,11 @@ protected:
         igEndChild();
     }
 
+    override
+    void onClose() {
+        incResetClearColor();
+    }
+
 public:
     this(string outFile) {
         super(_("Export Image..."));
@@ -136,7 +141,7 @@ public:
         // Search for cameras
         cameras = incActivePuppet().findNodesType!ExCamera(incActivePuppet().root);
         if (cameras.length == 0) {
-            incDialog("Error", "No cameras to export from in Scene, please add a Camera.");
+            incDialog("NO_CAMERA", __("Error"), _("No cameras to export from in Scene, please add a Camera."));
             this.close();
             return;
         }

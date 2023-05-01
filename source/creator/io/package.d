@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -198,7 +198,7 @@ void incCreatePartsFromFiles(string[] files) {
             case ".png", ".tga", ".jpeg", ".jpg":
                 try {
                     auto tex = new ShallowTexture(file);
-                    inTexPremultiply(tex.data);
+                    inTexPremultiply(tex.data, tex.channels);
 
                     incAddChildWithHistory(
                         inCreateSimplePart(*tex, null, fname),

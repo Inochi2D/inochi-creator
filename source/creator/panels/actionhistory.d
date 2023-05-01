@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -54,7 +54,7 @@ protected:
         igSeparator();
         igSpacing();
         if (igButton(__("Clear History"), ImVec2(0, 0))) {
-            incActionClearHistory();
+            incActionClearHistory(ActionStackClear.CurrentLevel);
         }
         igSameLine(0, 0);
 

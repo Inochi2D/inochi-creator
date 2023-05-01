@@ -14,7 +14,7 @@ permissions:
 jobs:
   build:
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v3
@@ -30,17 +30,16 @@ jobs:
       run: |
         git clone https://github.com/Inochi2D/bindbc-imgui.git --recurse-submodules
         git clone https://github.com/Inochi2D/inochi2d.git
-        git clone https://github.com/Inochi2D/facetrack-d.git
-        git clone https://github.com/KitsunebiGames/i18n.git
         dub add-local bindbc-imgui/ "0.7.0"
-        dub add-local inochi2d/ "0.7.2"
-        dub add-local facetrack-d/ "0.6.2"
-        dub add-local i18n/ "1.0.1"
+        dub add-local inochi2d/ "0.8.0"
 
     - name: 'Build and Test'
       run: |
+        # Build metadata (like version information and icons)
+        dub build --config=meta
+        
         # Build the project, with its main file included, without unittests
-        dub build --compiler=ldc2 --build=release --config=full
+        dub build --compiler=ldc2 --build=release --config=linux-full
 
     - name: "Upload Artifacts"  
       if: success()

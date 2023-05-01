@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -12,15 +12,17 @@ import creator.core;
 import creator.core.input;
 import creator.utils.link;
 import creator.config;
+import creator.io.autosave;
 import creator;
 import inochi2d;
 import inochi2d.core.dbg;
 import tinyfiledialogs;
 import i18n;
+import creator.ext;
 
 import std.string;
 import std.stdio;
-import std.path : setExtension;
+import std.path;
 
 private {
     bool dbgShowStyleEditor;
@@ -133,9 +135,25 @@ void incMainMenu() {
                     }
 
                     string[] prevProjects = incGetPrevProjects();
+                    AutosaveRecord[] prevAutosaves = incGetPrevAutosaves();
                     if (igBeginMenu(__("Recent"), prevProjects.length > 0)) {
+                        import std.path : baseName;
+                        if (igBeginMenu(__("Autosaves"), prevAutosaves.length > 0)) {
+                            foreach(saveRecord; prevAutosaves) {
+                                auto autosavePath = saveRecord.autosavePath.baseName.toStringz;
+                                if (igMenuItem(autosavePath, "", false, true)) {
+                                    incPopWelcomeWindow();
+                                    incOpenProject(
+                                        saveRecord.mainsavePath,
+                                        saveRecord.autosavePath
+                                    );
+                                }
+                                incTooltip(saveRecord.autosavePath);
+                            }
+                            igEndMenu();
+                        }
+
                         foreach(project; incGetPrevProjects) {
-                            import std.path : baseName;
                             if (igMenuItem(project.baseName.toStringz, "", false, true)) {
                                 incPopWelcomeWindow();
                                 incOpenProject(project);
@@ -206,7 +224,11 @@ void incMainMenu() {
 
                             string path = incShowImportDialog(filters, _("Import..."), true);
                             if (path) {
-                                incCreatePartsFromFiles(path.split("|"));
+                                try {
+                                    incCreatePartsFromFiles(path.split("|"));
+                                } catch (Exception ex) {
+                                    incDialog(__("Error"), ex.msg);
+                                }
                             }
                         }
                         incTooltip(_("Merges (adds) selected image files to project"));
@@ -270,11 +292,17 @@ void incMainMenu() {
                             const TFD_Filter[] filters = [
                                 { ["*.mp4"], "H.264 Video (*.mp4)" },
                                 { ["*.avi"], "AVI Video (*.avi)" },
+                                { ["*.webm"], "WebM Video (*.webm)" },
                                 { ["*.png"], "PNG Sequence (*.png)" }
                             ];
 
-                            // string file = incShowSaveDialog(filters, "", _("Export..."));
-                            // if (file) incPushWindow(new ImageExportWindow(file.setExtension("tga")));
+                            string file = incShowSaveDialog(filters, "", _("Export..."));
+                            if (file) {
+
+                                // Fallback to .mp4
+                                if (!extension(file)) file = file.setExtension("mp4");
+                                incPushWindow(new VideoExportWindow(file));
+                            }
                         }
                         igEndMenu();
                     }
@@ -343,10 +371,17 @@ void incMainMenu() {
                         // Skip panels that'll always be visible
                         if (panel.alwaysVisible) continue;
 
+                        if (!panel.isActive()) igBeginDisabled();
+
                         // Show menu item for panel
                         if(igMenuItem(panel.displayNameC, null, panel.visible, true)) {
                             panel.visible = !panel.visible;
                             incSettingsSet(panel.name~".visible", panel.visible);
+                        }
+
+                        if (!panel.isActive()) {
+                            igEndDisabled();
+                            incTooltip(_("Panel is not visible in current edit mode."));
                         }
                     }
 
@@ -392,6 +427,7 @@ void incMainMenu() {
                             ubyte[] textureData = new ubyte[inViewportDataLength()];
                             inDumpViewport(textureData);
                             inTexUnPremuliply(textureData);
+                            incResetClearColor();
                             
                             // Write to texture
                             outTexture.setData(textureData);
@@ -413,7 +449,6 @@ void incMainMenu() {
                 if (igBeginMenu(__("Tools"), true)) {
                     import creator.utils.repair : incAttemptRepairPuppet, incRegenerateNodeIDs;
 
-                
                     igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Puppet Data"));
                     igSeparator();
 
@@ -424,7 +459,7 @@ void incMainMenu() {
                         ];
 
                         if (string path = incShowImportDialog(filters, _("Import..."))) {
-                            Puppet p = inLoadPuppet(path);
+                            Puppet p = inLoadPuppet!ExPuppet(path);
 
                             if ("com.inochi2d.inochi-session.bindings" in p.extData) {
                                 incActivePuppet().extData["com.inochi2d.inochi-session.bindings"] = p.extData["com.inochi2d.inochi-session.bindings"].dup;

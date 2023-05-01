@@ -19,6 +19,7 @@
   [carbotaniuman](https://github.com/carbotaniuman)
   [Grillo](https://twitter.com/Grillo_delmal)
   [Aki-nyan](https://twitter.com/lethalbit)
+  [PanzerKern](https://github.com/pankern)
 
 ## Mascot
 ### Mascot Design

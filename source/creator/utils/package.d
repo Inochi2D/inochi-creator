@@ -11,6 +11,7 @@ string incTypeIdToIcon(string typeId) {
         case "Mask": return "\ue14e";
         case "SimplePhysics": return "\ue922";
         case "Camera": return "";
+        case "MeshGroup": return "";
         default: return "\ue97a"; 
     }
 }

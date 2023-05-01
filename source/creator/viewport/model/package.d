@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -137,7 +137,7 @@ void incViewportModelConfirmBar() {
                         incSelectNode(node);
                         incVertexEditSetTarget(node);
                         incFocusCamera(node, vec2(0, 0));
-                        incVertexEditCopyMeshDataToTarget(payloadDrawable.getMesh());
+                        incVertexEditCopyMeshDataToTarget(node, payloadDrawable, payloadDrawable.getMesh());
                     }
                 }
                 igEndDragDropTarget();
@@ -176,6 +176,36 @@ void incViewportModelOptions() {
                 }
                 incTooltip(incShowOrientation ? _("Hide Orientation Gizmo") : _("Show Orientation Gizmo"));
 
+                // DropdownMenu is silly, so
+                igSameLine(0, 0);
+                incDummy(ImVec2(4, 0));
+                igSameLine(0, 0);
+                if(incBeginDropdownMenu("COLOR", "", ImVec2(128, 0), ImVec2(float.max, float.max))) {
+                    import inochi2d : inSetClearColor, inGetClearColor;
+
+                    // Get clear color
+                    vec3 clearColor;
+                    float a = 1;
+                    inGetClearColor(clearColor.r, clearColor.g, clearColor.b, a);
+
+                    // Set clear color
+                    igColorPicker3(__("COLOR"), &clearColor.vector, 
+                        ImGuiColorEditFlags.NoSidePreview | 
+                        ImGuiColorEditFlags.NoLabel |
+                        ImGuiColorEditFlags.NoSmallPreview |
+                        ImGuiColorEditFlags.NoBorder
+                    );
+                    ImVec2 space = incAvailableSpace();
+
+                    inSetClearColor(clearColor.r, clearColor.g, clearColor.b, a);
+                    incDummy(ImVec2(0, 4));
+
+                    if (igButton(__("Reset"), ImVec2(space.x, 0))) incResetClearColor();
+                    
+                    incEndDropdownMenu();
+                }
+                incTooltip("Background Color");
+
                 incEndDropdownMenu();
             }
             incTooltip(_("Gizmos"));
@@ -206,7 +236,6 @@ void incViewportModelDraw(Camera camera) {
                 if (selectedNode is null) continue; 
                 if (incShowOrientation) selectedNode.drawOrientation();
                 if (incShowBounds) selectedNode.drawBounds();
-
 
                 if (Drawable selectedDraw = cast(Drawable)selectedNode) {
 

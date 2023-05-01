@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -14,8 +14,10 @@ import creator.viewport.model.deform;
 import creator.core;
 import creator.core.actionstack;
 import creator.windows;
+import creator.windows.autosave;
 import creator.atlas;
 import creator.ext;
+import creator.io.autosave;
 import creator.widgets.dialog;
 
 public import creator.ver;
@@ -23,9 +25,12 @@ public import creator.atlas;
 public import creator.io;
 import creator.core.colorbleed;
 
-import std.file;
+import std.path;
 import std.format;
 import i18n;
+import std.algorithm.searching;
+import inochi2d.core.animation.player;
+
 
 /**
     A project
@@ -51,7 +56,20 @@ private {
     Parameter armedParam;
     size_t armedParamIdx;
     string currProjectPath;
-    string[] prevProjects;
+
+    void function(Puppet)[] loadCallbacks;
+    void function(Puppet)[] saveCallbacks;
+
+    AnimationPlayer incAnimationPlayer;
+    AnimationPlaybackRef incAnimationCurrent;
+}
+
+void incRegisterLoadFunc(void function(Puppet) func) {
+    loadCallbacks ~= func;
+}
+
+void incRegisterSaveFunc(void function(Puppet) func) {
+    saveCallbacks ~= func;
 }
 
 /**
@@ -61,22 +79,27 @@ enum EditMode {
     /**
         Model editing mode
     */
-    ModelEdit,
+    ModelEdit = 0x1,
 
     /**
         Vertex Editing Mode
     */
-    VertexEdit,
+    VertexEdit = 0x2,
 
     /**
         Animation Editing Mode
     */
-    AnimEdit,
+    AnimEdit = 0x4,
 
     /**
         Model testing mode
     */
-    ModelTest
+    ModelTest = 0x8,
+
+    /**
+        Not real edit mode, contains all the combined modes
+    */
+    ALL = ModelEdit | VertexEdit | AnimEdit | ModelTest,
 }
 
 bool incShowVertices    = true; /// Show vertices of selected parts
@@ -140,6 +163,9 @@ void incAddPrevProject(string path) {
     Creates a new project
 */
 void incNewProject() {
+
+    // Release lockfile, etc. from prev project
+    if (currProjectPath.length > 0) incReleaseLockfile();
     incClearImguiData();
 
     currProjectPath = "";
@@ -150,6 +176,8 @@ void incNewProject() {
 
     activeProject = new Project;
     activeProject.puppet = new ExPuppet;
+    incAnimationPlayer = new AnimationPlayer(activeProject.puppet);
+    incAnimationCurrent = null;
     incFocusCamera(activeProject.puppet.root);
     incSelectNode(null);
     incDisarmParameter();
@@ -164,6 +192,9 @@ void incNewProject() {
     incFreeMemory();
 
     incViewportPresentMode(editMode_);
+    incSetWindowTitle(_("New Project"));
+
+    startAutosaveTimer();
 }
 
 void incResetRootNode(ref Puppet puppet) {
@@ -172,49 +203,94 @@ void incResetRootNode(ref Puppet puppet) {
     puppet.root.localTransform.scale = vec2(1, 1);
 }
 
-void incOpenProject(string path) {
+void incOpenProject(bool handleError=true)(string path) {
+    if (incCheckLockfile(path)) {
+        incPushWindow(new RestoreSaveWindow(path));
+
+        //Answering that window is the new trigger for loading the project.
+        return;
+    }
+
+    // Usual case
+    incOpenProject!(handleError)(path, "");
+}
+
+/**
+    mainPath is the canonical project path that the user normally saves to.
+    backupPath is the inx file to load all the data from, but is empty string
+    when just loading a normal mainsave project file.
+*/
+void incOpenProject(bool handleError=true)(string mainPath, string backupPath) {
+    import std.path : setExtension, baseName;
     incClearImguiData();
     
     Puppet puppet;
 
     // Load the puppet from file
     try {
-        puppet = inLoadPuppet!ExPuppet(path);
+        if (backupPath.length > 0) {
+            puppet = inLoadPuppet!ExPuppet(backupPath);
+        } else {
+            puppet = inLoadPuppet!ExPuppet(mainPath);
+        }
     } catch (Exception ex) {
-        incDialog(__("Error"), ex.msg);
-        return;
+        static if (handleError) {
+            incDialog(__("Error"), ex.msg);
+            return;
+        } else {
+            throw ex;
+        }
     }
 
     // Clear out stuff by creating a new project
     incNewProject();
 
     // Set the path
-    currProjectPath = path;
-    incAddPrevProject(path);
+    currProjectPath = mainPath;
+    incAddPrevProject(mainPath);
 
     incResetRootNode(puppet);
 
     incActiveProject().puppet = puppet;
+    foreach (func; loadCallbacks)
+        func(puppet);
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
 
+    incAnimationPlayer = new AnimationPlayer(puppet);
+    incAnimationCurrent = null;
+
     incSetStatus(_("%s opened successfully.").format(currProjectPath));
+    incSetWindowTitle(currProjectPath.baseName);
 }
 
-void incSaveProject(string path) {
-    import std.path : setExtension;
+void incSaveProject(string path, string autosaveStamp = "") {
+    import std.path : setExtension, baseName;
     try {
-        string finalPath = path.setExtension(".inx");
-        currProjectPath = path;
-        incAddPrevProject(finalPath);
+        string finalPath;
+        bool isAutosave = autosaveStamp.length > 0 ? true : false;
+        if (isAutosave) {
+            finalPath = path ~ "_" ~ autosaveStamp ~ ".inx";
+            incAddPrevAutosave(finalPath);
+        } else {
+            finalPath = path.setExtension(".inx");
+            currProjectPath = path;
+            incAddPrevProject(finalPath);
+        }
 
         // Remember to populate texture slots otherwise things will break real bad!
         incActivePuppet().populateTextureSlots();
+        foreach (func; saveCallbacks)
+            func(incActivePuppet());
 
         // Write the puppet to file
         inWriteINPPuppet(incActivePuppet(), finalPath);
 
+        if (!isAutosave) incReleaseLockfile();
+        incActivePuppet().resetDrivers();
+
         incSetStatus(_("%s saved successfully.").format(currProjectPath));
+        incSetWindowTitle(currProjectPath.baseName);
     } catch(Exception ex) {
         incSetStatus(_("Failed to save %s").format(currProjectPath));
         incDialog(__("Error"), ex.msg);
@@ -258,6 +334,8 @@ void incImportFolder(string folder) {
     puppet.rescanNodes();
     puppet.populateTextureSlots();
     incActiveProject().puppet = puppet;
+    incAnimationPlayer = new AnimationPlayer(puppet);
+    incAnimationCurrent = null;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
 
@@ -270,12 +348,15 @@ void incImportFolder(string folder) {
     Imports an Inochi2D puppet
 */
 void incImportINP(string file) {
+    import std.path : baseName;
+    
     incNewProject();
     Puppet puppet;
     try {
 
-        puppet = inLoadPuppet(file);
+        puppet = inLoadPuppet!ExPuppet(file);
         incSetStatus(_("%s was imported...".format(file)));
+        incSetWindowTitle(file.baseName);
     } catch(Exception ex) {
         
         incDialog(__("Error"), ex.msg);
@@ -283,6 +364,8 @@ void incImportINP(string file) {
         return;
     }
     incActiveProject().puppet = puppet;
+    incAnimationPlayer = new AnimationPlayer(puppet);
+    incAnimationCurrent = null;
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
 }
@@ -415,8 +498,10 @@ void incSelectNode(Node n = null) {
     Adds node to selection
 */
 void incAddSelectNode(Node n) {
-    if (incArmedParameter()) return;
+    if (selectedNodes.canFind(n))
+        return;
     selectedNodes ~= n;
+    incViewportModelNodeSelectionChanged();
 }
 
 /**
@@ -427,6 +512,7 @@ void incRemoveSelectNode(Node n) {
         if (n.uuid == nn.uuid) {
             import std.algorithm.mutation : remove;
             selectedNodes = selectedNodes.remove(i);
+            incViewportModelNodeSelectionChanged();
         }
     }
 }
@@ -537,4 +623,166 @@ void incSetEditMode(EditMode editMode, bool unselect = true) {
     editMode_ = editMode;
 
     incViewportPresentMode(editMode_);
+    incAnimationPlayer.stopAll(true);
+    incAnimationPlayer.destroyAll();
+    incAnimationCurrent = null;
+}
+
+/**
+    Sets the current animation being edited
+*/
+void incAnimationChange(string name) {
+    incAnimationPlayer.stopAll(true);
+    incAnimationCurrent = incAnimationPlayer.createOrGet(name);
+    
+    import creator.panels.timeline : incAnimationTimelineUpdate;
+    incAnimationTimelineUpdate(*incAnimationCurrent.animation);
+}
+
+/**
+    Gets a list of editable animations
+*/
+string[] incAnimationKeysGet() {
+    return incActivePuppet().getAnimations().keys;
+}
+
+/**
+    Gets the current animation being edited
+*/
+ref AnimationPlayer incAnimationPlayerGet() {
+    return incAnimationPlayer;
+}
+
+/**
+    Gets the current animation being edited
+*/
+AnimationPlaybackRef incAnimationGet() {
+    return incAnimationCurrent;
+}
+
+void incAnimationRender() {
+    incAnimationPlayer.update(deltaTime());
+    if (incAnimationCurrent) incAnimationCurrent.render();
+}
+
+/**
+    Updates the current animation being edited
+*/
+void incAnimationUpdate() {
+
+    if (incAnimationCurrent && (incAnimationCurrent.isRunning() || incAnimationCurrent.isPlayingLeadOut()) && !incAnimationCurrent.paused) {
+        incAnimationRender();
+    }
+
+    if (incEditMode() == EditMode.AnimEdit && incAnimationCurrent && incGetWindowsOpen() == 0) {
+        if (igIsKeyPressed(ImGuiKey.Space, false)) {
+            if (!incAnimationCurrent.playing || incAnimationCurrent.paused){
+                if (igIsKeyDown(ImGuiKey.LeftCtrl) || igIsKeyDown(ImGuiKey.RightCtrl) && incAnimationCurrent.frame != 0) {
+                    incAnimationCurrent.seek(0);
+                }
+                
+                incAnimationCurrent.play(true);
+            } else {
+                if (igIsKeyDown(ImGuiKey.LeftCtrl) || igIsKeyDown(ImGuiKey.RightCtrl)) {
+                    incAnimationPlayer.stopAll(igIsKeyDown(ImGuiKey.LeftShift) || igIsKeyDown(ImGuiKey.RightShift));
+                } else {
+                    incAnimationCurrent.pause();
+                }
+            }
+        }
+
+        if (igIsKeyPressed(ImGuiKey.LeftArrow, true) && incAnimationCurrent.frame > 0) {
+            incAnimationCurrent.seek(incAnimationCurrent.frame-1);
+            incAnimationRender();
+        }
+
+        if (igIsKeyPressed(ImGuiKey.RightArrow, true) && incAnimationCurrent.frame+1 < incAnimationCurrent.frames) {
+            incAnimationCurrent.seek(incAnimationCurrent.frame+1);
+            incAnimationRender();
+        }
+
+        if (igIsKeyPressed(ImGuiKey.N, false) || igIsKeyPressed(ImGuiKey.Insert, false)) {
+            foreach(ref lane; incAnimationCurrent.animation.lanes) {
+                auto param = lane.paramRef.targetParam;
+                auto axis = lane.paramRef.targetAxis;
+                auto value = param.value.vector[axis];
+
+                incAnimationKeyframeAdd(param, axis, value);
+            }
+        }
+
+        if (igIsKeyPressed(ImGuiKey.R, false) || igIsKeyPressed(ImGuiKey.Delete, false)) {
+            foreach(ref lane; incAnimationCurrent.animation.lanes) {
+                auto param = lane.paramRef.targetParam;
+                auto axis = lane.paramRef.targetAxis;
+                auto value = param.value.vector[axis];
+
+                incAnimationKeyframeRemove(param, axis);
+            }
+        }
+    }
+}
+
+/**
+    Adds a keyframe to the current animation
+*/
+void incAnimationKeyframeAdd(ref Parameter param, int axis, float value) {
+    foreach(ref lane; incAnimationCurrent.animation.lanes) {
+        if (lane.paramRef.targetParam == param && axis == lane.paramRef.targetAxis) {
+
+            // Try editing current frame
+            foreach(ref frame; lane.frames) {
+                if (frame.frame == incAnimationCurrent.frame) {
+                    frame.value = value;
+                    return;
+                }
+            }
+
+            // Try adding a new keyframe
+            lane.frames ~= Keyframe(
+                incAnimationCurrent.frame,
+                value,
+                0.5
+            );
+            lane.updateFrames();
+            return;
+        }
+    }
+
+    incAnimationCurrent.animation.lanes ~= AnimationLane(
+        param.uuid,
+        new AnimationParameterRef(param, axis),
+        [
+            Keyframe(
+                incAnimationCurrent.frame,
+                value,
+                0.5
+            ),
+        ],
+        InterpolateMode.Linear
+    );
+    
+    import creator.panels.timeline : incAnimationTimelineUpdate;
+    incAnimationTimelineUpdate(*incAnimationCurrent.animation);
+}
+
+/**
+    Removes a keyframe to the current animation
+*/
+bool incAnimationKeyframeRemove(ref Parameter param, int axis) {
+    import std.algorithm.mutation : remove;
+    foreach(ref lane; incAnimationCurrent.animation.lanes) {
+        if (lane.paramRef.targetParam == param && axis == lane.paramRef.targetAxis) {
+
+            // Try editing current frame
+            foreach(i; 0..lane.frames.length) {
+                if (lane.frames[i].frame == incAnimationCurrent.frame) {
+                    lane.frames = lane.frames.remove(i);
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }

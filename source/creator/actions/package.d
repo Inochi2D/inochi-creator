@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -10,6 +10,7 @@ public import creator.actions.parameter;
 public import creator.actions.binding;
 public import creator.actions.mesheditor;
 public import creator.actions.drawable;
+public import creator.actions.mesh;
 
 /**
     An undo/redo-able action
@@ -64,6 +65,7 @@ interface LazyBoundAction : Action {
      * Confirm 'redo' state from the current status of the target.
      */
     void updateNewState();
+    void clear();
 }
 
 
@@ -132,4 +134,6 @@ public:
     
     bool merge(Action other) { return false; }
     bool canMerge(Action other) { return false; }
+
+    bool empty() { return actions.length == 0; }
 }

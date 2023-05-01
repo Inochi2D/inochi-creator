@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -16,6 +16,7 @@ private {
     GLuint writeVBO;
 
     GLint atlasMVP;
+    GLint atlasRenderOpacity;
     Shader atlasShader;
     Texture currCanvas;
 
@@ -28,7 +29,7 @@ private {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void renderToTexture(ref Texture toWrite, rect where, rect uvs) {
+    void renderToTexture(ref Texture toWrite, rect where, rect uvs, BlendMode blendMode = BlendMode.Normal, float opacity = 1) {
         glBindVertexArray(writeVAO);
         glBindFramebuffer(GL_FRAMEBUFFER, writeFBO);
 
@@ -37,7 +38,7 @@ private {
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
 
-            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+            inSetBlendMode(blendMode);
 
             vec2[] bufData = [
                 vec2(where.left,    where.top),
@@ -63,6 +64,7 @@ private {
             glVertexAttribPointer(1, 2, GL_FLOAT, false, vec2.sizeof*2, cast(void*)vec2.sizeof);
 
             atlasShader.use();
+            atlasShader.setUniform(atlasRenderOpacity, opacity);
             atlasShader.setUniform(atlasMVP, mat4.orthographic(
                 0, currCanvas.width, currCanvas.height, 0, 0, 2
             ) * mat4.scaling(1, -1, 1) * mat4.translation(0, -currCanvas.height, -1));
@@ -87,6 +89,7 @@ void incInitAtlassing() {
 
     atlasShader = new Shader(import("shaders/atlassing.vert"), import("shaders/atlassing.frag"));
     atlasMVP = atlasShader.getUniformLocation("mvp");
+    atlasRenderOpacity = atlasShader.getUniformLocation("opacity");
 }
 
 /**
@@ -120,12 +123,18 @@ public:
     rect[uint] mappings;
 
     /**
+        Lists containing counts of how many of a texture type is atlassed.
+    */
+    int[TextureUsage.COUNT] packedIndices;
+
+    /**
         Constructs a new atlas with the specified size
     */
     this(size_t atlasSize, int padding, float scale) {
         this.padding = padding;
         this.scale = scale;
         this.resize(atlasSize);
+        packedIndices = new int[TextureUsage.COUNT];
     }
 
     /**
@@ -134,10 +143,11 @@ public:
 
         UVs should be stretched to cover this area.
     */
-    bool pack(Part p) {
+    bool pack(Part p, float fscale=1) {
         auto mesh = p.getMesh();
         vec2 textureStartOffset = vec2(0, 0);
         vec2 textureEndOffset   = vec2(0, 0);
+        fscale = fscale*scale;
 
         // Calculate how much of the texture is actually used in UV coordinates
         vec4 uvArea = vec4(1, 1, 0, 0);
@@ -171,8 +181,8 @@ public:
                                    uvArea.z - uvArea.x + textureStartOffset.x + textureEndOffset.x, uvArea.w - uvArea.y + textureStartOffset.y + textureEndOffset.y);
 
         vec2i size = vec2i(
-            cast(int)((p.textures[0].width*boundingUVRect.width)*scale)+(padding*2), 
-            cast(int)((p.textures[0].height*boundingUVRect.height)*scale)+(padding*2)
+            cast(int)((p.textures[0].width*boundingUVRect.width)*fscale)+(padding*2), 
+            cast(int)((p.textures[0].height*boundingUVRect.height)*fscale)+(padding*2)
         );
 
         // Get a slot for the texture in the atlas
@@ -181,15 +191,19 @@ public:
         // Could not fit texture, return false
         if (atlasArea == vec4i(0, 0, 0, 0)) return false;
 
-        textureStartOffset.x *= p.textures[0].width  * scale;
-        textureStartOffset.y *= p.textures[0].height * scale;
-        textureEndOffset.x   *= p.textures[0].width  * scale;
-        textureEndOffset.y   *= p.textures[0].height * scale;
+        textureStartOffset.x *= p.textures[0].width  * fscale;
+        textureStartOffset.y *= p.textures[0].height * fscale;
+        textureEndOffset.x   *= p.textures[0].width  * fscale;
+        textureEndOffset.y   *= p.textures[0].height * fscale;
+        
         // Render textures in to our atlas
         foreach(i, ref Texture texture; p.textures) {
             if (texture) {
                 setCanvas(textures[i]);
-                // where is the calculated texture boundary #2, specifying the area which texture is copied. (alsway between 0..1 in UV position)
+
+                packedIndices[i]++;
+
+                // where is the calculated texture boundary #2, specifying the area which texture is copied. (always between 0..1 in UV position)
                 rect where = rect(atlasArea.x+textureStartOffset.x+padding, atlasArea.y+textureStartOffset.y+padding, 
                                   atlasArea.z-(padding*2)-textureStartOffset.x - textureEndOffset.x, atlasArea.w-(padding*2)-textureStartOffset.y - textureEndOffset.y);
                 mappings[p.uuid] = rect(atlasArea.x+padding, atlasArea.y+padding, atlasArea.z-padding*2, atlasArea.w-padding*2);
@@ -197,6 +211,13 @@ public:
             }
         }
         return true;
+    }
+
+    void renderOnTop(uint atlasIdx, Texture texture, rect where, rect uvs, BlendMode blendMode, float opacity) {
+        if (texture && atlasIdx < textures.length) {
+            setCanvas(textures[atlasIdx]);
+            renderToTexture(texture, where, uvs, blendMode, opacity);
+        }
     }
 
     /**
@@ -234,5 +255,6 @@ public:
     void clear() {
         mappings.clear();
         packer.clear();
+        packedIndices = new int[TextureUsage.COUNT];
     }
 }

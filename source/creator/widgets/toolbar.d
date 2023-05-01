@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -8,6 +8,7 @@ module creator.widgets.toolbar;
 import creator.viewport;
 import creator.widgets;
 import creator.core;
+import creator.windows;
 import creator;
 import i18n;
 
@@ -32,26 +33,45 @@ void incToolbar() {
                 // Render toolbar
                 igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(0, 0));
                 igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
+                    igBeginDisabled(incWelcomeWindowOnTop());
 
-                    if (incButtonColored("", ImVec2(32, 32), incActivePuppet().enableDrivers ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
-                        incActivePuppet().enableDrivers = !incActivePuppet().enableDrivers;
-                    }
-                    incTooltip(_("Enable physics"));
+                        if (incButtonColored("", ImVec2(32, 32), incActivePuppet().enableDrivers ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
+                            incActivePuppet().enableDrivers = !incActivePuppet().enableDrivers;
+                        }
+                        incTooltip(_("Enable physics"));
 
-                    igSameLine(0, 0);
+                        igSameLine(0, 0);
 
-                    if (incButtonColored("", ImVec2(32, 32), incShouldPostProcess ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
-                        incShouldPostProcess = !incShouldPostProcess;
-                    }
-                    incTooltip(_("Enable post processing"));
+                        if (incButtonColored("", ImVec2(32, 32), incShouldPostProcess ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
+                            incShouldPostProcess = !incShouldPostProcess;
+                        }
+                        incTooltip(_("Enable post processing"));
 
-                    if (incButtonColored("", ImVec2(32, 32), ImVec4.init)) {
-                        incActivePuppet().resetDrivers();
-                    }
-                    incTooltip(_("Reset physics"));
+                        if (incButtonColored("", ImVec2(32, 32), ImVec4.init)) {
+                            incActivePuppet().resetDrivers();
+                        }
+                        incTooltip(_("Reset physics"));
 
-                    // Draw the toolbar relevant for that viewport
-                    incViewportToolbar();
+                        igSameLine(0, 0);
+
+                        if (incButtonColored("", ImVec2(32, 32), ImVec4.init)) {
+                            incPushWindow(new FlipPairWindow());
+                        }
+                        incTooltip(_("Configure Flip Pairings"));
+                        
+                        if (incButtonColored("", ImVec2(32, 32), ImVec4.init)) {
+                            if (incActivePuppet()) {
+                                foreach(ref parameter; incActivePuppet().parameters) {
+                                    parameter.value = parameter.defaults;
+                                }
+                            }
+                        }
+                        incTooltip(_("Reset parameters"));
+                        
+
+                        // Draw the toolbar relevant for that viewport
+                        incViewportToolbar();
+                    igEndDisabled();
                 igPopStyleVar(2);
 
                 // Render mode switch buttons
@@ -96,7 +116,7 @@ void incToolbar() {
     igPopStyleColor();
 }
 
-bool incBeginInnerToolbar(float height, bool matchTitlebar=false) {
+bool incBeginInnerToolbar(float height, bool matchTitlebar=false, bool offset=true) {
 
     auto style = igGetStyle();
     auto window = igGetCurrentWindow();
@@ -115,8 +135,18 @@ bool incBeginInnerToolbar(float height, bool matchTitlebar=false) {
     igPushStyleColor(ImGuiCol.Button, barColor);
 
     if (!window.IsExplicitChild) {
-        igPushClipRect(ImVec2(window.OuterRectClipped.Max.x, window.OuterRectClipped.Max.y-1), ImVec2(window.OuterRectClipped.Min.x, window.OuterRectClipped.Min.y), false);
-        igSetCursorPosY(igGetCursorPosY()-1);
+        igPushClipRect(
+            ImVec2(
+                window.OuterRectClipped.Max.x, 
+                offset ? window.OuterRectClipped.Max.y-1 : window.OuterRectClipped.Max.y
+            ), 
+            ImVec2(
+                window.OuterRectClipped.Min.x, 
+                window.OuterRectClipped.Min.y
+            ), 
+            false
+        );
+        igSetCursorPosY(offset ? igGetCursorPosY()-1 : igGetCursorPosY());
     }
     
     bool visible = igBeginChild("###Toolbar", ImVec2(0, height), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
@@ -125,7 +155,8 @@ bool incBeginInnerToolbar(float height, bool matchTitlebar=false) {
 }
 
 void incEndInnerToolbar() {
-    igPopClipRect();
+    auto window = igGetCurrentWindow();
+    if (!window.IsExplicitChild) igPopClipRect();
 
     igEndChild();
     igPopStyleColor(2);
@@ -156,5 +187,14 @@ void incToolbarSpacer(float space) {
     Vertical separator for toolbar
 */
 void incToolbarSeparator() {
-    igSeparatorEx(ImGuiSeparatorFlags.Vertical);
+    igPushStyleColor(ImGuiCol.Separator, ImVec4(0.5, 0.5, 0.5, 1));
+        igSeparatorEx(ImGuiSeparatorFlags.Vertical);
+        igSameLine(0, 6);
+    igPopStyleColor();
+}
+
+void incToolbarText(string text) {
+    igSetCursorPosY(6);
+    incText(text);
+    igSameLine(0, 4);
 }

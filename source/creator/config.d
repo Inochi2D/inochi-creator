@@ -1,5 +1,5 @@
 /**
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -37,3 +37,30 @@ enum INC_BUG_REPORT_URI = "https://github.com/Inochi2D/inochi-creator/issues/new
     unless you're making a fork.
 */
 enum INC_FEATURE_REQ_URI = "https://github.com/Inochi2D/inochi-creator/issues/new?assignees=&labels=enhancement&template=feature_request.yml&title=%5BFeature+Request%5D";
+
+/**
+    URI to website for the project, change this if you fork the project.
+*/
+enum INC_INFO_WEBSITE_URI = "https://inochi2d.com/";
+
+/**
+    URI to documentation provided for this software, by default it'll direct to the Inochi2D Documentation
+
+    If you modify the software by adding new features it's highly recommended that you change this link to
+    documentation which fits with the new featureset.
+*/
+enum INC_INFO_DOCS_URI = "https://docs.inochi2d.com/";
+
+/**
+    URI to the discord server where support is provided.
+
+    Set to "" to disable the link.
+*/
+enum INC_INFO_DISCORD_URI = "https://discord.com/invite/abnxwN6r9v";
+
+/**
+    Whether to show donation links.
+
+    These are hardcoded, if you're forking the project set this to false.
+*/
+enum INC_INFO_SHOW_DONATE_LINKS = true;

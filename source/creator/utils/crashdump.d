@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -44,20 +44,27 @@ version(Windows) {
     private void ShowMessageBox(string message, string title) {
         MessageBoxW(null, toUTF16z(message), toUTF16z(title), 0);
     }
-
-    void crashdump(T...)(Throwable throwable, T state) {
-        write(buildPath(getDesktopDir(), "inochi-creator-crashdump.txt"), genCrashDump!T(throwable, state));
-
-        ShowMessageBox(
-            _("The application has unexpectedly crashed\nPlease send the developers the inochi-creator-crashdump.txt which has been put on your desktop\nVia https://github.com/Inochi2D/inochi-creator/issues"),
-            _("Inochi Creator Crashdump")
-        );
-    }
 }
 
-version(Posix) {
-    void crashdump(T...)(Throwable throwable, T state) {
-        write(expandTilde("~/inochi-creator-crashdump.txt"), genCrashDump!T(throwable, state));
-        writeln(_("\n\n\n===   Inochi Creator has crashed   ===\nPlease send us the inochi-creator-crashdump.txt file in your home folder\nAttach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/issues"));
-    }
+string getCrashDumpDir() {
+    version(Windows) return getDesktopDir();
+    else version(OSX) return expandTilde("~/Library/Logs/inochi-creator-crashdump.txt");
+    else version(linux) return expandTilde("$XDG_STATE_HOME/inochi-creator-crashdump.txt"); // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
+    else return expandTilde("~");
+}
+
+
+
+void crashdump(T...)(Throwable throwable, T state) {
+
+    // Write crash dump to disk
+    write(buildPath(getCrashDumpDir(), "inochi-creator-crashdump.txt"), genCrashDump!T(throwable, state));
+
+    // Use appropriate system method to notify user where crash dump is.
+    version(OSX) writeln(_("\n\n\n===   Inochi Creator has crashed   ===\nPlease send us the inochi-creator-crashdump.txt file in ~/Library/Logs\nAttach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/issues"));
+    else version(linux) writeln(_("\n\n\n===   Inochi Creator has crashed   ===\nPlease send us the inochi-creator-crashdump.txt file in your log directory, XDG_STATE_HOME. For Flatpak, this is in ~/.var/app/com.inochi2d.inochi-creator.\nAttach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/issues"));
+    else version(Windows) ShowMessageBox(
+        _("The application has unexpectedly crashed\nPlease send the developers the inochi-creator-crashdump.txt which has been put on your desktop\nVia https://github.com/Inochi2D/inochi-creator/issues"),
+        _("Inochi Creator Crashdump")
+    );
 }

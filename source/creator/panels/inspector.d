@@ -1,11 +1,12 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
 */
 module creator.panels.inspector;
 import creator.viewport.vertex;
+import creator.viewport.model.deform;
 import creator.core;
 import creator.panels;
 import creator.widgets;
@@ -65,6 +66,10 @@ protected:
                                 incInspectorDeformComposite(composite, param, cursor);
                             }
 
+                            if (SimplePhysics phys = cast(SimplePhysics)node) {
+                                incInspectorDeformSimplePhysics(phys, param, cursor);
+                            }
+
                         } else {
                             incModelModeHeader(node);
                             incInspectorModelTRS(node);
@@ -94,6 +99,11 @@ protected:
                             if (SimplePhysics part = cast(SimplePhysics)node) {
                                 incInspectorModelSimplePhysics(part);
                             }
+
+                            // Node MeshGroup Section
+                            if (MeshGroup group = cast(MeshGroup)node) {
+                                incInspectorModelMeshGroup(group);
+                            }
                         }
                     
                     break;
@@ -112,6 +122,7 @@ protected:
 public:
     this() {
         super("Inspector", _("Inspector"), true);
+        activeModes = EditMode.ModelEdit;
     }
 }
 
@@ -761,6 +772,12 @@ void incInspectorModelPart(Part node) {
         incText(_("Tint (Screen)"));
         igColorEdit3("###S_TINT", cast(float[3]*)node.screenTint.ptr);
 
+        incText(_("Emission Strength"));
+        float strengthPerc = node.emissionStrength*100;
+        if (igDragFloat("###S_EMISSION", &strengthPerc, 0.1, 0, float.max, "%.0f%%")) {
+            node.emissionStrength = strengthPerc*0.01;
+        }
+
         // Padding
         igSpacing();
         igSpacing();
@@ -768,7 +785,7 @@ void incInspectorModelPart(Part node) {
 
         // Header for the Blending options for Parts
         incText(_("Blending"));
-        if (igBeginCombo("###Blending", __(node.blendingMode.text))) {
+        if (igBeginCombo("###Blending", __(node.blendingMode.text), ImGuiComboFlags.HeightLarge)) {
 
             // Normal blending mode as used in Photoshop, generally
             // the default blending mode photoshop starts a layer out as.
@@ -777,15 +794,49 @@ void incInspectorModelPart(Part node) {
             // Multiply blending mode, in which this texture's color data
             // will be multiplied with the color data already in the framebuffer.
             if (igSelectable(__("Multiply"), node.blendingMode == BlendMode.Multiply)) node.blendingMode = BlendMode.Multiply;
+                            
+            // Screen blending mode
+            if (igSelectable(__("Screen"), node.blendingMode == BlendMode.Screen)) node.blendingMode = BlendMode.Screen;
+
+            // Overlay blending mode
+            if (igSelectable(__("Overlay"), node.blendingMode == BlendMode.Overlay)) node.blendingMode = BlendMode.Overlay;
+
+            // Darken blending mode
+            if (igSelectable(__("Darken"), node.blendingMode == BlendMode.Darken)) node.blendingMode = BlendMode.Darken;
+
+            // Lighten blending mode
+            if (igSelectable(__("Lighten"), node.blendingMode == BlendMode.Lighten)) node.blendingMode = BlendMode.Lighten;
                     
             // Color Dodge blending mode
             if (igSelectable(__("Color Dodge"), node.blendingMode == BlendMode.ColorDodge)) node.blendingMode = BlendMode.ColorDodge;
                     
             // Linear Dodge blending mode
             if (igSelectable(__("Linear Dodge"), node.blendingMode == BlendMode.LinearDodge)) node.blendingMode = BlendMode.LinearDodge;
+                    
+            // Color Burn blending mode
+            if (igSelectable(__("Color Burn"), node.blendingMode == BlendMode.ColorBurn)) node.blendingMode = BlendMode.ColorBurn;
+                    
+            // Hard Light blending mode
+            if (igSelectable(__("Hard Light"), node.blendingMode == BlendMode.HardLight)) node.blendingMode = BlendMode.HardLight;
+                    
+            // Soft Light blending mode
+            if (igSelectable(__("Soft Light"), node.blendingMode == BlendMode.SoftLight)) node.blendingMode = BlendMode.SoftLight;
                             
-            // Screen blending mode
-            if (igSelectable(__("Screen"), node.blendingMode == BlendMode.Screen)) node.blendingMode = BlendMode.Screen;
+            // Subtract blending mode
+            if (igSelectable(__("Subtract"), node.blendingMode == BlendMode.Subtract)) node.blendingMode = BlendMode.Subtract;
+                            
+            // Difference blending mode
+            if (igSelectable(__("Difference"), node.blendingMode == BlendMode.Difference)) node.blendingMode = BlendMode.Difference;
+                            
+            // Exclusion blending mode
+            if (igSelectable(__("Exclusion"), node.blendingMode == BlendMode.Exclusion)) node.blendingMode = BlendMode.Exclusion;
+                            
+            // Inverse blending mode
+            if (igSelectable(__("Inverse"), node.blendingMode == BlendMode.Inverse)) node.blendingMode = BlendMode.Inverse;
+            incTooltip(_("Inverts the color by a factor of the overlying color"));
+                            
+            // Destination In blending mode
+            if (igSelectable(__("Destination In"), node.blendingMode == BlendMode.DestinationIn)) node.blendingMode = BlendMode.DestinationIn;
                             
             // Clip to Lower blending mode
             if (igSelectable(__("Clip to Lower"), node.blendingMode == BlendMode.ClipToLower)) node.blendingMode = BlendMode.ClipToLower;
@@ -952,15 +1003,49 @@ void incInspectorModelComposite(Composite node) {
             // Multiply blending mode, in which this texture's color data
             // will be multiplied with the color data already in the framebuffer.
             if (igSelectable(__("Multiply"), node.blendingMode == BlendMode.Multiply)) node.blendingMode = BlendMode.Multiply;
+                            
+            // Screen blending mode
+            if (igSelectable(__("Screen"), node.blendingMode == BlendMode.Screen)) node.blendingMode = BlendMode.Screen;
+
+            // Overlay blending mode
+            if (igSelectable(__("Overlay"), node.blendingMode == BlendMode.Overlay)) node.blendingMode = BlendMode.Overlay;
+
+            // Darken blending mode
+            if (igSelectable(__("Darken"), node.blendingMode == BlendMode.Darken)) node.blendingMode = BlendMode.Darken;
+
+            // Lighten blending mode
+            if (igSelectable(__("Lighten"), node.blendingMode == BlendMode.Lighten)) node.blendingMode = BlendMode.Lighten;
                     
             // Color Dodge blending mode
             if (igSelectable(__("Color Dodge"), node.blendingMode == BlendMode.ColorDodge)) node.blendingMode = BlendMode.ColorDodge;
                     
             // Linear Dodge blending mode
             if (igSelectable(__("Linear Dodge"), node.blendingMode == BlendMode.LinearDodge)) node.blendingMode = BlendMode.LinearDodge;
+                    
+            // Color Burn blending mode
+            if (igSelectable(__("Color Burn"), node.blendingMode == BlendMode.ColorBurn)) node.blendingMode = BlendMode.ColorBurn;
+                    
+            // Hard Light blending mode
+            if (igSelectable(__("Hard Light"), node.blendingMode == BlendMode.HardLight)) node.blendingMode = BlendMode.HardLight;
+                    
+            // Soft Light blending mode
+            if (igSelectable(__("Soft Light"), node.blendingMode == BlendMode.SoftLight)) node.blendingMode = BlendMode.SoftLight;
                             
-            // Screen blending mode
-            if (igSelectable(__("Screen"), node.blendingMode == BlendMode.Screen)) node.blendingMode = BlendMode.Screen;
+            // Subtract blending mode
+            if (igSelectable(__("Subtract"), node.blendingMode == BlendMode.Subtract)) node.blendingMode = BlendMode.Subtract;
+                            
+            // Difference blending mode
+            if (igSelectable(__("Difference"), node.blendingMode == BlendMode.Difference)) node.blendingMode = BlendMode.Difference;
+                            
+            // Exclusion blending mode
+            if (igSelectable(__("Exclusion"), node.blendingMode == BlendMode.Exclusion)) node.blendingMode = BlendMode.Exclusion;
+                            
+            // Inverse blending mode
+            if (igSelectable(__("Inverse"), node.blendingMode == BlendMode.Inverse)) node.blendingMode = BlendMode.Inverse;
+            incTooltip(_("Inverts the color by a factor of the overlying color"));
+                            
+            // Destination In blending mode
+            if (igSelectable(__("Destination In"), node.blendingMode == BlendMode.DestinationIn)) node.blendingMode = BlendMode.DestinationIn;
             
             igEndCombo();
         }
@@ -981,6 +1066,92 @@ void incInspectorModelComposite(Composite node) {
         igSliderFloat("###Threshold", &node.threshold, 0.0, 1.0, "%.2f");
         
         igSpacing();
+
+        // The sources that the part gets masked by. Depending on the masking mode
+        // either the sources will cut out things that don't overlap, or cut out
+        // things that do.
+        incText(_("Mask Sources"));
+        if (igBeginListBox("###MaskSources", ImVec2(0, 128))) {
+            if (node.masks.length == 0) {
+                incText(_("(Drag a Part or Mask Here)"));
+            }
+
+            foreach(i; 0..node.masks.length) {
+                MaskBinding* masker = &node.masks[i];
+                igPushID(cast(int)i);
+                    if (igBeginPopup("###MaskSettings")) {
+                        if (igBeginMenu(__("Mode"))) {
+                            if (igMenuItem(__("Mask"), null, masker.mode == MaskingMode.Mask)) masker.mode = MaskingMode.Mask;
+                            if (igMenuItem(__("Dodge"), null, masker.mode == MaskingMode.DodgeMask)) masker.mode = MaskingMode.DodgeMask;
+                            
+                            igEndMenu();
+                        }
+
+                        if (igMenuItem(__("Delete"))) {
+                            import std.algorithm.mutation : remove;
+                            node.masks = node.masks.remove(i);
+                            igEndPopup();
+                            igPopID();
+                            igEndListBox();
+                            incEndCategory();
+                            return;
+                        }
+
+                        igEndPopup();
+                    }
+
+                    if (masker.mode == MaskingMode.Mask) igSelectable(_("%s (Mask)").format(masker.maskSrc.name).toStringz);
+                    else igSelectable(_("%s (Dodge)").format(masker.maskSrc.name).toStringz);
+
+                    
+                    if(igBeginDragDropTarget()) {
+                        const(ImGuiPayload)* payload = igAcceptDragDropPayload("_MASKITEM");
+                        if (payload !is null) {
+                            if (MaskBinding* binding = cast(MaskBinding*)payload.Data) {
+                                ptrdiff_t maskIdx = node.getMaskIdx(binding.maskSrcUUID);
+                                if (maskIdx >= 0) {
+                                    import std.algorithm.mutation : remove;
+
+                                    node.masks = node.masks.remove(maskIdx);
+                                    if (i == 0) node.masks = *binding ~ node.masks;
+                                    else if (i+1 >= node.masks.length) node.masks ~= *binding;
+                                    else node.masks = node.masks[0..i] ~ *binding ~ node.masks[i+1..$];
+                                }
+                            }
+                        }
+                        
+                        igEndDragDropTarget();
+                    }
+
+                    // TODO: We really should account for left vs. right handedness
+                    if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                        igOpenPopup("###MaskSettings");
+                    }
+
+                    if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
+                        igSetDragDropPayload("_MASKITEM", cast(void*)masker, MaskBinding.sizeof, ImGuiCond.Always);
+                        incText(masker.maskSrc.name);
+                        igEndDragDropSource();
+                    }
+                igPopID();
+            }
+            igEndListBox();
+        }
+
+        if(igBeginDragDropTarget()) {
+            const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+            if (payload !is null) {
+                if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
+
+                    // Make sure we don't mask against ourselves as well as don't double mask
+                    if (payloadDrawable != node && !node.isMaskedBy(payloadDrawable)) {
+                        node.masks ~= MaskBinding(payloadDrawable.uuid, MaskingMode.Mask, payloadDrawable);
+                    }
+                }
+            }
+            
+            igEndDragDropTarget();
+        }
 
         // Padding
         igSpacing();
@@ -1057,48 +1228,55 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
         igSpacing();
 
         igPushID("SimplePhysics");
+        
+        igPushID(-1);
+            igCheckbox(__("Local Transform Lock"), &node.localOnly);
+            incTooltip(_("Whether the physics system only listens to the movement of the physics node itself"));
+            igSpacing();
+            igSpacing();
+        igPopID();
 
         igPushID(0);
-        incText(_("Gravity scale"));
-        incDragFloat("gravity", &node.gravity, adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-        igSpacing();
-        igSpacing();
+            incText(_("Gravity scale"));
+            incDragFloat("gravity", &node.gravity, adjustSpeed/100, -float.max, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            igSpacing();
+            igSpacing();
         igPopID();
 
         igPushID(1);
-        incText(_("Length"));
-        incDragFloat("length", &node.length, adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-        igSpacing();
-        igSpacing();
+            incText(_("Length"));
+            incDragFloat("length", &node.length, adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            igSpacing();
+            igSpacing();
         igPopID();
 
         igPushID(2);
-        incText(_("Resonant frequency"));
-        incDragFloat("frequency", &node.frequency, adjustSpeed/100, 0.01, 30, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-        igSpacing();
-        igSpacing();
+            incText(_("Resonant frequency"));
+            incDragFloat("frequency", &node.frequency, adjustSpeed/100, 0.01, 30, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            igSpacing();
+            igSpacing();
         igPopID();
 
         igPushID(3);
-        incText(_("Damping"));
-        incDragFloat("damping_angle", &node.angleDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            incText(_("Damping"));
+            incDragFloat("damping_angle", &node.angleDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
         igPopID();
 
         igPushID(4);
-        incDragFloat("damping_length", &node.lengthDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-        igSpacing();
-        igSpacing();
+            incDragFloat("damping_length", &node.lengthDamping, adjustSpeed/100, 0, 5, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            igSpacing();
+            igSpacing();
         igPopID();
 
         igPushID(5);
-        incText(_("Output scale"));
-        incDragFloat("output_scale.x", &node.outputScale.vector[0], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            incText(_("Output scale"));
+            incDragFloat("output_scale.x", &node.outputScale.vector[0], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
         igPopID();
 
         igPushID(6);
-        incDragFloat("output_scale.y", &node.outputScale.vector[1], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-        igSpacing();
-        igSpacing();
+            incDragFloat("output_scale.y", &node.outputScale.vector[1], adjustSpeed/100, 0, float.max, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            igSpacing();
+            igSpacing();
         igPopID();
 
         // Padding
@@ -1107,6 +1285,31 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
 
         igPopID();
         }
+    incEndCategory();
+}
+
+
+void incInspectorModelMeshGroup(MeshGroup node) {
+    if (incBeginCategory(__("MeshGroup"))) {
+        
+
+        igSpacing();
+
+        bool dynamic = node.dynamic;
+        if (igCheckbox(__("Dynamic Deformation (slower)"), &dynamic)) {
+            node.switchMode(dynamic);
+        }
+        incTooltip(_("Whether the MeshGroup should dynamically deform children,\nthis is an expensive operation and should not be overused."));
+
+        bool translateChildren = node.getTranslateChildren();
+        if (igCheckbox(__("Translate origins"), &translateChildren)) {
+            node.setTranslateChildren(translateChildren);
+        }
+        incTooltip(_("Translate origin of child nodes for non-Drawable object."));
+
+        // Padding
+        igSpacing();
+    }
     incEndCategory();
 }
 
@@ -1147,6 +1350,12 @@ void incInspectorDeformFloatDragVal(string name, string paramName, float adjustS
             incActionPush(groupAction);
         } else {
             incActionPush(action);
+        }
+
+        if (auto editor = incViewportModelDeformGetEditor()) {
+            if (auto e = editor.getEditorFor(node)) {
+                e.adjustPathTransform();
+            }
         }
     }
 }
@@ -1255,6 +1464,48 @@ void incInspectorDeformSliderFloat(string name, string paramName, float min, flo
             incActionPush(action);
         }
     }
+}
+
+void incInspectorDeformDragFloat(string name, string paramName, float speed, float min, float max, const(char)* fmt, Node node, Parameter param, vec2u cursor) {
+    float value = incInspectorDeformGetValue(node, param, paramName, cursor);
+    if (igDragFloat(name.toStringz, &value, speed, min, max, fmt)) {
+        incInspectorDeformSetValue(node, param, paramName, cursor, value);
+    }
+}
+
+float incInspectorDeformGetValue(Node node, Parameter param, string paramName, vec2u cursor) {
+    float currFloat = node.getDefaultValue(paramName);
+    if (ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName)) {
+        currFloat = b.getValue(cursor);
+    }
+    return currFloat;
+}
+
+void incInspectorDeformSetValue(Node node, Parameter param, string paramName, vec2u cursor, float value) {
+        GroupAction groupAction = null;
+        ValueParameterBinding b = cast(ValueParameterBinding)param.getBinding(node, paramName);
+        if (b is null) {
+            b = cast(ValueParameterBinding)param.createBinding(node, paramName);
+            param.addBinding(b);
+            groupAction = new GroupAction();
+            auto addAction = new ParameterBindingAddAction(param, b);
+            groupAction.addAction(addAction);
+        }
+        auto action = new ParameterBindingValueChangeAction!(float)(b.getName(), b, cursor.x, cursor.y);
+        b.setValue(cursor, value);
+        action.updateNewState();
+        if (groupAction) {
+            groupAction.addAction(action);
+            incActionPush(groupAction);
+        } else {
+            incActionPush(action);
+        }
+
+        if (auto editor = incViewportModelDeformGetEditor()) {
+            if (auto e = editor.getEditorFor(node)) {
+                e.adjustPathTransform();
+            }
+        }
 }
 
 void incInspectorDeformTRS(Node node, Parameter param, vec2u cursor) {
@@ -1375,12 +1626,21 @@ void incInspectorDeformPart(Part node, Parameter param, vec2u cursor) {
                 // Header for texture options    
                 if (incBeginCategory(__("Textures")))  {
 
-                    incText(_("Tint (Multiply)"));
+                    igPushID(0);
+                        incText(_("Tint (Multiply)"));
+                        incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
+                    igPopID();
 
-                    incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
+                    igPushID(1);
+                        incText(_("Tint (Screen)"));
+                        incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
+                    igPopID();
 
-                    incText(_("Tint (Screen)"));
-                    incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
+                    incText(_("Emission Strength"));
+                    float strengthPerc = incInspectorDeformGetValue(node, param, "emissionStrength", cursor)*100;
+                    if (igDragFloat("###S_EMISSION", &strengthPerc, 0.1, 0, float.max, "%.0f%%")) {
+                        incInspectorDeformSetValue(node, param, "emissionStrength", cursor, strengthPerc*0.01);
+                    }
 
                     // Padding
                     igSeparator();
@@ -1411,13 +1671,16 @@ void incInspectorDeformComposite(Composite node, Parameter param, vec2u cursor) 
                 // Header for texture options    
                 if (incBeginCategory(__("Textures")))  {
 
-                    incText(_("Tint (Multiply)"));
-
-                    incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
-
-                    incText(_("Tint (Screen)"));
-
-                    incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
+                    igPushID(0);
+                        incText(_("Tint (Multiply)"));
+                        incInspectorDeformColorEdit3(["tint.r", "tint.g", "tint.b"], node, param, cursor);
+                    igPopID();
+                    
+                    igPushID(1);
+                        incText(_("Tint (Screen)"));
+                        incInspectorDeformColorEdit3(["screenTint.r", "screenTint.g", "screenTint.b"], node, param, cursor);
+                    igPopID();
+                    
 
                     // Padding
                     igSeparator();
@@ -1432,6 +1695,63 @@ void incInspectorDeformComposite(Composite node, Parameter param, vec2u cursor) 
         incInspectorDeformSliderFloat("###Opacity", "opacity", 0, 1f, node, param, cursor);
         igSpacing();
         igSpacing();
+    }
+    incEndCategory();
+}
+
+void incInspectorDeformSimplePhysics(SimplePhysics node, Parameter param, vec2u cursor) {
+    if (incBeginCategory(__("Simple Physics"))) {
+        float adjustSpeed = 1;
+        igPushID("SimplePhysics");
+
+            igPushID(0);
+                incText(_("Gravity scale"));
+                incInspectorDeformDragFloat("###Gravity", "gravity", adjustSpeed/100, -float.max, float.max, "%.2f", node, param, cursor);
+                igSpacing();
+                igSpacing();
+            igPopID();
+
+            igPushID(1);
+                incText(_("Length"));
+                incInspectorDeformDragFloat("###Length", "length", adjustSpeed/100, 0, float.max, "%.2f", node, param, cursor);
+                igSpacing();
+                igSpacing();
+            igPopID();
+
+            igPushID(2);
+                incText(_("Resonant frequency"));
+                incInspectorDeformDragFloat("###ResFreq", "frequency", adjustSpeed/100, 0.01, 30, "%.2f", node, param, cursor);
+                igSpacing();
+                igSpacing();
+            igPopID();
+
+            igPushID(3);
+                incText(_("Damping"));
+                incInspectorDeformDragFloat("###AngleDamp", "angleDamping", adjustSpeed/100, 0, 5, "%.2f", node, param, cursor);
+            igPopID();
+
+            igPushID(4);
+                incInspectorDeformDragFloat("###Length", "lengthDamping", adjustSpeed/100, 0, 5, "%.2f", node, param, cursor);
+                igSpacing();
+                igSpacing();
+            igPopID();
+
+            igPushID(5);
+                incText(_("Output scale"));
+                incInspectorDeformDragFloat("###OutScaleX", "outputScale.x", adjustSpeed/100, 0, float.max, "%.2f", node, param, cursor);
+            igPopID();
+
+            igPushID(6);
+                incInspectorDeformDragFloat("###OutScaleY", "outputScale.y", adjustSpeed/100, 0, float.max, "%.2f", node, param, cursor);
+                igSpacing();
+                igSpacing();
+            igPopID();
+
+            // Padding
+            igSpacing();
+            igSpacing();
+
+        igPopID();
     }
     incEndCategory();
 }

@@ -6,15 +6,18 @@ name: Build & Release
 
 on:
   push:
+    # Push all normally versioned tags
+    # Ignore release candidates!
     tags:
       - '*'
+      - '!*-rc*'
 
 permissions:
   contents: write
 
 jobs:
   build-resources:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     
     steps:
     - uses: actions/checkout@v3
@@ -43,7 +46,7 @@ jobs:
         retention-days: 1
 
   linux-build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v3
@@ -64,17 +67,18 @@ jobs:
       run: |
         git clone https://github.com/Inochi2D/bindbc-imgui.git --recurse-submodules
         git clone https://github.com/Inochi2D/inochi2d.git
-        git clone https://github.com/Inochi2D/facetrack-d.git
-        git clone https://github.com/KitsunebiGames/i18n.git
+        git clone https://github.com/Inochi2D/dcv-i2d
         dub add-local bindbc-imgui/ "0.7.0"
-        dub add-local inochi2d/ "0.7.2"
-        dub add-local facetrack-d/ "0.6.2"
-        dub add-local i18n/ "1.0.1"
+        dub add-local inochi2d/ "0.8.0"
+        dub add-local dcv-i2d/ "0.3.0"
 
     - name: 'Build Inochi Creator'
       run: |
+        # Build metadata (like version information and icons)
+        dub build --config=meta
+
         # Build the project, with its main file included, without unittests
-        dub build --compiler=ldc2 --build=release --config=full
+        dub build --compiler=ldc2 --build=release --config=linux-full
 
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
@@ -120,27 +124,30 @@ jobs:
       run: |
         git clone https://github.com/Inochi2D/bindbc-imgui.git --recurse-submodules
         git clone https://github.com/Inochi2D/inochi2d.git
-        git clone https://github.com/Inochi2D/facetrack-d.git
-        git clone https://github.com/KitsunebiGames/i18n.git
+        git clone https://github.com/Inochi2D/dcv-i2d
         dub add-local bindbc-imgui/ "0.7.0"
-        dub add-local inochi2d/ "0.7.2"
-        dub add-local facetrack-d/ "0.6.2"
-        dub add-local i18n/ "1.0.1"
+        dub add-local inochi2d/ "0.8.0"
+        dub add-local dcv-i2d/ "0.3.0"
 
     - name: 'Build Inochi Creator'
       run: |
         function Invoke-VSDevEnvironment {
         $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-              $installationPath = & $vswhere -prerelease -legacy -latest -property installationPath
-              $Command = Join-Path $installationPath "Common7\Tools\vsdevcmd.bat"
-            & "${env:COMSPEC}" /s /c "`"$Command`" -no_logo && set" | Foreach-Object {
-                  if ($_ -match '^([^=]+)=(.*)') {
-                      [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2])
-                  }
-              }
-          }
-          Invoke-VSDevEnvironment
-          dub build --compiler=ldc2 --build=release --config=win32-full
+            $installationPath = & $vswhere -prerelease -legacy -latest -property installationPath
+            $Command = Join-Path $installationPath "Common7\Tools\vsdevcmd.bat"
+          & "${env:COMSPEC}" /s /c "`"$Command`" -no_logo && set" | Foreach-Object {
+                if ($_ -match '^([^=]+)=(.*)') {
+                    [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2])
+                }
+            }
+        }
+        Invoke-VSDevEnvironment
+        
+        # Build metadata (like version information and icons)
+        dub build --config=meta
+
+        # Build the project, with its main file included, without unittests
+        dub build --compiler=ldc2 --build=release --config=win32-full
 
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
@@ -195,13 +202,21 @@ jobs:
         compiler: ldc-latest
   
     - name: "Prepare for DMG packing"
+      continue-on-error: true
       run: |
+        export HOMEBREW_NO_INSTALL_CLEANUP=1
         brew update
         brew install create-dmg gettext
 
+    - name: "Remove conflicting brew packages"
+      continue-on-error: true
+      run: |
         # Remove conflicting brew items
         brew remove --ignore-dependencies aom cairo composer curl fontconfig freetype gd ghostscript httpd imagemagick jpeg-xl libavif libheif libxft mongodb-community@5.0 mongosh node@16 openjpeg php r sox webp libpng brotli
 
+    - name: "Remove final conflicting files"
+      continue-on-error: true
+      run: |
         # Delete fake harfbuzz if need be
         if [ -f "/usr/local/lib/libharfbuzz.dylib" ]; then
           sudo rm -r /usr/local/lib/libharfbuzz.dylib
@@ -221,15 +236,18 @@ jobs:
       run: |
         git clone https://github.com/Inochi2D/bindbc-imgui.git --recurse-submodules
         git clone https://github.com/Inochi2D/inochi2d.git
-        git clone https://github.com/Inochi2D/facetrack-d.git
-        git clone https://github.com/KitsunebiGames/i18n.git
+        git clone https://github.com/Inochi2D/dcv-i2d
         dub add-local bindbc-imgui/ "0.7.0"
-        dub add-local inochi2d/ "0.7.2"
-        dub add-local facetrack-d/ "0.6.2"
-        dub add-local i18n/ "1.0.1"
+        dub add-local inochi2d/ "0.8.0"
+        dub add-local dcv-i2d/ "0.3.0"
 
     - name: 'Build Inochi Creator'
+      env:
+        DFLAGS: "-force-dwarf-frame-section=false"
       run: |
+        # Build metadata (like version information and icons)
+        dub build --config=meta
+        
         # First build ARM64 version...
         echo "Building arm64 binary..."
         dub build --build=release --config=osx-full --arch=arm64-apple-macos

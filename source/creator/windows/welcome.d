@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -18,6 +18,7 @@ import creator.ver;
 import creator.io;
 import creator;
 import creator.config;
+import creator.widgets.dialog;
 
 import creator.widgets.shadow;
 
@@ -234,8 +235,12 @@ protected:
 
                                 string file = incShowOpenDialog(filters, _("Open..."));
                                 if (file) {
-                                    incOpenProject(file);
-                                    this.close();
+                                    try {
+                                        incOpenProject!false(file);
+                                        this.close();
+                                    } catch(Exception ex) {
+                                        incDialog(__("Error"), ex.msg);
+                                    }
                                 }
                             }
 
@@ -258,8 +263,12 @@ protected:
 
                                     import std.path : baseName;
                                     if (incTextLinkWithIcon("", recent.baseName)) {
-                                        incOpenProject(recent);
-                                        this.close();
+                                        try {
+                                            incOpenProject!false(recent);
+                                            this.close();
+                                        } catch(Exception ex) {
+                                            incDialog(__("Error"), ex.msg);
+                                        }
                                     }
                                 }
                             } else {
@@ -277,25 +286,33 @@ protected:
                         incDummy(ImVec2(0, 2));
                         igIndent();
 
-                            if (incTextLinkWithIcon("", _("Website"))) {
-                                incOpenLink("https://inochi2d.com");
+                            static if (INC_INFO_WEBSITE_URI.length > 0) {
+                                if (incTextLinkWithIcon("", _("Website"))) {
+                                    incOpenLink(INC_INFO_WEBSITE_URI);
+                                }
                             }
 
-                            if (incTextLinkWithIcon("", _("Documentation"))) {
-                                incOpenLink("https://github.com/Inochi2D/Inochi-creator/wiki");
+                            static if (INC_INFO_DOCS_URI.length > 0) {
+                                if (incTextLinkWithIcon("", _("Documentation"))) {
+                                    incOpenLink(INC_INFO_DOCS_URI);
+                                }
+                            }
+                            
+                            static if (INC_INFO_DISCORD_URI.length > 0) {
+                                if (incTextLinkWithIcon("", _("Join our Discord"))) {
+                                    incOpenLink(INC_INFO_DISCORD_URI);
+                                }
                             }
 
-                            if (incTextLinkWithIcon("", _("Join our Discord"))) {
-                                incOpenLink("https://discord.com/invite/abnxwN6r9v");
-                            }
-
-                            igNewLine();
-                            igNewLine();
-                            if (incTextLinkWithIcon("", _("Patreon"))) {
-                                incOpenLink("https://www.patreon.com/LunaFoxgirlVT");
-                            }
-                            if (incTextLinkWithIcon("", _("Github Sponsors"))) {
-                                incOpenLink("https://github.com/sponsors/LunaTheFoxgirl/");
+                            static if (INC_INFO_SHOW_DONATE_LINKS) {
+                                igNewLine();
+                                igNewLine();
+                                if (incTextLinkWithIcon("", _("Patreon"))) {
+                                    incOpenLink("https://www.patreon.com/LunaFoxgirlVT");
+                                }
+                                if (incTextLinkWithIcon("", _("Github Sponsors"))) {
+                                    incOpenLink("https://github.com/sponsors/LunaTheFoxgirl/");
+                                }
                             }
                         igUnindent();
                     }

@@ -1,7 +1,7 @@
 name: Feature request
 description: Suggest an idea for Inochi Creator
 title: "[Feature Request]"
-labels: enhancement
+labels: ["Enhancement", "Triage"] 
 body:
   - type: markdown
     attributes:

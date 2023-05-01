@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -10,38 +10,53 @@ import creator.actions;
 import inochi2d;
 
 private {
-    Action[] actions;
-    size_t actionPointer;
-    size_t actionIndex;
+    Action[][] actions;
+    size_t currentLevel = 0;
+    GroupAction[] currentGroup = null;
+    size_t[] actionPointer;
+    size_t[] actionIndex;
     size_t maxUndoHistory;
 }
+
+enum ActionStackClear {
+    All, CurrentLevel
+};
 
 /**
     Initialize actions system
 */
 void incActionInit() {
     maxUndoHistory = incSettingsGet!size_t("MaxUndoHistory", 100);
+    actions.length = currentLevel + 1;
+    actionPointer.length = currentLevel + 1;
+    actionIndex.length = currentLevel + 1;
+    currentGroup.length = currentLevel + 1;
 }
 
 /**
     Pushes a new action to the stack
 */
 void incActionPush(Action action) {
-    
-    // Chop away entries outside undo history
-    if (actionPointer+1 > incActionGetUndoHistoryLength()) {
-        size_t toChop = (actionPointer+1)-incActionGetUndoHistoryLength();
-        actions = actions[toChop..$];
-        actionPointer -= toChop;
-    }
 
-    if (incActionTop() !is null && incActionTop().canMerge(action)) {
-        incActionTop().merge(action);
-        incActionNotifyTopChanged();
+    if (currentGroup[currentLevel] !is null) {
+        currentGroup[currentLevel].addAction(action);
     } else {
-        // Add to the history
-        actions = actions[0..actionPointer]~action;
-        actionPointer++;
+    
+        // Chop away entries outside undo history
+        if (actionPointer[currentLevel]+1 > incActionGetUndoHistoryLength()) {
+            size_t toChop = (actionPointer[currentLevel]+1)-incActionGetUndoHistoryLength();
+            actions[currentLevel] = actions[currentLevel][toChop..$];
+            actionPointer[currentLevel] -= toChop;
+        }
+
+        if (incActionTop() !is null && incActionTop().canMerge(action)) {
+            incActionTop().merge(action);
+            incActionNotifyTopChanged();
+        } else {
+            // Add to the history
+            actions[currentLevel] = actions[currentLevel][0..actionPointer[currentLevel]]~action;
+            actionPointer[currentLevel]++;
+        }
     }
 }
 
@@ -49,66 +64,66 @@ void incActionPush(Action action) {
     Steps back in the action stack
 */
 void incActionUndo() {
-    actionPointer--;
-    if (cast(ptrdiff_t)actionPointer < 0) {
-        actionPointer = 0;
+    actionPointer[currentLevel]--;
+    if (cast(ptrdiff_t)actionPointer[currentLevel] < 0) {
+        actionPointer[currentLevel] = 0;
         return;
     }
-    actions[actionPointer].rollback();
+    actions[currentLevel][actionPointer[currentLevel]].rollback();
 }
 
 /**
     Steps forward in the action stack
 */
 void incActionRedo() {
-    if (actionPointer >= actions.length) {
-        actionPointer = actions.length;
+    if (actionPointer[currentLevel] >= actions[currentLevel].length) {
+        actionPointer[currentLevel] = actions[currentLevel].length;
         return;
     }
-    actions[actionPointer].redo();
-    actionPointer++;
+    actions[currentLevel][actionPointer[currentLevel]].redo();
+    actionPointer[currentLevel]++;
 }
 
 /**
     Gets whether undo is possible
 */
 bool incActionCanUndo() {
-    return actionPointer > 0;
+    return actionPointer[currentLevel] > 0;
 }
 
 /**
     Gets whether redo is possible
 */
 bool incActionCanRedo() {
-    return actionPointer < actions.length;
+    return actionPointer[currentLevel] < actions[currentLevel].length;
 }
 
 /**
     Gets the action history
 */
 Action[] incActionHistory() {
-    return actions;
+    return actions[currentLevel];
 }
 
 /**
     Index of the current action
 */
 size_t incActionIndex() {
-    return actionPointer;
+    return actionPointer[currentLevel];
 }
 
 /**
     Gets the "top" action
 */
 Action incActionTop() {
-    return actionPointer > 0 && actionPointer <= actions.length ? actions[actionPointer-1] : null;
+    return actionPointer[currentLevel] > 0 && actionPointer[currentLevel] <= actions[currentLevel].length ? actions[currentLevel][actionPointer[currentLevel]-1] : null;
 }
 
 /**
     Notify that the top action has changed
 */
 void incActionNotifyTopChanged() {
-    actions.length = actionPointer;
+    actions[currentLevel].length = actionPointer[currentLevel];
 }
 
 /**
@@ -132,8 +147,8 @@ size_t incActionGetUndoHistoryLength() {
     Indexes start at 1, 0 is reserved for the INTIAL index
 */
 void incActionSetIndex(size_t index) {
-    if (index > actions.length) {
-        index = actions.length;
+    if (index > actions[currentLevel].length) {
+        index = actions[currentLevel].length;
     }
 
     if (index == 0) {
@@ -142,17 +157,70 @@ void incActionSetIndex(size_t index) {
         while (incActionCanUndo()) incActionUndo();
     }
 
-    if (index < actionPointer) {
-        while (index < actionPointer) incActionUndo();
-    } else if (cast(ptrdiff_t)index > cast(ptrdiff_t)actionPointer) {
-        while (cast(ptrdiff_t)index > cast(ptrdiff_t)actionPointer) incActionRedo();
+    if (index < actionPointer[currentLevel]) {
+        while (index < actionPointer[currentLevel]) incActionUndo();
+    } else if (cast(ptrdiff_t)index > cast(ptrdiff_t)actionPointer[currentLevel]) {
+        while (cast(ptrdiff_t)index > cast(ptrdiff_t)actionPointer[currentLevel]) incActionRedo();
     }
 }
 
 /**
     Clears action history
 */
-void incActionClearHistory() {
-    actions.length = 0;
-    actionPointer = 0;
+void incActionClearHistory(ActionStackClear target = ActionStackClear.All) {
+    switch (target) {
+    case ActionStackClear.All:
+        currentLevel = 0;
+        actions.length = currentLevel + 1;
+        actionPointer.length = currentLevel + 1;
+        actionIndex.length = currentLevel + 1;
+        currentGroup.length = currentLevel + 1;
+        actions[currentLevel].length = 0;
+        actionPointer[currentLevel] = 0;
+        currentGroup[currentLevel] = null;
+        break;
+    case ActionStackClear.CurrentLevel:
+        actions[currentLevel].length = 0;
+        actionPointer[currentLevel] = 0;
+        currentGroup[currentLevel] = null;
+        break;
+    default:
+    }
+}
+
+/**
+    Push GroupAction to action stack.
+    Subsequent Action is added to GroupAction.
+    GroupAction is added to action stack when incActionPopGroup is called.
+*/
+void incActionPushGroup() {
+    if (!currentGroup[currentLevel])
+        currentGroup[currentLevel] = new GroupAction();
+}
+
+void incActionPopGroup() {
+    if (currentGroup[currentLevel]) {
+        auto group = currentGroup[currentLevel];
+        currentGroup[currentLevel] = null;
+        if (group !is null && !group.empty())
+            incActionPush(group);
+    }
+}
+
+void incActionPushStack() {
+    ++ currentLevel;
+    actions.length = currentLevel + 1;
+    actionPointer.length = currentLevel + 1;
+    actionIndex.length = currentLevel + 1;
+    currentGroup.length = currentLevel + 1;
+}
+
+void incActionPopStack() {
+    if (currentLevel > 0) {
+        -- currentLevel;
+        actions.length = currentLevel + 1;
+        actionPointer.length = currentLevel + 1;
+        actionIndex.length = currentLevel + 1;
+        currentGroup.length = currentLevel + 1;
+    }
 }

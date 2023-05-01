@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -8,11 +8,10 @@ module creator.panels;
 import creator.core;
 import creator.core.settings;
 import creator.widgets;
+import creator : EditMode, incEditMode;
 import bindbc.imgui;
 import std.string;
 import i18n;
-
-public import creator.panels.logger;
 
 /**
     A Widget
@@ -32,6 +31,7 @@ protected:
     ImVec2 panelSpace;
     abstract void onUpdate();
     ImGuiWindowFlags flags;
+    EditMode activeModes = EditMode.ALL;
 
     void onBeginUpdate() {
 
@@ -109,6 +109,10 @@ public:
         return displayNamePtr;
     }
 
+    final bool isActive() {
+        return (incEditMode() & this.activeModes) > 0;
+    }
+
     /**
         Draws the panel
     */
@@ -144,7 +148,12 @@ void incAddPanel(Panel panel) {
 */
 void incUpdatePanels() {
     foreach(panel; incPanels) {
+
+        // Don't render panels that aren't visible
         if (!panel.visible && !panel.alwaysVisible) continue;
+
+        // Don't render panels that aren't active
+        if (!panel.isActive()) continue;
 
         panel.update();
     }

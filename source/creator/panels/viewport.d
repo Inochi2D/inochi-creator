@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -40,6 +40,8 @@ protected:
         priorWindowPadding = igGetStyle().WindowPadding;
         igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(0, 2));
         igSetNextWindowDockID(incGetViewportDockSpace(), ImGuiCond.Always);
+
+        flags |= ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
         super.onBeginUpdate();
     }
 
@@ -85,8 +87,7 @@ protected:
                 incEndDragInViewport(btn);
             }
         }
-
-        if (igBeginChild("##ViewportView", ImVec2(0, -32))) {
+        if (igBeginChild("##ViewportView", ImVec2(0, -32), false, flags)) {
             igGetContentRegionAvail(&currSize);
             currSize = ImVec2(
                 clamp(currSize.x, 128, float.max), 
@@ -113,21 +114,44 @@ protected:
             }
 
             auto style = igGetStyle();
-            inSetClearColor(style.Colors[ImGuiCol.WindowBg].x, style.Colors[ImGuiCol.WindowBg].y, style.Colors[ImGuiCol.WindowBg].z, 1);
             incViewportDraw();
 
             int width, height;
             inGetViewport(width, height);
 
-            // Render our viewport
-            igImage(
-                cast(void*)inGetRenderImage(), 
-                ImVec2(ceil(width/incGetUIScale()), ceil(height/incGetUIScale())), 
-                ImVec2((0.5/width), 1-(0.5/height)), 
-                ImVec2(1-(0.5/width), (0.5/height)), 
-                ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0)
+            ImVec4 color;
+            inGetClearColor(color.x, color.y, color.z, color.w);
+
+            ImRect rect = ImRect(
+                ImVec2(
+                    window.InnerRect.Max.x-1,
+                    window.InnerRect.Max.y,
+                ),
+                ImVec2(
+                    window.InnerRect.Min.x+1,
+                    window.InnerRect.Max.y+currSize.y,
+                ),
             );
 
+            // Render background color
+            ImDrawList_AddRectFilled(drawList,
+                rect.Min,
+                rect.Max,
+                igGetColorU32(color),
+            );
+
+            // Render our viewport
+            ImDrawList_AddImage(
+                drawList,
+                cast(void*)inGetRenderImage(),
+                rect.Min,
+                rect.Max,
+                ImVec2((0.5/width), 1-(0.5/height)), 
+                ImVec2(1-(0.5/width), (0.5/height)), 
+                0xFFFFFFFF,
+            );
+            igItemAdd(rect, igGetID("###VIEWPORT_DISP"));
+            
             // Popup right click menu
             igPushStyleVar(ImGuiStyleVar.WindowPadding, priorWindowPadding);
             if (incViewportHasMenu()) {
@@ -172,6 +196,8 @@ protected:
                 incBeginViewportToolArea("ConfirmArea", ImGuiDir.Left, ImGuiDir.Down, false);
                     incViewportDrawConfirmBar();
                 incEndViewportToolArea();
+                if (incEditMode == EditMode.ModelEdit)
+                    incViewportTransformHandle();
             igPopStyleVar();
 
             lastSize = currSize;
@@ -191,7 +217,6 @@ protected:
             igColorConvertFloat4ToU32(*igGetStyleColorVec4(ImGuiCol.Separator)), 
             2
         );
-
 
         // FILE DRAG & DROP
         if (igBeginDragDropTarget()) {

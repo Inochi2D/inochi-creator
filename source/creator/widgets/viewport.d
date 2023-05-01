@@ -17,7 +17,11 @@ private {
 /**
     Starts a generalized tool area that resizes to fit its contents
 */
-void incBeginViewportToolArea(string id_str, ImGuiDir hdir, ImGuiDir vdir = ImGuiDir.Up, bool pad = true) {
+void incBeginViewportToolArea(string id_str, ImVec2 pos, bool pad = true) {
+    incBeginViewportToolArea(id_str, ImGuiDir.Right, ImGuiDir.Up, pad, &pos);
+}
+
+void incBeginViewportToolArea(string id_str, ImGuiDir hdir, ImGuiDir vdir = ImGuiDir.Up, bool pad = true, ImVec2* pos = null) {
     igSetItemAllowOverlap();
     igPushID(id_str.ptr, id_str.ptr+id_str.length);
     auto storage = igGetStateStorage();
@@ -41,6 +45,7 @@ void incBeginViewportToolArea(string id_str, ImGuiDir hdir, ImGuiDir vdir = ImGu
     // Depending on whether we're on the right or the left we want the tool area to display slightly offset
     // on the top left or top right, this ensures that.
     igSetCursorScreenPos(
+        pos? ImVec2(pos.x + win.InnerRect.Max.x, pos.y + win.InnerRect.Max.y):
         ImVec2(
             hdir == ImGuiDir.Right ? win.InnerRect.Min.x - (paddingX+data.contentSize.x) : win.InnerRect.Max.x + paddingX,
             vdir == ImGuiDir.Down ? win.InnerRect.Min.y - (paddingY+data.contentSize.y) : win.InnerRect.Max.y + paddingY,   

@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020,2022 Inochi2D Project
+    Copyright © 2020-2023,2022 Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
 */
 module creator.actions.drawable;
@@ -37,8 +37,10 @@ public:
     }
 
     override
-    void updateNewState() {
-    }
+    void updateNewState() {}
+
+    override
+    void clear() {}
 
     void addBinding(Parameter param, ParameterBinding binding) {
         addAction(new ParameterBindingRemoveAction(param, binding));
@@ -53,6 +55,8 @@ public:
             MeshData tmpMesh;
             copy(self.getMesh(), tmpMesh);
             self.rebuffer(mesh);
+            if (auto mgroup = cast(MeshGroup)self)
+                mgroup.clearCache();
             mesh = tmpMesh;
             undoable = false;
         }
@@ -68,6 +72,8 @@ public:
             MeshData tmpMesh;
             copy(self.getMesh(), tmpMesh);
             self.rebuffer(mesh);
+            if (auto mgroup = cast(MeshGroup)self)
+                mgroup.clearCache();
             mesh = tmpMesh;
             undoable = true;
         }

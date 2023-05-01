@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -48,12 +48,12 @@ public:
     /**
         The original transform of the node
     */
-    Transform originalTransform;
+    Transform[uint] originalTransform;
 
     /**
         The new transform of the node
     */
-    Transform newTransform;
+    Transform[uint] newTransform;
 
     /**
         Creates a new node change action
@@ -71,15 +71,17 @@ public:
             
             // Store ref to prev parent
             if (sn.parent) {
+                originalTransform[sn.uuid] = sn.localTransform;
                 prevParents[sn.uuid] = sn.parent;
                 prevOffsets[sn.uuid] = sn.getIndexInParent();
             }
 
             // Set relative position
             if (new_) {
-                sn.setRelativeTo(new_);
-                sn.insertInto(new_, pOffset);
+                sn.reparent(new_, pOffset);
+                sn.transformChanged();
             } else sn.parent = null;
+            newTransform[sn.uuid] = sn.localTransform;
         }
         incActivePuppet().rescanNodes();
     
@@ -93,9 +95,11 @@ public:
     */
     void rollback() {
         foreach(ref sn; nodes) {
-            if (prevParents[sn.uuid]) {
+            if (sn.uuid in prevParents && prevParents[sn.uuid]) {
                 if (!sn.lockToRoot()) sn.setRelativeTo(prevParents[sn.uuid]);
-                sn.insertInto(prevParents[sn.uuid], prevOffsets[sn.uuid]);
+                sn.reparent(prevParents[sn.uuid], prevOffsets[sn.uuid]);
+                sn.localTransform = originalTransform[sn.uuid];
+                sn.transformChanged();
             } else sn.parent = null;
         }
         incActivePuppet().rescanNodes();
@@ -108,7 +112,9 @@ public:
         foreach(sn; nodes) {
             if (newParent) {
                 if (!sn.lockToRoot()) sn.setRelativeTo(newParent);
-                sn.insertInto(newParent, parentOffset);
+                sn.reparent(newParent, parentOffset);
+                sn.localTransform = newTransform[sn.uuid];
+                sn.transformChanged();
             } else sn.parent = null;
         }
         incActivePuppet().rescanNodes();
@@ -128,7 +134,7 @@ public:
     */
     string describeUndo() {
         if (prevParents.length == 0) return _("Created %s").format(descrName);
-        if (nodes.length == 1 && prevParents.length == 1) return  _("Moved %s from %s").format(descrName, prevParents[nodes[0].uuid].name);
+        if (nodes.length == 1 && prevParents.length == 1 && prevParents.values[0]) return  _("Moved %s from %s").format(descrName, prevParents[nodes[0].uuid].name);
         return _("Moved %s from origin").format(descrName);
     }
 
@@ -222,6 +228,7 @@ void incAddChildWithHistory(Node n, Node to, string name=null) {
     ));
 
     n.insertInto(to, Node.OFFSET_START);
+    n.localTransform.clear();
     if (name is null) n.name = _("Unnamed ")~_(n.typeId());
     else n.name = name;
     incActivePuppet().rescanNodes();

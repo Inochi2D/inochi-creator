@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -15,8 +15,10 @@ import creator.widgets;
 import creator.core.actionstack;
 import creator.core.i18n;
 import creator.io;
+import creator.io.autosave;
 import creator.atlas.atlas : incInitAtlassing;
 import creator.ext;
+import creator.windows.flipconfig;
 import inochi2d;
 import creator;
 import i18n;
@@ -68,6 +70,8 @@ int main(string[] args)
         // Initialize node overrides
         incInitExt();
 
+        incInitFlipConfig();
+
         // Initialize video exporting
         incInitVideoExport();
         
@@ -86,6 +90,8 @@ int main(string[] args)
             incPushWindow(new WelcomeWindow());
         }
 
+        version(InNightly) incDialog("NIGHTLY_WARN", __("Inochi Creator (Nightly)"), _("You're running a nightly build of Inochi Creator!\nInochi Creator may crash unexpectedly and you will likely encounter bugs.\nMake sure to save and back up your work often!"), DialogLevel.Warning);
+
         // Update loop
         while(!incIsCloseRequested()) {
             incUpdate();
@@ -94,7 +100,11 @@ int main(string[] args)
         incFinalize();
     } catch(Throwable ex) {
         debug {
-            throw ex;
+            version(Windows) {
+                crashdump(ex);
+            } else {
+                throw ex;
+            }
         } else {
             crashdump(ex);
         }
@@ -108,7 +118,10 @@ int main(string[] args)
 void incUpdate() {
 
     // Update Inochi2D
+    incAnimationUpdate();
     inUpdate();
+
+    incCheckAutosave();
 
     // Begin IMGUI loop
     incBeginLoop();
@@ -131,6 +144,7 @@ void incUpdate() {
 void incUpdateNoEv() {
 
     // Update Inochi2D
+    incAnimationUpdate();
     inUpdate();
     
     // Begin IMGUI loop

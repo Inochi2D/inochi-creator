@@ -1,7 +1,7 @@
 name: Bug Report
 description: Report an issue with Inochi Creator
 title: "[BUG]"
-labels: bug
+labels: ["Bug", "Triage"] 
 body:
   - type: markdown
     attributes:

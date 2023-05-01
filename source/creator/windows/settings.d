@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -9,6 +9,7 @@ import creator.windows;
 import creator.widgets;
 import creator.core;
 import creator.core.i18n;
+import creator.io.autosave;
 import std.string;
 import creator.utils.link;
 import i18n;
@@ -19,7 +20,8 @@ bool incIsSettingsOpen;
 enum SettingsPane : string {
     LookAndFeel = "Look and Feel",
     Viewport = "Viewport",
-    Accessibility = "Accessbility"
+    Accessibility = "Accessbility",
+    Autosaves = "Autosaves"
 }
 
 /**
@@ -84,6 +86,10 @@ protected:
                 
                 if (igSelectable(__("Accessbility"), settingsPane == SettingsPane.Accessibility)) {
                     settingsPane = SettingsPane.Accessibility;
+                }
+
+                if (igSelectable(__("Autosaves"), settingsPane == SettingsPane.Autosaves)) {
+                    settingsPane = SettingsPane.Autosaves;
                 }
             igPopTextWrapPos();
         }
@@ -161,6 +167,24 @@ protected:
                                 changesRequiresRestart = true;
                             }
                             incTooltip("Use the OpenDyslexic font for Latin text characters.");
+                        endSection();
+                        break;
+                    case SettingsPane.Autosaves:
+                        beginSection(__("Autosaves"));
+                            bool autosaveEnabled = incGetAutosaveEnabled();
+                            if (igCheckbox(__("Enable Autosaves"), &autosaveEnabled)) {
+                                incSetAutosaveEnabled(autosaveEnabled);
+                            }
+
+                            int autosaveFreq = incGetAutosaveInterval();
+                            if (igInputInt(__("Save Interval (Minutes)"), &autosaveFreq, 5, 15, ImGuiInputTextFlags.EnterReturnsTrue)) {
+                                incSetAutosaveInterval(autosaveFreq);
+                            }
+
+                            int saveFileLimit = incGetAutosaveFileLimit();
+                            if (igInputInt(__("Maximum Autosaves"), &saveFileLimit, 1, 5, ImGuiInputTextFlags.EnterReturnsTrue)) {
+                                incSetAutosaveFileLimit(saveFileLimit);
+                            }
                         endSection();
                         break;
                     default:

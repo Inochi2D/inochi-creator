@@ -1,5 +1,5 @@
 /*
-    Copyright © 2020, Inochi2D Project
+    Copyright © 2020-2023, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
     Authors: Luna Nielsen
@@ -14,6 +14,7 @@ import creator.utils.link;
 import creator;
 import creator.widgets.dialog;
 import creator.backend.gl;
+import creator.io.autosave;
 
 import std.exception;
 
@@ -96,6 +97,7 @@ private {
     ImGuiIO* io;
     bool done = false;
     ImGuiID viewportDock;
+    bool firstFrame = true;
 
     version (InBranding) {
         Texture incLogoI2D;
@@ -114,6 +116,19 @@ private {
     
     ImVec4[ImGuiCol.COUNT] incDarkModeColors;
     ImVec4[ImGuiCol.COUNT] incLightModeColors;
+
+    SDL_Window* tryCreateWindow(string title, SDL_WindowFlags flags) {
+        auto w = SDL_CreateWindow(
+            title.toStringz, 
+            SDL_WINDOWPOS_UNDEFINED,
+            SDL_WINDOWPOS_UNDEFINED,
+            cast(uint)incSettingsGet!int("WinW", 1280), 
+            cast(uint)incSettingsGet!int("WinH", 800), 
+            flags
+        );
+        if (w) SDL_SetWindowMinimumSize(window, 960, 720);
+        return w;
+    }
 
 }
 
@@ -238,15 +253,7 @@ void incOpenWindow() {
         else string WIN_TITLE = "Inochi Creator "~INC_VERSION;
     } else string WIN_TITLE = "Inochi Creator "~_("(Unsupported)");
     
-    window = SDL_CreateWindow(
-        WIN_TITLE.toStringz, 
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        cast(uint)incSettingsGet!int("WinW", 1280), 
-        cast(uint)incSettingsGet!int("WinH", 800), 
-        flags
-    );
-    SDL_SetWindowMinimumSize(window, 960, 720);
+    window = tryCreateWindow(WIN_TITLE, flags);
     
     // On Linux we want to check whether the window was created under wayland or x11
     version(linux) {
@@ -257,6 +264,16 @@ void incOpenWindow() {
 
     GLSupport support;
     gl_context = SDL_GL_CreateContext(window);
+    if (!gl_context) {
+        SDL_DestroyWindow(window);
+
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+        window = tryCreateWindow(WIN_TITLE, flags);
+        gl_context = SDL_GL_CreateContext(window);
+    }
+    enforce(gl_context !is null, "Failed to create GL 3.2 or 3.1 core context!");
     SDL_GL_SetSwapInterval(1);
 
     // Load GL 3
@@ -339,9 +356,6 @@ void incCreateContext() {
     // Setup IMGUI
     auto ctx = igCreateContext(null);
     io = igGetIO();
-    
-    // Setup font handling
-    incInitFonts();
 
     import std.file : exists;
     if (!exists(incGetAppImguiConfigFile())) {
@@ -378,8 +392,12 @@ void incCreateContext() {
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     incGLBackendInit(null);
 
+    // Setup font handling
+    incInitFonts();
+
     incInitStyling();
     incInitDialogs();
+    incResetClearColor();
 }
 
 
@@ -468,8 +486,8 @@ void incInitStyling() {
     style.Colors[ImGuiCol.TableHeaderBg]          = ImVec4(0.19f, 0.19f, 0.20f, 1.00f);
     style.Colors[ImGuiCol.TableBorderStrong]      = ImVec4(0.31f, 0.31f, 0.35f, 1.00f);
     style.Colors[ImGuiCol.TableBorderLight]       = ImVec4(0.23f, 0.23f, 0.25f, 1.00f);
-    style.Colors[ImGuiCol.TableRowBg]             = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-    style.Colors[ImGuiCol.TableRowBgAlt]          = ImVec4(1.00f, 1.00f, 1.00f, 0.06f);
+    style.Colors[ImGuiCol.TableRowBg]             = ImVec4(0.310f, 0.310f, 0.310f, 0.267f);
+    style.Colors[ImGuiCol.TableRowBgAlt]          = ImVec4(0.463f, 0.463f, 0.463f, 0.267f);
     style.Colors[ImGuiCol.TextSelectedBg]         = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
     style.Colors[ImGuiCol.DragDropTarget]         = ImVec4(1.00f, 1.00f, 0.00f, 0.90f);
     style.Colors[ImGuiCol.NavHighlight]           = ImVec4(0.32f, 0.32f, 0.32f, 1.00f);
@@ -587,7 +605,9 @@ void incBeginLoopNoEv() {
         incSettingsSet("firstrun_complete", true);
     }
 
-    incRenderDialogs();
+    // HACK: ImGui Crashes if a popup is rendered on the first frame, let's avoid that.
+    if (firstFrame) firstFrame = false;
+    else incRenderDialogs();
     incStatusUpdate();
 }
 
@@ -597,9 +617,10 @@ void incSetDefaultLayout() {
     igDockBuilderRemoveNodeChildNodes(viewportDock);
     ImGuiID 
         dockMainID, dockIDNodes, dockIDInspector, dockIDHistory, dockIDParams,
-        dockIDToolSettings, dockIDLoggerAndTextureSlots, dockIDTimeline;
+        dockIDToolSettings, dockIDLoggerAndTextureSlots, dockIDTimeline, dockIDAnimList;
 
     dockMainID = viewportDock;
+    dockIDAnimList = igDockBuilderSplitNode(dockMainID, ImGuiDir.Left, 0.10f, null, &dockMainID);
     dockIDNodes = igDockBuilderSplitNode(dockMainID, ImGuiDir.Left, 0.10f, null, &dockMainID);
     dockIDInspector = igDockBuilderSplitNode(dockIDNodes, ImGuiDir.Down, 0.60f, null, &dockIDNodes);
     dockIDToolSettings = igDockBuilderSplitNode(dockMainID, ImGuiDir.Right, 0.10f, null, &dockMainID);
@@ -614,6 +635,7 @@ void incSetDefaultLayout() {
     igDockBuilderDockWindow("###Scene", dockIDHistory);
     debug(InExperimental) igDockBuilderDockWindow("###Tracking", dockIDHistory);
     igDockBuilderDockWindow("###Timeline", dockIDTimeline);
+    igDockBuilderDockWindow("###Animation List", dockIDAnimList);
     igDockBuilderDockWindow("###Logger", dockIDTimeline);
     igDockBuilderDockWindow("###Parameters", dockIDParams);
     igDockBuilderDockWindow("###Texture Slots", dockIDLoggerAndTextureSlots);
@@ -680,7 +702,7 @@ void incEndLoop() {
 
     
     version(InBranding) {
-        import creator.core.egg;
+        import creator.core.egg : incAdaUpdate;
         incAdaUpdate();
     }
 
@@ -720,6 +742,13 @@ void incDebugImGuiState(string msg, int indent = 0) {
 }
 
 /**
+    Resets the clear color
+*/
+void incResetClearColor() {
+    inSetClearColor(0, 0, 0, 0);
+}
+
+/**
     Gets whether Inochi Creator has requested the app to close
 */
 bool incIsCloseRequested() {
@@ -739,6 +768,7 @@ void incExit() {
     incSettingsSet("WinW", w);
     incSettingsSet("WinH", h);
     incSettingsSet!bool("WinMax", (flags & SDL_WINDOW_MAXIMIZED) > 0);
+    incReleaseLockfile();
 }
 
 /**
@@ -783,4 +813,9 @@ void incHandleShortcuts() {
     } else if (incShortcut("Ctrl+Z", true)) {
         incActionUndo();
     }
+}
+
+void incSetWindowTitle(string subtitle) {
+    if (subtitle.length > 0) SDL_SetWindowTitle(window, ("Inochi Creator - "~subtitle).toStringz);
+    else SDL_SetWindowTitle(window, "Inochi Creator");
 }
