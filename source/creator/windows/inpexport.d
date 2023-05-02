@@ -248,8 +248,8 @@ protected:
                                     // Finish the file drag
                                     incFinishFileDrag();
                                 }
+                                igEndDragDropTarget();
                             }
-                            igEndDragDropTarget();
 
                             igSameLine();
 
