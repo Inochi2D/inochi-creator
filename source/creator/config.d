@@ -19,13 +19,13 @@ module creator.config;
 
     If you change the banner you SHOULD change this.
 */
-enum INC_BANNER_ARTIST_NAME = "七乃ななせ";
+enum INC_BANNER_ARTIST_NAME = "nighteden";
 
 /**
     Link to the artist's preferred social media,
     or art posting page.
 */
-enum INC_BANNER_ARTIST_PAGE = "https://twitter.com/nana_nono120";
+enum INC_BANNER_ARTIST_PAGE = "https://mastodon.art/@nighteden";
 
 /**
     URI for bug reports, for unofficial builds this SHOULD be changed.
