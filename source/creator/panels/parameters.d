@@ -369,7 +369,8 @@ private {
         incActionPush(action);
     }
 
-    void keypointActions(Parameter param, ParameterBinding[] bindings) {
+    void keypointActions(Parameter param, ParameterBinding[] srcBindings, ParameterBinding[] targetBindings) {
+        ParameterBinding[] bindings = (targetBindings !is null)? targetBindings: srcBindings;
         if (igMenuItem(__("Unset"), "", false, true)) {
             auto action = new ParameterChangeBindingsValueAction("unset", param, bindings, cParamPoint.x, cParamPoint.y);
             foreach(binding; bindings) {
@@ -456,8 +457,11 @@ private {
                     foreach(binding; bindings) {
                         Node target = binding.getTarget().node;
                         auto pair = incGetFlipPairFor(target);
-                        auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), true);
-                        autoFlipBinding(targetBinding, binding, cParamPoint, 0);
+                        auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), targetBindings is null);
+                        if (targetBindings !is null)
+                            autoFlipBinding(binding, targetBinding, cParamPoint, 0);
+                        else
+                            autoFlipBinding(targetBinding, binding, cParamPoint, 0);
                     }
                     action.updateNewState();
                     incActionPush(action);
@@ -470,8 +474,11 @@ private {
                     foreach(binding; bindings) {
                         Node target = binding.getTarget().node;
                         auto pair = incGetFlipPairFor(target);
-                        auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), true);
-                        autoFlipBinding(targetBinding, binding, cParamPoint, 1);
+                        auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), targetBindings is null);
+                        if (targetBindings !is null)
+                            autoFlipBinding(binding, targetBinding, cParamPoint, 1);
+                        else
+                            autoFlipBinding(targetBinding, binding, cParamPoint, 1);
                     }
                     action.updateNewState();
                     incActionPush(action);
@@ -484,8 +491,11 @@ private {
                     foreach(binding; bindings) {
                         Node target = binding.getTarget().node;
                         auto pair = incGetFlipPairFor(target);
-                        auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), true);
-                        autoFlipBinding(targetBinding, binding, cParamPoint, -1);
+                        auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), targetBindings is null);
+                        if (targetBindings !is null)
+                            autoFlipBinding(binding, targetBinding, cParamPoint, -1);
+                        else
+                            autoFlipBinding(targetBinding, binding, cParamPoint, -1);
                     }
                     action.updateNewState();
                     incActionPush(action);
@@ -501,8 +511,11 @@ private {
                 foreach(binding; bindings) {
                     Node target = binding.getTarget().node;
                     auto pair = incGetFlipPairFor(target);
-                    auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), true);
-                    autoFlipBinding(targetBinding, binding, cParamPoint, 0);
+                    auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), targetBindings is null);
+                    if (targetBindings !is null)
+                        autoFlipBinding(binding, targetBinding, cParamPoint, 0);
+                    else
+                        autoFlipBinding(targetBinding, binding, cParamPoint, 0);
                 }
                 action.updateNewState();
                 incActionPush(action);
@@ -599,7 +612,7 @@ private {
                                 incViewportNodeDeformNotifyParamValueChanged();
                             }
 
-                            keypointActions(param, cSelectedBindings.values);
+                            keypointActions(param, null, cSelectedBindings.values);
 
                             if (igBeginMenu(__("Interpolation Mode"), true)) {
                                 if (igMenuItem(__("Nearest"), "", false, true)) {
@@ -884,7 +897,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
             // Popup for rightclicking the controller
             if (igBeginPopup("###ControlPopup")) {
                 if (incArmedParameter() == param) {
-                    keypointActions(param, param.bindings);
+                    keypointActions(param, param.bindings, null);
                 }
                 igEndPopup();
             }
