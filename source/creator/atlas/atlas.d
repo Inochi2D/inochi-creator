@@ -208,6 +208,7 @@ public:
                                   atlasArea.z-(padding*2)-textureStartOffset.x - textureEndOffset.x, atlasArea.w-(padding*2)-textureStartOffset.y - textureEndOffset.y);
                 mappings[p.uuid] = rect(atlasArea.x+padding, atlasArea.y+padding, atlasArea.z-padding*2, atlasArea.w-padding*2);
                 renderToTexture(texture, where, uvRect);
+                inBlendModeBarrier();
             }
         }
         return true;
@@ -217,6 +218,7 @@ public:
         if (texture && atlasIdx < textures.length) {
             setCanvas(textures[atlasIdx]);
             renderToTexture(texture, where, uvs, blendMode, opacity);
+            inBlendModeBarrier();
         }
     }
 
