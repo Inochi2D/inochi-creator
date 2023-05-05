@@ -289,6 +289,9 @@ protected:
                                             
                                     // Linear Dodge blending mode
                                     if (igSelectable(__("Linear Dodge"), settings.decorateWatermarkBlendMode == BlendMode.LinearDodge)) this.setBlending(BlendMode.LinearDodge);
+                    
+                                    // Add (Glow) blending mode
+                                    if (igSelectable(__("Add (Glow)"), settings.decorateWatermarkBlendMode == BlendMode.AddGlow)) this.setBlending(BlendMode.AddGlow);
                                             
                                     // Color Burn blending mode
                                     if (igSelectable(__("Color Burn"), settings.decorateWatermarkBlendMode == BlendMode.ColorBurn)) this.setBlending(BlendMode.ColorBurn);
