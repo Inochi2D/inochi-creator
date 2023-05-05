@@ -7,7 +7,7 @@ dependency "inochi2d" version="~>0.8.0"
 dependency "tinyfiledialogs" version="~>0.10.1"
 dependency "facetrack-d" version="~>0.7.6"
 dependency "bindbc-sdl" version="~>1.1.2"
-dependency "bindbc-imgui" version="~>0.7.0"
+dependency "i2d-imgui" version="~>0.8.0"
 dependency "i18n-d" version="~>1.0.2"
 dependency "psd-d" version="~>0.6.1"
 dependency "inmath" version="~>1.0.5"
@@ -16,7 +16,7 @@ targetPath "out/"
 workingDirectory "out/"
 dflags "-mscrtlib=msvcrt" platform="windows-ldc"
 lflags "-rpath=$$ORIGIN" platform="linux"
-versions "GL_32" "USE_SDL2" "USE_GL" "SDL_208" "USE_OpenGL3" "UseUIScaling"
+versions "GL_32" "USE_SDL2" "SDL_208" "UseUIScaling"
 stringImportPaths "res/" "./"
 
 
@@ -33,7 +33,7 @@ configuration "barebones" {
 // Metadata generation
 configuration "meta" {
 	targetType "none"
-	preGenerateCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
+	preGenerateCommands "dub run -y gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
 	preGenerateCommands "rc.exe /v res\\inochi-creator.rc" platform="windows"
 }
 
