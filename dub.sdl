@@ -24,7 +24,7 @@ stringImportPaths "res/" "./"
 configuration "barebones" {
 	platforms "linux"
 	targetType "executable"
-	subConfiguration "bindbc-imgui" "static_dynamicCRT"
+	subConfiguration "i2d-imgui" "static_dynamicCRT"
 	copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/OpenDyslexic-LICENSE" "LICENSE"
 	
 	dependency "dportals" version="~>0.1.0"
@@ -42,7 +42,7 @@ configuration "linux-full" {
 
 	platforms "linux"
 	targetType "executable"
-	subConfiguration "bindbc-imgui" "static_dynamicCRT"
+	subConfiguration "i2d-imgui" "static_dynamicCRT"
 	versions "InBranding"
 	
 	dependency "dportals" version="~>0.1.0"
@@ -53,7 +53,7 @@ configuration "osx-full" {
 	platforms "osx"
 	targetType "executable"
 	targetPath "out/Inochi Creator.app/Contents/MacOS"
-	subConfiguration "bindbc-imgui" "dynamic_dynamicCRT"
+	subConfiguration "i2d-imgui" "dynamic_dynamicCRT"
 	dflags "-force-dwarf-frame-section=false"
 	lflags "-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
 	versions "InBranding"
@@ -63,7 +63,7 @@ configuration "osx-full" {
 configuration "win32-full" {
 	platforms "windows"
 	targetType "executable"
-	subConfiguration "bindbc-imgui" "static_staticCRT"
+	subConfiguration "i2d-imgui" "static_staticCRT"
 	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows-dmd"
 	sourceFiles "res\\inochi-creator.res"
 	versions "InBranding"
@@ -75,7 +75,7 @@ configuration "linux-nightly" {
 
 	platforms "linux"
 	targetType "executable"
-	subConfiguration "bindbc-imgui" "static_dynamicCRT"
+	subConfiguration "i2d-imgui" "static_dynamicCRT"
 	versions "InBranding" "InNightly"
 	
 	dependency "dportals" version="~>0.1.0"
@@ -86,7 +86,7 @@ configuration "osx-nightly" {
 	platforms "osx"
 	targetType "executable"
 	targetPath "out/Inochi Creator.app/Contents/MacOS"
-	subConfiguration "bindbc-imgui" "dynamic_dynamicCRT"
+	subConfiguration "i2d-imgui" "dynamic_dynamicCRT"
 	dflags "-force-dwarf-frame-section=false"
 	lflags "-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
 	versions "InBranding" "InNightly"
@@ -96,7 +96,7 @@ configuration "osx-nightly" {
 configuration "win32-nightly" {
 	platforms "windows"
 	targetType "executable"
-	subConfiguration "bindbc-imgui" "static_staticCRT"
+	subConfiguration "i2d-imgui" "static_staticCRT"
 	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows-dmd"
 	sourceFiles "res\\inochi-creator.res"
 	versions "InBranding" "InNightly"
