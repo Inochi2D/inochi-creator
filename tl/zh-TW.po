@@ -1956,28 +1956,3 @@ msgstr "Github 贊助"
 #: source/creator/windows/welcome.d:324
 msgid "Inochi Creator Start"
 msgstr "Inochi Creator 啟動"
-
-#, c-format
-#~ msgid "%s->%s chang cancelled"
-#~ msgstr "取消 %s 變更為 %s"
-
-#~ msgid "Automatically connects vertices"
-#~ msgstr "自動連接頂點"
-
-#~ msgid "Inochi Puppet"
-#~ msgstr "Inochi 模型"
-
-#~ msgid "Tutorial"
-#~ msgstr "教學"
-
-#~ msgid "General"
-#~ msgstr "一般"
-
-#~ msgid "Use software rendering"
-#~ msgstr "使用軟體渲染"
-
-#~ msgid "Undo/Redo History"
-#~ msgstr "復原 歷史"
-
-#~ msgid "Other"
-#~ msgstr "其他"
