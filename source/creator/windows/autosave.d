@@ -55,7 +55,6 @@ protected:
             if (igButton(__("Discard"), ImVec2(64, 24))) {
                 incOpenProject(projectPath, "");
                 this.close();
-                incPopWelcomeWindow();
             }
             igSameLine(0, 0);
 
@@ -64,7 +63,6 @@ protected:
                 auto entries = currentBackups(backupDir);
                 incOpenProject(projectPath, entries[$-1]);
                 this.close();
-                incPopWelcomeWindow();
             }
         }
         igEndChild();

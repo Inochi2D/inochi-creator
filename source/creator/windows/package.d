@@ -223,9 +223,11 @@ void incPopWindowListAll() {
     Pops a window
 */
 void incPopWindow() {
-    windowStack[$-1].onClose();
-    windowStack.length--;
-    if (windowStack.length > 0) windowStack[$-1].restore();
+    if (windowStack.length > 0) {
+        windowStack[$-1].onClose();
+        windowStack.length--;
+        windowStack[$-1].restore();
+    }
 }
 
 /**
@@ -261,10 +263,12 @@ Window incGetTopWindow() {
 */
 void incPopWelcomeWindow() {
     import std.algorithm.mutation : remove;
-    foreach(i; 0..windowStack.length) {
-        if (auto ww = cast(WelcomeWindow)windowStack[i]) {
-            windowStack = windowStack.remove(i);
-            return;
+    if (windowStack) {
+        foreach(i; 0..windowStack.length) {
+            if (auto ww = cast(WelcomeWindow)windowStack[i]) {
+                windowStack = windowStack.remove(i);
+                return;
+            }
         }
     }
 }
