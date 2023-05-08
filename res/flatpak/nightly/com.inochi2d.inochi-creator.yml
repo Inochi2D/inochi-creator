@@ -52,7 +52,7 @@ modules:
 
     sources:
       - type: dir
-        path: ../.. # The root of the Inochi Creator repo
+        path: ../../.. # The root of the Inochi Creator repo
 
   - name: Metadata
     buildsystem: simple

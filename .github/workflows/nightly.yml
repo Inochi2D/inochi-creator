@@ -254,7 +254,7 @@ jobs:
       options: --privileged
 
     env:
-      MANIFEST_PATH: flatpak-res/nightly/com.inochi2d.inochi-creator.yml
+      MANIFEST_PATH: res/flatpak/nightly/com.inochi2d.inochi-creator.yml
       FLATPAK_BRANCH: nightly
       FLATPAK_BUILD_DIR: build-dir
       FLATPAK_BUILD_REPO: build-repo
