@@ -31,8 +31,8 @@ jobs:
         # Build translations
         mkdir otl/
         
-        sudo chmod +x gentl.sh
-        ./gentl.sh
+        sudo chmod +x ./build-aux/gentl.sh
+        ./build-aux/gentl.sh
 
         cp out/* otl/
 
@@ -58,8 +58,8 @@ jobs:
 
     - name: 'Generate i18n'
       run: |
-        sudo chmod +x gentl.sh
-        ./gentl.sh
+        sudo chmod +x ./build-aux/gentl.sh
+        ./build-aux/gentl.sh
       
     - name: "Clone dependencies & set versions"
       run: |
@@ -193,8 +193,8 @@ jobs:
 
     - name: 'Generate i18n'
       run: |
-        sudo chmod +x gentl.sh
-        ./gentl.sh
+        sudo chmod +x ./build-aux/gentl.sh
+        ./build-aux/gentl.sh
       
     - name: "Clone dependencies & set versions"
       run: |
@@ -234,11 +234,11 @@ jobs:
         # Cleanup and bundle
         echo "Cleaning up..."
         rm "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
-        ./osxbundle.sh
+        ./build-aux/osx/osxbundle.sh
 
     - name: 'Build DMG'
       run: |
-        ./gendmg.sh
+        ./build-aux/osx/gendmg.sh
 
     - name: Release to nightly tag
       uses: softprops/action-gh-release@v1
@@ -254,7 +254,7 @@ jobs:
       options: --privileged
 
     env:
-      MANIFEST_PATH: res/flatpak/nightly/com.inochi2d.inochi-creator.yml
+      MANIFEST_PATH: build-aux/flatpak/nightly/com.inochi2d.inochi-creator.yml
       FLATPAK_BRANCH: nightly
       FLATPAK_BUILD_DIR: build-dir
       FLATPAK_BUILD_REPO: build-repo
