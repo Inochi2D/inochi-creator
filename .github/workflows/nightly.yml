@@ -335,3 +335,99 @@ jobs:
         files: |
           ${{ env.FLATPAK_BUNDLE }}.flatpak
 
+  #TODO: Setup result packages and index repository
+  publish-flatpak-oci:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: build-flatpak
+
+    env:
+      APP_ID: com.inochi2d.inochi-creator
+      FLATPAK_BUNDLE: inochi-creator
+      FLATPAK_BRANCH: nightly
+      #FIXME: Set this to the repository
+      INDEX_GITHUB_USERNAME: 
+      INDEX_REPOSITORY_NAME: 
+      FLATPAK_BUILD_REPO: build-repo
+
+    steps:
+    - name: "Check if Auth Token exists"
+      id: check-token 
+      env: 
+          secret_token: ${{ secrets.PAT }}
+      if: ${{ env.secret_token != '' }}
+      run: |
+        echo "has-token=true" >> $GITHUB_OUTPUT
+
+    - if: steps.check-token.outputs.has-token
+      uses: actions/checkout@v2
+
+    - name: Install flatpak and libcontainers tools
+      if: steps.check-token.outputs.has-token
+      run: |
+        set -e
+        . /etc/os-release
+        sudo apt install -y skopeo flatpak jq
+
+    - name: Download flatpak repo
+      if: steps.check-token.outputs.has-token
+      uses: actions/download-artifact@v1
+      with:
+        name: ${{ env.FLATPAK_BUILD_REPO }}
+
+    - name: Create OCI bundle
+      if: steps.check-token.outputs.has-token
+      run: |
+        set -e
+        mkdir -p ${FLATPAK_BUILD_REPO}/{extensions,refs/{mirrors,remotes},state,tmp/cache}
+        flatpak build-bundle \
+          --oci \
+          --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo \
+          ${FLATPAK_BUILD_REPO} ${FLATPAK_BUNDLE} ${APP_ID} ${FLATPAK_BRANCH}
+
+    - name: Publish OCI image
+      if: steps.check-token.outputs.has-token
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT }}
+        REGISTRY_AUTH_FILE: /tmp/auth.json
+      run: |
+        export IMAGE_REPOSITORY=$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')
+        set -e
+        skopeo login --username "${{ github.actor }}" --password-stdin ghcr.io <<<$GITHUB_TOKEN
+        skopeo copy \
+          oci:${FLATPAK_BUNDLE} \
+          docker://ghcr.io/${IMAGE_REPOSITORY}:$FLATPAK_BRANCH
+
+    - name: Update static index
+      if: steps.check-token.outputs.has-token
+      env:
+        REGISTRY_AUTH_FILE: /tmp/auth.json
+      run: |
+        export IMAGE_REPOSITORY=$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')
+        export DOCKER="$(skopeo inspect docker://ghcr.io/$IMAGE_REPOSITORY:$FLATPAK_BRANCH | jq --arg github_repository "$GITHUB_REPOSITORY" '. as $img | { "Name": $github_repository, "Images": [$img] }')"
+        set -e
+        git clone -b gh-pages https://github.com/$INDEX_GITHUB_USERNAME/$INDEX_REPOSITORY_NAME.git gh-pages
+        echo '{"Registry": "https://ghcr.io/","Results": []}' | jq --argjson docker "$DOCKER" '.Results += [ $docker ]' > ./gh-pages/index/static
+
+    - name: Check for changes
+      if: steps.check-token.outputs.has-token
+      id: is-updated 
+      run: |
+        set -x
+        git -C ./gh-pages status -s -uno
+        cat gh-pages/index/static
+        # Don't let the file be empty
+        [ ! -s ./gh-pages/index/static ] || [ -z "$(git -C ./gh-pages status -s -uno)" ] || echo "updated=true" >> $GITHUB_OUTPUT
+
+    - name: Push to repository
+      if: steps.is-updated.outputs.updated
+      uses: cpina/github-action-push-to-another-repository@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.PAT }}
+      with:
+        source-directory: 'gh-pages'
+        destination-github-username: ${{ env.INDEX_GITHUB_USERNAME }}
+        destination-repository-name: ${{ env.INDEX_REPOSITORY_NAME }}
+        user-email: github-actions[bot]@users.noreply.github.com
+        commit-message: Update index
+        target-branch: gh-pages
