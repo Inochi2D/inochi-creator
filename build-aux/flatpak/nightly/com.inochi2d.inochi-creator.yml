@@ -69,8 +69,5 @@ modules:
         url: https://github.com/Inochi2D/branding.git
         commit: a412602d346ba69c63237217ae286112e300927d
 
-      - type: file
-        path: inochi-creator.desktop
-
-      - type: file
-        path: com.inochi2d.inochi-creator.metainfo.xml
+      - type: dir
+        path: ../../../res/flatpak/nightly/
