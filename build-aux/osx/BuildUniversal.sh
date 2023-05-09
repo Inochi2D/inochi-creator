@@ -19,4 +19,4 @@ lipo -info "out/Inochi Creator.app/Contents/MacOS/inochi-creator"
 # Cleanup and bundle
 echo "Cleaning up..."
 rm "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
-./osxbundle.sh
+./build-aux/osx/osxbundle.sh
