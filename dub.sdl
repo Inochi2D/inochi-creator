@@ -34,7 +34,7 @@ configuration "barebones" {
 configuration "meta" {
 	targetType "none"
 	preGenerateCommands "dub run -y gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
-	preGenerateCommands "rc.exe /v res\\inochi-creator.rc" platform="windows"
+	preGenerateCommands "rc.exe /v build-aux\\windows\\inochi-creator.rc" platform="windows"
 }
 
 // Linux build
@@ -65,9 +65,8 @@ configuration "win32-full" {
 	targetType "executable"
 	subConfiguration "i2d-imgui" "static_staticCRT"
 	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows-dmd"
-	sourceFiles "res\\inochi-creator.res"
+	sourceFiles "build-aux\\windows\\inochi-creator.res"
 	versions "InBranding"
-	preBuildCommands "rc.exe /v res\\inochi-creator.rc"
 }
 
 // Linux nightly build
@@ -98,6 +97,6 @@ configuration "win32-nightly" {
 	targetType "executable"
 	subConfiguration "i2d-imgui" "static_staticCRT"
 	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows-dmd"
-	sourceFiles "res\\inochi-creator.res"
+	sourceFiles "build-aux\\windows\\inochi-creator.res"
 	versions "InBranding" "InNightly"
 }
