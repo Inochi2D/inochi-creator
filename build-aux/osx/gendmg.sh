@@ -7,7 +7,6 @@ if [ -d "out/Inochi Creator.app" ]; then
         rm "out/$DMGFILENAME"
     fi
 
-    PREVPWD=$PWD
     cd out/
     echo "Building $DMGFILENAME..."
 
@@ -37,7 +36,7 @@ if [ -d "out/Inochi Creator.app" ]; then
     rm LICENSE
 
     echo "DMG generated as $PWD/$DMGFILENAME"
-    cd $PREVPWD
+    cd ..
 else
     echo "Could not find Inochi Creator for packaging..."
 fi
