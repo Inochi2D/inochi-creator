@@ -38,7 +38,7 @@ modules:
 
       append-path: /usr/lib/sdk/ldc/bin
     build-commands:
-      - chmod +x ./build-aux/gentl.sh; ./build-aux/gentl.sh
+      - chmod +x ./gentl.sh; ./gentl.sh
       - git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules;
         git clone https://github.com/Inochi2D/inochi2d.git;
         git clone https://github.com/Inochi2D/dcv-i2d;

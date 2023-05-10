@@ -31,8 +31,8 @@ jobs:
         # Build translations
         mkdir otl/
         
-        sudo chmod +x ./build-aux/gentl.sh
-        ./build-aux/gentl.sh
+        sudo chmod +x ./gentl.sh
+        ./gentl.sh
 
         cp out/* otl/
 
@@ -58,8 +58,8 @@ jobs:
 
     - name: 'Generate i18n'
       run: |
-        sudo chmod +x ./build-aux/gentl.sh
-        ./build-aux/gentl.sh
+        sudo chmod +x ./gentl.sh
+        ./gentl.sh
       
     - name: "Clone dependencies & set versions"
       run: |
@@ -193,8 +193,8 @@ jobs:
 
     - name: 'Generate i18n'
       run: |
-        sudo chmod +x ./build-aux/gentl.sh
-        ./build-aux/gentl.sh
+        sudo chmod +x ./gentl.sh
+        ./gentl.sh
       
     - name: "Clone dependencies & set versions"
       run: |
