@@ -1,3 +1,6 @@
+# Generate version files...
+dub build --config=meta
+
 # First build ARM64 version...
 echo "Building arm64 binary..."
 dub build --build=release --config=osx-full --arch=arm64-apple-macos
