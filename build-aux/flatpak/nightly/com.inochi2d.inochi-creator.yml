@@ -70,4 +70,4 @@ modules:
         commit: a412602d346ba69c63237217ae286112e300927d
 
       - type: dir
-        path: ../../../res/flatpak/nightly/
+        path: ../../linux/flatpak/nightly/
