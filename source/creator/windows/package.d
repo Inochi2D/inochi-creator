@@ -226,7 +226,10 @@ void incPopWindow() {
     if (windowStack.length > 0) {
         windowStack[$-1].onClose();
         windowStack.length--;
-        windowStack[$-1].restore();
+
+        // The size of the stack has changed, make sure we
+        // have anything to restore
+        if (windowStack.length > 0) windowStack[$-1].restore();
     }
 }
 
