@@ -813,6 +813,9 @@ void incInspectorModelPart(Part node) {
             // Linear Dodge blending mode
             if (igSelectable(__("Linear Dodge"), node.blendingMode == BlendMode.LinearDodge)) node.blendingMode = BlendMode.LinearDodge;
                     
+            // Add (Glow) blending mode
+            if (igSelectable(__("Add (Glow)"), node.blendingMode == BlendMode.AddGlow)) node.blendingMode = BlendMode.AddGlow;
+                    
             // Color Burn blending mode
             if (igSelectable(__("Color Burn"), node.blendingMode == BlendMode.ColorBurn)) node.blendingMode = BlendMode.ColorBurn;
                     
@@ -1021,6 +1024,9 @@ void incInspectorModelComposite(Composite node) {
                     
             // Linear Dodge blending mode
             if (igSelectable(__("Linear Dodge"), node.blendingMode == BlendMode.LinearDodge)) node.blendingMode = BlendMode.LinearDodge;
+                    
+            // Add (Glow) blending mode
+            if (igSelectable(__("Add (Glow)"), node.blendingMode == BlendMode.AddGlow)) node.blendingMode = BlendMode.AddGlow;
                     
             // Color Burn blending mode
             if (igSelectable(__("Color Burn"), node.blendingMode == BlendMode.ColorBurn)) node.blendingMode = BlendMode.ColorBurn;

@@ -1,3 +1,6 @@
+# Generate version files...
+dub build --config=meta
+
 # First build ARM64 version...
 echo "Building arm64 binary..."
 dub build --build=release --config=osx-full --arch=arm64-apple-macos
@@ -19,4 +22,4 @@ lipo -info "out/Inochi Creator.app/Contents/MacOS/inochi-creator"
 # Cleanup and bundle
 echo "Cleaning up..."
 rm "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
-./osxbundle.sh
+./build-aux/osx/osxbundle.sh

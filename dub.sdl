@@ -7,7 +7,7 @@ dependency "inochi2d" version="~>0.8.0"
 dependency "tinyfiledialogs" version="~>0.10.1"
 dependency "facetrack-d" version="~>0.7.6"
 dependency "bindbc-sdl" version="~>1.1.2"
-dependency "bindbc-imgui" version="~>0.7.0"
+dependency "i2d-imgui" version="~>0.8.0"
 dependency "i18n-d" version="~>1.0.2"
 dependency "psd-d" version="~>0.6.1"
 dependency "inmath" version="~>1.0.5"
@@ -16,7 +16,7 @@ targetPath "out/"
 workingDirectory "out/"
 dflags "-mscrtlib=msvcrt" platform="windows-ldc"
 lflags "-rpath=$$ORIGIN" platform="linux"
-versions "GL_32" "USE_SDL2" "USE_GL" "SDL_208" "USE_OpenGL3" "UseUIScaling"
+versions "GL_32" "USE_SDL2" "SDL_208" "UseUIScaling"
 stringImportPaths "res/" "./"
 
 
@@ -24,7 +24,7 @@ stringImportPaths "res/" "./"
 configuration "barebones" {
 	platforms "linux"
 	targetType "executable"
-	subConfiguration "bindbc-imgui" "static_dynamicCRT"
+	subConfiguration "i2d-imgui" "static_dynamicCRT"
 	copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/OpenDyslexic-LICENSE" "LICENSE"
 	
 	dependency "dportals" version="~>0.1.0"
@@ -33,8 +33,8 @@ configuration "barebones" {
 // Metadata generation
 configuration "meta" {
 	targetType "none"
-	preGenerateCommands "dub run gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
-	preGenerateCommands "rc.exe /v res\\inochi-creator.rc" platform="windows"
+	preGenerateCommands "dub run -y gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
+	preGenerateCommands "rc.exe /v build-aux\\windows\\inochi-creator.rc" platform="windows"
 }
 
 // Linux build
@@ -42,7 +42,7 @@ configuration "linux-full" {
 
 	platforms "linux"
 	targetType "executable"
-	subConfiguration "bindbc-imgui" "static_dynamicCRT"
+	subConfiguration "i2d-imgui" "static_dynamicCRT"
 	versions "InBranding"
 	
 	dependency "dportals" version="~>0.1.0"
@@ -53,7 +53,7 @@ configuration "osx-full" {
 	platforms "osx"
 	targetType "executable"
 	targetPath "out/Inochi Creator.app/Contents/MacOS"
-	subConfiguration "bindbc-imgui" "dynamic_dynamicCRT"
+	subConfiguration "i2d-imgui" "dynamic_dynamicCRT"
 	dflags "-force-dwarf-frame-section=false"
 	lflags "-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
 	versions "InBranding"
@@ -63,11 +63,10 @@ configuration "osx-full" {
 configuration "win32-full" {
 	platforms "windows"
 	targetType "executable"
-	subConfiguration "bindbc-imgui" "static_staticCRT"
+	subConfiguration "i2d-imgui" "static_staticCRT"
 	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows-dmd"
-	sourceFiles "res\\inochi-creator.res"
+	sourceFiles "build-aux\\windows\\inochi-creator.res"
 	versions "InBranding"
-	preBuildCommands "rc.exe /v res\\inochi-creator.rc"
 }
 
 // Linux nightly build
@@ -75,7 +74,7 @@ configuration "linux-nightly" {
 
 	platforms "linux"
 	targetType "executable"
-	subConfiguration "bindbc-imgui" "static_dynamicCRT"
+	subConfiguration "i2d-imgui" "static_dynamicCRT"
 	versions "InBranding" "InNightly"
 	
 	dependency "dportals" version="~>0.1.0"
@@ -86,7 +85,7 @@ configuration "osx-nightly" {
 	platforms "osx"
 	targetType "executable"
 	targetPath "out/Inochi Creator.app/Contents/MacOS"
-	subConfiguration "bindbc-imgui" "dynamic_dynamicCRT"
+	subConfiguration "i2d-imgui" "dynamic_dynamicCRT"
 	dflags "-force-dwarf-frame-section=false"
 	lflags "-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
 	versions "InBranding" "InNightly"
@@ -96,8 +95,8 @@ configuration "osx-nightly" {
 configuration "win32-nightly" {
 	platforms "windows"
 	targetType "executable"
-	subConfiguration "bindbc-imgui" "static_staticCRT"
+	subConfiguration "i2d-imgui" "static_staticCRT"
 	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows-dmd"
-	sourceFiles "res\\inochi-creator.res"
+	sourceFiles "build-aux\\windows\\inochi-creator.res"
 	versions "InBranding" "InNightly"
 }

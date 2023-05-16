@@ -2687,12 +2687,3 @@ msgstr "GitHub Sponsors"
 #: source/creator/windows/welcome.d:324
 msgid "Inochi Creator Start"
 msgstr "Inochi Creator Start"
-
-#~ msgid "Automatically connects vertices"
-#~ msgstr "Forbinder hjørner automatisk"
-
-#~ msgid "Tutorial"
-#~ msgstr "Tutorial"
-
-#~ msgid "Inochi Puppet"
-#~ msgstr "Inochi Puppet"

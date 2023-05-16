@@ -7,7 +7,6 @@ if [ -d "out/Inochi Creator.app" ]; then
         rm "out/$DMGFILENAME"
     fi
 
-    PREVPWD=$PWD
     cd out/
     echo "Building $DMGFILENAME..."
 
@@ -25,7 +24,7 @@ if [ -d "out/Inochi Creator.app" ]; then
     create-dmg \
         --volname "$DMGTITLE" \
         --volicon "InochiCreator.icns" \
-        --background "../res/dmgbg.png" \
+        --background "../build-aux/osx/dmgbg.png" \
         --window-size 800 600 \
         --icon "Inochi Creator.app" 200 250 \
         --hide-extension "Inochi Creator.app" \
@@ -37,7 +36,8 @@ if [ -d "out/Inochi Creator.app" ]; then
     rm LICENSE
 
     echo "DMG generated as $PWD/$DMGFILENAME"
-    cd $PREVPWD
+    cd ..
 else
     echo "Could not find Inochi Creator for packaging..."
+    exit 1
 fi

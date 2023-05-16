@@ -17,7 +17,7 @@
   [Asahi Lina](https://twitter.com/LinaAsahi)
   [seagetch](https://twitter.com/seagetch)
   [carbotaniuman](https://github.com/carbotaniuman)
-  [Grillo](https://twitter.com/Grillo_delmal)
+  [Grillo](https://vt.social/@grillo_delmal)
   [Aki-nyan](https://twitter.com/lethalbit)
   [PanzerKern](https://github.com/pankern)
 

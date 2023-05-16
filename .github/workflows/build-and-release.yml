@@ -33,7 +33,7 @@ jobs:
         # Build translations
         mkdir otl/
         
-        sudo chmod +x gentl.sh
+        sudo chmod +x ./gentl.sh
         ./gentl.sh
 
         cp out/* otl/
@@ -60,15 +60,15 @@ jobs:
 
     - name: 'Generate i18n'
       run: |
-        sudo chmod +x gentl.sh
+        sudo chmod +x ./gentl.sh
         ./gentl.sh
       
     - name: "Clone dependencies & set versions"
       run: |
-        git clone https://github.com/Inochi2D/bindbc-imgui.git --recurse-submodules
+        git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules
         git clone https://github.com/Inochi2D/inochi2d.git
         git clone https://github.com/Inochi2D/dcv-i2d
-        dub add-local bindbc-imgui/ "0.7.0"
+        dub add-local i2d-imgui/ "0.8.0"
         dub add-local inochi2d/ "0.8.0"
         dub add-local dcv-i2d/ "0.3.0"
 
@@ -122,10 +122,10 @@ jobs:
       
     - name: "Clone dependencies & set versions"
       run: |
-        git clone https://github.com/Inochi2D/bindbc-imgui.git --recurse-submodules
+        git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules
         git clone https://github.com/Inochi2D/inochi2d.git
         git clone https://github.com/Inochi2D/dcv-i2d
-        dub add-local bindbc-imgui/ "0.7.0"
+        dub add-local i2d-imgui/ "0.8.0"
         dub add-local inochi2d/ "0.8.0"
         dub add-local dcv-i2d/ "0.3.0"
 
@@ -229,15 +229,15 @@ jobs:
 
     - name: 'Generate i18n'
       run: |
-        sudo chmod +x gentl.sh
+        sudo chmod +x ./gentl.sh
         ./gentl.sh
       
     - name: "Clone dependencies & set versions"
       run: |
-        git clone https://github.com/Inochi2D/bindbc-imgui.git --recurse-submodules
+        git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules
         git clone https://github.com/Inochi2D/inochi2d.git
         git clone https://github.com/Inochi2D/dcv-i2d
-        dub add-local bindbc-imgui/ "0.7.0"
+        dub add-local i2d-imgui/ "0.8.0"
         dub add-local inochi2d/ "0.8.0"
         dub add-local dcv-i2d/ "0.3.0"
 
@@ -269,7 +269,7 @@ jobs:
         # Cleanup and bundle
         echo "Cleaning up..."
         rm "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
-        ./osxbundle.sh
+        ./build-aux/osx/osxbundle.sh
 
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
@@ -290,7 +290,7 @@ jobs:
 
     - name: 'Build DMG'
       run: |
-        ./gendmg.sh
+        ./build-aux/osx/gendmg.sh
 
     - name: Release
       uses: softprops/action-gh-release@v1

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="5495a276-0643-4197-876c-bdefcae95fd8" Name="Inochi Creator" Language="1033" Version="0.8.1" Manufacturer="Inochi2D Project" UpgradeCode="545ff6a4-c555-46c2-9d67-f77896b5de9b">
+		<Package Description="Inochi Creator Installer" InstallerVersion="200" Compressed="yes" Platform="x64" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+
+		<Feature Id="InochiCreatorFeatureGroup" Title="Inochi Creator" Description="Inochi Creator" Level="1">
+			
+			<Feature Id="InochiCreatorFeature" Title="Main Files" Description="The core Inochi Creator files" Level="1" AllowAdvertise="no" Absent="disallow">
+				<ComponentGroupRef Id="ApplicationFiles" Primary="yes" />
+				<ComponentRef Id='ProgramMenuDir' />
+			</Feature>
+
+			<Feature Id="InochiCreatorAssocFeature" Title="File Association" Description="Associate .inx files with Inochi Creator" Level="1">
+				<ComponentRef Id="FileAssoc" />
+			</Feature>
+
+			<Feature Id="InochiCreatorTranslationFeature" Title="Translations" Description="Translations for Inochi Creator" Level="1">
+				<ComponentGroupRef Id="Translations" />
+			</Feature>
+
+			<Feature Id="InochiCreatorDesktopiconFeature" Title="Desktop Icon" Description="Create Desktop Icon" Level="1">
+				<ComponentRef Id='DesktopIcon' />
+			</Feature>
+			
+		</Feature>
+
+		<!--<Feature Id="ExampleModelFeature" Title="Example Models" Description="Example models" Level="1">
+			<ComponentGroupRef Id="ExampleModels" />
+		</Feature>-->
+
+		<UIRef Id="WixUI_FeatureTree" />
+		<UIRef Id="WixUI_ErrorProgressText" />
+
+
+		<WixVariable Id="WixUILicenseRtf" Value="res\LICENSE.rtf" />
+		<WixVariable Id="WixUIBannerBmp" Value="res\banner.bmp" />
+		<WixVariable Id="WixUIDialogBmp" Value="res\dialog.bmp" />
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFiles64Folder">
+				<Directory Id="INSTALLFOLDER" Name="Inochi Creator">
+					<Directory Id="i18n" Name="i18n" />
+				</Directory>
+			</Directory>
+
+
+			<Directory Id="ProgramMenuFolder" Name="Programs">
+				<Directory Id="ProgramMenuDir" Name="Inochi Creator">
+					<Component Id="ProgramMenuDir" Guid="1a6ac99b-9a71-4d1e-9d60-2df7c8ab5701">
+						<RemoveFolder Id='ProgramMenuDir' On='uninstall' />
+						<RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]' Type='string' Value='' KeyPath='yes' />
+					</Component>
+				</Directory>
+			</Directory>
+
+			<Directory Id="DesktopFolder" Name="Desktop" />
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<Icon Id="CreatorIcon.ico" SourceFile="..\..\..\build-aux\windows\inochi-creator.ico" />
+
+		<!-- Inochi Creator main app -->
+		<ComponentGroup Id="ApplicationFiles" Directory="INSTALLFOLDER">
+
+			<Component Id="InochiCreator" Win64="yes" Guid="1f5acf16-5f1d-491e-9102-2abcf5d631d4">
+				<File Id="CreatorEXE.exe" Name="inochi-creator.exe" Source="..\..\..\out\inochi-creator.exe" KeyPath="yes" />
+				
+				<!-- File Association for INX-->
+				<ProgId Id='InochiCreator.inx' Description='Inochi Creator Project File' Icon="CreatorEXE.exe">
+					<Extension Id='inx' ContentType='application/inx'>
+						<Verb Id='open' Command='Open' TargetFile='CreatorEXE.exe' Argument='"%1"' />
+					</Extension>
+				</ProgId>
+
+				<!-- Icons -->
+				<Shortcut Id="ProgramFilesCreator" Directory="ProgramMenuDir" Name="Inochi Creator" WorkingDirectory='INSTALLDIR' Icon="CreatorIcon.ico" IconIndex="0" Advertise="yes" />
+			</Component>
+
+			<Component Id="SDL2" Win64="yes" Guid="0cdcb63a-4c90-4f4e-9de7-667347840f54">
+				<File Name="SDL2.dll" Source="..\..\..\out\SDL2.dll" KeyPath="yes" />
+			</Component>
+
+			<Component Id="Freetype" Win64="yes" Guid="07ef8952-ba2b-4069-98e1-86ab0200702a">
+				<File Name="freetype.dll" Source="..\..\..\out\freetype.dll" KeyPath="yes" />
+			</Component>
+
+		</ComponentGroup>
+
+		<Component Id="FileAssoc" Win64="yes" Guid="*" Directory="INSTALLFOLDER">
+
+			<!-- App Paths to support Start,Run -> "myapp" -->
+			<RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\inochi-creator.exe" Value="[INSTALLFOLDER]inochi-creator.exe" Type="string" />
+			<RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\inochi-creator.exe" Name="Path" Value="[INSTALLFOLDER]" Type="string" />
+
+			<!-- Extend to the "open with" list + Win7 jump menu pinning  -->
+			<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\inochi-creator.exe\SupportedTypes" Name=".inx" Value="" Type="string" />
+			<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\inochi-creator.exe\shell\open" Name="FriendlyAppName" Value="Inochi Creator" Type="string" />
+			<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\Applications\inochi-creator.exe\shell\open\command" Value="&quot;[INSTALLFOLDER]inochi-creator.exe&quot; &quot;%1&quot;" Type="string" />
+
+			<!-- Add an 'Edit with Inochi Creator' to 'right click' even when not associated -->
+			<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\SystemFileAssociations\.inx\shell\edit.inochi-creator.exe" Value="Edit with Inochi Creator" Type="string" />
+			<RegistryValue Root="HKLM" Key="SOFTWARE\Classes\SystemFileAssociations\.inx\shell\edit.inochi-creator.exe\command" Value="&quot;[INSTALLFOLDER]inochi-creator.exe&quot; &quot;%1&quot;" Type="string" />
+		</Component>
+
+		<Component Id="DesktopIcon" Win64="yes" Guid="5495a276-0643-4197-876c-bdefcae95fd8" Directory="INSTALLFOLDER">
+			<RegistryValue Root="HKCU"
+						   Key="Software\Microsoft\InochiCreator"
+						   Name="installed"
+						   Type="integer"
+						   Value="1"
+						   KeyPath="yes" />
+			<Shortcut Id="DesktopCreator" Directory="DesktopFolder" Name="Inochi Creator" WorkingDirectory='INSTALLDIR' Icon="CreatorIcon.ico" IconIndex="0" Advertise="no" />
+		</Component>
+
+		<ComponentGroup Id="Translations" Directory="i18n">
+			<Component Id="TranslationFiles" Win64="yes" Guid="24c059e8-81cf-473d-b944-513410a2a9e0">
+				<CreateFolder Directory="i18n"/>
+				<File Id="Danish" Name="da.mo" Source="..\..\..\out\i18n\da.mo" KeyPath="yes" />
+				<File Id="German" Name="de_DE.mo" Source="..\..\..\out\i18n\de_DE.mo" />
+				<File Id="GermanFormal" Name="de_DE@formal.mo" Source="..\..\..\out\i18n\de_DE@formal.mo" />
+				<File Id="Spanish" Name="es.mo" Source="..\..\..\out\i18n\es.mo" />
+				<File Id="Italian" Name="it.mo" Source="..\..\..\out\i18n\it.mo" />
+				<File Id="Japanese" Name="ja.mo" Source="..\..\..\out\i18n\ja.mo" />
+				<File Id="ChineseCN" Name="zh-CN.mo" Source="..\..\..\out\i18n\zh-CN.mo" />
+				<File Id="ChineseTW" Name="zh-TW.mo" Source="..\..\..\out\i18n\zh-TW.mo" />
+			</Component>
+		</ComponentGroup>
+	
+		<!-- Example models -->
+		<!--<ComponentGroup Id="ExampleModels" Directory="INSTALLFOLDER">
+			TODO: Add a mechanism to make Inochi Creator be able to find them easily.
+		</ComponentGroup>-->
+	</Fragment>
+</Wix>

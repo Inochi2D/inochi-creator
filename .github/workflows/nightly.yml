@@ -31,7 +31,7 @@ jobs:
         # Build translations
         mkdir otl/
         
-        sudo chmod +x gentl.sh
+        sudo chmod +x ./gentl.sh
         ./gentl.sh
 
         cp out/* otl/
@@ -58,15 +58,15 @@ jobs:
 
     - name: 'Generate i18n'
       run: |
-        sudo chmod +x gentl.sh
+        sudo chmod +x ./gentl.sh
         ./gentl.sh
       
     - name: "Clone dependencies & set versions"
       run: |
-        git clone https://github.com/Inochi2D/bindbc-imgui.git --recurse-submodules
+        git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules
         git clone https://github.com/Inochi2D/inochi2d.git
         git clone https://github.com/Inochi2D/dcv-i2d
-        dub add-local bindbc-imgui/ "0.7.0"
+        dub add-local i2d-imgui/ "0.8.0"
         dub add-local inochi2d/ "0.8.0"
         dub add-local dcv-i2d/ "0.3.0"
 
@@ -113,10 +113,10 @@ jobs:
       
     - name: "Clone dependencies & set versions"
       run: |
-        git clone https://github.com/Inochi2D/bindbc-imgui.git --recurse-submodules
+        git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules
         git clone https://github.com/Inochi2D/inochi2d.git
         git clone https://github.com/Inochi2D/dcv-i2d
-        dub add-local bindbc-imgui/ "0.7.0"
+        dub add-local i2d-imgui/ "0.8.0"
         dub add-local inochi2d/ "0.8.0"
         dub add-local dcv-i2d/ "0.3.0"
 
@@ -193,15 +193,15 @@ jobs:
 
     - name: 'Generate i18n'
       run: |
-        sudo chmod +x gentl.sh
+        sudo chmod +x ./gentl.sh
         ./gentl.sh
       
     - name: "Clone dependencies & set versions"
       run: |
-        git clone https://github.com/Inochi2D/bindbc-imgui.git --recurse-submodules
+        git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules
         git clone https://github.com/Inochi2D/inochi2d.git
         git clone https://github.com/Inochi2D/dcv-i2d
-        dub add-local bindbc-imgui/ "0.7.0"
+        dub add-local i2d-imgui/ "0.8.0"
         dub add-local inochi2d/ "0.8.0"
         dub add-local dcv-i2d/ "0.3.0"
 
@@ -234,11 +234,11 @@ jobs:
         # Cleanup and bundle
         echo "Cleaning up..."
         rm "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
-        ./osxbundle.sh
+        ./build-aux/osx/osxbundle.sh
 
     - name: 'Build DMG'
       run: |
-        ./gendmg.sh
+        ./build-aux/osx/gendmg.sh
 
     - name: Release to nightly tag
       uses: softprops/action-gh-release@v1
@@ -246,3 +246,92 @@ jobs:
         name: 'Nightly Build'
         tag_name: nightly
         files: 'out/Install_Inochi_Creator.dmg'
+
+  build-flatpak:
+    runs-on: ubuntu-latest
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:freedesktop-22.08
+      options: --privileged
+
+    env:
+      MANIFEST_PATH: build-aux/flatpak/nightly/com.inochi2d.inochi-creator.yml
+      FLATPAK_BRANCH: nightly
+      FLATPAK_BUILD_DIR: build-dir
+      FLATPAK_BUILD_REPO: build-repo
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+
+    - name: Dump canonical manifest
+      run: |
+        set -e
+        flatpak-builder --show-manifest ${MANIFEST_PATH} > canonical-manifest.json
+
+    - name: Download flatpak SDK and sources
+      run: |
+        set -e
+        flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+        flatpak-builder --default-branch=${FLATPAK_BRANCH} --install-deps-from=flathub --install-deps-only --user /dev/null ${MANIFEST_PATH}
+        flatpak-builder --default-branch=${FLATPAK_BRANCH} --download-only /dev/null ${MANIFEST_PATH}
+
+    - name: Prime cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          .flatpak-builder/ccache
+        key: flatpak-builder-${{ hashFiles('canonical-manifest.json') }}
+        restore-keys: |
+          flatpak-builder-
+
+    - name: Build flatpak
+      run: |
+        set -e
+        flatpak-builder --default-branch=${FLATPAK_BRANCH} --ccache --repo=${FLATPAK_BUILD_REPO} ${FLATPAK_BUILD_DIR} ${MANIFEST_PATH}
+
+    - name: Upload flatpak repo
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.FLATPAK_BUILD_REPO }}
+        path: |
+          ${{ env.FLATPAK_BUILD_REPO }}
+          !${{ env.FLATPAK_BUILD_REPO }}/.lock
+
+  publish-flatpak-bundle:
+    runs-on: ubuntu-latest
+    needs: build-flatpak
+
+    env:
+      APP_ID: com.inochi2d.inochi-creator
+      FLATPAK_BUNDLE: inochi-creator
+      FLATPAK_BRANCH: nightly
+      FLATPAK_BUILD_REPO: build-repo
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install flatpak
+      run: |
+        set -e
+        sudo apt install -y flatpak
+
+    - name: Download flatpak repo
+      uses: actions/download-artifact@v1
+      with:
+        name: ${{ env.FLATPAK_BUILD_REPO }}
+
+    - name: Create flatpak bundle
+      run: |
+        set -e
+        mkdir -p ${FLATPAK_BUILD_REPO}/{extensions,refs/{mirrors,remotes},state,tmp/cache}
+        flatpak build-bundle --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo ${FLATPAK_BUILD_REPO} ${FLATPAK_BUNDLE}.flatpak ${APP_ID} ${FLATPAK_BRANCH}
+
+    - name: Release to nightly tag
+      uses: softprops/action-gh-release@v1
+      with:
+        name: 'Nightly Build'
+        tag_name: nightly
+        files: |
+          ${{ env.FLATPAK_BUNDLE }}.flatpak
+

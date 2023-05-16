@@ -163,6 +163,7 @@ void incAddPrevProject(string path) {
     Creates a new project
 */
 void incNewProject() {
+    incPopWelcomeWindow();
 
     // Release lockfile, etc. from prev project
     if (currProjectPath.length > 0) incReleaseLockfile();

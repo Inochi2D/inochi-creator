@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Inochi Creator", "Inochi Creator.wixproj", "{786D71C2-12CD-4D88-AAF6-7BC5BD9E6B87}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{786D71C2-12CD-4D88-AAF6-7BC5BD9E6B87}.Debug|x64.ActiveCfg = Debug|x86
+		{786D71C2-12CD-4D88-AAF6-7BC5BD9E6B87}.Debug|x64.Build.0 = Debug|x86
+		{786D71C2-12CD-4D88-AAF6-7BC5BD9E6B87}.Release|x64.ActiveCfg = Release|x86
+		{786D71C2-12CD-4D88-AAF6-7BC5BD9E6B87}.Release|x64.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D17F3A66-961D-4671-AAB5-B275495CCBEB}
+	EndGlobalSection
+EndGlobal

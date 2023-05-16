@@ -31,7 +31,6 @@ private {
     bool dbgShowStackTool;
 
     void fileNew() {
-        incPopWelcomeWindow();
         incNewProject();
     }
 
@@ -40,7 +39,6 @@ private {
             { ["*.inx"], "Inochi Creator Project (*.inx)" }
         ];
 
-        incPopWelcomeWindow();
         string file = incShowOpenDialog(filters, _("Open..."));
         if (file) incOpenProject(file);
     }
@@ -142,7 +140,6 @@ void incMainMenu() {
                             foreach(saveRecord; prevAutosaves) {
                                 auto autosavePath = saveRecord.autosavePath.baseName.toStringz;
                                 if (igMenuItem(autosavePath, "", false, true)) {
-                                    incPopWelcomeWindow();
                                     incOpenProject(
                                         saveRecord.mainsavePath,
                                         saveRecord.autosavePath
@@ -155,7 +152,6 @@ void incMainMenu() {
 
                         foreach(project; incGetPrevProjects) {
                             if (igMenuItem(project.baseName.toStringz, "", false, true)) {
-                                incPopWelcomeWindow();
                                 incOpenProject(project);
                             }
                             incTooltip(project);
@@ -185,7 +181,6 @@ void incMainMenu() {
 
                             string file = incShowOpenDialog(filters, _("Import..."));
                             if (file) {
-                                incPopWelcomeWindow();
                                 incImportINP(file);
                             }
                         }
@@ -194,7 +189,6 @@ void incMainMenu() {
                         if (igMenuItem(__("Image Folder"))) {
                             string folder = incShowOpenFolderDialog(_("Select a Folder..."));
                             if (folder) {
-                                incPopWelcomeWindow();
                                 incImportFolder(folder);
                             }
                         }
@@ -309,9 +303,6 @@ void incMainMenu() {
 
                     // Close Project option
                     if (igMenuItem(__("Close Project"))) {
-                        
-                        // Just in case...
-                        incPopWelcomeWindow();
 
                         // TODO: Check if changes were done to project and warn before
                         // creating new project

@@ -1,0 +1,109 @@
+name: ffmpeg
+
+# Add required libs to this file
+#modules:
+#  ffmpeg-libs.yml
+
+config-opts:
+  - --disable-stripping
+  - --disable-doc
+  - --disable-static
+  - --enable-shared
+  - --disable-everything
+  - --enable-ffplay
+  - --enable-ffprobe
+  - --enable-gnutls
+  - --enable-libaom
+  - --enable-libdav1d
+  - --enable-libfdk-aac
+  - --enable-libmp3lame
+  - --enable-libfontconfig
+  - --enable-libfreetype
+  - --enable-libopus
+  - --enable-libpulse
+  - --enable-libspeex
+  - --enable-libtheora
+  - --enable-libvorbis
+  - --enable-libvpx
+  - --enable-libwebp
+  - --enable-openal
+  - --enable-opengl
+  - --enable-sdl2
+  - --enable-vulkan
+  - --enable-zlib
+  - --enable-libv4l2
+  - --enable-libxcb
+  - --enable-vdpau
+  - --enable-vaapi
+  - --enable-pthreads
+  - --enable-libopenh264
+  - >-
+    --enable-hwaccel=
+    vp8_vaapi,mjpeg_vaapi,h263_vaapi,h264_vaapi,h264_vdpau,hevc_vaapi,
+    hevc_vdpau,mpeg4_vaapi,mpeg4_vdpau
+  - >-
+    --enable-parser=
+    aac,ac3,flac,mjpeg,mpegaudio,mpeg4video,opus,vp3,vp8,vp9,vorbis,hevc,
+    h263,h264,dca
+  - >-
+    --enable-muxer=
+    ac3,ass,flac,g722,gif,matroska,mp3,mpegvideo,rtp,ogg,opus,pcm_s16be,
+    pcm_s16le,wav,webm,asf,avi,h263,h264,hevc,mp4,rawvideo,apng,avif,image2
+  - >-
+    --enable-demuxer=
+    aac,ac3,ass,flac,g722,gif,image_jpeg_pipe,image_png_pipe,
+    image_webp_pipe,matroska,mjpeg,mov,mp3,mpegvideo,ogg,pcm_mulaw,rawvideo,
+    pcm_alaw,pcm_s16be,pcm_s16le,rtp,wav,ape,asf,avi,h263,h264,hevc,m4v,
+    mjpeg_2000,mp4,wav,xwma,apng
+  - >-
+    --enable-filter=
+    atempo,crop,scale,overlay,amix,amerge,aresample,format,aformat,fps,
+    transpose,pad
+  - >-
+    --enable-indev=
+    v4l2,xcbgrab
+  - >-
+    --enable-protocol=
+    crypto,file,pipe,rtp,srtp,rtsp,tcp,udp,unix,fd
+  # Audio codecs
+  - >-
+    --enable-encoder=
+    ac3,alac,flac,libfdk_aac,g723_1,mp2,libmp3lame,libopus,libspeex,
+    pcm_alaw,pcm_mulaw,pcm_f32le,pcm_s16be,pcm_s24be,pcm_s16le,
+    pcm_s24le,pcm_s32le,pcm_u8,tta,libvorbis,wavpack,wmav1,wmav2
+  - >-
+    --enable-decoder=
+    adpcm_g722,alac,flac,g723_1,g729,libfdk_aac,libopus,libspeex,
+    mp2,mp3,m4a,pcm_alaw,pcm_mulaw,pcm_f16le,pcm_f24le,pcm_f32be,
+    pcm_f32le,pcm_f64be,pcm_f64le,pcm_s16be,pcm_s16be_planar,pcm_s24be,
+    pcm_s16le,pcm_s16le_planar,pcm_s24le,pcm_s24le_planar,pcm_s32le,
+    pcm_s32le_planar,pcm_s64be,pcm_s64le,pcm_s8,pcm_s8_planar,
+    pcm_u8,pcm_u24be,pcm_u24le,pcm_u32be,pcm_u32le,tta,vorbis,wavpack,
+    ape,dca,eac3,mlp,tak,truehd,wmav1,wmav2,wmapro
+
+  # Video codecs
+  - >-
+    --enable-encoder=
+    ass,ffv1,libaom_av1,libvpx_vp8,libvpx_vp9,mjpeg_vaapi,rawvideo,
+    theora,vp8_vaapi,libopenh264,h263,h263p,h264,ljpeg,mpeg4,wmv1,wmv2,
+    apng
+  - >-
+    --enable-decoder=
+    ass,ffv1,mjpeg,mjpegb,libaom_av1,libdav1d,libvpx_vp8,libvpx_vp9,
+    rawvideo,theora,vp8,vp9,libopenh264,cinepak,flv,hevc,h263,h264,
+    indeo2,indeo3,indeo4,indeo5,jpeg2000,mpeg2video,mpeg4,msmpeg4,
+    msmpeg4v1,msmpeg4v2,msmpeg4v3,vp6,vp6a,vp6f,wmv1,wmv2,wmv3,
+    wmv3image,apng
+  # Image codecs
+  - >-
+    --enable-encoder=
+    bmp,gif,jpegls,png,tiff,webp
+  - >-
+    --enable-decoder=
+    bmp,gif,jpegls,png,tiff,webp
+cleanup:
+  - /share/ffmpeg/examples
+sources:
+  - type: archive
+    url: https://ffmpeg.org/releases/ffmpeg-6.0.tar.xz
+    sha256: 57be87c22d9b49c112b6d24bc67d42508660e6b718b3db89c44e47e289137082

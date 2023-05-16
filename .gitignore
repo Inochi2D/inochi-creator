@@ -34,3 +34,10 @@ settings.json
 source/creator/ver.d
 
 .DS_Store
+
+# WiX Install
+build-aux/windows/wix/obj
+build-aux/windows/wix/packages
+build-aux/windows/wix/.vs
+build-aux/windows/wix/bin
+*.msi
