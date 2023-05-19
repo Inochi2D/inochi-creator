@@ -109,7 +109,7 @@ public:
 
     void removeGroup(ExParameterGroup group) {
         auto index = groups.countUntil(group);
-        if (index > 0) {
+        if (index >= 0) {
             groups = groups.remove(index);
         }
     }
