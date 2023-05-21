@@ -649,6 +649,7 @@ void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 el
                     // We've added new stuff, rescan nodes
                     incActivePuppet().rescanNodes();
                     incActivePuppet().populateTextureSlots();
+                    incActivePuppet().updateTextureState();
                     break;
                     
                 default:
@@ -713,6 +714,7 @@ void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 el
 
                         incActivePuppet().rescanNodes();
                         incActivePuppet().populateTextureSlots();
+                        incActivePuppet().updateTextureState();
                     }
                 }
 
