@@ -535,8 +535,18 @@ void incInspectorModelTRS(Node node) {
         // positive values = further away from camera
         igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Sorting"));
         float zsortV = node.relZSort;
+        float zsortB = zsortV;
         if (igInputFloat("###ZSort", &zsortV, 0.01, 0.05, "%0.2f")) {
             node.zSort = zsortV;
+            incActionPush(
+                new NodeValueChangeAction!(Node, float)(
+                    _("Sorting"),
+                    node, 
+                    zsortB,
+                    zsortV,
+                    &node.relZSort()
+                )
+            );
         }
     }
     incEndCategory();
@@ -649,6 +659,7 @@ void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 el
                     // We've added new stuff, rescan nodes
                     incActivePuppet().rescanNodes();
                     incActivePuppet().populateTextureSlots();
+                    incActivePuppet().updateTextureState();
                     break;
                     
                 default:
@@ -713,6 +724,7 @@ void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 el
 
                         incActivePuppet().rescanNodes();
                         incActivePuppet().populateTextureSlots();
+                        incActivePuppet().updateTextureState();
                     }
                 }
 
