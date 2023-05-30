@@ -1053,7 +1053,8 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                     }
                     
                     
-                    if (incButtonColored("", ImVec2(24, 24), incArmedParameter() == param ? ImVec4(1f, 0f, 0f, 1f) : *igGetStyleColorVec4(ImGuiCol.Text))) {
+                    bool isArmed = incArmedParameter() == param;
+                    if (incButtonColored(isArmed ? "" : "", ImVec2(24, 24), isArmed ? ImVec4(1f, 0f, 0f, 1f) : *igGetStyleColorVec4(ImGuiCol.Text))) {
                         if (incArmedParameter() == param) {
                             incDisarmParameter();
                         } else {
