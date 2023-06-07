@@ -131,6 +131,8 @@ protected:
                         mappings[mappingName].take = false;
 
                         igEndDragDropTarget();
+                        igEndChild();
+                        igEndGroup();
                         return;
                     }
                     igEndDragDropTarget();
@@ -156,6 +158,7 @@ protected:
                     mappings[mappingName].take = true;
 
                     igEndDragDropTarget();
+                    igEndGroup();
                     return;
                 }
                 igEndDragDropTarget();

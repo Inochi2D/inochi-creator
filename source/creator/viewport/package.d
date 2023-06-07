@@ -17,6 +17,9 @@ import creator.viewport.vertex;
 import creator.viewport.anim;
 import creator.viewport.test;
 import creator.widgets.viewport;
+import creator.widgets.label;
+import creator.widgets.tooltip;
+import i18n;
 import bindbc.imgui;
 import std.algorithm.sorting;
 import std.algorithm.searching;
@@ -445,6 +448,8 @@ void incViewportTransformHandle() {
         groupingAction = false;
         incActionPopGroup();
     }
+
+
     // Move handle
     incBeginViewportToolArea(name, ImVec2(bounds.x - 32, bounds.y - 32));
     igButton("", ImVec2(32, 32));
@@ -470,6 +475,14 @@ void incViewportTransformHandle() {
             }
         }
     }
+    incEndViewportToolArea();
+
+    // Editing tip
+    incBeginViewportToolArea("AREA_MODE", ImVec2(bounds.z, bounds.w));
+        igSetWindowFontScale(1.5);
+            incTextBordered(param ? "" : "");
+        igSetWindowFontScale(1);
+        incTooltip(param ? _("Editing armed parameter...") : _("Editing base transform..."));
     incEndViewportToolArea();
 
     // Scaling dragging

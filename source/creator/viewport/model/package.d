@@ -241,7 +241,6 @@ void incViewportModelDraw(Camera camera) {
 
                     if (incShowVertices || incEditMode != EditMode.ModelEdit) {
                         selectedDraw.drawMeshLines();
-                        selectedDraw.drawMeshPoints();
                     }
                 }
                 
