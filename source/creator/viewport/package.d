@@ -300,10 +300,30 @@ bool incGetDragOriginOnHandle(int btn, string name, out vec2 mpos) {
     return result;
 }
 
+bool incGetDragOrigValueOnHandle(int btn, string name, out vec2 value) {
+    bool result = incDragStartedOnHandle(btn, name);
+    value = isDraggingOnHandle[btn][name].origValue;
+    return result;
+}
+
 bool incGetDragPrevValueOnHandle(int btn, string name, out vec2 value) {
     bool result = incDragStartedOnHandle(btn, name);
     value = isDraggingOnHandle[btn][name].prevValue;
     return result;
+}
+
+bool incGetDragPrevPosOnHandle(int btn, string name, out vec2 pos) {
+    bool result = incDragStartedOnHandle(btn, name);
+    pos = isDraggingOnHandle[btn][name].prevPos;
+    return result;
+}
+
+void incSetDragPrevPosOnHandle(int btn, string name, vec2 pos) {
+    isDraggingOnHandle[btn][name].prevPos = pos;
+}
+
+void incSetDragPrevValueOnHandle(int btn, string name, vec2 value) {
+    isDraggingOnHandle[btn][name].prevValue = value;
 }
 
 void incEndDragInViewport(int btn) {
@@ -612,28 +632,27 @@ void incViewportTransformHandle() {
         name = selectedNode.name ~ "rotate";
         vec2u index = armedParam? armedParam.findClosestKeypoint() : vec2u(0, 0);
         if (incDragStartedOnHandle(btn, name)) {
-            vec2 prevValue;
-            incGetDragPrevValueOnHandle(btn, name, prevValue);
             DraggingOnHandle status = incGetDragOnHandleStatus(btn, name);
 
             if (igIsMouseDown(btn)) {
-                vec2 mpos, origPos;
-                incGetDragOriginOnHandle(btn, name, origPos);
+                vec2 mpos, prevPos, prevValue;
+                incGetDragPrevPosOnHandle(btn, name, prevPos);
+                incGetDragPrevValueOnHandle(btn, name, prevValue);
                 mpos = incInputGetMousePosition();
-                auto origin = -(obounds.xy + obounds.zw) / 2;
-                mpos -= origin;
-                origPos -= origin;
+                incSetDragPrevPosOnHandle(btn, name, mpos);
+                auto origin = -vec2(selectedNode.transform.translation.vector[0..2]);
+                mpos    -= origin;
+                prevPos -= origin;
 
-                float getArg(vec2 p) {
-                    float arg = acos(p.length == 0 ? 0: p.x / p.length);
-                    if (p.y < 0)
-                        arg *= -1;
-                    return arg;
-                }
-                float origArg = getArg(origPos);
+                float getArg(vec2 p) { return atan2(p.y, p.x); }
+                float prevArg = getArg(prevPos);
                 float newArg  = getArg(mpos);
-                float diffArg = newArg - origArg;
+                float diffArg = newArg - prevArg;
+                while (diffArg > PI) diffArg  -= 2*PI;
+                while (diffArg < -PI) diffArg += 2*PI;
                 float newValue = prevValue.x + diffArg;
+                incSetDragPrevValueOnHandle(btn, name, vec2(newValue, 0));
+
                 if (io.KeyCtrl) {
                     newValue = radians(round(degrees(newValue) / 5) * 5);
                 }
@@ -644,10 +663,12 @@ void incViewportTransformHandle() {
                     selectedNode.localTransform.rotation.vector[2] = newValue;
                 }
             } else {
+                vec2 origValue;
+                incGetDragOrigValueOnHandle(btn, name, origValue);
                 if (!armedParam) {
-                    if (selectedNode.localTransform.rotation.vector[2] != prevValue.x) {
+                    if (selectedNode.localTransform.rotation.vector[2] != origValue.x) {
                         status.actions["Z"] =
-                            new NodeValueChangeAction!(Node, float)("Z", selectedNode, prevValue.x,
+                            new NodeValueChangeAction!(Node, float)("Z", selectedNode, origValue.x,
                                 selectedNode.localTransform.rotation.vector[2], &selectedNode.localTransform.rotation.vector[2]);
                     }
                 }
@@ -683,7 +704,7 @@ void incViewportTransformHandle() {
                     if (armedParam) {
                         ValueParameterBinding b;
                         b = cast(ValueParameterBinding)param.getBinding(selectedNode, "transform.r.z");
-                        auto origZ = (b !is null)? b.getValue(index) : 1;
+                        auto origZ = (b !is null)? b.getValue(index) : 0;
                         incBeginDragOnHandle(btn, name, vec2(origZ, 0));
                     } else
                         incBeginDragOnHandle(btn, name, vec2(selectedNode.localTransform.rotation.vector[2], 0));
@@ -740,14 +761,18 @@ private {
     class DraggingOnHandle {
         bool dragged;
         vec2 dragOrigin;
+        vec2 origValue;
+        vec2 prevPos;
         vec2 prevValue;
         Action[string] actions;
         LockedOrientation locked;
 
         this(vec2 origin=vec2(0,0), vec2 value=vec2(0, 0)) {
-            dragged = true;
+            dragged    = true;
             dragOrigin = origin;
-            prevValue = value;
+            prevPos    = origin;
+            origValue  = value;
+            prevValue  = value;
             locked = LockedOrientation.None;
         }
 
