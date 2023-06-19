@@ -204,7 +204,7 @@ void incViewportModelOptions() {
                     
                     incEndDropdownMenu();
                 }
-                incTooltip("Background Color");
+                incTooltip(_("Background Color"));
 
                 incEndDropdownMenu();
             }

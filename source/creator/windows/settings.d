@@ -166,7 +166,7 @@ protected:
                                 incSettingsSet("useOpenDyslexic", disableCompositor);
                                 changesRequiresRestart = true;
                             }
-                            incTooltip("Use the OpenDyslexic font for Latin text characters.");
+                            incTooltip(_("Use the OpenDyslexic font for Latin text characters."));
                         endSection();
                         break;
                     case SettingsPane.Autosaves:
