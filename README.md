@@ -24,7 +24,7 @@ If you are a VTuber wanting to use Inochi2D we highly recommend checking out [In
 ### Experimental Builds
 
 &nbsp;&nbsp;&nbsp;&nbsp;
-[![Nightly Builds](https://img.shields.io/github/workflow/status/Inochi2D/inochi-creator/Nightly/main?label=Nightly&style=for-the-badge)](https://github.com/Inochi2D/inochi-creator/releases/tag/nightly)  
+[![Nightly Builds](https://img.shields.io/github/actions/workflow/status/Inochi2D/inochi-creator/nightly.yml?label=Nightly&style=for-the-badge)](https://github.com/Inochi2D/inochi-creator/releases/tag/nightly)  
 
 &nbsp;
 
