@@ -156,12 +156,6 @@ jobs:
         filename: 'inochi-creator-win32-x86_64.zip'
         directory: 'out/'
         path: '*'
-
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-          files: out/inochi-creator-win32-x86_64.zip
     
     - name: 'Add msbuild to PATH'
       uses: microsoft/setup-msbuild@v1.1
@@ -181,11 +175,13 @@ jobs:
         mv bin/Release/Inochi\ Creator.msi ../../../out
         cd ../../../
 
-    - name: 'Release MSI'
+    - name: 'Release'
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-          files: 'out/Inochi Creator.msi'
+        files: |
+          'out/Inochi Creator.msi'
+          'out/inochi-creator-win32-x86_64.zip'
 
     - name: Make Artifact of ZIP
       uses: actions/upload-artifact@v3
