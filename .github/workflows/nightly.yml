@@ -148,13 +148,7 @@ jobs:
         filename: 'inochi-creator-win32-x86_64.zip'
         directory: 'out/'
         path: '*'
-
-    - name: Release ZIP to nightly tag
-      uses: softprops/action-gh-release@v1
-      with:
-        name: 'Nightly Build'
-        tag_name: nightly
-    
+        
     - name: 'Add msbuild to PATH'
       uses: microsoft/setup-msbuild@v1.1
     
