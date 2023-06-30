@@ -91,6 +91,10 @@ private:
 
             // Load texture in to memory
             layer.extractLayerImage();
+
+            // Early escape, layer has 0 data.
+            if (layer.data.length == 0) continue;
+
             inTexPremultiply(layer.data);
             auto layerTexture = new Texture(layer.data, layer.width, layer.height);
             layer.data = null;

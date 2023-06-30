@@ -157,6 +157,7 @@ void incImportKRA(string file, IncKRAImportSettings settings = IncKRAImportSetti
         Puppet puppet = new ExPuppet();
 
         void recurseAdd(Node n, IncKRALayer layer) {
+            if (!layer.kraLayerRef.isLayerUseful) return;
             
             Node child;
             if (layer.isLayerGroup) {
@@ -169,6 +170,10 @@ void incImportKRA(string file, IncKRAImportSettings settings = IncKRAImportSetti
             } else {
                 
                 layer.kraLayerRef.extractLayerImage();
+
+                // Early escape, layer has 0 data.
+                if (layer.kraLayerRef.data.length == 0) return;
+
                 inTexPremultiply(layer.kraLayerRef.data);
                 auto tex = new Texture(layer.kraLayerRef.data, layer.kraLayerRef.width, layer.kraLayerRef.height);
                 ExPart part = incCreateExPart(tex, null, layer.name);
@@ -201,8 +206,10 @@ void incImportKRA(string file, IncKRAImportSettings settings = IncKRAImportSetti
                 child.reparent(n, 0);
             }
 
+
             // Add children
             foreach(sublayer; layer.children) {
+                if (!sublayer.kraLayerRef.isLayerUseful) continue;
                 if (settings.keepStructure) {
 
                     // Normal adding
