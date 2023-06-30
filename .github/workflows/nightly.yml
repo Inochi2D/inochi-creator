@@ -162,6 +162,7 @@ jobs:
     - name: 'Build MSI'
       run: |
         cd build-aux/windows/wix
+        msbuild -t:restore
         msbuild "Inochi Creator.sln" -property:Configuration=Release
         mv bin/Release/Inochi\ Creator.msi ../../../out
         cd ../../../
