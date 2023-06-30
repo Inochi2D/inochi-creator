@@ -162,8 +162,15 @@ jobs:
     - name: 'Build MSI'
       run: |
         cd build-aux/windows/wix
-        dotnet restore
+
+        # Install required dependency
+        mkdir packages/
+        nuget install WixToolset.UI.wixext -version 4.0.0 -OutputDirectory packages/
+
+        # Build solution
         msbuild "Inochi Creator.sln" -property:Configuration=Release
+
+        # Copy installer out
         mv bin/Release/Inochi\ Creator.msi ../../../out
         cd ../../../
 
