@@ -155,7 +155,10 @@ jobs:
         name: 'Nightly Build'
         tag_name: nightly
         files: 'out/inochi-creator-win32-x86_64.zip'
-        
+    
+    - name: 'Add msbuild to PATH'
+      uses: microsoft/setup-msbuild@v1.1
+    
     - name: 'Build MSI'
       run: |
         cd build-aux/windows/wix
