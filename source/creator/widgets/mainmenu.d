@@ -173,6 +173,11 @@ void incMainMenu() {
                             incImportShowPSDDialog();
                         }
                         incTooltip(_("Import a standard Photoshop PSD file."));
+                        if(igMenuItem(__("Krita Document"), "", false, true)) {
+                            incPopWelcomeWindow();
+                            incImportShowKRADialog();
+                        }
+                        incTooltip(_("Import a standard Photoshop PSD file."));
 
                         if (igMenuItem(__("Inochi2D Puppet"), "", false, true)) {
                             const TFD_Filter[] filters = [
@@ -208,6 +213,19 @@ void incMainMenu() {
                             }
                         }
                         incTooltip(_("Merge layers from Photoshop document"));
+
+                        if(igMenuItem(__("Krita Document"), "", false, true)) {
+                            const TFD_Filter[] filters = [
+                                { ["*.kra"], "Krita Document (*.kra)" }
+                            ];
+
+                            string file = incShowOpenDialog(filters, _("Import..."));
+                            if (file) {
+                                incPopWelcomeWindow();
+                                incPushWindow(new KRAMergeWindow(file));
+                            }
+                        }
+                        incTooltip(_("Merge layers from Krita document"));
 
                         if(igMenuItem(__("Image Files"), "", false, true)) {
                             const TFD_Filter[] filters = [

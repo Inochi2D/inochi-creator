@@ -20,6 +20,7 @@ public import creator.windows.paramaxes;
 public import creator.windows.paramsplit;
 public import creator.windows.trkbind;
 public import creator.windows.psdmerge;
+public import creator.windows.kramerge;
 public import creator.windows.welcome;
 public import creator.windows.rename;
 public import creator.windows.imgexport;
