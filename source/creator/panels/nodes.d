@@ -303,12 +303,16 @@ protected:
                         if (payload !is null) {
                             Node payloadNode = *cast(Node*)payload.Data;
                             
-                            if (selectedNodes.length > 1) incMoveChildrenWithHistory(selectedNodes, n, i);
-                            else incMoveChildWithHistory(payloadNode, n, i);
+                            try {
+                                if (selectedNodes.length > 1) incMoveChildrenWithHistory(selectedNodes, n, i);
+                                else incMoveChildWithHistory(payloadNode, n, i);
+                            } catch (Exception ex) {
+                                incDialog(__("Error"), ex.msg);
+                            }
                             
+                            igEndDragDropTarget();
                             igPopID();
                             igTreePop();
-                            igEndDragDropTarget();
                             return;
                         }
                         igEndDragDropTarget();
