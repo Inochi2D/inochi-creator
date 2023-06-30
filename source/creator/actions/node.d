@@ -12,6 +12,8 @@ import inochi2d;
 import std.format;
 import i18n;
 import std.exception;
+import std.array: insertInPlace;
+import std.algorithm.mutation: remove;
 
 /**
     An action that happens when a node is changed
@@ -150,6 +152,97 @@ public:
 }
 
 /**
+    An action that happens when a node is changed
+*/
+class PartAddRemoveMaskAction(bool addAction = false) : Action {
+public:
+
+    /**
+        Previous parent of node
+    */
+    Part target;
+    MaskingMode mode;
+    size_t offset;
+    Drawable maskSrc;
+
+    /**
+        Creates a new node change action
+    */
+    this(Drawable drawable, Part target, MaskingMode mode) {
+        this.maskSrc = drawable;
+        this.target = target;
+
+        if (addAction) {
+            offset = target.masks.length;
+            target.masks ~= MaskBinding(maskSrc.uuid, mode, drawable);
+
+        } else {
+            foreach (i, masker; target.masks) {
+                if (masker.maskSrc == maskSrc) {
+                    offset = i;
+                    target.masks = target.masks.remove(i);
+                    break;
+                }
+            }
+        }
+        incActivePuppet().rescanNodes();
+    }
+
+    /**
+        Rollback
+    */
+    void rollback() {
+        if (addAction) {
+            target.masks = target.masks.remove(offset);
+        } else {
+            target.masks.insertInPlace(offset, MaskBinding(maskSrc.uuid, mode, maskSrc));
+        }
+        incActivePuppet().rescanNodes();
+    }
+
+    /**
+        Redo
+    */
+    void redo() {
+        if (addAction) {
+            target.masks.insertInPlace(offset, MaskBinding(maskSrc.uuid, mode, maskSrc));
+        } else {
+            target.masks = target.masks.remove(offset);
+        }
+        incActivePuppet().rescanNodes();
+    }
+
+    /**
+        Describe the action
+    */
+    string describe() {
+        if (addAction) return _("%s is added to mask of %s").format(maskSrc.name, target.name);
+        else return _("%s is deleted from mask of %s").format(maskSrc.name, target.name);
+    }
+
+    /**
+        Describe the action
+    */
+    string describeUndo() {
+        if (addAction) return _("%s is deleted from mask of %s").format(maskSrc.name, target.name);
+        else return _("%s is added to mask of %s").format(maskSrc.name, target.name);
+    }
+
+    /**
+        Gets name of this action
+    */
+    string getName() {
+        return this.stringof;
+    }
+    
+    bool merge(Action other) { return false; }
+    bool canMerge(Action other) { return false; }
+}
+
+alias PartAddMaskAction = PartAddRemoveMaskAction!true;
+alias PartRemoveMaskAction = PartAddRemoveMaskAction!false;
+
+/**
     Action for whether a node was activated or deactivated
 */
 class NodeActiveAction : Action {
@@ -234,15 +327,40 @@ void incAddChildWithHistory(Node n, Node to, string name=null) {
     incActivePuppet().rescanNodes();
 }
 
+GroupAction incDeleteMaskOfNode(Node n, GroupAction group = null) {
+    auto removedDrawables = incActivePuppet().findNodesType!Drawable(n);
+    auto parts = incActivePuppet().findNodesType!Part(incActivePuppet().root);
+    foreach (drawable; removedDrawables) {
+        foreach (target; parts) {
+            auto idx = target.getMaskIdx(drawable);
+            if (idx >= 0) {
+                if (group is null)
+                    group = new GroupAction();
+                group.addAction(new PartRemoveMaskAction(drawable, target, target.masks[idx].mode));
+            }
+        }
+    }
+    return group;
+}
+
 /**
     Deletes child with history
 */
 void incDeleteChildWithHistory(Node n) {
-    // Push action to stack
-    incActionPush(new NodeMoveAction(
-        [n],
-        null
-    ));
+    auto group = incDeleteMaskOfNode(n);
+    if (group !is null) {
+        group.addAction(new NodeMoveAction(
+            [n],
+            null
+        ));
+        incActionPush(group);
+    } else {
+        // Push action to stack
+        incActionPush(new NodeMoveAction(
+            [n],
+            null
+        ));
+    }
     
     incActivePuppet().rescanNodes();
 }
@@ -250,12 +368,25 @@ void incDeleteChildWithHistory(Node n) {
 /**
     Deletes child with history
 */
-void incDeleteChildrenWithHistory(Node[] n) {
-    // Push action to stack
-    incActionPush(new NodeMoveAction(
-        n,
-        null
-    ));
+void incDeleteChildrenWithHistory(Node[] ns) {
+    GroupAction group = null;
+    foreach (n; ns) {
+        incDeleteMaskOfNode(n, group);
+    }
+    if (group !is null) {
+        // Push action to stack
+        group.addAction(new NodeMoveAction(
+            ns,
+            null
+        ));
+        incActionPush(group);
+    } else {
+        // Push action to stack
+        incActionPush(new NodeMoveAction(
+            ns,
+            null
+        ));
+    }
 
     incActivePuppet().rescanNodes();
 }

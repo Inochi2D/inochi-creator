@@ -902,8 +902,7 @@ void incInspectorModelPart(Part node) {
                         }
 
                         if (igMenuItem(__("Delete"))) {
-                            import std.algorithm.mutation : remove;
-                            node.masks = node.masks.remove(i);
+                            incActionPush(new PartRemoveMaskAction(node.masks[i].maskSrc, node, node.masks[i].mode));
                             igEndPopup();
                             igPopID();
                             igEndListBox();
@@ -959,7 +958,7 @@ void incInspectorModelPart(Part node) {
 
                     // Make sure we don't mask against ourselves as well as don't double mask
                     if (payloadDrawable != node && !node.isMaskedBy(payloadDrawable)) {
-                        node.masks ~= MaskBinding(payloadDrawable.uuid, MaskingMode.Mask, payloadDrawable);
+                        incActionPush(new PartAddMaskAction(payloadDrawable, node, MaskingMode.Mask));
                     }
                 }
             }
