@@ -28,8 +28,6 @@ configuration "barebones" {
 	targetType "executable"
 	subConfiguration "i2d-imgui" "static_dynamicCRT"
 	copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/OpenDyslexic-LICENSE" "LICENSE"
-	
-	dependency "dportals" version="~>0.1.0"
 }
 
 // Metadata generation
@@ -47,8 +45,6 @@ configuration "linux-full" {
 	targetType "executable"
 	subConfiguration "i2d-imgui" "static_dynamicCRT"
 	versions "InBranding"
-	
-	dependency "dportals" version="~>0.1.0"
 }
 
 // macOS build
@@ -79,8 +75,6 @@ configuration "linux-nightly" {
 	targetType "executable"
 	subConfiguration "i2d-imgui" "static_dynamicCRT"
 	versions "InBranding" "InNightly"
-	
-	dependency "dportals" version="~>0.1.0"
 }
 
 // macOS nightly build
