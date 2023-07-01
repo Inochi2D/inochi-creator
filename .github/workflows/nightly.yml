@@ -148,7 +148,7 @@ jobs:
         filename: 'inochi-creator-win32-x86_64.zip'
         directory: 'out/'
         path: '*'
-        
+
     - name: 'Add msbuild to PATH'
       uses: microsoft/setup-msbuild@v1.1
     
@@ -164,17 +164,16 @@ jobs:
         msbuild "Inochi Creator.sln" -property:Configuration=Release
 
         # Copy installer out
-        mv "bin/Release/Inochi Creator.msi" "../../../out"
+        mv "bin/Release/Inochi Creator.msi" "../../../out/"
         cd ../../../
 
     - name: 'Release to nightly tag'
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
       with:
         tag_name: nightly
         files: |
-          'out/Inochi Creator.msi'
-          'out/inochi-creator-win32-x86_64.zip'
+          out/Inochi Creator.msi
+          out/inochi-creator-win32-x86_64.zip
 
   macOS-dmg:
     runs-on: macos-12
