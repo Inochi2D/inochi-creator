@@ -304,8 +304,8 @@ jobs:
       with:
         name: release-osx
         path: |
-          'out/inochi-creator-macOS.zip'
-          'version.txt'
+          out/inochi-creator-macOS.zip
+          version.txt
         retention-days: 1
 
     - name: 'Build DMG'
@@ -336,4 +336,4 @@ jobs:
         ITCH_GAME: inochi-creator
         ITCH_USER: LunaFoxgirlVT
         VERSION_FILE: version.txt
-        PACKAGE: 'out/inochi-creator-macOS.zip'
+        PACKAGE: out/inochi-creator-macOS.zip
