@@ -263,7 +263,7 @@ private:
                 continue;
             } else if (pair.parts[0] is null) {
                 pair.parts[0] = pair.parts[1];
-                pair.parts[1] = pair.parts[0];
+                pair.parts[1] = null;
             }
 
             igPushID(cast(int)i);
