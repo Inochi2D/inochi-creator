@@ -89,6 +89,14 @@ void incLoadFlipConfig(Puppet puppet) {
         foreach (pair; flipPairs) {
             pair.finalize(puppet);
         }
+        // Removing unused pair, and ensure that pair.parts[0] exists.
+        flipPairs.remove!(p=> p.parts[0] is null && p.parts[1] is null);
+        foreach (i, pair; flipPairs) {
+            if (pair.parts[0] is null) {
+                pair.parts[0] = pair.parts[1];
+                pair.parts[1] = null;
+            }
+        }
     }
 }
 
@@ -248,6 +256,15 @@ private:
         int deleted = -1;
 
         foreach(i, ref FlipPair pair; pairs) {
+            // Avoid crash when pair information is corrupted.
+            // This should be checked on window open, and model loading.
+            // This logic is a guard logic for potential errors.
+            if (pair.parts[0] is null && pair.parts[1] is null) {
+                continue;
+            } else if (pair.parts[0] is null) {
+                pair.parts[0] = pair.parts[1];
+                pair.parts[1] = pair.parts[0];
+            }
 
             igPushID(cast(int)i);
 
@@ -498,6 +515,8 @@ public:
         auto puppet = incActivePuppet();
         nodes = puppet.findNodesType!Node(puppet.root);
         pairs = incGetFlipPairs().dup;
+        // Removing unused pairs (happens when target nodes are removed.)
+        pairs.remove!(p=> p.parts[0] is null && p.parts[1] is null);
         foreach (i, pair; pairs) {
             if (pair.parts[0] !is null)
                 map[pair.parts[0].uuid] = i;
