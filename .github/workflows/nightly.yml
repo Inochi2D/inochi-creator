@@ -95,7 +95,7 @@ jobs:
           out/inochi-creator-linux-x86_64.zip
         generate_release_notes: true
 
-  windows-zip:
+  windows:
     runs-on: windows-latest
     needs: build-resources
 
@@ -149,12 +149,31 @@ jobs:
         directory: 'out/'
         path: '*'
 
-    - name: Release to nightly tag
+    - name: 'Add msbuild to PATH'
+      uses: microsoft/setup-msbuild@v1.1
+    
+    - name: 'Build MSI'
+      run: |
+        cd build-aux/windows/wix
+
+        # Install required dependency
+        mkdir packages/
+        nuget install WixToolset.UI.wixext -version 4.0.0 -OutputDirectory packages/
+
+        # Build solution
+        msbuild "Inochi Creator.sln" -property:Configuration=Release
+
+        # Copy installer out
+        mv "bin/Release/Inochi Creator.msi" "../../../out/"
+        cd ../../../
+
+    - name: 'Release to nightly tag'
       uses: softprops/action-gh-release@v1
       with:
-        name: 'Nightly Build'
         tag_name: nightly
-        files: 'out/inochi-creator-win32-x86_64.zip'
+        files: |
+          out/Inochi Creator.msi
+          out/inochi-creator-win32-x86_64.zip
 
   macOS-dmg:
     runs-on: macos-12

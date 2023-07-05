@@ -245,10 +245,24 @@ protected:
                             }
 
 
-                            if (incTextLinkWithIcon("", _("Import PSD..."))) {
-                                if (incImportShowPSDDialog()) {
-                                    this.close();
+                            if (incTextLinkWithIcon("", _("Import..."))) {
+                                igOpenPopup("IMPORT_OPTIONS");
+                            }
+                            
+                            if (igBeginPopup("IMPORT_OPTIONS")) {
+                                if(igMenuItem(__("Import PSD..."))) {
+                                    if (incImportShowPSDDialog()) {
+                                        this.close();
+                                    }
                                 }
+
+                                if(igMenuItem(__("Import KRA..."))) {
+                                    if (incImportShowKRADialog()) {
+                                        this.close();
+                                    }
+                                }
+
+                                igEndPopup();
                             }
 
                         igUnindent();

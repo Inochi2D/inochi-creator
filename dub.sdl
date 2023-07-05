@@ -3,15 +3,16 @@ description "Inochi2D rigging application"
 authors "Inochi2D Project"
 copyright "Copyright © 2020, Inochi2D Project"
 license "BSD 2-clause"
-dependency "inochi2d" version="~>0.8.0"
+dependency "psd-d" version="~>0.6.1"
+dependency "inmath" version="~>1.0.5"
+dependency "kra-d" version="~>0.5.5"
 dependency "tinyfiledialogs" version="~>0.10.1"
 dependency "facetrack-d" version="~>0.7.6"
 dependency "bindbc-sdl" version="~>1.1.2"
-dependency "i2d-imgui" version="~>0.8.0"
-dependency "i18n-d" version="~>1.0.2"
-dependency "psd-d" version="~>0.6.1"
-dependency "inmath" version="~>1.0.5"
 dependency "dcv:core" version="~>0.3.0"
+dependency "i18n-d" version="~>1.0.2"
+dependency "i2d-imgui" version="~>0.8.0"
+dependency "inochi2d" version="~>0.8.2"
 targetPath "out/"
 workingDirectory "out/"
 dflags "-mscrtlib=msvcrt" platform="windows-ldc"
@@ -23,11 +24,10 @@ stringImportPaths "res/" "./"
 // Barebones build
 configuration "barebones" {
 	platforms "linux"
+	dependency "dportals" version="~>0.1.0"
 	targetType "executable"
 	subConfiguration "i2d-imgui" "static_dynamicCRT"
 	copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/OpenDyslexic-LICENSE" "LICENSE"
-	
-	dependency "dportals" version="~>0.1.0"
 }
 
 // Metadata generation
@@ -41,11 +41,10 @@ configuration "meta" {
 configuration "linux-full" {
 
 	platforms "linux"
+	dependency "dportals" version="~>0.1.0"
 	targetType "executable"
 	subConfiguration "i2d-imgui" "static_dynamicCRT"
 	versions "InBranding"
-	
-	dependency "dportals" version="~>0.1.0"
 }
 
 // macOS build
@@ -71,13 +70,11 @@ configuration "win32-full" {
 
 // Linux nightly build
 configuration "linux-nightly" {
-
 	platforms "linux"
+	dependency "dportals" version="~>0.1.0"
 	targetType "executable"
 	subConfiguration "i2d-imgui" "static_dynamicCRT"
 	versions "InBranding" "InNightly"
-	
-	dependency "dportals" version="~>0.1.0"
 }
 
 // macOS nightly build

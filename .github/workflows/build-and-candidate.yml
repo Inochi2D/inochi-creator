@@ -144,12 +144,32 @@ jobs:
         filename: 'inochi-creator-win32-x86_64.zip'
         directory: 'out/'
         path: '*'
+    
+    - name: 'Add msbuild to PATH'
+      uses: microsoft/setup-msbuild@v1.1
+    
+    - name: 'Build MSI'
+      run: |
+        cd build-aux/windows/wix
 
-    - name: Release
+        # Install required dependency
+        mkdir packages/
+        nuget install WixToolset.UI.wixext -version 4.0.0 -OutputDirectory packages/
+
+        # Build solution
+        msbuild "Inochi Creator.sln" -property:Configuration=Release
+
+        # Copy installer out
+        mv "bin/Release/Inochi Creator.msi" "../../../out/"
+        cd ../../../
+
+    - name: 'Release'
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-          files: out/inochi-creator-win32-x86_64.zip
+          files: |
+            out/Inochi Creator.msi
+            out/inochi-creator-win32-x86_64.zip
 
   macOS-build:
     runs-on: macos-12
@@ -246,4 +266,6 @@ jobs:
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-          files: out/Install_Inochi_Creator.dmg
+          files: |
+            out/inochi-creator-macOS.zip
+            out/Install_Inochi_Creator.dmg
