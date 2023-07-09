@@ -534,15 +534,15 @@ private {
 
         if (igMenuItem(__("Paste"), "", false,  true)) {
 
-            // Whether there's only a single binding, if so, we should not push a group
-            bool isSingle = bindings.length == 1 && cClipboardBindings.length == 1;
-
             // Find the bindings we should apply
             // This allows us to skip the application process if we can't apply anything.
             ParameterBinding[] bindingsToApply;
             foreach(ref binding; bindings) {
                 if (binding.getTarget() in cClipboardBindings) bindingsToApply ~= binding;
             }
+
+            // Whether there's only a single binding, if so, we should not push a group
+            bool isSingle = (bindings.length == 1 && cClipboardBindings.length == 1) || bindingsToApply.length == 1;
 
             if (bindingsToApply.length > 0) {
                 if (!isSingle) incActionPushGroup();
