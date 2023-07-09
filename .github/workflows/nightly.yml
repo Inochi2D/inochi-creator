@@ -164,7 +164,7 @@ jobs:
         msbuild "Inochi Creator.sln" -property:Configuration=Release
 
         # Copy installer out
-        mv "bin/Release/Inochi Creator.msi" "../../../out/"
+        mv "bin/Release/Inochi Creator.msi" "../../../out/inochi-creator-win32-x86_64.msi"
         cd ../../../
 
     - name: 'Release to nightly tag'
@@ -172,7 +172,7 @@ jobs:
       with:
         tag_name: nightly
         files: |
-          out/Inochi Creator.msi
+          out/inochi-creator-win32-x86_64.msi
           out/inochi-creator-win32-x86_64.zip
 
   macOS-dmg:
