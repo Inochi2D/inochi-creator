@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="5495a276-0643-4197-876c-bdefcae95fd8" Name="Inochi Creator" Language="1033" Version="0.8.1" Manufacturer="Inochi2D Project" UpgradeCode="545ff6a4-c555-46c2-9d67-f77896b5de9b">
+	<Product Id="7279cffe-7518-4b62-bc68-1bf3c2fe3427" Name="Inochi Creator" Language="1033" Version="0.8.1" Manufacturer="Inochi2D Project" UpgradeCode="545ff6a4-c555-46c2-9d67-f77896b5de9b">
 		<Package Description="Inochi Creator Installer" InstallerVersion="200" Compressed="yes" Platform="x64" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
