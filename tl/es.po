@@ -156,12 +156,12 @@ msgstr "Se movió %s desde su origen"
 #: source/creator/actions/node.d:219 source/creator/actions/node.d:228
 #, c-format
 msgid "%s is added to mask of %s"
-msgstr ""
+msgstr "%s se agrego a la mascara de %s"
 
 #: source/creator/actions/node.d:220 source/creator/actions/node.d:227
 #, c-format
 msgid "%s is deleted from mask of %s"
-msgstr ""
+msgstr "%s se borro de la mascara de %s"
 
 #: source/creator/actions/node.d:271 source/creator/actions/node.d:278
 msgid "Enabled"
@@ -747,7 +747,7 @@ msgstr "Sobreexposición lineal"
 #: source/creator/panels/inspector.d:829 source/creator/panels/inspector.d:1040
 #: source/creator/windows/inpexport.d:294
 msgid "Add (Glow)"
-msgstr ""
+msgstr "Agregar (Resplandor)"
 
 #. Color Burn blending mode
 #: source/creator/panels/inspector.d:832 source/creator/panels/inspector.d:1043
@@ -800,7 +800,7 @@ msgstr "Invierte el color por el factor del color superpuesto"
 #: source/creator/panels/inspector.d:854 source/creator/panels/inspector.d:1065
 #: source/creator/windows/inpexport.d:319
 msgid "Destination In"
-msgstr ""
+msgstr "Destino Dentro"
 
 #. Clip to Lower blending mode
 #: source/creator/panels/inspector.d:857 source/creator/windows/inpexport.d:322
@@ -1677,7 +1677,7 @@ msgstr "COLOR"
 
 #: source/creator/viewport/model/package.d:207
 msgid "Background Color"
-msgstr ""
+msgstr "Color de fondo"
 
 #: source/creator/viewport/model/package.d:211
 msgid "Gizmos"
@@ -1689,11 +1689,11 @@ msgstr "Ninguna herramienta seleccionada..."
 
 #: source/creator/viewport/package.d:505
 msgid "Editing armed parameter..."
-msgstr ""
+msgstr "Editando parametro armado..."
 
 #: source/creator/viewport/package.d:505
 msgid "Editing base transform..."
-msgstr ""
+msgstr "Editando transformación base..."
 
 #: source/creator/viewport/vertex/package.d:51
 msgid "Flip Horizontally"
@@ -2601,7 +2601,7 @@ msgstr "Usar fuente OpenDyslexic"
 
 #: source/creator/windows/settings.d:169
 msgid "Use the OpenDyslexic font for Latin text characters."
-msgstr ""
+msgstr "Usar la fuente OpenDyslexic para caracteres Latinos."
 
 #: source/creator/windows/settings.d:175
 msgid "Enable Autosaves"
