@@ -533,24 +533,27 @@ private {
         }
 
         if (igMenuItem(__("Paste"), "", false,  true)) {
-            if (bindings.length == 1 && cClipboardBindings.length == 1 &&
-                bindings[0].isCompatibleWithNode(cClipboardBindings.values[0].getNode())) {
-                auto action = new ParameterChangeBindingsValueAction("paste", param, bindings,cParamPoint.x, cParamPoint.y);
-                cClipboardBindings.values[0].copyKeypointToBinding(cClipboardPoint, bindings[0], cParamPoint);
-                action.updateNewState();
-                incActionPush(action);
-            } else {
-                incActionPushGroup();
-                foreach(binding; bindings) {
-                    if (binding.getTarget() in cClipboardBindings) {
-                        auto action = new ParameterChangeBindingsValueAction("paste", param, bindings, cParamPoint.x, cParamPoint.y);
-                        ParameterBinding origBinding = cClipboardBindings[binding.getTarget()];
-                        origBinding.copyKeypointToBinding(cClipboardPoint, binding, cParamPoint);
-                        action.updateNewState();
-                        incActionPush(action);
-                    }
+
+            // Whether there's only a single binding, if so, we should not push a group
+            bool isSingle = bindings.length == 1 && cClipboardBindings.length == 1;
+
+            // Find the bindings we should apply
+            // This allows us to skip the application process if we can't apply anything.
+            ParameterBinding[] bindingsToApply;
+            foreach(ref binding; bindings) {
+                if (binding.getTarget() in cClipboardBindings) bindingsToApply ~= binding;
+            }
+
+            if (bindingsToApply.length > 0) {
+                if (!isSingle) incActionPushGroup();
+                foreach(binding; bindingsToApply) {
+                    auto action = new ParameterChangeBindingsValueAction("paste", param, bindings, cParamPoint.x, cParamPoint.y);
+                    ParameterBinding origBinding = cClipboardBindings[binding.getTarget()];
+                    origBinding.copyKeypointToBinding(cClipboardPoint, binding, cParamPoint);
+                    action.updateNewState();
+                    incActionPush(action);
                 }
-                incActionPopGroup();
+                if (!isSingle) incActionPopGroup();
             }
         }
 
