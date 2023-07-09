@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-07-09 18:46+0200\n"
-"PO-Revision-Date: 2023-05-01 22:30-0400\n"
+"PO-Revision-Date: 2023-07-09 23:00+0200\n"
 "Last-Translator: Yukusai <85849071+p-yukusai@users.noreply.github.com>, "
 "Grillo <@grillo_delmal@vt.social>, Anasu <@anasu@vt.social>\n"
 "Language-Team: Spanish\n"
@@ -20,7 +20,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: source/app.d:93
 msgid "Inochi Creator (Nightly)"
@@ -298,12 +298,12 @@ msgid "Error"
 msgstr "Error"
 
 #: source/creator/io/kra.d:244
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An error occured during KRA import:\n"
 "%s"
 msgstr ""
-"Ha ocurrido un error durante la importación del PSD:\n"
+"Ha ocurrido un error durante la importación del KRA:\n"
 "%s"
 
 #: source/creator/io/package.d:212 source/creator/panels/inspector.d:654
@@ -1851,9 +1851,8 @@ msgid "Import a standard Photoshop PSD file."
 msgstr "Importar un archivo PSD estándar de Photoshop."
 
 #: source/creator/widgets/mainmenu.d:176 source/creator/widgets/mainmenu.d:217
-#, fuzzy
 msgid "Krita Document"
-msgstr "Documento de Photoshop"
+msgstr "Documento de Krita"
 
 #: source/creator/widgets/mainmenu.d:182 source/creator/widgets/mainmenu.d:265
 msgid "Inochi2D Puppet"
@@ -1885,9 +1884,8 @@ msgid "Merge layers from Photoshop document"
 msgstr "Fusionar capas de documento Photoshop"
 
 #: source/creator/widgets/mainmenu.d:228
-#, fuzzy
 msgid "Merge layers from Krita document"
-msgstr "Fusionar capas de documento Photoshop"
+msgstr "Fusionar capas de documento Krita"
 
 #: source/creator/widgets/mainmenu.d:230
 msgid "Image Files"
@@ -2493,9 +2491,8 @@ msgstr ""
 "lienzo."
 
 #: source/creator/windows/kramerge.d:454
-#, fuzzy
 msgid "KRA Merging"
-msgstr "Fusionar PSD"
+msgstr "Fusionar KRA"
 
 #. Points where the user can set parameter values
 #: source/creator/windows/paramaxes.d:156
@@ -2745,9 +2742,8 @@ msgid "Import PSD..."
 msgstr "Importar PSD..."
 
 #: source/creator/windows/welcome.d:259
-#, fuzzy
 msgid "Import KRA..."
-msgstr "Importar..."
+msgstr "Importar KRA..."
 
 #: source/creator/windows/welcome.d:271
 msgid "Recent Projects"
