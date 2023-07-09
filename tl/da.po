@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-09 18:46+0200\n"
-"PO-Revision-Date: 2023-07-09 18:52+0200\n"
+"POT-Creation-Date: 2023-07-10 00:12+0200\n"
+"PO-Revision-Date: 2023-07-10 00:13+0200\n"
 "Last-Translator: Luna <cli-luna@protonmail.com>\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -2459,12 +2459,12 @@ msgstr "Vis kun afmappede"
 msgid "Auto-rename"
 msgstr "Auto omnavngiv"
 
-#: source/creator/windows/kramerge.d:403 source/creator/windows/psdmerge.d:399
+#: source/creator/windows/kramerge.d:403
 msgid ""
-"Renames all mapped nodes to match the names of the PSD layer that was merged "
+"Renames all mapped nodes to match the names of the KRA layer that was merged "
 "in to them."
 msgstr ""
-"Omnavngiver alle mappede noder så at de matcher navnene på PSD lagene som "
+"Omnavngiver alle mappede noder så at de matcher navnene på KRA lagene som "
 "var flettet sammen med dem."
 
 #: source/creator/windows/kramerge.d:406 source/creator/windows/psdmerge.d:402
@@ -2522,6 +2522,14 @@ msgstr " (Split)"
 #: source/creator/windows/paramsplit.d:182
 msgid "Split Parameter"
 msgstr "Split Parametre"
+
+#: source/creator/windows/psdmerge.d:399
+msgid ""
+"Renames all mapped nodes to match the names of the PSD layer that was merged "
+"in to them."
+msgstr ""
+"Omnavngiver alle mappede noder så at de matcher navnene på PSD lagene som "
+"var flettet sammen med dem."
 
 #: source/creator/windows/psdmerge.d:451
 msgid "PSD Merging"

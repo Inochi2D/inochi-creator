@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-09 18:46+0200\n"
-"PO-Revision-Date: 2023-07-09 23:00+0200\n"
+"POT-Creation-Date: 2023-07-10 00:12+0200\n"
+"PO-Revision-Date: 2023-07-10 00:13+0200\n"
 "Last-Translator: Yukusai <85849071+p-yukusai@users.noreply.github.com>, "
 "Grillo <@grillo_delmal@vt.social>, Anasu <@anasu@vt.social>\n"
 "Language-Team: Spanish\n"
@@ -2471,13 +2471,13 @@ msgstr "Solo mostrar no mapeados"
 msgid "Auto-rename"
 msgstr "Auto-renombrar"
 
-#: source/creator/windows/kramerge.d:403 source/creator/windows/psdmerge.d:399
+#: source/creator/windows/kramerge.d:403
 msgid ""
-"Renames all mapped nodes to match the names of the PSD layer that was merged "
+"Renames all mapped nodes to match the names of the KRA layer that was merged "
 "in to them."
 msgstr ""
 "Renombra todos los nodos mapeados para coincidir con los nombres de las "
-"capas PSD a las que fueron fusionados."
+"capas KRA a las que fueron fusionados."
 
 #: source/creator/windows/kramerge.d:406 source/creator/windows/psdmerge.d:402
 msgid "Re-translate"
@@ -2536,6 +2536,14 @@ msgstr " (Dividir)"
 #: source/creator/windows/paramsplit.d:182
 msgid "Split Parameter"
 msgstr "Dividir Parámetro"
+
+#: source/creator/windows/psdmerge.d:399
+msgid ""
+"Renames all mapped nodes to match the names of the PSD layer that was merged "
+"in to them."
+msgstr ""
+"Renombra todos los nodos mapeados para coincidir con los nombres de las "
+"capas PSD a las que fueron fusionados."
 
 #: source/creator/windows/psdmerge.d:451
 msgid "PSD Merging"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-09 18:46+0200\n"
+"POT-Creation-Date: 2023-07-10 00:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2389,9 +2389,9 @@ msgstr ""
 msgid "Auto-rename"
 msgstr ""
 
-#: source/creator/windows/kramerge.d:403 source/creator/windows/psdmerge.d:399
+#: source/creator/windows/kramerge.d:403
 msgid ""
-"Renames all mapped nodes to match the names of the PSD layer that was merged "
+"Renames all mapped nodes to match the names of the KRA layer that was merged "
 "in to them."
 msgstr ""
 
@@ -2448,6 +2448,12 @@ msgstr ""
 
 #: source/creator/windows/paramsplit.d:182
 msgid "Split Parameter"
+msgstr ""
+
+#: source/creator/windows/psdmerge.d:399
+msgid ""
+"Renames all mapped nodes to match the names of the PSD layer that was merged "
+"in to them."
 msgstr ""
 
 #: source/creator/windows/psdmerge.d:451

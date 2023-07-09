@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-09 18:46+0200\n"
-"PO-Revision-Date: 2023-07-09 18:55+0200\n"
+"POT-Creation-Date: 2023-07-10 00:12+0200\n"
+"PO-Revision-Date: 2023-07-10 00:12+0200\n"
 "Last-Translator: Nejikugi <63852665+scrwnl@users.noreply.github.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
@@ -2447,11 +2447,11 @@ msgstr "未割り当てのみ表示"
 msgid "Auto-rename"
 msgstr "自動的にリネームする"
 
-#: source/creator/windows/kramerge.d:403 source/creator/windows/psdmerge.d:399
+#: source/creator/windows/kramerge.d:403
 msgid ""
-"Renames all mapped nodes to match the names of the PSD layer that was merged "
+"Renames all mapped nodes to match the names of the KRA layer that was merged "
 "in to them."
-msgstr "割り当てられたノードをすべてPSDのレイヤー名に変更します。"
+msgstr "割り当てられたノードをすべてKRAのレイヤー名に変更します。"
 
 #: source/creator/windows/kramerge.d:406 source/creator/windows/psdmerge.d:402
 msgid "Re-translate"
@@ -2507,6 +2507,12 @@ msgstr " (分割)"
 #: source/creator/windows/paramsplit.d:182
 msgid "Split Parameter"
 msgstr "パラメータを分割"
+
+#: source/creator/windows/psdmerge.d:399
+msgid ""
+"Renames all mapped nodes to match the names of the PSD layer that was merged "
+"in to them."
+msgstr "割り当てられたノードをすべてPSDのレイヤー名に変更します。"
 
 #: source/creator/windows/psdmerge.d:451
 msgid "PSD Merging"

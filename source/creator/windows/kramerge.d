@@ -218,7 +218,7 @@ private:
             }
         }
         
-        // Unload PSD, we're done with it
+        // Unload KRA, we're done with it
         destroy(document);
         puppet.root.transformChanged();
         updatePart(puppet.root);
@@ -400,7 +400,7 @@ protected:
 
             // Auto-rename
             igCheckbox(__("Auto-rename"), &renameMapped);
-            incTooltip(_("Renames all mapped nodes to match the names of the PSD layer that was merged in to them."));
+            incTooltip(_("Renames all mapped nodes to match the names of the KRA layer that was merged in to them."));
 
             igSameLine(0, 8);
             igCheckbox(__("Re-translate"), &retranslateMapped);
@@ -408,7 +408,7 @@ protected:
 
             // igSameLine(0, 8);
             // igCheckbox(__("Re-sort"), &resortModel);
-            // incTooltip(_("[NOT IMPLEMENTED] Sorts all nodes zSorting position to match the sorting in the PSD."));
+            // incTooltip(_("[NOT IMPLEMENTED] Sorts all nodes zSorting position to match the sorting in the KRA."));
 
 
             // Spacer
