@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-07-10 00:12+0200\n"
-"PO-Revision-Date: 2023-07-10 00:12+0200\n"
+"PO-Revision-Date: 2023-07-11 01:01+0900\n"
 "Last-Translator: Nejikugi <63852665+scrwnl@users.noreply.github.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 2.3\n"
 
 #: source/app.d:93
 msgid "Inochi Creator (Nightly)"
@@ -151,12 +151,12 @@ msgstr "%sを原点から移動しました。"
 #: source/creator/actions/node.d:219 source/creator/actions/node.d:228
 #, c-format
 msgid "%s is added to mask of %s"
-msgstr ""
+msgstr "%sが%sのマスクに追加されました"
 
 #: source/creator/actions/node.d:220 source/creator/actions/node.d:227
 #, c-format
 msgid "%s is deleted from mask of %s"
-msgstr ""
+msgstr "%sが%sのマスクから削除されました"
 
 #: source/creator/actions/node.d:271 source/creator/actions/node.d:278
 msgid "Enabled"
@@ -734,7 +734,7 @@ msgstr "加算"
 #: source/creator/panels/inspector.d:829 source/creator/panels/inspector.d:1040
 #: source/creator/windows/inpexport.d:294
 msgid "Add (Glow)"
-msgstr ""
+msgstr "光彩"
 
 #. Color Burn blending mode
 #: source/creator/panels/inspector.d:832 source/creator/panels/inspector.d:1043
@@ -787,7 +787,7 @@ msgstr "レイヤーの上にある色に従って色を反転します。"
 #: source/creator/panels/inspector.d:854 source/creator/panels/inspector.d:1065
 #: source/creator/windows/inpexport.d:319
 msgid "Destination In"
-msgstr ""
+msgstr "Destination-In (Porter Duff)"
 
 #. Clip to Lower blending mode
 #: source/creator/panels/inspector.d:857 source/creator/windows/inpexport.d:322
@@ -1163,7 +1163,7 @@ msgstr "入れ替え"
 
 #: source/creator/panels/parameters.d:835
 msgid "New Parameter Group"
-msgstr "新規パラメータグループを追加"
+msgstr "新規パラメータグループ"
 
 #: source/creator/panels/parameters.d:939
 msgid "Edit Properties"
@@ -1297,7 +1297,7 @@ msgstr "乗算"
 
 #: source/creator/panels/timeline.d:101
 msgid "Forced"
-msgstr "強制"
+msgstr "強制上書き"
 
 #: source/creator/panels/timeline.d:211
 msgid "Lock playback to animation framerate"
@@ -1673,11 +1673,11 @@ msgstr "ノードが選択されていません..."
 
 #: source/creator/viewport/package.d:505
 msgid "Editing armed parameter..."
-msgstr ""
+msgstr "デフォーマを編集中"
 
 #: source/creator/viewport/package.d:505
 msgid "Editing base transform..."
-msgstr ""
+msgstr "パーツのベース位置・姿勢を編集中"
 
 #: source/creator/viewport/vertex/package.d:51
 msgid "Flip Horizontally"
@@ -1865,11 +1865,11 @@ msgstr "マージ"
 
 #: source/creator/widgets/mainmenu.d:215
 msgid "Merge layers from Photoshop document"
-msgstr "PhotoshopのPSDファイルのレイヤーをマージします。"
+msgstr "PhotoshopのPSDファイル中のレイヤーをマージします。"
 
 #: source/creator/widgets/mainmenu.d:228
 msgid "Merge layers from Krita document"
-msgstr "Kritaファイルのレイヤーをマージします。"
+msgstr "Kritaの画像ファイル中のレイヤーをマージします。"
 
 #: source/creator/widgets/mainmenu.d:230
 msgid "Image Files"
@@ -1877,7 +1877,7 @@ msgstr "画像ファイル"
 
 #: source/creator/widgets/mainmenu.d:246
 msgid "Merges (adds) selected image files to project"
-msgstr "選択されている画像をプロジェクトにマージ(追加)する。"
+msgstr "選択されている画像をプロジェクトにマージ(追加)します。"
 
 #: source/creator/widgets/mainmenu.d:248
 msgid "Inochi Creator Project"
@@ -2090,7 +2090,7 @@ msgstr "パペットのミップマップを再作成"
 
 #: source/creator/widgets/mainmenu.d:507
 msgid "Generate fake layer name info..."
-msgstr "仮のレイヤー情報を生成"
+msgstr "仮のレイヤー情報を生成..."
 
 #: source/creator/widgets/mainmenu.d:517
 msgid "Generates fake layer info based on node names"
@@ -2284,7 +2284,7 @@ msgstr "カスタムレート"
 
 #: source/creator/windows/editanim.d:157
 msgid "New Animation..."
-msgstr "新規アニメーション"
+msgstr "新規アニメーション..."
 
 #: source/creator/windows/editanim.d:170
 #, c-format
@@ -2365,7 +2365,8 @@ msgid ""
 "Whether too large parts should individually be scaled down instead of all "
 "parts being scaled down uniformly."
 msgstr ""
-"大きなパーツを個別に縮小するか、全パーツを一括して縮小するかを指定します。"
+"全パーツの縮小率を一律にするか、大きなパーツに対して個々に縮小率を変更させる"
+"かを指定します。"
 
 #: source/creator/windows/inpexport.d:162
 msgid "Texture Scale"
@@ -2464,7 +2465,7 @@ msgstr "PSD上のレイヤーの位置に合わせて、全ノードの位置を
 
 #: source/creator/windows/kramerge.d:454
 msgid "KRA Merging"
-msgstr "KRAファイルをマージする"
+msgstr "KRAファイルのマージ"
 
 #. Points where the user can set parameter values
 #: source/creator/windows/paramaxes.d:156
@@ -2516,7 +2517,7 @@ msgstr "割り当てられたノードをすべてPSDのレイヤー名に変更
 
 #: source/creator/windows/psdmerge.d:451
 msgid "PSD Merging"
-msgstr "PSDファイルをマージする"
+msgstr "PSDファイルのマージ"
 
 #: source/creator/windows/rename.d:64
 #, c-format
@@ -2680,7 +2681,7 @@ msgstr "閉じる"
 
 #: source/creator/windows/videoexport.d:281
 msgid "Export Video..."
-msgstr "ビデオのエクスポート"
+msgstr "動画への書き出し..."
 
 #: source/creator/windows/videoexport.d:284
 msgid "FFMPEG was not found, please install FFMPEG to export video."
@@ -2738,7 +2739,7 @@ msgstr "ドキュメント"
 
 #: source/creator/windows/welcome.d:316
 msgid "Join our Discord"
-msgstr "私たちのDiscordに参加"
+msgstr "Inochi2DのDiscordに参加"
 
 #: source/creator/windows/welcome.d:324
 msgid "Patreon"
