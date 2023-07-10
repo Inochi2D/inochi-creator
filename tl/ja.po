@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-07-10 00:12+0200\n"
-"PO-Revision-Date: 2023-07-11 00:50+0900\n"
+"PO-Revision-Date: 2023-07-11 01:01+0900\n"
 "Last-Translator: Nejikugi <63852665+scrwnl@users.noreply.github.com>\n"
 "Language-Team: Language ja\n"
 "Language: ja\n"
@@ -151,12 +151,12 @@ msgstr "%sを原点から移動しました。"
 #: source/creator/actions/node.d:219 source/creator/actions/node.d:228
 #, c-format
 msgid "%s is added to mask of %s"
-msgstr "%sがマスク(%s)に追加されました"
+msgstr "%sが%sのマスクに追加されました"
 
 #: source/creator/actions/node.d:220 source/creator/actions/node.d:227
 #, c-format
 msgid "%s is deleted from mask of %s"
-msgstr "%sがマスク(%s)から削除されました"
+msgstr "%sが%sのマスクから削除されました"
 
 #: source/creator/actions/node.d:271 source/creator/actions/node.d:278
 msgid "Enabled"
