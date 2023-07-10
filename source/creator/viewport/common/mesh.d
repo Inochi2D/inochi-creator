@@ -931,6 +931,13 @@ public:
     }
 
     Deformation* deformByDeformationBinding(Drawable part, Deformation deform, bool flipHorz = false) {
+        if (deform.vertexOffsets.length == 0) {
+            vec2[] vertexOffsets = [];
+            for (int i = 0; i < vertices.length; i++)
+                vertexOffsets ~= vec2(0, 0);
+            return new Deformation(vertexOffsets);
+        }
+
         auto origVertices = vertices.dup;
 
         // find triangle which covers specified point. 
