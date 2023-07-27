@@ -1170,6 +1170,15 @@ void incInspectorModelComposite(Composite node) {
             igEndDragDropTarget();
         }
 
+        bool propagateMeshGroup = node.propagateMeshGroup;
+        if (igCheckbox(__("Propagate MeshGroup"), &propagateMeshGroup)) {
+            node.propagateMeshGroup = propagateMeshGroup;
+            long offset = node.parent !is null? node.parent.children.countUntil(node): 0;
+            if (node.parent !is null)
+                node.reparent(node.parent, offset);
+        }
+        incTooltip(_("Allow ascendant MeshGroup to deform children of Composite"));
+
         // Padding
         igSpacing();
         igSpacing();
