@@ -100,7 +100,7 @@ protected:
                 );
 
                 //Logo
-                igSetCursorPosY(origin.y+4);
+                igSetCursorPos(ImVec2(0, 0));
                 version(InBranding) {
                     igImage(cast(void*)bannerLogo.getTextureId(), ImVec2(bannerLogo.width/4, bannerLogo.height/4));
                 } else {
