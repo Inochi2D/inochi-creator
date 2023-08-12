@@ -48,8 +48,8 @@ version(Windows) {
 
 string getCrashDumpDir() {
     version(Windows) return getDesktopDir();
-    else version(OSX) return expandTilde("~/Library/Logs/inochi-creator-crashdump.txt");
-    else version(linux) return expandTilde("$XDG_STATE_HOME/inochi-creator-crashdump.txt"); // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
+    else version(OSX) return expandTilde("~/Library/Logs/");
+    else version(linux) return expandTilde("$XDG_STATE_HOME/"); // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
     else return expandTilde("~");
 }
 
