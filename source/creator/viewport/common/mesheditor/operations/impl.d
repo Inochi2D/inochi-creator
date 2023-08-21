@@ -129,4 +129,7 @@ public:
         }
     }
 
+    override
+    Tool getTool() { return tools[toolMode]; }
+
 }
