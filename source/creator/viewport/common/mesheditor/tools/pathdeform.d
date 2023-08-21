@@ -22,10 +22,19 @@ import std.stdio;
 import std.math;
 
 class PathDeformTool : NodeSelect {
-
     CatmullSpline path;
     uint pathDragTarget;
     uint lockedPoint;
+
+    enum Mode {
+        Define,
+        Transform
+    }
+
+    Mode mode = Mode.Define;
+    Mode prevMode = Mode.Define;
+    bool _isShiftMode = false;
+    bool _isRotateMode = false;
 
     override
     void setToolMode(VertexToolMode toolMode, IncMeshEditorOne impl) {
@@ -41,6 +50,13 @@ class PathDeformTool : NodeSelect {
             lockedPoint = -1;
         }
     }
+
+    Mode getMode() { return mode; }
+    void setMode(Mode mode) { this.mode = mode; }
+    bool getIsShiftMode() { return _isShiftMode; }
+    void setIsShiftMode(bool value) { _isShiftMode = value; }
+    bool getIsRotateMode() { return _isRotateMode; }
+    void setIsRotateMode(bool value) { _isRotateMode = value; }
 
     override bool update(ImGuiIO* io, IncMeshEditorOne impl, int action, out bool changed) {
         super.update(io, impl, action, changed);
@@ -63,7 +79,7 @@ class PathDeformTool : NodeSelect {
         
         impl.vtxAtMouse = ulong(-1); // Do not need this in this mode
 
-        if (incInputIsKeyPressed(ImGuiKey.Tab)) {
+        if (mode != prevMode || incInputIsKeyPressed(ImGuiKey.Tab)) {
             if (path.target is null) {
                 impl.createPathTarget();
                 impl.getCleanDeformAction();
@@ -74,6 +90,7 @@ class PathDeformTool : NodeSelect {
                 }
             }
             impl.deforming = !impl.deforming;
+            mode = impl.deforming? Mode.Transform: Mode.Define;
             if (impl.deforming) {
                 impl.getCleanDeformAction();
                 impl.updatePathTarget();
@@ -98,12 +115,13 @@ class PathDeformTool : NodeSelect {
             path.mapReference();
         } else if (igIsMouseClicked(ImGuiMouseButton.Left)) {
             auto target = editPath.findPoint(impl.mousePos);
-            if (io.KeyCtrl) {
+            if (io.KeyCtrl || _isRotateMode) {
                 if (target == lockedPoint)
                     lockedPoint = -1;
                 else
                     lockedPoint = target;
                 pathDragTarget = -1;
+                _isRotateMode = false;
             } else {
                 pathDragTarget = target;
             }
@@ -130,11 +148,13 @@ class PathDeformTool : NodeSelect {
                     for (int i = lockedPoint + step; 0 <= i && i < editPath.points.length; i += step) {
                         editPath.points[i].position = (rotate * vec4(editPath.points[i].position, 0, 1)).xy;
                     }
-                } else if (io.KeyShift) {
+                } else if (io.KeyShift || _isShiftMode) {
+                    _isShiftMode = true;
                     float off = path.findClosestPointOffset(impl.mousePos);
                     vec2 pos  = path.eval(off);
                     editPath.points[pathDragTarget].position = pos;
                 } else {
+                    _isShiftMode = false;
                     vec2 relTranslation = impl.mousePos - impl.lastMousePos;
                     editPath.points[pathDragTarget].position += relTranslation;
                 }
@@ -150,6 +170,8 @@ class PathDeformTool : NodeSelect {
                 }
             }
         }
+
+        this.prevMode = this.mode;
 
         if (changed) impl.refreshMesh();
         return changed;

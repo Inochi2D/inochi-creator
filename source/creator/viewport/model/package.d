@@ -209,6 +209,8 @@ void incViewportModelOptions() {
                 incEndDropdownMenu();
             }
             incTooltip(_("Gizmos"));
+        } else {
+            incViewportModelDeformOptions();
         }
     igPopStyleVar(2);
 }
