@@ -43,7 +43,8 @@ class NodeSelect : Tool, Draggable {
         impl.deselectAll();
     }
 
-    override int peek(ImGuiIO* io, IncMeshEditorOne impl) {
+    override 
+    int peek(ImGuiIO* io, IncMeshEditorOne impl) {
         impl.lastMousePos = impl.mousePos;
 
         impl.mousePos = incInputGetMousePosition();
@@ -61,15 +62,18 @@ class NodeSelect : Tool, Draggable {
         return 0;
     }
 
-    override int unify(int[] actions) {
+    override 
+    int unify(int[] actions) {
         return 0;
     }
 
-    override bool update(ImGuiIO* io, IncMeshEditorOne impl, int action, out bool changed) {
+    override 
+    bool update(ImGuiIO* io, IncMeshEditorOne impl, int action, out bool changed) {
         return false;
     }
 
-    override bool onDragStart(vec2 mousePos, IncMeshEditorOne impl) {
+    override 
+    bool onDragStart(vec2 mousePos, IncMeshEditorOne impl) {
         if (!impl.isSelecting) {
             isDragging = true;
             impl.getDeformAction();
@@ -78,7 +82,8 @@ class NodeSelect : Tool, Draggable {
         return false;
     }
 
-    override bool onDragEnd(vec2 mousePos, IncMeshEditorOne impl) {
+    override 
+    bool onDragEnd(vec2 mousePos, IncMeshEditorOne impl) {
         isDragging = false;
         if (impl.isSelecting) {
             if (impl.mutateSelection) {
@@ -106,7 +111,8 @@ class NodeSelect : Tool, Draggable {
         return true;
     }
 
-    override bool onDragUpdate(vec2 mousePos, IncMeshEditorOne impl) {
+    override 
+    bool onDragUpdate(vec2 mousePos, IncMeshEditorOne impl) {
         if (isDragging) {
             foreach(select; impl.selected) {
                 impl.foreachMirror((uint axis) {

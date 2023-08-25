@@ -18,6 +18,7 @@ import std.algorithm.mutation;
 import std.array;
 import std.math : isFinite, PI, atan2;
 import std.stdio;
+import std.algorithm.searching;
 
 private {
     float nearestLine(vec2 a, vec2 b, vec2 c)
@@ -72,7 +73,6 @@ private:
     vec2[] interpolated;
     vec3[] drawLines;
     vec3[] drawPoints;
-    vec3[] refOffsets;
 
 public:
     uint resolution = 40;
@@ -81,6 +81,7 @@ public:
     vec2[] refMesh;
     vec2[] initTangents;
     CatmullSpline target;
+    vec3[] refOffsets;
 
     float origX, origY, origRotZ;
 
@@ -139,7 +140,7 @@ public:
         initTangents.length = 0;
 
         float epsilon = 0.0001;
-        foreach(vtx; refMesh) {
+        foreach(i, vtx; refMesh) {
             float off = findClosestPointOffset(vtx);
             // FIXME: calculate tangent properly
             vec2 pt = target.eval(off);
@@ -222,7 +223,7 @@ public:
         }
     }
 
-    mat4 updateTarget(T)(T mesh) {
+    mat4 updateTarget(T)(T mesh, ulong[] selected = null) {
         if (points.length < 2) {
             resetTarget(mesh);
             return mat4.identity;
@@ -232,6 +233,7 @@ public:
         mat4 result;
         foreach(i, rel; refOffsets) {
             if (!isFinite(rel.z)) continue;
+            if (selected && selected.countUntil(i) < 0) continue;
 
             // FIXME: calculate tangent properly
             vec2 pt = target.eval(rel.z);
