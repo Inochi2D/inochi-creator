@@ -199,7 +199,8 @@ class MeshEditorAction(T)  : LazyBoundAction {
     mat4 oldEditorTransform = mat4.identity();
     mat4 newEditorTransform = mat4.identity();
     Parameter      param;
-    vec2u  keypoint;
+    vec2u  oldKeypoint;
+    vec2u  newKeypoint;
 
     this(Node target, T action = null) {
         this.target = target;
@@ -220,7 +221,7 @@ class MeshEditorAction(T)  : LazyBoundAction {
         if (auto lazyAction = cast(LazyBoundAction)action)
             lazyAction.updateNewState();
         if (self !is null) {
-            newEditorTransform = self.transform;
+            newKeypoint = param.findClosestKeypoint();
         }
     }
 
@@ -229,8 +230,8 @@ class MeshEditorAction(T)  : LazyBoundAction {
             target       = null;
             param        = null;
         } else {
-            param        = incArmedParameter();
-            keypoint     = param.findClosestKeypoint();
+            param              = incArmedParameter();
+            oldKeypoint        = param.findClosestKeypoint();
             oldEditorTransform = self.transform;
         }
         if (auto lazyAction = cast(LazyBoundAction)action)
@@ -246,12 +247,17 @@ class MeshEditorAction(T)  : LazyBoundAction {
     */
     void rollback() {
         if (action !is null) {
+            if (self !is null) {
+                param.pushIOffset(param.getKeypointValue(newKeypoint), ParamMergeMode.Forced);
+            }
             action.rollback();
             if (isApplyable()) {
                 self.transform = oldEditorTransform;
             }
-            if (self !is null)
+            if (self !is null) {
+                param.pushIOffset(param.getKeypointValue(oldKeypoint), ParamMergeMode.Forced);
                 self.forceResetAction();
+            }
         }
     }
 
@@ -261,11 +267,16 @@ class MeshEditorAction(T)  : LazyBoundAction {
     void redo() {
         if (action !is null) {
             action.redo();
+            if (self !is null) {
+                param.pushIOffset(param.getKeypointValue(oldKeypoint), ParamMergeMode.Forced);
+            }
             if (isApplyable()) {
                 self.transform = newEditorTransform;
             }
-            if (self !is null)
+            if (self !is null) {
+                param.pushIOffset(param.getKeypointValue(newKeypoint), ParamMergeMode.Forced);
                 self.forceResetAction();
+            }
         }
     }
 
@@ -448,18 +459,18 @@ public:
         super.redo();
         if (isApplyable()) {
             if (newPathPoints !is null && newPathPoints.length > 0 && path !is null) {
-                this.path.points = newPathPoints.dup;
+                path.points = newPathPoints.dup;
                 path.initTangents = newInitTangents.dup;
                 path.refOffsets = newRefOffsets.dup;
                 path.origX = newOrigX;
                 path.origY = newOrigY;
                 path.origRotZ  = newOrigRotZ;
-                this.path.update();
+                path.update();
             }
             if (newSelected !is null) self.selected = newSelected.dup;
             if (newTargetPathPoints !is null && newTargetPathPoints.length > 0 && path !is null && path.target !is null) {
-                this.path.target.points = newTargetPathPoints.dup;
-                this.path.target.update();
+                path.target.points = newTargetPathPoints.dup;
+                path.target.update();
             }
         }
    }

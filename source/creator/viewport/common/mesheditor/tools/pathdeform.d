@@ -103,7 +103,7 @@ class PathDeformTool : NodeSelect {
 
         } else if (igIsMouseClicked(ImGuiMouseButton.Left)) {
             auto target = editPath.findPoint(impl.mousePos);
-            if (io.KeyCtrl || _isRotateMode) {
+            if (target != -1 && (io.KeyCtrl || _isRotateMode)) {
                 if (target == lockedPoint)
                     return PathDeformActionID.UnsetRotateCenter;
                 else if (target != -1)
@@ -115,10 +115,10 @@ class PathDeformTool : NodeSelect {
 
         int action = SelectActionID.None;
 
+        bool preDragging = isDragging;
         if (incDragStartedInViewport(ImGuiMouseButton.Left) && igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
             if (pathDragTarget != -1)  {
                 isDragging = true;
-                action = PathDeformActionID.StartTransform;
             }
         }
 
@@ -127,12 +127,14 @@ class PathDeformTool : NodeSelect {
                 if (lockedPoint != -1) {
                     action = PathDeformActionID.Rotate;
                 } else if (io.KeyShift || _isShiftMode) {
-                    if (action == PathDeformActionID.StartTransform)
+                    if (isDragging != preDragging)
                         action = PathDeformActionID.StartShiftTransform;
                     else
                         action = PathDeformActionID.Shift;
                 } else {
-                    if (action != PathDeformActionID.StartTransform)
+                    if (isDragging != preDragging)
+                        action = PathDeformActionID.StartTransform;
+                    else
                         action = PathDeformActionID.Transform;
                 }
             }
@@ -245,7 +247,7 @@ class PathDeformTool : NodeSelect {
         }
 
         if (action == PathDeformActionID.StartTransform || action == PathDeformActionID.StartShiftTransform) {
-            impl.getDeformAction();
+            (cast(MeshEditorAction!DeformationAction)(impl.getDeformAction())).clear();
         }
 
         if (action == PathDeformActionID.RemovePoint || action == PathDeformActionID.AddPoint) {
