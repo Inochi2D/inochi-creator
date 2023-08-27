@@ -334,6 +334,8 @@ class PathDeformTool : NodeSelect {
             onDragStart(impl.mousePos, impl);
         }
 
+        this.prevMode = this.mode;
+
         if (changed) impl.refreshMesh();
         return changed;
     }
