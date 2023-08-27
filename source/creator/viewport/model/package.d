@@ -52,12 +52,18 @@ void incViewportModelMenuOpening() {
 }
 
 void incViewportModelMenu() {
+    if (auto editor = incViewportModelDeformGetEditor()) {
+        editor.popupMenu();
+    }
+    igNewLine();
+    igSeparator();
+    
     if (incSelectedNode() != incActivePuppet().root) {
         if (igMenuItem(__("Focus Selected"))) {
             incFocusCamera(incSelectedNode());
         }
     }
-    
+
     if (igBeginChild("FOUND_PARTS", ImVec2(256, 256), false)) {
         if (foundParts.length > 0) {
             ImVec2 avail = incAvailableSpace();

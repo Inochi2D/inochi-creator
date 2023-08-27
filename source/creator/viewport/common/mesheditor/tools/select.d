@@ -40,7 +40,7 @@ class NodeSelect : Tool, Draggable {
         assert(!impl.deformOnly || toolMode != VertexToolMode.Connect);
         isDragging = false;
         impl.isSelecting = false;
-        impl.deselectAll();
+//        impl.deselectAll();
     }
 
     override 

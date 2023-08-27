@@ -15,11 +15,14 @@ import creator.viewport.common.mesheditor.tools;
 import creator.viewport.common;
 import creator.viewport.common.mesh;
 import creator.viewport.common.spline;
+import creator.viewport.model.deform;
 import creator.core.input;
 import creator.core.actionstack;
+import creator.windows.flipconfig;
 import creator.actions;
 import creator.ext;
 import creator.widgets;
+import creator.utils.transform;
 import creator;
 import inochi2d;
 import inochi2d.core.dbg;
@@ -275,6 +278,88 @@ public:
 
 
             igPopStyleVar(2);
+        }
+    }
+
+    void resetSelection() {
+        auto param = incArmedParameter();
+        auto cParamPoint = param.findClosestKeypoint();
+
+        ParameterBinding[] bindings = [];
+        foreach (drawing, editor; editors) {
+            bindings ~= param.getOrAddBinding(drawing, "deform");
+        }
+
+        auto action = new ParameterChangeBindingsValueAction("reset selection", param, bindings, cParamPoint.x, cParamPoint.y);
+        foreach (drawing, editor; editors) {
+            auto binding = cast(DeformationParameterBinding)(param.getOrAddBinding(drawing, "deform"));
+            assert (binding !is null);
+
+            void clearValue(ref Deformation val) {
+                // Reset deformation to identity, with the right vertex count
+                if (Drawable d = cast(Drawable)drawing) {
+                    val.vertexOffsets.length = d.vertices.length;
+                    foreach(i; 0..d.vertices.length) {
+                        if (editor.selected.countUntil(i) >= 0)
+                            val.vertexOffsets[i] = vec2(0);
+                    }
+                }
+            }
+            clearValue(binding.values[cParamPoint.x][cParamPoint.y]);
+            binding.getIsSet()[cParamPoint.x][cParamPoint.y] = true;
+
+        }
+        action.updateNewState();
+        incActionPush(action);
+        incViewportNodeDeformNotifyParamValueChanged();
+    }
+
+    void flipSelection() {
+        auto param = incArmedParameter();
+        auto cParamPoint = param.findClosestKeypoint();
+
+        ParameterBinding[] bindings = [];
+        foreach (drawing, editor; editors) {
+            bindings ~= param.getOrAddBinding(drawing, "deform");
+        }
+
+        incActionPushGroup();
+        auto action = new ParameterChangeBindingsValueAction("Flip selection horizontaly from mirror", param, bindings, cParamPoint.x, cParamPoint.y);
+        foreach (drawing, editor; editors) {
+            auto binding = cast(DeformationParameterBinding)(param.getOrAddBinding(drawing, "deform"));
+            assert (binding !is null);
+
+            Node target = binding.getTarget().node;
+            auto pair = incGetFlipPairFor(target);
+            auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), false);
+
+            if (true)
+                autoFlipBinding(binding, targetBinding, cParamPoint, 0, true, &editor.selected);
+            else
+                autoFlipBinding(targetBinding, binding, cParamPoint, 0, true, &editor.selected);
+        }
+        action.updateNewState();
+        incActionPush(action);
+        incActionPopGroup();
+        incViewportNodeDeformNotifyParamValueChanged();        
+    }
+
+    void popupMenu() {
+        bool selected = false;
+        foreach (drawing, editor; editors) {
+            if (editor.selected.length > 0) {
+                selected = true;
+                break;
+            }
+        }
+
+        if (selected) {
+            if (igMenuItem(__("Reset selected"), "", false, true)) {
+                resetSelection();
+            }
+            if (igMenuItem(__("Flip selected from mirror"), "", false, true)) {
+                flipSelection();
+            }
         }
     }
 
