@@ -49,7 +49,7 @@ ParameterBinding incBindingGetPairFor(Parameter param, Node target, FlipPair pai
 
 
 /** 
-    * autoFlipBinding: flipping or paste binding from srcBinding.
+    * incBindingAutoFlip: flipping or paste binding from srcBinding.
     * if extrapolation is set to true, this function copies deformation from mirrored position, otherwise, deformation is copied from same index.
     * if axis is set other than 2, data is flipped in any direction.
     * Usage:
