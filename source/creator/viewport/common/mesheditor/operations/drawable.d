@@ -292,7 +292,7 @@ public:
 
     override
     mat4 updatePathTarget() {
-        return getPath().updateTarget(mesh);
+        return getPath().updateTarget(mesh, selected);
     }
 
     override
@@ -302,7 +302,7 @@ public:
 
     override
     void remapPathTarget(ref CatmullSpline p, mat4 trans) {
-        p.remapTarget(mesh);
+        p.remapTarget(mesh, mat4.identity);
     }
 
     override
@@ -612,7 +612,7 @@ public:
 
     override
     mat4 updatePathTarget() {
-        return getPath().updateTarget(mesh);
+        return getPath().updateTarget(mesh, selected);
     }
 
     override
@@ -622,7 +622,7 @@ public:
 
     override
     void remapPathTarget(ref CatmullSpline p, mat4 trans) {
-        p.remapTarget(mesh);
+        p.remapTarget(mesh, mat4.identity);
     }
 
     override

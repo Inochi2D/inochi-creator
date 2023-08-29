@@ -17,6 +17,7 @@ import creator.ext.param;
 import creator.viewport.common.mesheditor;
 import creator.viewport.common.mesh;
 import creator.windows.flipconfig;
+import creator.utils.transform;
 import creator;
 import std.string;
 import inochi2d;
@@ -88,119 +89,6 @@ private {
         incActionPush(action);
     }
 
-    /** 
-     * autoFlipBinding: flipping or paste binding from srcBinding.
-     * if extrapolation is set to true, this function copies deformation from mirrored position, otherwise, deformation is copied from same index.
-     * if axis is set other than 2, data is flipped in any direction.
-     * Usage:
-     * 1. set from mirror / mirrrored auto-fill:
-     *    extrapolation = true, axis is in one of {0, 1, -1}, srcBinding should be taken from same parameters
-     * 2. copy deformation from other binding / parameters
-     *    extrapolation = false, axis is in one of {0, 1, -1}, srcBinding should be taken from other parameters
-     * 3. copy deformation from other parts.
-     *    extrapolation = false, axis = 2
-     * Params:
-     *   binding = destination binding
-     *   srcBinding = source binding to be copied
-     *   index = target index of binding
-     *   axis = 0: flip horizontally, 1: flip vertically, -1: flip diagonally, 2: not flipped
-     *   extrapolation = specifying source index is selected in mirroered position or not.
-     */
-    void autoFlipBinding(ParameterBinding binding, ParameterBinding srcBinding, vec2u index, uint axis, bool extrapolation = true) {
-
-        T extrapolateValueAt(T)(ParameterBindingImpl!T binding, vec2u index, uint axis) {
-            vec2 offset = binding.parameter.getKeypointOffset(index);
-
-            switch (axis) {
-                case -1: offset = vec2(1, 1) - offset; break;
-                case 0: offset.x = 1 - offset.x; break;
-                case 1: offset.y = 1 - offset.y; break;
-                case 2: break; // Just paste from srcBinding
-                default: assert(false, "bad axis");
-            }
-
-            vec2u srcIndex;
-            vec2 subOffset;
-            binding.parameter.findOffset(offset, srcIndex, subOffset);
-
-            return binding.interpolate(srcIndex, subOffset);            
-        }
-        T interpolateValueAt(T)(ParameterBindingImpl!T binding, vec2u index, uint axis) {
-            vec2 offset = binding.parameter.getKeypointOffset(index);
-            vec2u srcIndex;
-            vec2 subOffset;
-            binding.parameter.findOffset(offset, srcIndex, subOffset);
-            return binding.interpolate(srcIndex, subOffset);            
-        }
-
-        auto deformBinding = cast(DeformationParameterBinding)binding;
-        if (srcBinding !is null) {
-            if (deformBinding !is null) {
-                Drawable drawable = cast(Drawable)deformBinding.getTarget().node;
-                auto srcDeformBinding = cast(DeformationParameterBinding)srcBinding;
-                Drawable srcDrawable = cast(Drawable)srcDeformBinding.getTarget().node;
-                auto mesh = new IncMesh(drawable.getMesh());
-                Deformation deform = extrapolation? extrapolateValueAt!Deformation(srcDeformBinding, index, axis):
-                                                    interpolateValueAt!Deformation(srcDeformBinding, index, axis);
-                auto newDeform = mesh.deformByDeformationBinding(srcDrawable, deform, extrapolation || axis < 1);
-                if (newDeform)
-                    deformBinding.setValue(index, *newDeform);
-
-            } else {
-                auto srcValueBinding = cast(ValueParameterBinding)srcBinding;
-                float value;
-                value = extrapolation? extrapolateValueAt!float(srcValueBinding, index, axis):
-                                       interpolateValueAt!float(srcValueBinding, index, axis);
-
-                auto valueBinding = cast(ValueParameterBinding)binding;
-                valueBinding.setValue(index, value);
-                if (axis < 2)
-                    valueBinding.scaleValueAt(index, axis, -1);
-            }
-
-        } else {
-            if (deformBinding !is null) {
-                Drawable drawable = cast(Drawable)deformBinding.getTarget().node;
-                auto mesh = new IncMesh(drawable.getMesh());
-                Deformation deform = extrapolation? extrapolateValueAt!Deformation(deformBinding, index, axis):
-                                                    interpolateValueAt!Deformation(deformBinding, index, axis);
-                auto newDeform = mesh.deformByDeformationBinding(drawable, deform, extrapolation || axis < 1);
-                if (newDeform)
-                    deformBinding.setValue(index, *newDeform);
-            } else {
-                if (extrapolation)
-                    binding.extrapolateValueAt(index, axis);
-            }
-        }
-    }
-
-    ParameterBinding getPairBindingFor(Parameter param, Node target, FlipPair pair, string name, bool forceCreate = false) {
-        Node pairNode;
-        ParameterBinding result = null;
-        if (pair !is null && pair.parts[0] !is null && pair.parts[0].uuid == target.uuid) {
-            pairNode = pair.parts[1];
-        } else if (pair !is null) {
-            pairNode = pair.parts[0];
-        }
-        if (pairNode is null && forceCreate) {
-            pairNode = target;
-        }
-        if (pairNode !is null) {
-            foreach (ParameterBinding binding; param.bindings) {
-                if (binding.getTarget().node.uuid == pairNode.uuid && binding.getName() == name)
-                    return binding;
-            }
-        }
-        if (forceCreate) {
-            result = param.createBinding(pairNode, name);
-            param.addBinding(result);
-            auto action = new ParameterBindingAddAction(param, result);
-            incActionPush(action);
-            return result;
-        }
-        return null;
-    }
-
     void mirroredAutofill(Parameter param, uint axis, float min, float max) {
         incActionPushGroup();
         auto action = new ParameterChangeBindingsAction("Mirror Auto Fill", param, null);
@@ -209,7 +97,7 @@ private {
 
             Node target = binding.getTarget().node;
             auto pair = incGetFlipPairFor(target);
-            auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), true);
+            auto targetBinding = incBindingGetPairFor(param, target, pair, binding.getName(), true);
             uint xCount = param.axisPointCount(0);
             uint yCount = param.axisPointCount(1);
             foreach(x; 0..xCount) {
@@ -220,7 +108,7 @@ private {
                     if (axis == 1 && (offY < min || offY > max)) continue;
 
                     vec2u index = vec2u(x, y);
-                    if (!targetBinding.isSet(index)) autoFlipBinding(targetBinding, binding, index, axis);
+                    if (!targetBinding.isSet(index)) incBindingAutoFlip(targetBinding, binding, index, axis);
                 }
             }
         }
@@ -241,13 +129,13 @@ private {
             FlipPair pair = null;
             if (axis != 2)
                 pair = incGetFlipPairFor(target);
-            auto binding = getPairBindingFor(param, target, pair, srcBinding.getName(), true);
+            auto binding = incBindingGetPairFor(param, target, pair, srcBinding.getName(), true);
             uint xCount = param.axisPointCount(0);
             uint yCount = param.axisPointCount(1);
             foreach(x; 0..xCount) {
                 foreach(y; 0..yCount) {
                     vec2u index = vec2u(x, y);
-                    autoFlipBinding(binding, srcBinding, index, axis, false);
+                    incBindingAutoFlip(binding, srcBinding, index, axis, false);
                 }
             }
         }
@@ -457,11 +345,11 @@ private {
                     foreach(binding; bindings) {
                         Node target = binding.getTarget().node;
                         auto pair = incGetFlipPairFor(target);
-                        auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), targetBindings is null);
+                        auto targetBinding = incBindingGetPairFor(param, target, pair, binding.getName(), targetBindings is null);
                         if (targetBindings !is null)
-                            autoFlipBinding(binding, targetBinding, cParamPoint, 0);
+                            incBindingAutoFlip(binding, targetBinding, cParamPoint, 0);
                         else
-                            autoFlipBinding(targetBinding, binding, cParamPoint, 0);
+                            incBindingAutoFlip(targetBinding, binding, cParamPoint, 0);
                     }
                     action.updateNewState();
                     incActionPush(action);
@@ -474,11 +362,11 @@ private {
                     foreach(binding; bindings) {
                         Node target = binding.getTarget().node;
                         auto pair = incGetFlipPairFor(target);
-                        auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), targetBindings is null);
+                        auto targetBinding = incBindingGetPairFor(param, target, pair, binding.getName(), targetBindings is null);
                         if (targetBindings !is null)
-                            autoFlipBinding(binding, targetBinding, cParamPoint, 1);
+                            incBindingAutoFlip(binding, targetBinding, cParamPoint, 1);
                         else
-                            autoFlipBinding(targetBinding, binding, cParamPoint, 1);
+                            incBindingAutoFlip(targetBinding, binding, cParamPoint, 1);
                     }
                     action.updateNewState();
                     incActionPush(action);
@@ -491,11 +379,11 @@ private {
                     foreach(binding; bindings) {
                         Node target = binding.getTarget().node;
                         auto pair = incGetFlipPairFor(target);
-                        auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), targetBindings is null);
+                        auto targetBinding = incBindingGetPairFor(param, target, pair, binding.getName(), targetBindings is null);
                         if (targetBindings !is null)
-                            autoFlipBinding(binding, targetBinding, cParamPoint, -1);
+                            incBindingAutoFlip(binding, targetBinding, cParamPoint, -1);
                         else
-                            autoFlipBinding(targetBinding, binding, cParamPoint, -1);
+                            incBindingAutoFlip(targetBinding, binding, cParamPoint, -1);
                     }
                     action.updateNewState();
                     incActionPush(action);
@@ -511,11 +399,11 @@ private {
                 foreach(binding; bindings) {
                     Node target = binding.getTarget().node;
                     auto pair = incGetFlipPairFor(target);
-                    auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), targetBindings is null);
+                    auto targetBinding = incBindingGetPairFor(param, target, pair, binding.getName(), targetBindings is null);
                     if (targetBindings !is null)
-                        autoFlipBinding(binding, targetBinding, cParamPoint, 0);
+                        incBindingAutoFlip(binding, targetBinding, cParamPoint, 0);
                     else
-                        autoFlipBinding(targetBinding, binding, cParamPoint, 0);
+                        incBindingAutoFlip(targetBinding, binding, cParamPoint, 0);
                 }
                 action.updateNewState();
                 incActionPush(action);
