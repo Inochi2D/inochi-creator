@@ -20,7 +20,7 @@ import std.algorithm.searching: countUntil;
 
 
 
-ParameterBinding getPairBindingFor(Parameter param, Node target, FlipPair pair, string name, bool forceCreate = false) {
+ParameterBinding incBindingGetPairFor(Parameter param, Node target, FlipPair pair, string name, bool forceCreate = false) {
     Node pairNode;
     ParameterBinding result = null;
     if (pair !is null && pair.parts[0] !is null && pair.parts[0].uuid == target.uuid) {
@@ -66,7 +66,7 @@ ParameterBinding getPairBindingFor(Parameter param, Node target, FlipPair pair, 
     *   axis = 0: flip horizontally, 1: flip vertically, -1: flip diagonally, 2: not flipped
     *   extrapolation = specifying source index is selected in mirroered position or not.
     */
-void autoFlipBinding(ParameterBinding binding, ParameterBinding srcBinding, vec2u index, uint axis, bool extrapolation = true, ulong[]* selected = null) {
+void incBindingAutoFlip(ParameterBinding binding, ParameterBinding srcBinding, vec2u index, uint axis, bool extrapolation = true, ulong[]* selected = null) {
 
     T extrapolateValueAt(T)(ParameterBindingImpl!T binding, vec2u index, uint axis) {
         vec2 offset = binding.parameter.getKeypointOffset(index);

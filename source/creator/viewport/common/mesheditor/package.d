@@ -331,12 +331,12 @@ public:
 
             Node target = binding.getTarget().node;
             auto pair = incGetFlipPairFor(target);
-            auto targetBinding = getPairBindingFor(param, target, pair, binding.getName(), false);
+            auto targetBinding = incBindingGetPairFor(param, target, pair, binding.getName(), false);
 
             if (true)
-                autoFlipBinding(binding, targetBinding, cParamPoint, 0, true, &editor.selected);
+                incBindingAutoFlip(binding, targetBinding, cParamPoint, 0, true, &editor.selected);
             else
-                autoFlipBinding(targetBinding, binding, cParamPoint, 0, true, &editor.selected);
+                incBindingAutoFlip(targetBinding, binding, cParamPoint, 0, true, &editor.selected);
         }
         action.updateNewState();
         incActionPush(action);
