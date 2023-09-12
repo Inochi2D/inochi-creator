@@ -623,7 +623,7 @@ public:
 
     override
     void remapPathTarget(ref CatmullSpline p, mat4 trans) {
-        p.remapTarget(mesh, trans); //mat4.identity);
+        p.remapTarget(mesh, trans, vertices); //mat4.identity);
     }
 
     override
@@ -779,12 +779,10 @@ public:
         auto drawable = cast(Drawable)target;
 
         mat4 trans = (target? drawable.getDynamicMatrix(): transform).inverse * transform;
+        deformation = drawable.deformation.dup;
         ref CatmullSpline doAdjust(ref CatmullSpline p) {
-//            for (int i; i < p.points.length; i++) {
-//                p.points[i].position = (trans * vec4(p.points[i].position, 0, 1)).xy;
-//            }
             p.update();
-//            remapPathTarget(p, mat4.identity);
+
             remapPathTarget(p, trans);
             return p;
         }
