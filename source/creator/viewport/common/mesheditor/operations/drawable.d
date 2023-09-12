@@ -472,7 +472,6 @@ protected:
     void substituteMeshVertices(MeshVertex* meshVertex) {
     }
     MeshEditorAction!DeformationAction editorAction = null;
-    vec2[] deformation;
     void updateTarget() {
         auto drawable = cast(Drawable)target;
         transform = drawable.getDynamicMatrix();
@@ -483,6 +482,7 @@ protected:
     }
 
 public:
+    vec2[] deformation;
     vec2[] vertices;
 
     this() {
