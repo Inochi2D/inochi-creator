@@ -343,9 +343,15 @@ public:
     vec3[] newRefOffsets;
     ulong[] oldSelected;
     ulong[] newSelected;
+    vec2[] oldDeformation;
+    vec2[] newDeformation;
     float oldOrigX, oldOrigY, oldOrigRotZ;
     float newOrigX, newOrigY, newOrigRotZ;
     
+    IncMeshEditorOneDrawableDeform selfDeform() {
+        return cast(IncMeshEditorOneDrawableDeform)self();
+    }
+
     auto path() {
         if (self !is null)
             return self.getPath();
@@ -372,8 +378,11 @@ public:
         }
         if (self !is null) {
             oldSelected = self.selected;
+            if (selfDeform !is null)
+                oldDeformation = selfDeform.deformation;
         } else {
             oldSelected = null;
+            oldDeformation = null;
         }
 
         if (this.path && this.path.target !is null)
@@ -395,6 +404,8 @@ public:
         }
         if (self !is null) {
             newSelected = self.selected;
+            if (selfDeform !is null)
+                newDeformation = selfDeform.deformation;
         }
         if (path !is null && path.target !is null) 
             newTargetPathPoints = path.target.points.dup;        
@@ -417,7 +428,11 @@ public:
             oldOrigY = 0;
             oldOrigRotZ = 0;
         }
-        if (self !is null) oldSelected = self.selected;
+        if (self !is null) {
+            oldSelected = self.selected;
+            if (selfDeform !is null)
+                oldDeformation = selfDeform.deformation;
+        }
         else oldSelected = null;
         if (path !is null && path.target !is null)
             oldTargetPathPoints = path.target.points.dup;
@@ -443,7 +458,11 @@ public:
                 path.origRotZ  = oldOrigRotZ;
                 path.update(); /// FIX ME: we need to recreate path object if needed.
             }
-            if (oldSelected !is null) self.selected = oldSelected.dup;
+            if (oldSelected !is null) {
+                self.selected = oldSelected.dup;
+            }
+            if (oldDeformation !is null)
+                selfDeform.deformation = oldDeformation.dup;
             if (oldTargetPathPoints !is null && oldTargetPathPoints.length > 0 && path !is null && path.target !is null) {
                 path.target.points = oldTargetPathPoints.dup;
                 path.target.update(); /// FIX ME: we need to recreate path object if needed.
@@ -467,7 +486,11 @@ public:
                 path.origRotZ  = newOrigRotZ;
                 path.update();
             }
-            if (newSelected !is null) self.selected = newSelected.dup;
+            if (newSelected !is null) {
+                self.selected = newSelected.dup;
+            }
+            if (newDeformation !is null)
+                selfDeform.deformation = newDeformation.dup;
             if (newTargetPathPoints !is null && newTargetPathPoints.length > 0 && path !is null && path.target !is null) {
                 path.target.points = newTargetPathPoints.dup;
                 path.target.update();
