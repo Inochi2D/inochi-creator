@@ -472,7 +472,7 @@ protected:
     void substituteMeshVertices(MeshVertex* meshVertex) {
     }
     MeshEditorAction!DeformationAction editorAction = null;
-
+    vec2[] deformation;
     void updateTarget() {
         auto drawable = cast(Drawable)target;
         transform = drawable.getDynamicMatrix();
@@ -494,6 +494,7 @@ public:
         Drawable drawable = cast(Drawable)target;
         if (drawable is null)
             return;
+        deformation = drawable.deformation.dup;
         super.setTarget(target);
         updateTarget();
         mesh = new IncMesh(drawable.getMesh());
@@ -607,12 +608,12 @@ public:
 
     override
     void createPathTarget() {
-        getPath().createTarget(mesh, mat4.identity); //transform.inverse() * target.transform.matrix);
+        getPath().createTarget(mesh, mat4.identity, vertices); //transform.inverse() * target.transform.matrix);
     }
 
     override
     mat4 updatePathTarget() {
-        return getPath().updateTarget(mesh, selected);
+        return getPath().updateTarget(mesh, selected, mat4.identity(), deformation);
     }
 
     override
@@ -622,7 +623,7 @@ public:
 
     override
     void remapPathTarget(ref CatmullSpline p, mat4 trans) {
-        p.remapTarget(mesh, mat4.identity);
+        p.remapTarget(mesh, trans); //mat4.identity);
     }
 
     override
@@ -779,11 +780,12 @@ public:
 
         mat4 trans = (target? drawable.getDynamicMatrix(): transform).inverse * transform;
         ref CatmullSpline doAdjust(ref CatmullSpline p) {
-            for (int i; i < p.points.length; i++) {
-                p.points[i].position = (trans * vec4(p.points[i].position, 0, 1)).xy;
-            }
+//            for (int i; i < p.points.length; i++) {
+//                p.points[i].position = (trans * vec4(p.points[i].position, 0, 1)).xy;
+//            }
             p.update();
-            remapPathTarget(p, mat4.identity);
+//            remapPathTarget(p, mat4.identity);
+            remapPathTarget(p, trans);
             return p;
         }
         if (getPath()) {
