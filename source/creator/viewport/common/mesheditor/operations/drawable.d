@@ -487,15 +487,20 @@ protected:
             return;
         deformation = drawable.deformation.dup;
         auto param = incArmedParameter();
-        auto binding = cast(DeformationParameterBinding)param.getBinding(drawable, "deform");
-
-        auto deform = binding.getValue(param.findClosestKeypoint());
-        if (drawable.deformation.length == deform.vertexOffsets.length) {
-            deformation.length = drawable.deformation.length;
-            foreach (i, d; drawable.deformation) {
-                deformation[i] = d - deform.vertexOffsets[i];
+        auto binding = cast(DeformationParameterBinding)(param? param.getBinding(drawable, "deform"): null);
+        if (binding is null) {
+            deformation = drawable.deformation.dup;
+            
+        } else {
+            auto deform = binding.getValue(param.findClosestKeypoint());
+            if (drawable.deformation.length == deform.vertexOffsets.length) {
+                deformation.length = drawable.deformation.length;
+                foreach (i, d; drawable.deformation) {
+                    deformation[i] = d - deform.vertexOffsets[i];
+                }
             }
         }
+            
     }
 
 public:
