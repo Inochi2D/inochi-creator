@@ -481,6 +481,23 @@ protected:
         }
     }
 
+    void importDeformation() {
+        Drawable drawable = cast(Drawable)target;
+        if (drawable is null)
+            return;
+        deformation = drawable.deformation.dup;
+        auto param = incArmedParameter();
+        auto binding = cast(DeformationParameterBinding)param.getBinding(drawable, "deform");
+
+        auto deform = binding.getValue(param.findClosestKeypoint());
+        if (drawable.deformation.length == deform.vertexOffsets.length) {
+            deformation.length = drawable.deformation.length;
+            foreach (i, d; drawable.deformation) {
+                deformation[i] = d - deform.vertexOffsets[i];
+            }
+        }
+    }
+
 public:
     vec2[] deformation;
     vec2[] vertices;
@@ -494,7 +511,7 @@ public:
         Drawable drawable = cast(Drawable)target;
         if (drawable is null)
             return;
-        deformation = drawable.deformation.dup;
+        importDeformation();
         super.setTarget(target);
         updateTarget();
         mesh = new IncMesh(drawable.getMesh());
@@ -779,7 +796,7 @@ public:
         auto drawable = cast(Drawable)target;
 
         mat4 trans = (target? drawable.getDynamicMatrix(): transform).inverse * transform;
-        deformation = drawable.deformation.dup;
+        importDeformation();
         ref CatmullSpline doAdjust(ref CatmullSpline p) {
             p.update();
 
