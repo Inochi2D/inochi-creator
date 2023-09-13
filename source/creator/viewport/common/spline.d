@@ -85,29 +85,35 @@ public:
 
     float origX, origY, origRotZ;
 
-    void createTarget(T)(T reference, mat4 trans) {
+    void createTarget(T)(T reference, mat4 trans, vec2[] vertices = null) {
         target = new CatmullSpline;
         target.resolution = resolution;
         target.selectRadius = selectRadius;
         target.points = points.dup;
         target.interpolate();
 
-        remapTarget(reference, trans);
+        remapTarget(reference, trans, vertices);
     }
 
-    void remapTarget(T)(T reference, mat4 trans = mat4.identity) {}
+    void remapTarget(T)(T reference, mat4 trans = mat4.identity, vec2[] vertices = null) {}
 
-    void remapTarget(IncMesh reference, mat4 trans = mat4.identity) {
+    void remapTarget(IncMesh reference, mat4 trans = mat4.identity, vec2[] vertices = null) {
         if (target !is null) {
             refMesh.length = 0;
-            foreach(ref MeshVertex* vtx; reference.vertices) {
-                refMesh ~= (trans * vec4(vtx.position, 0, 1)).xy;
+            if (vertices !is null) {
+                foreach(vertex; vertices) {
+                    refMesh ~= (trans * vec4(vertex, 0, 1)).xy;
+                }
+            } else {
+                foreach(ref MeshVertex* vtx; reference.vertices) {
+                    refMesh ~= (trans * vec4(vtx.position, 0, 1)).xy;
+                }
             }
             mapReference();
         }
     }
 
-    void remapTarget(Node node, mat4 trans = mat4.identity) {
+    void remapTarget(Node node, mat4 trans = mat4.identity, vec2[] vertices = null) {
         if (target !is null) {
             refMesh.length = 0;
             vec2 local = vec2(node.getValue("transform.t.x"), node.getValue("transform.t.y"));
@@ -165,12 +171,12 @@ public:
         }
     }
 
-    mat4 exportTarget(T)(ref T mesh, size_t i, ref vec2 vtx, vec2 tangent, vec2 initTangent) {
+    mat4 exportTarget(T)(ref T mesh, size_t i, ref vec2 vtx, vec2 tangent, vec2 initTangent, mat4 invert, vec2 deformation) {
         return mat4.identity();
     }
 
-    mat4 exportTarget(ref IncMesh mesh, size_t i, ref vec2 vtx, vec2 tangent, vec2 initTangent) {
-        mesh.vertices[i].position = vtx;
+    mat4 exportTarget(ref IncMesh mesh, size_t i, ref vec2 vtx, vec2 tangent, vec2 initTangent, mat4 invert, vec2 deformation) {
+        mesh.vertices[i].position = (invert * vec4(vtx, 0, 1)).xy - deformation;
         return mat4.identity();
     }
 
@@ -219,11 +225,11 @@ public:
 
     void resetTarget(T)(T mesh) {
         foreach(i, vtx; refMesh) {
-            exportTarget(mesh, i, vtx, vec2(0, 1), vec2(0, 1));
+            exportTarget(mesh, i, vtx, vec2(0, 1), vec2(0, 1), mat4.identity, vec2(0, 0));
         }
     }
 
-    mat4 updateTarget(T)(T mesh, ulong[] selected = null) {
+    mat4 updateTarget(T)(T mesh, ulong[] selected = null, mat4 invert = mat4.identity, vec2[] deformations = null) {
         if (points.length < 2) {
             resetTarget(mesh);
             return mat4.identity;
@@ -246,7 +252,7 @@ public:
                 pt.y + rel.y * tangent.x + rel.x * tangent.y
             );
 //             writefln("%s %s %s", vtx, rel, tangent);
-            result = exportTarget(mesh, i, vtx, tangent, initTangents.length > i ? initTangents[i]: tangent);
+            result = exportTarget(mesh, i, vtx, tangent, initTangents.length > i ? initTangents[i]: tangent, invert, deformations[i]);
         }
         return result;
     }
