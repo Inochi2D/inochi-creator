@@ -442,6 +442,30 @@ private {
                     incActionPush(action);
                 }
                 if (!isSingle) incActionPopGroup();
+            } else if (bindings.length == 1 && cClipboardBindings.length == 1) {
+                ParameterBinding binding = bindings[0];
+                ParameterBinding srcBinding = cClipboardBindings.values[0];
+                if (is(typeof(binding) == typeof(srcBinding))) {
+                    auto action = new ParameterChangeBindingsValueAction("paste", param, bindings, cParamPoint.x, cParamPoint.y);
+                    if (auto deformParam = cast(DeformationParameterBinding)(binding)) {
+                        auto deformBinding = cast(DeformationParameterBinding)binding;
+                        auto srcDeformBinding = cast(DeformationParameterBinding)srcBinding;
+                        Drawable drawable = cast(Drawable)deformBinding.getTarget().node;
+                        Drawable srcDrawable = cast(Drawable)srcDeformBinding.getTarget().node;
+                        auto mesh = new IncMesh(drawable.getMesh());
+                        Deformation deform = srcDeformBinding.getValue(cClipboardPoint);
+                        auto newDeform = mesh.deformByDeformationBinding(srcDrawable, deform, false);
+                        if (newDeform)
+                            deformBinding.setValue(cParamPoint, *newDeform);
+
+                    } else {
+                        ValueParameterBinding valueBinding = cast(ValueParameterBinding)(binding);
+                        ValueParameterBinding valueSrcBinding = cast(ValueParameterBinding)(srcBinding);
+                        valueBinding.setValue(cParamPoint, valueSrcBinding.getValue(cClipboardPoint));
+                    }
+                    action.updateNewState();
+                    incActionPush(action);
+                }
             }
         }
 
