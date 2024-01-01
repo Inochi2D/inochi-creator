@@ -18,6 +18,7 @@ import std.algorithm.mutation;
 import std.array;
 import std.math : isFinite, PI, atan2;
 import std.stdio;
+import std.algorithm.searching;
 
 private {
     float nearestLine(vec2 a, vec2 b, vec2 c)
@@ -72,7 +73,6 @@ private:
     vec2[] interpolated;
     vec3[] drawLines;
     vec3[] drawPoints;
-    vec3[] refOffsets;
 
 public:
     uint resolution = 40;
@@ -81,32 +81,39 @@ public:
     vec2[] refMesh;
     vec2[] initTangents;
     CatmullSpline target;
+    vec3[] refOffsets;
 
     float origX, origY, origRotZ;
 
-    void createTarget(T)(T reference, mat4 trans) {
+    void createTarget(T)(T reference, mat4 trans, vec2[] vertices = null) {
         target = new CatmullSpline;
         target.resolution = resolution;
         target.selectRadius = selectRadius;
         target.points = points.dup;
         target.interpolate();
 
-        remapTarget(reference, trans);
+        remapTarget(reference, trans, vertices);
     }
 
-    void remapTarget(T)(T reference, mat4 trans = mat4.identity) {}
+    void remapTarget(T)(T reference, mat4 trans = mat4.identity, vec2[] vertices = null) {}
 
-    void remapTarget(IncMesh reference, mat4 trans = mat4.identity) {
+    void remapTarget(IncMesh reference, mat4 trans = mat4.identity, vec2[] vertices = null) {
         if (target !is null) {
             refMesh.length = 0;
-            foreach(ref MeshVertex* vtx; reference.vertices) {
-                refMesh ~= (trans * vec4(vtx.position, 0, 1)).xy;
+            if (vertices !is null) {
+                foreach(vertex; vertices) {
+                    refMesh ~= (trans * vec4(vertex, 0, 1)).xy;
+                }
+            } else {
+                foreach(ref MeshVertex* vtx; reference.vertices) {
+                    refMesh ~= (trans * vec4(vtx.position, 0, 1)).xy;
+                }
             }
             mapReference();
         }
     }
 
-    void remapTarget(Node node, mat4 trans = mat4.identity) {
+    void remapTarget(Node node, mat4 trans = mat4.identity, vec2[] vertices = null) {
         if (target !is null) {
             refMesh.length = 0;
             vec2 local = vec2(node.getValue("transform.t.x"), node.getValue("transform.t.y"));
@@ -139,7 +146,7 @@ public:
         initTangents.length = 0;
 
         float epsilon = 0.0001;
-        foreach(vtx; refMesh) {
+        foreach(i, vtx; refMesh) {
             float off = findClosestPointOffset(vtx);
             // FIXME: calculate tangent properly
             vec2 pt = target.eval(off);
@@ -164,12 +171,12 @@ public:
         }
     }
 
-    mat4 exportTarget(T)(ref T mesh, size_t i, ref vec2 vtx, vec2 tangent, vec2 initTangent) {
+    mat4 exportTarget(T)(ref T mesh, size_t i, ref vec2 vtx, vec2 tangent, vec2 initTangent, mat4 invert, vec2 deformation) {
         return mat4.identity();
     }
 
-    mat4 exportTarget(ref IncMesh mesh, size_t i, ref vec2 vtx, vec2 tangent, vec2 initTangent) {
-        mesh.vertices[i].position = vtx;
+    mat4 exportTarget(ref IncMesh mesh, size_t i, ref vec2 vtx, vec2 tangent, vec2 initTangent, mat4 invert, vec2 deformation) {
+        mesh.vertices[i].position = (invert * vec4(vtx, 0, 1)).xy - deformation;
         return mat4.identity();
     }
 
@@ -218,11 +225,11 @@ public:
 
     void resetTarget(T)(T mesh) {
         foreach(i, vtx; refMesh) {
-            exportTarget(mesh, i, vtx, vec2(0, 1), vec2(0, 1));
+            exportTarget(mesh, i, vtx, vec2(0, 1), vec2(0, 1), mat4.identity, vec2(0, 0));
         }
     }
 
-    mat4 updateTarget(T)(T mesh) {
+    mat4 updateTarget(T)(T mesh, ulong[] selected = null, mat4 invert = mat4.identity, vec2[] deformations = null) {
         if (points.length < 2) {
             resetTarget(mesh);
             return mat4.identity;
@@ -232,6 +239,7 @@ public:
         mat4 result;
         foreach(i, rel; refOffsets) {
             if (!isFinite(rel.z)) continue;
+            if (selected && selected.countUntil(i) < 0) continue;
 
             // FIXME: calculate tangent properly
             vec2 pt = target.eval(rel.z);
@@ -244,7 +252,7 @@ public:
                 pt.y + rel.y * tangent.x + rel.x * tangent.y
             );
 //             writefln("%s %s %s", vtx, rel, tangent);
-            result = exportTarget(mesh, i, vtx, tangent, initTangents.length > i ? initTangents[i]: tangent);
+            result = exportTarget(mesh, i, vtx, tangent, initTangents.length > i ? initTangents[i]: tangent, invert, deformations[i]);
         }
         return result;
     }

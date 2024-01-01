@@ -83,6 +83,12 @@ void incViewportModelDeformTools() {
     }
 }
 
+void incViewportModelDeformOptions() {
+    if (editor) {
+        editor.displayToolOptions();
+    }
+}
+
 void incViewportModelDeformToolSettings() {
 
 }

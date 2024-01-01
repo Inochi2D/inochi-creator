@@ -261,5 +261,5 @@ public:
     abstract void viewportTools(VertexToolMode mode);
 
     abstract void adjustPathTransform();
-
+    abstract Tool getTool();
 }

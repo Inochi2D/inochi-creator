@@ -14,7 +14,7 @@ fi
 
 # Create new directories and move dylibs
 mkdir -p Frameworks SharedSupport Resources Resources/i18n
-mv MacOS/libSDL2*.dylib Frameworks/libSDL2.dylib
+mv MacOS/libSDL2-2.0.dylib Frameworks/libSDL2.dylib
 mv -n MacOS/*.dylib Frameworks
 
 # Move back to where we were

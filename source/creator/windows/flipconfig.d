@@ -90,7 +90,7 @@ void incLoadFlipConfig(Puppet puppet) {
             pair.finalize(puppet);
         }
         // Removing unused pair, and ensure that pair.parts[0] exists.
-        flipPairs.remove!(p=> p.parts[0] is null && p.parts[1] is null);
+        flipPairs = flipPairs.remove!(p=> p.parts[0] is null && p.parts[1] is null);
         foreach (i, pair; flipPairs) {
             if (pair.parts[0] is null) {
                 pair.parts[0] = pair.parts[1];
@@ -516,7 +516,7 @@ public:
         nodes = puppet.findNodesType!Node(puppet.root);
         pairs = incGetFlipPairs().dup;
         // Removing unused pairs (happens when target nodes are removed.)
-        pairs.remove!(p=> p.parts[0] is null && p.parts[1] is null);
+        pairs = pairs.remove!(p=> p.parts[0] is null && p.parts[1] is null);
         foreach (i, pair; pairs) {
             if (pair.parts[0] !is null)
                 map[pair.parts[0].uuid] = i;
