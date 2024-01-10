@@ -2,10 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>LSMinimumSystemVersion</key>
+	<string>11</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.productivity</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.8.3</string>
+	<string>0.8.4</string>
 	<key>CFBundleName</key>
 	<string>Inochi Creator</string>
 	<key>CFBundleDisplayName</key>
@@ -13,7 +15,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.inochi2d.InochiCreator</string>
 	<key>CFBundleVersion</key>
-	<string>0.8.3</string>
+	<string>2</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
@@ -22,6 +24,22 @@
 	<string>inochi-creator</string>
 	<key>CFBundleIconFile</key>
 	<string>InochiCreator</string>
+	<key>DTCompiler</key>
+	<string>com.apple.compilers.llvm.clang.1_0</string>
+	<key>DTPlatformBuild</key>
+	<string></string>
+	<key>DTPlatformName</key>
+	<string>macosx</string>
+	<key>DTPlatformVersion</key>
+	<string>14.0</string>
+	<key>DTSDKBuild</key>
+	<string>23A334</string>
+	<key>DTSDKName</key>
+	<string>macosx14.0</string>
+	<key>DTXcode</key>
+	<string>1501</string>
+	<key>DTXcodeBuild</key>
+	<string>15A507</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -31,6 +49,8 @@
 			<string>Inochi Creator Project</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>com.inochi2d.inochi-creator.project</string>

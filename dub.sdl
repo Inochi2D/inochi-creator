@@ -17,6 +17,7 @@ targetPath "out/"
 workingDirectory "out/"
 dflags "-mscrtlib=msvcrt" platform="windows-ldc"
 lflags "-rpath=$$ORIGIN" platform="linux"
+lflags "-dead_strip" platform="osx"
 versions "GL_32" "USE_SDL2" "SDL_208" "UseUIScaling"
 stringImportPaths "res/" "./"
 
@@ -33,7 +34,7 @@ configuration "barebones" {
 // Metadata generation
 configuration "meta" {
 	targetType "none"
-	preGenerateCommands "dub run -y gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
+	// preGenerateCommands "dub run -y gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
 	preGenerateCommands "rc.exe /v build-aux\\windows\\inochi-creator.rc" platform="windows"
 }
 
@@ -53,7 +54,7 @@ configuration "osx-full" {
 	targetType "executable"
 	targetPath "out/Inochi Creator.app/Contents/MacOS"
 	subConfiguration "i2d-imgui" "dynamic_dynamicCRT"
-	dflags "-force-dwarf-frame-section=false"
+	// dflags "-force-dwarf-frame-section=false" platform="osx-arm64"
 	lflags "-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
 	versions "InBranding"
 }
@@ -83,7 +84,7 @@ configuration "osx-nightly" {
 	targetType "executable"
 	targetPath "out/Inochi Creator.app/Contents/MacOS"
 	subConfiguration "i2d-imgui" "dynamic_dynamicCRT"
-	dflags "-force-dwarf-frame-section=false"
+	// dflags "-force-dwarf-frame-section=false" platform="osx-arm64"
 	lflags "-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
 	versions "InBranding" "InNightly"
 }

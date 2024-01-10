@@ -35,6 +35,9 @@ source/creator/ver.d
 
 .DS_Store
 
+# macOS provisioning
+embedded.provisionprofile
+
 # WiX Install
 build-aux/windows/wix/obj
 build-aux/windows/wix/packages
