@@ -205,11 +205,15 @@ void incViewportVertexDraw(Camera camera) {
             } else if (MeshGroup mgroup = cast(MeshGroup)target) {
                 mat4 transform = mgroup.transform.matrix.inverse;
                 mgroup.setOneTimeTransform(&transform);
-                Drawable[] subParts;
+                Node[] subParts;
                 void findSubDrawable(Node n) {
                     if (auto m = cast(MeshGroup)n) {
                         foreach (child; n.children)
                             findSubDrawable(child);
+                    } else if (auto c = cast(Composite)n) {
+                        if (c.propagateMeshGroup) {
+                            subParts ~= c;
+                        }
                     } else if (auto d = cast(Drawable)n) {
                         subParts ~= d;
                         foreach (child; n.children)
