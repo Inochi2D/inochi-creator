@@ -109,6 +109,8 @@ void incBindingAutoFlip(ParameterBinding binding, ParameterBinding srcBinding, v
     if (srcBinding !is null) {
         if (deformBinding !is null) {
             Drawable drawable = cast(Drawable)deformBinding.getTarget().node;
+            // Exit if it's not drawable
+            if(drawable is null) return;
             auto srcDeformBinding = cast(DeformationParameterBinding)srcBinding;
             Drawable srcDrawable = cast(Drawable)srcDeformBinding.getTarget().node;
             auto mesh = new IncMesh(drawable.getMesh());
@@ -134,6 +136,8 @@ void incBindingAutoFlip(ParameterBinding binding, ParameterBinding srcBinding, v
     } else {
         if (deformBinding !is null) {
             Drawable drawable = cast(Drawable)deformBinding.getTarget().node;
+            // Exit if it's not drawable
+            if(drawable is null) return;
             auto mesh = new IncMesh(drawable.getMesh());
             Deformation deform = extrapolation? extrapolateValueAt!Deformation(deformBinding, index, axis):
                                                 interpolateValueAt!Deformation(deformBinding, index, axis);
