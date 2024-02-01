@@ -134,7 +134,7 @@ private {
                 pair = incGetFlipPairFor(target);
             auto binding = incBindingGetPairFor(param, target, pair, srcBinding.getName(), true);
             // Check if the binding was found or created
-            if(targetBinding is null) continue;
+            if(binding is null) continue;
 
             uint xCount = param.axisPointCount(0);
             uint yCount = param.axisPointCount(1);
