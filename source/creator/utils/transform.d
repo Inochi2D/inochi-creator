@@ -40,7 +40,7 @@ ParameterBinding incBindingGetPairFor(Parameter param, Node target, FlipPair pai
     if (forceCreate) {
         result = param.createBinding(pairNode, name);
         // Skip if trying to add a deform binding to a node that can't get deformed
-        if(name == "deform" && cast(Drawable)pairNode is null) return result;
+        if(name == "deform" && cast(Drawable)pairNode is null) return null;
         param.addBinding(result);
         auto action = new ParameterBindingAddAction(param, result);
         incActionPush(action);
