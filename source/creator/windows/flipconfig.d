@@ -12,6 +12,7 @@ import creator;
 import creator.ext;
 import std.string;
 import creator.utils.link;
+import creator.utils;
 import inochi2d;
 import i18n;
 import psd;
@@ -226,18 +227,18 @@ private:
 
             igPushID(cast(int)i);
 
-            igSelectable(node.cName, false, ImGuiSelectableFlagsI.SpanAvailWidth);
+            igSelectable((incTypeIdToIcon(node.typeId)~node.name).toStringz, false, ImGuiSelectableFlagsI.SpanAvailWidth);
 
             if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
                 igSetDragDropPayload("__PAIRING", cast(void*)&node, (&node).sizeof, ImGuiCond.Always);
-                igText(node.cName);
+                incText(incTypeIdToIcon(node.typeId)~node.name);
                 igEndDragDropSource();
             }
 
             // Incredibly cursed preview image
             if (igIsItemHovered()) {
                 igBeginTooltip();
-                    incText(node.name);
+                    incText(incTypeIdToIcon(node.typeId)~node.name);
                     // Calculate render size
                     if (auto part = cast(Part)node) {
                         previewImage(part, ImVec2(PreviewSize/2, PreviewSize/2), PreviewSize);
@@ -278,7 +279,7 @@ private:
                 igSetItemAllowOverlap();
             igPopStyleColor();
             igSameLine();
-            igText(pair.parts[0].cName);
+            incText(incTypeIdToIcon(pair.parts[0].typeId)~pair.parts[0].name);
             // Only allow reparenting one node
             if(igBeginDragDropTarget()) {
                 const(ImGuiPayload)* payload = igAcceptDragDropPayload("__PAIRING");
@@ -313,7 +314,7 @@ private:
             }
 
             igTableNextColumn();
-            igText(pair.parts[1] ? pair.parts[1].cName : __("<< Not assigned >>"));
+            incText(pair.parts[1] ? (incTypeIdToIcon(pair.parts[1].typeId)~pair.parts[1].name) : _("<< Not assigned >>"));
             // Only allow reparenting one node
             if(igBeginDragDropTarget()) {
                 const(ImGuiPayload)* payload = igAcceptDragDropPayload("__PAIRING");
