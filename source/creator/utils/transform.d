@@ -39,6 +39,8 @@ ParameterBinding incBindingGetPairFor(Parameter param, Node target, FlipPair pai
     }
     if (forceCreate) {
         result = param.createBinding(pairNode, name);
+        // Skip if trying to add a deform binding to a node that can't get deformed
+        if(name == "deform" && cast(Drawable)pairNode is null) return null;
         param.addBinding(result);
         auto action = new ParameterBindingAddAction(param, result);
         incActionPush(action);
@@ -109,6 +111,8 @@ void incBindingAutoFlip(ParameterBinding binding, ParameterBinding srcBinding, v
     if (srcBinding !is null) {
         if (deformBinding !is null) {
             Drawable drawable = cast(Drawable)deformBinding.getTarget().node;
+            // Return if target node doesn't support deformations 
+            if(drawable is null) return;
             auto srcDeformBinding = cast(DeformationParameterBinding)srcBinding;
             Drawable srcDrawable = cast(Drawable)srcDeformBinding.getTarget().node;
             auto mesh = new IncMesh(drawable.getMesh());
@@ -121,6 +125,8 @@ void incBindingAutoFlip(ParameterBinding binding, ParameterBinding srcBinding, v
 
         } else {
             auto srcValueBinding = cast(ValueParameterBinding)srcBinding;
+            // Return if target binding doesn't support being flipped
+            if(srcValueBinding is null) return;
             float value;
             value = extrapolation? extrapolateValueAt!float(srcValueBinding, index, axis):
                                     interpolateValueAt!float(srcValueBinding, index, axis);
@@ -134,6 +140,8 @@ void incBindingAutoFlip(ParameterBinding binding, ParameterBinding srcBinding, v
     } else {
         if (deformBinding !is null) {
             Drawable drawable = cast(Drawable)deformBinding.getTarget().node;
+            // Return if target node doesn't support deformations 
+            if(drawable is null) return;
             auto mesh = new IncMesh(drawable.getMesh());
             Deformation deform = extrapolation? extrapolateValueAt!Deformation(deformBinding, index, axis):
                                                 interpolateValueAt!Deformation(deformBinding, index, axis);

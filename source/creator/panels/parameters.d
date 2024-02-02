@@ -98,6 +98,9 @@ private {
             Node target = binding.getTarget().node;
             auto pair = incGetFlipPairFor(target);
             auto targetBinding = incBindingGetPairFor(param, target, pair, binding.getName(), true);
+            // Check if the binding was found or created
+            if(targetBinding is null) continue;
+
             uint xCount = param.axisPointCount(0);
             uint yCount = param.axisPointCount(1);
             foreach(x; 0..xCount) {
@@ -130,6 +133,9 @@ private {
             if (axis != 2)
                 pair = incGetFlipPairFor(target);
             auto binding = incBindingGetPairFor(param, target, pair, srcBinding.getName(), true);
+            // Check if the binding was found or created
+            if(binding is null) continue;
+
             uint xCount = param.axisPointCount(0);
             uint yCount = param.axisPointCount(1);
             foreach(x; 0..xCount) {
@@ -348,7 +354,7 @@ private {
                         auto targetBinding = incBindingGetPairFor(param, target, pair, binding.getName(), targetBindings is null);
                         if (targetBindings !is null)
                             incBindingAutoFlip(binding, targetBinding, cParamPoint, 0);
-                        else
+                        else if(targetBinding !is null)
                             incBindingAutoFlip(targetBinding, binding, cParamPoint, 0);
                     }
                     action.updateNewState();
@@ -365,7 +371,7 @@ private {
                         auto targetBinding = incBindingGetPairFor(param, target, pair, binding.getName(), targetBindings is null);
                         if (targetBindings !is null)
                             incBindingAutoFlip(binding, targetBinding, cParamPoint, 1);
-                        else
+                        else if(targetBinding !is null)
                             incBindingAutoFlip(targetBinding, binding, cParamPoint, 1);
                     }
                     action.updateNewState();
@@ -382,7 +388,7 @@ private {
                         auto targetBinding = incBindingGetPairFor(param, target, pair, binding.getName(), targetBindings is null);
                         if (targetBindings !is null)
                             incBindingAutoFlip(binding, targetBinding, cParamPoint, -1);
-                        else
+                        else if(targetBinding !is null)
                             incBindingAutoFlip(targetBinding, binding, cParamPoint, -1);
                     }
                     action.updateNewState();
@@ -402,7 +408,7 @@ private {
                     auto targetBinding = incBindingGetPairFor(param, target, pair, binding.getName(), targetBindings is null);
                     if (targetBindings !is null)
                         incBindingAutoFlip(binding, targetBinding, cParamPoint, 0);
-                    else
+                    else if(targetBinding !is null)
                         incBindingAutoFlip(targetBinding, binding, cParamPoint, 0);
                 }
                 action.updateNewState();
