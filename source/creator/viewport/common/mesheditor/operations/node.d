@@ -213,6 +213,13 @@ public:
         if (abs(translation.distance(mousePos)) < selectRadius/incViewportZoom) return 0;
         return -1;
     }
+    
+    override
+    float[] getVerticesInBrush(vec2 mousePos, float radius) {
+        float distance = max(0, 1 - abs(translation.distance(mousePos)) / selectRadius);
+        return [distance];
+    }
+
 
     override void removeVertexAt(vec2 vertex) {}
     override bool removeVertex(ImGuiIO* io, bool selectedOnly) { return false; }

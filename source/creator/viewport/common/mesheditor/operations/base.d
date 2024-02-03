@@ -33,6 +33,7 @@ enum VertexToolMode {
     Connect,
     PathDeform,
     Grid,
+    Brush,
 }
 
 
@@ -40,6 +41,7 @@ class IncMeshEditorOne {
 public:
     abstract void substituteMeshVertices(MeshVertex* meshVertex);
     abstract ulong getVertexFromPoint(vec2 mousePos);
+    abstract float[] getVerticesInBrush(vec2 mousePos, float radius);
     abstract void removeVertexAt(vec2 vertex);
     abstract bool removeVertex(ImGuiIO* io, bool selectedOnly);
     abstract bool addVertex(ImGuiIO* io);

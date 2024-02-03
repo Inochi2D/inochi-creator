@@ -207,6 +207,11 @@ public:
     }
 
     override
+    float[] getVerticesInBrush(vec2 mousePos, float radius) {
+        return mesh.getVerticesInBrush(mousePos, radius);
+    }
+
+    override
     void removeVertexAt(vec2 vertex) {
         mesh.removeVertexAt(vertex);
     }
@@ -574,6 +579,16 @@ public:
             }
         }
         return -1;
+    }
+
+    override
+    float[] getVerticesInBrush(vec2 mousePos, float radius) {
+        float[] indices;
+        foreach(idx, ref vert; vertices) {
+            float distance = 1 - abs(vert.distance(mousePos)) / radius;
+            indices ~= max(distance, 0);
+        }
+        return indices;
     }
 
     override

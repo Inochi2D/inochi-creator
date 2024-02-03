@@ -34,6 +34,7 @@ public:
         tools[VertexToolMode.Connect] = new ConnectTool;
         tools[VertexToolMode.PathDeform] = new PathDeformTool;
         tools[VertexToolMode.Grid] = new GridTool;
+        tools[VertexToolMode.Brush] = new BrushTool;
     }
 
     override

@@ -499,6 +499,15 @@ public:
         return -1;
     }
 
+    float[] getVerticesInBrush(vec2 point, float radius) {
+        float[] indices;
+        foreach(idx, ref vert; vertices) {
+            float distance = 1 - abs(vert.position.distance(point)) / radius;
+            indices ~= max(distance, 0);
+        }
+        return indices;
+    }
+
     void remove(MeshVertex* vert) {
         import std.algorithm.searching : countUntil;
         import std.algorithm.mutation : remove;

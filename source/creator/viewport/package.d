@@ -254,8 +254,12 @@ bool incViewportAlwaysUpdate() {
     switch(incEditMode) {
         case EditMode.ModelTest:
             return true;
-        default: return false;
+        default: return alwaysUpdateMode;
     }
+}
+
+void incViewportSetAlwaysUpdate(bool value) {
+    alwaysUpdateMode = value;
 }
 
 /// For when there's no tools for that view
@@ -755,6 +759,8 @@ void incViewportReset() {
 //          Internal Viewport Stuff(TM)
 //
 private {
+    bool alwaysUpdateMode = false;
+
     enum LockedOrientation {
         None, Horizontal, Vertical
     };

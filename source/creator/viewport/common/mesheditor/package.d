@@ -208,6 +208,13 @@ public:
                             e.viewportTools(VertexToolMode.PathDeform);
                     }
                     incTooltip(_("Path Deform Tool"));
+
+                    if (incButtonColored("", ImVec2(0, 0), getToolMode() == VertexToolMode.Brush ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                        setToolMode(VertexToolMode.Brush);
+                        foreach (e; editors)
+                            e.viewportTools(VertexToolMode.Brush);
+                    }
+                    incTooltip(_("Brush Tool"));
                 }
 
                 if (!deformOnly) {
