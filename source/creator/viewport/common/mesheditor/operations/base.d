@@ -252,8 +252,6 @@ public:
     abstract CatmullSpline getPath();
     abstract void setPath(CatmullSpline path);
 
-    abstract void viewportTools(VertexToolMode mode);
-
     abstract void adjustPathTransform();
     abstract Tool getTool();
 }

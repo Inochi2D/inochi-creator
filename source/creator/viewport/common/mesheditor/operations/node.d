@@ -151,13 +151,7 @@ public:
             registerBinding("transform.t.x", groupAction);
             registerBinding("transform.t.y", groupAction);
             registerBinding("transform.r.z", groupAction);
-            switch (toolMode) {
-            case VertexToolMode.PathDeform:
-                editorAction = new MeshEditorPathDeformAction!GroupAction(target, groupAction);
-                break;
-            default:
-                editorAction = new MeshEditorAction!GroupAction(target, groupAction);
-            }
+            editorAction = tools[toolMode].editorAction(target, groupAction);
         } else {
             if (reset) {
                 editorAction.clear();

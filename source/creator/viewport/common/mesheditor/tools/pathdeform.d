@@ -356,13 +356,41 @@ class PathDeformTool : NodeSelect {
         }
     }
 
+    override
+    MeshEditorAction!DeformationAction editorAction(Node target, DeformationAction action) {
+        return new MeshEditorPathDeformAction!(DeformationAction)(target, action);
+    }
+
+    override
+    MeshEditorAction!GroupAction editorAction(Node target, GroupAction action) {
+        return new MeshEditorPathDeformAction!(GroupAction)(target, action);
+    }
+
+    override
+    MeshEditorAction!DeformationAction editorAction(Drawable target, DeformationAction action) {
+        return new MeshEditorPathDeformAction!(DeformationAction)(target, action);
+    }
+
+    override
+    MeshEditorAction!GroupAction editorAction(Drawable target, GroupAction action) {
+        return new MeshEditorPathDeformAction!(GroupAction)(target, action);
+    }
 }
 
 class ToolInfoImpl(T: PathDeformTool) : ToolInfoBase!(T) {
     override
+    void setupToolMode(IncMeshEditorOne e, VertexToolMode mode) {
+        e.setToolMode(mode);
+        e.setPath(new CatmullSpline);
+        e.deforming = false;
+        e.refreshMesh();
+    }
+
+    override
     bool viewportTools(bool deformOnly, VertexToolMode toolMode, IncMeshEditorOne[Node] editors) {
-        if (deformOnly)
+        if (deformOnly) {
             return super.viewportTools(deformOnly, toolMode, editors);
+        }
         return false;
     }
     

@@ -92,29 +92,6 @@ public:
     }
 
     override
-    void viewportTools(VertexToolMode mode) {
-        switch (mode) {
-        case VertexToolMode.PathDeform:
-            setToolMode(mode);
-            setPath(new CatmullSpline);
-            deforming = false;
-            refreshMesh();
-            break;
-        case VertexToolMode.Grid:
-            setToolMode(mode);
-            setPath(null);
-            deforming = false;
-            refreshMesh();
-            break;
-        default:       
-            setToolMode(mode);
-            setPath(null);
-            refreshMesh();
-            break;
-        }
-    }
-
-    override
     void setToolMode(VertexToolMode toolMode) {
         if (toolMode in tools) {
             this.toolMode = toolMode;

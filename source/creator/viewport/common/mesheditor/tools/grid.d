@@ -359,6 +359,14 @@ class GridTool : NodeSelect {
 
 class ToolInfoImpl(T: GridTool) : ToolInfoBase!(T) {
     override
+    void setupToolMode(IncMeshEditorOne e, VertexToolMode mode) {
+        e.setToolMode(mode);
+        e.setPath(null);
+        e.deforming = false;
+        e.refreshMesh();
+    }
+
+    override
     bool viewportTools(bool deformOnly, VertexToolMode toolMode, IncMeshEditorOne[Node] editors) {
         if (!deformOnly)
             return super.viewportTools(deformOnly, toolMode, editors);

@@ -338,13 +338,7 @@ public:
             pushDeformAction();
         if (editorAction is null || !editorAction.action.isApplyable()) {
             auto deformAction = new DeformationAction(target.name, target);
-            switch (toolMode) {
-            case VertexToolMode.PathDeform:
-                editorAction = new MeshEditorPathDeformAction!DeformationAction(target, deformAction);
-                break;
-            default:
-                editorAction = new MeshEditorAction!DeformationAction(target, deformAction);
-            }
+            editorAction = tools[toolMode].editorAction(target, deformAction);
 
         } else {
             if (reset)
@@ -691,13 +685,7 @@ public:
             pushDeformAction();
         if (editorAction is null || !editorAction.action.isApplyable()) {
             auto deformAction = new DeformationAction(target.name, target);
-            switch (toolMode) {
-            case VertexToolMode.PathDeform:
-                editorAction = new MeshEditorPathDeformAction!DeformationAction(target, deformAction);
-                break;
-            default:
-                editorAction = new MeshEditorAction!DeformationAction(target, deformAction);
-            }
+            editorAction = tools[toolMode].editorAction(target, deformAction);
 
         } else {
             if (reset)
