@@ -1,4 +1,4 @@
-module creator.viewport.common.mesheditor.brushes.circlebrush;
+module creator.viewport.common.mesheditor.brushes.doublethreshbrush;
 
 import creator.viewport.common.mesheditor.brushes.base;
 import creator.viewport;
@@ -8,17 +8,19 @@ import inochi2d.core.dbg;
 import inmath;
 import bindbc.imgui;
 
-class CircleBrush : Brush {
-    string _name;
+class DoubleThreshBrush : Brush {
     float radius;
+    float innerRadius;
+    string _name;
     
-    this(string name, float radius) {
+    this(string name, float radius, float innerRadius) {
         _name = name;
-        this.radius = radius;
+        this.radius = max(1, radius);
+        this.innerRadius = min(innerRadius, radius);
     }
 
     override
-    string name() { return _name; }
+    string name() {return _name;}
     
     override
     bool isInside(vec2 center, vec2 pos) {
@@ -27,8 +29,12 @@ class CircleBrush : Brush {
     
     override
     float weightAt(vec2 center, vec2 pos) {
-        float distance = 1 - abs(pos.distance(center)) / radius;
-        return min(1, max(distance, 0));
+        float distance = abs(pos.distance(center));
+        if (distance <= innerRadius)
+            return 1;
+        if (radius > innerRadius)
+            return min(1, max(1 - (distance - innerRadius) / (radius - innerRadius), 0));
+        return 0;
     }
 
     override
@@ -48,7 +54,9 @@ class CircleBrush : Brush {
         inDbgPointsSize(radius * incViewportZoom * 2 + 4);
         inDbgDrawPoints(vec4(0, 0, 0, 0.1), transform);
         inDbgPointsSize(2 * radius * incViewportZoom);
-        inDbgDrawPoints(vec4(1, 1, 1, 0.3), transform);
+        inDbgDrawPoints(vec4(.5, .5, .5, 0.1), transform);
+        inDbgPointsSize(2 * innerRadius * incViewportZoom);
+        inDbgDrawPoints(vec4(1, 1, 1, 0.2), transform);
     }
 
     override
@@ -60,7 +68,15 @@ class CircleBrush : Brush {
                 "brush_radius", &radius, 1,
                 1, 2000, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
             igPopID();
+
+            igSameLine(0, 4);
     
+            igPushID("BRUSH_INNER_RADIUS");
+            igSetNextItemWidth(64);
+            incDragFloat(
+                "brush_inner_radius", &innerRadius, 1,
+                1, 2000, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+            igPopID();
         igEndGroup();
         return false;
     }

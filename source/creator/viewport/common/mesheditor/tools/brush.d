@@ -24,14 +24,19 @@ import std.algorithm.mutation;
 import std.algorithm.searching;
 import std.stdio;
 import std.math;
+import std.string;
 
 private {
     Brush _currentBrush;
     Brush currentBrush() {
         if (_currentBrush is null) {
-            _currentBrush = new CircleBrush(300);
+            _currentBrush = incBrushList()[0];
         }
         return _currentBrush;
+    }
+    void setCurrentBrush(Brush brush) {
+        if (brush !is null)
+            _currentBrush = brush;
     }
 }
 
@@ -244,6 +249,22 @@ class ToolInfoImpl(T: BrushTool) : ToolInfoBase!(T) {
 
             igSameLine(0, 4);
             currentBrush.configure();
+            igSameLine(0, 4);
+
+            igBeginGroup();
+            igPushID("BRUSH_SELECT");
+                auto brushName = currentBrush.name();
+                if(igBeginCombo("###Brushes", brushName.toStringz)) {
+                    foreach (brush; incBrushList) {
+                        if (igSelectable(brush.name().toStringz)) {
+                            setCurrentBrush(brush);
+                        }
+                    }
+                    igEndCombo();
+                }
+            igPopID();
+
+            igEndGroup();
         igPopStyleVar(2);
         return false;
     }
