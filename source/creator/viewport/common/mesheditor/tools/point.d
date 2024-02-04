@@ -379,8 +379,6 @@ class PointTool : NodeSelect {
     }
 
     override int peek(ImGuiIO* io, IncMeshEditorOne impl) {
-        writeln("Point::peek");
-
         super.peek(io, impl);
         if (impl.deformOnly)
             return peekDeformEdit(io, impl);

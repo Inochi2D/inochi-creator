@@ -81,7 +81,6 @@ class BrushTool : NodeSelect {
 
     override 
     int peek(ImGuiIO* io, IncMeshEditorOne impl) {
-        writeln("Brush::peek");
         super.peek(io, impl);
 
         if (incInputIsMouseReleased(ImGuiMouseButton.Left)) {
@@ -213,6 +212,54 @@ class ToolInfoImpl(T: BrushTool) : ToolInfoBase!(T) {
     bool viewportTools(bool deformOnly, VertexToolMode toolMode, IncMeshEditorOne[Node] editors) {
         if (deformOnly)
             return super.viewportTools(deformOnly, toolMode, editors);
+        return false;
+    }
+    override
+    bool displayToolOptions(bool deformOnly, VertexToolMode toolMode, IncMeshEditorOne[Node] editors) {
+        igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
+        igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(4, 4));
+        auto brushTool = cast(BrushTool)(editors.length == 0 ? null: editors.values()[0].getTool());
+            igBeginGroup();
+                if (incButtonColored("", ImVec2(0, 0), (brushTool !is null && !brushTool.getFlow())? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) { // path definition
+                    foreach (e; editors) {
+                        auto bt = cast(BrushTool)(e.getTool());
+                        if (bt)
+                            bt.setFlow(false);
+                    }
+                }
+                incTooltip(_("Drag mode"));
+
+                igSameLine(0, 0);
+                if (incButtonColored("", ImVec2(0, 0), (brushTool !is null && brushTool.getFlow())? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) { // path definition
+                    foreach (e; editors) {
+                        auto bt = cast(BrushTool)(e.getTool());
+                        if (bt)
+                            bt.setFlow(true);
+                    }
+                }
+                incTooltip(_("Flow mode"));
+
+            igEndGroup();
+
+            igSameLine(0, 4);
+
+            igBeginGroup();
+                igPushID("BRUSH_RADIUS");
+                igSetNextItemWidth(64);
+                if (incDragFloat(
+                    "brush_radius", &brushTool.radius, 1,
+                    1, 2000, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
+                ) {
+                    foreach (e; editors) {
+                        auto bt = cast(BrushTool)(e.getTool());
+                        if (bt)
+                            bt.setRadius(brushTool.radius);
+                    }
+                }
+                igPopID();
+        
+            igEndGroup();
+        igPopStyleVar(2);
         return false;
     }
     override VertexToolMode mode() { return VertexToolMode.Brush; };
