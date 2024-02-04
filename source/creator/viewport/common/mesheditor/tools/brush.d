@@ -4,6 +4,7 @@ import creator.viewport.common.mesheditor.tools.enums;
 import creator.viewport.common.mesheditor.tools.base;
 import creator.viewport.common.mesheditor.tools.select;
 import creator.viewport.common.mesheditor.operations;
+import creator.viewport.common.mesheditor.brushes;
 import i18n;
 import creator.viewport;
 import creator.viewport.common;
@@ -24,20 +25,27 @@ import std.algorithm.searching;
 import std.stdio;
 import std.math;
 
+private {
+    Brush _currentBrush;
+    Brush currentBrush() {
+        if (_currentBrush is null) {
+            _currentBrush = new CircleBrush(300);
+        }
+        return _currentBrush;
+    }
+}
+
 class BrushTool : NodeSelect {
-    float radius = 300;
     bool flow = false;
     float[] weights;
 
-    float getRadius() { return radius; }
-    void setRadius(float value) { radius = value; }
     bool getFlow() { return flow; }
     void setFlow(bool value) { flow = value; }
 
     override bool onDragStart(vec2 mousePos, IncMeshEditorOne impl) {
         if (isDragging) {
             if (!flow)
-                weights = impl.getVerticesInBrush(impl.mousePos, radius);
+                weights = impl.getVerticesInBrush(impl.mousePos, currentBrush);
         }
         return super.onDragStart(mousePos, impl);
     }
@@ -49,7 +57,7 @@ class BrushTool : NodeSelect {
     override bool onDragUpdate(vec2 mousePos, IncMeshEditorOne impl) {
         if (isDragging && !impl.isSelecting) {
             if (flow)
-                weights = impl.getVerticesInBrush(impl.mousePos, radius);
+                weights = impl.getVerticesInBrush(impl.mousePos, currentBrush);
             auto diffPos = mousePos - impl.lastMousePos;
             foreach (idx, weight; weights) {
                 MeshVertex* v = impl.getVerticesByIndex([idx])[0];
@@ -195,14 +203,7 @@ class BrushTool : NodeSelect {
     override
     void draw(Camera camera, IncMeshEditorOne impl) {
         super.draw(camera, impl);
-
-        vec3[] drawPoints;
-        drawPoints ~= vec3(impl.mousePos, 0);
-        inDbgSetBuffer(drawPoints);
-        inDbgPointsSize(radius * incViewportZoom * 2 + 4);
-        inDbgDrawPoints(vec4(0, 0, 0, 0.1), impl.transform);
-        inDbgPointsSize(2 * radius * incViewportZoom);
-        inDbgDrawPoints(vec4(1, 1, 1, 0.3), impl.transform);
+        currentBrush.draw(impl.mousePos, impl.transform);
     }
 
 }
@@ -242,23 +243,7 @@ class ToolInfoImpl(T: BrushTool) : ToolInfoBase!(T) {
             igEndGroup();
 
             igSameLine(0, 4);
-
-            igBeginGroup();
-                igPushID("BRUSH_RADIUS");
-                igSetNextItemWidth(64);
-                if (incDragFloat(
-                    "brush_radius", &brushTool.radius, 1,
-                    1, 2000, "%.2f", ImGuiSliderFlags.NoRoundToFormat)
-                ) {
-                    foreach (e; editors) {
-                        auto bt = cast(BrushTool)(e.getTool());
-                        if (bt)
-                            bt.setRadius(brushTool.radius);
-                    }
-                }
-                igPopID();
-        
-            igEndGroup();
+            currentBrush.configure();
         igPopStyleVar(2);
         return false;
     }

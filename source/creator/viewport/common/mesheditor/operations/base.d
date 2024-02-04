@@ -10,6 +10,7 @@ module creator.viewport.common.mesheditor.operations.base;
 
 import creator.viewport.common.mesheditor.tools.enums;
 import creator.viewport.common.mesheditor.tools.base;
+import creator.viewport.common.mesheditor.brushes;
 import i18n;
 import creator.viewport;
 import creator.viewport.common;
@@ -33,7 +34,7 @@ class IncMeshEditorOne {
 public:
     abstract void substituteMeshVertices(MeshVertex* meshVertex);
     abstract ulong getVertexFromPoint(vec2 mousePos);
-    abstract float[] getVerticesInBrush(vec2 mousePos, float radius);
+    abstract float[] getVerticesInBrush(vec2 mousePos, Brush brush);
     abstract void removeVertexAt(vec2 vertex);
     abstract bool removeVertex(ImGuiIO* io, bool selectedOnly);
     abstract bool addVertex(ImGuiIO* io);

@@ -14,6 +14,7 @@ import creator.viewport.common;
 import creator.viewport.common.mesh;
 import creator.viewport.common.mesheditor.operations;
 import creator.viewport.common.mesheditor.tools.enums;
+import creator.viewport.common.mesheditor.brushes;
 import creator.viewport.common.spline;
 import creator.core.input;
 import creator.core.actionstack;
@@ -210,9 +211,8 @@ public:
     }
     
     override
-    float[] getVerticesInBrush(vec2 mousePos, float radius) {
-        float distance = max(0, 1 - abs(translation.distance(mousePos)) / selectRadius);
-        return [distance];
+    float[] getVerticesInBrush(vec2 mousePos, Brush brush) {
+        return [brush.weightAt(mousePos, translation)];
     }
 
 

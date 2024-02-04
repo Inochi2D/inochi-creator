@@ -12,6 +12,7 @@
 */
 module creator.viewport.common.mesh;
 import creator.viewport;
+import creator.viewport.common.mesheditor.brushes;
 import inochi2d;
 import inochi2d.core.dbg;
 import bindbc.opengl;
@@ -499,11 +500,10 @@ public:
         return -1;
     }
 
-    float[] getVerticesInBrush(vec2 point, float radius) {
+    float[] getVerticesInBrush(vec2 point, Brush brush) {
         float[] indices;
         foreach(idx, ref vert; vertices) {
-            float distance = 1 - abs(vert.position.distance(point)) / radius;
-            indices ~= max(distance, 0);
+            indices ~= brush.weightAt(point, vert.position);
         }
         return indices;
     }
