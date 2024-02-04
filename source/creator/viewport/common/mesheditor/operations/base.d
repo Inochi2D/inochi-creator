@@ -8,6 +8,7 @@
 */
 module creator.viewport.common.mesheditor.operations.base;
 
+import creator.viewport.common.mesheditor.tools.enums;
 import creator.viewport.common.mesheditor.tools.base;
 import i18n;
 import creator.viewport;
@@ -27,15 +28,6 @@ import bindbc.imgui;
 import std.algorithm.mutation;
 import std.algorithm.searching;
 import std.stdio;
-
-enum VertexToolMode {
-    Points,
-    Connect,
-    PathDeform,
-    Grid,
-    Brush,
-}
-
 
 class IncMeshEditorOne {
 public:

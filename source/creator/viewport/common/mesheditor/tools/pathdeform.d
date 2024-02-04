@@ -1,4 +1,7 @@
 module creator.viewport.common.mesheditor.tools.pathdeform;
+
+import creator.viewport.common.mesheditor.tools.enums;
+import creator.viewport.common.mesheditor.tools.base;
 import creator.viewport.common.mesheditor.tools.select;
 import creator.viewport.common.mesheditor.operations;
 import i18n;
@@ -353,4 +356,71 @@ class PathDeformTool : NodeSelect {
         }
     }
 
+}
+
+class ToolInfoImpl(T: PathDeformTool) : ToolInfoBase!(T) {
+    override
+    bool viewportTools(bool deformOnly, VertexToolMode toolMode, IncMeshEditorOne[Node] editors) {
+        if (deformOnly)
+            return super.viewportTools(deformOnly, toolMode, editors);
+        return false;
+    }
+    
+    override
+    bool displayToolOptions(bool deformOnly, VertexToolMode toolMode, IncMeshEditorOne[Node] editors) { 
+        igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
+        igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(4, 4));        auto deformTool = cast(PathDeformTool)(editors.length == 0 ? null: editors.values()[0].getTool());
+        igBeginGroup();
+            if (incButtonColored("", ImVec2(0, 0), (deformTool !is null && deformTool.mode == PathDeformTool.Mode.Define)? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) { // path definition
+                foreach (e; editors) {
+                    auto deform = cast(PathDeformTool)(e.getTool());
+                    if (deform !is null)
+                        deform.setMode(PathDeformTool.Mode.Define);
+                }
+            }
+            incTooltip(_("Define paths"));
+
+            igSameLine(0, 0);
+
+            if (incButtonColored("", ImVec2(0, 0), (deformTool !is null && deformTool.mode == PathDeformTool.Mode.Transform) ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) { // path deformation
+                foreach (e; editors) {
+                    auto deform = cast(PathDeformTool)(e.getTool());
+                    if (deform !is null)
+                        deform.setMode(PathDeformTool.Mode.Transform);
+                }
+            }
+            incTooltip(_("Transform path"));
+        igEndGroup();
+
+        igSameLine(0, 4);
+
+        igBeginGroup();
+            if (incButtonColored("", ImVec2(0, 0), (deformTool !is null && deformTool.getIsRotateMode()) ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) { // rotation mode
+                foreach (e; editors) {
+                    auto deform = cast(PathDeformTool)(e.getTool());
+                    if (deform !is null)
+                        deform.setIsRotateMode(!deform.getIsRotateMode());
+                }
+            }
+            incTooltip(_("Set rotation center"));
+        igEndGroup();
+
+        igSameLine(0, 4);
+
+        igBeginGroup();
+            if (incButtonColored("", ImVec2(0, 0), (deformTool !is null && deformTool.getIsShiftMode()) ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) { // move shift
+                foreach (e; editors) {
+                    auto deform = cast(PathDeformTool)(e.getTool());
+                    if (deform !is null)
+                        deform.setIsShiftMode(!deform.getIsShiftMode());
+                }
+            }
+            incTooltip(_("Move points along the path"));
+        igEndGroup();
+        igPopStyleVar(2);
+        return false;
+    }
+    override VertexToolMode mode() { return VertexToolMode.PathDeform; }
+    override string icon() { return "";}
+    override string description() { return _("Path Deform Tool");}
 }

@@ -1,5 +1,7 @@
 module creator.viewport.common.mesheditor.tools.grid;
 
+import creator.viewport.common.mesheditor.tools.enums;
+import creator.viewport.common.mesheditor.tools.base;
 import creator.viewport.common.mesheditor.tools.select;
 import creator.viewport.common.mesheditor.operations;
 import i18n;
@@ -353,4 +355,16 @@ class GridTool : NodeSelect {
 
         }
     }
+}
+
+class ToolInfoImpl(T: GridTool) : ToolInfoBase!(T) {
+    override
+    bool viewportTools(bool deformOnly, VertexToolMode toolMode, IncMeshEditorOne[Node] editors) {
+        if (!deformOnly)
+            return super.viewportTools(deformOnly, toolMode, editors);
+        return false;
+    }
+    override VertexToolMode mode() { return VertexToolMode.Grid; };
+    override string icon() { return "";}
+    override string description() { return _("Grid Vertex Tool");}
 }

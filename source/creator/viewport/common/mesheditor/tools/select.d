@@ -1,5 +1,6 @@
 module creator.viewport.common.mesheditor.tools.select;
 
+import creator.viewport.common.mesheditor.tools.enums;
 import creator.viewport.common.mesheditor.tools.base;
 import creator.viewport.common.mesheditor.operations;
 import i18n;

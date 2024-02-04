@@ -1,4 +1,7 @@
 module creator.viewport.common.mesheditor.tools.brush;
+
+import creator.viewport.common.mesheditor.tools.enums;
+import creator.viewport.common.mesheditor.tools.base;
 import creator.viewport.common.mesheditor.tools.select;
 import creator.viewport.common.mesheditor.operations;
 import i18n;
@@ -23,10 +26,19 @@ import std.math;
 
 class BrushTool : NodeSelect {
     float radius = 300;
+    bool flow = false;
+    float[] weights;
+
     float getRadius() { return radius; }
     void setRadius(float value) { radius = value; }
+    bool getFlow() { return flow; }
+    void setFlow(bool value) { flow = value; }
 
     override bool onDragStart(vec2 mousePos, IncMeshEditorOne impl) {
+        if (isDragging) {
+            if (!flow)
+                weights = impl.getVerticesInBrush(impl.mousePos, radius);
+        }
         return super.onDragStart(mousePos, impl);
     }
 
@@ -36,7 +48,8 @@ class BrushTool : NodeSelect {
 
     override bool onDragUpdate(vec2 mousePos, IncMeshEditorOne impl) {
         if (isDragging && !impl.isSelecting) {
-            float[] weights = impl.getVerticesInBrush(impl.mousePos, radius);
+            if (flow)
+                weights = impl.getVerticesInBrush(impl.mousePos, radius);
             auto diffPos = mousePos - impl.lastMousePos;
             foreach (idx, weight; weights) {
                 MeshVertex* v = impl.getVerticesByIndex([idx])[0];
@@ -68,6 +81,7 @@ class BrushTool : NodeSelect {
 
     override 
     int peek(ImGuiIO* io, IncMeshEditorOne impl) {
+        writeln("Brush::peek");
         super.peek(io, impl);
 
         if (incInputIsMouseReleased(ImGuiMouseButton.Left)) {
@@ -78,8 +92,7 @@ class BrushTool : NodeSelect {
         
         int action = SelectActionID.None;
 
-        bool preDragging = isDragging;
-        if (incDragStartedInViewport(ImGuiMouseButton.Left) && igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
+        if (!isDragging && incDragStartedInViewport(ImGuiMouseButton.Left) && igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
             isDragging = true;
             onDragStart(impl.mousePos, impl);
         }
@@ -193,4 +206,16 @@ class BrushTool : NodeSelect {
         inDbgDrawPoints(vec4(1, 1, 1, 0.3), impl.transform);
     }
 
+}
+
+class ToolInfoImpl(T: BrushTool) : ToolInfoBase!(T) {
+    override
+    bool viewportTools(bool deformOnly, VertexToolMode toolMode, IncMeshEditorOne[Node] editors) {
+        if (deformOnly)
+            return super.viewportTools(deformOnly, toolMode, editors);
+        return false;
+    }
+    override VertexToolMode mode() { return VertexToolMode.Brush; };
+    override string icon() { return "";}
+    override string description() { return _("Brush Tool");}
 }
