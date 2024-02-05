@@ -23,7 +23,6 @@ import bindbc.imgui;
 import std.algorithm.mutation;
 import std.algorithm.searching;
 import std.stdio;
-import std.math;
 import std.string;
 import std.range;
 
@@ -44,6 +43,8 @@ private {
 class BrushTool : NodeSelect {
     bool flow = false;
     float[] weights;
+    vec2 initPos;
+    int axisDirection; // 0: none, 1: lock to horizontal move only, 2: lock to vertical move only
 
     bool getFlow() { return flow; }
     void setFlow(bool value) { flow = value; }
@@ -52,6 +53,8 @@ class BrushTool : NodeSelect {
         if (isDragging) {
             if (!flow)
                 weights = impl.getVerticesInBrush(impl.mousePos, currentBrush);
+            initPos = impl.mousePos;
+            axisDirection = 0;
         }
         return super.onDragStart(mousePos, impl);
     }
@@ -183,6 +186,20 @@ class BrushTool : NodeSelect {
         }
 
         if (action == BrushActionID.Drawing) {
+            if (io.KeyShift) {
+                static int THRESHOLD = 32;
+                if (axisDirection == 0) {
+                    vec2 diffToInit = impl.mousePos - initPos;
+                    if (abs(diffToInit.x) / incViewportZoom > THRESHOLD)
+                        axisDirection = 1;
+                    else if (abs(diffToInit.y) / incViewportZoom > THRESHOLD)
+                        axisDirection = 2;
+                }
+                if (axisDirection == 1)
+                    impl.mousePos.y = initPos.y;
+                else if (axisDirection == 2)
+                    impl.mousePos.x = initPos.x;
+            }
             if (flow)
                 weights = impl.getVerticesInBrush(impl.mousePos, currentBrush);
             auto diffPos = impl.mousePos - impl.lastMousePos;
@@ -210,7 +227,8 @@ class BrushTool : NodeSelect {
     override
     void draw(Camera camera, IncMeshEditorOne impl) {
         super.draw(camera, impl);
-        currentBrush.draw(impl.mousePos, impl.transform);
+        if (!(igGetIO().KeyAlt))
+            currentBrush.draw(impl.mousePos, impl.transform);
     }
 
 }
