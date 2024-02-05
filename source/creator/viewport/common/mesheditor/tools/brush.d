@@ -60,23 +60,6 @@ class BrushTool : NodeSelect {
     }
 
     override bool onDragUpdate(vec2 mousePos, IncMeshEditorOne impl) {
-        if (isDragging && !impl.isSelecting) {
-            if (flow)
-                weights = impl.getVerticesInBrush(impl.mousePos, currentBrush);
-            auto diffPos = mousePos - impl.lastMousePos;
-            foreach (idx, weight; weights) {
-                MeshVertex* v = impl.getVerticesByIndex([idx])[0];
-                if (v is null)
-                    continue;
-                if (weight > 0) {
-                    v.position += diffPos * weight;
-                    impl.markActionDirty();
-                }
-            }
-
-            impl.refreshMesh();
-            return true;
-        }
         return super.onDragUpdate(mousePos, impl);
     }
 
@@ -104,7 +87,8 @@ class BrushTool : NodeSelect {
         
         int action = SelectActionID.None;
 
-        if (!isDragging && incDragStartedInViewport(ImGuiMouseButton.Left) && igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
+        if (!isDragging && !impl.isSelecting && 
+            incDragStartedInViewport(ImGuiMouseButton.Left) && igIsMouseDown(ImGuiMouseButton.Left) && incInputIsDragRequested(ImGuiMouseButton.Left)) {
             isDragging = true;
             onDragStart(impl.mousePos, impl);
         }
@@ -197,8 +181,22 @@ class BrushTool : NodeSelect {
             onDragStart(impl.mousePos, impl);
         }
 
-        if (isDragging) {
-            changed = onDragUpdate(impl.mousePos, impl) || changed;
+        if (action == BrushActionID.Drawing) {
+            if (flow)
+                weights = impl.getVerticesInBrush(impl.mousePos, currentBrush);
+            auto diffPos = impl.mousePos - impl.lastMousePos;
+            foreach (idx, weight; weights) {
+                MeshVertex* v = impl.getVerticesByIndex([idx])[0];
+                if (v is null)
+                    continue;
+                if (weight > 0) {
+                    v.position += diffPos * weight;
+                    impl.markActionDirty();
+                }
+            }
+
+            impl.refreshMesh();
+            changed = true;
         }
 
         if (changed) impl.refreshMesh();
