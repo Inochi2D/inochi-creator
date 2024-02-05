@@ -158,6 +158,10 @@ class BrushTool : NodeSelect {
 
     override 
     bool update(ImGuiIO* io, IncMeshEditorOne impl, int action, out bool changed) {
+        incStatusTooltip(_("Deform"), _("Left Mouse"));
+        incStatusTooltip(_("Snap to X/Y axis"), _("SHIFT"));
+        incStatusTooltip(_("Select vertices"), _("ALT"));
+
         // Left click selection
         if (action == SelectActionID.ToggleSelect) {
             if (impl.vtxAtMouse != ulong(-1))
