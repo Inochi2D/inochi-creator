@@ -246,7 +246,7 @@ class ToolInfoImpl(T: BrushTool) : ToolInfoBase!(T) {
         igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(4, 4));
         auto brushTool = cast(BrushTool)(editors.length == 0 ? null: editors.values()[0].getTool());
             igBeginGroup();
-                if (incButtonColored("", ImVec2(0, 0), (brushTool !is null && !brushTool.getFlow())? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) { // path definition
+                if (incButtonColored("", ImVec2(0, 0), (brushTool !is null && !brushTool.getFlow())? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) { // path definition
                     foreach (e; editors) {
                         auto bt = cast(BrushTool)(e.getTool());
                         if (bt)
@@ -256,7 +256,7 @@ class ToolInfoImpl(T: BrushTool) : ToolInfoBase!(T) {
                 incTooltip(_("Drag mode"));
 
                 igSameLine(0, 0);
-                if (incButtonColored("", ImVec2(0, 0), (brushTool !is null && brushTool.getFlow())? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) { // path definition
+                if (incButtonColored("", ImVec2(0, 0), (brushTool !is null && brushTool.getFlow())? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) { // path definition
                     foreach (e; editors) {
                         auto bt = cast(BrushTool)(e.getTool());
                         if (bt)
