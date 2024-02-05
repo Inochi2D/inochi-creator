@@ -25,6 +25,7 @@ import std.algorithm.searching;
 import std.stdio;
 import std.math;
 import std.string;
+import std.range;
 
 private {
     Brush _currentBrush;
@@ -185,7 +186,9 @@ class BrushTool : NodeSelect {
             if (flow)
                 weights = impl.getVerticesInBrush(impl.mousePos, currentBrush);
             auto diffPos = impl.mousePos - impl.lastMousePos;
-            foreach (idx, weight; weights) {
+            ulong[] selected = (impl.selected && impl.selected.length > 0)? impl.selected: array(iota(weights.length));
+            foreach (idx; selected) {
+                float weight = weights[idx];
                 MeshVertex* v = impl.getVerticesByIndex([idx])[0];
                 if (v is null)
                     continue;
@@ -197,7 +200,8 @@ class BrushTool : NodeSelect {
 
             impl.refreshMesh();
             changed = true;
-        }
+        } else if (isDragging)
+            onDragUpdate(impl.mousePos, impl);
 
         if (changed) impl.refreshMesh();
         return changed;
