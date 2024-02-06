@@ -2,6 +2,7 @@ module creator.viewport.common.mesheditor.brushes.doublethreshbrush;
 
 import creator.viewport.common.mesheditor.brushes.base;
 import creator.viewport;
+import creator.viewport.common;
 import creator.widgets.drag;
 import inochi2d;
 import inochi2d.core.dbg;
@@ -48,15 +49,17 @@ class DoubleThreshBrush : Brush {
     
     override
     void draw(vec2 center, mat4 transform) {
-        vec3[] drawPoints;
-        drawPoints ~= vec3(center, 0);
+        vec3[] drawPoints = incCreateCircleBuffer(center, vec2(radius, radius), 32) ~
+                            incCreateCircleBuffer(center, vec2(innerRadius, innerRadius), 32);
+        drawPoints ~= vec3(center.x - radius, center.y, 0);
+        drawPoints ~= vec3(center.x + radius, center.y, 0);
+        drawPoints ~= vec3(center.x, center.y - radius, 0);
+        drawPoints ~= vec3(center.x, center.y + radius, 0);
         inDbgSetBuffer(drawPoints);
-        inDbgPointsSize(radius * incViewportZoom * 2 + 4);
-        inDbgDrawPoints(vec4(0, 0, 0, 0.1), transform);
-        inDbgPointsSize(2 * radius * incViewportZoom);
-        inDbgDrawPoints(vec4(.5, .5, .5, 0.1), transform);
-        inDbgPointsSize(2 * innerRadius * incViewportZoom);
-        inDbgDrawPoints(vec4(1, 1, 1, 0.2), transform);
+        inDbgPointsSize(8);
+        inDbgDrawLines(vec4(0, 0, 0, 1), transform);
+        inDbgPointsSize(4);
+        inDbgDrawLines(vec4(1, 0, 0, 1), transform);
     }
 
     override
