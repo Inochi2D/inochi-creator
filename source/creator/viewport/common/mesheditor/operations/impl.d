@@ -21,6 +21,7 @@ import std.algorithm.mutation;
 import std.algorithm.searching;
 import std.stdio;
 
+
 class IncMeshEditorOneImpl(T) : IncMeshEditorOne {
 protected:
     T target;
@@ -30,10 +31,10 @@ protected:
 public:
     this(bool deformOnly) {
         super(deformOnly);
-        tools[VertexToolMode.Points] = new PointTool;
-        tools[VertexToolMode.Connect] = new ConnectTool;
-        tools[VertexToolMode.PathDeform] = new PathDeformTool;
-        tools[VertexToolMode.Grid] = new GridTool;
+        ToolInfo[] infoList = incGetToolInfo();
+        foreach (info; infoList) {
+            tools[info.mode()] = info.newTool();
+        }
     }
 
     override
@@ -88,37 +89,6 @@ public:
         }
 
         return updateChanged(changed);
-    }
-
-    override
-    void viewportTools(VertexToolMode mode) {
-        switch (mode) {
-        case VertexToolMode.Points:
-            setToolMode(VertexToolMode.Points);
-            setPath(null);
-            refreshMesh();
-            break;
-        case VertexToolMode.Connect:
-            setToolMode(VertexToolMode.Connect);
-            setPath(null);
-            refreshMesh();
-            break;
-        case VertexToolMode.PathDeform:
-            import std.stdio;
-            setToolMode(VertexToolMode.PathDeform);
-            setPath(new CatmullSpline);
-            deforming = false;
-            refreshMesh();
-            break;
-        case VertexToolMode.Grid:
-            import std.stdio;
-            setToolMode(VertexToolMode.Grid);
-            setPath(null);
-            deforming = false;
-            refreshMesh();
-            break;
-        default:       
-        }
     }
 
     override

@@ -1,5 +1,7 @@
 module creator.viewport.common.mesheditor.tools.connect;
 
+import creator.viewport.common.mesheditor.tools.enums;
+import creator.viewport.common.mesheditor.tools.base;
 import creator.viewport.common.mesheditor.tools.select;
 import creator.viewport.common.mesheditor.operations;
 import i18n;
@@ -99,4 +101,16 @@ class ConnectTool : NodeSelect {
             updateMeshEdit(io, impl, changed);
         return changed;
     }
+}
+
+class ToolInfoImpl(T: ConnectTool) : ToolInfoBase!(T) {
+    override
+    bool viewportTools(bool deformOnly, VertexToolMode toolMode, IncMeshEditorOne[Node] editors) {
+        if (!deformOnly)
+            return super.viewportTools(deformOnly, toolMode, editors);
+        return false;
+    }
+    override VertexToolMode mode() { return VertexToolMode.Connect; };
+    override string icon() { return "";}
+    override string description() { return _("Path Deform Tool");}
 }

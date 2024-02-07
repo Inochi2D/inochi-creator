@@ -13,6 +13,8 @@ import creator.viewport;
 import creator.viewport.common;
 import creator.viewport.common.mesh;
 import creator.viewport.common.mesheditor.operations;
+import creator.viewport.common.mesheditor.tools.enums;
+import creator.viewport.common.mesheditor.brushes;
 import creator.viewport.common.spline;
 import creator.core.input;
 import creator.core.actionstack;
@@ -150,13 +152,7 @@ public:
             registerBinding("transform.t.x", groupAction);
             registerBinding("transform.t.y", groupAction);
             registerBinding("transform.r.z", groupAction);
-            switch (toolMode) {
-            case VertexToolMode.PathDeform:
-                editorAction = new MeshEditorPathDeformAction!GroupAction(target, groupAction);
-                break;
-            default:
-                editorAction = new MeshEditorAction!GroupAction(target, groupAction);
-            }
+            editorAction = tools[toolMode].editorAction(target, groupAction);
         } else {
             if (reset) {
                 editorAction.clear();
@@ -213,6 +209,12 @@ public:
         if (abs(translation.distance(mousePos)) < selectRadius/incViewportZoom) return 0;
         return -1;
     }
+    
+    override
+    float[] getVerticesInBrush(vec2 mousePos, Brush brush) {
+        return [brush.weightAt(mousePos, translation)];
+    }
+
 
     override void removeVertexAt(vec2 vertex) {}
     override bool removeVertex(ImGuiIO* io, bool selectedOnly) { return false; }

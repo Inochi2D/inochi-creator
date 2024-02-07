@@ -254,8 +254,12 @@ bool incViewportAlwaysUpdate() {
     switch(incEditMode) {
         case EditMode.ModelTest:
             return true;
-        default: return false;
+        default: return alwaysUpdateMode;
     }
+}
+
+void incViewportSetAlwaysUpdate(bool value) {
+    alwaysUpdateMode = value;
 }
 
 /// For when there's no tools for that view
@@ -278,7 +282,7 @@ void incEndDrag(int btn) {
 }
 
 bool incDragStartedInViewport(int btn) {
-    return isDraggingInViewport[btn];
+    return isDraggingInViewport[btn] && numDraggedOnHandle[btn] == 0;
 }
 
 bool incDragStartedOnHandle(int btn, string name) {
@@ -292,6 +296,7 @@ void incBeginDragInViewport(int btn) {
 void incBeginDragOnHandle(int btn, string name, vec2 prevValue = vec2(0,0)) {
     auto mpos = incInputGetMousePosition();
     isDraggingOnHandle[btn][name] = new DraggingOnHandle(mpos, prevValue);
+    numDraggedOnHandle[btn] ++;
 }
 
 bool incGetDragOriginOnHandle(int btn, string name, out vec2 mpos) {
@@ -332,6 +337,7 @@ void incEndDragInViewport(int btn) {
 
 void incEndDragOnHandle(int btn, string name) {
     isDraggingOnHandle[btn].remove(name);
+    numDraggedOnHandle[btn] --;
 }
 
 DraggingOnHandle incGetDragOnHandleStatus(int btn, string name) {
@@ -755,6 +761,8 @@ void incViewportReset() {
 //          Internal Viewport Stuff(TM)
 //
 private {
+    bool alwaysUpdateMode = false;
+
     enum LockedOrientation {
         None, Horizontal, Vertical
     };
@@ -808,6 +816,7 @@ private {
     bool[ImGuiMouseButton.COUNT] isDraggingInViewport;
     DraggingOnHandle[string][ImGuiMouseButton.COUNT] isDraggingOnHandle;
     bool[ImGuiMouseButton.COUNT] isDragging;
+    int[ImGuiMouseButton.COUNT] numDraggedOnHandle = [0];
     bool isMovingViewport;
     float sx, sy;
     float csx, csy;

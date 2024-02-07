@@ -1,5 +1,6 @@
 module creator.viewport.common.mesheditor.tools.select;
 
+import creator.viewport.common.mesheditor.tools.enums;
 import creator.viewport.common.mesheditor.tools.base;
 import creator.viewport.common.mesheditor.operations;
 import i18n;
@@ -40,7 +41,7 @@ class NodeSelect : Tool, Draggable {
         assert(!impl.deformOnly || toolMode != VertexToolMode.Connect);
         isDragging = false;
         impl.isSelecting = false;
-//        impl.deselectAll();
+        incViewportSetAlwaysUpdate(false);
     }
 
     override 

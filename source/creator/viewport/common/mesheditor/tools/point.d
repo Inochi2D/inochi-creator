@@ -1,5 +1,7 @@
 module creator.viewport.common.mesheditor.tools.point;
 
+import creator.viewport.common.mesheditor.tools.enums;
+import creator.viewport.common.mesheditor.tools.base;
 import creator.viewport.common.mesheditor.tools.select;
 import creator.viewport.common.mesheditor.operations;
 import i18n;
@@ -422,4 +424,13 @@ class PointTool : NodeSelect {
         return changed;
     }
 
+}
+
+class ToolInfoImpl(T: PointTool) : ToolInfoBase!(T) {
+    override
+    VertexToolMode mode() { return VertexToolMode.Points; }
+    override
+    string icon() { return ""; }
+    override
+    string description() { return _("Vertex Tool"); }
 }

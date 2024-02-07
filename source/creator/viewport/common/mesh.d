@@ -12,6 +12,7 @@
 */
 module creator.viewport.common.mesh;
 import creator.viewport;
+import creator.viewport.common.mesheditor.brushes;
 import inochi2d;
 import inochi2d.core.dbg;
 import bindbc.opengl;
@@ -497,6 +498,14 @@ public:
             if (abs(vert.position.distance(point)) < selectRadius/incViewportZoom) return idx;
         }
         return -1;
+    }
+
+    float[] getVerticesInBrush(vec2 point, Brush brush) {
+        float[] indices;
+        foreach(idx, ref vert; vertices) {
+            indices ~= brush.weightAt(point, vert.position);
+        }
+        return indices;
     }
 
     void remove(MeshVertex* vert) {
