@@ -5,7 +5,7 @@
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.productivity</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.8.3</string>
+	<string>0.8.4</string>
 	<key>CFBundleName</key>
 	<string>Inochi Creator</string>
 	<key>CFBundleDisplayName</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.inochi2d.InochiCreator</string>
 	<key>CFBundleVersion</key>
-	<string>0.8.3</string>
+	<string>0.8.4</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
