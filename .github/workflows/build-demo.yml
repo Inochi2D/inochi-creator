@@ -206,15 +206,11 @@ jobs:
     - name: "Remove final conflicting files"
       continue-on-error: true
       run: |
-        # Delete fake harfbuzz if need be
-        if [ -f "/usr/local/lib/libharfbuzz.dylib" ]; then
-          sudo rm -r /usr/local/lib/libharfbuzz.dylib
-        fi
+        # Yoink everything in /user/local/lib
+        sudo rm -r /usr/local/lib/*
 
-        # And the .a for it as well
-        if [ -f "/usr/local/lib/libharfbuzz.a" ]; then
-          sudo rm -r /usr/local/lib/libharfbuzz.a
-        fi
+        # Yoink it all!!!
+        sudo rm -r /usr/local/Cellar/*
 
     - name: 'Generate i18n'
       run: |
