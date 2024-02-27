@@ -214,7 +214,7 @@ jobs:
         name: release-win32
 
   macOS-build:
-    runs-on: macos-12
+    runs-on: macos-14
 
     steps:
     - uses: actions/checkout@v3
@@ -234,7 +234,7 @@ jobs:
       continue-on-error: true
       run: |
         # Remove conflicting brew items
-        brew remove --ignore-dependencies aom cairo composer curl fontconfig freetype gd ghostscript httpd imagemagick jpeg-xl libavif libheif libxft mongodb-community mongosh node openjpeg php r sox webp libpng brotli
+        brew remove --ignore-dependencies aom cairo composer curl fontconfig freetype gd ghostscript httpd imagemagick jpeg-xl libavif libheif libxft node openjpeg php r sox webp libpng brotli
 
     - name: "Remove final conflicting files"
       continue-on-error: true
