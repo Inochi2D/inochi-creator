@@ -233,7 +233,7 @@ jobs:
       continue-on-error: true
       run: |
         # Remove conflicting brew items
-        brew remove --ignore-dependencies aom cairo composer curl fontconfig freetype gd ghostscript httpd imagemagick jpeg-xl libavif libheif libxft mongodb-community@5.0 mongosh node@16 openjpeg php r sox webp libpng brotli
+        brew remove --ignore-dependencies aom cairo composer curl fontconfig freetype gd ghostscript httpd imagemagick jpeg-xl libavif libheif libxft mongodb-community mongosh node openjpeg php r sox webp libpng brotli
 
     - name: "Remove final conflicting files"
       continue-on-error: true
