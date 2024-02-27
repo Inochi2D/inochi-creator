@@ -10,7 +10,6 @@ on:
     # Ignore release candidates!
     tags:
       - '*'
-      - '!*-rc*'
 
 permissions:
   contents: write
