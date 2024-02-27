@@ -13,6 +13,7 @@ import creator.windows;
 import creator.utils.link;
 import creator;
 import creator.widgets.dialog;
+import creator.widgets.modal;
 import creator.backend.gl;
 import creator.io.autosave;
 
@@ -623,7 +624,10 @@ void incBeginLoopNoEv() {
 
     // HACK: ImGui Crashes if a popup is rendered on the first frame, let's avoid that.
     if (firstFrame) firstFrame = false;
-    else incRenderDialogs();
+    else {
+        incModalRender();
+        incRenderDialogs();
+    }
     incStatusUpdate();
 }
 

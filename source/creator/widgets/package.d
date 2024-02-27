@@ -25,6 +25,7 @@ public import creator.widgets.texture;
 public import creator.widgets.category;
 public import creator.widgets.dragdrop;
 public import creator.widgets.timeline;
+public import creator.widgets.modal;
 
 bool incBegin(const(char)* name, bool* pOpen, ImGuiWindowFlags flags) {
     version (NoUIScaling) {

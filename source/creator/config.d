@@ -44,6 +44,11 @@ enum INC_FEATURE_REQ_URI = "https://github.com/Inochi2D/inochi-creator/issues/ne
 enum INC_INFO_WEBSITE_URI = "https://inochi2d.com/";
 
 /**
+    URI to buy a copy, unused for non-official builds
+*/
+enum INC_INFO_BUY_URL = "https://lunafoxgirlvt.itch.io/inochi-creator";
+
+/**
     URI to documentation provided for this software, by default it'll direct to the Inochi2D Documentation
 
     If you modify the software by adding new features it's highly recommended that you change this link to

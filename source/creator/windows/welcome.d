@@ -321,9 +321,16 @@ protected:
                             static if (INC_INFO_SHOW_DONATE_LINKS) {
                                 igNewLine();
                                 igNewLine();
+                                version(InDemo) {
+                                    if (incTextLinkWithIcon("", _("Buy a copy"))) {
+                                        incOpenLink(INC_INFO_BUY_URL);
+                                    }
+                                }
+
                                 if (incTextLinkWithIcon("", _("Patreon"))) {
                                     incOpenLink("https://www.patreon.com/LunaFoxgirlVT");
                                 }
+
                                 if (incTextLinkWithIcon("", _("Github Sponsors"))) {
                                     incOpenLink("https://github.com/sponsors/LunaTheFoxgirl/");
                                 }

@@ -18,8 +18,7 @@ If you are a VTuber wanting to use Inochi2D we highly recommend checking out [In
 ### Stable Builds
 
 &nbsp;&nbsp;&nbsp;&nbsp;
-[![Download on itch.io](https://img.shields.io/github/v/release/Inochi2D/inochi-creator?color=%23fa5c5c&label=itch.io&logo=itch.io&style=for-the-badge)](https://lunafoxgirlvt.itch.io/inochi-creator)
-[![Latest Build](https://img.shields.io/github/v/release/Inochi2D/inochi-creator?style=for-the-badge&logo=github)](https://github.com/Inochi2D/inochi-creator/releases/latest)
+[![Buy on itch.io](https://img.shields.io/github/v/release/Inochi2D/inochi-creator?color=%23fa5c5c&label=itch.io&logo=itch.io&style=for-the-badge)](https://lunafoxgirlvt.itch.io/inochi-creator)
 
 ### Experimental Builds
 
@@ -52,66 +51,13 @@ Once the below dependencies are met, building and running inochi-creator should 
 - Visual Studio 2022 (With "Desktop development with C++" workflow installed)
   - In theory, "Build Tools for Visual Studio 2022" should also work, but is untested.
 - CMake (Currently 3.16 or higher is needed.)
-- Dlang, either dmd or ldc
+- Dlang, either dmd or ldc (ldc recommended)
 
 ### Linux
 #### Dependencies
 - The equivalent of build-essential on Ubuntu, on centos 7, this was `sudo yum groupinstall 'Development Tools'`, this should get you a working C++ toolchain.
-- Dlang, either dmd or ldc
+- Dlang, either dmd or ldc (ldc recommended)
 - CMake (Currently 3.16 or higher is needed.)
 - SDL2 (developer package)
 - Freetype (developer package)
 - appimagetool (for building an AppImage)
-
-## Building an AppImage (Experimental)
-The AppImages we're currently experimenatlly distributing are generated on CentOS 7, and have only been tested (for creation) there. Eventually we'll containerize this environment somehow and set up GitHub Actions to generate releases
-
-In the meantime, if you've got the project built on your Linux environment, simply run `./BuildAppImage.sh` to build it, it should generate a `build` directory, and a `inochi-creator-x86_64.AppImage` file within it. 
-
-Currently we're not set up for Arm builds (or 32 bit builds), but down the line we plan to improve the tooling for easily building an creating images for all of our targets. 
-
-Obviously the existing caveats with AppImages still exist when generating them on newer environments, or ones without for example Freetype and SDL install. We're looking at improving our story in this regard as well, but these are just some of the reasons why it's still Experimental.
-
-### CentOS 7 Env Setup:
-This is roughly what we did to set up our CentOS 7 env for building/creating an AppImage. Thanks go to @grillo-delmal for helping us with this!
-
-```bash
-# Install our deps
-yum -y groupinstall 'Development Tools'
-yum -y install epel-release
-yum -y install SDL2-devel.x86_64
-yum -y install freetype-devel.x86_64
-yum -y install cmake3
-ln -s /usr/bin/cmake3 /usr/bin/cmake
-
-# Install llvm
-yum -y install centos-release-scl
-yum -y install llvm-toolset-7.0
-yum -y install llvm-toolset-7.0-llvm-devel
-yum -y install llvm-toolset-7.0-llvm-static
-
-# Install an older LDC that we can't use for inochi-creator, since LDC needs a D compiler to build.
-mkdir -p ~/dlang && curl -L https://dlang.org/install.sh -o ~/dlang/install.sh
-bash ~/dlang/install.sh ldc-1.24.0
-source ~/dlang/ldc-1.24.0/activate
-
-# Finally, clone and build a recent LDC
-curl -L https://github.com/ldc-developers/ldc/releases/download/v1.29.0/ldc-1.29.0-src.tar.gz -o ldc-1.29.0-src.tar.gz
-tar -xzf ldc-1.29.0-src.tar.gz
-pushd ldc-1.29.0-src
-
-mkdir build
-pushd build
-
-scl enable llvm-toolset-7.0 'cmake -S ..'
-# Maybe should do `make -j8` or whatever here. Maybe we should depend on ninja...
-scl enable llvm-toolset-7.0 'make'
-scl enable llvm-toolset-7.0 'make install'
-
-popd
-popd
-deactivate
-
-# Navigate to inochi-creator dir and build
-scl enable llvm-toolset-7.0 dub
-```

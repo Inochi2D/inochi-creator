@@ -38,6 +38,37 @@ configuration "meta" {
 }
 
 // Linux build
+configuration "linux-demo" {
+
+	platforms "linux"
+	dependency "dportals" version="~>0.1.0"
+	targetType "executable"
+	subConfiguration "i2d-imgui" "static_dynamicCRT"
+	versions "InBranding" "InDemo"
+}
+
+// macOS build
+configuration "osx-demo" {
+	platforms "osx"
+	targetType "executable"
+	targetPath "out/Inochi Creator.app/Contents/MacOS"
+	subConfiguration "i2d-imgui" "dynamic_dynamicCRT"
+	dflags "-force-dwarf-frame-section=false"
+	lflags "-rpath" "@executable_path/../Frameworks" "-rpath" "@executable_path/."
+	versions "InBranding" "InDemo"
+}
+
+// Windows build
+configuration "win32-demo" {
+	platforms "windows"
+	targetType "executable"
+	subConfiguration "i2d-imgui" "static_staticCRT"
+	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows-dmd"
+	sourceFiles "build-aux\\windows\\inochi-creator.res"
+	versions "InBranding" "InDemo"
+}
+
+// Linux build
 configuration "linux-full" {
 
 	platforms "linux"

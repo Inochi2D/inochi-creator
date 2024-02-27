@@ -90,8 +90,21 @@ int main(string[] args)
             incPushWindow(new WelcomeWindow());
         }
 
-        version(InNightly) incDialog("NIGHTLY_WARN", __("Inochi Creator (Nightly)"), _("You're running a nightly build of Inochi Creator!\nInochi Creator may crash unexpectedly and you will likely encounter bugs.\nMake sure to save and back up your work often!"), DialogLevel.Warning);
-
+        version(InNightly) incModalAdd(
+            new Nagscreen(
+                _("Warning!"), 
+                _("You're running a nightly build of Inochi Creator!\nInochi Creator may crash unexpectedly and you will likely encounter bugs.\nMake sure to save and back up your work often!"),
+                5
+            )
+        );
+        
+        version(InDemo) incModalAdd(
+            new Nagscreen(
+                _("Thank you!"), 
+                _("Thank you for downloading Inochi Creator!\nSoftware is expensive to create and the same goes for Inochi Creator.\nKindly consider chipping in to fund the development!\n\nTo remove this nagscreen, [buy a copy today!](https://inochi2d.com)"),
+                10
+            )
+        );
         // Update loop
         while(!incIsCloseRequested()) {
             incUpdate();
