@@ -1095,11 +1095,11 @@ msgstr "%s (Sobreexpocición)"
 #: source/creator/panels/inspector.d:1174
 #, fuzzy
 msgid "Propagate MeshGroup"
-msgstr "GrupoDeMallas"
+msgstr "Propagar GrupoDeMallas"
 
 #: source/creator/panels/inspector.d:1180
 msgid "Allow ascendant MeshGroup to deform children of Composite"
-msgstr ""
+msgstr "Permite al GrupoDeMallas deformar a hijos de un Nodo de composición"
 
 #: source/creator/panels/inspector.d:1190
 msgid "SimplePhysics"
@@ -1538,7 +1538,7 @@ msgstr "Fijar a píxel"
 
 #: source/creator/viewport/common/mesheditor/tools/brush.d:162
 msgid "SHIFT"
-msgstr ""
+msgstr "SHIFT"
 
 #: source/creator/viewport/common/mesheditor/tools/brush.d:163
 #, fuzzy
@@ -1547,20 +1547,20 @@ msgstr "Ocultar vértices"
 
 #: source/creator/viewport/common/mesheditor/tools/brush.d:163
 msgid "ALT"
-msgstr ""
+msgstr "ALT"
 
 #: source/creator/viewport/common/mesheditor/tools/brush.d:260
 #, fuzzy
 msgid "Drag mode"
-msgstr "Modo de mapeo"
+msgstr "Modo de arrastre"
 
 #: source/creator/viewport/common/mesheditor/tools/brush.d:270
 msgid "Flow mode"
-msgstr ""
+msgstr "Modo fluido"
 
 #: source/creator/viewport/common/mesheditor/tools/brush.d:297
 msgid "Brush Tool"
-msgstr ""
+msgstr "Brocha de vertices"
 
 #: source/creator/viewport/common/mesheditor/tools/connect.d:34
 #: source/creator/viewport/common/mesheditor/tools/point.d:97
@@ -1637,12 +1637,12 @@ msgstr "Shift"
 
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:410
 msgid "Define paths"
-msgstr ""
+msgstr "Definir trazo"
 
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:421
 #, fuzzy
 msgid "Transform path"
-msgstr "Transformar"
+msgstr "Transformar trazo"
 
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:434
 #, fuzzy
@@ -2828,7 +2828,7 @@ msgstr "Únete a nuestro Discord"
 
 #: source/creator/windows/welcome.d:325
 msgid "Buy a copy"
-msgstr ""
+msgstr "Comprar una copia"
 
 #: source/creator/windows/welcome.d:330
 msgid "Patreon"
@@ -2844,7 +2844,7 @@ msgstr "Inicio de Inochi Creator"
 
 #: source/app.d:95
 msgid "Warning!"
-msgstr ""
+msgstr "¡Alerta!"
 
 #: source/app.d:96
 msgid ""
@@ -2859,7 +2859,7 @@ msgstr ""
 
 #: source/app.d:103
 msgid "Thank you!"
-msgstr ""
+msgstr "¡Gracias!"
 
 #: source/app.d:104
 msgid ""
@@ -2869,6 +2869,11 @@ msgid ""
 "\n"
 "To remove this nagscreen, [buy a copy today!](https://inochi2d.com)"
 msgstr ""
+"¡Gracias por descargar Inochi Creator!\n"
+"Crear software es caro, y esto tambien es cierto para Inochi Creator.\n"
+"¡Por favor considera poner de tu parte para finaciar su desarrollo!\n"
+"\n"
+"Para evitar este mensaje, [¡compra una copia hoy!](https://inochi2d.com)"
 
 #~ msgid "Inochi Creator (Nightly)"
 #~ msgstr "Inochi Creator (Nightly)"
