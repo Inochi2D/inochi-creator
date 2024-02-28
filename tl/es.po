@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-10 00:12+0200\n"
+"POT-Creation-Date: 2024-02-27 23:01-0300\n"
 "PO-Revision-Date: 2023-07-10 00:13+0200\n"
 "Last-Translator: Yukusai <85849071+p-yukusai@users.noreply.github.com>, "
 "Grillo <@grillo_delmal@vt.social>, Anasu <@anasu@vt.social>\n"
@@ -21,21 +21,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.3.2\n"
-
-#: source/app.d:93
-msgid "Inochi Creator (Nightly)"
-msgstr "Inochi Creator (Nightly)"
-
-#: source/app.d:93
-msgid ""
-"You're running a nightly build of Inochi Creator!\n"
-"Inochi Creator may crash unexpectedly and you will likely encounter bugs.\n"
-"Make sure to save and back up your work often!"
-msgstr ""
-"¡Estás corriendo una versión nightly de Inochi Creator!\n"
-"Inochi Creator se puede caer inesperadamente y es probable que encuentres "
-"bugs.\n"
-"¡Asegúrate de guardar y realizar respaldos de tu trabajo!"
 
 #: source/creator/actions/binding.d:74
 #, c-format
@@ -108,15 +93,35 @@ msgstr "%s: vertice fue eliminado."
 msgid "%s: vertex was translated."
 msgstr "%s: vertice fue trasladado."
 
-#: source/creator/actions/mesheditor.d:157
+#: source/creator/actions/parameter.d:114
 #, c-format
-msgid "%s->Edited deformation of %s."
-msgstr "%s->Se modifico la deformación de %s."
+msgid "Added parameter %s"
+msgstr "Se ha añadido el parámetro %s"
 
-#: source/creator/actions/mesheditor.d:164
+#: source/creator/actions/parameter.d:116
 #, c-format
-msgid "%s->deformation of %s was edited."
-msgstr "%s->La deformación de %s fue modificada."
+msgid "Removed parameter %s"
+msgstr "Se ha eliminado el parámetro %s"
+
+#: source/creator/actions/parameter.d:124
+#, c-format
+msgid "Parameter %s was removed"
+msgstr "El parámetro %s fue eliminado"
+
+#: source/creator/actions/parameter.d:126
+#, c-format
+msgid "Parameter %s was added"
+msgstr "El parámetro %s fue agregado"
+
+#: source/creator/actions/parameter.d:202 source/creator/actions/node.d:432
+#, c-format
+msgid "%s->%s changed to %s"
+msgstr "%s->%s cambió a %s"
+
+#: source/creator/actions/parameter.d:212 source/creator/actions/node.d:439
+#, c-format
+msgid "%s->%s changed from %s"
+msgstr "%s->%s cambió de %s"
 
 #. Enforce reparenting rules
 #: source/creator/actions/node.d:69
@@ -180,16 +185,6 @@ msgstr "%s fue %s"
 msgid "Unnamed "
 msgstr "No nombrado "
 
-#: source/creator/actions/node.d:432 source/creator/actions/parameter.d:202
-#, c-format
-msgid "%s->%s changed to %s"
-msgstr "%s->%s cambió a %s"
-
-#: source/creator/actions/node.d:439 source/creator/actions/parameter.d:212
-#, c-format
-msgid "%s->%s changed from %s"
-msgstr "%s->%s cambió de %s"
-
 #: source/creator/actions/node.d:503 source/creator/actions/node.d:511
 #, c-format
 msgid "%s locked to root node"
@@ -200,25 +195,15 @@ msgstr "%s fijado al nodo raiz"
 msgid "%s unlocked from root node"
 msgstr "%s liberado del nodo raiz"
 
-#: source/creator/actions/parameter.d:114
+#: source/creator/actions/mesheditor.d:157
 #, c-format
-msgid "Added parameter %s"
-msgstr "Se ha añadido el parámetro %s"
+msgid "%s->Edited deformation of %s."
+msgstr "%s->Se modifico la deformación de %s."
 
-#: source/creator/actions/parameter.d:116
+#: source/creator/actions/mesheditor.d:164
 #, c-format
-msgid "Removed parameter %s"
-msgstr "Se ha eliminado el parámetro %s"
-
-#: source/creator/actions/parameter.d:124
-#, c-format
-msgid "Parameter %s was removed"
-msgstr "El parámetro %s fue eliminado"
-
-#: source/creator/actions/parameter.d:126
-#, c-format
-msgid "Parameter %s was added"
-msgstr "El parámetro %s fue agregado"
+msgid "%s->deformation of %s was edited."
+msgstr "%s->La deformación de %s fue modificada."
 
 #: source/creator/core/dpi.d:54 source/creator/core/dpi.d:58
 msgid "100% (Locked)"
@@ -231,11 +216,11 @@ msgstr "100% (Bloqueado)"
 msgid "LANG_NAME"
 msgstr "Español"
 
-#: source/creator/core/package.d:252
+#: source/creator/core/package.d:269
 msgid "(Debug Mode)"
 msgstr "(Modo de depuración)"
 
-#: source/creator/core/package.d:254
+#: source/creator/core/package.d:271
 msgid "(Unsupported)"
 msgstr "(Sin soporte)"
 
@@ -254,7 +239,7 @@ msgstr "Falló la exportación de %s con el error (%s)..."
 msgid "A texture is too big for the atlas."
 msgstr "Una de las texturas es muy grande para el atlas."
 
-#: source/creator/io/kra.d:26 source/creator/io/psd.d:26
+#: source/creator/io/psd.d:26 source/creator/io/kra.d:26
 #: source/creator/panels/inspector.d:698 source/creator/widgets/mainmenu.d:187
 #: source/creator/widgets/mainmenu.d:209 source/creator/widgets/mainmenu.d:222
 #: source/creator/widgets/mainmenu.d:237 source/creator/widgets/mainmenu.d:470
@@ -262,26 +247,26 @@ msgstr "Una de las texturas es muy grande para el atlas."
 msgid "Import..."
 msgstr "Importar..."
 
-#: source/creator/io/kra.d:240 source/creator/io/psd.d:233
+#: source/creator/io/psd.d:233 source/creator/io/kra.d:240
 #: source/creator/package.d:359
 #, c-format
 msgid "%s was imported..."
 msgstr "%s ha sido importado..."
 
-#: source/creator/io/kra.d:243 source/creator/io/psd.d:236
+#: source/creator/io/psd.d:236 source/creator/io/kra.d:243
 #: source/creator/package.d:364
 msgid "Import failed..."
 msgstr "Importación fallida..."
 
 #. Write error
-#: source/creator/io/kra.d:244 source/creator/io/package.d:212
-#: source/creator/io/package.d:213 source/creator/io/psd.d:237
+#: source/creator/io/psd.d:237 source/creator/io/kra.d:244
+#: source/creator/io/package.d:212 source/creator/io/package.d:213
 #: source/creator/package.d:239 source/creator/package.d:297
-#: source/creator/package.d:363 source/creator/panels/inspector.d:635
-#: source/creator/panels/inspector.d:654 source/creator/panels/inspector.d:655
-#: source/creator/panels/inspector.d:666 source/creator/panels/nodes.d:283
-#: source/creator/panels/nodes.d:310 source/creator/panels/viewport.d:242
-#: source/creator/viewport/vertex/package.d:304
+#: source/creator/package.d:363 source/creator/panels/viewport.d:242
+#: source/creator/panels/nodes.d:283 source/creator/panels/nodes.d:310
+#: source/creator/panels/inspector.d:635 source/creator/panels/inspector.d:654
+#: source/creator/panels/inspector.d:655 source/creator/panels/inspector.d:666
+#: source/creator/viewport/vertex/package.d:308
 #: source/creator/widgets/mainmenu.d:242 source/creator/widgets/mainmenu.d:477
 #: source/creator/windows/imgexport.d:144
 #: source/creator/windows/inpexport.d:217
@@ -297,21 +282,6 @@ msgstr "Importación fallida..."
 msgid "Error"
 msgstr "Error"
 
-#: source/creator/io/kra.d:244
-#, c-format
-msgid ""
-"An error occured during KRA import:\n"
-"%s"
-msgstr ""
-"Ha ocurrido un error durante la importación del KRA:\n"
-"%s"
-
-#: source/creator/io/package.d:212 source/creator/panels/inspector.d:654
-#: source/creator/panels/inspector.d:666 source/creator/panels/viewport.d:242
-#, c-format
-msgid "%s is not supported"
-msgstr "No hay soporte para %s"
-
 #: source/creator/io/psd.d:237
 #, c-format
 msgid ""
@@ -324,6 +294,21 @@ msgstr ""
 #: source/creator/io/videoexport.d:65
 msgid "Automatic"
 msgstr "Automatico"
+
+#: source/creator/io/kra.d:244
+#, c-format
+msgid ""
+"An error occured during KRA import:\n"
+"%s"
+msgstr ""
+"Ha ocurrido un error durante la importación del KRA:\n"
+"%s"
+
+#: source/creator/io/package.d:212 source/creator/panels/viewport.d:242
+#: source/creator/panels/inspector.d:654 source/creator/panels/inspector.d:666
+#, c-format
+msgid "%s is not supported"
+msgstr "No hay soporte para %s"
 
 #: source/creator/package.d:196
 msgid "New Project"
@@ -392,10 +377,11 @@ msgstr "Historial"
 msgid "Edit..."
 msgstr "Editar..."
 
-#: source/creator/panels/animlist.d:37 source/creator/panels/inspector.d:904
-#: source/creator/panels/inspector.d:1107 source/creator/panels/nodes.d:142
-#: source/creator/panels/parameters.d:1033
-#: source/creator/panels/parameters.d:1253 source/creator/panels/timeline.d:107
+#: source/creator/panels/animlist.d:37 source/creator/panels/timeline.d:107
+#: source/creator/panels/nodes.d:142 source/creator/panels/inspector.d:904
+#: source/creator/panels/inspector.d:1107
+#: source/creator/panels/parameters.d:951
+#: source/creator/panels/parameters.d:1171
 msgid "Delete"
 msgstr "Borrar"
 
@@ -403,10 +389,244 @@ msgstr "Borrar"
 msgid "Animation List"
 msgstr "Lista de Animación"
 
-#: source/creator/panels/inspector.d:42 source/creator/panels/nodes.d:342
-#: source/creator/panels/parameters.d:1110
+#: source/creator/panels/logger.d:25
+msgid "Logger"
+msgstr "Registro"
+
+#: source/creator/panels/scene.d:29
+msgid "Ambient Light"
+msgstr "Luz de ambiente"
+
+#: source/creator/panels/scene.d:38
+msgid "Scene"
+msgstr "Escena"
+
+#: source/creator/panels/timeline.d:73
+msgid "Interpolation"
+msgstr "Interpolación"
+
+#: source/creator/panels/timeline.d:74 source/creator/panels/parameters.d:539
+msgid "Nearest"
+msgstr "Más cercano"
+
+#: source/creator/panels/timeline.d:77
+msgid "Stepped"
+msgstr "Escalonado"
+
+#: source/creator/panels/timeline.d:80 source/creator/panels/parameters.d:545
+msgid "Linear"
+msgstr "Lineal"
+
+#: source/creator/panels/timeline.d:83 source/creator/panels/parameters.d:551
+msgid "Cubic"
+msgstr "Cubico"
+
+#: source/creator/panels/timeline.d:89
+msgid "Merge Mode"
+msgstr "Modo de Combinación"
+
+#: source/creator/panels/timeline.d:93 source/creator/windows/editanim.d:90
+msgid "Additive"
+msgstr "Aditivo"
+
+#: source/creator/panels/timeline.d:96
+msgid "Multiplicative"
+msgstr "Multiplicativo"
+
+#: source/creator/panels/timeline.d:101
+msgid "Forced"
+msgstr "Forzado"
+
+#: source/creator/panels/timeline.d:211
+msgid "Lock playback to animation framerate"
+msgstr "Restringir reproducción a framerate de animación"
+
+#: source/creator/panels/timeline.d:281
+msgid "Not in Animation Edit mode..."
+msgstr "No disponible fuera del modo de Edición de Animación..."
+
+#: source/creator/panels/timeline.d:288
+msgid "Timeline"
+msgstr "Línea de tiempo"
+
+#: source/creator/panels/toolsettings.d:31
+msgid "Tool Settings"
+msgstr "Ajustes de herramientas"
+
+#. Appended to the name of a face tracking receiver
+#. in the Tracking settings panel
+#: source/creator/panels/tracking.d:32
+#, c-format
+msgid "%s Receiver"
+msgstr "%s Receptor"
+
+#: source/creator/panels/tracking.d:60
+msgid "A reciever which uses your phone and associated app to track your body"
+msgstr ""
+"Un receptor que usa tu célular y la aplicación asociada para seguir tu cuerpo"
+
+#: source/creator/panels/tracking.d:64
+msgid "Bind Address"
+msgstr "Direccion de conexión"
+
+#: source/creator/panels/tracking.d:73
+msgid ""
+"The IP address that the VMC binding server should listen on, default 0.0.0.0"
+msgstr ""
+"La dirección IP que el servidor VMC debería escuchar. Por defecto es 0.0.0.0"
+
+#: source/creator/panels/tracking.d:76
+msgid "Port"
+msgstr "Puerto"
+
+#: source/creator/panels/tracking.d:85
+msgid "The port that the VMC binding server should listen on, default 39540"
+msgstr "El puerto al que el servidor VMC debería escuchar. Por defecto 39540"
+
+#: source/creator/panels/tracking.d:88
+msgid "A reciever which uses the VTubeStudio iOS app"
+msgstr "Un receptor que usa la aplicación de IOS VTubeStudio"
+
+#: source/creator/panels/tracking.d:91
+msgid "iPhone IP"
+msgstr "IP del iPhone"
+
+#: source/creator/panels/tracking.d:100
+msgid ""
+"The IP Address of your iPhone,\n"
+"You can find it in the VSeeFace Config panel in VTube Studio"
+msgstr ""
+"La dirección IP de tu iPhone,\n"
+"La puedes encontrar en el panel de configuración VSeeFace en Vtube Studio"
+
+#: source/creator/panels/tracking.d:103
+msgid "A receiver which uses OpenSeeFace application"
+msgstr "Un receptor que utiliza la aplicación OpenSeeFace"
+
+#: source/creator/panels/tracking.d:105
+msgid "OSF Bind Address"
+msgstr "Dirección de OSF"
+
+#: source/creator/panels/tracking.d:116
+msgid "OSF Listen Port"
+msgstr "Puerto de OSF"
+
+#: source/creator/panels/tracking.d:128
+msgid "Tracking Bindings"
+msgstr "Conexiones de seguimiento"
+
+#: source/creator/panels/tracking.d:133
+#, c-format
+msgid "%s bound to %s"
+msgstr "%s conectado a %s"
+
+#: source/creator/panels/tracking.d:148
+msgid "Not in Test Mode..."
+msgstr "No disponible fuera de modo de prueba..."
+
+#: source/creator/panels/tracking.d:154
+msgid "Tracking"
+msgstr "Rastreo"
+
+#: source/creator/panels/viewport.d:304 source/creator/panels/inspector.d:979
+#: source/creator/windows/settings.d:83
+msgid "Viewport"
+msgstr "Ventana de visualización"
+
+#: source/creator/panels/nodes.d:92
+msgid "Add"
+msgstr "Agregar"
+
+#: source/creator/panels/nodes.d:96
+msgid "Node"
+msgstr "Nodo"
+
+#: source/creator/panels/nodes.d:100 source/creator/panels/inspector.d:898
+#: source/creator/panels/inspector.d:1101
+msgid "Mask"
+msgstr "Máscara"
+
+#: source/creator/panels/nodes.d:107 source/creator/panels/inspector.d:993
+#: source/creator/panels/inspector.d:1694
+msgid "Composite"
+msgstr "Composición"
+
+#: source/creator/panels/nodes.d:113 source/creator/panels/inspector.d:1729
+msgid "Simple Physics"
+msgstr "Físicas simples"
+
+#: source/creator/panels/nodes.d:118 source/creator/panels/inspector.d:977
+#: source/creator/windows/imgexport.d:97
+#: source/creator/windows/videoexport.d:161
+msgid "Camera"
+msgstr "Cámara"
+
+#: source/creator/panels/nodes.d:122 source/creator/panels/inspector.d:1319
+msgid "MeshGroup"
+msgstr "GrupoDeMallas"
+
+#. Switches Inochi Creator over to Mesh Edit mode
+#. and selects the mesh that you had selected previously
+#. in Model Edit mode.
+#: source/creator/panels/nodes.d:132
+#: source/creator/viewport/model/package.d:156
+msgid "Edit Mesh"
+msgstr "Editar malla"
+
+#. Option to hide the node (and subnodes)
+#: source/creator/panels/nodes.d:138
+msgid "Hide"
+msgstr "Ocultar"
+
+#. Option to show the node (and subnodes)
+#: source/creator/panels/nodes.d:138
+msgid "Show"
+msgstr "Mostrar"
+
+#: source/creator/panels/nodes.d:162
+msgid "More Info"
+msgstr "Más información"
+
+#. %s is the name of the node in the More Info menu
+#. %u is the UUID of the node in the More Info menu
+#: source/creator/panels/nodes.d:168
+#, c-format
+msgid "%s ID: %u"
+msgstr "%s ID: %u"
+
+#: source/creator/panels/nodes.d:171
+#, c-format
+msgid "%s Layer: %s"
+msgstr "%s Capa: %s"
+
+#. %u is the UUID of the node in the More Info menu
+#: source/creator/panels/nodes.d:176
+#, c-format
+msgid "ID: %u"
+msgstr "ID: %u"
+
+#: source/creator/panels/nodes.d:179
+#, c-format
+msgid "Layer: %s"
+msgstr "Capa: %s"
+
+#: source/creator/panels/nodes.d:186
+msgid "Recalculate origin"
+msgstr "Recalcular origen"
+
+#. Selectable
+#: source/creator/panels/nodes.d:241 source/creator/panels/inspector.d:168
+msgid "Puppet"
+msgstr "Marioneta"
+
+#: source/creator/panels/nodes.d:342 source/creator/panels/inspector.d:42
+#: source/creator/panels/parameters.d:1028
 msgid "In vertex edit mode..."
 msgstr "En modo de edición de vértices..."
+
+#: source/creator/panels/nodes.d:443
+msgid "Nodes"
+msgstr "Nodos"
 
 #: source/creator/panels/inspector.d:116
 msgid "No nodes selected..."
@@ -419,11 +639,6 @@ msgstr "Solo se puede inspeccionar un único nodo..."
 #: source/creator/panels/inspector.d:124
 msgid "Inspector"
 msgstr "Inspector"
-
-#. Selectable
-#: source/creator/panels/inspector.d:168 source/creator/panels/nodes.d:241
-msgid "Puppet"
-msgstr "Marioneta"
 
 #: source/creator/panels/inspector.d:181 source/creator/panels/inspector.d:186
 msgid "Inochi2D Ver."
@@ -540,7 +755,7 @@ msgstr ""
 "Hace que el modelo Inochi2D use la técnica de filtrado de punto, reduciendo "
 "el desenfoque en modelos de baja resolución."
 
-#: source/creator/panels/inspector.d:293 source/creator/panels/inspector.d:1529
+#: source/creator/panels/inspector.d:293 source/creator/panels/inspector.d:1538
 msgid "Transform"
 msgstr "Transformar"
 
@@ -548,7 +763,7 @@ msgstr "Transformar"
 #. Translation
 #.
 #. Translation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:309 source/creator/panels/inspector.d:1544
+#: source/creator/panels/inspector.d:309 source/creator/panels/inspector.d:1553
 msgid "Translation"
 msgstr "Traslación"
 
@@ -571,7 +786,7 @@ msgstr ""
 "mantenga en su sitio aún si el nodo padre se mueve."
 
 #. Rotation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:399 source/creator/panels/inspector.d:1581
+#: source/creator/panels/inspector.d:399 source/creator/panels/inspector.d:1590
 msgid "Rotation"
 msgstr "Rotación"
 
@@ -588,7 +803,7 @@ msgid "Rotation Z"
 msgstr "Rotación Z"
 
 #. Scaling portion of the transformation matrix.
-#: source/creator/panels/inspector.d:471 source/creator/panels/inspector.d:1613
+#: source/creator/panels/inspector.d:471 source/creator/panels/inspector.d:1622
 msgid "Scale"
 msgstr "Escala"
 
@@ -612,7 +827,7 @@ msgstr "Fijar a píxel"
 #. negative values = closer to camera
 #. positive values = further away from camera
 #: source/creator/panels/inspector.d:536 source/creator/panels/inspector.d:543
-#: source/creator/panels/inspector.d:1633
+#: source/creator/panels/inspector.d:1642
 msgid "Sorting"
 msgstr "Ordenamiento"
 
@@ -640,7 +855,7 @@ msgstr "Guardar a un archivo"
 msgid "Load from File"
 msgstr "Cargar desde Archivo"
 
-#: source/creator/panels/inspector.d:705 source/creator/panels/parameters.d:608
+#: source/creator/panels/inspector.d:705 source/creator/panels/parameters.d:526
 #: source/creator/windows/inpexport.d:222
 msgid "Remove"
 msgstr "Eliminar"
@@ -651,7 +866,7 @@ msgstr "Eliminar"
 msgid "Make Emissive"
 msgstr "Hacer emisivo"
 
-#: source/creator/panels/inspector.d:755 source/creator/panels/inspector.d:1640
+#: source/creator/panels/inspector.d:755 source/creator/panels/inspector.d:1649
 msgid "Part"
 msgstr "Parte"
 
@@ -672,18 +887,18 @@ msgid "Bumpmap"
 msgstr "Bumpmap"
 
 #: source/creator/panels/inspector.d:781 source/creator/panels/inspector.d:1003
-#: source/creator/panels/inspector.d:1647
-#: source/creator/panels/inspector.d:1692
+#: source/creator/panels/inspector.d:1656
+#: source/creator/panels/inspector.d:1701
 msgid "Tint (Multiply)"
 msgstr "Tinte (Multiplicar)"
 
 #: source/creator/panels/inspector.d:784 source/creator/panels/inspector.d:1006
-#: source/creator/panels/inspector.d:1652
-#: source/creator/panels/inspector.d:1697
+#: source/creator/panels/inspector.d:1661
+#: source/creator/panels/inspector.d:1706
 msgid "Tint (Screen)"
 msgstr "Tinte (Trama)"
 
-#: source/creator/panels/inspector.d:787 source/creator/panels/inspector.d:1656
+#: source/creator/panels/inspector.d:787 source/creator/panels/inspector.d:1665
 msgid "Emission Strength"
 msgstr "Intensidad de Emision"
 
@@ -831,8 +1046,8 @@ msgstr ""
 "Básicamente lo opuesto de Recortar hacia el fondo."
 
 #: source/creator/panels/inspector.d:869 source/creator/panels/inspector.d:1072
-#: source/creator/panels/inspector.d:1671
-#: source/creator/panels/inspector.d:1711
+#: source/creator/panels/inspector.d:1680
+#: source/creator/panels/inspector.d:1720
 #: source/creator/windows/inpexport.d:334
 msgid "Opacity"
 msgstr "Opacidad"
@@ -844,7 +1059,7 @@ msgstr "Máscaras"
 #. Threshold slider name for adjusting how transparent a pixel can be
 #. before it gets discarded.
 #: source/creator/panels/inspector.d:879 source/creator/panels/inspector.d:1082
-#: source/creator/panels/inspector.d:1678
+#: source/creator/panels/inspector.d:1687
 msgid "Threshold"
 msgstr "Umbral"
 
@@ -863,11 +1078,6 @@ msgstr "(Arrastra una parte o una máscara aquí)"
 msgid "Mode"
 msgstr "Modo"
 
-#: source/creator/panels/inspector.d:898 source/creator/panels/inspector.d:1101
-#: source/creator/panels/nodes.d:100
-msgid "Mask"
-msgstr "Máscara"
-
 #: source/creator/panels/inspector.d:899 source/creator/panels/inspector.d:1102
 msgid "Dodge"
 msgstr "Sobreexpocición"
@@ -882,112 +1092,101 @@ msgstr "%s (Máscara)"
 msgid "%s (Dodge)"
 msgstr "%s (Sobreexpocición)"
 
-#: source/creator/panels/inspector.d:977 source/creator/panels/nodes.d:118
-#: source/creator/windows/imgexport.d:97
-#: source/creator/windows/videoexport.d:161
-msgid "Camera"
-msgstr "Cámara"
+#: source/creator/panels/inspector.d:1174
+#, fuzzy
+msgid "Propagate MeshGroup"
+msgstr "Propagar GrupoDeMallas"
 
-#: source/creator/panels/inspector.d:979 source/creator/panels/viewport.d:304
-#: source/creator/windows/settings.d:83
-msgid "Viewport"
-msgstr "Ventana de visualización"
+#: source/creator/panels/inspector.d:1180
+msgid "Allow ascendant MeshGroup to deform children of Composite"
+msgstr "Permite al GrupoDeMallas deformar a hijos de un Nodo de composición"
 
-#: source/creator/panels/inspector.d:993 source/creator/panels/inspector.d:1685
-#: source/creator/panels/nodes.d:107
-msgid "Composite"
-msgstr "Composición"
-
-#: source/creator/panels/inspector.d:1181
+#: source/creator/panels/inspector.d:1190
 msgid "SimplePhysics"
 msgstr "Físicas simples"
 
-#: source/creator/panels/inspector.d:1193 source/creator/windows/kramerge.d:280
-#: source/creator/windows/psdmerge.d:276
+#: source/creator/panels/inspector.d:1202 source/creator/windows/psdmerge.d:276
+#: source/creator/windows/kramerge.d:280
 msgid "Unmap"
 msgstr "Desasignar"
 
-#: source/creator/panels/inspector.d:1198
+#: source/creator/panels/inspector.d:1207
 msgid "Unassigned"
 msgstr "Sin asignar"
 
-#: source/creator/panels/inspector.d:1204 source/creator/windows/trkbind.d:47
+#: source/creator/panels/inspector.d:1213 source/creator/windows/trkbind.d:47
 msgid "Parameter"
 msgstr "Parámetro"
 
-#: source/creator/panels/inspector.d:1205
+#: source/creator/panels/inspector.d:1214
 msgid "(unassigned)"
 msgstr "(sin asignar)"
 
-#: source/creator/panels/inspector.d:1223
+#: source/creator/panels/inspector.d:1232
 msgid "Type"
 msgstr "Tipo"
 
-#: source/creator/panels/inspector.d:1226
+#: source/creator/panels/inspector.d:1235
 msgid "Pendulum"
 msgstr "Péndulo"
 
-#: source/creator/panels/inspector.d:1228
+#: source/creator/panels/inspector.d:1237
 msgid "SpringPendulum"
 msgstr "Péndulo resorte"
 
-#: source/creator/panels/inspector.d:1235
+#: source/creator/panels/inspector.d:1244
 msgid "Mapping mode"
 msgstr "Modo de mapeo"
 
-#: source/creator/panels/inspector.d:1238
+#: source/creator/panels/inspector.d:1247
 msgid "AngleLength"
 msgstr "Largo del ángulo"
 
-#: source/creator/panels/inspector.d:1240
+#: source/creator/panels/inspector.d:1249
 msgid "XY"
 msgstr "XY"
 
-#: source/creator/panels/inspector.d:1250
+#: source/creator/panels/inspector.d:1259
 msgid "Local Transform Lock"
 msgstr "Fijar Transformación Local"
 
-#: source/creator/panels/inspector.d:1251
+#: source/creator/panels/inspector.d:1260
 msgid ""
 "Whether the physics system only listens to the movement of the physics node "
 "itself"
 msgstr ""
 "Define si el sistema de fisica solo responde al movimiento del nodo de fisica"
 
-#: source/creator/panels/inspector.d:1257
-#: source/creator/panels/inspector.d:1725
+#: source/creator/panels/inspector.d:1266
+#: source/creator/panels/inspector.d:1734
 msgid "Gravity scale"
 msgstr "Escala de gravedad"
 
-#: source/creator/panels/inspector.d:1264
-#: source/creator/panels/inspector.d:1732
+#: source/creator/panels/inspector.d:1273
+#: source/creator/panels/inspector.d:1741
 msgid "Length"
 msgstr "Largo"
 
-#: source/creator/panels/inspector.d:1271
-#: source/creator/panels/inspector.d:1739
+#: source/creator/panels/inspector.d:1280
+#: source/creator/panels/inspector.d:1748
 msgid "Resonant frequency"
 msgstr "Frecuencia de resonancia"
 
-#: source/creator/panels/inspector.d:1278
-#: source/creator/panels/inspector.d:1746
+#: source/creator/panels/inspector.d:1287
+#: source/creator/panels/inspector.d:1755
 msgid "Damping"
 msgstr "Amortiguación"
 
-#: source/creator/panels/inspector.d:1289
-#: source/creator/panels/inspector.d:1757
+#: source/creator/panels/inspector.d:1298
+#: source/creator/panels/inspector.d:1766
 msgid "Output scale"
 msgstr "Escala de salida"
 
-#: source/creator/panels/inspector.d:1310 source/creator/panels/nodes.d:122
-msgid "MeshGroup"
-msgstr "GrupoDeMallas"
-
-#: source/creator/panels/inspector.d:1316
+#: source/creator/panels/inspector.d:1325
 msgid "Dynamic Deformation (slower)"
 msgstr "Deformación dinamica (lento)"
 
-#: source/creator/panels/inspector.d:1319
+#: source/creator/panels/inspector.d:1328
 msgid ""
 "Whether the MeshGroup should dynamically deform children,\n"
 "this is an expensive operation and should not be overused."
@@ -995,412 +1194,206 @@ msgstr ""
 "Define si el Grupo de Mallas debe deformar dinamicamente a los hijos.\n"
 "Esta es una operación costosa, por lo que no se recomienda abusar de ella."
 
-#: source/creator/panels/inspector.d:1322
+#: source/creator/panels/inspector.d:1331
 msgid "Translate origins"
 msgstr "Trasladar origenes"
 
-#: source/creator/panels/inspector.d:1325
+#: source/creator/panels/inspector.d:1334
 msgid "Translate origin of child nodes for non-Drawable object."
 msgstr "Traladar origen de los nodos hijos de objetos no dibujables."
 
 #. Header for texture options
-#: source/creator/panels/inspector.d:1644
-#: source/creator/panels/inspector.d:1689
+#: source/creator/panels/inspector.d:1653
+#: source/creator/panels/inspector.d:1698
 msgid "Textures"
 msgstr "Texturas"
 
-#: source/creator/panels/inspector.d:1720 source/creator/panels/nodes.d:113
-msgid "Simple Physics"
-msgstr "Físicas simples"
-
-#: source/creator/panels/logger.d:25
-msgid "Logger"
-msgstr "Registro"
-
-#: source/creator/panels/nodes.d:92
-msgid "Add"
-msgstr "Agregar"
-
-#: source/creator/panels/nodes.d:96
-msgid "Node"
-msgstr "Nodo"
-
-#. Switches Inochi Creator over to Mesh Edit mode
-#. and selects the mesh that you had selected previously
-#. in Model Edit mode.
-#: source/creator/panels/nodes.d:132
-#: source/creator/viewport/model/package.d:150
-msgid "Edit Mesh"
-msgstr "Editar malla"
-
-#. Option to hide the node (and subnodes)
-#: source/creator/panels/nodes.d:138
-msgid "Hide"
-msgstr "Ocultar"
-
-#. Option to show the node (and subnodes)
-#: source/creator/panels/nodes.d:138
-msgid "Show"
-msgstr "Mostrar"
-
-#: source/creator/panels/nodes.d:162
-msgid "More Info"
-msgstr "Más información"
-
-#. %s is the name of the node in the More Info menu
-#. %u is the UUID of the node in the More Info menu
-#: source/creator/panels/nodes.d:168
-#, c-format
-msgid "%s ID: %u"
-msgstr "%s ID: %u"
-
-#: source/creator/panels/nodes.d:171
-#, c-format
-msgid "%s Layer: %s"
-msgstr "%s Capa: %s"
-
-#. %u is the UUID of the node in the More Info menu
-#: source/creator/panels/nodes.d:176
-#, c-format
-msgid "ID: %u"
-msgstr "ID: %u"
-
-#: source/creator/panels/nodes.d:179
-#, c-format
-msgid "Layer: %s"
-msgstr "Capa: %s"
-
-#: source/creator/panels/nodes.d:186
-msgid "Recalculate origin"
-msgstr "Recalcular origen"
-
-#: source/creator/panels/nodes.d:443
-msgid "Nodes"
-msgstr "Nodos"
-
-#: source/creator/panels/parameters.d:374
+#: source/creator/panels/parameters.d:268
 msgid "Unset"
 msgstr "Desarmar"
 
-#: source/creator/panels/parameters.d:383
+#: source/creator/panels/parameters.d:277
 msgid "Set to current"
 msgstr "Aplicar al actual"
 
-#: source/creator/panels/parameters.d:392
-#: source/creator/viewport/model/package.d:203
+#: source/creator/panels/parameters.d:286
+#: source/creator/viewport/model/package.d:209
 msgid "Reset"
 msgstr "Restablecer"
 
-#: source/creator/panels/parameters.d:401 source/creator/windows/trkbind.d:110
+#: source/creator/panels/parameters.d:295 source/creator/windows/trkbind.d:110
 msgid "Invert"
 msgstr "Invertir"
 
-#: source/creator/panels/parameters.d:410
-#: source/creator/panels/parameters.d:976
+#: source/creator/panels/parameters.d:304
+#: source/creator/panels/parameters.d:894
 msgid "Mirror"
 msgstr "Reflejar"
 
-#: source/creator/panels/parameters.d:411
-#: source/creator/panels/parameters.d:454
-#: source/creator/panels/parameters.d:977
+#: source/creator/panels/parameters.d:305
+#: source/creator/panels/parameters.d:348
+#: source/creator/panels/parameters.d:895
 msgid "Horizontally"
 msgstr "Horizontalmente"
 
-#: source/creator/panels/parameters.d:420
-#: source/creator/panels/parameters.d:471
-#: source/creator/panels/parameters.d:981
+#: source/creator/panels/parameters.d:314
+#: source/creator/panels/parameters.d:365
+#: source/creator/panels/parameters.d:899
 msgid "Vertically"
 msgstr "Verticalmente"
 
-#: source/creator/panels/parameters.d:431
+#: source/creator/panels/parameters.d:325
 msgid "Flip Deform"
 msgstr "Voltear Deformación"
 
-#: source/creator/panels/parameters.d:453
-#: source/creator/panels/parameters.d:508
+#: source/creator/panels/parameters.d:347
+#: source/creator/panels/parameters.d:402
 msgid "Set from mirror"
 msgstr "Aplicar desde el reflejo"
 
-#: source/creator/panels/parameters.d:488
+#: source/creator/panels/parameters.d:382
 msgid "Diagonally"
 msgstr "Diagonalmente"
 
-#: source/creator/panels/parameters.d:527
-#: source/creator/panels/parameters.d:1012
-#: source/creator/widgets/mainmenu.d:342
+#: source/creator/panels/parameters.d:421
+#: source/creator/panels/parameters.d:930 source/creator/widgets/mainmenu.d:342
 msgid "Copy"
 msgstr "Copiar"
 
-#: source/creator/panels/parameters.d:535
-#: source/creator/panels/parameters.d:1015
-#: source/creator/widgets/mainmenu.d:343
+#: source/creator/panels/parameters.d:429
+#: source/creator/panels/parameters.d:933 source/creator/widgets/mainmenu.d:343
 msgid "Paste"
 msgstr "Pegar"
 
-#: source/creator/panels/parameters.d:563
+#: source/creator/panels/parameters.d:481
 msgid "Bindings"
 msgstr "Conexiones"
 
-#: source/creator/panels/parameters.d:571
+#: source/creator/panels/parameters.d:489
 msgid "Show all nodes"
 msgstr "Mostrar todos los nodos"
 
-#: source/creator/panels/parameters.d:571
+#: source/creator/panels/parameters.d:489
 msgid "Show only selected nodes"
 msgstr "Mostrar solo nodos seleccionados"
 
-#: source/creator/panels/parameters.d:620
+#: source/creator/panels/parameters.d:538
 msgid "Interpolation Mode"
 msgstr "Modo de interpolación"
 
-#: source/creator/panels/parameters.d:621 source/creator/panels/timeline.d:74
-msgid "Nearest"
-msgstr "Más cercano"
-
-#: source/creator/panels/parameters.d:627 source/creator/panels/timeline.d:80
-msgid "Linear"
-msgstr "Lineal"
-
-#: source/creator/panels/parameters.d:633 source/creator/panels/timeline.d:83
-msgid "Cubic"
-msgstr "Cubico"
-
-#: source/creator/panels/parameters.d:643
+#: source/creator/panels/parameters.d:561
 msgid "Copy to"
 msgstr "Copiar a"
 
-#: source/creator/panels/parameters.d:651
+#: source/creator/panels/parameters.d:569
 msgid "Swap with"
 msgstr "Cambiar con"
 
-#: source/creator/panels/parameters.d:835
+#: source/creator/panels/parameters.d:753
 msgid "New Parameter Group"
 msgstr "Nuevo grupo de parámetros"
 
-#: source/creator/panels/parameters.d:939
+#: source/creator/panels/parameters.d:857
 msgid "Edit Properties"
 msgstr "Editar propiedades"
 
-#: source/creator/panels/parameters.d:943
+#: source/creator/panels/parameters.d:861
 msgid "Edit Axes Points"
 msgstr "Editar los puntos de ejes"
 
-#: source/creator/panels/parameters.d:947
+#: source/creator/panels/parameters.d:865
 msgid "Split"
 msgstr "Dividir"
 
-#: source/creator/panels/parameters.d:951
+#: source/creator/panels/parameters.d:869
 msgid "To 2D"
 msgstr "A 2D"
 
-#: source/creator/panels/parameters.d:956
+#: source/creator/panels/parameters.d:874
 msgid "Flip X"
 msgstr "Voltear X"
 
-#: source/creator/panels/parameters.d:962
+#: source/creator/panels/parameters.d:880
 msgid "Flip Y"
 msgstr "Voltear Y"
 
-#: source/creator/panels/parameters.d:969
+#: source/creator/panels/parameters.d:887
 msgid "Flip"
 msgstr "Voltear"
 
-#: source/creator/panels/parameters.d:987
+#: source/creator/panels/parameters.d:905
 msgid "Mirrored Autofill"
 msgstr "Autocompletar reflejado"
 
-#: source/creator/panels/parameters.d:1019
+#: source/creator/panels/parameters.d:937
 msgid "Paste and Horiontal Flip"
 msgstr "Pegar y Voltear Horizontalmente"
 
-#: source/creator/panels/parameters.d:1024
+#: source/creator/panels/parameters.d:942
 msgid "Duplicate"
 msgstr "Duplicar"
 
 #. Sets the default value of the param
-#: source/creator/panels/parameters.d:1045
+#: source/creator/panels/parameters.d:963
 msgid "Set Starting Position"
 msgstr "Fijar posición inicial"
 
 #. Arms the parameter for recording values.
-#: source/creator/panels/parameters.d:1071
+#: source/creator/panels/parameters.d:989
 msgid "Arm Parameter"
 msgstr "Armar parámetro"
 
-#: source/creator/panels/parameters.d:1084
+#: source/creator/panels/parameters.d:1002
 msgid "Add Keyframe"
 msgstr "Agregar Keyframe"
 
-#: source/creator/panels/parameters.d:1119
+#: source/creator/panels/parameters.d:1037
 msgid "Add 1D Parameter (0..1)"
 msgstr "Agregar parámetro 1D (0..1)"
 
-#: source/creator/panels/parameters.d:1127
+#: source/creator/panels/parameters.d:1045
 msgid "Add 1D Parameter (-1..1)"
 msgstr "Agregar parámetro 1D (-1..1)"
 
-#: source/creator/panels/parameters.d:1138
+#: source/creator/panels/parameters.d:1056
 msgid "Add 2D Parameter (0..1)"
 msgstr "Agregar parámetro 2D (0..1)"
 
-#: source/creator/panels/parameters.d:1146
+#: source/creator/panels/parameters.d:1064
 msgid "Add 2D Parameter (-1..+1)"
 msgstr "Agregar parámetro 2D (-1..+1)"
 
-#: source/creator/panels/parameters.d:1158
+#: source/creator/panels/parameters.d:1076
 msgid "Add Mouth Shape"
 msgstr "Agregar deformación de boca"
 
-#: source/creator/panels/parameters.d:1180
+#: source/creator/panels/parameters.d:1098
 msgid "Filter, search for specific parameters"
 msgstr "Filtrar, buscar por parámetros específicos"
 
 #. Textbox
-#: source/creator/panels/parameters.d:1220 source/creator/windows/rename.d:42
+#: source/creator/panels/parameters.d:1138 source/creator/windows/rename.d:42
 #: source/creator/windows/rename.d:57
 msgid "Rename"
 msgstr "Renombrar"
 
-#: source/creator/panels/parameters.d:1224
+#: source/creator/panels/parameters.d:1142
 msgid "Colors"
 msgstr "Colores"
 
 #. CUSTOM COLOR PICKER
 #. Allows user to select a custom color for parameter group.
-#: source/creator/panels/parameters.d:1249
+#: source/creator/panels/parameters.d:1167
 msgid "Custom Color"
 msgstr "Color personalizado"
 
-#: source/creator/panels/parameters.d:1325
+#: source/creator/panels/parameters.d:1243
 msgid "Add Parameter"
 msgstr "Añadir parámetro"
 
-#: source/creator/panels/parameters.d:1330
+#: source/creator/panels/parameters.d:1248
 msgid "Parameters"
 msgstr "Parámetros"
-
-#: source/creator/panels/scene.d:29
-msgid "Ambient Light"
-msgstr "Luz de ambiente"
-
-#: source/creator/panels/scene.d:38
-msgid "Scene"
-msgstr "Escena"
-
-#: source/creator/panels/timeline.d:73
-msgid "Interpolation"
-msgstr "Interpolación"
-
-#: source/creator/panels/timeline.d:77
-msgid "Stepped"
-msgstr "Escalonado"
-
-#: source/creator/panels/timeline.d:89
-msgid "Merge Mode"
-msgstr "Modo de Combinación"
-
-#: source/creator/panels/timeline.d:93 source/creator/windows/editanim.d:90
-msgid "Additive"
-msgstr "Aditivo"
-
-#: source/creator/panels/timeline.d:96
-msgid "Multiplicative"
-msgstr "Multiplicativo"
-
-#: source/creator/panels/timeline.d:101
-msgid "Forced"
-msgstr "Forzado"
-
-#: source/creator/panels/timeline.d:211
-msgid "Lock playback to animation framerate"
-msgstr "Restringir reproducción a framerate de animación"
-
-#: source/creator/panels/timeline.d:281
-msgid "Not in Animation Edit mode..."
-msgstr "No disponible fuera del modo de Edición de Animación..."
-
-#: source/creator/panels/timeline.d:288
-msgid "Timeline"
-msgstr "Línea de tiempo"
-
-#: source/creator/panels/toolsettings.d:31
-msgid "Tool Settings"
-msgstr "Ajustes de herramientas"
-
-#. Appended to the name of a face tracking receiver
-#. in the Tracking settings panel
-#: source/creator/panels/tracking.d:32
-#, c-format
-msgid "%s Receiver"
-msgstr "%s Receptor"
-
-#: source/creator/panels/tracking.d:60
-msgid "A reciever which uses your phone and associated app to track your body"
-msgstr ""
-"Un receptor que usa tu célular y la aplicación asociada para seguir tu cuerpo"
-
-#: source/creator/panels/tracking.d:64
-msgid "Bind Address"
-msgstr "Direccion de conexión"
-
-#: source/creator/panels/tracking.d:73
-msgid ""
-"The IP address that the VMC binding server should listen on, default 0.0.0.0"
-msgstr ""
-"La dirección IP que el servidor VMC debería escuchar. Por defecto es 0.0.0.0"
-
-#: source/creator/panels/tracking.d:76
-msgid "Port"
-msgstr "Puerto"
-
-#: source/creator/panels/tracking.d:85
-msgid "The port that the VMC binding server should listen on, default 39540"
-msgstr "El puerto al que el servidor VMC debería escuchar. Por defecto 39540"
-
-#: source/creator/panels/tracking.d:88
-msgid "A reciever which uses the VTubeStudio iOS app"
-msgstr "Un receptor que usa la aplicación de IOS VTubeStudio"
-
-#: source/creator/panels/tracking.d:91
-msgid "iPhone IP"
-msgstr "IP del iPhone"
-
-#: source/creator/panels/tracking.d:100
-msgid ""
-"The IP Address of your iPhone,\n"
-"You can find it in the VSeeFace Config panel in VTube Studio"
-msgstr ""
-"La dirección IP de tu iPhone,\n"
-"La puedes encontrar en el panel de configuración VSeeFace en Vtube Studio"
-
-#: source/creator/panels/tracking.d:103
-msgid "A receiver which uses OpenSeeFace application"
-msgstr "Un receptor que utiliza la aplicación OpenSeeFace"
-
-#: source/creator/panels/tracking.d:105
-msgid "OSF Bind Address"
-msgstr "Dirección de OSF"
-
-#: source/creator/panels/tracking.d:116
-msgid "OSF Listen Port"
-msgstr "Puerto de OSF"
-
-#: source/creator/panels/tracking.d:128
-msgid "Tracking Bindings"
-msgstr "Conexiones de seguimiento"
-
-#: source/creator/panels/tracking.d:133
-#, c-format
-msgid "%s bound to %s"
-msgstr "%s conectado a %s"
-
-#: source/creator/panels/tracking.d:148
-msgid "Not in Test Mode..."
-msgstr "No disponible fuera de modo de prueba..."
-
-#: source/creator/panels/tracking.d:154
-msgid "Tracking"
-msgstr "Rastreo"
 
 #. Use appropriate system method to notify user where crash dump is.
 #: source/creator/utils/crashdump.d:64
@@ -1521,179 +1514,226 @@ msgstr ""
 "Especificar un factor de escala para aplicar a los bordes. Si se definen "
 "multiples escalas, se agregaran vértices a cada una de ellas."
 
-#: source/creator/viewport/common/mesheditor/package.d:189
-msgid "Vertex Tool"
-msgstr "Herramienta de vértices"
-
-#: source/creator/viewport/common/mesheditor/package.d:197
-msgid "Edge Tool"
-msgstr "Herramienta de aristas"
-
-#: source/creator/viewport/common/mesheditor/package.d:205
-msgid "Path Deform Tool"
-msgstr "Herramienta de deformación del trazado"
-
-#: source/creator/viewport/common/mesheditor/package.d:213
-msgid "Grid Vertex Tool"
-msgstr "Herramienta de grilla de vértices"
-
-#: source/creator/viewport/common/mesheditor/tools/connect.d:32
-#: source/creator/viewport/common/mesheditor/tools/point.d:95
-#: source/creator/viewport/common/mesheditor/tools/point.d:309
-msgid "Select"
-msgstr "Seleccionar"
-
-#: source/creator/viewport/common/mesheditor/tools/connect.d:32
-#: source/creator/viewport/common/mesheditor/tools/connect.d:34
-#: source/creator/viewport/common/mesheditor/tools/grid.d:238
-#: source/creator/viewport/common/mesheditor/tools/grid.d:239
-#: source/creator/viewport/common/mesheditor/tools/grid.d:240
-#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:55
-#: source/creator/viewport/common/mesheditor/tools/point.d:95
-#: source/creator/viewport/common/mesheditor/tools/point.d:309
-msgid "Left Mouse"
-msgstr "Click izquierdo"
-
-#: source/creator/viewport/common/mesheditor/tools/connect.d:34
-msgid "Connect/Disconnect"
-msgstr "Conectar/Desconectar"
-
-#: source/creator/viewport/common/mesheditor/tools/connect.d:35
-msgid "Connect Multiple"
-msgstr "Conectar múltiples"
-
-#: source/creator/viewport/common/mesheditor/tools/connect.d:35
-msgid "Shift+Left Mouse"
-msgstr "Shift+Click izquierdo"
-
-#: source/creator/viewport/common/mesheditor/tools/grid.d:238
-msgid "Drag to define 2x2 mesh"
-msgstr "Arrastrar para crear una malla de 2x2"
-
-#: source/creator/viewport/common/mesheditor/tools/grid.d:239
-msgid "Add/remove key points to axes"
-msgstr "Agregar/eliminar puntos a los ejes"
-
-#: source/creator/viewport/common/mesheditor/tools/grid.d:240
-msgid "Change key point position in the axis"
-msgstr "Traslada la posición de los puntos en el eje"
-
-#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:55
+#: source/creator/viewport/common/mesheditor/tools/brush.d:161
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:216
 msgid "Deform"
 msgstr "Deformar"
 
-#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:56
-#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:59
+#: source/creator/viewport/common/mesheditor/tools/brush.d:161
+#: source/creator/viewport/common/mesheditor/tools/connect.d:34
+#: source/creator/viewport/common/mesheditor/tools/connect.d:36
+#: source/creator/viewport/common/mesheditor/tools/grid.d:240
+#: source/creator/viewport/common/mesheditor/tools/grid.d:241
+#: source/creator/viewport/common/mesheditor/tools/grid.d:242
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:216
+#: source/creator/viewport/common/mesheditor/tools/point.d:97
+#: source/creator/viewport/common/mesheditor/tools/point.d:311
+msgid "Left Mouse"
+msgstr "Click izquierdo"
+
+#: source/creator/viewport/common/mesheditor/tools/brush.d:162
+#, fuzzy
+msgid "Snap to X/Y axis"
+msgstr "Fijar a píxel"
+
+#: source/creator/viewport/common/mesheditor/tools/brush.d:162
+msgid "SHIFT"
+msgstr "SHIFT"
+
+#: source/creator/viewport/common/mesheditor/tools/brush.d:163
+#, fuzzy
+msgid "Select vertices"
+msgstr "Ocultar vértices"
+
+#: source/creator/viewport/common/mesheditor/tools/brush.d:163
+msgid "ALT"
+msgstr "ALT"
+
+#: source/creator/viewport/common/mesheditor/tools/brush.d:260
+#, fuzzy
+msgid "Drag mode"
+msgstr "Modo de arrastre"
+
+#: source/creator/viewport/common/mesheditor/tools/brush.d:270
+msgid "Flow mode"
+msgstr "Modo fluido"
+
+#: source/creator/viewport/common/mesheditor/tools/brush.d:297
+msgid "Brush Tool"
+msgstr "Brocha de vertices"
+
+#: source/creator/viewport/common/mesheditor/tools/connect.d:34
+#: source/creator/viewport/common/mesheditor/tools/point.d:97
+#: source/creator/viewport/common/mesheditor/tools/point.d:311
+msgid "Select"
+msgstr "Seleccionar"
+
+#: source/creator/viewport/common/mesheditor/tools/connect.d:36
+msgid "Connect/Disconnect"
+msgstr "Conectar/Desconectar"
+
+#: source/creator/viewport/common/mesheditor/tools/connect.d:37
+msgid "Connect Multiple"
+msgstr "Conectar múltiples"
+
+#: source/creator/viewport/common/mesheditor/tools/connect.d:37
+msgid "Shift+Left Mouse"
+msgstr "Shift+Click izquierdo"
+
+#: source/creator/viewport/common/mesheditor/tools/connect.d:115
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:454
+msgid "Path Deform Tool"
+msgstr "Herramienta de deformación del trazado"
+
+#: source/creator/viewport/common/mesheditor/tools/grid.d:240
+msgid "Drag to define 2x2 mesh"
+msgstr "Arrastrar para crear una malla de 2x2"
+
+#: source/creator/viewport/common/mesheditor/tools/grid.d:241
+msgid "Add/remove key points to axes"
+msgstr "Agregar/eliminar puntos a los ejes"
+
+#: source/creator/viewport/common/mesheditor/tools/grid.d:242
+msgid "Change key point position in the axis"
+msgstr "Traslada la posición de los puntos en el eje"
+
+#: source/creator/viewport/common/mesheditor/tools/grid.d:377
+msgid "Grid Vertex Tool"
+msgstr "Herramienta de grilla de vértices"
+
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:217
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:220
 msgid "Switch Mode"
 msgstr "Cambiar modo"
 
-#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:56
-#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:59
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:217
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:220
 msgid "TAB"
 msgstr "TAB"
 
-#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:58
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:219
 msgid "Create/Destroy"
 msgstr "Crear/Destruir"
 
-#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:58
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:219
 msgid "Left Mouse (x2)"
 msgstr "Click izquierdo (x2)"
 
-#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:61
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:222
 msgid "Toggle locked point"
 msgstr "Alternar bloqueo de punto"
 
-#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:61
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:222
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:62
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:223
 msgid "Move point along with the path"
 msgstr "Mover punto sobre el trazo"
 
-#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:62
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:223
 msgid "Shift"
 msgstr "Shift"
 
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:410
+msgid "Define paths"
+msgstr "Definir trazo"
+
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:421
+#, fuzzy
+msgid "Transform path"
+msgstr "Transformar trazo"
+
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:434
+#, fuzzy
+msgid "Set rotation center"
+msgstr "Aplicar al actual"
+
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:447
+#, fuzzy
+msgid "Move points along the path"
+msgstr "Mover punto sobre el trazo"
+
 #. Done button
-#: source/creator/viewport/common/mesheditor/tools/point.d:96
+#: source/creator/viewport/common/mesheditor/tools/point.d:98
 #: source/creator/windows/editanim.d:124
 msgid "Create"
 msgstr "Crear"
 
-#: source/creator/viewport/common/mesheditor/tools/point.d:96
+#: source/creator/viewport/common/mesheditor/tools/point.d:98
 msgid "Ctrl+Left Mouse"
 msgstr "Ctrl+Click izquierdo"
 
-#: source/creator/viewport/model/package.d:56
+#: source/creator/viewport/common/mesheditor/tools/point.d:435
+msgid "Vertex Tool"
+msgstr "Herramienta de vértices"
+
+#: source/creator/viewport/common/mesheditor/package.d:279
+#, fuzzy
+msgid "Reset selected"
+msgstr "No hay nodos seleccionados..."
+
+#: source/creator/viewport/common/mesheditor/package.d:282
+#, fuzzy
+msgid "Flip selected from mirror"
+msgstr "Aplicar desde el reflejo"
+
+#: source/creator/viewport/model/package.d:62
 msgid "Focus Selected"
 msgstr "Seleccionar"
 
-#: source/creator/viewport/model/package.d:104
+#: source/creator/viewport/model/package.d:110
 msgid "No parts found"
 msgstr "No se han encontrado partes"
 
-#: source/creator/viewport/model/package.d:123
+#: source/creator/viewport/model/package.d:129
 msgid " Copy Mesh"
 msgstr " Copiar Malla"
 
-#: source/creator/viewport/model/package.d:123
+#: source/creator/viewport/model/package.d:129
 msgid " Edit Mesh"
 msgstr " Editar malla"
 
-#: source/creator/viewport/model/package.d:131
+#: source/creator/viewport/model/package.d:137
 msgid "Copy Mesh Data"
 msgstr "Copiar datos de malla"
 
-#: source/creator/viewport/model/package.d:165
+#: source/creator/viewport/model/package.d:171
 msgid "Hide Vertices"
 msgstr "Ocultar vértices"
 
-#: source/creator/viewport/model/package.d:165
+#: source/creator/viewport/model/package.d:171
 msgid "Show Vertices"
 msgstr "Mostrar vértices"
 
-#: source/creator/viewport/model/package.d:171
+#: source/creator/viewport/model/package.d:177
 msgid "Hide Bounds"
 msgstr "Ocultar limites"
 
-#: source/creator/viewport/model/package.d:171
+#: source/creator/viewport/model/package.d:177
 msgid "Show Bounds"
 msgstr "Mostrar limites"
 
-#: source/creator/viewport/model/package.d:177
+#: source/creator/viewport/model/package.d:183
 msgid "Hide Orientation Gizmo"
 msgstr "Ocultar manipuladores de orientación"
 
-#: source/creator/viewport/model/package.d:177
+#: source/creator/viewport/model/package.d:183
 msgid "Show Orientation Gizmo"
 msgstr "Mostrar manipuladores de orientación"
 
 #. Set clear color
-#: source/creator/viewport/model/package.d:192
+#: source/creator/viewport/model/package.d:198
 msgid "COLOR"
 msgstr "COLOR"
 
-#: source/creator/viewport/model/package.d:207
+#: source/creator/viewport/model/package.d:213
 msgid "Background Color"
 msgstr "Color de fondo"
 
-#: source/creator/viewport/model/package.d:211
+#: source/creator/viewport/model/package.d:217
 msgid "Gizmos"
 msgstr "Manipuladores"
-
-#: source/creator/viewport/package.d:265
-msgid "No tool selected..."
-msgstr "Ninguna herramienta seleccionada..."
-
-#: source/creator/viewport/package.d:505
-msgid "Editing armed parameter..."
-msgstr "Editando parametro armado..."
-
-#: source/creator/viewport/package.d:505
-msgid "Editing base transform..."
-msgstr "Editando transformación base..."
 
 #: source/creator/viewport/vertex/package.d:51
 msgid "Flip Horizontally"
@@ -1763,22 +1803,34 @@ msgstr "Aplicar"
 msgid " Cancel"
 msgstr " Cancelar"
 
-#.
 #. Cancels the edited state for the axies points
+#.
 #: source/creator/viewport/vertex/package.d:189
-#: source/creator/widgets/dialog.d:116 source/creator/windows/flipconfig.d:487
-#: source/creator/windows/paramaxes.d:169
+#: source/creator/widgets/dialog.d:116 source/creator/windows/paramaxes.d:169
 #: source/creator/windows/videoexport.d:264
+#: source/creator/windows/flipconfig.d:488
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: source/creator/viewport/vertex/package.d:304
+#: source/creator/viewport/vertex/package.d:308
 msgid ""
 "Cannot apply invalid mesh\n"
 "At least 3 vertices forming a triangle is needed."
 msgstr ""
 "No se puede aplicar malla inválida\n"
 "Al menos 3 vértices formando un triángulo son necesarios."
+
+#: source/creator/viewport/package.d:269
+msgid "No tool selected..."
+msgstr "Ninguna herramienta seleccionada..."
+
+#: source/creator/viewport/package.d:511
+msgid "Editing armed parameter..."
+msgstr "Editando parametro armado..."
+
+#: source/creator/viewport/package.d:511
+msgid "Editing base transform..."
+msgstr "Editando transformación base..."
 
 #: source/creator/widgets/dialog.d:124
 msgid "OK"
@@ -1791,6 +1843,38 @@ msgstr "Sí"
 #: source/creator/widgets/dialog.d:140
 msgid "No"
 msgstr "No"
+
+#: source/creator/widgets/toolbar.d:41
+msgid "Enable physics"
+msgstr "Habilitar físicas"
+
+#: source/creator/widgets/toolbar.d:48
+msgid "Enable post processing"
+msgstr "Habilitar postratamiento"
+
+#: source/creator/widgets/toolbar.d:53
+msgid "Reset physics"
+msgstr "Reiniciar físicas"
+
+#: source/creator/widgets/toolbar.d:60
+msgid "Configure Flip Pairings"
+msgstr "Configurar pares de invertidos"
+
+#: source/creator/widgets/toolbar.d:69
+msgid "Reset parameters"
+msgstr "Resetear parámetros"
+
+#: source/creator/widgets/toolbar.d:89
+msgid "Edit Puppet"
+msgstr "Editar marioneta"
+
+#: source/creator/widgets/toolbar.d:94
+msgid "Edit Animation"
+msgstr "Editar animación"
+
+#: source/creator/widgets/toolbar.d:99
+msgid "Test Puppet"
+msgstr "Probar marioneta"
 
 #: source/creator/widgets/mainmenu.d:42 source/creator/windows/welcome.d:231
 #: source/creator/windows/welcome.d:236
@@ -1831,10 +1915,10 @@ msgstr "Autoguardados"
 #. feels more safe with a save button then we have
 #. it here.
 #: source/creator/widgets/mainmenu.d:162 source/creator/windows/editanim.d:124
-#: source/creator/windows/flipconfig.d:494
 #: source/creator/windows/imgexport.d:122
 #: source/creator/windows/paramaxes.d:176
 #: source/creator/windows/paramprop.d:102 source/creator/windows/trkbind.d:129
+#: source/creator/windows/flipconfig.d:495
 msgid "Save"
 msgstr "Guardar"
 
@@ -1874,8 +1958,8 @@ msgstr "Selecciona una carpeta..."
 msgid "Supports PNGs, TGAs and JPEGs."
 msgstr "Soporta PNGs, TGAs y JPEGs."
 
-#: source/creator/widgets/mainmenu.d:203 source/creator/windows/kramerge.d:420
-#: source/creator/windows/psdmerge.d:416
+#: source/creator/widgets/mainmenu.d:203 source/creator/windows/psdmerge.d:416
+#: source/creator/windows/kramerge.d:420
 msgid "Merge"
 msgstr "Fusionar"
 
@@ -2184,37 +2268,10 @@ msgstr "Donar aquí"
 msgid "Support development via Patreon"
 msgstr "Apóya el desarrollo a través de Patreon"
 
-#: source/creator/widgets/toolbar.d:41
-msgid "Enable physics"
-msgstr "Habilitar físicas"
-
-#: source/creator/widgets/toolbar.d:48
-msgid "Enable post processing"
-msgstr "Habilitar postratamiento"
-
-#: source/creator/widgets/toolbar.d:53
-msgid "Reset physics"
-msgstr "Reiniciar físicas"
-
-#: source/creator/widgets/toolbar.d:60
-msgid "Configure Flip Pairings"
-msgstr "Configurar pares de invertidos"
-
-#: source/creator/widgets/toolbar.d:69
-msgid "Reset parameters"
-msgstr "Resetear parámetros"
-
-#: source/creator/widgets/toolbar.d:89
-msgid "Edit Puppet"
-msgstr "Editar marioneta"
-
-#: source/creator/widgets/toolbar.d:94
-msgid "Edit Animation"
-msgstr "Editar animación"
-
-#: source/creator/widgets/toolbar.d:99
-msgid "Test Puppet"
-msgstr "Probar marioneta"
+#: source/creator/widgets/modal/nagscreen.d:116
+#: source/creator/windows/videoexport.d:270
+msgid "Close"
+msgstr "Cerrar"
 
 #: source/creator/windows/autosave.d:45
 msgid "Inochi Creator closed unexpectedly while editing this file."
@@ -2312,30 +2369,6 @@ msgstr "Nueva Animación..."
 #, c-format
 msgid "Edit %s..."
 msgstr "Editar %s..."
-
-#: source/creator/windows/flipconfig.d:316
-msgid "<< Not assigned >>"
-msgstr "<< No asignado >>"
-
-#: source/creator/windows/flipconfig.d:378
-msgid "< Add new row >"
-msgstr "< Agregar nueva fila >"
-
-#: source/creator/windows/flipconfig.d:442
-msgid "Pair"
-msgstr "Par"
-
-#: source/creator/windows/flipconfig.d:450
-msgid "Part 1"
-msgstr "Parte 1"
-
-#: source/creator/windows/flipconfig.d:451
-msgid "Part 2"
-msgstr "Parte 2"
-
-#: source/creator/windows/flipconfig.d:527
-msgid "Flip Pairing"
-msgstr "Invertir par"
 
 #: source/creator/windows/imgexport.d:93
 #: source/creator/windows/videoexport.d:157
@@ -2449,51 +2482,6 @@ msgstr "La exportación ha fallado..."
 msgid "Export Options"
 msgstr "Ajustes de exportación"
 
-#: source/creator/windows/kramerge.d:242 source/creator/windows/psdmerge.d:238
-#, c-format
-msgid "%s  %s"
-msgstr "%s  %s"
-
-#: source/creator/windows/kramerge.d:285 source/creator/windows/psdmerge.d:281
-msgid "Ignore"
-msgstr "Ignorar"
-
-#: source/creator/windows/kramerge.d:285 source/creator/windows/psdmerge.d:281
-msgid "Use"
-msgstr "Usar"
-
-#: source/creator/windows/kramerge.d:382 source/creator/windows/psdmerge.d:378
-msgid "Only show unmapped"
-msgstr "Solo mostrar no mapeados"
-
-#. Auto-rename
-#: source/creator/windows/kramerge.d:402 source/creator/windows/psdmerge.d:398
-msgid "Auto-rename"
-msgstr "Auto-renombrar"
-
-#: source/creator/windows/kramerge.d:403
-msgid ""
-"Renames all mapped nodes to match the names of the KRA layer that was merged "
-"in to them."
-msgstr ""
-"Renombra todos los nodos mapeados para coincidir con los nombres de las "
-"capas KRA a las que fueron fusionados."
-
-#: source/creator/windows/kramerge.d:406 source/creator/windows/psdmerge.d:402
-msgid "Re-translate"
-msgstr "Volver a trasladar"
-
-#: source/creator/windows/kramerge.d:407 source/creator/windows/psdmerge.d:403
-msgid ""
-"Moves all nodes so that they visually match their position in the canvas."
-msgstr ""
-"Mueve todos los nodos para que visualmente coincidan con su posición en el "
-"lienzo."
-
-#: source/creator/windows/kramerge.d:454
-msgid "KRA Merging"
-msgstr "Fusionar KRA"
-
 #. Points where the user can set parameter values
 #: source/creator/windows/paramaxes.d:156
 msgid "Breakpoints"
@@ -2529,13 +2517,27 @@ msgstr "El nombre ya ha sido utilizado"
 msgid "Parameter Properties"
 msgstr "Propiedades del parámetro"
 
-#: source/creator/windows/paramsplit.d:48
-msgid " (Split)"
-msgstr " (Dividir)"
+#: source/creator/windows/psdmerge.d:238 source/creator/windows/kramerge.d:242
+#, c-format
+msgid "%s  %s"
+msgstr "%s  %s"
 
-#: source/creator/windows/paramsplit.d:182
-msgid "Split Parameter"
-msgstr "Dividir Parámetro"
+#: source/creator/windows/psdmerge.d:281 source/creator/windows/kramerge.d:285
+msgid "Ignore"
+msgstr "Ignorar"
+
+#: source/creator/windows/psdmerge.d:281 source/creator/windows/kramerge.d:285
+msgid "Use"
+msgstr "Usar"
+
+#: source/creator/windows/psdmerge.d:378 source/creator/windows/kramerge.d:382
+msgid "Only show unmapped"
+msgstr "Solo mostrar no mapeados"
+
+#. Auto-rename
+#: source/creator/windows/psdmerge.d:398 source/creator/windows/kramerge.d:402
+msgid "Auto-rename"
+msgstr "Auto-renombrar"
 
 #: source/creator/windows/psdmerge.d:399
 msgid ""
@@ -2545,6 +2547,17 @@ msgstr ""
 "Renombra todos los nodos mapeados para coincidir con los nombres de las "
 "capas PSD a las que fueron fusionados."
 
+#: source/creator/windows/psdmerge.d:402 source/creator/windows/kramerge.d:406
+msgid "Re-translate"
+msgstr "Volver a trasladar"
+
+#: source/creator/windows/psdmerge.d:403 source/creator/windows/kramerge.d:407
+msgid ""
+"Moves all nodes so that they visually match their position in the canvas."
+msgstr ""
+"Mueve todos los nodos para que visualmente coincidan con su posición en el "
+"lienzo."
+
 #: source/creator/windows/psdmerge.d:451
 msgid "PSD Merging"
 msgstr "Fusionar PSD"
@@ -2553,81 +2566,6 @@ msgstr "Fusionar PSD"
 #, c-format
 msgid "Rename %s..."
 msgstr "Renombrar %s..."
-
-#: source/creator/windows/settings.d:79 source/creator/windows/settings.d:110
-msgid "Look and Feel"
-msgstr "Visualizacion"
-
-#: source/creator/windows/settings.d:87
-msgid "Accessbility"
-msgstr "Accesibilidad"
-
-#: source/creator/windows/settings.d:111 source/creator/windows/welcome.d:174
-msgid "Color Theme"
-msgstr "Tema"
-
-#: source/creator/windows/settings.d:111 source/creator/windows/settings.d:112
-#: source/creator/windows/welcome.d:174 source/creator/windows/welcome.d:175
-msgid "Dark"
-msgstr "Oscuro"
-
-#: source/creator/windows/settings.d:111 source/creator/windows/settings.d:113
-#: source/creator/windows/welcome.d:174 source/creator/windows/welcome.d:176
-msgid "Light"
-msgstr "Claro"
-
-#: source/creator/windows/settings.d:119 source/creator/windows/welcome.d:160
-msgid "Language"
-msgstr "Lenguage"
-
-#: source/creator/windows/settings.d:138 source/creator/windows/welcome.d:186
-msgid "UI Scale"
-msgstr "Escala de la interfaz"
-
-#: source/creator/windows/settings.d:148
-msgid "Max Undo History"
-msgstr "Máximo largo del historial"
-
-#: source/creator/windows/settings.d:154
-msgid "Linux Tweaks"
-msgstr "Ajustes para Linux"
-
-#: source/creator/windows/settings.d:156
-msgid "Disable Compositor"
-msgstr "Desactivar el compositor"
-
-#: source/creator/windows/settings.d:163
-msgid "Accessibility"
-msgstr "Accesibilidad"
-
-#: source/creator/windows/settings.d:165
-msgid "Use OpenDyslexic Font"
-msgstr "Usar fuente OpenDyslexic"
-
-#: source/creator/windows/settings.d:169
-msgid "Use the OpenDyslexic font for Latin text characters."
-msgstr "Usar la fuente OpenDyslexic para caracteres Latinos."
-
-#: source/creator/windows/settings.d:175
-msgid "Enable Autosaves"
-msgstr "Activar Autoguardado"
-
-#: source/creator/windows/settings.d:180
-msgid "Save Interval (Minutes)"
-msgstr "Intervalo de guardado (Minutos)"
-
-#: source/creator/windows/settings.d:185
-msgid "Maximum Autosaves"
-msgstr "Cantidad máxima de autoguardados"
-
-#: source/creator/windows/settings.d:204 source/creator/windows/welcome.d:198
-msgid "Inochi Creator needs to be restarted for some changes to take effect."
-msgstr ""
-"Inochi Creator necesita ser reiniciado para que algunos cambios tomen efecto."
-
-#: source/creator/windows/settings.d:212
-msgid "Done"
-msgstr "Hecho"
 
 #: source/creator/windows/texviewer.d:47
 msgid "Texture Viewer"
@@ -2706,10 +2644,6 @@ msgstr "Fijar al framerate de animación"
 msgid "Codec"
 msgstr "Codec"
 
-#: source/creator/windows/videoexport.d:270
-msgid "Close"
-msgstr "Cerrar"
-
 #: source/creator/windows/videoexport.d:281
 msgid "Export Video..."
 msgstr "Exportar Video..."
@@ -2724,6 +2658,125 @@ msgid "No animations are defined for this model, please add an animation."
 msgstr ""
 "No se han definido animaciones para este modelo, por favor agrega una "
 "animación."
+
+#: source/creator/windows/paramsplit.d:48
+msgid " (Split)"
+msgstr " (Dividir)"
+
+#: source/creator/windows/paramsplit.d:182
+msgid "Split Parameter"
+msgstr "Dividir Parámetro"
+
+#: source/creator/windows/settings.d:79 source/creator/windows/settings.d:110
+msgid "Look and Feel"
+msgstr "Visualizacion"
+
+#: source/creator/windows/settings.d:87
+msgid "Accessbility"
+msgstr "Accesibilidad"
+
+#: source/creator/windows/settings.d:111 source/creator/windows/welcome.d:174
+msgid "Color Theme"
+msgstr "Tema"
+
+#: source/creator/windows/settings.d:111 source/creator/windows/settings.d:112
+#: source/creator/windows/welcome.d:174 source/creator/windows/welcome.d:175
+msgid "Dark"
+msgstr "Oscuro"
+
+#: source/creator/windows/settings.d:111 source/creator/windows/settings.d:113
+#: source/creator/windows/welcome.d:174 source/creator/windows/welcome.d:176
+msgid "Light"
+msgstr "Claro"
+
+#: source/creator/windows/settings.d:119 source/creator/windows/welcome.d:160
+msgid "Language"
+msgstr "Lenguage"
+
+#: source/creator/windows/settings.d:138 source/creator/windows/welcome.d:186
+msgid "UI Scale"
+msgstr "Escala de la interfaz"
+
+#: source/creator/windows/settings.d:148
+msgid "Max Undo History"
+msgstr "Máximo largo del historial"
+
+#: source/creator/windows/settings.d:154
+msgid "Linux Tweaks"
+msgstr "Ajustes para Linux"
+
+#: source/creator/windows/settings.d:156
+msgid "Disable Compositor"
+msgstr "Desactivar el compositor"
+
+#: source/creator/windows/settings.d:163
+msgid "Accessibility"
+msgstr "Accesibilidad"
+
+#: source/creator/windows/settings.d:165
+msgid "Use OpenDyslexic Font"
+msgstr "Usar fuente OpenDyslexic"
+
+#: source/creator/windows/settings.d:169
+msgid "Use the OpenDyslexic font for Latin text characters."
+msgstr "Usar la fuente OpenDyslexic para caracteres Latinos."
+
+#: source/creator/windows/settings.d:175
+msgid "Enable Autosaves"
+msgstr "Activar Autoguardado"
+
+#: source/creator/windows/settings.d:180
+msgid "Save Interval (Minutes)"
+msgstr "Intervalo de guardado (Minutos)"
+
+#: source/creator/windows/settings.d:185
+msgid "Maximum Autosaves"
+msgstr "Cantidad máxima de autoguardados"
+
+#: source/creator/windows/settings.d:204 source/creator/windows/welcome.d:198
+msgid "Inochi Creator needs to be restarted for some changes to take effect."
+msgstr ""
+"Inochi Creator necesita ser reiniciado para que algunos cambios tomen efecto."
+
+#: source/creator/windows/settings.d:212
+msgid "Done"
+msgstr "Hecho"
+
+#: source/creator/windows/kramerge.d:403
+msgid ""
+"Renames all mapped nodes to match the names of the KRA layer that was merged "
+"in to them."
+msgstr ""
+"Renombra todos los nodos mapeados para coincidir con los nombres de las "
+"capas KRA a las que fueron fusionados."
+
+#: source/creator/windows/kramerge.d:454
+msgid "KRA Merging"
+msgstr "Fusionar KRA"
+
+#: source/creator/windows/flipconfig.d:317
+msgid "<< Not assigned >>"
+msgstr "<< No asignado >>"
+
+#: source/creator/windows/flipconfig.d:379
+msgid "< Add new row >"
+msgstr "< Agregar nueva fila >"
+
+#: source/creator/windows/flipconfig.d:443
+msgid "Pair"
+msgstr "Par"
+
+#: source/creator/windows/flipconfig.d:451
+msgid "Part 1"
+msgstr "Parte 1"
+
+#: source/creator/windows/flipconfig.d:452
+msgid "Part 2"
+msgstr "Parte 2"
+
+#: source/creator/windows/flipconfig.d:528
+msgid "Flip Pairing"
+msgstr "Invertir par"
 
 #: source/creator/windows/welcome.d:113
 msgid "Unsupported"
@@ -2773,14 +2826,57 @@ msgstr "Documentación"
 msgid "Join our Discord"
 msgstr "Únete a nuestro Discord"
 
-#: source/creator/windows/welcome.d:324
+#: source/creator/windows/welcome.d:325
+msgid "Buy a copy"
+msgstr "Comprar una copia"
+
+#: source/creator/windows/welcome.d:330
 msgid "Patreon"
 msgstr "Patreon"
 
-#: source/creator/windows/welcome.d:327
+#: source/creator/windows/welcome.d:334
 msgid "Github Sponsors"
 msgstr "Patrocinadores de Github"
 
-#: source/creator/windows/welcome.d:355
+#: source/creator/windows/welcome.d:362
 msgid "Inochi Creator Start"
 msgstr "Inicio de Inochi Creator"
+
+#: source/app.d:95
+msgid "Warning!"
+msgstr "¡Alerta!"
+
+#: source/app.d:96
+msgid ""
+"You're running a nightly build of Inochi Creator!\n"
+"Inochi Creator may crash unexpectedly and you will likely encounter bugs.\n"
+"Make sure to save and back up your work often!"
+msgstr ""
+"¡Estás corriendo una versión nightly de Inochi Creator!\n"
+"Inochi Creator se puede caer inesperadamente y es probable que encuentres "
+"bugs.\n"
+"¡Asegúrate de guardar y realizar respaldos de tu trabajo!"
+
+#: source/app.d:103
+msgid "Thank you!"
+msgstr "¡Gracias!"
+
+#: source/app.d:104
+msgid ""
+"Thank you for downloading Inochi Creator!\n"
+"Software is expensive to create and the same goes for Inochi Creator.\n"
+"Kindly consider chipping in to fund the development!\n"
+"\n"
+"To remove this nagscreen, [buy a copy today!](https://inochi2d.com)"
+msgstr ""
+"¡Gracias por descargar Inochi Creator!\n"
+"Crear software es caro, y esto tambien es cierto para Inochi Creator.\n"
+"¡Por favor considera poner de tu parte para finaciar su desarrollo!\n"
+"\n"
+"Para evitar este mensaje, [¡compra una copia hoy!](https://inochi2d.com)"
+
+#~ msgid "Inochi Creator (Nightly)"
+#~ msgstr "Inochi Creator (Nightly)"
+
+#~ msgid "Edge Tool"
+#~ msgstr "Herramienta de aristas"
