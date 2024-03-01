@@ -1255,9 +1255,16 @@ void incInspectorModelSimplePhysics(SimplePhysics node) {
 
         igPushID("SimplePhysics");
         
-        igPushID(-1);
+        igPushID(-2);
             igCheckbox(__("Local Transform Lock"), &node.localOnly);
             incTooltip(_("Whether the physics system only listens to the movement of the physics node itself"));
+            igSpacing();
+            igSpacing();
+        igPopID();
+
+        igPushID(-1);
+            igCheckbox(__("Flip Output Axis"), &node.flipOutputAxis);
+            incTooltip(_("Flips the output axis so that the XY result gets mapped to YX values in the parameter"));
             igSpacing();
             igSpacing();
         igPopID();
