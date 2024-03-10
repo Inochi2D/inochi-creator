@@ -111,6 +111,6 @@ class ToolInfoImpl(T: ConnectTool) : ToolInfoBase!(T) {
         return false;
     }
     override VertexToolMode mode() { return VertexToolMode.Connect; };
-    override string icon() { return "";}
-    override string description() { return _("Path Deform Tool");}
+    override string icon() { return "";}
+    override string description() { return _("Edge Tool");}
 }
