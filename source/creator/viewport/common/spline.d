@@ -175,6 +175,10 @@ public:
         return mat4.identity();
     }
 
+    mat4 exportTarget(T)(ref T mesh, size_t i, ref vec2 vtx, vec2 tangent, vec2 initTangent) {
+        return mat4.identity();
+    }
+
     mat4 exportTarget(ref IncMesh mesh, size_t i, ref vec2 vtx, vec2 tangent, vec2 initTangent, mat4 invert, vec2 deformation) {
         mesh.vertices[i].position = (invert * vec4(vtx, 0, 1)).xy - deformation;
         return mat4.identity();
@@ -252,7 +256,11 @@ public:
                 pt.y + rel.y * tangent.x + rel.x * tangent.y
             );
 //             writefln("%s %s %s", vtx, rel, tangent);
-            result = exportTarget(mesh, i, vtx, tangent, initTangents.length > i ? initTangents[i]: tangent, invert, deformations[i]);
+            if(deformations is null){
+                result = exportTarget(mesh, i, vtx, tangent, initTangents.length > i ? initTangents[i]: tangent);
+            } else {
+                result = exportTarget(mesh, i, vtx, tangent, initTangents.length > i ? initTangents[i]: tangent, invert, deformations[i]);
+            }
         }
         return result;
     }

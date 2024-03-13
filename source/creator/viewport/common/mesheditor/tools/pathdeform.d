@@ -250,7 +250,8 @@ class PathDeformTool : NodeSelect {
         }
 
         if (action == PathDeformActionID.StartTransform || action == PathDeformActionID.StartShiftTransform) {
-            (cast(MeshEditorAction!DeformationAction)(impl.getDeformAction())).clear();
+            auto deform = (cast(MeshEditorAction!DeformationAction)(impl.getDeformAction()));
+            if(deform !is null) deform.clear();
         }
 
         if (action == PathDeformActionID.RemovePoint || action == PathDeformActionID.AddPoint) {
