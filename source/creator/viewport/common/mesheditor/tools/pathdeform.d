@@ -290,13 +290,17 @@ class PathDeformTool : NodeSelect {
             }
 
         } else if (action == PathDeformActionID.Shift || action == PathDeformActionID.StartShiftTransform) {
-            float off = path.findClosestPointOffset(impl.mousePos);
-            vec2 pos  = path.eval(off);
-            editPath.points[pathDragTarget].position = pos;
+            if(pathDragTarget != -1){
+                float off = path.findClosestPointOffset(impl.mousePos);
+                vec2 pos  = path.eval(off);
+                editPath.points[pathDragTarget].position = pos;
+            }
         
         } else if (action == PathDeformActionID.Transform || action == PathDeformActionID.StartTransform) {
-            vec2 relTranslation = impl.mousePos - impl.lastMousePos;
-            editPath.points[pathDragTarget].position += relTranslation;
+            if(pathDragTarget != -1){
+                vec2 relTranslation = impl.mousePos - impl.lastMousePos;
+                editPath.points[pathDragTarget].position += relTranslation;
+            }
         }
 
         editPath.update();
