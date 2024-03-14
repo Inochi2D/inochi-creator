@@ -257,7 +257,7 @@ class PathDeformTool : NodeSelect {
         if (action == PathDeformActionID.RemovePoint || action == PathDeformActionID.AddPoint) {
             if (action == PathDeformActionID.RemovePoint) {
                 int idx = path.findPoint(impl.mousePos);
-                path.removePoint(idx);
+                if(idx != -1) path.removePoint(idx);
             } else if (action == PathDeformActionID.AddPoint) {
                 path.addPoint(impl.mousePos);
             }
