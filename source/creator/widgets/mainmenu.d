@@ -177,7 +177,7 @@ void incMainMenu() {
                             incPopWelcomeWindow();
                             incImportShowKRADialog();
                         }
-                        incTooltip(_("Import a standard Photoshop PSD file."));
+                        incTooltip(_("Import a standard Krita KRA file."));
 
                         if (igMenuItem(__("Inochi2D Puppet"), "", false, true)) {
                             const TFD_Filter[] filters = [
