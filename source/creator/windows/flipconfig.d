@@ -132,7 +132,7 @@ FlipPair[] incGetFlipPairs() {
 
 FlipPair incGetFlipPairFor(Node node) {
     foreach (pair; flipPairs) {
-        if (pair.parts[0].uuid == node.uuid || pair.parts[1].uuid == node.uuid) {
+        if (pair.parts[1] !is null && (pair.parts[0].uuid == node.uuid || pair.parts[1].uuid == node.uuid)) {
             return pair;
         }
     }

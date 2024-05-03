@@ -934,7 +934,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                             pasteParameter(param, 2);
                             incViewportNodeDeformNotifyParamValueChanged();
                         }
-                        if (igMenuItem(__("Paste and Horiontal Flip"), "", false, true)) {
+                        if (igMenuItem(__("Paste and Horizontal Flip"), "", false, true)) {
                             pasteParameter(param, 0);
                             incViewportNodeDeformNotifyParamValueChanged();
                         }
