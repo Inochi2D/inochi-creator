@@ -17,12 +17,14 @@ import creator;
 import inochi2d;
 import bindbc.imgui;
 import std.stdio;
+import std.string;
 import bindbc.opengl;
 
 private {
     IncMeshEditor editor;
     AutoMeshProcessor[] autoMeshProcessors = [
-        new ContourAutoMeshProcessor()
+        new ContourAutoMeshProcessor(),
+        new GridAutoMeshProcessor()
     ];
     AutoMeshProcessor activeProcessor = null;
 }
@@ -38,6 +40,7 @@ void incViewportVertexTools() {
 }
 
 void incViewportVertexOptions() {
+
     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
     igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(4, 4));
         igBeginGroup();
@@ -126,6 +129,16 @@ void incViewportVertexOptions() {
             if (incBeginDropdownMenu("AUTOMESH_SETTINGS")) {
                 if (!activeProcessor)
                     activeProcessor = autoMeshProcessors[0];
+                
+                igBeginGroup();
+                foreach (processor; autoMeshProcessors) {
+                    if (incButtonColored(processor.icon().toStringz, ImVec2(0, 0), (processor == activeProcessor)? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                        activeProcessor = processor;
+                    }
+                    igSameLine(0, 2);
+                }
+                igEndGroup();
+
                 activeProcessor.configure();
 
                 // Button which bakes some auto generated content
@@ -201,7 +214,15 @@ void incViewportVertexDraw(Camera camera) {
         foreach (target; targets) {
             if (Part part = cast(Part)target) {
                 // Draw albedo texture at 0, 0
-                inDrawTextureAtPosition(part.textures[0], vec2(0, 0));
+                auto origin = vec2(0, 0);
+                if (part.textures[0] !is null) {
+                    inDrawTextureAtPosition(part.textures[0], origin);
+                } else {
+                    mat4 transform = part.transform.matrix.inverse;
+                    part.setOneTimeTransform(&transform);
+                    part.drawOne();
+                    part.setOneTimeTransform(null);
+                }
             } else if (MeshGroup mgroup = cast(MeshGroup)target) {
                 mat4 transform = mgroup.transform.matrix.inverse;
                 mgroup.setOneTimeTransform(&transform);
@@ -304,10 +325,12 @@ void incMeshEditApply() {
     foreach (d; target) {
         if (Drawable drawable = cast(Drawable)d) {
             auto meshEditor = cast(IncMeshEditorOneDrawable)editor.getEditorFor(drawable);
+            /*
             if (meshEditor !is null && (meshEditor.getMesh().getTriCount() < 1)) {
                 incDialog(__("Error"), _("Cannot apply invalid mesh\nAt least 3 vertices forming a triangle is needed."));
                 return;
             }
+            */
         }
     }
 
