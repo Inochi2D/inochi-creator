@@ -367,4 +367,8 @@ public:
 
     }
 
+    override
+    string icon() {
+        return "";
+    }
 };
