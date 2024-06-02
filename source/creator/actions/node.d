@@ -85,7 +85,9 @@ public:
             if (new_) {
                 sn.reparent(new_, pOffset);
                 sn.transformChanged();
+                sn.notifyChange(sn, NotifyReason.StructureChanged);
             } else sn.parent = null;
+            if (sn.uuid in prevParents && prevParents[sn.uuid]) prevParents[sn.uuid].notifyChange(sn, NotifyReason.StructureChanged);
             newTransform[sn.uuid] = sn.localTransform;
         }
         incActivePuppet().rescanNodes();
@@ -108,6 +110,8 @@ public:
                 }
                 sn.localTransform = originalTransform[sn.uuid];
                 sn.transformChanged();
+                if (newParent) newParent.notifyChange(sn, NotifyReason.StructureChanged);
+                sn.notifyChange(sn, NotifyReason.StructureChanged);
             } else sn.parent = null;
         }
         incActivePuppet().rescanNodes();
@@ -123,6 +127,8 @@ public:
                 sn.reparent(newParent, parentOffset);
                 sn.localTransform = newTransform[sn.uuid];
                 sn.transformChanged();
+                if (sn.uuid in prevParents && prevParents[sn.uuid]) prevParents[sn.uuid].notifyChange(sn, NotifyReason.StructureChanged);
+                sn.notifyChange(sn, NotifyReason.StructureChanged);
             } else sn.parent = null;
         }
         incActivePuppet().rescanNodes();
@@ -211,7 +217,9 @@ public:
         else if (to.parent !is null)
             children = to.children.dup;
 
-        if (cast(Part)toNode !is null) {
+        if (cast(DynamicComposite)srcNode !is null && 
+            cast(DynamicComposite)toNode is null &&
+            cast(Part)toNode !is null) {
             deepCopy = false;
         }
         this.deepCopy = deepCopy;
@@ -240,8 +248,10 @@ public:
         if (deepCopy) {
             foreach (i, child; children) {
                 child.reparent(srcNode, i);
+                child.notifyChange(child, NotifyReason.StructureChanged);
             }
-        }
+        } else
+            srcNode.notifyChange(srcNode, NotifyReason.StructureChanged);
     }
 
     /**
@@ -259,8 +269,10 @@ public:
         if (deepCopy) {
             foreach (i, child; children) {
                 child.reparent(toNode, i);
+                child.notifyChange(child, NotifyReason.StructureChanged);
             }
-        }
+        } else
+            toNode.notifyChange(toNode, NotifyReason.StructureChanged);
     }
 
     /**
@@ -322,6 +334,7 @@ public:
                 }
             }
         }
+        target.notifyChange(target, NotifyReason.AttributeChanged);
         incActivePuppet().rescanNodes();
     }
 
@@ -330,9 +343,11 @@ public:
     */
     void rollback() {
         if (addAction) {
+            target.notifyChange(target, NotifyReason.AttributeChanged);
             target.masks = target.masks.remove(offset);
         } else {
             target.masks.insertInPlace(offset, MaskBinding(maskSrc.uuid, mode, maskSrc));
+            target.notifyChange(target, NotifyReason.AttributeChanged);
         }
         incActivePuppet().rescanNodes();
     }
@@ -343,7 +358,9 @@ public:
     void redo() {
         if (addAction) {
             target.masks.insertInPlace(offset, MaskBinding(maskSrc.uuid, mode, maskSrc));
+            target.notifyChange(target, NotifyReason.AttributeChanged);
         } else {
+            target.notifyChange(target, NotifyReason.AttributeChanged);
             target.masks = target.masks.remove(offset);
         }
         incActivePuppet().rescanNodes();
@@ -766,6 +783,7 @@ public:
         this.oldValue = oldValue;
         this.newValue = newValue;
         this.valuePtr = valuePtr;
+        node.notifyChange(node, NotifyReason.AttributeChanged);
     }
 
     /**
@@ -773,6 +791,7 @@ public:
     */
     void rollback() {
         *valuePtr = oldValue;
+        node.notifyChange(node, NotifyReason.AttributeChanged);
     }
 
     /**
@@ -780,6 +799,7 @@ public:
     */
     void redo() {
         *valuePtr = newValue;
+        node.notifyChange(node, NotifyReason.AttributeChanged);
     }
 
     /**
@@ -844,6 +864,7 @@ public:
     */
     void rollback() {
         this.node.lockToRoot = origState;
+        node.notifyChange(node, NotifyReason.StructureChanged);
     }
 
     /**
@@ -851,6 +872,7 @@ public:
     */
     void redo() {
         this.node.lockToRoot = state;
+        node.notifyChange(node, NotifyReason.StructureChanged);
     }
 
     /**

@@ -17,6 +17,7 @@ import creator.ext.param;
 import creator.viewport.common.mesheditor;
 import creator.viewport.common.mesh;
 import creator.windows.flipconfig;
+import creator.viewport.model.onionslice;
 import creator.utils.transform;
 import creator;
 import std.string;
@@ -210,6 +211,7 @@ private {
             ParameterBinding b = param.getOrAddBinding(target, binding.getName());
             binding.copyKeypointToBinding(cParamPoint, b, cParamPoint);
         }
+        target.notifyChange(target, NotifyReason.StructureChanged);
 
         refreshBindingList(param);
     }
@@ -596,6 +598,7 @@ void incBindingMenuContents(Parameter param, ParameterBinding[BindTarget] cSelec
         foreach(binding; cSelectedBindings.byValue()) {
             action.addAction(new ParameterBindingRemoveAction(param, binding));
             param.removeBinding(binding);
+            binding.getTarget().node.notifyChange(binding.getTarget().node, NotifyReason.StructureChanged);
         }
         incActionPush(action);
         incViewportNodeDeformNotifyParamValueChanged();
@@ -1020,6 +1023,9 @@ void incParameterView(bool armedParam=false, bool showCategory = true, bool fixe
 
             if (incController("###CONTROLLER", param, ImVec2(width, height), incArmedParameter() == param, *grabParam)) {
                 if (incArmedParameter() == param) {
+                    auto onion = OnionSlice.singleton;
+                    onion.capture(cParamPoint);
+
                     incViewportNodeDeformNotifyParamValueChanged();
                     paramPointChanged(param);
                 }

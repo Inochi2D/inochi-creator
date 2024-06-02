@@ -445,9 +445,11 @@ void incViewportTransformHandle() {
                 if (armedParam) {
                     changeParameter(selectedNode, armedParam, "transform.t.x", index, newValueX);
                     changeParameter(selectedNode, armedParam, "transform.t.y", index, newValueY);
+                    selectedNode.notifyChange(selectedNode, NotifyReason.AttributeChanged);
                 } else {
                     selectedNode.localTransform.translation.vector[0] = newValueX;
                     selectedNode.localTransform.translation.vector[1] = newValueY;
+                    selectedNode.notifyChange(selectedNode, NotifyReason.AttributeChanged);
                 }
             } else {
                 if (!armedParam) {
@@ -575,9 +577,11 @@ void incViewportTransformHandle() {
                 if (armedParam) {
                     changeParameter(selectedNode, armedParam, "transform.s.x", index, newValueX);
                     changeParameter(selectedNode, armedParam, "transform.s.y", index, newValueY);
+                    selectedNode.notifyChange(selectedNode, NotifyReason.AttributeChanged);
                 } else {
                     selectedNode.localTransform.scale.vector[0] = newValueX;
                     selectedNode.localTransform.scale.vector[1] = newValueY;
+                    selectedNode.notifyChange(selectedNode, NotifyReason.AttributeChanged);
                 }
             } else {
                 if (!armedParam) {
@@ -591,6 +595,7 @@ void incViewportTransformHandle() {
                             new NodeValueChangeAction!(Node, float)("Y", selectedNode, prevValue.y,
                                 selectedNode.localTransform.scale.vector[1], &selectedNode.localTransform.scale.vector[1]);
                     }
+                    selectedNode.notifyChange(selectedNode, NotifyReason.AttributeChanged);
                 } 
                 if (incSelectedNodes.length > 1 && !groupingAction) {
                     groupingAction = true;
@@ -669,8 +674,10 @@ void incViewportTransformHandle() {
 
                 if (armedParam) {
                     changeParameter(selectedNode, armedParam, "transform.r.z", index, newValue);
+                    selectedNode.notifyChange(selectedNode, NotifyReason.AttributeChanged);
                 } else {
                     selectedNode.localTransform.rotation.vector[2] = newValue;
+                    selectedNode.notifyChange(selectedNode, NotifyReason.AttributeChanged);
                 }
             } else {
                 vec2 origValue;

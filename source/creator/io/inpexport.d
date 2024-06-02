@@ -330,6 +330,8 @@ void incINPExportFinalizePacking(ref Puppet source, Atlas[] atlasses) {
     
     // Apply all atlasses
     foreach(Part part; source.getAllParts()) {
+        if (cast(DynamicComposite)part !is null)
+            continue;
         foreach(Atlas atlas; atlasses) {
             
             // Look for our part in the atlas

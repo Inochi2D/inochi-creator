@@ -543,6 +543,7 @@ void incInspectorModelTRS(Node node) {
         float zsortB = zsortV;
         if (igInputFloat("###ZSort", &zsortV, 0.01, 0.05, "%0.2f")) {
             node.zSort = zsortV;
+            node.notifyChange(node, NotifyReason.AttributeChanged);
             incActionPush(
                 new NodeValueChangeAction!(Node, float)(
                     _("Sorting"),
@@ -866,6 +867,9 @@ void incInspectorModelPart(Part node) {
             if (igSelectable(__("Slice from Lower"), node.blendingMode == BlendMode.SliceFromLower)) node.blendingMode = BlendMode.SliceFromLower;
             incTooltip(_("Special blending mode that causes (while respecting transparency) the part to be slice by everything underneath.\nBasically reverse Clip to Lower."));
             
+            if (node.blendingMode != prevBlendingMode) {
+                node.notifyChange(node, NotifyReason.AttributeChanged);
+            }
             igEndCombo();
         }
 
@@ -873,6 +877,7 @@ void incInspectorModelPart(Part node) {
 
         incText(_("Opacity"));
         if (igSliderFloat("###Opacity", &node.opacity, 0, 1f, "%0.2f")) {
+            node.notifyChange(node, NotifyReason.AttributeChanged);
         }
         igSpacing();
         igSpacing();
@@ -885,6 +890,12 @@ void incInspectorModelPart(Part node) {
         incText(_("Threshold"));
         igSliderFloat("###Threshold", &node.maskAlphaThreshold, 0.0, 1.0, "%.2f");
 
+        if (DynamicComposite dcomposite = cast(DynamicComposite)node) {
+            if (igCheckbox(__("Resize automatically"), &dcomposite.autoResizedMesh)) {
+            }
+            incTooltip(_("Resize size automatically when child nodes are added or removed. Affect performance severly, not recommended."));
+        }
+        
         igSpacing();
 
         // The sources that the part gets masked by. Depending on the masking mode
@@ -903,15 +914,18 @@ void incInspectorModelPart(Part node) {
                         if (igBeginMenu(__("Mode"))) {
                             if (igMenuItem(__("Mask"), null, masker.mode == MaskingMode.Mask)) {
                                 masker.mode = MaskingMode.Mask;
+                                node.notifyChange(node, NotifyReason.AttributeChanged);
                             }
                             if (igMenuItem(__("Dodge"), null, masker.mode == MaskingMode.DodgeMask)) {
                                 masker.mode = MaskingMode.DodgeMask;
+                                node.notifyChange(node, NotifyReason.AttributeChanged);
                             }
                             igEndMenu();
                         }
 
                         if (igMenuItem(__("Delete"))) {
                             incActionPush(new PartRemoveMaskAction(node.masks[i].maskSrc, node, node.masks[i].mode));
+                            node.notifyChange(node, NotifyReason.StructureChanged);
                             igEndPopup();
                             igPopID();
                             igEndListBox();
@@ -938,6 +952,7 @@ void incInspectorModelPart(Part node) {
                                     if (i == 0) node.masks = *binding ~ node.masks;
                                     else if (i+1 >= node.masks.length) node.masks ~= *binding;
                                     else node.masks = node.masks[0..i] ~ *binding ~ node.masks[i+1..$];
+                                    node.notifyChange(node, NotifyReason.StructureChanged);
                                 }
                             }
                         }
@@ -993,6 +1008,7 @@ void incInspectorModelPart(Part node) {
 
                         if (igMenuItem(__("Delete"))) {
                             incActionPush(new DrawableRemoveWeldingAction(node, node.welded[i].target, node.welded[i].indices, node.welded[i].weight));
+                            node.notifyChange(node, NotifyReason.StructureChanged);
                             igEndPopup();
                             igPopID();
                             igEndListBox();
@@ -1021,6 +1037,7 @@ void incInspectorModelPart(Part node) {
                         if (index != -1) {
                             welded.target.welded[index].weight = 1 - weight;
                         }
+                        node.notifyChange(node, NotifyReason.StructureChanged);
                     }
                     /*
                     if(igBeginDragDropTarget()) {
@@ -1164,6 +1181,7 @@ void incInspectorModelComposite(Composite node) {
 
         incText(_("Opacity"));
         if (igSliderFloat("###Opacity", &node.opacity, 0, 1f, "%0.2f")) {
+            node.notifyChange(node, NotifyReason.AttributeChanged);
         }
         igSpacing();
         igSpacing();

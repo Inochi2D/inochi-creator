@@ -48,6 +48,7 @@ public:
                 sf.param = null;
             }
         }
+        incActivePuppet().root.notifyChange(incActivePuppet().root, NotifyReason.StructureChanged);
     }
 
     import std.stdio;
@@ -77,6 +78,7 @@ public:
                 sf.param = self;
             }
         }
+        incActivePuppet().root.notifyChange(incActivePuppet().root, NotifyReason.StructureChanged);
     }
 
     /**
@@ -104,6 +106,7 @@ public:
                 sf.param = null;
             }
         }
+        incActivePuppet().root.notifyChange(incActivePuppet().root, NotifyReason.StructureChanged);
     }
 
     /**

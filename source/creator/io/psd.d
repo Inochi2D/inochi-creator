@@ -26,7 +26,7 @@ bool incImportShowPSDDialog() {
     string file = incShowImportDialog(filters, _("Import..."));
 
     if (file) {
-        incImportPSD(file, IncPSDImportSettings(false));
+        incImportPSD(file, IncPSDImportSettings(true));
         return true;
     }
     return false;
@@ -160,12 +160,18 @@ void incImportPSD(string file, IncPSDImportSettings settings = IncPSDImportSetti
             
             Node child;
             if (layer.isLayerGroup) {
+                if (settings.keepStructure) {
+                    child = new DynamicComposite(cast(Node)null);
+                    (cast(DynamicComposite)child).blendingMode = layer.blendMode;
+                }
+                /*
                 if (layer.psdLayerRef.blendModeKey == BlendingMode.PassThrough || layer.psdLayerRef.blendModeKey == BlendingMode.Normal) {
                     if (settings.keepStructure) child = new Node(cast(Node)null);
                 } else {
                     child = new Composite(null);
                     (cast(Composite)child).blendingMode = layer.blendMode;
                 }
+                */
             } else {
                 
                 layer.psdLayerRef.extractLayerImage();

@@ -50,9 +50,10 @@ private {
     string[string] actionIconMap;
     static this() {
         conversionMap = [
-            "Node": ["MeshGroup"],
-            "MeshGroup": ["Node"],
-            "Composite": ["Node"]
+            "Node": ["MeshGroup", "DynamicComposite"],
+            "DynamicComposite": ["MeshGroup", "Node", "Part"],
+            "MeshGroup": ["DynamicComposite", "Node"],
+            "Composite": ["DynamicComposite", "Node"]
         ];
         actionIconMap = [
             "Add": "\ue145",
@@ -84,6 +85,7 @@ private {
 void incReloadNode(Node node) {
     foreach (child; node.children) {
         incReloadNode(child);
+        child.notifyChange(child);
     }
     node.clearCache();
 }
@@ -124,6 +126,10 @@ void incNodeActionsPopup(const char* title, bool isRoot = false, bool icon = fal
             incText(incTypeIdToIcon("MeshGroup"));
             igSameLine(0, 2);
             if (igMenuItem(__("MeshGroup"), "", false, true)) incAddChildWithHistory(new MeshGroup(cast(Node)null), n);
+
+            incText(incTypeIdToIcon("DynamicComposite"));
+            igSameLine(0, 2);
+            if (igMenuItem(__("DynamicComposite"), "", false, true)) incAddChildWithHistory(new DynamicComposite(cast(Node)null), n);
 
             igEndMenu();
         }
@@ -216,6 +222,7 @@ void incNodeActionsPopup(const char* title, bool isRoot = false, bool icon = fal
                             Node node = inInstantiateNode(type);
                             node.copyFrom(n, true, true);
                             incActionPush(new NodeReplaceAction(n, node, true));
+                            node.notifyChange(node, NotifyReason.StructureChanged);
                         }
                     }
                     igEndMenu();

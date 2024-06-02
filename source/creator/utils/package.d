@@ -12,6 +12,7 @@ string incTypeIdToIcon(string typeId) {
         case "SimplePhysics": return "";
         case "Camera": return "";
         case "MeshGroup": return "";
+        case "DynamicComposite": return "";
         case "Parameter": return "";
         case "Binding": return "";
         default: return "\ue97a"; 

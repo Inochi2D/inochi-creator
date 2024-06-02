@@ -10,6 +10,7 @@ import creator.widgets;
 import creator.core;
 import creator.windows;
 import creator;
+import creator.viewport.model.onionslice;
 import i18n;
 
 void incToolbar() {
@@ -67,6 +68,14 @@ void incToolbar() {
                             }
                         }
                         incTooltip(_("Reset parameters"));
+                        
+                        igSameLine(0, 0);
+
+                        auto onion = OnionSlice.singleton;
+                        if (incButtonColored("\ue71c", ImVec2(32, 32), onion.enabled? ImVec4.init: ImVec4(0.6, 0.6, 0.6, 1))) {
+                            onion.toggle();
+                        }
+                        incTooltip(_("Onion slice"));
                         
 
                         // Draw the toolbar relevant for that viewport

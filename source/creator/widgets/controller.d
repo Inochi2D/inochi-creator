@@ -183,8 +183,8 @@ bool incController(float oRectOffsetX=24, float oRectOffsetY=12, float circleSiz
             }
 
             // OFFSET VALUE
-            fScaleX = ((param.lastInternal.x) - param.min.x) / sDeltaX;
-            fScaleY = 1 - ((param.lastInternal.y) - param.min.y) / sDeltaY;
+            fScaleX = ((param.latestInternal.x) - param.min.x) / sDeltaX;
+            fScaleY = 1 - ((param.latestInternal.y) - param.min.y) / sDeltaY;
             vCursorPos = ImVec2(
                 (oRect.Max.x - oRect.Min.x) * fScaleX + oRect.Min.x, 
                 (oRect.Max.y - oRect.Min.y) * fScaleY + oRect.Min.y
@@ -321,7 +321,7 @@ bool incController(float oRectOffsetX=24, float oRectOffsetY=12, float circleSiz
             }
 
             // OFFSET VALUE
-            fScaleX = ((param.lastInternal.x) - param.min.x) / sDeltaX;
+            fScaleX = ((param.latestInternal.x) - param.min.x) / sDeltaX;
             vCursorPos = ImVec2(
                 (oRect.Max.x - oRect.Min.x) * fScaleX + oRect.Min.x, 
                 fYCenter

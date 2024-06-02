@@ -15,6 +15,7 @@ import creator.widgets.button;
 import creator.core.input;
 import creator.core;
 import creator.viewport.vertex;
+import creator.viewport.model.onionslice;
 import creator;
 import inochi2d;
 import bindbc.imgui;
@@ -244,6 +245,8 @@ void incViewportModelDraw(Camera camera) {
     Parameter param = incArmedParameter();
     incActivePuppet.update();
     incActivePuppet.draw();
+    auto onion = OnionSlice.singleton();
+    onion.draw();
 
     if (param) {
         incViewportModelDeformDraw(camera, param);
