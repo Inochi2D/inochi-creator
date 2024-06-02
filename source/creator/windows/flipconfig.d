@@ -132,7 +132,9 @@ FlipPair[] incGetFlipPairs() {
 
 FlipPair incGetFlipPairFor(Node node) {
     foreach (pair; flipPairs) {
-        if (pair.parts[1] !is null && (pair.parts[0].uuid == node.uuid || pair.parts[1].uuid == node.uuid)) {
+        if (pair.parts[0] !is null &&
+            pair.parts[1] !is null &&
+            (pair.parts[0].uuid == node.uuid || pair.parts[1].uuid == node.uuid)) {
             return pair;
         }
     }
@@ -159,24 +161,13 @@ private:
 
 
     void autoPair(string part1, string part2) {
-        // FIXME: this code sometimes doesn't work well with multi-byte utf-8 charset.
-        string truncate(string str) {
-            int i;
-            for (i = (cast(int)str.length) - 1; i >= 0; i --) {
-                if (str[i] != '\0')
-                    break;
-            }
-            if (i >= 0) {
-                return str[0..i];
-            }
-            return "";
-        }
-
         foreach(i, ref Node node; nodes) {
-            string targetName = node.name.replace(part1, part2);
+            string node1Name = node.name.toStringz.fromStringz;
+            string targetName = node1Name.replace(part1, part2);
             if (node.uuid in map) continue;
             foreach (ref Node node2; nodes) {
-                if (node.name.indexOf(part1) >= 0 && truncate(node2.name) == truncate(targetName)) {
+                string node2Name = node2.name.toStringz.fromStringz;
+                if (node1Name.indexOf(part1) >= 0 && node2Name == targetName) {
                     if (node2.uuid != node.uuid) {
                         pairs ~= new FlipPair([node, node2], "");
                         map[node.uuid] = pairs.length - 1;
