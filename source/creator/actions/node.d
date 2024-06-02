@@ -30,6 +30,7 @@ public:
         Which index in to the parent the nodes should be placed
     */
     size_t parentOffset;
+    float[uint] zSort;
 
     /**
         Previous parent of node
@@ -76,6 +77,7 @@ public:
                 originalTransform[sn.uuid] = sn.localTransform;
                 prevParents[sn.uuid] = sn.parent;
                 prevOffsets[sn.uuid] = sn.getIndexInParent();
+                zSort[sn.uuid] = sn.zSort;
             }
 
             // Set relative position
@@ -100,6 +102,9 @@ public:
             if (sn.uuid in prevParents && prevParents[sn.uuid]) {
                 if (!sn.lockToRoot()) sn.setRelativeTo(prevParents[sn.uuid]);
                 sn.reparent(prevParents[sn.uuid], prevOffsets[sn.uuid]);
+                if (sn.uuid in zSort) {
+                    sn.zSort = zSort[sn.uuid] - prevParents[sn.uuid].zSort();
+                }
                 sn.localTransform = originalTransform[sn.uuid];
                 sn.transformChanged();
             } else sn.parent = null;
