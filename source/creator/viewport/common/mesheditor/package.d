@@ -31,6 +31,8 @@ import bindbc.imgui;
 import std.algorithm.mutation;
 import std.algorithm.searching;
 import std.stdio;
+import std.format;
+import std.string;
 
 class IncMeshEditor {
 private:
@@ -193,6 +195,34 @@ public:
 
             igPopStyleVar(2);
         igSetWindowFontScale(1);
+    }
+
+    void displayGroupIds() {
+        // Show group Id
+        if (editors.length > 0 && (cast(IncMeshEditorOneDrawable)editors.values[0]).getMesh().maxGroupId > 1) {
+            auto editor = cast(IncMeshEditorOneDrawable)editors.values[0];
+            igSetWindowFontScale(1.30);
+                igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(10, 1));
+                igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(8, 10));
+
+                    if (incButtonColored("All", ImVec2(0, 0), editor.getGroupId() == 0 ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                        foreach (e; editors) {
+                            e.setGroupId(0);
+                        }
+                    }
+                    igSameLine();
+                    foreach (i; 1..1+editor.getMesh().maxGroupId) {
+                        if (incButtonColored("%d".format(i).toStringz, ImVec2(0, 0), i == editor.getGroupId() ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                            foreach (e; editors) {
+                                e.setGroupId(i);
+                            }
+                        }
+                        igSameLine();
+                    }
+
+                igPopStyleVar(2);
+            igSetWindowFontScale(1);
+        }
     }
 
     void displayToolOptions() {

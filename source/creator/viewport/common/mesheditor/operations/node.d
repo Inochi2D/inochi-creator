@@ -66,6 +66,7 @@ public:
     }
 
     override void importMesh(ref MeshData data) {}
+    override void mergeMesh(ref MeshData data, mat4 matrix) {}
 
     override
     void applyOffsets(vec2[] offsets) {
@@ -229,7 +230,7 @@ public:
     }
 
     override
-    ulong[] getInRect(vec2 min, vec2 max) { 
+    ulong[] getInRect(vec2 min, vec2 max, uint groupId) { 
         if (min.x > max.x) swap(min.x, max.x);
         if (min.y > max.y) swap(min.y, max.y);
 
@@ -334,5 +335,4 @@ public:
         transform = this.target.transform.matrix;
         forceResetAction();
     }
-
 }

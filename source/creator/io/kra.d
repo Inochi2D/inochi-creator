@@ -193,7 +193,7 @@ void incImportKRA(string file, IncKRAImportSettings settings = IncKRAImportSetti
                 );
 
 
-                part.enabled = layer.kraLayerRef.isVisible;
+                part.setEnabled(layer.kraLayerRef.isVisible);
                 part.opacity = (cast(float)layer.kraLayerRef.opacity)/255;
                 part.blendingMode = layer.blendMode;
 

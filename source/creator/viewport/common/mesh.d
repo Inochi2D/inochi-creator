@@ -22,6 +22,7 @@ import std.algorithm;
 struct MeshVertex {
     vec2 position;
     MeshVertex*[] connections;
+    uint groupId = 1;
 }
 
 void connect(MeshVertex* self, MeshVertex* other) {
@@ -62,9 +63,13 @@ private:
     MeshData* data;
     vec2 eOrigin;
 
-    void mImport(ref MeshData data) {
+    void mImport(bool reset = true)(ref MeshData data, mat4 matrix=mat4.identity) {
         // Reset vertex length
-        vertices.length = 0;
+        if (reset) {
+            vertices.length = 0;
+        } else {
+            maxGroupId = 2;
+        }
         eOrigin = data.origin;
 
         // Iterate over flat mesh and extract it in to
@@ -72,7 +77,8 @@ private:
         MeshVertex*[] iVertices;
         iVertices.length = data.vertices.length;
         foreach(idx, vertex; data.vertices) {
-            iVertices[idx] = new MeshVertex(vertex, []);
+            iVertices[idx] = new MeshVertex((matrix * vec4(vertex, 0, 1)).xy, []);
+            if (!reset) iVertices[idx].groupId = 2;
         }
 
         foreach(i; 0..data.indices.length/3) {
@@ -106,13 +112,15 @@ private:
         }
 
         axes = [];
-        if (data.isGrid()) {
-            foreach (axis; data.gridAxes) {
-                float[] newAxis;
-                foreach (axValue; axis) {
-                    newAxis ~= axValue;
+        if (reset) {
+            if (data.isGrid()) {
+                foreach (axis; data.gridAxes) {
+                    float[] newAxis;
+                    foreach (axValue; axis) {
+                        newAxis ~= axValue;
+                    }
+                    axes ~= newAxis;
                 }
-                axes ~= newAxis;
             }
         }
 
@@ -295,6 +303,7 @@ public:
     MeshVertex*[] vertices;
     float[][] axes;
     bool changed;
+    uint maxGroupId = 1;
 
     /**
         Constructs a new IncMesh
@@ -307,6 +316,11 @@ public:
     void import_(ref MeshData mesh) {
         data = &mesh;
         mImport(mesh);
+    }
+
+    final
+    void merge_(ref MeshData mesh, mat4 matrix) {
+        mImport!false(mesh, matrix);
     }
     
     /**
@@ -352,6 +366,7 @@ public:
 
     final
     size_t getTriCount() {
+        if (vertices.length == 0) return 0;
         size_t tris;
 
         MeshVertex*[] visited;
@@ -582,7 +597,7 @@ public:
         }
     }
 
-    ulong[] getInRect(vec2 min, vec2 max) {
+    ulong[] getInRect(vec2 min, vec2 max, uint groupId = 0) {
         if (min.x > max.x) swap(min.x, max.x);
         if (min.y > max.y) swap(min.y, max.y);
 
@@ -592,6 +607,7 @@ public:
             if (min.y > vertex.position.y) continue;
             if (max.x < vertex.position.x) continue;
             if (max.y < vertex.position.y) continue;
+            if (groupId > 0 && groupId != vertex.groupId) continue;
             matching ~= idx;
         }
 
@@ -943,7 +959,7 @@ public:
 
         // Check whether deform has more than 1 triangle.
         // If not, returns default Deformation which has dummpy offsets.
-        if (deform.vertexOffsets.length < 3) {
+        if (deform.vertexOffsets.length < 3 || vertices.length < 3 || part.getMesh().vertices.length < 3) {
             vec2[] vertexOffsets = [];
             for (int i = 0; i < vertices.length; i++)
                 vertexOffsets ~= vec2(0, 0);
@@ -1042,7 +1058,11 @@ public:
         // Apply transform for mesh
         vec2[] transformMesh(ref MeshData bindingMesh, Deformation deform) {
             vec2[] result;
-            assert(bindingMesh.vertices.length == deform.vertexOffsets.length);
+            if (bindingMesh.vertices.length != deform.vertexOffsets.length) {
+                result.length = bindingMesh.vertices.length;
+                return result;
+            }
+//            assert(bindingMesh.vertices.length == deform.vertexOffsets.length);
             foreach (i, v; bindingMesh.vertices) {
                 result ~= v + deform.vertexOffsets[i];
             }

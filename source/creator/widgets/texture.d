@@ -121,7 +121,7 @@ void incTextureSlot(string text, Texture texture, ImVec2 size = ImVec2(92, 92), 
 /**
     Renders a texture slot with specified size
 */
-void incTextureSlotUntitled(string name, Texture texture, ImVec2 size = ImVec2(92, 92), float gridSize = 32, ImGuiWindowFlags flags = ImGuiWindowFlags.None) {
+void incTextureSlotUntitled(string name, Texture texture, ImVec2 size = ImVec2(92, 92), float gridSize = 32, ImGuiWindowFlags flags = ImGuiWindowFlags.None, bool selected = false) {
     if (igBeginChildFrame(igGetID(name.ptr, name.ptr+name.length), size, flags | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)) {
 
         ImVec2 startPos;
@@ -132,21 +132,20 @@ void incTextureSlotUntitled(string name, Texture texture, ImVec2 size = ImVec2(9
 
 
         igBeginGroup();
+            // NOTE: These variables may be reused if the texture is square.
+            float qsizex = quantize(size.x, gridSize/2);
+            float qsizey = quantize(size.y, gridSize/2);
+
+            ImVec2 screenStart;
+            auto drawList = igGetWindowDrawList();
+            igGetCursorScreenPos(&screenStart);
+
+            // Draw background grid
+            ImVec2 gridMin = ImVec2(screenStart.x-(paddingX/2), screenStart.y-(paddingY/2));
+            ImVec2 gridMax = ImVec2(gridMin.x+size.x-paddingX, gridMin.y+size.y-paddingY);
 
             // Only draw texture stuff if we actually have a texture
             if (texture) {
-
-                // NOTE: These variables may be reused if the texture is square.
-                float qsizex = quantize(size.x, gridSize/2);
-                float qsizey = quantize(size.y, gridSize/2);
-
-                ImVec2 screenStart;
-                auto drawList = igGetWindowDrawList();
-                igGetCursorScreenPos(&screenStart);
-
-                // Draw background grid
-                ImVec2 gridMin = ImVec2(screenStart.x-(paddingX/2), screenStart.y-(paddingY/2));
-                ImVec2 gridMax = ImVec2(gridMin.x+size.x-paddingX, gridMin.y+size.y-paddingY);
 
                 // Draw transparent background if there is any transparency
                 if (texture.colorMode == GL_RGBA) {
@@ -212,6 +211,9 @@ void incTextureSlotUntitled(string name, Texture texture, ImVec2 size = ImVec2(9
                         ImVec2(bounds.z, bounds.w)
                     );
                 }
+            }
+            if (selected) {
+                ImDrawList_AddRect(drawList, gridMin, gridMax, igGetColorU32(igGetStyle().Colors[ImGuiCol.HeaderActive]), igGetStyle().FrameRounding, ImDrawFlags.None, 2.0f);
             }
         igEndGroup();
     }

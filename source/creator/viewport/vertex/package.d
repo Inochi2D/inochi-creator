@@ -38,6 +38,8 @@ void incViewportVertexTools() {
 }
 
 void incViewportVertexOptions() {
+    editor.displayGroupIds();
+
     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
     igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(4, 4));
         igBeginGroup();
@@ -275,6 +277,17 @@ void incVertexEditCopyMeshDataToTarget(Drawable target, Drawable drawable, ref M
         editor.addTarget(target);
         assert(editor.getEditorFor(target));
         editor.getEditorFor(target).importMesh(data);
+    }
+}
+
+void incVertexEditMergeMeshDataToTarget(Drawable target, Drawable drawable, ref MeshData data) {
+    mat4 matrix = drawable.transform.matrix * target.transform.matrix.inverse;
+    if (editor.getEditorFor(target)) {
+        editor.getEditorFor(target).mergeMesh(data, matrix);
+    } else {
+        editor.addTarget(target);
+        assert(editor.getEditorFor(target));
+        editor.getEditorFor(target).mergeMesh(data, matrix);
     }
 }
 

@@ -15,6 +15,7 @@ import creator.viewport.common.mesh;
 import creator.viewport.common.mesheditor.tools.enums;
 import creator.viewport.common.mesheditor.operations;
 import creator.viewport.common.mesheditor.brushes;
+import creator.viewport.common.mesheditor;
 import creator.viewport.common.spline;
 import creator.core.input;
 import creator.core.actionstack;
@@ -29,7 +30,22 @@ import bindbc.imgui;
 import std.algorithm.mutation;
 import std.algorithm.searching;
 import std.stdio;
+import std.range: enumerate;
 
+void incUpdateWeldedPoints(Drawable drawable) {
+    foreach (welded; drawable.welded) {
+        ptrdiff_t[] indices;
+        foreach (i, v; drawable.vertices) {
+            auto vv = drawable.transform.matrix * vec4(v, 0, 1);
+            auto minDistance = welded.target.vertices.enumerate.minElement!((a)=>(welded.target.transform.matrix * vec4(a.value, 0, 1)).distance(vv))();
+            if ((welded.target.transform.matrix * vec4(minDistance[1], 0, 1)).distance(vv) < 4)
+                indices ~= minDistance[0];
+            else
+                indices ~= -1;
+        }
+        incActionPush(new DrawableChangeWeldingAction(drawable, welded.target, indices, welded.weight));
+    }
+}
 
 class IncMeshEditorOneDrawable : IncMeshEditorOneImpl!Drawable {
 protected:
@@ -100,6 +116,12 @@ public:
     }
 
     override
+    void mergeMesh(ref MeshData data, mat4 matrix) {
+        mesh.merge_(data, matrix);
+        mesh.refresh();
+    }
+
+    override
     void applyOffsets(vec2[] offsets) {
     }
 
@@ -110,6 +132,7 @@ public:
 
     override
     void applyToTarget() {
+        incActionPushGroup();
         // Apply the model
         auto action = new DrawableChangeAction(target.name, target);
 
@@ -118,18 +141,8 @@ public:
         data.fixWinding();
 
         // Fix UVs
-        foreach(i; 0..data.uvs.length) {
-            if (Part part = cast(Part)target) {
-
-                // Texture 0 is always albedo texture
-                auto tex = part.textures[0];
-
-                // By dividing by width and height we should get the values in UV coordinate space.
-                data.uvs[i].x /= cast(float)tex.width;
-                data.uvs[i].y /= cast(float)tex.height;
-                data.uvs[i] += vec2(0.5, 0.5);
-            }
-        }
+        // By dividing by width and height we should get the values in UV coordinate space.
+        target.normalizeUV(&data);
 
         if (data.vertices.length != target.vertices.length)
             vertexMapDirty = true;
@@ -173,9 +186,7 @@ public:
         incActivePuppet().resetDrivers();
         vertexMapDirty = false;
 
-        if (auto mgroup = cast(MeshGroup)target) {
-            mgroup.clearCache();
-        }
+        target.clearCache();
         target.rebuffer(data);
 
         // reInterpolate MUST be called after rebuffer is called.
@@ -185,6 +196,12 @@ public:
 
         action.updateNewState();
         incActionPush(action);
+
+        if (auto drawable = cast(Drawable)target) {
+            incUpdateWeldedPoints(drawable);
+        }
+        
+        incActionPopGroup();
     }
 
     override
@@ -277,8 +294,8 @@ public:
     }
 
     override
-    ulong[] getInRect(vec2 min, vec2 max) { 
-        return mesh.getInRect(selectOrigin, mousePos);
+    ulong[] getInRect(vec2 min, vec2 max, uint groupId = 0) { 
+        return mesh.getInRect(selectOrigin, mousePos, groupId);
     }
     override 
     MeshVertex*[] getVerticesByIndex(ulong[] indices, bool removeNull = false) {
@@ -377,6 +394,14 @@ public:
             mesh.drawPoints(trans);
         } else {
             mesh.draw(trans);
+        }
+
+        if (groupId != 0) {
+            MeshVertex*[] vertsInGroup = [];
+            foreach (v; mesh.vertices) {
+                if (v.groupId != groupId) vertsInGroup ~= v;
+            }
+            mesh.drawPointSubset(vertsInGroup, vec4(0.6, 0.6, 0.6, 1), trans);
         }
 
         if (selected.length) {
@@ -542,6 +567,12 @@ public:
     }
 
     override
+    void mergeMesh(ref MeshData data, mat4 matrix) {
+        mesh.merge_(data, matrix);
+        mesh.refresh();
+    }
+
+    override
     void applyOffsets(vec2[] offsets) {
         mesh.applyOffsets(offsets);
     }
@@ -606,7 +637,7 @@ public:
     }
 
     override
-    ulong[] getInRect(vec2 min, vec2 max) {
+    ulong[] getInRect(vec2 min, vec2 max, uint groupId) {
         if (min.x > max.x) swap(min.x, max.x);
         if (min.y > max.y) swap(min.y, max.y);
 
@@ -732,6 +763,14 @@ public:
             inDbgDrawPoints(vec4(0, 0, 0, 1), trans);
             inDbgPointsSize(6);
             inDbgDrawPoints(vec4(1, 1, 1, 1), trans);
+        }
+
+        if (groupId != 0) {
+            MeshVertex*[] vertsInGroup = [];
+            foreach (v; mesh.vertices) {
+                if (v.groupId != groupId) vertsInGroup ~= v;
+            }
+            mesh.drawPointSubset(vertsInGroup, vec4(0.6, 0.6, 0.6, 1), trans);
         }
 
         if (vtxAtMouse != ulong(-1) && !isSelecting) {

@@ -169,7 +169,7 @@ public:
             }
 
         }
-        
+
         return mesh.autoTriangulate();
     };
 

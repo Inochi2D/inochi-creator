@@ -42,7 +42,7 @@ public:
     abstract void removeMeshVertex(MeshVertex* v2);
     
     abstract bool isPointOver(vec2 mousePos);
-    abstract ulong[] getInRect(vec2 min, vec2 max);
+    abstract ulong[] getInRect(vec2 min, vec2 max, uint groupId);
     abstract MeshVertex*[] getVerticesByIndex(ulong[] indices, bool removeNull = false);
     abstract bool hasAction();
     abstract void updateAddVertexAction(MeshVertex* vertex);
@@ -228,6 +228,7 @@ public:
     abstract void resetMesh();
     abstract void refreshMesh();
     abstract void importMesh(ref MeshData data);
+    abstract void mergeMesh(ref MeshData data, mat4 matrix);
     abstract void applyOffsets(vec2[] offsets);
     abstract vec2[] getOffsets();
 
@@ -255,4 +256,7 @@ public:
 
     abstract void adjustPathTransform();
     abstract Tool getTool();
+
+    abstract uint getGroupId();
+    abstract void setGroupId(uint groupId);
 }

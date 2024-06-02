@@ -21,7 +21,7 @@ struct EditableAxisPoint {
 /**
     A Parameter controller
 */
-bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSnap = false, string grabParam = "") {
+bool incController(float oRectOffsetX=24, float oRectOffsetY=12, float circleSize = 6.0f, float frameWidth = 2.0f)(string strId, ref Parameter param, ImVec2 size, bool forceSnap = false, string grabParam = "") {
     ImGuiWindow* window = igGetCurrentWindow();
     if (window.SkipItems) return false;
 
@@ -45,8 +45,6 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
     bool bModified = false;
     
     if (param.isVec2) {
-        float oRectOffsetX = 24;
-        float oRectOffsetY = 12;
         ImRect fRect = ImRect(
             vPos,
             ImVec2(vPos.x + size.x, vPos.y + size.y)
@@ -149,10 +147,10 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
             }
 
             // OUTSIDE FRAME
-            ImDrawList_AddLine(drawList, ImVec2(oRect.Min.x, oRect.Min.y), ImVec2(oRect.Max.x, oRect.Min.y), uLineColor, 2f);
-            ImDrawList_AddLine(drawList, ImVec2(oRect.Min.x, oRect.Max.y), ImVec2(oRect.Max.x, oRect.Max.y), uLineColor, 2f);
-            ImDrawList_AddLine(drawList, ImVec2(oRect.Min.x, oRect.Min.y), ImVec2(oRect.Min.x, oRect.Max.y), uLineColor, 2f);
-            ImDrawList_AddLine(drawList, ImVec2(oRect.Max.x, oRect.Min.y), ImVec2(oRect.Max.x, oRect.Max.y), uLineColor, 2f);
+            ImDrawList_AddLine(drawList, ImVec2(oRect.Min.x, oRect.Min.y), ImVec2(oRect.Max.x, oRect.Min.y), uLineColor, frameWidth);
+            ImDrawList_AddLine(drawList, ImVec2(oRect.Min.x, oRect.Max.y), ImVec2(oRect.Max.x, oRect.Max.y), uLineColor, frameWidth);
+            ImDrawList_AddLine(drawList, ImVec2(oRect.Min.x, oRect.Min.y), ImVec2(oRect.Min.x, oRect.Max.y), uLineColor, frameWidth);
+            ImDrawList_AddLine(drawList, ImVec2(oRect.Max.x, oRect.Min.y), ImVec2(oRect.Max.x, oRect.Max.y), uLineColor, frameWidth);
             
             // AXES POINTS
             foreach(xIdx; 0..param.axisPoints[0].length) {
@@ -165,7 +163,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
                         (oRect.Max.y - oRect.Min.y) * yVal + oRect.Min.y
                     );
 
-                    ImDrawList_AddCircleFilled(drawList, vCursorPos, 6.0f, uDotKeyColor, 16);
+                    ImDrawList_AddCircleFilled(drawList, vCursorPos, circleSize, uDotKeyColor, 16);
 
                     bool isPartial = false;
                     bool isComplete = true;
@@ -178,9 +176,9 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
                     }
 
                     if (isComplete && isPartial)
-                        ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotKeyComplete, 16);
+                        ImDrawList_AddCircleFilled(drawList, vCursorPos, circleSize * 2 / 3, uDotKeyComplete, 16);
                     else if (isPartial)
-                        ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotKeyPartial, 16);
+                        ImDrawList_AddCircleFilled(drawList, vCursorPos, circleSize * 2 / 3, uDotKeyPartial, 16);
                 }
             }
 
@@ -192,7 +190,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
                 (oRect.Max.y - oRect.Min.y) * fScaleY + oRect.Min.y
             );
             
-            ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotColorOff, 16);
+            ImDrawList_AddCircleFilled(drawList, vCursorPos, circleSize * 2 / 3, uDotColorOff, 16);
 
             // PARAM VALUE
             fScaleX = (param.value.x - param.min.x) / sDeltaX;
@@ -202,7 +200,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
                 (oRect.Max.y - oRect.Min.y) * fScaleY + oRect.Min.y
             );
             
-            ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotColor, 16);
+            ImDrawList_AddCircleFilled(drawList, vCursorPos, circleSize * 2 / 3, uDotColor, 16);
         
         igPopID(); 
 
@@ -211,8 +209,6 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
     } else {
         const float lineHeight = 16;
 
-        float oRectOffsetX = 24;
-        float oRectOffsetY = 12;
         ImRect fRect = ImRect(
             vPos,
             ImVec2(vPos.x + size.x, vPos.y + size.y)
@@ -298,13 +294,13 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
                         fYCenter+fYCenterLineLen1th
                     ), 
                     uLineColor, 
-                    2f, 
+                    frameWidth, 
                 );
             
             }
 
             // REF LINE
-            ImDrawList_AddLine(drawList, ImVec2(oRect.Min.x, fYCenter), ImVec2(oRect.Max.x, fYCenter), uLineColor, 2f);
+            ImDrawList_AddLine(drawList, ImVec2(oRect.Min.x, fYCenter), ImVec2(oRect.Max.x, fYCenter), uLineColor, frameWidth);
             
             // AXES POINTS
             foreach(xIdx; 0..param.axisPoints[0].length) {
@@ -315,10 +311,10 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
                     fYCenter
                 );
 
-                ImDrawList_AddCircleFilled(drawList, vCursorPos, 6.0f, uDotKeyColor, 16);
+                ImDrawList_AddCircleFilled(drawList, vCursorPos, circleSize, uDotKeyColor, 16);
                 foreach(binding; param.bindings) {
                     if (binding.getIsSet()[xIdx][0]) {
-                        ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotKeyFilled, 16);
+                        ImDrawList_AddCircleFilled(drawList, vCursorPos, circleSize * 2 / 3, uDotKeyFilled, 16);
                         break;
                     }
                 }
@@ -331,7 +327,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
                 fYCenter
             );
             
-            ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotColorOff, 16);
+            ImDrawList_AddCircleFilled(drawList, vCursorPos, circleSize * 2 / 3, uDotColorOff, 16);
 
             // PARAM VALUE
             fScaleX = (param.value.x - param.min.x) / sDeltaX;
@@ -340,7 +336,7 @@ bool incController(string strId, ref Parameter param, ImVec2 size, bool forceSna
                 fYCenter
             );
             
-            ImDrawList_AddCircleFilled(drawList, vCursorPos, 4f, uDotColor, 16);
+            ImDrawList_AddCircleFilled(drawList, vCursorPos, circleSize * 2 / 3, uDotColor, 16);
         
         igPopID(); 
 

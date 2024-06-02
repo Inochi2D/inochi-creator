@@ -25,6 +25,10 @@ import std.algorithm.sorting;
 import std.algorithm.searching;
 import std.stdio;
 
+private {
+    enum HandleSize = 24;
+}
+
 /**
     Draws the viewport contents
 */
@@ -477,8 +481,8 @@ void incViewportTransformHandle() {
 
 
     // Move handle
-    incBeginViewportToolArea(name, ImVec2(bounds.x - 32, bounds.y - 32));
-    igButton("", ImVec2(32, 32));
+    incBeginViewportToolArea(name, ImVec2(bounds.x - HandleSize, bounds.y - HandleSize));
+    igButton("", ImVec2(HandleSize, HandleSize));
     if (igIsItemHovered() && igIsMouseDown(btn)) {
         foreach (selectedNode; incSelectedNodes) {
             if (isOwned(selectedNode, incSelectedNodes))
@@ -605,8 +609,8 @@ void incViewportTransformHandle() {
     }
     // Scale handle
     if (incSelectedNodes.length == 1) {
-        incBeginViewportToolArea(name, ImVec2(bounds.x - 32, bounds.w));
-        igButton("", ImVec2(32, 32));
+        incBeginViewportToolArea(name, ImVec2(bounds.x - HandleSize, bounds.w));
+        igButton("", ImVec2(HandleSize, HandleSize));
         if (igIsItemHovered() && igIsMouseDown(btn)) {
             foreach (selectedNode; incSelectedNodes) {
                 if (isOwned(selectedNode, incSelectedNodes))
@@ -695,8 +699,8 @@ void incViewportTransformHandle() {
     }
     // Rotation handle
     if (incSelectedNodes.length == 1) {
-        incBeginViewportToolArea(name, ImVec2(bounds.z, bounds.y - 32));
-        igButton("", ImVec2(32, 32));
+        incBeginViewportToolArea(name, ImVec2(bounds.z, bounds.y - HandleSize));
+        igButton("", ImVec2(HandleSize, HandleSize));
         if (igIsItemHovered() && igIsMouseDown(btn)) {
             foreach (selectedNode; incSelectedNodes) {
                 if (isOwned(selectedNode, incSelectedNodes))

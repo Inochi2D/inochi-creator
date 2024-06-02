@@ -35,7 +35,8 @@ public import creator.core.actionstack;
 public import creator.core.tasks;
 public import creator.core.path;
 public import creator.core.font;
-public import creator.core.dpi;
+public import creator.core.dpi; 
+public import creator.core.selector;
 import i18n;
 
 version(OSX) {

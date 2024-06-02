@@ -185,7 +185,7 @@ void incINPExportOptimizePrune(Puppet puppet, IncINPExportSettings settings) {
     // nodes as well.
     void nodePruneIter(ref Node self) {
         foreach(ref Node child; self.children) {
-            if (!child.enabled) child.parent = null;
+            if (!child.getEnabled()) child.parent = null;
             else nodePruneIter(child);
         }
     }

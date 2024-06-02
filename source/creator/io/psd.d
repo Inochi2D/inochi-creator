@@ -139,7 +139,7 @@ IncPSDLayer[] incPSDBuildLayerLayout(PSD document) {
 }
 
 struct IncPSDImportSettings {
-    bool keepStructure = false;
+    bool keepStructure = true;
 }
 
 /**
@@ -188,7 +188,7 @@ void incImportPSD(string file, IncPSDImportSettings settings = IncPSDImportSetti
                 );
 
 
-                part.enabled = (layer.psdLayerRef.flags & LayerFlags.Visible) == 0;
+                part.setEnabled((layer.psdLayerRef.flags & LayerFlags.Visible) == 0);
                 part.opacity = (cast(float)layer.psdLayerRef.opacity)/255;
                 part.blendingMode = layer.blendMode;
 
@@ -227,6 +227,8 @@ void incImportPSD(string file, IncPSDImportSettings settings = IncPSDImportSetti
         }
 
         puppet.populateTextureSlots();
+        puppet.root.transformChanged();
+        puppet.root.centralize();
         incActiveProject().puppet = puppet;
         incFocusCamera(incActivePuppet().root);
 

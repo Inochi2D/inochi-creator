@@ -14,6 +14,7 @@ import i18n;
 import std.exception;
 import std.array: insertInPlace;
 import std.algorithm.mutation: remove;
+import std.algorithm.searching;
 
 /**
     An action that happens when a node is changed
@@ -157,6 +158,137 @@ public:
 }
 
 /**
+    An action that happens when a node is replaced
+*/
+class NodeReplaceAction : Action {
+    /**
+      Update the binding target of parameters.
+      This function must be called after redo / undo operations are done.
+     */
+    void updateParameterBindings() {
+        auto parent = srcNode.parent;
+        auto src = toNode;
+        auto to  = srcNode;
+        if (toNode.parent !is null) {
+            parent = toNode.parent;
+            src = srcNode;
+            to  = toNode;
+        }
+        assert(parent.puppet !is null);
+        auto parameters = parent.puppet.parameters;
+        foreach (param; parameters) {
+            foreach (binding; param.bindings) {
+                if (binding.getTarget().node == src) {
+                    binding.setTarget(to, binding.getTarget().paramName);
+                }
+            }
+        }
+    }
+public:
+
+    /**
+        Descriptive name
+    */
+    string descrName;
+    
+    /**
+        Nodes that was moved
+    */
+    Node srcNode;
+    Node toNode;
+    Node[] children;
+    bool deepCopy;
+
+    /**
+        Creates a new node change action
+    */
+    this(Node src, Node to, bool deepCopy) {
+        srcNode = src;
+        toNode = to;
+
+        if (src.parent !is null)
+            children = src.children.dup;
+        else if (to.parent !is null)
+            children = to.children.dup;
+
+        if (cast(Part)toNode !is null) {
+            deepCopy = false;
+        }
+        this.deepCopy = deepCopy;
+
+        // Set visual name
+        descrName = src.name;
+
+        if (toNode.parent is null)
+            redo();
+
+        updateParameterBindings();
+    }
+
+    /**
+        Rollback
+    */
+    void rollback() {
+        auto parent = toNode.parent;
+        assert(parent !is null);
+        ulong pOffset = parent.children.countUntil(toNode);
+        Transform tmpTransform = toNode.transform;
+        toNode.reparent(null, 0);
+        toNode.localTransform = tmpTransform;
+        srcNode.reparent(parent, pOffset);
+        updateParameterBindings();
+        if (deepCopy) {
+            foreach (i, child; children) {
+                child.reparent(srcNode, i);
+            }
+        }
+    }
+
+    /**
+        Redo
+    */
+    void redo() {
+        auto parent = srcNode.parent;
+        assert(parent !is null);
+        ulong pOffset = parent.children.countUntil(srcNode);
+        Transform tmpTransform = srcNode.transform;
+        srcNode.reparent(null, 0);
+        srcNode.localTransform = tmpTransform;
+        toNode.reparent(parent, pOffset);
+        updateParameterBindings();
+        if (deepCopy) {
+            foreach (i, child; children) {
+                child.reparent(toNode, i);
+            }
+        }
+    }
+
+    /**
+        Describe the action
+    */
+    string describe() {
+        return _("Change type of %s to %s").format(descrName, toNode.typeId);
+    }
+
+    /**
+        Describe the action
+    */
+    string describeUndo() {
+        return _("Revert type of %s to %s").format(descrName, srcNode.typeId);
+    }
+
+    /**
+        Gets name of this action
+    */
+    string getName() {
+        return this.stringof;
+    }
+    
+    bool merge(Action other) { return false; }
+    bool canMerge(Action other) { return false; }
+}
+
+/**
     An action that happens when a node is changed
 */
 class PartAddRemoveMaskAction(bool addAction = false) : Action {
@@ -246,6 +378,211 @@ public:
 
 alias PartAddMaskAction = PartAddRemoveMaskAction!true;
 alias PartRemoveMaskAction = PartAddRemoveMaskAction!false;
+/**
+    An action that happens when a node is changed
+*/
+class DrawableAddRemoveWeldingAction(bool addAction = false) : Action {
+public:
+
+    /**
+        Previous parent of node
+    */
+    Drawable drawable;
+    size_t offset;
+    Drawable target;
+    ptrdiff_t[] weldedVertexIndices;
+    float weight;
+
+    /**
+        Creates a new node change action
+    */
+    this(Drawable drawable, Drawable target, ptrdiff_t[] weldedVertexIndices = null, float weight = -1) {
+        this.drawable = drawable;
+        this.target = target;
+
+        if (weldedVertexIndices is null || weight < 0) {
+            auto idx = drawable.welded.countUntil!((a)=>a.target == target);
+            if (idx >= 0) {
+                Drawable.WeldingLink link = drawable.welded[idx];
+                if (weldedVertexIndices is null) {
+                    weldedVertexIndices = link.indices;
+                }
+                if (weight < 0) {
+                    weight = link.weight;
+                }
+            } else {
+                throw new Exception("DrawableAddRemoveWeldingAction is created without any specific parameters.");
+            }
+        }
+
+        this.weight = weight;
+        this.weldedVertexIndices = weldedVertexIndices;
+
+        if (addAction) {
+            offset = drawable.welded.length;
+            drawable.addWeldedTarget(target, weldedVertexIndices, weight);
+
+        } else {
+            drawable.removeWeldedTarget(target);
+        }
+        incActivePuppet().rescanNodes();
+    }
+
+    /**
+        Rollback
+    */
+    void rollback() {
+        if (addAction) {
+            drawable.removeWeldedTarget(target);
+        } else {
+            drawable.addWeldedTarget(target, weldedVertexIndices, weight);
+        }
+        incActivePuppet().rescanNodes();
+    }
+
+    /**
+        Redo
+    */
+    void redo() {
+        if (addAction) {
+            drawable.addWeldedTarget(target, weldedVertexIndices, weight);
+        } else {
+            drawable.removeWeldedTarget(target);
+        }
+        incActivePuppet().rescanNodes();
+    }
+
+    /**
+        Describe the action
+    */
+    string describe() {
+        if (addAction) return _("%s is added to welded targets of %s").format(target.name, drawable.name);
+        else return _("%s is deleted from welded targets of %s").format(target.name, drawable.name);
+    }
+
+    /**
+        Describe the action
+    */
+    string describeUndo() {
+        if (addAction) return _("%s is deleted from welded targets of %s").format(target.name, drawable.name);
+        else return _("%s is added to welded targets of %s").format(target.name, drawable.name);
+    }
+
+    /**
+        Gets name of this action
+    */
+    string getName() {
+        return this.stringof;
+    }
+    
+    bool merge(Action other) { return false; }
+    bool canMerge(Action other) { return false; }
+}
+
+alias DrawableAddWeldingAction = DrawableAddRemoveWeldingAction!true;
+alias DrawableRemoveWeldingAction = DrawableAddRemoveWeldingAction!false;
+
+/**
+    An action that happens when a node is changed
+*/
+class DrawableChangeWeldingAction : Action {
+public:
+
+    /**
+        Previous parent of node
+    */
+    Drawable drawable;
+    Drawable.WeldingLink* link;
+    Drawable.WeldingLink* counterLink;
+    float oldWeight;
+    float newWeight;
+    float oldCounterWeight;
+    float newCounterWeight;
+    ptrdiff_t[] oldIndices;
+    ptrdiff_t[] newIndices;
+    ptrdiff_t[] oldCounterIndices;
+    ptrdiff_t[] newCounterIndices;
+
+    /**
+        Creates a new node change action
+    */
+    this(Drawable drawable, Drawable target, ptrdiff_t[] weldedVertexIndices, float weight) {
+        this.drawable = drawable;
+        auto index = drawable.welded.countUntil!((a)=>a.target == target)();
+        auto counterIndex = target.welded.countUntil!((a)=>a.target == drawable);
+        if (index >= 0 && counterIndex >= 0) {
+            link = &(drawable.welded[index]);
+            counterLink = &(target.welded[counterIndex]);
+
+            ptrdiff_t[] counterWeldedVertexIndices;
+            counterWeldedVertexIndices.length = target.vertices.length;
+            counterWeldedVertexIndices[0..$] = -1;
+            foreach (i, ind; weldedVertexIndices) {
+                if (ind != -1)
+                    counterWeldedVertexIndices[ind] = i;
+            }
+
+            oldWeight = link.weight;
+            newWeight = weight;
+            oldCounterWeight = counterLink.weight;
+            newCounterWeight = 1 - weight;
+            oldIndices = link.indices[];
+            oldCounterIndices = counterLink.indices[];
+            newIndices = weldedVertexIndices;
+            newCounterIndices = counterWeldedVertexIndices;
+            redo();
+        }
+    }
+
+    /**
+        Rollback
+    */
+    void rollback() {
+        if (link) {
+            link.weight = oldWeight;
+            link.indices = oldIndices;
+            counterLink.weight = oldCounterWeight;
+            counterLink.indices = oldCounterIndices;
+        }
+    }
+
+    /**
+        Redo
+    */
+    void redo() {
+        if (link) {
+            link.weight = newWeight;
+            link.indices = newIndices;
+            counterLink.weight = newCounterWeight;
+            counterLink.indices = newCounterIndices;
+            import std.stdio;
+        }
+    }
+
+    /**
+        Describe the action
+    */
+    string describe() {
+        return _("links of %s and %s are changed.").format(drawable.name, link.target.name);
+    }
+
+    /**
+        Describe the action
+    */
+    string describeUndo() {
+        return _("links of %s and %s are restored.").format(drawable.name, link.target.name);
+    }
+
+    /**
+        Gets name of this action
+    */
+    string getName() {
+        return this.stringof;
+    }
+    
+    bool merge(Action other) { return false; }
+    bool canMerge(Action other) { return false; }
+}
 
 /**
     Action for whether a node was activated or deactivated
@@ -259,14 +596,14 @@ public:
         Rollback
     */
     void rollback() {
-        self.enabled = !newState;
+        self.setEnabled(!newState);
     }
 
     /**
         Redo
     */
     void redo() {
-        self.enabled = newState;
+        self.setEnabled(newState);
     }
 
     /**
@@ -348,11 +685,26 @@ GroupAction incDeleteMaskOfNode(Node n, GroupAction group = null) {
     return group;
 }
 
+GroupAction incDeleteWeldedLinksOfNode(Node n, GroupAction group = null) {
+    auto removedDrawables = incActivePuppet().findNodesType!Drawable(n);
+    auto parts = incActivePuppet().findNodesType!Part(incActivePuppet().root);
+    foreach (drawable; removedDrawables) {
+        foreach (target; parts) {
+            if (target.isWeldedBy(drawable)) {
+                if (group is null)
+                    group = new GroupAction();
+                group.addAction(new DrawableRemoveWeldingAction(drawable, target));
+            }
+        }
+    }
+    return group;
+}
 /**
     Deletes child with history
 */
 void incDeleteChildWithHistory(Node n) {
     auto group = incDeleteMaskOfNode(n);
+    group = incDeleteWeldedLinksOfNode(n, group);
     if (group !is null) {
         group.addAction(new NodeMoveAction(
             [n],

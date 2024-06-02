@@ -228,13 +228,13 @@ void incOpenProject(bool handleError=true)(string mainPath, string backupPath) {
     Puppet puppet;
 
     // Load the puppet from file
-    try {
+//    try {
         if (backupPath.length > 0) {
             puppet = inLoadPuppet!ExPuppet(backupPath);
         } else {
             puppet = inLoadPuppet!ExPuppet(mainPath);
         }
-    } catch (Exception ex) {
+/*    } catch (Exception ex) {
         static if (handleError) {
             incDialog(__("Error"), ex.msg);
             return;
@@ -242,7 +242,7 @@ void incOpenProject(bool handleError=true)(string mainPath, string backupPath) {
             throw ex;
         }
     }
-
+*/
     // Clear out stuff by creating a new project
     incNewProject();
 
@@ -418,14 +418,14 @@ void incFreeMemory() {
 /**
     Gets puppet in active project
 */
-ref Puppet incActivePuppet() {
-    return activeProject.puppet;
+Puppet incActivePuppet() {
+    return activeProject? activeProject.puppet: null;
 }
 
 /**
     Gets active project
 */
-ref Project incActiveProject() {
+Project incActiveProject() {
     return activeProject;
 }
 

@@ -25,6 +25,7 @@ import std.stdio;
 class IncMeshEditorOneImpl(T) : IncMeshEditorOne {
 protected:
     T target;
+    uint groupId;
 
     Tool[VertexToolMode] tools;
 
@@ -83,7 +84,7 @@ public:
         }
 
         if (isSelecting) {
-            newSelected = getInRect(selectOrigin, mousePos);
+            newSelected = getInRect(selectOrigin, mousePos, groupId);
             mutateSelection = io.KeyShift;
             invertSelection = io.KeyCtrl;
         }
@@ -100,6 +101,22 @@ public:
     }
 
     override
+    ulong selectOne(ulong vertIndex) {
+        auto vertex = getVerticesByIndex([vertIndex]);
+        if (groupId > 0 && vertex[0] !is null && vertex[0].groupId != groupId) {
+            selected = [];
+            return cast(ulong)-1;
+        } else {
+            return super.selectOne(vertIndex);
+        }
+    }
+
+    override
     Tool getTool() { return tools[toolMode]; }
+
+    override
+    uint getGroupId() { return groupId; }
+    override
+    void setGroupId(uint groupId) { this.groupId = groupId; }
 
 }

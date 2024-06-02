@@ -126,7 +126,8 @@ void incViewportModelConfirmBar() {
 
     igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(16, 4));
         if (Drawable node = cast(Drawable)incSelectedNode()) {
-            const(char)* text = incHasDragDrop("_PUPPETNTREE") ? __(" Copy Mesh") : __(" Edit Mesh");
+            auto io = igGetIO();
+            const(char)* text = incHasDragDrop("_PUPPETNTREE") ? (io.KeyCtrl ? __(" Merge Mesh"): __(" Copy Mesh")) : __(" Edit Mesh");
             
             if (igButton(text, ImVec2(0, 26))) {
                 incVertexEditStartEditing(node);
@@ -134,7 +135,10 @@ void incViewportModelConfirmBar() {
 
             // Allow copying mesh data via drag n drop for now
             if(igBeginDragDropTarget()) {
-                incTooltip(_("Copy Mesh Data"));
+                if (io.KeyCtrl)
+                    incTooltip(_("Merge Mesh Data"));
+                else
+                    incTooltip(_("Copy Mesh Data"));
                 
                 const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
                 if (payload !is null) {
@@ -143,7 +147,12 @@ void incViewportModelConfirmBar() {
                         incSelectNode(node);
                         incVertexEditSetTarget(node);
                         incFocusCamera(node, vec2(0, 0));
-                        incVertexEditCopyMeshDataToTarget(node, payloadDrawable, payloadDrawable.getMesh());
+                        if (io.KeyCtrl) {
+                            incVertexEditMergeMeshDataToTarget(node, payloadDrawable, payloadDrawable.getMesh());
+
+                        } else {
+                            incVertexEditCopyMeshDataToTarget(node, payloadDrawable, payloadDrawable.getMesh());
+                        }
                     }
                 }
                 igEndDragDropTarget();

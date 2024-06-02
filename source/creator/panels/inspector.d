@@ -20,9 +20,11 @@ import inochi2d.core.nodes.common;
 import std.string;
 import std.algorithm.searching;
 import std.algorithm.mutation;
+import std.typecons: tuple;
 import std.conv;
 import std.utf;
 import i18n;
+import std.range: enumerate;
 
 // Drag drop data
 import creator.panels.parameters;
@@ -133,8 +135,6 @@ public:
 mixin incPanel!InspectorPanel;
 
 
-
-private:
 
 //
 // COMMON
@@ -758,10 +758,10 @@ void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 el
 
 void incInspectorModelPart(Part node) {
     if (incBeginCategory(__("Part"))) {
-        
         if (!node.getMesh().isReady()) { 
             igSpacing();
             igTextColored(ImVec4(0.7, 0.5, 0.5, 1), __("Cannot inspect an unmeshed part"));
+            incEndCategory();
             return;
         }
         igSpacing();
@@ -803,7 +803,7 @@ void incInspectorModelPart(Part node) {
         // Header for the Blending options for Parts
         incText(_("Blending"));
         if (igBeginCombo("###Blending", __(node.blendingMode.text), ImGuiComboFlags.HeightLarge)) {
-
+            auto prevBlendingMode = node.blendingMode;
             // Normal blending mode as used in Photoshop, generally
             // the default blending mode photoshop starts a layer out as.
             if (igSelectable(__("Normal"), node.blendingMode == BlendMode.Normal)) node.blendingMode = BlendMode.Normal;
@@ -872,7 +872,8 @@ void incInspectorModelPart(Part node) {
         igSpacing();
 
         incText(_("Opacity"));
-        igSliderFloat("###Opacity", &node.opacity, 0, 1f, "%0.2f");
+        if (igSliderFloat("###Opacity", &node.opacity, 0, 1f, "%0.2f")) {
+        }
         igSpacing();
         igSpacing();
 
@@ -883,7 +884,7 @@ void incInspectorModelPart(Part node) {
         // before it gets discarded.
         incText(_("Threshold"));
         igSliderFloat("###Threshold", &node.maskAlphaThreshold, 0.0, 1.0, "%.2f");
-        
+
         igSpacing();
 
         // The sources that the part gets masked by. Depending on the masking mode
@@ -900,9 +901,12 @@ void incInspectorModelPart(Part node) {
                 igPushID(cast(int)i);
                     if (igBeginPopup("###MaskSettings")) {
                         if (igBeginMenu(__("Mode"))) {
-                            if (igMenuItem(__("Mask"), null, masker.mode == MaskingMode.Mask)) masker.mode = MaskingMode.Mask;
-                            if (igMenuItem(__("Dodge"), null, masker.mode == MaskingMode.DodgeMask)) masker.mode = MaskingMode.DodgeMask;
-                            
+                            if (igMenuItem(__("Mask"), null, masker.mode == MaskingMode.Mask)) {
+                                masker.mode = MaskingMode.Mask;
+                            }
+                            if (igMenuItem(__("Dodge"), null, masker.mode == MaskingMode.DodgeMask)) {
+                                masker.mode = MaskingMode.DodgeMask;
+                            }
                             igEndMenu();
                         }
 
@@ -971,6 +975,90 @@ void incInspectorModelPart(Part node) {
             igEndDragDropTarget();
         }
 
+        igSpacing();
+
+        // The sources that the part gets masked by. Depending on the masking mode
+        // either the sources will cut out things that don't overlap, or cut out
+        // things that do.
+        incText(_("Welding"));
+        if (igBeginListBox("###Welding", ImVec2(0, 128))) {
+            if (node.masks.length == 0) {
+                incText(_("(Drag a Part Here)"));
+            }
+
+            foreach(i; 0..node.welded.length) {
+                Drawable.WeldingLink* welded = &node.welded[i];
+                igPushID(cast(int)i);
+                    if (igBeginPopup("###WeldedLink")) {
+
+                        if (igMenuItem(__("Delete"))) {
+                            incActionPush(new DrawableRemoveWeldingAction(node, node.welded[i].target, node.welded[i].indices, node.welded[i].weight));
+                            igEndPopup();
+                            igPopID();
+                            igEndListBox();
+                            incEndCategory();
+                            return;
+                        }
+
+                        igEndPopup();
+                    }
+
+                    igSelectable("##%s".format(welded.target.name).toStringz);
+                    if (igIsItemClicked(ImGuiMouseButton.Right)) {
+                        igOpenPopup("###WeldedLink");
+                    }
+                    igSetItemAllowOverlap();
+                    igSameLine(0, 0);
+                    igText(welded.target.name.toStringz);
+                    igSameLine(0, 0);
+                    incDummy(ImVec2(-64, 0));
+                    igSameLine(0, 0);
+                    auto weight = welded.weight;
+                    igSetNextItemWidth(64);
+                    if (igSliderFloat("###weight", &weight, 0, 1f, "%0.2f")) {
+                        welded.weight = weight;
+                        auto index = welded.target.welded.countUntil!"a.target == b"(node);
+                        if (index != -1) {
+                            welded.target.welded[index].weight = 1 - weight;
+                        }
+                    }
+                    /*
+                    if(igBeginDragDropTarget()) {
+                        const(ImGuiPayload)* payload = igAcceptDragDropPayload("_WELDINGITEM");
+                        if (payload !is null) {
+                        }
+                        
+                        igEndDragDropTarget();
+                    }
+                    */
+                    // TODO: We really should account for left vs. right handedness
+                    /*
+                    if(igBeginDragDropSource(ImGuiDragDropFlags.SourceAllowNullID)) {
+                        igSetDragDropPayload("_WELDINGITEM", cast(void*)welded, Drawable.WeldingLink.sizeof, ImGuiCond.Always);
+                        incText(welded.target.name);
+                        igEndDragDropSource();
+                    }
+                    */
+                igPopID();
+            }
+            igEndListBox();
+        }
+
+        if(igBeginDragDropTarget()) {
+            const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
+            if (payload !is null) {
+                if (Drawable payloadDrawable = cast(Drawable)*cast(Node*)payload.Data) {
+
+                    // Make sure we don't mask against ourselves as well as don't double mask
+                    if (payloadDrawable != node && !node.isWeldedBy(payloadDrawable) && payloadDrawable.vertices.length != 0) {
+                        incRegisterWeldedPoints(node, payloadDrawable);
+                    }
+                }
+            }
+            
+            igEndDragDropTarget();
+        }
+        
         // Padding
         igSpacing();
         igSpacing();
@@ -1075,7 +1163,8 @@ void incInspectorModelComposite(Composite node) {
         igSpacing();
 
         incText(_("Opacity"));
-        igSliderFloat("###Opacity", &node.opacity, 0, 1f, "%0.2f");
+        if (igSliderFloat("###Opacity", &node.opacity, 0, 1f, "%0.2f")) {
+        }
         igSpacing();
         igSpacing();
 
@@ -1789,4 +1878,18 @@ void incInspectorDeformSimplePhysics(SimplePhysics node, Parameter param, vec2u 
         igPopID();
     }
     incEndCategory();
+}
+
+ptrdiff_t[] incRegisterWeldedPoints(Drawable node, Drawable counterDrawable, float weight = 0.5) {
+    ptrdiff_t[] indices;
+    foreach (i, v; node.vertices) {
+        auto vv = node.transform.matrix * vec4(v, 0, 1);
+        auto minDistance = counterDrawable.vertices.enumerate.minElement!((a)=>(counterDrawable.transform.matrix * vec4(a.value, 0, 1)).distance(vv))();
+        if ((counterDrawable.transform.matrix * vec4(minDistance[1], 0, 1)).distance(vv) < 4)
+            indices ~= minDistance[0];
+        else
+            indices ~= -1;
+    }
+    incActionPush(new DrawableAddWeldingAction(node, counterDrawable, indices, weight));
+    return indices;
 }

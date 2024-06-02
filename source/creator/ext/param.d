@@ -95,7 +95,13 @@ public:
     FghjException deserializeFromFghj(Fghj data) {
         if (!data["parentUUID"].isEmpty)
             data["parentUUID"].deserializeValue(this.parentUUID);
+        try{
         return super.deserializeFromFghj(data);
+        }catch(Exception ex) {
+            import std.stdio;
+            writefln("%s", name);
+            throw ex;
+        }
     }
 
     override
