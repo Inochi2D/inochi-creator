@@ -1,4 +1,5 @@
 .dub
+.vs
 docs.json
 __dummy.html
 docs/
