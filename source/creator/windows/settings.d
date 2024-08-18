@@ -190,13 +190,11 @@ protected:
                         break;
                     case SettingsPane.Viewport:
                         beginSection(__("Viewport"));
-                            string selected = incGetCurrentViewportZoomMode();
+                            string selected = incGetViewportZoomMode();
                             if(igBeginCombo(__("Zoom Mode"), selected.toStringz)) {
-                                foreach (options; incGetViewportZoomModes()) {
-                                    if (igSelectable(options.toStringz)) {
-                                        incSetCurrentViewportZoomMode(options);
-                                    }
-                                }
+                                if (igSelectable(__("To Screen Center"), incSettingsGet!string("ViewportZoomMode") == "ScreenCenter")) incSetViewportZoomMode("ScreenCenter");
+                                if (igSelectable(__("To Mouse Position"), incSettingsGet!string("ViewportZoomMode") == "MousePosition")) incSetViewportZoomMode("MousePosition");
+
                                 igEndCombo();
                             }
 
