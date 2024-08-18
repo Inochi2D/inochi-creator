@@ -849,13 +849,16 @@ private {
         }
 
         // HANDLE ZOOM
-        // incViewportZoomLegacy(io, camera, uiScale);
-        incViewportZoomNew(io, camera, uiScale);
+        string zoomMode = incGetCurrentViewportZoomMode();
+        if (zoomMode == "legacy-zooming")
+            incViewportZoomLegacy(io, camera, uiScale);
+        else if (zoomMode == "normal")
+            incViewportZoomNew(io, camera, uiScale);
     }
 
     void incViewportZoomNew(ImGuiIO* io, Camera camera, float uiScale) {
         // This value changes the zoom speed
-        float speed = 5.0;
+        float speed = incGetViewportZoomSpeed();
         if (io.MouseWheel != 0) {
             float prevZoom = incViewportZoom;
             incViewportZoom += (io.MouseWheel*speed/50)*incViewportZoom*uiScale;
@@ -891,4 +894,38 @@ private {
             incViewportTargetZoom = incViewportZoom;
         }
     }
+}
+
+string[] incGetViewportZoomModes() {
+    return ["normal", "legacy-zooming"];
+}
+
+string incGetCurrentViewportZoomMode() {
+    if (incSettingsCanGet("ViewportZoomMode"))
+      return incSettingsGet!string("ViewportZoomMode");
+    else
+      return "normal";
+}
+
+bool incSetCurrentViewportZoomMode(string select) {
+    string[] viewportZoomModes = incGetViewportZoomModes();
+
+    // Verify zoom mode conifg
+    if (viewportZoomModes.canFind(select) == -1)
+      return false;
+
+    incSettingsSet("ViewportZoomMode", select);
+    return true;
+}
+
+float incGetViewportZoomSpeed() {
+    if (incSettingsCanGet("ViewportZoomSpeed"))
+      return incSettingsGet!float("ViewportZoomSpeed");
+    else
+      return 5.0;
+}
+
+bool incSetViewportZoomSpeed(float speed) {
+    incSettingsSet("ViewportZoomSpeed", speed);
+    return true;
 }

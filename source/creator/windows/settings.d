@@ -6,6 +6,7 @@
 */
 module creator.windows.settings;
 import creator.windows;
+import creator.viewport;
 import creator.widgets;
 import creator.core;
 import creator.core.i18n;
@@ -184,6 +185,24 @@ protected:
                             int saveFileLimit = incGetAutosaveFileLimit();
                             if (igInputInt(__("Maximum Autosaves"), &saveFileLimit, 1, 5, ImGuiInputTextFlags.EnterReturnsTrue)) {
                                 incSetAutosaveFileLimit(saveFileLimit);
+                            }
+                        endSection();
+                        break;
+                    case SettingsPane.Viewport:
+                        beginSection(__("Viewport"));
+                            string selected = incGetCurrentViewportZoomMode();
+                            if(igBeginCombo(__("Zoom Mode"), selected.toStringz)) {
+                                foreach (options; incGetViewportZoomModes()) {
+                                    if (igSelectable(options.toStringz)) {
+                                        incSetCurrentViewportZoomMode(options);
+                                    }
+                                }
+                                igEndCombo();
+                            }
+
+                            float zoomSpeed = cast(float)incGetViewportZoomSpeed();
+                            if (igDragFloat(__("Zoom Speed"), &zoomSpeed, 0.1, 1, 50, "%f")) {
+                                incSetViewportZoomSpeed(zoomSpeed);
                             }
                         endSection();
                         break;
