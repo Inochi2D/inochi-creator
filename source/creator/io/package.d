@@ -10,6 +10,7 @@ public import creator.io.kra;
 public import creator.io.inpexport;
 public import creator.io.videoexport;
 public import creator.io.imageexport;
+import creator.widgets: DialogButtons;
 
 import tinyfiledialogs;
 public import tinyfiledialogs : TFD_Filter;
@@ -161,10 +162,6 @@ string incShowSaveDialog(const(TFD_Filter)[] filters, string fname, string title
     }
 }
 
-enum DialogButton {
-    Cancel, Yes, No
-}
-
 enum DialogType : c_str {
     Ok = "ok",
     OkCancel = "okcancel",
@@ -182,12 +179,12 @@ enum IconType : c_str {
 // tinyfd api may make confusion with the button id
 // 0 cancel/no, 1 ok/yes , 2 no in yesnocancel
 // so we need to impelement incDialogButtonToTinyfd() and incTinyfdToDialogButton()
-int incDialogButtonToTinyfd(DialogButton button, DialogType dialogType) {
+int incDialogButtonToTinyfd(DialogButtons button, DialogType dialogType) {
     if (dialogType == DialogType.YesNoCancel) {
         switch (button) {
-            case DialogButton.Cancel: return 0;
-            case DialogButton.Yes: return 1;
-            case DialogButton.No: return 2;
+            case DialogButtons.Cancel: return 0;
+            case DialogButtons.Yes: return 1;
+            case DialogButtons.No: return 2;
             default: assert(0);
         }
     } else {
@@ -195,12 +192,12 @@ int incDialogButtonToTinyfd(DialogButton button, DialogType dialogType) {
     }
 }
 
-DialogButton incTinyfdToDialogButton(int button, DialogType dialogType) {
+DialogButtons incTinyfdToDialogButton(int button, DialogType dialogType) {
     if (dialogType == DialogType.YesNoCancel) {
         switch (button) {
-            case 0: return DialogButton.Cancel;
-            case 1: return DialogButton.Yes;
-            case 2: return DialogButton.No;
+            case 0: return DialogButtons.Cancel;
+            case 1: return DialogButtons.Yes;
+            case 2: return DialogButtons.No;
             default: assert(0);
         }
     } else {
@@ -209,12 +206,15 @@ DialogButton incTinyfdToDialogButton(int button, DialogType dialogType) {
 }
 
 // TODO: incDialogButtonToTinyfd() / incTinyfdToDialogButton() unit test?
-
-DialogButton incMessageBox(
+/*
+* incMessageBox provides a simple message box dialog
+* also see `incDialog` and `incDialogButtonSelected` in `source/nijigenerate/widgets/dialog.d` We might be able to unify the function.
+*/
+DialogButtons incMessageBox(
         string title, string message,
         DialogType dialogType = DialogType.Ok,
         IconType iconType = IconType.Info,
-        DialogButton defaultButton = DialogButton.Cancel
+        DialogButtons defaultButton = DialogButtons.Cancel
     ) {
     // is necessary check on linux? or just using tinyfd_messageBox?
     int result = tinyfd_messageBox(
@@ -296,7 +296,7 @@ AskKeepLayerFolder incImportKeepFolderStructPop() {
     if (incGetKeepLayerFolder() == "NotPreserve")
         return AskKeepLayerFolder.NotPreserve;
  
-    DialogButton result = incMessageBox(
+    DialogButtons result = incMessageBox(
         "Import File",
         "Do you want to preserve the folder structure of the imported file? You can change this in the settings.",
         DialogType.YesNoCancel,
@@ -304,11 +304,11 @@ AskKeepLayerFolder incImportKeepFolderStructPop() {
     );
 
     switch (result) {
-        case DialogButton.Cancel:
+        case DialogButtons.Cancel:
             return AskKeepLayerFolder.Cancel;
-        case DialogButton.Yes:
+        case DialogButtons.Yes:
             return AskKeepLayerFolder.Preserve;
-        case DialogButton.No:
+        case DialogButtons.No:
             return AskKeepLayerFolder.NotPreserve;
         default: assert(0);
     }
