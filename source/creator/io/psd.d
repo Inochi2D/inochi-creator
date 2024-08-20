@@ -168,13 +168,13 @@ bool incAskImportPSD(string file) {
         return false;
 
     switch (incImportKeepFolderStructPop()) {
-        case "NotPreserve":
+        case AskKeepLayerFolder.NotPreserve:
             incImportPSD(file, IncPSDImportSettings(false));
             return true;
-        case "Preserve":
+        case AskKeepLayerFolder.Preserve:
             incImportPSD(file, IncPSDImportSettings(true));
             return true;
-        case "Cancel":
+        case AskKeepLayerFolder.Cancel:
             return false;
         default:
             throw new Exception("Invalid selection");

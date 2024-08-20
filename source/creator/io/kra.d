@@ -148,14 +148,14 @@ bool incAskImportKRA(string file) {
     // Note: currently KRA not supported Preserve layer structure, so we just skip the dialog
     // until we have a proper implementation.
     // switch (incImportKeepFolderStructPop()) {
-    switch ("NotPreserve") {
-        case "NotPreserve":
+    switch (AskKeepLayerFolder.NotPreserve) {
+        case AskKeepLayerFolder.NotPreserve:
             incImportKRA(file, IncKRAImportSettings(false));
             return true;
-        case "Preserve":
+        case AskKeepLayerFolder.Preserve:
             incImportKRA(file, IncKRAImportSettings(true));
             return true;
-        case "Cancel":
+        case AskKeepLayerFolder.Cancel:
             return false;
         default:
             throw new Exception("Invalid selection");

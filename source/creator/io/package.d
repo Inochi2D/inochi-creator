@@ -282,15 +282,19 @@ bool incSetKeepLayerFolder(string select) {
     return true;
 }
 
+enum AskKeepLayerFolder {
+    Preserve, NotPreserve, Cancel
+}
+
 /**
     Function for importing pop-up dialog
     returns "Preserve" or "NotPreserve" or "Cancel"
 */
-string incImportKeepFolderStructPop() {
+AskKeepLayerFolder incImportKeepFolderStructPop() {
     if (incGetKeepLayerFolder() == "Preserve")
-        return "Preserve";
+        return AskKeepLayerFolder.Preserve;
     if (incGetKeepLayerFolder() == "NotPreserve")
-        return "NotPreserve";
+        return AskKeepLayerFolder.NotPreserve;
  
     DialogButton result = incMessageBox(
         "Import File",
@@ -300,9 +304,12 @@ string incImportKeepFolderStructPop() {
     );
 
     switch (result) {
-        case DialogButton.Cancel: return "Cancel";
-        case DialogButton.Yes: return "Preserve";
-        case DialogButton.No: return "NotPreserve";
+        case DialogButton.Cancel:
+            return AskKeepLayerFolder.Cancel;
+        case DialogButton.Yes:
+            return AskKeepLayerFolder.Preserve;
+        case DialogButton.No:
+            return AskKeepLayerFolder.NotPreserve;
         default: assert(0);
     }
 }
