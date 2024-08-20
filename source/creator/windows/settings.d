@@ -22,7 +22,7 @@ enum SettingsPane : string {
     LookAndFeel = "Look and Feel",
     Viewport = "Viewport",
     Accessibility = "Accessbility",
-    Autosaves = "Autosaves"
+    FileHandling = "FileHandling"
 }
 
 /**
@@ -89,8 +89,8 @@ protected:
                     settingsPane = SettingsPane.Accessibility;
                 }
 
-                if (igSelectable(__("Autosaves"), settingsPane == SettingsPane.Autosaves)) {
-                    settingsPane = SettingsPane.Autosaves;
+                if (igSelectable(__("File Handling"), settingsPane == SettingsPane.FileHandling)) {
+                    settingsPane = SettingsPane.FileHandling;
                 }
             igPopTextWrapPos();
         }
@@ -170,7 +170,7 @@ protected:
                             incTooltip(_("Use the OpenDyslexic font for Latin text characters."));
                         endSection();
                         break;
-                    case SettingsPane.Autosaves:
+                    case SettingsPane.FileHandling:
                         beginSection(__("Autosaves"));
                             bool autosaveEnabled = incGetAutosaveEnabled();
                             if (igCheckbox(__("Enable Autosaves"), &autosaveEnabled)) {
