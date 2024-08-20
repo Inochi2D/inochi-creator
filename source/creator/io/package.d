@@ -161,28 +161,71 @@ string incShowSaveDialog(const(TFD_Filter)[] filters, string fname, string title
     }
 }
 
-string incMessageBox(string title, string message, string dialogType = "ok", string iconType = "info", int defaultButton = 0) {
-    // is necessary check on linux?
-    int result = tinyfd_messageBox(
-        title.toStringz,
-        message.toStringz,
-        dialogType.toStringz,
-        iconType.toStringz,
-        defaultButton
-    );
-    
-    // tinyfd api may make confusion with the return value
-    // so we need to convert it to a more readable string
-    if (dialogType == "yesnocancel") {
-        switch (result) {
-            case 0: return "cancel";
-            case 1: return "yes";
-            case 2: return "no";
+enum DialogButton {
+    Cancel, Yes, No
+}
+
+enum DialogType : c_str {
+    Ok = "ok",
+    OkCancel = "okcancel",
+    YesNo = "yesno",
+    YesNoCancel = "yesnocancel"
+}
+
+enum IconType : c_str {
+    Info = "info", 
+    Warning = "warning",
+    Error = "error",
+    Question = "question"
+}
+
+// tinyfd api may make confusion with the button id
+// 0 cancel/no, 1 ok/yes , 2 no in yesnocancel
+// so we need to impelement incConvertToTinyfdButton() and incTinyfdToDialogButton()
+int incConvertToTinyfdButton(DialogButton button, DialogType dialogType) {
+    if (dialogType == DialogType.YesNoCancel) {
+        switch (button) {
+            case DialogButton.Cancel: return 0;
+            case DialogButton.Yes: return 1;
+            case DialogButton.No: return 2;
             default: assert(0);
         }
     } else {
         throw new Exception("Not implemented");
     }
+}
+
+DialogButton incTinyfdToDialogButton(int button, DialogType dialogType) {
+    if (dialogType == DialogType.YesNoCancel) {
+        switch (button) {
+            case 0: return DialogButton.Cancel;
+            case 1: return DialogButton.Yes;
+            case 2: return DialogButton.No;
+            default: assert(0);
+        }
+    } else {
+        throw new Exception("Not implemented");
+    }
+}
+
+// TODO: incConvertToTinyfdButton() / incTinyfdToDialogButton() unit test?
+
+DialogButton incMessageBox(
+        string title, string message,
+        DialogType dialogType = DialogType.Ok,
+        IconType iconType = IconType.Info,
+        DialogButton defaultButton = DialogButton.Cancel
+    ) {
+    // is necessary check on linux? or just using tinyfd_messageBox?
+    int result = tinyfd_messageBox(
+        title.toStringz,
+        message.toStringz,
+        dialogType,
+        iconType,
+        incConvertToTinyfdButton(defaultButton, dialogType),
+    );
+    
+    return incTinyfdToDialogButton(result, dialogType);
 }
 
 //
@@ -249,18 +292,17 @@ string incImportKeepFolderStructPop() {
     if (incGetKeepLayerFolder() == "NotPreserve")
         return "NotPreserve";
  
-    string result = incMessageBox(
+    DialogButton result = incMessageBox(
         "Import File",
         "Do you want to preserve the folder structure of the imported file? You can change this in the settings.",
-        "yesnocancel",
-        "info"
+        DialogType.YesNoCancel,
+        IconType.Question,
     );
 
-    if (result == "yes")
-        return "Preserve";
-    
-    if (result == "no")
-        return "NotPreserve";
-    
-    return "Cancel";
+    switch (result) {
+        case DialogButton.Cancel: return "Cancel";
+        case DialogButton.Yes: return "Preserve";
+        case DialogButton.No: return "NotPreserve";
+        default: assert(0);
+    }
 }
