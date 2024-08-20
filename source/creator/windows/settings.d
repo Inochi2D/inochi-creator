@@ -23,7 +23,7 @@ enum SettingsPane : string {
     LookAndFeel = "Look and Feel",
     Viewport = "Viewport",
     Accessibility = "Accessbility",
-    FileHandling = "FileHandling"
+    FileHandling = "File Handling"
 }
 
 /**
