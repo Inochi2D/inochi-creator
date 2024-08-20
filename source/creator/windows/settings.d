@@ -190,7 +190,12 @@ protected:
                         break;
                     case SettingsPane.Viewport:
                         beginSection(__("Viewport"));
-                            string selected = incGetViewportZoomMode();
+                            string[string] configShowing = [
+                                "ScreenCenter": "To Screen Center",
+                                "MousePosition": "To Mouse Position"
+                            ];
+
+                            string selected = configShowing[incGetViewportZoomMode()];
                             if(igBeginCombo(__("Zoom Mode"), selected.toStringz)) {
                                 if (igSelectable(__("To Screen Center"), incSettingsGet!string("ViewportZoomMode") == "ScreenCenter")) incSetViewportZoomMode("ScreenCenter");
                                 if (igSelectable(__("To Mouse Position"), incSettingsGet!string("ViewportZoomMode") == "MousePosition")) incSetViewportZoomMode("MousePosition");
