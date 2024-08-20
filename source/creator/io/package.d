@@ -181,8 +181,8 @@ enum IconType : c_str {
 
 // tinyfd api may make confusion with the button id
 // 0 cancel/no, 1 ok/yes , 2 no in yesnocancel
-// so we need to impelement incConvertToTinyfdButton() and incTinyfdToDialogButton()
-int incConvertToTinyfdButton(DialogButton button, DialogType dialogType) {
+// so we need to impelement incDialogButtonToTinyfd() and incTinyfdToDialogButton()
+int incDialogButtonToTinyfd(DialogButton button, DialogType dialogType) {
     if (dialogType == DialogType.YesNoCancel) {
         switch (button) {
             case DialogButton.Cancel: return 0;
@@ -208,7 +208,7 @@ DialogButton incTinyfdToDialogButton(int button, DialogType dialogType) {
     }
 }
 
-// TODO: incConvertToTinyfdButton() / incTinyfdToDialogButton() unit test?
+// TODO: incDialogButtonToTinyfd() / incTinyfdToDialogButton() unit test?
 
 DialogButton incMessageBox(
         string title, string message,
@@ -222,7 +222,7 @@ DialogButton incMessageBox(
         message.toStringz,
         dialogType,
         iconType,
-        incConvertToTinyfdButton(defaultButton, dialogType),
+        incDialogButtonToTinyfd(defaultButton, dialogType),
     );
     
     return incTinyfdToDialogButton(result, dialogType);
