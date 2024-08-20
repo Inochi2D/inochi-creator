@@ -161,6 +161,30 @@ string incShowSaveDialog(const(TFD_Filter)[] filters, string fname, string title
     }
 }
 
+string incMessageBox(string title, string message, string dialogType = "ok", string iconType = "info", int defaultButton = 0) {
+    // is necessary check on linux?
+    int result = tinyfd_messageBox(
+        title.toStringz,
+        message.toStringz,
+        dialogType.toStringz,
+        iconType.toStringz,
+        defaultButton
+    );
+    
+    // tinyfd api may make confusion with the return value
+    // so we need to convert it to a more readable string
+    if (dialogType == "yesnocancel") {
+        switch (result) {
+            case 0: return "cancel";
+            case 1: return "yes";
+            case 2: return "no";
+            default: assert(0);
+        }
+    } else {
+        throw new Exception("Not implemented");
+    }
+}
+
 //
 // Reusable basic loaders
 //
@@ -199,4 +223,44 @@ void incCreatePartsFromFiles(string[] files) {
             default: throw new Exception("Invalid file type "~fname.extension.toLower);
         }
     }
+}
+
+string incGetKeepLayerFolder() {
+    if (incSettingsCanGet("KeepLayerFolder"))
+      return incSettingsGet!string("KeepLayerFolder");
+    else
+      // also see incSettingsLoad()
+      // Preserve the original behavior for existing users
+      return "NotPreserve";
+}
+
+bool incSetKeepLayerFolder(string select) {
+    incSettingsSet("KeepLayerFolder", select);
+    return true;
+}
+
+/**
+    Function for importing pop-up dialog
+    returns "Preserve" or "NotPreserve" or "Cancel"
+*/
+string incImportKeepFolderStructPop() {
+    if (incGetKeepLayerFolder() == "Preserve")
+        return "Preserve";
+    if (incGetKeepLayerFolder() == "NotPreserve")
+        return "NotPreserve";
+ 
+    string result = incMessageBox(
+        "Import File",
+        "Do you want to preserve the folder structure of the imported file? You can change this in the settings.",
+        "yesnocancel",
+        "info"
+    );
+
+    if (result == "yes")
+        return "Preserve";
+    
+    if (result == "no")
+        return "NotPreserve";
+    
+    return "Cancel";
 }

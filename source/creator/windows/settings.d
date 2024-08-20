@@ -10,6 +10,7 @@ import creator.viewport;
 import creator.widgets;
 import creator.core;
 import creator.core.i18n;
+import creator.io;
 import creator.io.autosave;
 import std.string;
 import creator.utils.link;
@@ -186,6 +187,25 @@ protected:
                             if (igInputInt(__("Maximum Autosaves"), &saveFileLimit, 1, 5, ImGuiInputTextFlags.EnterReturnsTrue)) {
                                 incSetAutosaveFileLimit(saveFileLimit);
                             }
+                        endSection();
+
+                        // we mark PSD only until we have a proper implementation for kra
+                        beginSection(__("Preserve Imported File Folder Structure (Currently PSD only)"));
+                            string[string] configShowing = [
+                                "Ask": "Always Ask",
+                                "Preserve": "Preserve",
+                                "NotPreserve": "Not Preserve"
+                            ];
+
+                            string selected = configShowing[incGetKeepLayerFolder()];
+                            if(igBeginCombo(__("Preserve Folder Structure"), selected.toStringz)) {
+                                if (igSelectable(__("Always Ask"), incSettingsGet!string("KeepLayerFolder") == "Ask")) incSetKeepLayerFolder("Ask");
+                                if (igSelectable(__("Preserve"), incSettingsGet!string("KeepLayerFolder") == "Preserve")) incSetKeepLayerFolder("Preserve");
+                                if (igSelectable(__("Not Preserve"), incSettingsGet!string("KeepLayerFolder") == "NotPreserve")) incSetKeepLayerFolder("NotPreserve");
+
+                                igEndCombo();
+                            }
+
                         endSection();
                         break;
                     case SettingsPane.Viewport:

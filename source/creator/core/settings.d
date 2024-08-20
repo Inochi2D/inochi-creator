@@ -30,6 +30,11 @@ void incSettingsLoad() {
         // also see incGetViewportZoomMode()
         settings["ViewportZoomMode"] = "MousePosition";
         settings["ViewportZoomSpeed"] = 5.0;
+
+        // File Handling
+        // Always ask the user whether to preserve the folder structure during import
+        // also see incGetKeepLayerFolder()
+        settings["KeepLayerFolder"] = "Ask";
     }
 }
 

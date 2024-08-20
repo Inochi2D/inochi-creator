@@ -24,12 +24,7 @@ private {
 bool incImportShowKRADialog() {
     TFD_Filter[] filters = [{ ["*.kra"], "Krita Document (*.kra)" }];
     string file = incShowImportDialog(filters, _("Import..."));
-
-    if (file) {
-        incImportKRA(file, IncKRAImportSettings(false));
-        return true;
-    }
-    return false;
+    return incAskImportKRA(file);
 }
 
 class IncKRALayer {
@@ -143,7 +138,33 @@ struct IncKRAImportSettings {
 }
 
 /**
+    Imports a KRA file with user prompt.
+    also see incAskImportPSD()
+*/
+bool incAskImportKRA(string file) {
+    if (!file) 
+        return false;
+
+    // Note: currently KRA not supported Preserve layer structure, so we just skip the dialog
+    // until we have a proper implementation.
+    // switch (incImportKeepFolderStructPop()) {
+    switch ("NotPreserve") {
+        case "NotPreserve":
+            incImportKRA(file, IncKRAImportSettings(false));
+            return true;
+        case "Preserve":
+            incImportKRA(file, IncKRAImportSettings(true));
+            return true;
+        case "Cancel":
+            return false;
+        default:
+            throw new Exception("Invalid selection");
+    }
+}
+
+/**
     Imports a KRA file.
+    Note: You should invoke incAskImportKRA for UI interaction.
 */
 void incImportKRA(string file, IncKRAImportSettings settings = IncKRAImportSettings.init) {
     incNewProject();

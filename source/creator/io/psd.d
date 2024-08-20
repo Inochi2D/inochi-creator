@@ -24,12 +24,7 @@ private {
 bool incImportShowPSDDialog() {
     TFD_Filter[] filters = [{ ["*.psd"], "Photoshop Document (*.psd)" }];
     string file = incShowImportDialog(filters, _("Import..."));
-
-    if (file) {
-        incImportPSD(file, IncPSDImportSettings(false));
-        return true;
-    }
-    return false;
+    return incAskImportPSD(file);
 }
 
 class IncPSDLayer {
@@ -143,7 +138,52 @@ struct IncPSDImportSettings {
 }
 
 /**
+    Imports a PSD file with user prompt.
+    also see incAskImportKRA()
+*/
+bool incAskImportPSD(string file) {
+    if (!file) 
+        return false;
+
+    switch (incImportKeepFolderStructPop()) {
+        case "NotPreserve":
+            incImportPSD(file, IncPSDImportSettings(false));
+            return true;
+        case "Preserve":
+            incImportPSD(file, IncPSDImportSettings(true));
+            return true;
+        case "Cancel":
+            return false;
+        default:
+            throw new Exception("Invalid selection");
+    }
+}
+
+/**
+    Imports a PSD file with user prompt.
+    also see incAskImportKRA()
+*/
+bool incAskImportPSD(string file) {
+    if (!file) 
+        return false;
+
+    switch (incImportKeepFolderStructPop()) {
+        case "NotPreserve":
+            incImportPSD(file, IncPSDImportSettings(false));
+            return true;
+        case "Preserve":
+            incImportPSD(file, IncPSDImportSettings(true));
+            return true;
+        case "Cancel":
+            return false;
+        default:
+            throw new Exception("Invalid selection");
+    }
+}
+
+/**
     Imports a PSD file.
+    Note: You should invoke incAskImportPSD for UI interaction.
 */
 void incImportPSD(string file, IncPSDImportSettings settings = IncPSDImportSettings.init) {
     incNewProject();
