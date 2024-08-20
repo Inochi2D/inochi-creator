@@ -73,6 +73,13 @@ private {
     }
 }
 
+string incToDString(c_str cstr1) {
+    if (cstr1 !is null) {
+        return cast(string) cstr1.fromStringz;
+    }
+    return null;
+}
+
 string incShowImportDialog(const(TFD_Filter)[] filters, string title, bool multiple = false) {
     version (linux) {
         try {
@@ -86,19 +93,11 @@ string incShowImportDialog(const(TFD_Filter)[] filters, string title, bool multi
 
             // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
             c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, multiple);
-            if (filename !is null) {
-                string file = cast(string) filename.fromStringz;
-                return file;
-            }
-            return null;
+            return incToDString(filename);
         }
     } else {
         c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, multiple);
-        if (filename !is null) {
-            string file = cast(string) filename.fromStringz;
-            return file;
-        }
-        return null;
+        return incToDString(filename);
     }
 }
 
@@ -114,15 +113,11 @@ string incShowOpenFolderDialog(string title = "Open...") {
 
             // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
             c_str filename = tinyfd_selectFolderDialog(title.toStringz, null);
-            if (filename !is null)
-                return cast(string) filename.fromStringz;
-            return null;
+            return incToDString(filename);
         }
     } else {
         c_str filename = tinyfd_selectFolderDialog(title.toStringz, null);
-        if (filename !is null)
-            return cast(string) filename.fromStringz;
-        return null;
+        return incToDString(filename);
     }
 }
 
@@ -138,19 +133,11 @@ string incShowOpenDialog(const(TFD_Filter)[] filters, string title = "Open...") 
 
             // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
             c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, false);
-            if (filename !is null) {
-                string file = cast(string) filename.fromStringz;
-                return file;
-            }
-            return null;
+            return incToDString(filename);
         }
     } else {
         c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, false);
-        if (filename !is null) {
-            string file = cast(string) filename.fromStringz;
-            return file;
-        }
-        return null;
+        return incToDString(filename);
     }
 }
 
@@ -166,19 +153,11 @@ string incShowSaveDialog(const(TFD_Filter)[] filters, string fname, string title
 
             // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
             c_str filename = tinyfd_saveFileDialog(title.toStringz, fname.toStringz, filters);
-            if (filename !is null) {
-                string file = cast(string) filename.fromStringz;
-                return file;
-            }
-            return null;
+            return incToDString(filename);
         }
     } else {
         c_str filename = tinyfd_saveFileDialog(title.toStringz, fname.toStringz, filters);
-        if (filename !is null) {
-            string file = cast(string) filename.fromStringz;
-            return file;
-        }
-        return null;
+        return incToDString(filename);
     }
 }
 
