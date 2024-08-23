@@ -114,7 +114,13 @@ protected:
             }
 
             auto style = igGetStyle();
-            incViewportDraw();
+            if (incShouldMirrorViewport) {
+                camera.scale.x *= -1;
+                incViewportDraw();
+                camera.scale.x *= -1;
+            } else {
+                incViewportDraw();
+            }
 
             int width, height;
             inGetViewport(width, height);
