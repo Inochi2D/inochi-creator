@@ -849,11 +849,84 @@ private {
         }
 
         // HANDLE ZOOM
+        string zoomMode = incGetCurrentViewportZoomMode();
+        if (zoomMode == "legacy-zooming")
+            incViewportZoomLegacy(io, camera, uiScale);
+        else if (zoomMode == "normal")
+            incViewportZoomNew(io, camera, uiScale);
+    }
+
+    void incViewportZoomNew(ImGuiIO* io, Camera camera, float uiScale) {
+        // This value changes the zoom speed
+        float speed = incGetViewportZoomSpeed();
         if (io.MouseWheel != 0) {
-            incViewportZoom += (io.MouseWheel/50)*incViewportZoom*uiScale;
+            float prevZoom = incViewportZoom;
+            incViewportZoom += (io.MouseWheel*speed/50)*incViewportZoom*uiScale;
+            incViewportZoom = clamp(incViewportZoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX);
+            camera.scale = vec2(incViewportZoom);
+            incViewportTargetZoom = incViewportZoom;
+
+            // Get canvas size and xy
+            int uiWidth, uiHeight;
+            inGetViewport(uiWidth, uiHeight);
+            ImVec2 panelPos;
+            igGetItemRectMin(&panelPos);
+
+            // Taking the canvas as the center point, calculate the relative position
+            vec2 relatedMousePos = vec2(
+              io.MousePos.x - (panelPos.x + cast(float) uiWidth / 2),
+              io.MousePos.y - (panelPos.y + cast(float) uiHeight / 2)
+            );
+
+            // Calculate the relative value to the center point before and after scaling
+            vec2 afterScaleVec = relatedMousePos / incViewportZoom * uiScale;
+            vec2 beforeScaleVec = relatedMousePos / prevZoom * uiScale;
+            camera.position -= beforeScaleVec - afterScaleVec;
+            incViewportTargetPosition = camera.position;
+        }
+    }
+
+    void incViewportZoomLegacy(ImGuiIO* io, Camera camera, float uiScale) {
+        float speed = incGetViewportZoomSpeed();
+        if (io.MouseWheel != 0) {
+            incViewportZoom += (io.MouseWheel/50*speed)*incViewportZoom*uiScale;
             incViewportZoom = clamp(incViewportZoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX);
             camera.scale = vec2(incViewportZoom);
             incViewportTargetZoom = incViewportZoom;
         }
     }
+}
+
+string[] incGetViewportZoomModes() {
+    return ["normal", "legacy-zooming"];
+}
+
+string incGetCurrentViewportZoomMode() {
+    if (incSettingsCanGet("ViewportZoomMode"))
+      return incSettingsGet!string("ViewportZoomMode");
+    else
+      return "normal";
+}
+
+bool incSetCurrentViewportZoomMode(string select) {
+    string[] viewportZoomModes = incGetViewportZoomModes();
+
+    // Verify zoom mode conifg
+    if (viewportZoomModes.canFind(select) == -1)
+      return false;
+
+    incSettingsSet("ViewportZoomMode", select);
+    return true;
+}
+
+float incGetViewportZoomSpeed() {
+    if (incSettingsCanGet("ViewportZoomSpeed"))
+      return incSettingsGet!float("ViewportZoomSpeed");
+    else
+      return 5.0;
+}
+
+bool incSetViewportZoomSpeed(float speed) {
+    incSettingsSet("ViewportZoomSpeed", speed);
+    return true;
 }
