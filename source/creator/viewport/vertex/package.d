@@ -179,6 +179,7 @@ void incViewportVertexConfirmBar() {
         }
 
         // In case of a warning popup preventing application.
+        // TODO: if incDialogButtonSelected does not work, we may implement a DialogHandler for this.
         if (incDialogButtonSelected("CONFIRM_VERTEX_APPLY") == DialogButtons.Yes) {
             incMeshEditApply();
         }

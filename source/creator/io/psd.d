@@ -164,20 +164,34 @@ bool incAskImportPSD(string file) {
     also see incAskImportKRA()
 */
 bool incAskImportPSD(string file) {
-    if (!file) 
-        return false;
+    if (!file) return false;
 
-    switch (incImportKeepFolderStructPop()) {
-        case AskKeepLayerFolder.NotPreserve:
-            incImportPSD(file, IncPSDImportSettings(false));
-            return true;
-        case AskKeepLayerFolder.Preserve:
-            incImportPSD(file, IncPSDImportSettings(true));
-            return true;
-        case AskKeepLayerFolder.Cancel:
-            return false;
-        default:
-            throw new Exception("Invalid selection");
+    PSDLoadHandler handler = new PSDLoadHandler(file);
+    return incKeepStructDialog(handler);
+}
+
+class PSDLoadHandler : ImportKeepHandler {
+    private string file;
+
+    this(string file) {
+        super();
+        this.file = file;
+    }
+
+    override
+    bool load(AskKeepLayerFolder select) {
+        switch (select) {
+            case AskKeepLayerFolder.NotPreserve:
+                incImportPSD(file, IncPSDImportSettings(false));
+                return true;
+            case AskKeepLayerFolder.Preserve:
+                incImportPSD(file, IncPSDImportSettings(true));
+                return true;
+            case AskKeepLayerFolder.Cancel:
+                return false;
+            default:
+                throw new Exception("Invalid selection");
+        }
     }
 }
 

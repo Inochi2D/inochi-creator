@@ -11,6 +11,7 @@ public import creator.io.inpexport;
 public import creator.io.videoexport;
 public import creator.io.imageexport;
 import creator.widgets: DialogButtons;
+import creator.widgets.dialog;
 
 import tinyfiledialogs;
 public import tinyfiledialogs : TFD_Filter;
@@ -162,72 +163,6 @@ string incShowSaveDialog(const(TFD_Filter)[] filters, string fname, string title
     }
 }
 
-enum DialogType : c_str {
-    Ok = "ok",
-    OkCancel = "okcancel",
-    YesNo = "yesno",
-    YesNoCancel = "yesnocancel"
-}
-
-enum IconType : c_str {
-    Info = "info", 
-    Warning = "warning",
-    Error = "error",
-    Question = "question"
-}
-
-// tinyfd api may make confusion with the button id
-// 0 cancel/no, 1 ok/yes , 2 no in yesnocancel
-// so we need to impelement incDialogButtonToTinyfd() and incTinyfdToDialogButton()
-int incDialogButtonToTinyfd(DialogButtons button, DialogType dialogType) {
-    if (dialogType == DialogType.YesNoCancel) {
-        switch (button) {
-            case DialogButtons.Cancel: return 0;
-            case DialogButtons.Yes: return 1;
-            case DialogButtons.No: return 2;
-            default: assert(0);
-        }
-    } else {
-        throw new Exception("Not implemented");
-    }
-}
-
-DialogButtons incTinyfdToDialogButton(int button, DialogType dialogType) {
-    if (dialogType == DialogType.YesNoCancel) {
-        switch (button) {
-            case 0: return DialogButtons.Cancel;
-            case 1: return DialogButtons.Yes;
-            case 2: return DialogButtons.No;
-            default: assert(0);
-        }
-    } else {
-        throw new Exception("Not implemented");
-    }
-}
-
-// TODO: incDialogButtonToTinyfd() / incTinyfdToDialogButton() unit test?
-/*
-* incMessageBox provides a simple message box dialog
-* also see `incDialog` and `incDialogButtonSelected` in `source/nijigenerate/widgets/dialog.d` We might be able to unify the function.
-*/
-DialogButtons incMessageBox(
-        string title, string message,
-        DialogType dialogType = DialogType.Ok,
-        IconType iconType = IconType.Info,
-        DialogButtons defaultButton = DialogButtons.Cancel
-    ) {
-    // is necessary check on linux? or just using tinyfd_messageBox?
-    int result = tinyfd_messageBox(
-        title.toStringz,
-        message.toStringz,
-        dialogType,
-        iconType,
-        incDialogButtonToTinyfd(defaultButton, dialogType),
-    );
-    
-    return incTinyfdToDialogButton(result, dialogType);
-}
-
 //
 // Reusable basic loaders
 //
@@ -270,11 +205,11 @@ void incCreatePartsFromFiles(string[] files) {
 
 string incGetKeepLayerFolder() {
     if (incSettingsCanGet("KeepLayerFolder"))
-      return incSettingsGet!string("KeepLayerFolder");
+        return incSettingsGet!string("KeepLayerFolder");
     else
-      // also see incSettingsLoad()
-      // Preserve the original behavior for existing users
-      return "NotPreserve";
+        // also see incSettingsLoad()
+        // Preserve the original behavior for existing users
+        return "NotPreserve";
 }
 
 bool incSetKeepLayerFolder(string select) {
@@ -286,30 +221,53 @@ enum AskKeepLayerFolder {
     Preserve, NotPreserve, Cancel
 }
 
+const(char)* INC_KEEP_STRUCT_DIALOG_NAME = "ImportKeepFolderStructPopup";
+
 /**
     Function for importing pop-up dialog
-    returns "Preserve" or "NotPreserve" or "Cancel"
 */
-AskKeepLayerFolder incImportKeepFolderStructPop() {
-    if (incGetKeepLayerFolder() == "Preserve")
-        return AskKeepLayerFolder.Preserve;
-    if (incGetKeepLayerFolder() == "NotPreserve")
-        return AskKeepLayerFolder.NotPreserve;
- 
-    DialogButtons result = incMessageBox(
-        "Import File",
-        "Do you want to preserve the folder structure of the imported file? You can change this in the settings.",
-        DialogType.YesNoCancel,
-        IconType.Question,
-    );
+bool incKeepStructDialog(ImportKeepHandler handler) {
+    if (incGetKeepLayerFolder() == "Preserve") {
+        handler.load(AskKeepLayerFolder.Preserve);
+    } else if (incGetKeepLayerFolder() == "NotPreserve") {
+        handler.load(AskKeepLayerFolder.NotPreserve);
+    } else {
+        incRegisterDialogHandler(handler);
 
-    switch (result) {
-        case DialogButtons.Cancel:
-            return AskKeepLayerFolder.Cancel;
-        case DialogButtons.Yes:
-            return AskKeepLayerFolder.Preserve;
-        case DialogButtons.No:
-            return AskKeepLayerFolder.NotPreserve;
-        default: assert(0);
+        // Show dialog
+        incDialog(
+            INC_KEEP_STRUCT_DIALOG_NAME,
+            __("Import File"),
+            _("Do you want to preserve the folder structure of the imported file? You can change this in the settings."),
+            DialogLevel.Warning,
+            DialogButtons.Yes | DialogButtons.No | DialogButtons.Cancel
+        );
+    }
+
+    return true;
+}
+
+class ImportKeepHandler : DialogHandler {
+    this () {
+        super(INC_KEEP_STRUCT_DIALOG_NAME);
+    }
+
+    override
+    bool onClick(DialogButtons button) {
+        switch (button) {
+            case DialogButtons.Cancel:
+                return this.load(AskKeepLayerFolder.Cancel);
+            case DialogButtons.Yes:
+                return this.load(AskKeepLayerFolder.Preserve);
+            case DialogButtons.No:
+                return this.load(AskKeepLayerFolder.NotPreserve);
+            default:
+                throw new Exception("Invalid button");
+        }
+    }
+
+    bool load(AskKeepLayerFolder select) {
+        // override this
+        return false;
     }
 }

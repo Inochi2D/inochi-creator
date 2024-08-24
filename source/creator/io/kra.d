@@ -142,23 +142,39 @@ struct IncKRAImportSettings {
     also see incAskImportPSD()
 */
 bool incAskImportKRA(string file) {
-    if (!file) 
-        return false;
+    if (!file) return false;
 
     // Note: currently KRA not supported Preserve layer structure, so we just skip the dialog
     // until we have a proper implementation.
-    // switch (incImportKeepFolderStructPop()) {
-    switch (AskKeepLayerFolder.NotPreserve) {
-        case AskKeepLayerFolder.NotPreserve:
-            incImportKRA(file, IncKRAImportSettings(false));
-            return true;
-        case AskKeepLayerFolder.Preserve:
-            incImportKRA(file, IncKRAImportSettings(true));
-            return true;
-        case AskKeepLayerFolder.Cancel:
-            return false;
-        default:
-            throw new Exception("Invalid selection");
+    // KRALoadHandler handler = new KRALoadHandler(file);
+    // return incKeepStructDialog(handler);
+
+    incImportKRA(file, IncKRAImportSettings(false));
+    return true;
+}
+
+class KRALoadHandler : ImportKeepHandler {
+    private string file;
+
+    this(string file) {
+        super();
+        this.file = file;
+    }
+
+    override
+    bool load(AskKeepLayerFolder select) {
+        switch (select) {
+            case AskKeepLayerFolder.NotPreserve:
+                incImportKRA(file, IncKRAImportSettings(false));
+                return true;
+            case AskKeepLayerFolder.Preserve:
+                incImportKRA(file, IncKRAImportSettings(true));
+                return true;
+            case AskKeepLayerFolder.Cancel:
+                return false;
+            default:
+                throw new Exception("Invalid selection");
+        }
     }
 }
 
