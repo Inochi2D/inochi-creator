@@ -34,7 +34,7 @@ void incToolbar() {
                 igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(0, 0));
                 igPushStyleVar(ImGuiStyleVar.FrameRounding, 0);
                     igBeginDisabled(incWelcomeWindowOnTop());
-                        if (incButtonColored("", ImVec2(32, 32), incShouldMirrorViewport ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
+                        if (incButtonColored("##MirrorView", ImVec2(32, 32), incShouldMirrorViewport ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
                             incShouldMirrorViewport = !incShouldMirrorViewport;
                         }
                         incTooltip(_("Mirror View"));
