@@ -144,13 +144,8 @@ struct IncKRAImportSettings {
 bool incAskImportKRA(string file) {
     if (!file) return false;
 
-    // Note: currently KRA not supported Preserve layer structure, so we just skip the dialog
-    // until we have a proper implementation.
-    // KRALoadHandler handler = new KRALoadHandler(file);
-    // return incKeepStructDialog(handler);
-
-    incImportKRA(file, IncKRAImportSettings(false));
-    return true;
+    KRALoadHandler handler = new KRALoadHandler(file);
+    return incKeepStructDialog(handler);
 }
 
 class KRALoadHandler : ImportKeepHandler {

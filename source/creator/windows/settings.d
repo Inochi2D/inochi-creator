@@ -189,8 +189,7 @@ protected:
                             }
                         endSection();
 
-                        // we mark PSD only until we have a proper implementation for kra
-                        beginSection(__("Preserve Imported File Folder Structure (Currently PSD only)"));
+                        beginSection(__("Preserve Imported File Folder Structure"));
                             string[string] configShowing = [
                                 "Ask": "Always Ask",
                                 "Preserve": "Preserve",
