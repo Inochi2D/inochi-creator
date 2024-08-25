@@ -230,6 +230,8 @@ void incImportPSD(string file, IncPSDImportSettings settings = IncPSDImportSetti
         incActiveProject().puppet = puppet;
         incFocusCamera(incActivePuppet().root);
 
+        incInitAnimationPlayer(puppet);
+
         incSetStatus(_("%s was imported...".format(file)));
     } catch (Exception ex) {
 

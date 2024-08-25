@@ -237,6 +237,8 @@ void incImportKRA(string file, IncKRAImportSettings settings = IncKRAImportSetti
         incActiveProject().puppet = puppet;
         incFocusCamera(incActivePuppet().root);
 
+        incInitAnimationPlayer(puppet);
+
         incSetStatus(_("%s was imported...".format(file)));
     } catch (Exception ex) {
 

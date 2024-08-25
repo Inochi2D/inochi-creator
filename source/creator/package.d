@@ -159,6 +159,11 @@ void incAddPrevProject(string path) {
     incSettingsSave();
 }
 
+void incInitAnimationPlayer(Puppet puppet) {
+    incAnimationPlayer = new AnimationPlayer(activeProject.puppet);
+    incAnimationCurrent = null;
+}
+
 /**
     Creates a new project
 */
@@ -177,8 +182,7 @@ void incNewProject() {
 
     activeProject = new Project;
     activeProject.puppet = new ExPuppet;
-    incAnimationPlayer = new AnimationPlayer(activeProject.puppet);
-    incAnimationCurrent = null;
+    incInitAnimationPlayer(activeProject.puppet);
     incFocusCamera(activeProject.puppet.root);
     incSelectNode(null);
     incDisarmParameter();
@@ -258,8 +262,7 @@ void incOpenProject(bool handleError=true)(string mainPath, string backupPath) {
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
 
-    incAnimationPlayer = new AnimationPlayer(puppet);
-    incAnimationCurrent = null;
+    incInitAnimationPlayer(puppet);
 
     incSetStatus(_("%s opened successfully.").format(currProjectPath));
     incSetWindowTitle(currProjectPath.baseName);
@@ -335,8 +338,7 @@ void incImportFolder(string folder) {
     puppet.rescanNodes();
     puppet.populateTextureSlots();
     incActiveProject().puppet = puppet;
-    incAnimationPlayer = new AnimationPlayer(puppet);
-    incAnimationCurrent = null;
+    incInitAnimationPlayer(puppet);
     incFocusCamera(incActivePuppet().root);
     incFreeMemory();
 
