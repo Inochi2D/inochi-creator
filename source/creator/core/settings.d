@@ -31,7 +31,10 @@ void incSettingsLoad() {
     Saves settings from settings store
 */
 void incSettingsSave() {
-    write(incSettingsPath(), settings.toString());
+    // using swp prevent file corruption
+    string swapPath = incSettingsPath() ~ ".swp";
+    write(swapPath, settings.toString());
+    rename(swapPath, incSettingsPath());
 }
 
 /**
