@@ -27,6 +27,19 @@ private {
     enum ENTRY_SIZE = 48;
 }
 
+enum ViewporMenuSortMode {
+    ZSort,
+    SizeSort,
+}
+
+/** 
+    Default to SizeSort because when selecting objects, especially detailed puppets 
+    or small components, we assume the user will point directly at the one they want. 
+    Prioritizing smaller objects makes them easier to select, while larger objects 
+    can usually be selected by clicking elsewhere if needed.
+*/
+ViewporMenuSortMode incViewportModelMenuSortMode = ViewporMenuSortMode.SizeSort;
+
 void incViewportModelMenuOpening() {
     foundParts.length = 0;
 
@@ -46,9 +59,20 @@ void incViewportModelMenuOpening() {
     import std.algorithm.sorting : sort;
     import std.algorithm.mutation : SwapStrategy;
     import std.math : cmp;
-    sort!((a, b) => cmp(
-        a.zSortNoOffset, 
-        b.zSortNoOffset) < 0, SwapStrategy.stable)(foundParts);
+
+    if (incViewportModelMenuSortMode == ViewporMenuSortMode.ZSort) {
+        sort!((a, b) => cmp(
+            a.zSortNoOffset, 
+            b.zSortNoOffset) < 0, SwapStrategy.stable)(foundParts);
+
+    } else if (incViewportModelMenuSortMode == ViewporMenuSortMode.SizeSort) {
+        sort!((a, b) => cmp(
+            (a.bounds.z - a.bounds.x) * (a.bounds.w - a.bounds.y), 
+            (b.bounds.z - b.bounds.x) * (b.bounds.w - b.bounds.y)) < 0, SwapStrategy.stable)(foundParts);
+
+    } else {
+        throw new Exception("Unknown sort mode");
+    }
 }
 
 void incViewportModelMenu() {
