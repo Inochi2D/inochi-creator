@@ -960,8 +960,9 @@ private {
 
     void incViewportZoomLegacy(ImGuiIO* io, Camera camera, float uiScale) {
         float speed = incGetViewportZoomSpeed();
-        if (io.MouseWheel != 0) {
-            incViewportZoom += (io.MouseWheel/50*speed)*incViewportZoom*uiScale;
+        float zoomDelta = incMouseTouchpadWheel(io);
+        if (zoomDelta != 0) {
+            incViewportZoom += (zoomDelta/50*speed)*incViewportZoom*uiScale;
             incViewportZoom = clamp(incViewportZoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX);
             camera.scale = vec2(incViewportZoom);
             incViewportTargetZoom = incViewportZoom;
