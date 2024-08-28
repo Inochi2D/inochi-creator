@@ -240,7 +240,7 @@ void incOpenWindow() {
 
     // Allow touch events. The SDL_HINT_MOUSE_TOUCH_EVENTS option appears to be broken in bindbc.sdl.
     // just hardcode c_str for now
-    SDL_SetHint(__("SDL_MOUSE_TOUCH_EVENTS"), __("1"));
+    SDL_SetHint("SDL_MOUSE_TOUCH_EVENTS", "1");
 
     SDL_Init(SDL_INIT_EVERYTHING);
     
