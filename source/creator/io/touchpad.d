@@ -6,6 +6,7 @@
 */
 
 module creator.io.touchpad;
+import creator.core;
 import std.math.algebraic: abs;
 import inochi2d;
 
@@ -90,7 +91,7 @@ float incGetPinchDistance() {
 }
 
 bool incIsTouchpadUpdated() {
-    return incTouchpadUpdated;
+    return incTouchpadUpdated && incIsTouchpadEnabled();
 }
 
 void incUpdateTouchpadUp() {
@@ -100,4 +101,12 @@ void incUpdateTouchpadUp() {
 
 void incUpdateTouchpadDown() {
     incTouchpad.state = TouchpadState.DownInit;
+}
+
+bool incIsTouchpadEnabled() {
+    if (incSettingsCanGet("TouchpadEnabled"))
+        return incSettingsGet!bool("TouchpadEnabled");
+    else
+        // default is disabled, also see incSettingsLoad()
+        return false;
 }
