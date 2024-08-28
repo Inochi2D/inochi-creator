@@ -99,6 +99,10 @@ void incUpdateTouchpadUp() {
     incTouchpad.state = TouchpadState.Up;
 }
 
+bool incIsTouchpadDown() {
+    return incTouchpad.state != TouchpadState.Up && incIsTouchpadEnabled();
+}
+
 void incUpdateTouchpadDown() {
     incTouchpad.state = TouchpadState.DownInit;
 }

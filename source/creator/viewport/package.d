@@ -864,6 +864,8 @@ private {
     float csx, csy;
     bool isMovingPart;
 
+    bool prevIsTouchpad = false;
+
     void incViewportMovement(ImGuiIO* io, Camera camera) {
         float uiScale = incGetUIScale();
         
@@ -919,8 +921,20 @@ private {
      */
     float incMouseTouchpadWheel(ImGuiIO* io) {
         // return touchpad first if touchpad is down
-        if (incIsTouchpadUpdated())
+        if (incIsTouchpadUpdated()) {
+            prevIsTouchpad = true;
             return incGetPinchDistance();
+        }
+
+        // fixed the issue when touchpad released detected as mouse wheel
+        if (prevIsTouchpad) {
+            prevIsTouchpad = false;
+            return 0;
+        }
+
+        if (incIsTouchpadDown())
+            return 0;
+
         return io.MouseWheel;
     }
 
