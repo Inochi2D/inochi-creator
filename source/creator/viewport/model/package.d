@@ -27,18 +27,17 @@ private {
     enum ENTRY_SIZE = 48;
 }
 
+/** 
+    For detailed puppets or small components, we assume the user will directly point to the one they want. 
+    ZSort is slightly less effective than SizeSort on layers with more alpha pixels (e.g., hair overlapping eyes). 
+    SizeSort prioritizes smaller objects, making them easier to select.
+*/
 enum ViewporMenuSortMode {
     ZSort,
     SizeSort,
 }
 
-/** 
-    Default to SizeSort because when selecting objects, especially detailed puppets 
-    or small components, we assume the user will point directly at the one they want. 
-    Prioritizing smaller objects makes them easier to select, while larger objects 
-    can usually be selected by clicking elsewhere if needed.
-*/
-ViewporMenuSortMode incViewportModelMenuSortMode = ViewporMenuSortMode.SizeSort;
+ViewporMenuSortMode incViewportModelMenuSortMode = ViewporMenuSortMode.ZSort;
 
 void incViewportModelMenuOpening() {
     foundParts.length = 0;
