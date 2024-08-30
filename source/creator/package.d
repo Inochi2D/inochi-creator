@@ -228,6 +228,12 @@ void incOpenProject(bool handleError=true)(string path) {
 */
 void incOpenProject(bool handleError=true)(string mainPath, string backupPath) {
     import std.path : setExtension, baseName;
+    import std.file : exists;
+
+    // We should check if the file exists to prevent user confusion in case of a crash.
+    if (!exists(mainPath) && !exists(backupPath))
+        return incDialog(__("Error"), mainPath ~ _(" File does not exist."));
+
     incClearImguiData();
     
     Puppet puppet;
