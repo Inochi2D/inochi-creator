@@ -209,30 +209,29 @@ void incResetRootNode(ref Puppet puppet) {
     puppet.root.localTransform.scale = vec2(1, 1);
 }
 
-void incOpenProject(bool handleError=true)(string path) {
+bool incOpenProject(string path) {
     if (incCheckLockfile(path)) {
         incPushWindow(new RestoreSaveWindow(path));
 
         //Answering that window is the new trigger for loading the project.
-        return;
+        return false;
     }
 
     // Usual case
-    incOpenProject!(handleError)(path, "");
+    return incOpenProject(path, "");
 }
 
 /**
     mainPath is the canonical project path that the user normally saves to.
     backupPath is the inx file to load all the data from, but is empty string
     when just loading a normal mainsave project file.
-*/
-void incOpenProject(bool handleError=true)(string mainPath, string backupPath) {
-    import std.path : setExtension, baseName;
-    import std.file : exists;
 
-    // We should check if the file exists to prevent user confusion in case of a crash.
-    if (!exists(mainPath) && !exists(backupPath))
-        return incDialog(__("Error"), mainPath ~ _(" File does not exist."));
+    Note: You should not write try-catch blocks when calling this function, as it
+        handles FileException internally. Adding try-catch blocks would make debugging more difficult.
+*/
+bool incOpenProject(string mainPath, string backupPath) {
+    import std.path : setExtension, baseName;
+    import std.file : FileException;
 
     incClearImguiData();
     
@@ -245,13 +244,10 @@ void incOpenProject(bool handleError=true)(string mainPath, string backupPath) {
         } else {
             puppet = inLoadPuppet!ExPuppet(mainPath);
         }
-    } catch (Exception ex) {
-        static if (handleError) {
-            incDialog(__("Error"), ex.msg);
-            return;
-        } else {
-            throw ex;
-        }
+    } catch (FileException ex) {
+        // Also handle NFS or I/O errors
+        incDialog(__("Error"), ex.msg);
+        return false;
     }
 
     // Clear out stuff by creating a new project
@@ -273,6 +269,8 @@ void incOpenProject(bool handleError=true)(string mainPath, string backupPath) {
 
     incSetStatus(_("%s opened successfully.").format(currProjectPath));
     incSetWindowTitle(currProjectPath.baseName);
+
+    return true;
 }
 
 void incSaveProject(string path, string autosaveStamp = "") {
