@@ -81,14 +81,14 @@ string incShowImportDialog(const(TFD_Filter)[] filters, string title, bool multi
             op.multiple = multiple;
             auto promise = dpFileChooserOpenFile(getWindowHandle(), title, op);
             promise.await();
-            return promise.uriFromPromise().decode;
+            return promise.uriFromPromise().decode.dup;
         } catch (Throwable ex) {
 
             // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
             c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, multiple);
             if (filename !is null) {
                 string file = cast(string) filename.fromStringz;
-                return file;
+                return file.dup;
             }
             return null;
         }
@@ -96,7 +96,7 @@ string incShowImportDialog(const(TFD_Filter)[] filters, string title, bool multi
         c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, multiple);
         if (filename !is null) {
             string file = cast(string) filename.fromStringz;
-            return file;
+            return file.dup;
         }
         return null;
     }
@@ -109,19 +109,19 @@ string incShowOpenFolderDialog(string title = "Open...") {
             op.directory = true;
             auto promise = dpFileChooserOpenFile(getWindowHandle(), title, op);
             promise.await();
-            return promise.uriFromPromise().decode;
+            return promise.uriFromPromise().decode.dup;
         } catch (Throwable _) {
 
             // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
             c_str filename = tinyfd_selectFolderDialog(title.toStringz, null);
             if (filename !is null)
-                return cast(string) filename.fromStringz;
+                return cast(string) filename.fromStringz.dup;
             return null;
         }
     } else {
         c_str filename = tinyfd_selectFolderDialog(title.toStringz, null);
         if (filename !is null)
-            return cast(string) filename.fromStringz;
+            return cast(string) filename.fromStringz.dup;
         return null;
     }
 }
@@ -133,14 +133,14 @@ string incShowOpenDialog(const(TFD_Filter)[] filters, string title = "Open...") 
             op.filters = tfdToFileFilter(filters);
             auto promise = dpFileChooserOpenFile(getWindowHandle(), title, op);
             promise.await();
-            return promise.uriFromPromise().decode;
+            return promise.uriFromPromise().decode.dup;
         } catch (Throwable ex) {
 
             // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
             c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, false);
             if (filename !is null) {
                 string file = cast(string) filename.fromStringz;
-                return file;
+                return file.dup;
             }
             return null;
         }
@@ -148,7 +148,7 @@ string incShowOpenDialog(const(TFD_Filter)[] filters, string title = "Open...") 
         c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, false);
         if (filename !is null) {
             string file = cast(string) filename.fromStringz;
-            return file;
+            return file.dup;
         }
         return null;
     }
@@ -161,14 +161,14 @@ string incShowSaveDialog(const(TFD_Filter)[] filters, string fname, string title
             op.filters = tfdToFileFilter(filters);
             auto promise = dpFileChooserSaveFile(getWindowHandle(), title, op);
             promise.await();
-            return promise.uriFromPromise().decode;
+            return promise.uriFromPromise().decode.dup;
         } catch (Throwable ex) {
 
             // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
             c_str filename = tinyfd_saveFileDialog(title.toStringz, fname.toStringz, filters);
             if (filename !is null) {
                 string file = cast(string) filename.fromStringz;
-                return file;
+                return file.dup;
             }
             return null;
         }
@@ -176,7 +176,7 @@ string incShowSaveDialog(const(TFD_Filter)[] filters, string fname, string title
         c_str filename = tinyfd_saveFileDialog(title.toStringz, fname.toStringz, filters);
         if (filename !is null) {
             string file = cast(string) filename.fromStringz;
-            return file;
+            return file.dup;
         }
         return null;
     }
