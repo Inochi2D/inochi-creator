@@ -37,9 +37,41 @@ void incViewportVertexTools() {
     editor.viewportTools();
 }
 
+class MeshGroupNodeDrawer {
+    Node node;
+    this(Node node) {
+        this.node = node;
+    }
+
+    void draw() {
+        import inochi2d.core.dbg;
+
+        if (!editor.getShowMeshgroupNodeChild())
+            return;
+
+        node.drawBounds();
+
+        auto trans = node.transform.matrix();
+        inDbgSetBuffer([vec3(0, 0, 0)], [0]);
+        inDbgPointsSize(10);
+        inDbgDrawPoints(vec4(0, 0, 0, 1), trans);
+        inDbgPointsSize(6);
+        inDbgDrawPoints(vec4(0.5, 0.8, 0.5, 1), trans);
+    }
+}
+
 void incViewportVertexOptions() {
     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 0));
     igPushStyleVar(ImGuiStyleVar.WindowPadding, ImVec2(4, 4));
+        igBeginGroup();
+            if (incButtonColored("\ue3eb##mesh-group-view-node", ImVec2(0, 0), editor.getShowMeshgroupNodeChild() ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                editor.setShowMeshgroupNodeChild(!editor.getShowMeshgroupNodeChild());
+            }
+            incTooltip(_("Show Mesh Group Child Nodes Bounds"));
+        igEndGroup();
+
+        igSameLine(0, 4);
+
         igBeginGroup();
             if (igButton("")) {
                 foreach (d; incSelectedNodes) {
@@ -206,6 +238,7 @@ void incViewportVertexDraw(Camera camera) {
                 mat4 transform = mgroup.transform.matrix.inverse;
                 mgroup.setOneTimeTransform(&transform);
                 Node[] subParts;
+                Node[] subNodes;
                 void findSubDrawable(Node n) {
                     if (auto m = cast(MeshGroup)n) {
                         foreach (child; n.children)
@@ -218,6 +251,8 @@ void incViewportVertexDraw(Camera camera) {
                         subParts ~= d;
                         foreach (child; n.children)
                             findSubDrawable(child);
+                    } else {
+                        subNodes ~= n;
                     }
                 }
                 findSubDrawable(mgroup);
@@ -228,9 +263,26 @@ void incViewportVertexDraw(Camera camera) {
                     a.zSort, 
                     b.zSort) > 0, SwapStrategy.stable)(subParts);
 
+                foreach (part; subNodes) {
+                    auto nd = new MeshGroupNodeDrawer(part);
+                    nd.draw();
+                }
+
                 foreach (part; subParts) {
                     part.drawOne();
                 }
+
+                if (subParts.length == 0 && !editor.hasPopupMeshgroupNoDrawables) {
+                    import creator.widgets.dialog;
+                    editor.hasPopupMeshgroupNoDrawables = true;
+                    incDialog(
+                        "NO_DRAWABLES",
+                        __("No Drawables"),
+                        _("This meshgroup has no drawables to deform. To deform, replace the child with a meshgroup or other type."),
+                        DialogLevel.Info, DialogButtons.OK
+                    );
+                }
+
                 mgroup.setOneTimeTransform(null);
             }
         }
