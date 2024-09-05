@@ -20,9 +20,9 @@ string incSettingsPath() {
 }
 
 string incSettingsMoveCorruptedFile(string path) {
-    import std.uuid : randomUUID;
+    import std.datetime;
     // move the corrupted settings file to a new location
-    string backupPath = path ~ "." ~ randomUUID().toString();
+    string backupPath = path ~ "." ~ Clock.currTime().toISOString();
     rename(path, backupPath);
     return backupPath;
 }
