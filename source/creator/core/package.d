@@ -690,6 +690,12 @@ void incHandleEvent(SDL_Event *event) {
                 incSDLState = SDLEventState.WaitMode;
             if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
                 incSDLState = SDLEventState.PollMode;
+
+            // we can see the source code for this in imgui_impl_sdl2.cpp:ImGui_ImplSDL2_ProcessEvent()
+            // https://github.com/ocornut/imgui/blob/master/backends/imgui_impl_sdl2.cpp
+            // imgui will handle SDL_WINDOWEVENT, so we need to pass it to imgui
+            // incGLBackendProcessEvent() would invoke ImGui_ImplSDL2_ProcessEvent()
+            incGLBackendProcessEvent(event);
             break;
 
         default:
