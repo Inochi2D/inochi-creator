@@ -58,7 +58,7 @@ class NodeSelect : Tool, Draggable {
             impl.mousePos = -impl.mousePos;
         }
 
-        impl.vtxAtMouse = impl.getVertexFromPoint(impl.mousePos);
+        impl.updateVtxAtMouse(impl.getVertexFromPoint(impl.mousePos));
 
         return 0;
     }

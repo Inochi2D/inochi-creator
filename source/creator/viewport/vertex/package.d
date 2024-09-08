@@ -190,6 +190,9 @@ void incViewportVertexOptions() {
             incTooltip(_("Auto Meshing Options"));
         igEndGroup();
 
+        igSameLine(0, 4);
+
+        editor.displayToolOptions();
     igPopStyleVar(2);
 }
 
