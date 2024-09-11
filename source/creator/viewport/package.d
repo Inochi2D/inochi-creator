@@ -849,14 +849,14 @@ private {
         }
 
         // HANDLE ZOOM
-        string zoomMode = incGetViewportZoomMode();
-        if (zoomMode == "ScreenCenter")
-            incViewportZoomToCenter(io, camera, uiScale);
-        else if (zoomMode == "MousePosition")
-            incViewportZoomToMouse(io, camera, uiScale);
+        string zoomMode = incGetCurrentViewportZoomMode();
+        if (zoomMode == "legacy-zooming")
+            incViewportZoomLegacy(io, camera, uiScale);
+        else if (zoomMode == "normal")
+            incViewportZoomNew(io, camera, uiScale);
     }
 
-    void incViewportZoomToMouse(ImGuiIO* io, Camera camera, float uiScale) {
+    void incViewportZoomNew(ImGuiIO* io, Camera camera, float uiScale) {
         // This value changes the zoom speed
         float speed = incGetViewportZoomSpeed();
         if (io.MouseWheel != 0) {
@@ -886,7 +886,7 @@ private {
         }
     }
 
-    void incViewportZoomToCenter(ImGuiIO* io, Camera camera, float uiScale) {
+    void incViewportZoomLegacy(ImGuiIO* io, Camera camera, float uiScale) {
         float speed = incGetViewportZoomSpeed();
         if (io.MouseWheel != 0) {
             incViewportZoom += (io.MouseWheel/50*speed)*incViewportZoom*uiScale;
@@ -897,13 +897,24 @@ private {
     }
 }
 
-string incGetViewportZoomMode() {
+string[] incGetViewportZoomModes() {
+    return ["normal", "legacy-zooming"];
+}
+
+string incGetCurrentViewportZoomMode() {
     if (incSettingsCanGet("ViewportZoomMode"))
       return incSettingsGet!string("ViewportZoomMode");
     else
-      return "ScreenCenter";
+      return "normal";
 }
-bool incSetViewportZoomMode(string select) {
+
+bool incSetCurrentViewportZoomMode(string select) {
+    string[] viewportZoomModes = incGetViewportZoomModes();
+
+    // Verify zoom mode conifg
+    if (viewportZoomModes.canFind(select) == -1)
+      return false;
+
     incSettingsSet("ViewportZoomMode", select);
     return true;
 }
@@ -912,7 +923,7 @@ float incGetViewportZoomSpeed() {
     if (incSettingsCanGet("ViewportZoomSpeed"))
       return incSettingsGet!float("ViewportZoomSpeed");
     else
-      return 1.0;
+      return 5.0;
 }
 
 bool incSetViewportZoomSpeed(float speed) {
