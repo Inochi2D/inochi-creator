@@ -27,6 +27,7 @@ import creator.core.colorbleed;
 
 import std.path;
 import std.format;
+import std.file : rename;
 import i18n;
 import std.algorithm.searching;
 import inochi2d.core.animation.player;
@@ -287,8 +288,10 @@ void incSaveProject(string path, string autosaveStamp = "") {
         foreach (func; saveCallbacks)
             func(incActivePuppet());
 
-        // Write the puppet to file
-        inWriteINPPuppet(incActivePuppet(), finalPath);
+        // Write the puppet to file, using swp prevent file corruption
+        string swapPath = finalPath ~ ".swp";
+        inWriteINPPuppet(incActivePuppet(), swapPath);
+        rename(swapPath, finalPath);
 
         if (!isAutosave) incReleaseLockfile();
         incActivePuppet().resetDrivers();

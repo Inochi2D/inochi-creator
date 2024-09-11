@@ -6,6 +6,7 @@ import std.algorithm.sorting;
 import std.algorithm.mutation;
 import i18n;
 import std.exception;
+import std.file : rename;
 
 private {
     vec2 mapUVCoord(vec2 value, vec2 min, vec2 max) {
@@ -388,5 +389,8 @@ void incINPExport(Puppet puppet, IncINPExportSettings settings, string file) {
     incINPExportFlatten(source);
     incINPExportFinalizePacking(source, atlasses);
     
-    inWriteINPPuppet(source, file);
+    // using swp prevent file corruption
+    string swapPath = file ~ ".export.swp";
+    inWriteINPPuppet(source, swapPath);
+    rename(swapPath, file);
 }
