@@ -27,6 +27,18 @@ private {
     enum ENTRY_SIZE = 48;
 }
 
+/** 
+    For detailed puppets or small components, we assume the user will directly point to the one they want. 
+    ZSort is slightly less effective than SizeSort on layers with more alpha pixels (e.g., hair overlapping eyes). 
+    SizeSort prioritizes smaller objects, making them easier to select.
+*/
+enum ViewporMenuSortMode {
+    ZSort,
+    SizeSort,
+}
+
+ViewporMenuSortMode incViewportModelMenuSortMode = ViewporMenuSortMode.ZSort;
+
 void incViewportModelMenuOpening() {
     foundParts.length = 0;
 
@@ -46,16 +58,34 @@ void incViewportModelMenuOpening() {
     import std.algorithm.sorting : sort;
     import std.algorithm.mutation : SwapStrategy;
     import std.math : cmp;
-    sort!((a, b) => cmp(
-        a.zSortNoOffset, 
-        b.zSortNoOffset) < 0, SwapStrategy.stable)(foundParts);
+
+    if (incViewportModelMenuSortMode == ViewporMenuSortMode.ZSort) {
+        sort!((a, b) => cmp(
+            a.zSortNoOffset, 
+            b.zSortNoOffset) < 0, SwapStrategy.stable)(foundParts);
+
+    } else if (incViewportModelMenuSortMode == ViewporMenuSortMode.SizeSort) {
+        sort!((a, b) => cmp(
+            (a.bounds.z - a.bounds.x) * (a.bounds.w - a.bounds.y), 
+            (b.bounds.z - b.bounds.x) * (b.bounds.w - b.bounds.y)) < 0, SwapStrategy.stable)(foundParts);
+
+    } else {
+        throw new Exception("Unknown sort mode");
+    }
 }
 
 void incViewportModelMenu() {
     if (auto editor = incViewportModelDeformGetEditor()) {
         editor.popupMenu();
     }
-    igNewLine();
+
+    if (igMenuItem(incViewportModelMenuSortMode == ViewporMenuSortMode.ZSort ? __("Z-Sort") : __("Size-Sort"))) {
+        if (incViewportModelMenuSortMode == ViewporMenuSortMode.ZSort)
+            incViewportModelMenuSortMode = ViewporMenuSortMode.SizeSort;
+        else
+            incViewportModelMenuSortMode = ViewporMenuSortMode.ZSort;
+    }
+
     igSeparator();
     
     if (incSelectedNode() != incActivePuppet().root) {
