@@ -10,6 +10,7 @@ import creator.viewport;
 import creator.widgets;
 import creator.core;
 import creator.core.i18n;
+import creator.io;
 import creator.io.autosave;
 import std.string;
 import creator.utils.link;
@@ -22,7 +23,7 @@ enum SettingsPane : string {
     LookAndFeel = "Look and Feel",
     Viewport = "Viewport",
     Accessibility = "Accessbility",
-    Autosaves = "Autosaves"
+    FileHandling = "File Handling"
 }
 
 /**
@@ -89,8 +90,8 @@ protected:
                     settingsPane = SettingsPane.Accessibility;
                 }
 
-                if (igSelectable(__("Autosaves"), settingsPane == SettingsPane.Autosaves)) {
-                    settingsPane = SettingsPane.Autosaves;
+                if (igSelectable(__("File Handling"), settingsPane == SettingsPane.FileHandling)) {
+                    settingsPane = SettingsPane.FileHandling;
                 }
             igPopTextWrapPos();
         }
@@ -170,7 +171,7 @@ protected:
                             incTooltip(_("Use the OpenDyslexic font for Latin text characters."));
                         endSection();
                         break;
-                    case SettingsPane.Autosaves:
+                    case SettingsPane.FileHandling:
                         beginSection(__("Autosaves"));
                             bool autosaveEnabled = incGetAutosaveEnabled();
                             if (igCheckbox(__("Enable Autosaves"), &autosaveEnabled)) {
@@ -186,6 +187,24 @@ protected:
                             if (igInputInt(__("Maximum Autosaves"), &saveFileLimit, 1, 5, ImGuiInputTextFlags.EnterReturnsTrue)) {
                                 incSetAutosaveFileLimit(saveFileLimit);
                             }
+                        endSection();
+
+                        beginSection(__("Preserve Imported File Folder Structure"));
+                            string[string] configShowing = [
+                                "Ask": "Always Ask",
+                                "Preserve": "Preserve",
+                                "NotPreserve": "Not Preserve"
+                            ];
+
+                            string selected = configShowing[incGetKeepLayerFolder()];
+                            if(igBeginCombo(__("Preserve Folder Structure"), selected.toStringz)) {
+                                if (igSelectable(__("Always Ask"), incSettingsGet!string("KeepLayerFolder") == "Ask")) incSetKeepLayerFolder("Ask");
+                                if (igSelectable(__("Preserve"), incSettingsGet!string("KeepLayerFolder") == "Preserve")) incSetKeepLayerFolder("Preserve");
+                                if (igSelectable(__("Not Preserve"), incSettingsGet!string("KeepLayerFolder") == "NotPreserve")) incSetKeepLayerFolder("NotPreserve");
+
+                                igEndCombo();
+                            }
+
                         endSection();
                         break;
                     case SettingsPane.Viewport:

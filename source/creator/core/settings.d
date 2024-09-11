@@ -24,6 +24,11 @@ string incSettingsPath() {
 void incSettingsLoad() {
     if (exists(incSettingsPath())) {
         settings = parseJSON(readText(incSettingsPath()));
+
+        // File Handling
+        // Always ask the user whether to preserve the folder structure during import
+        // also see incGetKeepLayerFolder()
+        settings["KeepLayerFolder"] = "Ask";
     }
 }
 

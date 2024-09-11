@@ -241,7 +241,12 @@ protected:
 
                     // Allow dragging PSD in to main window
                     case ".psd":
-                        incImportPSD(file);
+                        incAskImportPSD(file);
+                        break mainLoop;
+
+                    // Allow dragging KRA in to main window
+                    case ".kra":
+                        incAskImportKRA(file);
                         break mainLoop;
 
                     default:

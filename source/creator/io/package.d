@@ -10,6 +10,8 @@ public import creator.io.kra;
 public import creator.io.inpexport;
 public import creator.io.videoexport;
 public import creator.io.imageexport;
+import creator.widgets: DialogButtons;
+import creator.widgets.dialog;
 
 import tinyfiledialogs;
 public import tinyfiledialogs : TFD_Filter;
@@ -73,6 +75,13 @@ private {
     }
 }
 
+string incToDString(c_str cstr1) {
+    if (cstr1 !is null) {
+        return cast(string) cstr1.fromStringz;
+    }
+    return null;
+}
+
 string incShowImportDialog(const(TFD_Filter)[] filters, string title, bool multiple = false) {
     version (linux) {
         try {
@@ -86,19 +95,11 @@ string incShowImportDialog(const(TFD_Filter)[] filters, string title, bool multi
 
             // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
             c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, multiple);
-            if (filename !is null) {
-                string file = cast(string) filename.fromStringz;
-                return file.dup;
-            }
-            return null;
+            return incToDString(filename).dup;
         }
     } else {
         c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, multiple);
-        if (filename !is null) {
-            string file = cast(string) filename.fromStringz;
-            return file.dup;
-        }
-        return null;
+        return incToDString(filename).dup;
     }
 }
 
@@ -114,15 +115,11 @@ string incShowOpenFolderDialog(string title = "Open...") {
 
             // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
             c_str filename = tinyfd_selectFolderDialog(title.toStringz, null);
-            if (filename !is null)
-                return cast(string) filename.fromStringz.dup;
-            return null;
+            return incToDString(filename).dup;
         }
     } else {
         c_str filename = tinyfd_selectFolderDialog(title.toStringz, null);
-        if (filename !is null)
-            return cast(string) filename.fromStringz.dup;
-        return null;
+        return incToDString(filename).dup;
     }
 }
 
@@ -138,19 +135,11 @@ string incShowOpenDialog(const(TFD_Filter)[] filters, string title = "Open...") 
 
             // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
             c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, false);
-            if (filename !is null) {
-                string file = cast(string) filename.fromStringz;
-                return file.dup;
-            }
-            return null;
+            return incToDString(filename).dup;
         }
     } else {
         c_str filename = tinyfd_openFileDialog(title.toStringz, "", filters, false);
-        if (filename !is null) {
-            string file = cast(string) filename.fromStringz;
-            return file.dup;
-        }
-        return null;
+        return incToDString(filename).dup;
     }
 }
 
@@ -166,19 +155,11 @@ string incShowSaveDialog(const(TFD_Filter)[] filters, string fname, string title
 
             // FALLBACK: If xdg-desktop-portal is not available then try tinyfiledialogs.
             c_str filename = tinyfd_saveFileDialog(title.toStringz, fname.toStringz, filters);
-            if (filename !is null) {
-                string file = cast(string) filename.fromStringz;
-                return file.dup;
-            }
-            return null;
+            return incToDString(filename).dup;
         }
     } else {
         c_str filename = tinyfd_saveFileDialog(title.toStringz, fname.toStringz, filters);
-        if (filename !is null) {
-            string file = cast(string) filename.fromStringz;
-            return file.dup;
-        }
-        return null;
+        return incToDString(filename).dup;
     }
 }
 
@@ -219,5 +200,74 @@ void incCreatePartsFromFiles(string[] files) {
                 break;
             default: throw new Exception("Invalid file type "~fname.extension.toLower);
         }
+    }
+}
+
+string incGetKeepLayerFolder() {
+    if (incSettingsCanGet("KeepLayerFolder"))
+        return incSettingsGet!string("KeepLayerFolder");
+    else
+        // also see incSettingsLoad()
+        // Preserve the original behavior for existing users
+        return "NotPreserve";
+}
+
+bool incSetKeepLayerFolder(string select) {
+    incSettingsSet("KeepLayerFolder", select);
+    return true;
+}
+
+enum AskKeepLayerFolder {
+    Preserve, NotPreserve, Cancel
+}
+
+const(char)* INC_KEEP_STRUCT_DIALOG_NAME = "ImportKeepFolderStructPopup";
+
+/**
+    Function for importing pop-up dialog
+*/
+bool incKeepStructDialog(ImportKeepHandler handler) {
+    if (incGetKeepLayerFolder() == "Preserve") {
+        handler.load(AskKeepLayerFolder.Preserve);
+    } else if (incGetKeepLayerFolder() == "NotPreserve") {
+        handler.load(AskKeepLayerFolder.NotPreserve);
+    } else {
+        incRegisterDialogHandler(handler);
+
+        // Show dialog
+        incDialog(
+            INC_KEEP_STRUCT_DIALOG_NAME,
+            __("Import File"),
+            _("Do you want to preserve the folder structure of the imported file? You can change this in the settings."),
+            DialogLevel.Warning,
+            DialogButtons.Yes | DialogButtons.No | DialogButtons.Cancel
+        );
+    }
+
+    return true;
+}
+
+class ImportKeepHandler : DialogHandler {
+    this () {
+        super(INC_KEEP_STRUCT_DIALOG_NAME);
+    }
+
+    override
+    bool onClick(DialogButtons button) {
+        switch (button) {
+            case DialogButtons.Cancel:
+                return this.load(AskKeepLayerFolder.Cancel);
+            case DialogButtons.Yes:
+                return this.load(AskKeepLayerFolder.Preserve);
+            case DialogButtons.No:
+                return this.load(AskKeepLayerFolder.NotPreserve);
+            default:
+                throw new Exception("Invalid button");
+        }
+    }
+
+    bool load(AskKeepLayerFolder select) {
+        // override this
+        return false;
     }
 }
