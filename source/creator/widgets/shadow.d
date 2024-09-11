@@ -18,7 +18,7 @@ void incDestroyWindowDrawList(ImDrawList* drawList) {
 
 private {
     T* prepend(T)(ref ImVector!T vec, ref ImVector!T other) {
-        import core.stdc.string : memcpy;
+        import core.stdc.string : memmove;
         if (other.Size == 0) return &vec.Data[vec.Size];
 
         // First reserve space to make sure the data will fit.
@@ -28,8 +28,8 @@ private {
         int newSize = vec.Size+other.Size;
         if (newSize > vec.Capacity) vec.reserve(vec._grow_capacity(newSize));
 
-        memcpy(vec.Data+other.Size,     vec.Data,   vec.Size*T.sizeof);
-        memcpy(vec.Data,                other.Data, other.Size*T.sizeof);
+        memmove(vec.Data+other.Size,     vec.Data,   vec.Size*T.sizeof);
+        memmove(vec.Data,                other.Data, other.Size*T.sizeof);
 
         // Apply the new size based on the previous sizes.
         vec.Size = newSize;
