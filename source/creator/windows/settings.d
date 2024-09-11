@@ -221,7 +221,7 @@ protected:
                             }
 
                             bool touchpadEnabled = incIsTouchpadEnabled();
-                            if (igCheckbox(__("Enable Touchpad"), &touchpadEnabled)) {
+                            if (igCheckbox(__("Enable Touchpad (Experimental)"), &touchpadEnabled)) {
                                 incSettingsSet("TouchpadEnabled", touchpadEnabled);
                             }
 

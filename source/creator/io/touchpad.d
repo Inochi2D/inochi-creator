@@ -1,8 +1,8 @@
 /*
-    Copyright © 2020-2024, nijigenerate Project
+    Copyright © 2020-2024, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
-    Authors: Lin, Yong Xiang (r888800009)
+    Authors: Lin, Yong Xiang <r888800009@gmail.com>
 */
 
 module creator.io.touchpad;
