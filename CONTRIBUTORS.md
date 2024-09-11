@@ -14,12 +14,13 @@
   [James Daniel](https://twitter.com/rakujira) 
 
 ## Code Contributors
-  [Asahi Lina](https://twitter.com/LinaAsahi)
+  [r888800009](https://github.com/r888800009)
   [seagetch](https://twitter.com/seagetch)
   [carbotaniuman](https://github.com/carbotaniuman)
   [Grillo](https://vt.social/@grillo_delmal)
   [Aki-nyan](https://twitter.com/lethalbit)
   [PanzerKern](https://github.com/pankern)
+  [Asahi Lina](https://twitter.com/LinaAsahi)
 
 ## Mascot
 ### Mascot Design
