@@ -590,13 +590,19 @@ void incMainMenu() {
                 // We need to pre-calculate the size of the right adjusted section
                 // This code is very ugly because imgui doesn't really exactly understand this
                 // stuff natively.
-                ImVec2 secondSectionLength = ImVec2(0, 0);
-                secondSectionLength.x += incMeasureString(_("Donate")).x+16; // Add 16 px padding
+                float secondSectionLength = 0f;
+                secondSectionLength += incMeasureString(_("Donate")).x+16; // Add 16 px padding
                 if (incShowStatsForNerds) { // Extra padding I guess
-                    secondSectionLength.x += igGetStyle().ItemSpacing.x;
-                    secondSectionLength.x += incMeasureString("1000ms").x;
+                    secondSectionLength += igGetStyle().ItemSpacing.x;
+                    secondSectionLength += incMeasureString("1000ms").x;
                 }
-                incDummy(ImVec2(-secondSectionLength.x, 0));
+                incDummy(ImVec2(-secondSectionLength, 0));
+            } else {
+                if (incShowStatsForNerds) {
+                    float secondSectionLength = igGetStyle().ItemSpacing.x;
+                    secondSectionLength += incMeasureString("1000ms").x;
+                    incDummy(ImVec2(-secondSectionLength, 0));
+                }
             }
 
             if (incShowStatsForNerds) {
