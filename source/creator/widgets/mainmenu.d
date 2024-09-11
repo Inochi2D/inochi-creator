@@ -583,16 +583,21 @@ void incMainMenu() {
             igPopStyleColor();
             igPopStyleColor();
 
-            // We need to pre-calculate the size of the right adjusted section
-            // This code is very ugly because imgui doesn't really exactly understand this
-            // stuff natively.
-            ImVec2 secondSectionLength = ImVec2(0, 0);
-            secondSectionLength.x += incMeasureString(_("Donate")).x+16; // Add 16 px padding
-            if (incShowStatsForNerds) { // Extra padding I guess
-                secondSectionLength.x += igGetStyle().ItemSpacing.x;
-                secondSectionLength.x += incMeasureString("1000ms").x;
+            version(InNightly) version = InShowDonateButton;
+            version(InDemo) version = InShowDonateButton;
+
+            version(InShowDonateButton) {
+                // We need to pre-calculate the size of the right adjusted section
+                // This code is very ugly because imgui doesn't really exactly understand this
+                // stuff natively.
+                ImVec2 secondSectionLength = ImVec2(0, 0);
+                secondSectionLength.x += incMeasureString(_("Donate")).x+16; // Add 16 px padding
+                if (incShowStatsForNerds) { // Extra padding I guess
+                    secondSectionLength.x += igGetStyle().ItemSpacing.x;
+                    secondSectionLength.x += incMeasureString("1000ms").x;
+                }
+                incDummy(ImVec2(-secondSectionLength.x, 0));
             }
-            incDummy(ImVec2(-secondSectionLength.x, 0));
 
             if (incShowStatsForNerds) {
                 string fpsText = "%.0fms".format(1000f/io.Framerate);
@@ -601,10 +606,11 @@ void incMainMenu() {
                 incText(fpsText);
             }
             
-            // Donate button
-            // NOTE: Is this too obstructive in the UI?
-            if(igMenuItem(__("Donate"))) {
-                incOpenLink("https://www.patreon.com/clipsey");
+            version(InShowDonateButton) {
+                // Donate button
+                if(igMenuItem(__("Donate"))) {
+                    incOpenLink("https://www.patreon.com/clipsey");
+                }
             }
             incTooltip(_("Support development via Patreon"));
         }
