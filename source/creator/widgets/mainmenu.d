@@ -24,6 +24,9 @@ import std.string;
 import std.stdio;
 import std.path;
 
+version(InNightly) version = InShowDonateButton;
+version(InDemo) version = InShowDonateButton;
+
 private {
     bool dbgShowStyleEditor;
     bool dbgShowDebugger;
@@ -582,9 +585,6 @@ void incMainMenu() {
             igPopStyleColor();
             igPopStyleColor();
             igPopStyleColor();
-
-            version(InNightly) version = InShowDonateButton;
-            version(InDemo) version = InShowDonateButton;
 
             version(InShowDonateButton) {
                 // We need to pre-calculate the size of the right adjusted section

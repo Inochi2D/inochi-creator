@@ -943,7 +943,7 @@ public:
 
         // Check whether deform has more than 1 triangle.
         // If not, returns default Deformation which has dummpy offsets.
-        if (deform.vertexOffsets.length < 3) {
+        if (deform.vertexOffsets.size() < 3) {
             vec2[] vertexOffsets = [];
             for (int i = 0; i < vertices.length; i++)
                 vertexOffsets ~= vec2(0, 0);
@@ -1042,7 +1042,7 @@ public:
         // Apply transform for mesh
         vec2[] transformMesh(ref MeshData bindingMesh, Deformation deform) {
             vec2[] result;
-            assert(bindingMesh.vertices.length == deform.vertexOffsets.length);
+            assert(bindingMesh.vertices.length == deform.vertexOffsets.size());
             foreach (i, v; bindingMesh.vertices) {
                 result ~= v + deform.vertexOffsets[i];
             }

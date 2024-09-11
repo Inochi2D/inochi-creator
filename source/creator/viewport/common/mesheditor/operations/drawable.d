@@ -148,7 +148,7 @@ public:
                         if (newDeform) 
                             deformBinding.values[x][y] = *newDeform;
                     } else {
-                        deformBinding.values[x][y].vertexOffsets.length = data.vertices.length;
+                        deformBinding.values[x][y].vertexOffsets.resize(data.vertices.length);
                     }
                     deformers ~= deformBinding;
                 }
@@ -494,7 +494,7 @@ protected:
             
         } else {
             auto deform = binding.getValue(param.findClosestKeypoint());
-            if (drawable.deformation.length == deform.vertexOffsets.length) {
+            if (drawable.deformation.length == deform.vertexOffsets.size()) {
                 deformation.length = drawable.deformation.length;
                 foreach (i, d; drawable.deformation) {
                     deformation[i] = d - deform.vertexOffsets[i];

@@ -44,7 +44,7 @@ void incViewportNodeDeformNotifyParamValueChanged() {
             if (e !is null) {
                 if (deform !is null) {
                     auto binding = deform.getValue(param.findClosestKeypoint());
-                    e.applyOffsets(binding.vertexOffsets);
+                    e.applyOffsets(binding.vertexOffsets[]);
                 }
                 e.adjustPathTransform();
             }

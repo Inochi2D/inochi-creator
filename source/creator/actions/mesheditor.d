@@ -101,7 +101,7 @@ class DeformationAction  : LazyBoundAction {
                 if (deform !is null) {
                     vec2[] tmpVertices = vertices;
                     bool   tmpIsSet    = isSet;
-                    vertices = deform.values[keypoint.x][keypoint.y].vertexOffsets.dup;
+                    vertices = deform.values[keypoint.x][keypoint.y].vertexOffsets[].dup;
                     isSet    = deform.isSet_[keypoint.x][keypoint.y];
                     deform.update(this.keypoint, tmpVertices);
                     deform.isSet_[keypoint.x][keypoint.y] = tmpIsSet;
@@ -113,7 +113,7 @@ class DeformationAction  : LazyBoundAction {
                 if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
                     self.resetMesh();
                     if (deform !is null) {
-                        self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);            
+                        self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets[]);            
                     }
                 }
             }
@@ -130,7 +130,7 @@ class DeformationAction  : LazyBoundAction {
                 if (deform !is null) {
                     vec2[] tmpVertices = vertices;
                     bool   tmpIsSet    = isSet;
-                    vertices = deform.values[keypoint.x][keypoint.y].vertexOffsets.dup;
+                    vertices = deform.values[keypoint.x][keypoint.y].vertexOffsets[].dup;
                     isSet    = deform.isSet_[keypoint.x][keypoint.y];
                     deform.update(this.keypoint, tmpVertices);
                     deform.isSet_[keypoint.x][keypoint.y] = tmpIsSet;
@@ -142,7 +142,7 @@ class DeformationAction  : LazyBoundAction {
                 if (self !is null && self.getTarget() == this.target && incArmedParameter() == this.param) {
                     self.resetMesh();
                     if (deform !is null) {
-                        self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets);
+                        self.applyOffsets(deform.getValue(param.findClosestKeypoint()).vertexOffsets[]);
                     }
                 }
             }
