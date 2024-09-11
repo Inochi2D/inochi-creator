@@ -69,7 +69,7 @@ jobs:
         git clone https://github.com/Inochi2D/inochi2d.git
         git clone https://github.com/Inochi2D/dcv-i2d
         dub add-local i2d-imgui/ "0.8.0"
-        dub add-local inochi2d/ "0.8.0"
+        dub add-local inochi2d/ "0.8.5"
         dub add-local dcv-i2d/ "0.3.0"
 
     - name: 'Build Inochi Creator'
@@ -120,7 +120,7 @@ jobs:
         git clone https://github.com/Inochi2D/inochi2d.git
         git clone https://github.com/Inochi2D/dcv-i2d
         dub add-local i2d-imgui/ "0.8.0"
-        dub add-local inochi2d/ "0.8.0"
+        dub add-local inochi2d/ "0.8.5"
         dub add-local dcv-i2d/ "0.3.0"
 
     - name: 'Build Inochi Creator'
@@ -260,7 +260,7 @@ jobs:
         git clone https://github.com/Inochi2D/inochi2d.git
         git clone https://github.com/Inochi2D/dcv-i2d
         dub add-local i2d-imgui/ "0.8.0"
-        dub add-local inochi2d/ "0.8.0"
+        dub add-local inochi2d/ "0.8.5"
         dub add-local dcv-i2d/ "0.3.0"
 
     - name: 'Build Inochi Creator'

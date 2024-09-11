@@ -31,7 +31,7 @@ jobs:
         git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules
         git clone https://github.com/Inochi2D/inochi2d.git
         dub add-local i2d-imgui/ "0.8.0"
-        dub add-local inochi2d/ "0.8.0"
+        dub add-local inochi2d/ "0.8.5"
 
     - name: 'Build and Test'
       run: |
