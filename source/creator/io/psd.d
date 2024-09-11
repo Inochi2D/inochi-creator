@@ -142,28 +142,6 @@ struct IncPSDImportSettings {
     also see incAskImportKRA()
 */
 bool incAskImportPSD(string file) {
-    if (!file) 
-        return false;
-
-    switch (incImportKeepFolderStructPop()) {
-        case "NotPreserve":
-            incImportPSD(file, IncPSDImportSettings(false));
-            return true;
-        case "Preserve":
-            incImportPSD(file, IncPSDImportSettings(true));
-            return true;
-        case "Cancel":
-            return false;
-        default:
-            throw new Exception("Invalid selection");
-    }
-}
-
-/**
-    Imports a PSD file with user prompt.
-    also see incAskImportKRA()
-*/
-bool incAskImportPSD(string file) {
     if (!file) return false;
 
     PSDLoadHandler handler = new PSDLoadHandler(file);
