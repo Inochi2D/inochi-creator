@@ -71,7 +71,6 @@ jobs:
         dub add-local dcv-i2d/ "0.3.0"
 
     - name: 'Build Inochi Creator'
-      continue-on-error: true
       run: |
         # Build metadata (like version information and icons)
         dub build --config=meta
@@ -122,7 +121,6 @@ jobs:
         dub add-local dcv-i2d/ "0.3.0"
 
     - name: 'Build Inochi Creator'
-      continue-on-error: true
       run: |
         function Invoke-VSDevEnvironment {
         $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
@@ -187,7 +185,6 @@ jobs:
         compiler: ldc-latest
   
     - name: "Prepare for DMG packing"
-      continue-on-error: true
       run: |
         export HOMEBREW_NO_INSTALL_CLEANUP=1
         export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
@@ -195,13 +192,11 @@ jobs:
         brew install create-dmg gettext
 
     - name: "Remove conflicting brew packages"
-      continue-on-error: true
       run: |
         # Remove conflicting brew items
         brew remove --ignore-dependencies libpng brotli harfbuzz
 
     - name: "Remove final conflicting files"
-      continue-on-error: true
       run: |
         # Delete fake harfbuzz if need be
         if [ -f "/usr/local/lib/libharfbuzz.dylib" ]; then
@@ -228,7 +223,6 @@ jobs:
         dub add-local dcv-i2d/ "0.3.0"
 
     - name: 'Build Inochi Creator'
-      continue-on-error: true
       env:
         DFLAGS: "-g -force-dwarf-frame-section=false"
       run: |
