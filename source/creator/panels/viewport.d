@@ -300,9 +300,9 @@ protected:
         igEndChild();
 
         // Handle smooth move
-        incViewportZoom = dampen(incViewportZoom, incViewportTargetZoom, deltaTime);
+        incViewportZoom = fdampen(incViewportZoom, incViewportTargetZoom, cast(float)deltaTime);
         camera.scale = vec2(incViewportZoom, incViewportZoom);
-        camera.position = vec2(dampen(camera.position, incViewportTargetPosition, deltaTime, 1.5));
+        camera.position = vec2(fdampen(camera.position, incViewportTargetPosition, cast(float)deltaTime));
     }
 
 public:
@@ -314,3 +314,59 @@ public:
 }
 
 mixin incPanel!ViewportPanel;
+
+
+import inmath.util;
+import std.traits;
+V fdampen(V, T)(V current, V target, T delta, T maxSpeed = 50) if(isVector!V && isFloatingPoint!T) {
+    V out_ = current;
+    V diff = current - target;
+
+    // Actual damping
+    if (diff.length > 0) {
+        V direction = (diff).normalized;
+
+        T speed = min(
+            max(0.001, 5.0*(target - current).length) * delta,
+            maxSpeed
+        );
+        V velocity = direction * speed;
+
+        // Set target out
+        out_ = ((target + diff) - velocity);
+
+        // Handle overshooting
+        diff = target - current;
+        if (diff.dot(out_ - target) > 0.0f) {
+            out_ = target;
+        }
+    }
+    return out_;
+}
+
+T fdampen(T)(T current, T target, T delta, T maxSpeed = 50) if(isFloatingPoint!T) {
+    T out_ = current;
+    T diff = current - target;
+    T diffLen = sqrt(diff^^2);
+    T direction = diff/diffLen;
+
+    // Actual damping
+    if (diffLen > 0) {
+
+        T speed = min(
+            max(0.001, 5.0*sqrt((target - current)^^2)) * delta,
+            maxSpeed
+        );
+        T velocity = direction * speed;
+
+        // Set target out
+        out_ = ((target + diff) - velocity);
+
+        // Handle overshooting
+        diff = target - current;
+        if (diff * (out_ - target) > 0.0f) {
+            out_ = target;
+        }
+    }
+    return out_;
+}
