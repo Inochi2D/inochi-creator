@@ -624,8 +624,12 @@ void incBeginLoopNoEv() {
     // HACK: ImGui Crashes if a popup is rendered on the first frame, let's avoid that.
     if (firstFrame) firstFrame = false;
     else {
-        incModalRender();
-        incRenderDialogs();
+        // imgui can not igOpenPopup two popups at the same time, that causes a freeze
+        // so we sperate the popups rendering
+        if (incModalIsOpen())
+            incModalRender();
+        else
+            incRenderDialogs();
     }
     incStatusUpdate();
 

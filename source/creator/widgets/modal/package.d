@@ -97,6 +97,12 @@ void incModalRender() {
         incModalList[incModalIndex].update();
     }
 }
+/** 
+    incModalIsOpen returns true if a modal is open
+*/
+bool incModalIsOpen() {
+    return incModalIndex > -1;
+}
 
 /**
     Adds a modal to the modal display list.
