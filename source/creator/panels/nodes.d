@@ -26,6 +26,10 @@ import i18n;
     The logger frame
 */
 class NodesPanel : Panel {
+private:
+    string filter;
+    bool[uint] filterResult;
+
 protected:
     void treeSetEnabled(Node n, bool enabled) {
         n.enabled = enabled;
@@ -192,6 +196,9 @@ protected:
     }
 
     void treeAddNode(bool isRoot = false)(ref Node n) {
+        if (!filterResult[n.uuid])
+            return;
+
         igTableNextRow();
 
         auto io = igGetIO();
@@ -293,6 +300,9 @@ protected:
         if (open) {
             // Draw children
             foreach(i, child; n.children) {
+                if (!filterResult[child.uuid])
+                    continue;
+
                 igPushID(cast(int)i);
                     igTableNextRow();
                     igTableSetColumnIndex(0);
@@ -325,6 +335,23 @@ protected:
         }
         
 
+    }
+
+    bool filterNodes(Node n) {
+        import std.algorithm;
+        bool result = false;
+        if (n.name.toLower.canFind(filter)) {
+            result = true;
+        } else if (n.children.length == 0) {
+            result = false;
+        }
+
+        foreach(child; n.children) {
+            result |= filterNodes(child);
+        }
+
+        filterResult[n.uuid] = result;
+        return result;
     }
 
     override
@@ -378,6 +405,16 @@ protected:
 
             igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 1));
             igPushStyleVar(ImGuiStyleVar.IndentSpacing, 14);
+
+            if (incInputText("Node Filter", filter)) {
+                filter = filter.toLower;
+                filterResult.clear();
+            }
+
+            incTooltip(_("Filter, search for specific nodes"));
+
+            // filter nodes
+            filterNodes(incActivePuppet.root);
 
             if (igBeginTable("NodesContent", 2, ImGuiTableFlags.ScrollX, ImVec2(0, 0), 0)) {
                 auto window = igGetCurrentWindow();
