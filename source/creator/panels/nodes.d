@@ -22,6 +22,16 @@ import std.format;
 import std.conv;
 import i18n;
 
+enum SelectState {
+    Init, Started, Ended
+}
+
+struct SelectStateData {
+    SelectState state;
+    Node lastClick;
+    Node shiftSelect;
+}
+
 /**
     The Nodes Tree Panel
 */
@@ -29,6 +39,11 @@ class NodesPanel : Panel {
 private:
     string filter;
     bool[uint] filterResult;
+
+    SelectStateData nextSelectState;
+    SelectStateData curSelectState;
+    Node[] rangeSelectNodes;
+    bool selectStateUpdate = false;
 
 protected:
     void treeSetEnabled(Node n, bool enabled) {
@@ -200,6 +215,63 @@ protected:
             incRemoveSelectNode(n);
         else
             incAddSelectNode(n);
+
+        rangeSelectNodes = [];
+    }
+
+    /**
+        Select a range of nodes, it should be called when the user is holding shift key and click on a node
+    */
+    void selectRange(ref Node n) {
+        if (curSelectState.lastClick is null) {
+            nextSelectState.lastClick = n;
+            incSelectNode(n);
+            return;
+        }
+
+        // recover rangeSelectNodes if selected
+        foreach(node; rangeSelectNodes) {
+            incRemoveSelectNode(node);
+        }
+        rangeSelectNodes = [];
+
+        nextSelectState.shiftSelect = n;
+    }
+
+    /**
+        Handle range selection, this function should be called in the treeAddNode or recursive function
+        we assume caller would traverse the tree nodes in order
+    */
+    void handleRangeSelect(ref Node n) {
+        if (curSelectState.state == SelectState.Ended ||
+            curSelectState.lastClick is null ||
+            curSelectState.shiftSelect is null
+            ) {
+            return;
+        }
+
+
+        if (n == curSelectState.lastClick || n == curSelectState.shiftSelect) {
+            switch(curSelectState.state) {
+                case SelectState.Init:
+                    curSelectState.state = SelectState.Started;
+                    break;
+                case SelectState.Started:
+                    curSelectState.state = SelectState.Ended;
+                    nextSelectState.shiftSelect = null;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (curSelectState.state != SelectState.Init && !incNodeInSelection(n)) {
+            incAddSelectNode(n);
+        }
+
+        if (curSelectState.state != SelectState.Init && n != curSelectState.lastClick) {
+            rangeSelectNodes ~= n;
+        }
     }
 
     void treeAddNode(bool isRoot = false)(ref Node n) {
@@ -251,12 +323,20 @@ protected:
                         }
                         igSameLine(0, 2);
 
+                        handleRangeSelect(n);
+
                         // Selectable
                         if (igSelectable(isRoot ? __("Puppet") : n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
                             switch(incEditMode) {
                                 default:
-                                    if (io.KeyCtrl)
+                                    selectStateUpdate = true;
+                                    if (!io.KeyShift)
+                                        nextSelectState.lastClick = n;
+
+                                    if (io.KeyCtrl && !io.KeyShift)
                                         toggleSelect(n);
+                                    else if (!io.KeyCtrl && io.KeyShift)
+                                        selectRange(n);
                                     else if (selected && selectedNodes.length == 1)
                                         incFocusCamera(n);
                                     else
@@ -425,6 +505,12 @@ protected:
                 //igTableSetupColumn("Visibility", ImGuiTableColumnFlags_WidthFixed, 32, 1);
                 
                 if (incEditMode == EditMode.ModelEdit) {
+                    if (selectStateUpdate) {
+                        curSelectState = nextSelectState;
+                        curSelectState.state = SelectState.Init;
+                        selectStateUpdate = false;
+                    }
+
                     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(4, 4));
                         treeAddNode!true(incActivePuppet.root);
                     igPopStyleVar();
