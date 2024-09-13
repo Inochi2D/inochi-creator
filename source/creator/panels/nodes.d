@@ -195,6 +195,13 @@ protected:
         }
     }
 
+    void toggleSelect(ref Node n) {
+        if (incNodeInSelection(n))
+            incRemoveSelectNode(n);
+        else
+            incAddSelectNode(n);
+    }
+
     void treeAddNode(bool isRoot = false)(ref Node n) {
         if (!filterResult[n.uuid])
             return;
@@ -248,17 +255,12 @@ protected:
                         if (igSelectable(isRoot ? __("Puppet") : n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
                             switch(incEditMode) {
                                 default:
-                                    if (selected) {
-                                        if (incSelectedNodes().length > 1) {
-                                            if (io.KeyCtrl) incRemoveSelectNode(n);
-                                            else incSelectNode(n);
-                                        } else {
-                                            incFocusCamera(n);
-                                        }
-                                    } else {
-                                        if (io.KeyCtrl) incAddSelectNode(n);
-                                        else incSelectNode(n);
-                                    }
+                                    if (io.KeyCtrl)
+                                        toggleSelect(n);
+                                    else if (selected && selectedNodes.length == 1)
+                                        incFocusCamera(n);
+                                    else
+                                        incSelectNode(n);
                                     break;
                             }
                         }
