@@ -31,6 +31,21 @@ protected:
             foreach(name, ref anim; incActivePuppet().getAnimations()) {
                 igPushID(name.ptr, name.ptr+name.length);
                     if (igBeginPopup("###OPTIONS")) {
+                        if (igMenuItem(__("Duplicate"))) {
+                            import inochi2d.fmt.serialize : inToJson, inLoadJsonDataFromMemory;
+
+                            // maybe we can just serialize and deserialize, without deep copy implementation
+                            auto newAnim = inLoadJsonDataFromMemory!Animation(inToJson(anim));
+                            auto newName = name ~ "_copy";
+                            while (newName in incActivePuppet().getAnimations()) {
+                                newName ~= "_copy";
+                            }
+
+                            incActivePuppet().getAnimations()[newName] = newAnim;
+                            newAnim.finalize(incActivePuppet());
+                            incAnimationChange(newName);
+                        }
+
                         if (igMenuItem(__("Edit..."))) {
                             incPushWindow(new EditAnimationWindow(anim, name));
                         }
