@@ -29,6 +29,10 @@ import std.algorithm.searching : countUntil;
 import std.algorithm.sorting : sort;
 import std.algorithm.mutation : remove;
 
+enum ScrollUpdate {
+    None, Selected, Unselected
+}
+
 private {
 
     ParameterBinding[][Node] cParamBindingEntries;
@@ -41,6 +45,10 @@ private {
     ParameterBinding[BindTarget] cClipboardBindings;
     Parameter cClipboardParameter = null;
     bool selectedOnly = false;
+
+    // handle the parameter view scroll focus
+    ScrollUpdate scrollUpdate = ScrollUpdate.None;
+    float prevScrollY = 0;
 
     void refreshBindingList(Parameter param, bool selectedOnly = false) {
         // Filter selection to remove anything that went away
@@ -978,10 +986,12 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                     if (incButtonColored(isArmed ? "" : "", ImVec2(24, 24), isArmed ? ImVec4(1f, 0f, 0f, 1f) : *igGetStyleColorVec4(ImGuiCol.Text))) {
                         if (incArmedParameter() == param) {
                             incDisarmParameter();
+                            scrollUpdate = ScrollUpdate.Unselected;
                         } else {
                             param.value = param.getClosestKeypointValue();
                             paramPointChanged(param);
                             incArmParameter(idx, param);
+                            scrollUpdate = ScrollUpdate.Selected;
                         }
                     }
 
@@ -1100,7 +1110,18 @@ protected:
         igEndChild();
 
         if (igBeginChild("ParametersList", ImVec2(0, -36))) {
-            
+            // Scroll update, it allows us to scroll to the selected parameter.
+            if (scrollUpdate != ScrollUpdate.None) {
+                if (scrollUpdate == ScrollUpdate.Selected) {
+                    prevScrollY = igGetScrollY();
+                    igSetScrollY(0);
+                } else if (scrollUpdate == ScrollUpdate.Unselected) {
+                    igSetScrollY(prevScrollY);
+                }
+
+                scrollUpdate = ScrollUpdate.None;
+            }
+
             // Always render the currently armed parameter on top
             if (incArmedParameter()) {
                 incParameterView!true(incArmedParameterIdx(), incArmedParameter(), &grabParam, false, parameters);
