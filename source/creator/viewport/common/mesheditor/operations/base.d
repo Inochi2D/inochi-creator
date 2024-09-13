@@ -64,12 +64,24 @@ public:
     bool mutateSelection = false;
     bool invertSelection = false;
     ulong maybeSelectOne;
+
+    // you should call updateVtxAtMouse() for updating vtxAtMouse
+    // because it also updates prevVtxAtMouse
     ulong vtxAtMouse;
+    ulong prevVtxAtMouse;
+
     vec2 selectOrigin;
     IncMesh previewMesh;
 
     bool deforming = false;
     float meshEditAOE = 4;
+
+    void updateVtxAtMouse(ulong vtxIndex) {
+        // we hope prevVtxAtMouse tracks the previous != -1 vtxAtMouse
+        if (vtxAtMouse != -1)
+            prevVtxAtMouse = vtxAtMouse;
+        vtxAtMouse = vtxIndex;
+    }
 
     bool isSelected(ulong vertIndex) {
         import std.algorithm.searching : canFind;
@@ -150,6 +162,14 @@ public:
         return vInd;
     }
 
+    MeshVertex* mirrorVertex(uint axis, MeshVertex* vtx) {
+        if (axis == 0) return vtx;
+        ulong vInd = getVertexFromPoint(mirror(axis, vtx.position));
+        MeshVertex* v = getVerticesByIndex([vInd])[0];
+        if (v is null || v == vtx) return null;
+        return getVerticesByIndex([vInd])[0];
+    }
+
     bool isOnMirror(vec2 pos, float aoe) {
         return 
             (mirrorVert && pos.y > -aoe && pos.y < aoe) ||
@@ -211,6 +231,7 @@ public:
 
     this(bool deformOnly) {
         this.deformOnly = deformOnly;
+        prevVtxAtMouse = ulong(-1);
     }
 
     VertexToolMode getToolMode() {
