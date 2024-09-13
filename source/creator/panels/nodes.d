@@ -23,7 +23,7 @@ import std.conv;
 import i18n;
 
 /**
-    The logger frame
+    The Nodes Tree Panel
 */
 class NodesPanel : Panel {
 private:
