@@ -249,6 +249,10 @@ protected:
                         incAskImportKRA(file);
                         break mainLoop;
 
+                    case ".inx":
+                        incOpenProject(file);
+                        break mainLoop;
+
                     default:
                         incDialog(__("Error"), _("%s is not supported").format(fname)); 
                         break;
