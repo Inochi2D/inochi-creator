@@ -30,6 +30,10 @@ struct SelectStateData {
     SelectState state;
     Node lastClick;
     Node shiftSelect;
+
+    // tracking for closed nodes
+    bool hasRenderedLastClick;
+    bool hasRenderedShiftSelect;
 }
 
 /**
@@ -46,6 +50,35 @@ private:
     bool selectStateUpdate = false;
 
 protected:
+    /**
+        track the last click and shift select if they are rendered
+    */
+    void trackingRenderedNode(ref Node node) {
+        if (nextSelectState.lastClick is node)
+            nextSelectState.hasRenderedLastClick = true;
+
+        if (nextSelectState.shiftSelect is node)
+            nextSelectState.hasRenderedShiftSelect = true;
+    }
+
+    void startTrackingRenderedNodes() {
+        nextSelectState.hasRenderedLastClick = false;
+        nextSelectState.hasRenderedShiftSelect = false;
+    }
+
+    void endTrackingRenderedNodes() {
+        if (!nextSelectState.hasRenderedLastClick && nextSelectState.lastClick !is null) {
+            nextSelectState.lastClick = null;
+            nextSelectState.shiftSelect = null;
+            selectStateUpdate = true;
+        }
+
+        if (!nextSelectState.hasRenderedShiftSelect && nextSelectState.shiftSelect !is null) {
+            nextSelectState.shiftSelect = null;
+            selectStateUpdate = true;
+        }
+    }
+
     void treeSetEnabled(Node n, bool enabled) {
         n.enabled = enabled;
         foreach(child; n.children) {
@@ -250,7 +283,6 @@ protected:
             return;
         }
 
-
         if (n == curSelectState.lastClick || n == curSelectState.shiftSelect) {
             switch(curSelectState.state) {
                 case SelectState.Init:
@@ -344,6 +376,9 @@ protected:
                                     break;
                             }
                         }
+
+                        trackingRenderedNode(n);
+
                         this.nodeActionsPopup!isRoot(n);
                     igEndGroup();
 
@@ -511,9 +546,11 @@ protected:
                         selectStateUpdate = false;
                     }
 
+                    startTrackingRenderedNodes();
                     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(4, 4));
                         treeAddNode!true(incActivePuppet.root);
                     igPopStyleVar();
+                    endTrackingRenderedNodes();
                 }
 
                 igEndTable();
