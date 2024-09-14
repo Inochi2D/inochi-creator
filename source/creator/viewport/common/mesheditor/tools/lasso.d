@@ -56,6 +56,15 @@ public:
         return p1.x + (y - p1.y) / (p2.y - p1.y) * (p2.x - p1.x);
     }
 
+    vec3[] mirrorLassoPoints(IncMeshEditorOne impl, uint axis, vec3[] points) {
+        vec3[] mirroredPoints;
+        foreach (point; points) {
+            vec2 v2 = impl.mirrorDelta(axis, point.xy);
+            mirroredPoints ~= vec3(v2.x, v2.y, 0);
+        }
+        return mirroredPoints;
+    }
+
     bool pointInPolygon(vec3 p, vec3[] poly) {
         debug assert(poly.length % 2 == 0);
         // ray-casting algorithm
@@ -141,26 +150,30 @@ public:
         if (impl.deformOnly)
             transform = impl.transform;
 
-        inDbgSetBuffer(lassoPoints);
-        inDbgPointsSize(10);
-        inDbgDrawPoints(vec4(0, 0, 0, 1), transform);
-        inDbgPointsSize(6);
-        inDbgDrawPoints(vec4(0.5, 0.5, 0.5, 1), transform);
+        impl.foreachMirror((uint axis) {
+            vec3[] mirroredPoints = mirrorLassoPoints(impl, axis, lassoPoints);
 
-        // find closest point
-        vec3 mousePos = vec3(impl.mousePos.x, impl.mousePos.y, 0);
-        size_t p = isClosestToStart(mousePos);
-        if (p != -1) {
-            inDbgSetBuffer([lassoPoints[p]]);
+            inDbgSetBuffer(mirroredPoints);
             inDbgPointsSize(10);
-            inDbgDrawPoints(vec4(1, 0, 0, 1), transform);
-        }
+            inDbgDrawPoints(vec4(0, 0, 0, 1), transform);
+            inDbgPointsSize(6);
+            inDbgDrawPoints(vec4(0.5, 0.5, 0.5, 1), transform);
 
-        inDbgSetBuffer(lassoPoints ~ [lassoPoints[$ - 1], vec3(impl.mousePos.x, impl.mousePos.y, 0)]);
-        inDbgLineWidth(3);
-        inDbgDrawLines(vec4(.0, .0, .0, 1), transform);
-        inDbgLineWidth(1);
-        inDbgDrawLines(vec4(1, 1, 1, 1), transform);
+            // find closest point
+            vec3 mousePos = vec3(impl.mousePos.x, impl.mousePos.y, 0);
+            size_t p = isClosestToStart(mousePos);
+            if (p != -1) {
+                inDbgSetBuffer([mirroredPoints[p]]);
+                inDbgPointsSize(10);
+                inDbgDrawPoints(vec4(1, 0, 0, 1), transform);
+            }
+
+            inDbgSetBuffer(mirroredPoints ~ mirrorLassoPoints(impl, axis, [lassoPoints[$ - 1], vec3(impl.mousePos.x, impl.mousePos.y, 0)]));
+            inDbgLineWidth(3);
+            inDbgDrawLines(vec4(.0, .0, .0, 1), transform);
+            inDbgLineWidth(1);
+            inDbgDrawLines(vec4(1, 1, 1, 1), transform);
+        });
     }
 }
 
