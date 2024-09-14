@@ -91,7 +91,7 @@ public:
 
         if (igIsMouseClicked(ImGuiMouseButton.Left) ||
             (igIsMouseDown(ImGuiMouseButton.Left) && lassoPoints.length > 0 &&
-            lassoPoints[$ - 1].xy.distance(impl.mousePos) > 40)) {
+            lassoPoints[$ - 1].xy.distance(impl.mousePos) > 20)) {
 
             if (lassoPoints.length > 1)
                 lassoPoints ~= lassoPoints[$ - 1];
@@ -121,7 +121,7 @@ public:
     }
 
     bool isCloses(vec3 p1, vec3 p2) {
-        return p1.distance(p2) < 20;
+        return p1.distance(p2) < 17;
     }
 
     size_t findClosest(vec3 target) {
