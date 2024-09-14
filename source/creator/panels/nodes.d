@@ -227,7 +227,7 @@ protected:
 
                         // Type Icon
                         static if (!isRoot) {
-                            incNodeIconButton!Node(n);
+                            incNodeIconButton(n);
                         } else {
                             incText("");
                         }

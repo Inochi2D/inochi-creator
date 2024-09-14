@@ -2,7 +2,7 @@ module creator.widgets.label;
 import bindbc.imgui;
 import creator.widgets.dummy;
 import creator.core.font;
-
+import inochi2d.core.nodes : Node;
 
 /**
     Render text
@@ -209,17 +209,15 @@ private {
 
 /**
     Show Node Icon Label
-    Note: we using template avoid the dependency of Node class (decoupling)
-        if we not using template, we need to import Node class in this file
 */
-void incNodeIconButton(T)(ref T node, string typeString) {
+void incNodeIconButton(ref Node node, string typeString) {
     if (node.enabled) incText(typeString);
     else incTextDisabled(typeString);
     if (igIsItemClicked())
         node.enabled = !node.enabled;
 }
 
-void incNodeIconButton(T)(ref T node) {
+void incNodeIconButton(ref Node node) {
     import creator.utils;
     incNodeIconButton(node, incTypeIdToIcon(node.typeId()));
 }
