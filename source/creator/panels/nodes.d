@@ -227,11 +227,7 @@ protected:
 
                         // Type Icon
                         static if (!isRoot) {
-                            if (n.enabled) incText(incTypeIdToIcon(n.typeId));
-                            else incTextDisabled(incTypeIdToIcon(n.typeId));
-                            if (igIsItemClicked()) {
-                                n.enabled = !n.enabled;
-                            }
+                            incNodeIconButton!Node(n);
                         } else {
                             incText("");
                         }

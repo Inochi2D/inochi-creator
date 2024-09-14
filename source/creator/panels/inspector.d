@@ -290,7 +290,7 @@ void incModelModeHeader(Node node) {
         igSameLine(0, 0);
         incDummy(ImVec2(-len.x, len.y));
         igSameLine(0, 0);
-        incText(typeString);
+        incNodeIconButton!Node(node);
     igPopID();
 }
 

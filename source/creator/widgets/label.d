@@ -206,3 +206,20 @@ private {
         ImDrawList_AddLine(igGetWindowDrawList(), min, max, igGetColorU32_Vec4(color), 1.0f);
     }
 }
+
+/**
+    Show Node Icon Label
+    Note: we using template avoid the dependency of Node class (decoupling)
+        if we not using template, we need to import Node class in this file
+*/
+void incNodeIconButton(T)(ref T node, string typeString) {
+    if (node.enabled) incText(typeString);
+    else incTextDisabled(typeString);
+    if (igIsItemClicked())
+        node.enabled = !node.enabled;
+}
+
+void incNodeIconButton(T)(ref T node) {
+    import creator.utils;
+    incNodeIconButton(node, incTypeIdToIcon(node.typeId()));
+}
