@@ -61,3 +61,9 @@ Once the below dependencies are met, building and running inochi-creator should 
 - SDL2 (developer package)
 - Freetype (developer package)
 - appimagetool (for building an AppImage)
+
+## Special Thanks
+
+This project is funded through [NGI0 Entrust](https://nlnet.nl/entrust), a fund established by [NLnet](https://nlnet.nl) with financial support from the European Commission's [Next Generation Internet](https://ngi.eu) program. Learn more at the [NLnet project page](https://nlnet.nl/project/Inochi2D).
+
+[<img src="https://nlnet.nl/logo/banner.svg" alt="NLnet foundation logo" width="20%" />](https://nlnet.nl)  
