@@ -91,12 +91,37 @@ public:
     void toggleSelect(ulong vertIndex) {
         import std.algorithm.searching : countUntil;
         import std.algorithm.mutation : remove;
-        auto idx = selected.countUntil(vertIndex);
-        if (isSelected(vertIndex)) {
+
+        // NOTE: isSelected iterates the array again
+        // but countUntil will return -1 if not found
+        // That way we can easily just use this value
+        // once and avoid 2 array iterations.
+        ptrdiff_t idx = selected.countUntil(vertIndex);
+        if (idx >= 0) {
             selected = selected.remove(idx);
         } else {
             selected ~= vertIndex;
         }
+
+        updateMirrorSelected();
+    }
+
+    void select(ulong vertIndex) {
+        if (!isSelected(vertIndex)) {
+            selected ~= vertIndex;
+        }
+        
+        updateMirrorSelected();
+    }
+
+    void deselect(ulong vertIndex) {
+        import std.algorithm.searching : countUntil;
+        import std.algorithm.mutation : remove;
+        ptrdiff_t idx = selected.countUntil(vertIndex);
+        if (idx >= 0) {
+            selected = selected.remove(idx);
+        }
+        
         updateMirrorSelected();
     }
 

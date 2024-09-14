@@ -357,7 +357,7 @@ class GridTool : NodeSelect {
     }
 }
 
-class ToolInfoImpl(T: GridTool) : ToolInfoBase!(T) {
+class GridToolInfo : ToolInfoBase!GridTool {
     override
     void setupToolMode(IncMeshEditorOne e, VertexToolMode mode) {
         e.setToolMode(mode);
