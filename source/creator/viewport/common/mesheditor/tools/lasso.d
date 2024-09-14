@@ -23,7 +23,7 @@ private:
     vec3[] lassoPoints;
 
 public:
-    void doSelection(IncMeshEditorOne impl) {
+    void doSelection(IncMeshEditorOne impl, bool addSelect, bool removeSelect) {
         // lassoPoints is stored the edge so multiply by 2
         if (lassoPoints.length < 2 * 2)
             return;
@@ -43,9 +43,16 @@ public:
         }
 
         // check if the point is inside the lasso polygon
+        if (!addSelect)
+            impl.deselectAll();
+
         foreach (index, vec; vertices) {
-            if (pointInPolygon(vec3(vec.x, vec.y, 0), lassoPoints))
-                impl.toggleSelect(index);
+            if (pointInPolygon(vec3(vec.x, vec.y, 0), lassoPoints)) {
+                if (addSelect && removeSelect) impl.toggleSelect(index); 
+                else if(!addSelect && removeSelect) impl.deselect(index);
+                else impl.select(index);
+            }
+                
         }
 
         lassoPoints.length = 0;
@@ -114,7 +121,13 @@ public:
     override
     bool update(ImGuiIO* io, IncMeshEditorOne impl, int action, out bool changed) {
         super.update(io, impl, action, changed);
+        bool addSelect = igIsKeyDown(ImGuiKey.LeftShift) || igIsKeyDown(ImGuiKey.RightShift);
+        bool removeSelect = igIsKeyDown(ImGuiKey.LeftCtrl) || igIsKeyDown(ImGuiKey.RightCtrl);
+
         incStatusTooltip(_("Add Lasso Point"), _("Left Mouse"));
+        incStatusTooltip(_("Additive Selection"), _("Shift"));
+        if (addSelect) incStatusTooltip(_("Inverse Selection"), _("Ctrl"));
+        else incStatusTooltip(_("Remove Selection"), _("Ctrl"));
         incStatusTooltip(_("Delete Last Point"), _("Right Mouse"));
         incStatusTooltip(_("Clear"), _("ESC"));
 
@@ -130,7 +143,7 @@ public:
             if (p == 0 && lassoPoints.length > 2) {
                 // force close the polygon prevent issue
                 lassoPoints[$ - 1] = lassoPoints[0];
-                doSelection(impl);
+                doSelection(impl, addSelect, removeSelect);
             }
         }
 
