@@ -89,8 +89,9 @@ public:
         incStatusTooltip(_("Delete Last Point"), _("Right Mouse"));
         incStatusTooltip(_("Clear"), _("ESC"));
 
-        if (igIsMouseClicked(ImGuiMouseButton.Left)) {
-
+        if (igIsMouseClicked(ImGuiMouseButton.Left) ||
+            (igIsMouseDown(ImGuiMouseButton.Left) && lassoPoints.length > 0 &&
+            lassoPoints[$ - 1].xy.distance(impl.mousePos) > 40)) {
 
             if (lassoPoints.length > 1)
                 lassoPoints ~= lassoPoints[$ - 1];
