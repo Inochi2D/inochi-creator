@@ -53,18 +53,28 @@ public:
 
     /**
         check lines are crossing on x axis
-        Note: p1, p2 vec3 just for x, y (z is not used)
     */
     pragma(inline, true)
-    bool isCrossingXaxis(float y, vec3 p1, vec3 p2) {
+    bool isCrossingXaxis(float y, vec2 p1, vec2 p2) {
         if (p1.y > p2.y)
             swap(p1, p2);
         return p1.y <= y && y <= p2.y && p1.y != p2.y;
     }
 
+    /**
+        Gets the point on the X axis that y crosses p1 and p2
+    */
     pragma(inline, true)
-    float getCrossX(float y, vec3 p1, vec3 p2) {
+    float getCrossX(float y, vec2 p1, vec2 p2) {
         return p1.x + (y - p1.y) / (p2.y - p1.y) * (p2.x - p1.x);
+    }
+
+    /**
+        Gets whether the crossing direction is "up" or "down"
+    */
+    pragma(inline, true)
+    bool getCrossDir(vec2 p1, vec2 p2) {
+        return p1.y < p2.y ? true : false;
     }
 
     vec3[] mirrorLassoPoints(IncMeshEditorOne impl, uint axis, vec3[] points) {
@@ -78,19 +88,27 @@ public:
 
     bool pointInPolygon(vec3 p, vec3[] poly) {
         debug assert(poly.length % 2 == 0);
-        // ray-casting algorithm
-        bool inside = false;
+        
+        // Sunday's algorithm
+        ptrdiff_t crossings = 0;
         for (size_t i = 0; i < poly.length; i += 2) {
-            vec3 p1 = poly[i];
-            vec3 p2 = poly[i + 1];
+            vec2 p1 = poly[i].xy;
+            vec2 p2 = poly[i + 1].xy;
             if (isCrossingXaxis(p.y, p1, p2)) {
+
                 // check point is on the left side of the line
                 float crossX = getCrossX(p.y, p1, p2);
-                if (p.x < crossX)
-                    inside = !inside;
+                
+                // Check direction of line
+                bool dir = getCrossDir(p1, p2);
+
+                if (p.x < crossX) {
+                    if (dir)    crossings++;
+                    else        crossings--;
+                }
             }
         }
-        return inside;
+        return crossings != 0;
     }
 
     override
@@ -189,7 +207,7 @@ public:
     }
 }
 
-class ToolInfoImpl(T: LassoTool) : ToolInfoBase!(T) {
+class LassoToolInfo : ToolInfoBase!LassoTool {
     override
     bool viewportTools(bool deformOnly, VertexToolMode toolMode, IncMeshEditorOne[Node] editors) {
         return super.viewportTools(deformOnly, toolMode, editors);

@@ -382,7 +382,7 @@ class PathDeformTool : NodeSelect {
     }
 }
 
-class ToolInfoImpl(T: PathDeformTool) : ToolInfoBase!(T) {
+class PathDeformToolInfo : ToolInfoBase!PathDeformTool {
     override
     void setupToolMode(IncMeshEditorOne e, VertexToolMode mode) {
         e.setToolMode(mode);

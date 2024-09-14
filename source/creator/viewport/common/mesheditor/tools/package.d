@@ -16,12 +16,12 @@ private {
 
 ToolInfo[] incGetToolInfo() {
     if (infoList.length == 0) {
-        infoList ~= new ToolInfoImpl!(PointTool);
-        infoList ~= new ToolInfoImpl!(ConnectTool);
-        infoList ~= new ToolInfoImpl!(PathDeformTool);
-        infoList ~= new ToolInfoImpl!(GridTool);
-        infoList ~= new ToolInfoImpl!(BrushTool);
-        infoList ~= new ToolInfoImpl!(LassoTool);
+        infoList ~= new PointToolInfo;
+        infoList ~= new ConnectToolInfo;
+        infoList ~= new PathDeformToolInfo;
+        infoList ~= new GridToolInfo;
+        infoList ~= new BrushToolInfo;
+        infoList ~= new LassoToolInfo;
     }
     return infoList;
 }
