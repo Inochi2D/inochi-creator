@@ -169,6 +169,12 @@ protected:
                                 changesRequiresRestart = true;
                             }
                             incTooltip(_("Use the OpenDyslexic font for Latin text characters."));
+
+                            bool disableParamAutoScroll = incSettingsGet!bool("DisableParamAutoScroll", false);
+                            if (igCheckbox(__("Disable Parameters List Auto-Scroll"), &disableParamAutoScroll)) {
+                                incSettingsSet("DisableParamAutoScroll", disableParamAutoScroll);
+                            }
+                            incTooltip(_("Disable automatic scrolling to the top of the parameters list."));
                         endSection();
                         break;
                     case SettingsPane.FileHandling:
