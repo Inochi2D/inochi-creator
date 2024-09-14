@@ -6,6 +6,7 @@
 */
 
 module creator.viewport.common.mesheditor.tools.lasso;
+import creator.viewport.common.mesh;
 import creator.viewport.common.mesheditor.tools.enums;
 import creator.viewport.common.mesheditor.tools.base;
 import creator.viewport.common.mesheditor.tools.select;
@@ -27,13 +28,23 @@ public:
         if (lassoPoints.length < 2 * 2)
             return;
 
-        auto implDrawable = cast(IncMeshEditorOneDrawable)impl;
-        auto mesh = implDrawable.getMesh();
-        if (mesh is null)
-            return;
+        // get the vertices
+        vec2[] vertices;
+        if (auto tmpImpl = cast(IncMeshEditorOneDrawableDeform)impl) {
+            auto drawable = cast(Drawable)tmpImpl.getTarget();
+            vertices.length = drawable.vertices().length;
+            foreach (index, vec; drawable.vertices())
+                vertices[index] = vec + drawable.deformation[index];
+        } else if (auto tmpImpl = cast(IncMeshEditorOneDrawable)impl) {
+            auto drawable = cast(Drawable)tmpImpl.getTarget();
+            vertices = drawable.vertices;
+        } else {
+            throw new Exception("Invalid IncMeshEditorOne type");
+        }
 
-        foreach (index, meshVertex; mesh.vertices) {
-            if (pointInPolygon(vec3(meshVertex.position.x, meshVertex.position.y, 0), lassoPoints))
+        // check if the point is inside the lasso polygon
+        foreach (index, vec; vertices) {
+            if (pointInPolygon(vec3(vec.x, vec.y, 0), lassoPoints))
                 impl.toggleSelect(index);
         }
 
@@ -181,10 +192,6 @@ public:
 class ToolInfoImpl(T: LassoTool) : ToolInfoBase!(T) {
     override
     bool viewportTools(bool deformOnly, VertexToolMode toolMode, IncMeshEditorOne[Node] editors) {
-        // idk why lasso selection can't get the deformed mesh vertex, so disable it
-        if (deformOnly)
-            return false;
-
         return super.viewportTools(deformOnly, toolMode, editors);
     }
     override VertexToolMode mode() { return VertexToolMode.LassoSelection; }
