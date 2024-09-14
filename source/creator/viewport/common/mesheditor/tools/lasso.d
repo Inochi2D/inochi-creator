@@ -21,8 +21,30 @@ import std.algorithm.mutation : swap;
 class LassoTool : NodeSelect {
 private:
     vec3[] lassoPoints;
+    size_t[] rollbackCheckpoints;
 
 public:
+    void cleanup() {
+        lassoPoints.length = 0;
+        rollbackCheckpoints.length = 0;
+    }
+
+    /**
+        Rollback the previous checkpoint
+    */
+    bool rollbackOnce() {
+        if (rollbackCheckpoints.length == 0)
+            return false;
+        
+        lassoPoints.length = rollbackCheckpoints[$ - 1];
+        rollbackCheckpoints.length -= 1;
+        return true;
+    }
+
+    void commitCheckpoint() {
+        rollbackCheckpoints ~= lassoPoints.length;
+    }
+
     void doSelection(IncMeshEditorOne impl, bool addSelect, bool removeSelect) {
         // lassoPoints is stored the edge so multiply by 2
         if (lassoPoints.length < 2 * 2)
@@ -55,7 +77,7 @@ public:
                 
         }
 
-        lassoPoints.length = 0;
+        cleanup();
     }
 
     /**
@@ -131,6 +153,9 @@ public:
         incStatusTooltip(_("Delete Last Point"), _("Right Mouse"));
         incStatusTooltip(_("Clear"), _("ESC"));
 
+        if (igIsMouseClicked(ImGuiMouseButton.Left))
+            commitCheckpoint();
+
         if (igIsMouseClicked(ImGuiMouseButton.Left) ||
             (igIsMouseDown(ImGuiMouseButton.Left) && lassoPoints.length > 0 &&
             lassoPoints[$ - 1].xy.distance(impl.mousePos) > 14/incViewportZoom)) {
@@ -147,17 +172,11 @@ public:
             }
         }
 
-        if (igIsMouseClicked(ImGuiMouseButton.Right)) {
-            if (lassoPoints.length >= 2) {
-                lassoPoints.length -= 2;
-            } else {
-                lassoPoints.length = 0;
-            }
-        }
+        if (igIsMouseClicked(ImGuiMouseButton.Right))
+            rollbackOnce();
 
-        if (igIsKeyPressed(ImGuiKey.Escape)) {
-            lassoPoints.length = 0;
-        }
+        if (igIsKeyPressed(ImGuiKey.Escape))
+            cleanup();
 
         return true;
     }
