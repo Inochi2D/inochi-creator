@@ -183,12 +183,6 @@ public:
         impl.foreachMirror((uint axis) {
             vec3[] mirroredPoints = mirrorLassoPoints(impl, axis, lassoPoints);
 
-            inDbgSetBuffer(mirroredPoints);
-            inDbgPointsSize(10);
-            inDbgDrawPoints(vec4(0, 0, 0, 1), transform);
-            inDbgPointsSize(6);
-            inDbgDrawPoints(vec4(0.5, 0.5, 0.5, 1), transform);
-
             // find closest point
             vec3 mousePos = vec3(impl.mousePos.x, impl.mousePos.y, 0);
             size_t p = isClosestToStart(mousePos);
