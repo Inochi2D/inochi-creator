@@ -6,4 +6,5 @@ enum VertexToolMode {
     PathDeform,
     Grid,
     Brush,
+    LassoSelection,
 };
