@@ -4,8 +4,8 @@
 
     Authors: Lin, Yong Xiang <r888800009@gmail.com>
 */
-
 module creator.viewport.common.mesheditor.tools.lasso;
+import creator.viewport;
 import creator.viewport.common.mesh;
 import creator.viewport.common.mesheditor.tools.enums;
 import creator.viewport.common.mesheditor.tools.base;
@@ -102,7 +102,7 @@ public:
 
         if (igIsMouseClicked(ImGuiMouseButton.Left) ||
             (igIsMouseDown(ImGuiMouseButton.Left) && lassoPoints.length > 0 &&
-            lassoPoints[$ - 1].xy.distance(impl.mousePos) > 20)) {
+            lassoPoints[$ - 1].xy.distance(impl.mousePos) > 14/incViewportZoom)) {
 
             if (lassoPoints.length > 1)
                 lassoPoints ~= lassoPoints[$ - 1];
@@ -132,7 +132,7 @@ public:
     }
 
     bool isCloses(vec3 p1, vec3 p2) {
-        return p1.distance(p2) < 17;
+        return p1.distance(p2) < 14/incViewportZoom;
     }
 
     size_t findClosest(vec3 target) {
