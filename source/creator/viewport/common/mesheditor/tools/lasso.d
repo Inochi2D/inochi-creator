@@ -43,7 +43,7 @@ public:
         }
 
         // check if the point is inside the lasso polygon
-        if (!addSelect)
+        if (!addSelect && !removeSelect)
             impl.deselectAll();
 
         foreach (index, vec; vertices) {
@@ -121,8 +121,8 @@ public:
     override
     bool update(ImGuiIO* io, IncMeshEditorOne impl, int action, out bool changed) {
         super.update(io, impl, action, changed);
-        bool addSelect = igIsKeyDown(ImGuiKey.LeftShift) || igIsKeyDown(ImGuiKey.RightShift);
-        bool removeSelect = igIsKeyDown(ImGuiKey.LeftCtrl) || igIsKeyDown(ImGuiKey.RightCtrl);
+        bool addSelect = igIsKeyDown(ImGuiKey.ModShift);
+        bool removeSelect = igIsKeyDown(ImGuiKey.ModCtrl);
 
         incStatusTooltip(_("Add Lasso Point"), _("Left Mouse"));
         incStatusTooltip(_("Additive Selection"), _("Shift"));
