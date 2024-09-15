@@ -40,6 +40,8 @@
   [Luna the Foxgirl](https://twitter.com/LunaFoxgirlVT)
 ### Italiano
   [Adryzz](https://twitter.com/Adryzz6)
+### Brasileiro
+  [Yuçuna](https://github.com/yussuna)
 ### 日本語
   [seagetch](https://twitter.com/seagetch)
   [40Nix](https://twitter.com/40Nix)
