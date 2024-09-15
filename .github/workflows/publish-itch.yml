@@ -51,4 +51,4 @@ jobs:
         ITCH_GAME: inochi-creator
         ITCH_USER: LunaFoxgirlVT
         VERSION_FILE: version.txt
-        PACKAGE: '${{ matrix.config.file }}'
+        PACKAGE: 'out/${{ matrix.config.file }}'

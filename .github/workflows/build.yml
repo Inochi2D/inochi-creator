@@ -234,7 +234,6 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: build-win32
-        path: out/
 
     - name: 'Add msbuild to PATH'
       uses: microsoft/setup-msbuild@v1.1
@@ -275,7 +274,6 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: build-osx
-        path: out/
 
     - name: 'Build DMG'
       run: |
