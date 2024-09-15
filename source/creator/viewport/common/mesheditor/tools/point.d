@@ -25,6 +25,7 @@ import std.stdio;
 
 class PointTool : NodeSelect {
     Action action;
+    bool autoConnect = true;
 
     override bool onDragStart(vec2 mousePos, IncMeshEditorOne impl) {
         if (!impl.deformOnly) {
@@ -129,32 +130,60 @@ class PointTool : NodeSelect {
                     impl.selected.length = 0;
                     impl.updateMirrorSelected();
                     impl.maybeSelectOne = ulong(-1);
-                    impl.vtxAtMouse = ulong(-1);
+                    impl.updateVtxAtMouse(ulong(-1));
                     changed = true;
                 }
 
                 action.updateNewState();
                 incActionPush(action);
             } else {
-                auto action = new MeshAddAction(impl.getTarget().name, impl, mesh);
+                void addVertex(ref MeshVertex* vertex) {
+                    auto action = new MeshAddAction(impl.getTarget().name, impl, mesh);
 
-                ulong off = mesh.vertices.length;
-                if (impl.isOnMirror(impl.mousePos, impl.meshEditAOE)) {
-                    impl.placeOnMirror(impl.mousePos, impl.meshEditAOE);
-                } else {
-                    impl.foreachMirror((uint axis) {
-                        MeshVertex* vertex = new MeshVertex(impl.mirror(axis, impl.mousePos));
-                        action.addVertex(vertex);
-                    });
+                    ulong off = mesh.vertices.length;
+                    if (impl.isOnMirror(impl.mousePos, impl.meshEditAOE)) {
+                        impl.placeOnMirror(impl.mousePos, impl.meshEditAOE);
+                    } else {
+                        impl.foreachMirror((uint axis) {
+                            vertex = new MeshVertex(impl.mirror(axis, impl.mousePos));
+                            action.addVertex(vertex);
+                        });
+                    }
+                    impl.refreshMesh();
+                    impl.vertexMapDirty = true;
+                    if (io.KeyCtrl) impl.selectOne(mesh.vertices.length - 1);
+                    else impl.selectOne(off);
+                    changed = true;
+
+                    action.updateNewState();
+                    incActionPush(action);
                 }
-                impl.refreshMesh();
-                impl.vertexMapDirty = true;
-                if (io.KeyCtrl) impl.selectOne(mesh.vertices.length - 1);
-                else impl.selectOne(off);
-                changed = true;
 
-                action.updateNewState();
-                incActionPush(action);
+                // connect if there is a selected vertex
+                void connectVertex(ref MeshVertex* vertex) {
+                    if (vertex is null) return;
+
+                    auto prevMouse = impl.getVerticesByIndex([impl.prevVtxAtMouse])[0];
+                    auto action = new MeshConnectAction(impl.getTarget().name, impl, mesh);
+                    impl.foreachMirror((uint axis) {
+                        MeshVertex* mPrev = impl.mirrorVertex(axis, prevMouse);
+                        MeshVertex* mSel  = impl.mirrorVertex(axis, vertex);
+
+                        if (mPrev !is null && mSel !is null) {
+                            action.connect(mPrev, mSel);
+                        }
+                    });
+                    impl.refreshMesh();
+                    action.updateNewState();
+                    incActionPush(action);
+
+                    changed = true;
+                }
+
+                MeshVertex* vertex;
+                addVertex(vertex);
+                if (autoConnect)
+                    connectVertex(vertex);
             }
         }
 
@@ -424,13 +453,41 @@ class PointTool : NodeSelect {
         return changed;
     }
 
+    bool isAutoConnect() {
+        return autoConnect;
+    }
+
+    void setAutoConnect(bool autoConnect) {
+        this.autoConnect = autoConnect;
+    }
 }
 
-class ToolInfoImpl(T: PointTool) : ToolInfoBase!(T) {
+class PointToolInfo : ToolInfoBase!PointTool {
     override
     VertexToolMode mode() { return VertexToolMode.Points; }
     override
     string icon() { return ""; }
     override
     string description() { return _("Vertex Tool"); }
+
+    override
+    bool displayToolOptions(bool deformOnly, VertexToolMode toolMode, IncMeshEditorOne[Node] editors) { 
+        if (deformOnly) {
+
+        } else {
+            auto pointTool = cast(PointTool)(editors.length == 0 ? null: editors.values()[0].getTool());
+            igBeginGroup();
+                if (incButtonColored("", ImVec2(0, 0), (pointTool !is null && !pointTool.isAutoConnect())? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                foreach (e; editors) {
+                    auto pt = cast(PointTool)(e.getTool());
+                    if (pt !is null)
+                        pt.setAutoConnect(!pt.isAutoConnect());
+                }
+                }
+                incTooltip(_("Auto connect vertices"));
+            igEndGroup();
+        }
+
+        return false;
+    }
 }

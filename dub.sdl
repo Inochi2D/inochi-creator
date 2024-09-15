@@ -32,9 +32,15 @@ configuration "barebones" {
 }
 
 // Metadata generation
-configuration "meta" {
+configuration "update-version" {
 	targetType "none"
 	preGenerateCommands "dub run -y gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
+}
+
+
+// Metadata generation
+configuration "meta" {
+	targetType "none"
 	preGenerateCommands "rc.exe /v build-aux\\windows\\inochi-creator.rc" platform="windows"
 }
 

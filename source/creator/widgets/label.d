@@ -2,7 +2,7 @@ module creator.widgets.label;
 import bindbc.imgui;
 import creator.widgets.dummy;
 import creator.core.font;
-
+import inochi2d.core.nodes : Node;
 
 /**
     Render text
@@ -205,4 +205,19 @@ private {
         min.y = max.y;
         ImDrawList_AddLine(igGetWindowDrawList(), min, max, igGetColorU32_Vec4(color), 1.0f);
     }
+}
+
+/**
+    Show Node Icon Label
+*/
+void incNodeIconButton(ref Node node, string typeString) {
+    if (node.enabled) incText(typeString);
+    else incTextDisabled(typeString);
+    if (igIsItemClicked())
+        node.enabled = !node.enabled;
+}
+
+void incNodeIconButton(ref Node node) {
+    import creator.utils;
+    incNodeIconButton(node, incTypeIdToIcon(node.typeId()));
 }

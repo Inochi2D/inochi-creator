@@ -1,0 +1,287 @@
+name: 'Build Inochi Creator'
+
+on:
+  workflow_call:
+    inputs:
+      target_ref:
+        required: true
+        type: string
+      variant:
+        required: true
+        type: string
+      build_type:
+        required: false
+        type: string
+        default: release
+      generate_version:
+        required: false
+        type: boolean
+        default: false
+      fail_fast:
+        required: false
+        type: boolean
+        default: true
+      do_package:
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+
+  # Build translations, etc.
+  build-resources:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4.1.7
+      with:
+        ref: '${{ inputs.target_ref }}'
+
+    - name: 'Install dependencies'
+      run: |
+        sudo apt-get update
+        sudo apt-get install gettext
+      
+    - name: 'Generate i18n'
+      run: |
+        # Build translations
+        mkdir out/
+        mkdir otl/
+        
+        sudo chmod +x ./gentl.sh
+        ./gentl.sh
+
+        cp out/* otl/
+    
+    - name: Make Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: translations
+        path: otl/*
+        retention-days: 1
+
+  build:
+    needs: build-resources
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: ${{ inputs.fail_fast }}
+      matrix:
+        config:
+          - platform: 'osx'
+            os: 'macos-14'
+
+          - platform: 'win32'
+            os: windows-latest
+
+          - platform: 'linux'
+            os: ubuntu-20.04
+      
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: '${{ inputs.target_ref }}'
+        
+    # Setup D Compiler
+    - uses: dlang-community/setup-dlang@v1.4.0
+      with:
+        compiler: ldc-latest
+
+    # Download Translations
+    - uses: actions/download-artifact@v4
+      with:
+        name: translations
+        path: out/i18n/
+
+    - name: 'Preparing build... (Ubuntu)'
+      if: ${{ matrix.config.platform == 'linux' }}
+      run: |
+        sudo apt install libsdl2-dev libfreetype6-dev
+
+    - name: 'Preparing build... (macOS)'
+      if: ${{ matrix.config.platform == 'osx' }}
+      run: |
+        export HOMEBREW_NO_INSTALL_CLEANUP=1
+        export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
+        brew update
+        brew install create-dmg
+
+        # Remove conflicting brew items
+        brew remove --ignore-dependencies libpng brotli harfbuzz
+
+        # Delete fake harfbuzz if need be
+        if [ -f "/usr/local/lib/libharfbuzz.dylib" ]; then
+          sudo rm -r /usr/local/lib/libharfbuzz.dylib
+        fi
+
+        # And the .a for it as well
+        if [ -f "/usr/local/lib/libharfbuzz.a" ]; then
+          sudo rm -r /usr/local/lib/libharfbuzz.a
+        fi
+
+    - name: 'Preparing build... (Windows)'
+      if: ${{ matrix.config.platform == 'win32' }}
+      run: |
+        Remove-Item 'C:/Strawberry' -Recurse
+
+      
+    - name: "Clone dependencies & set versions"
+      run: |
+        git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules
+        git clone https://github.com/Inochi2D/dcv-i2d
+        dub add-local i2d-imgui/ "0.8.0"
+        dub add-local dcv-i2d/ "0.3.0"
+
+    - name: 'Update version info'
+      if: 'inputs.generate_version'
+      run: |
+        # Build metadata (like version information and icons)
+        dub build --config=update-version
+
+    - name: 'Build (OSX Universal)'
+      if: ${{ matrix.config.platform == 'osx' }}
+      id: osx-build
+      run: |
+        dub build --config=meta
+
+        # First build ARM64 version...
+        echo "Building arm64 binary..."
+        dub build --build=${{ inputs.build_type }} --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }} --arch=arm64-apple-macos
+        mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
+
+        # Then the X86_64 version...
+        echo "Building x86_64 binary..."
+        dub build --build=${{ inputs.build_type }} --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }} --arch=x86_64-apple-macos
+        mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64"
+
+        # Glue them together with lipo
+        echo "Gluing them together..."
+        lipo "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64" -output "out/Inochi Creator.app/Contents/MacOS/inochi-creator" -create
+        
+        # Cleanup
+        echo "Cleaning up..."
+        rm "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
+        
+        # Bundle
+        echo "Bundling up to app"
+        ./build-aux/osx/osxbundle.sh
+
+    - name: 'Build (Windows)'
+      if: ${{ matrix.config.platform == 'win32' }}
+      id: win32-build
+      shell: powershell
+      run: |
+        .\vcvars.ps1
+        dub build --config=meta
+        dub build --build=${{ inputs.build_type }} --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }}
+
+    - name: 'Build (Linux)'
+      if: ${{ matrix.config.platform == 'linux' }}
+      id: posix-build
+      run: |
+        dub build --config=meta
+        dub build --build=${{ inputs.build_type }} --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }}
+
+    # TODO: Add signing workflow.
+    # - name: 'Select latest XCode (OSX)'
+    #   if: ${{ startsWith(matrix.config.os, 'macos') }}
+    #   uses: BoundfoxStudios/action-xcode-select@v1
+    # - name: 'Sign and Notarize (OSX)'
+    #   if: ${{ startsWith(matrix.config.os, 'macos') }}
+    #   uses: BoundfoxStudios/action-xcode-notarize@v1.1
+    #   with:
+    #     product-path: 'out/Inochi Creator.app'
+
+    - name: 'Make Artifact (Main)'
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-${{ matrix.config.platform }}
+        path: |
+          out/*
+          version.txt
+        retention-days: 1
+
+    - name: Archive Zip
+      uses: thedoctor0/zip-release@main
+      with:
+        type: 'zip'
+        filename: 'inochi-creator-${{ matrix.config.platform }}.zip'
+        directory: 'out/'
+        path: '*'
+
+    - name: 'Make Artifact (ZIP)'
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-${{ matrix.config.platform }}-zip
+        path: |
+          out/inochi-creator-${{ matrix.config.platform }}.zip
+          version.txt
+        retention-days: 1
+  
+  package-msi:
+    if: ${{ inputs.do_package == true }}
+    needs: build
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4.1.7
+      with:
+        sparse-checkout:
+          build-aux
+    
+    - uses: actions/download-artifact@v4
+      with:
+        name: build-win32
+
+    - name: 'Add msbuild to PATH'
+      uses: microsoft/setup-msbuild@v1.1
+    
+    - name: 'Build MSI'
+      run: |
+        cd build-aux/windows/wix
+
+        # Install required dependency
+        mkdir packages/
+        nuget install WixToolset.UI.wixext -version 4.0.0 -OutputDirectory packages/
+
+        # Build solution
+        msbuild "Inochi Creator.sln" -property:Configuration=Release
+
+        # Copy installer out
+        mv "bin/Release/Inochi Creator.msi" "../../../out/inochi-creator-win32.msi"
+        cd ../../../
+
+    - name: Make Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-win32-msi
+        path: out/inochi-creator-win32.msi
+        retention-days: 1
+  
+  package-dmg:
+    if: ${{ inputs.do_package == true }}
+    needs: build
+    runs-on: macos-14
+
+    steps:
+    - uses: actions/checkout@v4.1.7
+      with:
+        sparse-checkout:
+          build-aux
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: build-osx
+
+    - name: 'Build DMG'
+      run: |
+        ./build-aux/osx/gendmg.sh
+
+    - name: Make Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-osx-dmg
+        path: out/Install_Inochi_Creator.dmg
+        retention-days: 1

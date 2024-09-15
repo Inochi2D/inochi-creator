@@ -290,7 +290,7 @@ void incModelModeHeader(Node node) {
         igSameLine(0, 0);
         incDummy(ImVec2(-len.x, len.y));
         igSameLine(0, 0);
-        incText(typeString);
+        incNodeIconButton(node);
     igPopID();
 }
 
@@ -984,7 +984,8 @@ void incInspectorModelCamera(ExCamera node) {
         incText(_("Viewport"));
         igIndent();
             igSetNextItemWidth(incAvailableSpace().x);
-            igDragFloat2("###VIEWPORT", &node.getViewport().vector);
+            igDragFloat2("###VIEWPORT", &node.getViewport().vector, 2);
+            incVerifyCameraSizeShowWarning(node);
         igUnindent();
 
         // Padding

@@ -189,18 +189,21 @@ protected:
                             }
                         endSection();
 
-                        beginSection(__("Preserve Imported File Folder Structure"));
+                        beginSection(__("Import behaviour"));
                             string[string] configShowing = [
-                                "Ask": "Always Ask",
-                                "Preserve": "Preserve",
-                                "NotPreserve": "Not Preserve"
+                                "Ask": _("Always ask"),
+                                "Preserve": _("Preserve"),
+                                "NotPreserve": _("Don't preserve")
                             ];
 
                             string selected = configShowing[incGetKeepLayerFolder()];
-                            if(igBeginCombo(__("Preserve Folder Structure"), selected.toStringz)) {
-                                if (igSelectable(__("Always Ask"), incSettingsGet!string("KeepLayerFolder") == "Ask")) incSetKeepLayerFolder("Ask");
-                                if (igSelectable(__("Preserve"), incSettingsGet!string("KeepLayerFolder") == "Preserve")) incSetKeepLayerFolder("Preserve");
-                                if (igSelectable(__("Not Preserve"), incSettingsGet!string("KeepLayerFolder") == "NotPreserve")) incSetKeepLayerFolder("NotPreserve");
+                            string keepLayerFolder = incSettingsGet!string("KeepLayerFolder");
+
+                            if(igBeginCombo(__("Preserve structure"), selected.toStringz)) {
+                                foreach(key, displayName ; configShowing) {
+                                    if (igSelectable(displayName.toStringz, keepLayerFolder == key)) 
+                                        incSetKeepLayerFolder(key);
+                                }
 
                                 igEndCombo();
                             }

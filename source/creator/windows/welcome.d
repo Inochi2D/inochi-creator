@@ -11,6 +11,7 @@ import creator.windows;
 import creator.core;
 import creator.core.i18n;
 import std.string;
+import std.file : FileException;
 import creator.utils.link;
 import i18n;
 import inochi2d;
@@ -235,12 +236,9 @@ protected:
 
                                 string file = incShowOpenDialog(filters, _("Open..."));
                                 if (file) {
-                                    try {
-                                        incOpenProject!false(file);
+                                    // FileException should handle in incOpenProject, so we don't write try/catch here
+                                    if (incOpenProject(file))
                                         this.close();
-                                    } catch(Exception ex) {
-                                        incDialog(__("Error"), ex.msg);
-                                    }
                                 }
                             }
 
@@ -277,12 +275,9 @@ protected:
 
                                     import std.path : baseName;
                                     if (incTextLinkWithIcon("", recent.baseName)) {
-                                        try {
-                                            incOpenProject!false(recent);
+                                        // FileException should handle in incOpenProject, so we don't write try/catch here
+                                        if (incOpenProject(recent))
                                             this.close();
-                                        } catch(Exception ex) {
-                                            incDialog(__("Error"), ex.msg);
-                                        }
                                     }
                                 }
                             } else {
@@ -318,21 +313,21 @@ protected:
                                 }
                             }
 
-                            static if (INC_INFO_SHOW_DONATE_LINKS) {
+                            static if (INC_RT_SHOW_DONATION_LINKS) {
                                 igNewLine();
                                 igNewLine();
-                                version(InDemo) {
+                                static if (InDemo) {
                                     if (incTextLinkWithIcon("", _("Buy a copy"))) {
                                         incOpenLink(INC_INFO_BUY_URL);
                                     }
-                                }
 
-                                if (incTextLinkWithIcon("", _("Patreon"))) {
-                                    incOpenLink("https://www.patreon.com/LunaFoxgirlVT");
-                                }
+                                    if (incTextLinkWithIcon("", _("Patreon"))) {
+                                        incOpenLink("https://www.patreon.com/LunaFoxgirlVT");
+                                    }
 
-                                if (incTextLinkWithIcon("", _("Github Sponsors"))) {
-                                    incOpenLink("https://github.com/sponsors/LunaTheFoxgirl/");
+                                    if (incTextLinkWithIcon("", _("Github Sponsors"))) {
+                                        incOpenLink("https://github.com/sponsors/LunaTheFoxgirl/");
+                                    }
                                 }
                             }
                         igUnindent();

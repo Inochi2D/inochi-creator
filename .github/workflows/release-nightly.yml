@@ -1,0 +1,50 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+name: Build and Release (Nightly)
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    uses: './.github/workflows/build.yml'
+    with:
+      target_ref: '${{ github.ref_name }}'
+      variant: 'nightly'
+      generate_version: true
+      do_package: true
+
+  steam-publish:
+    needs: build
+    uses: './.github/workflows/publish-steam.yml'
+    secrets: inherit
+    with:
+      branch: 'nightly'
+  
+  gh-publish:
+    needs: build
+    uses: './.github/workflows/publish-gh.yml'
+    secrets: inherit
+    with:
+      tag: 'nightly'
+      name: 'Nightly'
+      generate-notes: true
+  
+  # Delete artifacts after use.
+  cleanup:
+    if: 'always()'
+    runs-on: ubuntu-latest
+    needs: [gh-publish, steam-publish]
+    steps:
+    - uses: GeekyEggo/delete-artifact@v5
+      with: 
+        name: |
+          *

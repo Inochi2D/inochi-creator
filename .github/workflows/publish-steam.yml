@@ -1,0 +1,25 @@
+name: 'Publish to Steam'
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+      
+      - uses: game-ci/steam-deploy@v3
+        with:
+          username: ${{ secrets.STEAM_USERNAME }}          
+          configVdf: ${{ secrets.CONFIGVDF }}
+          appId: 2108550
+          buildDescription: 'Automatic deployment'
+          depot3Path: build-win32/out/
+          depot4Path: build-linux/out/
+          depot5Path: build-osx/out/
+          releaseBranch: ${{ inputs.branch }}

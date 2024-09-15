@@ -2,7 +2,7 @@
 # They are provided by a third-party and are governed by
 # separate terms of service, privacy policy, and support
 # documentation.
-name: Pull Request test
+name: Pull Request Test
 
 on:
   pull_request:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4.1.7
     - uses: dlang-community/setup-dlang@4c99aa991ce7d19dd3064de0a4f2f6b2f152e2d7
       with:
         compiler: ldc-latest
@@ -33,13 +33,17 @@ jobs:
         dub add-local i2d-imgui/ "0.8.0"
         dub add-local inochi2d/ "0.8.5"
 
-    - name: 'Build and Test'
+    - name: 'Build'
       run: |
         # Build metadata (like version information and icons)
         dub build --config=meta
         
         # Build the project, with its main file included, without unittests
         dub build --compiler=ldc2 --build=release --config=linux-full
+    
+    - name: 'Test'
+      run: |
+        dub test --compiler=ldc2 --config=linux-full
 
     - name: "Upload Artifacts"  
       if: success()

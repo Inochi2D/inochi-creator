@@ -272,7 +272,7 @@ class GridTool : NodeSelect {
                     meshData.regenerateGrid();
                     mesh.copyFromMeshData(meshData);
                     impl.refreshMesh();
-                    impl.vtxAtMouse = ulong(-1);
+                    impl.updateVtxAtMouse(ulong(-1));
                 }
 
             } else {
@@ -357,7 +357,7 @@ class GridTool : NodeSelect {
     }
 }
 
-class ToolInfoImpl(T: GridTool) : ToolInfoBase!(T) {
+class GridToolInfo : ToolInfoBase!GridTool {
     override
     void setupToolMode(IncMeshEditorOne e, VertexToolMode mode) {
         e.setToolMode(mode);

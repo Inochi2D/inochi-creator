@@ -114,9 +114,9 @@ void incRenderDialogs() {
                 igSameLine(0, 0);
             }
             
-            if ((entry.btns & DialogButtons.Cancel) == 2) {
-                if (igButton(__("Cancel"), ImVec2(btnSize, btnHeight))) {
-                    entry.selected = DialogButtons.Cancel;
+            if ((entry.btns & DialogButtons.Yes) == 4) {
+                if (igButton(__("Yes"), ImVec2(btnSize, btnHeight))) {
+                    entry.selected = DialogButtons.Yes;
                     igCloseCurrentPopup();
                 }
                 igSameLine(0, 0);
@@ -130,19 +130,20 @@ void incRenderDialogs() {
                 igSameLine(0, 0);
             }
             
-            if ((entry.btns & DialogButtons.Yes) == 4) {
-                if (igButton(__("Yes"), ImVec2(btnSize, btnHeight))) {
-                    entry.selected = DialogButtons.Yes;
-                    igCloseCurrentPopup();
-                }
-                igSameLine(0, 0);
-            }
-            
             if ((entry.btns & DialogButtons.No) == 8) {
                 if (igButton(__("No"), ImVec2(btnSize, btnHeight))) {
                     entry.selected = DialogButtons.No;
                     igCloseCurrentPopup();
                 }
+                igSameLine(0, 0);
+            }
+            
+            if ((entry.btns & DialogButtons.Cancel) == 2) {
+                if (igButton(__("Cancel"), ImVec2(btnSize, btnHeight))) {
+                    entry.selected = DialogButtons.Cancel;
+                    igCloseCurrentPopup();
+                }
+                igSameLine(0, 0);
             }
 
             igEndPopup();

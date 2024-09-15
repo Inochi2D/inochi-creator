@@ -24,8 +24,6 @@ import std.string;
 import std.stdio;
 import std.path;
 
-version(InNightly) version = InShowDonateButton;
-version(InDemo) version = InShowDonateButton;
 
 private {
     bool dbgShowStyleEditor;
@@ -586,7 +584,7 @@ void incMainMenu() {
             igPopStyleColor();
             igPopStyleColor();
 
-            version(InShowDonateButton) {
+            static if (INC_RT_SHOW_DONATION_LINKS) {
                 // We need to pre-calculate the size of the right adjusted section
                 // This code is very ugly because imgui doesn't really exactly understand this
                 // stuff natively.
@@ -612,7 +610,7 @@ void incMainMenu() {
                 incText(fpsText);
             }
             
-            version(InShowDonateButton) {
+            static if (INC_RT_SHOW_DONATION_LINKS) {
                 // Donate button
                 if(igMenuItem(__("Donate"))) {
                     incOpenLink("https://www.patreon.com/clipsey");

@@ -50,10 +50,12 @@ class MeshGroupNodeDrawer {
 
         if (!editor.getShowMeshgroupNodeChild())
             return;
-
+        auto trans = node.transform.matrix();
+        mat4* oneTimeTransform = node.getOneTimeTransform();
+        if (oneTimeTransform !is null)
+            trans = (*oneTimeTransform) * trans;
         node.drawBounds();
 
-        auto trans = node.transform.matrix();
         inDbgSetBuffer([vec3(0, 0, 0)], [0]);
         inDbgPointsSize(10);
         inDbgDrawPoints(vec4(0, 0, 0, 1), trans);
@@ -190,6 +192,9 @@ void incViewportVertexOptions() {
             incTooltip(_("Auto Meshing Options"));
         igEndGroup();
 
+        igSameLine(0, 4);
+
+        editor.displayToolOptions();
     igPopStyleVar(2);
 }
 

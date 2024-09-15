@@ -64,12 +64,24 @@ public:
     bool mutateSelection = false;
     bool invertSelection = false;
     ulong maybeSelectOne;
+
+    // you should call updateVtxAtMouse() for updating vtxAtMouse
+    // because it also updates prevVtxAtMouse
     ulong vtxAtMouse;
+    ulong prevVtxAtMouse;
+
     vec2 selectOrigin;
     IncMesh previewMesh;
 
     bool deforming = false;
     float meshEditAOE = 4;
+
+    void updateVtxAtMouse(ulong vtxIndex) {
+        // we hope prevVtxAtMouse tracks the previous != -1 vtxAtMouse
+        if (vtxAtMouse != -1)
+            prevVtxAtMouse = vtxAtMouse;
+        vtxAtMouse = vtxIndex;
+    }
 
     bool isSelected(ulong vertIndex) {
         import std.algorithm.searching : canFind;
@@ -79,12 +91,37 @@ public:
     void toggleSelect(ulong vertIndex) {
         import std.algorithm.searching : countUntil;
         import std.algorithm.mutation : remove;
-        auto idx = selected.countUntil(vertIndex);
-        if (isSelected(vertIndex)) {
+
+        // NOTE: isSelected iterates the array again
+        // but countUntil will return -1 if not found
+        // That way we can easily just use this value
+        // once and avoid 2 array iterations.
+        ptrdiff_t idx = selected.countUntil(vertIndex);
+        if (idx >= 0) {
             selected = selected.remove(idx);
         } else {
             selected ~= vertIndex;
         }
+
+        updateMirrorSelected();
+    }
+
+    void select(ulong vertIndex) {
+        if (!isSelected(vertIndex)) {
+            selected ~= vertIndex;
+        }
+        
+        updateMirrorSelected();
+    }
+
+    void deselect(ulong vertIndex) {
+        import std.algorithm.searching : countUntil;
+        import std.algorithm.mutation : remove;
+        ptrdiff_t idx = selected.countUntil(vertIndex);
+        if (idx >= 0) {
+            selected = selected.remove(idx);
+        }
+        
         updateMirrorSelected();
     }
 
@@ -150,6 +187,14 @@ public:
         return vInd;
     }
 
+    MeshVertex* mirrorVertex(uint axis, MeshVertex* vtx) {
+        if (axis == 0) return vtx;
+        ulong vInd = getVertexFromPoint(mirror(axis, vtx.position));
+        MeshVertex* v = getVerticesByIndex([vInd])[0];
+        if (v is null || v == vtx) return null;
+        return getVerticesByIndex([vInd])[0];
+    }
+
     bool isOnMirror(vec2 pos, float aoe) {
         return 
             (mirrorVert && pos.y > -aoe && pos.y < aoe) ||
@@ -211,6 +256,7 @@ public:
 
     this(bool deformOnly) {
         this.deformOnly = deformOnly;
+        prevVtxAtMouse = ulong(-1);
     }
 
     VertexToolMode getToolMode() {
