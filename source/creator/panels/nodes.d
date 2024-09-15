@@ -413,7 +413,7 @@ protected:
         if (open) {
             // Draw children
             foreach(i, child; n.children) {
-                if (!filterResult.get(child.uuid, false))
+                if (!filterResult[child.uuid])
                     continue;
 
                 igPushID(cast(int)i);
