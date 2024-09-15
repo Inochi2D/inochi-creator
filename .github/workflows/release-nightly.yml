@@ -20,6 +20,7 @@ jobs:
       target_ref: '${{ github.ref_name }}'
       variant: 'nightly'
       generate_version: true
+      do_package: true
 
   steam-publish:
     needs: build

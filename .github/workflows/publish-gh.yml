@@ -23,7 +23,6 @@ jobs:
       with:
         pattern: build-*-
         merge-multiple: true
-        path: builds/
 
     - name: 'Release to ${{ inputs.tag }}'
       uses: softprops/action-gh-release@v1
@@ -31,9 +30,9 @@ jobs:
         name: '${{ inputs.name }}'
         tag_name: ${{ inputs.tag }}
         files: |
-          builds/out/inochi-creator-linux.zip
-          builds/out/inochi-creator-win32.zip
-          builds/out/inochi-creator-osx.zip
-          builds/out/inochi-creator-win32.msi
-          builds/out/Install_Inochi_Creator.dmg
+          out/inochi-creator-linux.zip
+          out/inochi-creator-win32.zip
+          out/inochi-creator-osx.zip
+          out/inochi-creator-win32.msi
+          out/Install_Inochi_Creator.dmg
         generate_release_notes: ${{ inputs.generate-notes }}
