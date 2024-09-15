@@ -13,23 +13,12 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: build-win32
-          path: out/build-win32
-      
-      - uses: actions/download-artifact@v4
-        with:
-          name: build-linux
-          path: out/build-linux
-      
-      - uses: actions/download-artifact@v4
-        with:
-          name: build-osx
-          path: out/build-osx
+          path: out/
       
       - uses: game-ci/steam-deploy@v3
         with:
           username: ${{ secrets.STEAM_USERNAME }}          
-          configVdf: ${{ secrets.CONFIGVDF}}          
+          configVdf: ${{ secrets.CONFIGVDF }}
           appId: 2108550
           buildDescription: 'Automatic deployment'
           rootPath: out/

@@ -31,6 +31,6 @@ jobs:
     needs: build
     uses: './.github/workflows/publish-gh.yml'
     with:
-      tag: 'refs/tags/nightly'
+      tag: 'nightly'
       name: 'Nightly'
       generate-notes: true

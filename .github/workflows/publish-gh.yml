@@ -21,19 +21,19 @@ jobs:
     steps:
     - uses: actions/download-artifact@v4
       with:
-        pattern: build-*
+        pattern: build-*-
         merge-multiple: true
         path: builds/
 
     - name: 'Release to ${{ inputs.tag }}'
-      if: startsWith(inputs.tag, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
         name: '${{ inputs.name }}'
         tag_name: ${{ inputs.tag }}
         files: |
-          builds/inochi-creator-linux.zip
-          builds/inochi-creator-win32.zip
-          builds/inochi-creator-osx.zip
-          builds/inochi-creator-win32.msi
+          builds/out/inochi-creator-linux.zip
+          builds/out/inochi-creator-win32.zip
+          builds/out/inochi-creator-osx.zip
+          builds/out/inochi-creator-win32.msi
+          builds/out/Install_Inochi_Creator.dmg
         generate_release_notes: ${{ inputs.generate-notes }}
