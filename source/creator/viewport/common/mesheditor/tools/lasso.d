@@ -150,8 +150,8 @@ public:
         incStatusTooltip(_("Additive Selection"), _("Shift"));
         if (addSelect) incStatusTooltip(_("Inverse Selection"), _("Ctrl"));
         else incStatusTooltip(_("Remove Selection"), _("Ctrl"));
-        incStatusTooltip(_("Delete Last Point"), _("Right Mouse"));
-        incStatusTooltip(_("Clear"), _("ESC"));
+        incStatusTooltip(_("Delete Last Lasso Point"), _("Right Mouse"));
+        incStatusTooltip(_("Clear All Lasso Points"), _("ESC"));
 
         if (igIsMouseClicked(ImGuiMouseButton.Left))
             commitCheckpoint();
