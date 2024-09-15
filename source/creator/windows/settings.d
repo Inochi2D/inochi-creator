@@ -169,6 +169,12 @@ protected:
                                 changesRequiresRestart = true;
                             }
                             incTooltip(_("Use the OpenDyslexic font for Latin text characters."));
+
+                            bool paramAutoScroll = incSettingsGet!bool("EnableParamAutoScroll", true);
+                            if (igCheckbox(__("Scroll to armed parameter"), &paramAutoScroll)) {
+                                incSettingsSet("EnableParamAutoScroll", paramAutoScroll);
+                            }
+                            incTooltip(_("Enable automatic scrolling to the top of the parameters list."));
                         endSection();
                         break;
                     case SettingsPane.FileHandling:
