@@ -6,7 +6,7 @@ on:
       target_ref:
         required: true
         type: string
-      build_mode:
+      variant:
         required: true
         type: string
       generate_version:
@@ -62,13 +62,13 @@ jobs:
       fail-fast: ${{ inputs.fail_fast }}
       matrix:
         config:
-          - dub_config: 'osx'
+          - platform: 'osx'
             os: 'macos-14'
 
-          - dub_config: 'win32'
+          - platform: 'win32'
             os: windows-latest
 
-          - dub_config: 'linux'
+          - platform: 'linux'
             os: ubuntu-20.04
       
     steps:
@@ -88,12 +88,12 @@ jobs:
         path: out/
 
     - name: 'Preparing build... (Ubuntu)'
-      if: ${{ startsWith(matrix.config.os, 'ubuntu') }}
+      if: ${{ matrix.config.platform == 'linux' }}
       run: |
         sudo apt install libsdl2-dev libfreetype6-dev
 
     - name: 'Preparing build... (macOS)'
-      if: ${{ startsWith(matrix.config.os, 'macos') }}
+      if: ${{ matrix.config.platform == 'osx' }}
       run: |
         export HOMEBREW_NO_INSTALL_CLEANUP=1
         export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
@@ -114,9 +114,10 @@ jobs:
         fi
 
     - name: 'Preparing build... (Windows)'
-      if: ${{ startsWith(matrix.config.os, 'windows') }}
+      if: ${{ matrix.config.platform == 'win32' }}
       run: |
         Remove-Item 'C:/Strawberry' -Recurse
+
       
     - name: "Clone dependencies & set versions"
       run: |
@@ -129,24 +130,22 @@ jobs:
       if: 'inputs.generate_version'
       run: |
         # Build metadata (like version information and icons)
-        dub build --config=meta
-
-    - name: 'Build (Linux)'
-      if: ${{ ! startsWith(matrix.config.os, 'ubuntu') }}
-      run: |
-        dub build --compiler=ldc2 --config=${{ matrix.config.dub_config }}-${{ inputs.build_mode }}
+        dub build --config=update-version
 
     - name: 'Build (OSX Universal)'
-      if: ${{ startsWith(matrix.config.os, 'macos') }}
+      if: ${{ matrix.config.platform == 'osx' }}
+      id: osx-build
       run: |
+        dub build --config=meta
+
         # First build ARM64 version...
         echo "Building arm64 binary..."
-        dub build --compiler=ldc2 --config=${{ matrix.config.dub_config }}-${{ inputs.build_mode }} --arch=arm64-apple-macos
+        dub build --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }} --arch=arm64-apple-macos
         mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
 
         # Then the X86_64 version...
         echo "Building x86_64 binary..."
-        dub build --compiler=ldc2 --config=${{ matrix.config.dub_config }}-${{ inputs.build_mode }} --arch=x86_64-apple-macos
+        dub build --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }} --arch=x86_64-apple-macos
         mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64"
 
         # Glue them together with lipo
@@ -160,22 +159,22 @@ jobs:
         # Bundle
         echo "Bundling up to app"
         ./build-aux/osx/osxbundle.sh
-    
+
     - name: 'Build (Windows)'
-      if: ${{ startsWith(matrix.config.os, 'windows') }}
-      run: |    
-        function Invoke-VSDevEnvironment {
-        $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-            $installationPath = & $vswhere -prerelease -legacy -latest -property installationPath
-            $Command = Join-Path $installationPath "Common7\Tools\vsdevcmd.bat"
-          & "${env:COMSPEC}" /s /c "`"$Command`" -no_logo && set" | Foreach-Object {
-                if ($_ -match '^([^=]+)=(.*)') {
-                    [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2])
-                }
-            }
-        }
-        Invoke-VSDevEnvironment
-        dub build --compiler=ldc2 --config=${{ matrix.config.dub_config }}-${{ inputs.build_mode }}
+      if: ${{ matrix.config.platform == 'win32' }}
+      id: win32-build
+      shell: powershell
+      run: |
+        .\vcvars.ps1
+        dub build --config=meta
+        dub build --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }}
+
+    - name: 'Build (Linux)'
+      if: ${{ matrix.config.platform == 'linux' }}
+      id: posix-build
+      run: |
+        dub build --config=meta
+        dub build --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }}
 
     # TODO: Add signing workflow.
     # - name: 'Select latest XCode (OSX)'
@@ -190,6 +189,6 @@ jobs:
     - name: Make Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: build-${{ matrix.config.dub_config }}
+        name: build-${{ matrix.config.platform }}
         path: out/*
         retention-days: 1

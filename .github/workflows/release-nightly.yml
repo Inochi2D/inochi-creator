@@ -18,7 +18,7 @@ jobs:
     uses: './.github/workflows/build.yml'
     with:
       target_ref: '${{ github.ref_name }}'
-      build_mode: 'nightly'
+      variant: 'nightly'
       generate_version: true
 
   steam-publish:
