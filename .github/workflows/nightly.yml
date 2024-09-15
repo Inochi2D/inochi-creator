@@ -14,70 +14,43 @@ permissions:
   contents: write
 
 jobs:
-  build-resources:
-    runs-on: ubuntu-20.04
-    
+  build:
+    uses: './.github/workflows/build.yml'
+    with:
+      target_ref: '${{ github.ref_name }}'
+      build_mode: 'nightly'
+      generate_version: true
+
+  steam-publish:
+    needs: build
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: 'Install dependencies'
-      run: |
-        sudo apt-get update
-        sudo apt-get install gettext
-        mkdir out/
-
-    - name: 'Generate i18n'
-      run: |
-        # Build translations
-        mkdir otl/
-        
-        sudo chmod +x ./gentl.sh
-        ./gentl.sh
-
-        cp out/* otl/
-
-    - name: Make Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: translations
-        path: otl/*
-        retention-days: 1
-
-  linux-zip:
-    runs-on: ubuntu-20.04
-
-    steps:
-    - uses: actions/checkout@v3
-    - uses: dlang-community/setup-dlang@4c99aa991ce7d19dd3064de0a4f2f6b2f152e2d7
-      with:
-        compiler: ldc-latest
-    
-    - name: "Get build dependencies"
-      run: |
-        sudo apt install libsdl2-dev libfreetype6-dev gettext
-
-    - name: 'Generate i18n'
-      run: |
-        sudo chmod +x ./gentl.sh
-        ./gentl.sh
+      - uses: actions/download-artifact@v4
+        with:
+          path: out/
       
-    - name: "Clone dependencies & set versions"
-      run: |
-        git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules
-        git clone -b v0_8 https://github.com/Inochi2D/inochi2d.git
-        git clone https://github.com/Inochi2D/dcv-i2d
-        dub add-local i2d-imgui/ "0.8.0"
-        dub add-local inochi2d/ "0.8.5"
-        dub add-local dcv-i2d/ "0.3.0"
+      - uses: game-ci/steam-deploy@v3
+        with:
+          username: ${{ secrets.STEAM_USERNAME }}          
+          configVdf: ${{ secrets.CONFIGVDF}}          
+          appId: 2108550
+          buildDescription: 'Automatic deployment'
+          rootPath: out/
+          depot3Path: build-win32
+          depot4Path: build-linux
+          depot5Path: build-osx
+          releaseBranch: nightly
+  
+  linux:
+    needs: build
+    runs-on: ubuntu-20.04
 
-    - name: 'Build Inochi Creator'
-      run: |
-        # Build metadata (like version information and icons)
-        dub build --config=meta
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: build-linux
+        path: out/
 
-        # Build the project, with its main file included, without unittests
-        dub build --compiler=ldc2 --config=linux-nightly --debug=InExperimental
-          
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
       with:
@@ -96,51 +69,20 @@ jobs:
         generate_release_notes: true
 
   windows:
+    needs: build
     runs-on: windows-latest
-    needs: build-resources
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: dlang-community/setup-dlang@4c99aa991ce7d19dd3064de0a4f2f6b2f152e2d7
+    - uses: actions/download-artifact@v4
       with:
-        compiler: ldc-latest
-        
-    - name: Download translations
-      uses: actions/download-artifact@v3
+        name: build-win32
+        path: out/
+    
+    - uses: actions/checkout@v4.1.7
       with:
-        name: translations
-        path: out/i18n/
-      
-    - name: "Clone dependencies & set versions"
-      run: |
-        git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules
-        git clone -b v0_8 https://github.com/Inochi2D/inochi2d.git
-        git clone https://github.com/Inochi2D/dcv-i2d
-        dub add-local i2d-imgui/ "0.8.0"
-        dub add-local inochi2d/ "0.8.5"
-        dub add-local dcv-i2d/ "0.3.0"
-
-    - name: 'Build Inochi Creator'
-      run: |
-        function Invoke-VSDevEnvironment {
-        $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-            $installationPath = & $vswhere -prerelease -legacy -latest -property installationPath
-            $Command = Join-Path $installationPath "Common7\Tools\vsdevcmd.bat"
-          & "${env:COMSPEC}" /s /c "`"$Command`" -no_logo && set" | Foreach-Object {
-                if ($_ -match '^([^=]+)=(.*)') {
-                    [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2])
-                }
-            }
-        }
-        Invoke-VSDevEnvironment
-        Remove-Item 'C:/Strawberry' -Recurse
-
-        # Build metadata (like version information and icons)
-        dub build --config=meta
-
-        # Build the project, with its main file included, without unittests
-        dub build --compiler=ldc2 --config=win32-nightly --debug=InExperimental
-
+        sparse-checkout:
+          build-aux
+    
     - name: Archive Zip
       uses: thedoctor0/zip-release@main
       with:
@@ -168,90 +110,27 @@ jobs:
         cd ../../../
 
     - name: 'Release to nightly tag'
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2.0.8
       with:
         tag_name: nightly
         files: |
           out/inochi-creator-win32-x86_64.msi
           out/inochi-creator-win32-x86_64.zip
 
-  macOS-dmg:
+  macOS:
+    needs: build
     runs-on: macos-14
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: dlang-community/setup-dlang@v1.4.0
+    - uses: actions/download-artifact@v4
       with:
-        compiler: ldc-latest
-  
-    - name: "Prepare for DMG packing"
-      run: |
-        export HOMEBREW_NO_INSTALL_CLEANUP=1
-        export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
-        brew update
-        brew install create-dmg gettext
-
-    - name: "Remove conflicting brew packages"
-      run: |
-        # Remove conflicting brew items
-        brew remove --ignore-dependencies libpng brotli harfbuzz
-
-    - name: "Remove final conflicting files"
-      run: |
-        # Delete fake harfbuzz if need be
-        if [ -f "/usr/local/lib/libharfbuzz.dylib" ]; then
-          sudo rm -r /usr/local/lib/libharfbuzz.dylib
-        fi
-
-        # And the .a for it as well
-        if [ -f "/usr/local/lib/libharfbuzz.a" ]; then
-          sudo rm -r /usr/local/lib/libharfbuzz.a
-        fi
-
-    - name: 'Generate i18n'
-      run: |
-        sudo chmod +x ./gentl.sh
-        ./gentl.sh
-      
-    - name: "Clone dependencies & set versions"
-      run: |
-        git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules
-        git clone -b v0_8 https://github.com/Inochi2D/inochi2d.git
-        git clone https://github.com/Inochi2D/dcv-i2d
-        dub add-local i2d-imgui/ "0.8.0"
-        dub add-local inochi2d/ "0.8.5"
-        dub add-local dcv-i2d/ "0.3.0"
-
-    - name: 'Build Inochi Creator'
-      env:
-        DFLAGS: "-g -force-dwarf-frame-section=false"
-      run: |
-
-        # Build metadata (like version information and icons)
-        dub build --config=meta
-
-        # First build ARM64 version...
-        echo "Building arm64 binary..."
-        dub build --config=osx-nightly --arch=arm64-apple-macos
-        mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
-
-        # Then the X86_64 version...
-        echo "Building x86_64 binary..."
-        dub build --config=osx-nightly --arch=x86_64-apple-macos
-        mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64"
-
-        # Glue them together with lipo
-        echo "Gluing them together..."
-        lipo "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64" -output "out/Inochi Creator.app/Contents/MacOS/inochi-creator" -create
-
-        # Print some nice info
-        echo "Done!"
-        lipo -info "out/Inochi Creator.app/Contents/MacOS/inochi-creator"
-
-        # Cleanup and bundle
-        echo "Cleaning up..."
-        rm "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
-        ./build-aux/osx/osxbundle.sh
+        name: build-osx
+        path: out/
+    
+    - uses: actions/checkout@v4.1.7
+      with:
+        sparse-checkout:
+          build-aux
 
     - name: 'Build DMG'
       run: |
@@ -277,7 +156,7 @@ jobs:
       FLATPAK_BUILD_REPO: build-repo
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4.1.7
       with:
         submodules: true
 

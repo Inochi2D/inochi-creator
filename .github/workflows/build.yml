@@ -1,0 +1,195 @@
+name: 'Build Inochi Creator'
+
+on:
+  workflow_call:
+    inputs:
+      target_ref:
+        required: true
+        type: string
+      build_mode:
+        required: true
+        type: string
+      generate_version:
+        required: false
+        type: boolean
+        default: false
+      fail_fast:
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+
+  # Build translations, etc.
+  build-resources:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4.1.7
+      with:
+        ref: '${{ inputs.target_ref }}'
+
+    - name: 'Install dependencies'
+      run: |
+        sudo apt-get update
+        sudo apt-get install gettext
+      
+    - name: 'Generate i18n'
+      run: |
+        # Build translations
+        mkdir out/
+        mkdir otl/
+        
+        sudo chmod +x ./gentl.sh
+        ./gentl.sh
+
+        cp out/* otl/
+    
+    - name: Make Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: translations
+        path: otl/*
+        retention-days: 1
+
+  build:
+    needs: build-resources
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: ${{ inputs.fail_fast }}
+      matrix:
+        config:
+          - dub_config: 'osx'
+            os: 'macos-14'
+
+          - dub_config: 'win32'
+            os: windows-latest
+
+          - dub_config: 'linux'
+            os: ubuntu-20.04
+      
+    steps:
+    - uses: actions/checkout@v4.1.7
+      with:
+        ref: '${{ inputs.target_ref }}'
+        
+    # Setup D Compiler
+    - uses: dlang-community/setup-dlang@v1.4.0
+      with:
+        compiler: ldc-latest
+
+    # Download Translations
+    - uses: actions/download-artifact@v4
+      with:
+        name: translations
+        path: out/
+
+    - name: 'Preparing build... (Ubuntu)'
+      if: ${{ startsWith(matrix.config.os, 'ubuntu') }}
+      run: |
+        sudo apt install libsdl2-dev libfreetype6-dev
+
+    - name: 'Preparing build... (macOS)'
+      if: ${{ startsWith(matrix.config.os, 'macos') }}
+      run: |
+        export HOMEBREW_NO_INSTALL_CLEANUP=1
+        export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
+        brew update
+        brew install create-dmg gettext
+
+        # Remove conflicting brew items
+        brew remove --ignore-dependencies libpng brotli harfbuzz
+
+        # Delete fake harfbuzz if need be
+        if [ -f "/usr/local/lib/libharfbuzz.dylib" ]; then
+          sudo rm -r /usr/local/lib/libharfbuzz.dylib
+        fi
+
+        # And the .a for it as well
+        if [ -f "/usr/local/lib/libharfbuzz.a" ]; then
+          sudo rm -r /usr/local/lib/libharfbuzz.a
+        fi
+
+    - name: 'Preparing build... (Windows)'
+      if: ${{ startsWith(matrix.config.os, 'windows') }}
+      run: |
+        Remove-Item 'C:/Strawberry' -Recurse
+      
+    - name: "Clone dependencies & set versions"
+      run: |
+        git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules
+        git clone https://github.com/Inochi2D/dcv-i2d
+        dub add-local i2d-imgui/ "0.8.0"
+        dub add-local dcv-i2d/ "0.3.0"
+
+    - name: 'Update version info'
+      if: 'inputs.generate_version'
+      run: |
+        # Build metadata (like version information and icons)
+        dub build --config=meta
+
+    - name: 'Build (Linux)'
+      if: ${{ ! startsWith(matrix.config.os, 'ubuntu') }}
+      run: |
+        dub build --compiler=ldc2 --config=${{ matrix.config.dub_config }}-${{ inputs.build_mode }}
+
+    - name: 'Build (OSX Universal)'
+      if: ${{ startsWith(matrix.config.os, 'macos') }}
+      run: |
+        # First build ARM64 version...
+        echo "Building arm64 binary..."
+        dub build --compiler=ldc2 --config=${{ matrix.config.dub_config }}-${{ inputs.build_mode }} --arch=arm64-apple-macos
+        mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
+
+        # Then the X86_64 version...
+        echo "Building x86_64 binary..."
+        dub build --compiler=ldc2 --config=${{ matrix.config.dub_config }}-${{ inputs.build_mode }} --arch=x86_64-apple-macos
+        mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64"
+
+        # Glue them together with lipo
+        echo "Gluing them together..."
+        lipo "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64" -output "out/Inochi Creator.app/Contents/MacOS/inochi-creator" -create
+        
+        # Cleanup
+        echo "Cleaning up..."
+        rm "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
+        
+        # Bundle
+        echo "Bundling up to app"
+        ./build-aux/osx/osxbundle.sh
+    
+    - name: 'Build (Windows)'
+      if: ${{ startsWith(matrix.config.os, 'windows') }}
+      run: |    
+        function Invoke-VSDevEnvironment {
+        $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+            $installationPath = & $vswhere -prerelease -legacy -latest -property installationPath
+            $Command = Join-Path $installationPath "Common7\Tools\vsdevcmd.bat"
+          & "${env:COMSPEC}" /s /c "`"$Command`" -no_logo && set" | Foreach-Object {
+                if ($_ -match '^([^=]+)=(.*)') {
+                    [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2])
+                }
+            }
+        }
+        Invoke-VSDevEnvironment
+        dub build --compiler=ldc2 --config=${{ matrix.config.dub_config }}-${{ inputs.build_mode }}
+
+    # TODO: Add signing workflow.
+    # - name: 'Select latest XCode (OSX)'
+    #   if: ${{ startsWith(matrix.config.os, 'macos') }}
+    #   uses: BoundfoxStudios/action-xcode-select@v1
+    # - name: 'Sign and Notarize (OSX)'
+    #   if: ${{ startsWith(matrix.config.os, 'macos') }}
+    #   uses: BoundfoxStudios/action-xcode-notarize@v1.1
+    #   with:
+    #     product-path: 'out/Inochi Creator.app'
+
+    - name: Make Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-${{ matrix.config.dub_config }}
+        path: out/*
+        retention-days: 1
