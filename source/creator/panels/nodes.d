@@ -307,6 +307,9 @@ protected:
     }
 
     void treeAddNode(bool isRoot = false)(ref Node n) {
+        if (n.uuid !in filterResult)
+            return;
+
         if (!filterResult[n.uuid])
             return;
 
@@ -413,6 +416,9 @@ protected:
         if (open) {
             // Draw children
             foreach(i, child; n.children) {
+                if (child.uuid !in filterResult)
+                    continue;
+
                 if (!filterResult[child.uuid])
                     continue;
 
