@@ -22,11 +22,63 @@ import std.format;
 import std.conv;
 import i18n;
 
+enum SelectState {
+    Init, Started, Ended
+}
+
+struct SelectStateData {
+    SelectState state;
+    Node lastClick;
+    Node shiftSelect;
+
+    // tracking for closed nodes
+    bool hasRenderedLastClick;
+    bool hasRenderedShiftSelect;
+}
+
 /**
-    The logger frame
+    The Nodes Tree Panel
 */
 class NodesPanel : Panel {
+private:
+    string filter;
+    bool[uint] filterResult;
+
+    SelectStateData nextSelectState;
+    SelectStateData curSelectState;
+    Node[] rangeSelectNodes;
+    bool selectStateUpdate = false;
+
 protected:
+    /**
+        track the last click and shift select if they are rendered
+    */
+    void trackingRenderedNode(ref Node node) {
+        if (nextSelectState.lastClick is node)
+            nextSelectState.hasRenderedLastClick = true;
+
+        if (nextSelectState.shiftSelect is node)
+            nextSelectState.hasRenderedShiftSelect = true;
+    }
+
+    void startTrackingRenderedNodes() {
+        nextSelectState.hasRenderedLastClick = false;
+        nextSelectState.hasRenderedShiftSelect = false;
+    }
+
+    void endTrackingRenderedNodes() {
+        if (!nextSelectState.hasRenderedLastClick && nextSelectState.lastClick !is null) {
+            nextSelectState.lastClick = null;
+            nextSelectState.shiftSelect = null;
+            selectStateUpdate = true;
+        }
+
+        if (!nextSelectState.hasRenderedShiftSelect && nextSelectState.shiftSelect !is null) {
+            nextSelectState.shiftSelect = null;
+            selectStateUpdate = true;
+        }
+    }
+
     void treeSetEnabled(Node n, bool enabled) {
         n.enabled = enabled;
         foreach(child; n.children) {
@@ -191,7 +243,73 @@ protected:
         }
     }
 
+    void toggleSelect(ref Node n) {
+        if (incNodeInSelection(n))
+            incRemoveSelectNode(n);
+        else
+            incAddSelectNode(n);
+
+        rangeSelectNodes = [];
+    }
+
+    /**
+        Select a range of nodes, it should be called when the user is holding shift key and click on a node
+    */
+    void selectRange(ref Node n) {
+        if (curSelectState.lastClick is null) {
+            nextSelectState.lastClick = n;
+            incSelectNode(n);
+            return;
+        }
+
+        // recover rangeSelectNodes if selected
+        foreach(node; rangeSelectNodes) {
+            incRemoveSelectNode(node);
+        }
+        rangeSelectNodes = [];
+
+        nextSelectState.shiftSelect = n;
+    }
+
+    /**
+        Handle range selection, this function should be called in the treeAddNode or recursive function
+        we assume caller would traverse the tree nodes in order
+    */
+    void handleRangeSelect(ref Node n) {
+        if (curSelectState.state == SelectState.Ended ||
+            curSelectState.lastClick is null ||
+            curSelectState.shiftSelect is null
+            ) {
+            return;
+        }
+
+        if (n == curSelectState.lastClick || n == curSelectState.shiftSelect) {
+            switch(curSelectState.state) {
+                case SelectState.Init:
+                    curSelectState.state = SelectState.Started;
+                    break;
+                case SelectState.Started:
+                    curSelectState.state = SelectState.Ended;
+                    nextSelectState.shiftSelect = null;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (curSelectState.state != SelectState.Init && !incNodeInSelection(n)) {
+            incAddSelectNode(n);
+        }
+
+        if (curSelectState.state != SelectState.Init && n != curSelectState.lastClick) {
+            rangeSelectNodes ~= n;
+        }
+    }
+
     void treeAddNode(bool isRoot = false)(ref Node n) {
+        if (!filterResult[n.uuid])
+            return;
+
         igTableNextRow();
 
         auto io = igGetIO();
@@ -233,24 +351,30 @@ protected:
                         }
                         igSameLine(0, 2);
 
+                        handleRangeSelect(n);
+
                         // Selectable
                         if (igSelectable(isRoot ? __("Puppet") : n.name.toStringz, selected, ImGuiSelectableFlags.None, ImVec2(0, 0))) {
                             switch(incEditMode) {
                                 default:
-                                    if (selected) {
-                                        if (incSelectedNodes().length > 1) {
-                                            if (io.KeyCtrl) incRemoveSelectNode(n);
-                                            else incSelectNode(n);
-                                        } else {
-                                            incFocusCamera(n);
-                                        }
-                                    } else {
-                                        if (io.KeyCtrl) incAddSelectNode(n);
-                                        else incSelectNode(n);
-                                    }
+                                    selectStateUpdate = true;
+                                    if (!io.KeyShift)
+                                        nextSelectState.lastClick = n;
+
+                                    if (io.KeyCtrl && !io.KeyShift)
+                                        toggleSelect(n);
+                                    else if (!io.KeyCtrl && io.KeyShift)
+                                        selectRange(n);
+                                    else if (selected && selectedNodes.length == 1)
+                                        incFocusCamera(n);
+                                    else
+                                        incSelectNode(n);
                                     break;
                             }
                         }
+
+                        trackingRenderedNode(n);
+
                         this.nodeActionsPopup!isRoot(n);
                     igEndGroup();
 
@@ -289,6 +413,9 @@ protected:
         if (open) {
             // Draw children
             foreach(i, child; n.children) {
+                if (!filterResult[child.uuid])
+                    continue;
+
                 igPushID(cast(int)i);
                     igTableNextRow();
                     igTableSetColumnIndex(0);
@@ -321,6 +448,23 @@ protected:
         }
         
 
+    }
+
+    bool filterNodes(Node n) {
+        import std.algorithm;
+        bool result = false;
+        if (n.name.toLower.canFind(filter)) {
+            result = true;
+        } else if (n.children.length == 0) {
+            result = false;
+        }
+
+        foreach(child; n.children) {
+            result |= filterNodes(child);
+        }
+
+        filterResult[n.uuid] = result;
+        return result;
     }
 
     override
@@ -375,6 +519,16 @@ protected:
             igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 1));
             igPushStyleVar(ImGuiStyleVar.IndentSpacing, 14);
 
+            if (incInputText("Node Filter", filter)) {
+                filter = filter.toLower;
+                filterResult.clear();
+            }
+
+            incTooltip(_("Filter, search for specific nodes"));
+
+            // filter nodes
+            filterNodes(incActivePuppet.root);
+
             if (igBeginTable("NodesContent", 2, ImGuiTableFlags.ScrollX, ImVec2(0, 0), 0)) {
                 auto window = igGetCurrentWindow();
                 igSetScrollY(window.Scroll.y+scrollDelta);
@@ -382,9 +536,17 @@ protected:
                 //igTableSetupColumn("Visibility", ImGuiTableColumnFlags_WidthFixed, 32, 1);
                 
                 if (incEditMode == EditMode.ModelEdit) {
+                    if (selectStateUpdate) {
+                        curSelectState = nextSelectState;
+                        curSelectState.state = SelectState.Init;
+                        selectStateUpdate = false;
+                    }
+
+                    startTrackingRenderedNodes();
                     igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(4, 4));
                         treeAddNode!true(incActivePuppet.root);
                     igPopStyleVar();
+                    endTrackingRenderedNodes();
                 }
 
                 igEndTable();
