@@ -280,6 +280,7 @@ protected:
                     }
                 } else {
                     if (igButton(__("Close"), ImVec2(64, 24))) {
+                        vctx.end();
                         this.close();
                     }
                 }
