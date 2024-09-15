@@ -1,0 +1,39 @@
+name: 'Publish to GitHub'
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+        default: ${{ github.ref }}
+      name:
+        required: true
+        type: string
+      generate-notes:
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: build-*
+        merge-multiple: true
+        path: builds/
+
+    - name: 'Release to ${{ inputs.tag }}'
+      if: startsWith(inputs.tag, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        name: '${{ inputs.name }}'
+        tag_name: ${{ inputs.tag }}
+        files: |
+          builds/inochi-creator-linux.zip
+          builds/inochi-creator-win32.zip
+          builds/inochi-creator-osx.zip
+          builds/inochi-creator-win32.msi
+        generate_release_notes: ${{ inputs.generate-notes }}

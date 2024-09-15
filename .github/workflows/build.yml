@@ -21,6 +21,10 @@ on:
         required: false
         type: boolean
         default: true
+      do_package:
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -190,9 +194,96 @@ jobs:
     #   with:
     #     product-path: 'out/Inochi Creator.app'
 
-    - name: Make Artifact
+    - name: 'Make Artifact (Main)'
       uses: actions/upload-artifact@v4
       with:
         name: build-${{ matrix.config.platform }}
-        path: out/*
+        path: |
+          out/*
+          version.txt
+        retention-days: 1
+
+    - name: Archive Zip
+      uses: thedoctor0/zip-release@main
+      with:
+        type: 'zip'
+        filename: 'inochi-creator-${{ matrix.config.platform }}.zip'
+        directory: 'out/'
+        path: '*'
+
+    - name: 'Make Artifact (ZIP)'
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-${{ matrix.config.platform }}-zip
+        path: |
+          out/inochi-creator-${{ matrix.config.platform }}.zip
+          version.txt
+        retention-days: 1
+  
+  package-msi:
+    if: 'do_package == true'
+    needs: build
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4.1.7
+      with:
+        sparse-checkout:
+          build-aux
+    
+    - uses: actions/download-artifact@v4
+      with:
+        name: build-win32
+        path: out/
+
+    - name: 'Add msbuild to PATH'
+      uses: microsoft/setup-msbuild@v1.1
+    
+    - name: 'Build MSI'
+      run: |
+        cd build-aux/windows/wix
+
+        # Install required dependency
+        mkdir packages/
+        nuget install WixToolset.UI.wixext -version 4.0.0 -OutputDirectory packages/
+
+        # Build solution
+        msbuild "Inochi Creator.sln" -property:Configuration=Release
+
+        # Copy installer out
+        mv "bin/Release/Inochi Creator.msi" "../../../out/inochi-creator-win32.msi"
+        cd ../../../
+
+    - name: Make Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-win32-msi
+        path: out/inochi-creator-win32.msi
+        retention-days: 1
+  
+  package-dmg:
+    if: 'do_package == true'
+    needs: build
+    runs-on: macos-14
+
+    steps:
+    - uses: actions/checkout@v4.1.7
+      with:
+        sparse-checkout:
+          build-aux
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: build-osx
+        path: out/
+
+    - name: 'Build DMG'
+      run: |
+        ./build-aux/osx/gendmg.sh
+
+    - name: Make Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-osx-dmg
+        path: out/Install_Inochi_Creator.dmg
         retention-days: 1

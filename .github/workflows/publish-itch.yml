@@ -1,0 +1,54 @@
+name: 'Publish to itch.io'
+
+on:
+  workflow_call:
+
+jobs:
+  publish:
+    continue-on-error: true
+    name: 'Publish'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - name: "Windows (ZIP)"
+            channel: 'windows'
+            artifact: 'build-win32-zip'
+            file: 'inochi-creator-win32.zip'
+
+          - name: "Windows (MSI)"
+            channel: 'windows-msi'
+            artifact: 'build-win32-msi'
+            file: 'inochi-creator-win32.msi'
+
+          - name: "macOS (ZIP)"
+            channel: 'osx'
+            artifact: 'build-osx-zip'
+            file: 'inochi-creator-osx.zip'
+
+          - name: "macOS (DMG)"
+            channel: 'osx'
+            artifact: 'build-osx-dmg'
+            file: 'Install_Inochi_Creator.dmg'
+
+          - name: "Linux"
+            channel: 'linux'
+            artifact: 'build-linux-zip'
+            file: 'inochi-creator-linux.zip'
+    steps:
+    - name: 'Download ${{ matrix.config.artifact }}...'
+      uses: actions/download-artifact@v4
+      with:
+        name: '${{ matrix.config.artifact }}'
+
+
+    - name: 'Publish to Itch'
+      uses: manleydev/butler-publish-itchio-action@master
+      env:
+        BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+        CHANNEL: ${{ matrix.config.channel }}
+        ITCH_GAME: inochi-creator
+        ITCH_USER: LunaFoxgirlVT
+        VERSION_FILE: version.txt
+        PACKAGE: '${{ matrix.config.file }}'

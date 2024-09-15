@@ -1,0 +1,49 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+name: Build and Release Demo
+
+on:
+  push:
+    # Push all normally versioned tags
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  # Demo Build
+  build-demo:
+    uses: './.github/workflows/build.yml'
+    with:
+      target_ref: '${{ github.ref_name }}'
+      variant: 'demo'
+      generate_version: true
+
+  gh-publish:
+    needs: build-demo
+    uses: './.github/workflows/publish-gh.yml'
+
+  # Full Release
+  # This needs "gh-publish-demo" due to the fact that
+  # we need to overwrite the artifacts related.
+  build-full:
+    if: ${{ ! contains(github.ref_name, 'rc') }}
+    needs: gh-publish
+    uses: './.github/workflows/build.yml'
+    with:
+      target_ref: '${{ github.ref_name }}'
+      variant: 'full'
+      generate_version: true
+
+  itch-publish:
+    needs: build-full
+    uses: './.github/workflows/publish-itch.yml'
+
+  steam-publish:
+    needs: build-full
+    uses: './.github/workflows/publish-steam.yml'
+    with:
+      branch: 'staging'

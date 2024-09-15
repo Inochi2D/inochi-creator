@@ -23,114 +23,14 @@ jobs:
 
   steam-publish:
     needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          path: out/
-      
-      - uses: game-ci/steam-deploy@v3
-        with:
-          username: ${{ secrets.STEAM_USERNAME }}          
-          configVdf: ${{ secrets.CONFIGVDF}}          
-          appId: 2108550
-          buildDescription: 'Automatic deployment'
-          rootPath: out/
-          depot3Path: build-win32
-          depot4Path: build-linux
-          depot5Path: build-osx
-          releaseBranch: nightly
+    uses: './.github/workflows/publish-steam.yml'
+    with:
+      branch: 'nightly'
   
-  linux:
+  gh-publish:
     needs: build
-    runs-on: ubuntu-20.04
-
-    steps:
-    - uses: actions/download-artifact@v4
-      with:
-        name: build-linux
-        path: out/
-
-    - name: Archive Zip
-      uses: thedoctor0/zip-release@main
-      with:
-        type: 'zip'
-        filename: 'inochi-creator-linux-x86_64.zip'
-        directory: 'out/'
-        path: '*'
-
-    - name: Release to nightly tag
-      uses: softprops/action-gh-release@v1
-      with:
-        name: 'Nightly Build'
-        tag_name: nightly
-        files: |
-          out/inochi-creator-linux-x86_64.zip
-        generate_release_notes: true
-
-  windows:
-    needs: build
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v4.1.7
-      with:
-        sparse-checkout:
-          build-aux
-    
-    - uses: actions/download-artifact@v4
-      with:
-        name: build-win32
-        path: out/
-
-    - name: 'Add msbuild to PATH'
-      uses: microsoft/setup-msbuild@v1.1
-    
-    - name: 'Build MSI'
-      run: |
-        cd build-aux/windows/wix
-
-        # Install required dependency
-        mkdir packages/
-        nuget install WixToolset.UI.wixext -version 4.0.0 -OutputDirectory packages/
-
-        # Build solution
-        msbuild "Inochi Creator.sln" -property:Configuration=Release
-
-        # Copy installer out
-        mv "bin/Release/Inochi Creator.msi" "../../../out/inochi-creator-win32-x86_64.msi"
-        cd ../../../
-
-    - name: 'Release to nightly tag'
-      uses: softprops/action-gh-release@v2.0.8
-      with:
-        tag_name: nightly
-        files: |
-          out/inochi-creator-win32-x86_64.msi
-          out/inochi-creator-win32-x86_64.zip
-
-  macOS:
-    needs: build
-    runs-on: macos-14
-
-    steps:
-    - uses: actions/checkout@v4.1.7
-      with:
-        sparse-checkout:
-          build-aux
-
-    - uses: actions/download-artifact@v4
-      with:
-        name: build-osx
-        path: out/
-
-    - name: 'Build DMG'
-      run: |
-        ./build-aux/osx/gendmg.sh
-
-    - name: Release to nightly tag
-      uses: softprops/action-gh-release@v1
-      with:
-        name: 'Nightly Build'
-        tag_name: nightly
-        files: 'out/Install_Inochi_Creator.dmg'
+    uses: './.github/workflows/publish-gh.yml'
+    with:
+      tag: 'refs/tags/nightly'
+      name: 'Nightly'
+      generate-notes: true
