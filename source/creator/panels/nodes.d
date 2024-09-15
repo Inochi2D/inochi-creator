@@ -525,41 +525,46 @@ protected:
             igPushStyleVar(ImGuiStyleVar.CellPadding, ImVec2(4, 1));
             igPushStyleVar(ImGuiStyleVar.IndentSpacing, 14);
 
-            if (incInputText("Node Filter", filter)) {
-                filter = filter.toLower;
-                filterResult.clear();
-            }
+            igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(0, 8));
+                if (incInputText("Node Filter", filter)) {
+                    filter = filter.toLower;
+                    filterResult.clear();
+                }
 
-            incTooltip(_("Filter, search for specific nodes"));
+                incTooltip(_("Filter, search for specific nodes"));
+            igPopStyleVar();
 
             // filter nodes
             filterNodes(incActivePuppet.root);
 
-            if (igBeginTable("NodesContent", 2, ImGuiTableFlags.ScrollX, ImVec2(0, 0), 0)) {
-                auto window = igGetCurrentWindow();
-                igSetScrollY(window.Scroll.y+scrollDelta);
-                igTableSetupColumn("Nodes", ImGuiTableColumnFlags.WidthFixed, 0, 0);
-                //igTableSetupColumn("Visibility", ImGuiTableColumnFlags_WidthFixed, 32, 1);
-                
-                if (incEditMode == EditMode.ModelEdit) {
-                    if (selectStateUpdate) {
-                        curSelectState = nextSelectState;
-                        curSelectState.state = SelectState.Init;
-                        selectStateUpdate = false;
+            auto frameColor = *igGetStyleColorVec4(ImGuiCol.FrameBg);
+            igPushStyleColor_Vec4(ImGuiCol.ChildBg, frameColor);
+                if (igBeginTable("NodesContent", 2, ImGuiTableFlags.ScrollX, ImVec2(0, -8), 0)) {
+                    auto window = igGetCurrentWindow();
+                    igSetScrollY(window.Scroll.y+scrollDelta);
+                    igTableSetupColumn("Nodes", ImGuiTableColumnFlags.WidthFixed, 0, 0);
+                    //igTableSetupColumn("Visibility", ImGuiTableColumnFlags_WidthFixed, 32, 1);
+                    
+                    if (incEditMode == EditMode.ModelEdit) {
+                        if (selectStateUpdate) {
+                            curSelectState = nextSelectState;
+                            curSelectState.state = SelectState.Init;
+                            selectStateUpdate = false;
+                        }
+
+                        startTrackingRenderedNodes();
+                        igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(4, 4));
+                            treeAddNode!true(incActivePuppet.root);
+                        igPopStyleVar();
+                        endTrackingRenderedNodes();
                     }
 
-                    startTrackingRenderedNodes();
-                    igPushStyleVar(ImGuiStyleVar.ItemSpacing, ImVec2(4, 4));
-                        treeAddNode!true(incActivePuppet.root);
-                    igPopStyleVar();
-                    endTrackingRenderedNodes();
+                    igEndTable();
                 }
-
-                igEndTable();
-            }
-            if (igIsItemClicked(ImGuiMouseButton.Left)) {
-                incSelectNode(null);
-            }
+                if (igIsItemClicked(ImGuiMouseButton.Left)) {
+                    incSelectNode(null);
+                }
+            igPopStyleColor(1);
             igPopStyleVar();
             igPopStyleVar();
         }
