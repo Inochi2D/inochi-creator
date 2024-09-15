@@ -40,6 +40,7 @@ jobs:
   
   # Delete artifacts after use.
   cleanup:
+    if: 'always()'
     runs-on: ubuntu-latest
     needs: [gh-publish, steam-publish]
     steps:

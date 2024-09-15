@@ -53,8 +53,9 @@ jobs:
   
   # Delete artifacts after use.
   cleanup:
+    if: 'always()'
     runs-on: ubuntu-latest
-    needs: [itch-publish, steam-publish]
+    needs: [itch-publish, steam-publish, gh-publish]
     steps:
     - uses: GeekyEggo/delete-artifact@v5
       with: 
