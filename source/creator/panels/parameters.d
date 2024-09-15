@@ -1111,7 +1111,7 @@ protected:
 
         if (igBeginChild("ParametersList", ImVec2(0, -36))) {
             // Scroll update, it allows us to scroll to the selected parameter.
-            if (!incSettingsGet!bool("DisableParamAutoScroll", false) && scrollUpdate != ScrollUpdate.None) {
+            if (incSettingsGet!bool("EnableParamAutoScroll", true) && scrollUpdate != ScrollUpdate.None) {
                 if (scrollUpdate == ScrollUpdate.Selected) {
                     prevScrollY = igGetScrollY();
                     igSetScrollY(0);
