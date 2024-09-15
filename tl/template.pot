@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-11 23:39+0200\n"
+"POT-Creation-Date: 2024-09-15 05:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -265,16 +265,17 @@ msgid ""
 "Error message: "
 msgstr ""
 
+#. Also handle NFS or I/O errors
 #. Write error
 #: source/creator/core/settings.d:36 source/creator/io/kra.d:278
 #: source/creator/io/package.d:194 source/creator/io/package.d:195
-#: source/creator/io/psd.d:271 source/creator/package.d:244
-#: source/creator/package.d:303 source/creator/package.d:368
+#: source/creator/io/psd.d:271 source/creator/package.d:249
+#: source/creator/package.d:307 source/creator/package.d:372
 #: source/creator/panels/inspector.d:640 source/creator/panels/inspector.d:659
 #: source/creator/panels/inspector.d:660 source/creator/panels/inspector.d:671
-#: source/creator/panels/nodes.d:283 source/creator/panels/nodes.d:310
-#: source/creator/panels/viewport.d:253
-#: source/creator/viewport/vertex/package.d:382
+#: source/creator/panels/nodes.d:279 source/creator/panels/nodes.d:306
+#: source/creator/panels/viewport.d:257
+#: source/creator/viewport/vertex/package.d:387
 #: source/creator/widgets/mainmenu.d:245 source/creator/widgets/mainmenu.d:480
 #: source/creator/windows/imgexport.d:144
 #: source/creator/windows/inpexport.d:217
@@ -286,7 +287,6 @@ msgstr ""
 #: source/creator/windows/videoexport.d:284
 #: source/creator/windows/videoexport.d:294
 #: source/creator/windows/videoexport.d:302
-#: source/creator/windows/welcome.d:242 source/creator/windows/welcome.d:284
 msgid "Error"
 msgstr ""
 
@@ -309,18 +309,18 @@ msgstr ""
 #: source/creator/panels/inspector.d:703 source/creator/widgets/mainmenu.d:190
 #: source/creator/widgets/mainmenu.d:212 source/creator/widgets/mainmenu.d:225
 #: source/creator/widgets/mainmenu.d:240 source/creator/widgets/mainmenu.d:473
-#: source/creator/windows/inpexport.d:207 source/creator/windows/welcome.d:248
+#: source/creator/windows/inpexport.d:207 source/creator/windows/welcome.d:246
 msgid "Import..."
 msgstr ""
 
 #: source/creator/io/kra.d:274 source/creator/io/psd.d:267
-#: source/creator/package.d:364
+#: source/creator/package.d:368
 #, c-format
 msgid "%s was imported..."
 msgstr ""
 
 #: source/creator/io/kra.d:277 source/creator/io/psd.d:270
-#: source/creator/package.d:369
+#: source/creator/package.d:373
 msgid "Import failed..."
 msgstr ""
 
@@ -332,19 +332,20 @@ msgid ""
 msgstr ""
 
 #: source/creator/io/package.d:194 source/creator/panels/inspector.d:659
-#: source/creator/panels/inspector.d:671 source/creator/panels/viewport.d:253
+#: source/creator/panels/inspector.d:671 source/creator/panels/viewport.d:257
 #, c-format
 msgid "%s is not supported"
 msgstr ""
 
 #: source/creator/io/package.d:240
-msgid "Import File"
+msgid "File import"
 msgstr ""
 
 #: source/creator/io/package.d:241
 msgid ""
-"Do you want to preserve the folder structure of the imported file? You can "
-"change this in the settings."
+"Would you like to keep the folder structure of the imported file?\n"
+"\n"
+"You can change the default behaviour in the settings."
 msgstr ""
 
 #: source/creator/io/psd.d:271
@@ -362,41 +363,41 @@ msgstr ""
 msgid "New Project"
 msgstr ""
 
-#: source/creator/package.d:268
+#: source/creator/package.d:270
 #, c-format
 msgid "%s opened successfully."
 msgstr ""
 
-#: source/creator/package.d:299
+#: source/creator/package.d:303
 #, c-format
 msgid "%s saved successfully."
 msgstr ""
 
-#: source/creator/package.d:302
+#: source/creator/package.d:306
 #, c-format
 msgid "Failed to save %s"
 msgstr ""
 
-#: source/creator/package.d:338
+#: source/creator/package.d:342
 #, c-format
 msgid ""
 "The following errors occured during file loading\n"
 "%s"
 msgstr ""
 
-#: source/creator/package.d:348
+#: source/creator/package.d:352
 msgid "Folder import completed with errors..."
 msgstr ""
 
-#: source/creator/package.d:349
+#: source/creator/package.d:353
 msgid "Folder import completed..."
 msgstr ""
 
-#: source/creator/package.d:396
+#: source/creator/package.d:400
 msgid "Mipmap generation completed."
 msgstr ""
 
-#: source/creator/package.d:411
+#: source/creator/package.d:415
 msgid "Texture bleeding completed."
 msgstr ""
 
@@ -419,22 +420,26 @@ msgstr ""
 msgid "History"
 msgstr ""
 
-#: source/creator/panels/animlist.d:34
+#: source/creator/panels/animlist.d:34 source/creator/panels/parameters.d:942
+msgid "Duplicate"
+msgstr ""
+
+#: source/creator/panels/animlist.d:49
 msgid "Edit..."
 msgstr ""
 
-#: source/creator/panels/animlist.d:37 source/creator/panels/inspector.d:909
+#: source/creator/panels/animlist.d:52 source/creator/panels/inspector.d:909
 #: source/creator/panels/inspector.d:1112 source/creator/panels/nodes.d:142
 #: source/creator/panels/parameters.d:951
 #: source/creator/panels/parameters.d:1171 source/creator/panels/timeline.d:107
 msgid "Delete"
 msgstr ""
 
-#: source/creator/panels/animlist.d:73
+#: source/creator/panels/animlist.d:88
 msgid "Animation List"
 msgstr ""
 
-#: source/creator/panels/inspector.d:43 source/creator/panels/nodes.d:342
+#: source/creator/panels/inspector.d:43 source/creator/panels/nodes.d:338
 #: source/creator/panels/parameters.d:1028
 msgid "In vertex edit mode..."
 msgstr ""
@@ -452,7 +457,7 @@ msgid "Inspector"
 msgstr ""
 
 #. Selectable
-#: source/creator/panels/inspector.d:169 source/creator/panels/nodes.d:241
+#: source/creator/panels/inspector.d:169 source/creator/panels/nodes.d:237
 msgid "Puppet"
 msgstr ""
 
@@ -908,8 +913,8 @@ msgstr ""
 msgid "Camera"
 msgstr ""
 
-#: source/creator/panels/inspector.d:984 source/creator/panels/viewport.d:315
-#: source/creator/windows/settings.d:85 source/creator/windows/settings.d:211
+#: source/creator/panels/inspector.d:984 source/creator/panels/viewport.d:319
+#: source/creator/windows/settings.d:85 source/creator/windows/settings.d:214
 msgid "Viewport"
 msgstr ""
 
@@ -1107,7 +1112,7 @@ msgstr ""
 msgid "Recalculate origin"
 msgstr ""
 
-#: source/creator/panels/nodes.d:443
+#: source/creator/panels/nodes.d:439
 msgid "Nodes"
 msgstr ""
 
@@ -1242,10 +1247,6 @@ msgstr ""
 
 #: source/creator/panels/parameters.d:937
 msgid "Paste and Horizontal Flip"
-msgstr ""
-
-#: source/creator/panels/parameters.d:942
-msgid "Duplicate"
 msgstr ""
 
 #. Sets the default value of the param
@@ -1569,9 +1570,10 @@ msgstr ""
 #: source/creator/viewport/common/mesheditor/tools/grid.d:240
 #: source/creator/viewport/common/mesheditor/tools/grid.d:241
 #: source/creator/viewport/common/mesheditor/tools/grid.d:242
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:149
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:216
-#: source/creator/viewport/common/mesheditor/tools/point.d:97
-#: source/creator/viewport/common/mesheditor/tools/point.d:311
+#: source/creator/viewport/common/mesheditor/tools/point.d:98
+#: source/creator/viewport/common/mesheditor/tools/point.d:340
 msgid "Left Mouse"
 msgstr ""
 
@@ -1604,8 +1606,8 @@ msgid "Brush Tool"
 msgstr ""
 
 #: source/creator/viewport/common/mesheditor/tools/connect.d:34
-#: source/creator/viewport/common/mesheditor/tools/point.d:97
-#: source/creator/viewport/common/mesheditor/tools/point.d:311
+#: source/creator/viewport/common/mesheditor/tools/point.d:98
+#: source/creator/viewport/common/mesheditor/tools/point.d:340
 msgid "Select"
 msgstr ""
 
@@ -1641,6 +1643,53 @@ msgstr ""
 msgid "Grid Vertex Tool"
 msgstr ""
 
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:149
+msgid "Add Lasso Point"
+msgstr ""
+
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:150
+msgid "Additive Selection"
+msgstr ""
+
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:150
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:223
+msgid "Shift"
+msgstr ""
+
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:151
+msgid "Inverse Selection"
+msgstr ""
+
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:151
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:152
+#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:222
+msgid "Ctrl"
+msgstr ""
+
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:152
+msgid "Remove Selection"
+msgstr ""
+
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:153
+msgid "Delete Last Point"
+msgstr ""
+
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:153
+msgid "Right Mouse"
+msgstr ""
+
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:154
+msgid "Clear"
+msgstr ""
+
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:154
+msgid "ESC"
+msgstr ""
+
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:246
+msgid "Lasso Selection"
+msgstr ""
+
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:217
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:220
 msgid "Switch Mode"
@@ -1663,16 +1712,8 @@ msgstr ""
 msgid "Toggle locked point"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:222
-msgid "Ctrl"
-msgstr ""
-
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:223
 msgid "Move point along with the path"
-msgstr ""
-
-#: source/creator/viewport/common/mesheditor/tools/pathdeform.d:223
-msgid "Shift"
 msgstr ""
 
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:415
@@ -1696,17 +1737,21 @@ msgid "Path Deform Tool"
 msgstr ""
 
 #. Done button
-#: source/creator/viewport/common/mesheditor/tools/point.d:98
+#: source/creator/viewport/common/mesheditor/tools/point.d:99
 #: source/creator/windows/editanim.d:124
 msgid "Create"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/point.d:98
+#: source/creator/viewport/common/mesheditor/tools/point.d:99
 msgid "Ctrl+Left Mouse"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/point.d:435
+#: source/creator/viewport/common/mesheditor/tools/point.d:471
 msgid "Vertex Tool"
+msgstr ""
+
+#: source/creator/viewport/common/mesheditor/tools/point.d:487
+msgid "Auto connect vertices"
 msgstr ""
 
 #: source/creator/viewport/model/package.d:82
@@ -1786,99 +1831,103 @@ msgstr ""
 msgid "Editing base transform..."
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:73
+#: source/creator/viewport/vertex/package.d:75
 msgid "Show Mesh Group Child Nodes Bounds"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:86
+#: source/creator/viewport/vertex/package.d:88
 msgid "Flip Horizontally"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:97
+#: source/creator/viewport/vertex/package.d:99
 msgid "Flip Vertically"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:107
+#: source/creator/viewport/vertex/package.d:109
 msgid "Mirror Horizontally"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:115
+#: source/creator/viewport/vertex/package.d:117
 msgid "Mirror Vertically"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:126
+#: source/creator/viewport/vertex/package.d:128
 msgid "Triangulate vertices"
 msgstr ""
 
 #. Button which bakes some auto generated content
 #. In this case, a mesh is baked from the triangulation.
-#: source/creator/viewport/vertex/package.d:133
-#: source/creator/viewport/vertex/package.d:178
+#: source/creator/viewport/vertex/package.d:135
+#: source/creator/viewport/vertex/package.d:180
 msgid "Bake"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:140
+#: source/creator/viewport/vertex/package.d:142
 msgid "Bakes the triangulation, applying it to the mesh."
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:144
+#: source/creator/viewport/vertex/package.d:146
 msgid "Triangulation Options"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:186
+#: source/creator/viewport/vertex/package.d:188
 msgid "Bakes the auto mesh."
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:190
+#: source/creator/viewport/vertex/package.d:192
 msgid "Auto Meshing Options"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:199
+#: source/creator/viewport/vertex/package.d:204
 msgid " Apply"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:205
+#: source/creator/viewport/vertex/package.d:210
 msgid "Are you sure?"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:206
+#: source/creator/viewport/vertex/package.d:211
 msgid ""
 "The layout of the mesh has changed, all deformations to this mesh will be "
 "deleted if you continue."
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:218
+#: source/creator/viewport/vertex/package.d:223
 #: source/creator/windows/paramsplit.d:171
 msgid "Apply"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:222
+#: source/creator/viewport/vertex/package.d:227
 msgid " Cancel"
 msgstr ""
 
 #.
 #. Cancels the edited state for the axies points
-#: source/creator/viewport/vertex/package.d:235
-#: source/creator/widgets/dialog.d:118 source/creator/windows/flipconfig.d:479
+#: source/creator/viewport/vertex/package.d:240
+#: source/creator/widgets/dialog.d:142 source/creator/windows/flipconfig.d:479
 #: source/creator/windows/paramaxes.d:169
 #: source/creator/windows/videoexport.d:264
 msgid "Cancel"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:302
+#: source/creator/viewport/vertex/package.d:307
 msgid "No Drawables"
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:303
+#: source/creator/viewport/vertex/package.d:308
 msgid ""
 "This meshgroup has no drawables to deform. To deform, replace the child with "
 "a meshgroup or other type."
 msgstr ""
 
-#: source/creator/viewport/vertex/package.d:382
+#: source/creator/viewport/vertex/package.d:387
 msgid ""
 "Cannot apply invalid mesh\n"
 "At least 3 vertices forming a triangle is needed."
+msgstr ""
+
+#: source/creator/widgets/dialog.d:118
+msgid "Yes"
 msgstr ""
 
 #: source/creator/widgets/dialog.d:126
@@ -1886,15 +1935,11 @@ msgid "OK"
 msgstr ""
 
 #: source/creator/widgets/dialog.d:134
-msgid "Yes"
-msgstr ""
-
-#: source/creator/widgets/dialog.d:142
 msgid "No"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:45 source/creator/windows/welcome.d:231
-#: source/creator/windows/welcome.d:236
+#: source/creator/widgets/mainmenu.d:45 source/creator/windows/welcome.d:232
+#: source/creator/windows/welcome.d:237
 msgid "Open..."
 msgstr ""
 
@@ -2064,7 +2109,7 @@ msgstr ""
 msgid "Cut"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:349 source/creator/windows/settings.d:265
+#: source/creator/widgets/mainmenu.d:349 source/creator/windows/settings.d:268
 msgid "Settings"
 msgstr ""
 
@@ -2521,7 +2566,7 @@ msgstr ""
 msgid "Loops"
 msgstr ""
 
-#: source/creator/windows/inpexport.d:342 source/creator/windows/settings.d:229
+#: source/creator/windows/inpexport.d:342 source/creator/windows/settings.d:232
 msgid "No settings for this category."
 msgstr ""
 
@@ -2649,25 +2694,25 @@ msgstr ""
 msgid "File Handling"
 msgstr ""
 
-#: source/creator/windows/settings.d:113 source/creator/windows/welcome.d:174
+#: source/creator/windows/settings.d:113 source/creator/windows/welcome.d:175
 msgid "Color Theme"
 msgstr ""
 
 #: source/creator/windows/settings.d:113 source/creator/windows/settings.d:114
-#: source/creator/windows/welcome.d:174 source/creator/windows/welcome.d:175
+#: source/creator/windows/welcome.d:175 source/creator/windows/welcome.d:176
 msgid "Dark"
 msgstr ""
 
 #: source/creator/windows/settings.d:113 source/creator/windows/settings.d:115
-#: source/creator/windows/welcome.d:174 source/creator/windows/welcome.d:176
+#: source/creator/windows/welcome.d:175 source/creator/windows/welcome.d:177
 msgid "Light"
 msgstr ""
 
-#: source/creator/windows/settings.d:121 source/creator/windows/welcome.d:160
+#: source/creator/windows/settings.d:121 source/creator/windows/welcome.d:161
 msgid "Language"
 msgstr ""
 
-#: source/creator/windows/settings.d:140 source/creator/windows/welcome.d:186
+#: source/creator/windows/settings.d:140 source/creator/windows/welcome.d:187
 msgid "UI Scale"
 msgstr ""
 
@@ -2708,38 +2753,38 @@ msgid "Maximum Autosaves"
 msgstr ""
 
 #: source/creator/windows/settings.d:192
-msgid "Preserve Imported File Folder Structure"
+msgid "Import behaviour"
 msgstr ""
 
-#: source/creator/windows/settings.d:200
-msgid "Preserve Folder Structure"
+#: source/creator/windows/settings.d:194
+msgid "Always ask"
 msgstr ""
 
-#: source/creator/windows/settings.d:201
-msgid "Always Ask"
-msgstr ""
-
-#: source/creator/windows/settings.d:202
+#: source/creator/windows/settings.d:195
 msgid "Preserve"
 msgstr ""
 
-#: source/creator/windows/settings.d:203
-msgid "Not Preserve"
+#: source/creator/windows/settings.d:196
+msgid "Don't preserve"
 msgstr ""
 
-#: source/creator/windows/settings.d:213
+#: source/creator/windows/settings.d:202
+msgid "Preserve structure"
+msgstr ""
+
+#: source/creator/windows/settings.d:216
 msgid "Zoom Mode"
 msgstr ""
 
-#: source/creator/windows/settings.d:223
+#: source/creator/windows/settings.d:226
 msgid "Zoom Speed"
 msgstr ""
 
-#: source/creator/windows/settings.d:242 source/creator/windows/welcome.d:198
+#: source/creator/windows/settings.d:245 source/creator/windows/welcome.d:199
 msgid "Inochi Creator needs to be restarted for some changes to take effect."
 msgstr ""
 
-#: source/creator/windows/settings.d:250
+#: source/creator/windows/settings.d:253
 msgid "Done"
 msgstr ""
 
@@ -2832,66 +2877,66 @@ msgstr ""
 msgid "No animations are defined for this model, please add an animation."
 msgstr ""
 
-#: source/creator/windows/welcome.d:113
+#: source/creator/windows/welcome.d:114
 msgid "Unsupported"
 msgstr ""
 
-#: source/creator/windows/welcome.d:149
+#: source/creator/windows/welcome.d:150
 msgid "Quick Setup"
 msgstr ""
 
-#: source/creator/windows/welcome.d:211
+#: source/creator/windows/welcome.d:212
 msgid "Next"
 msgstr ""
 
-#: source/creator/windows/welcome.d:223
+#: source/creator/windows/welcome.d:224
 msgid "Create Project"
 msgstr ""
 
-#: source/creator/windows/welcome.d:226
+#: source/creator/windows/welcome.d:227
 msgid "New..."
 msgstr ""
 
-#: source/creator/windows/welcome.d:253
+#: source/creator/windows/welcome.d:251
 msgid "Import PSD..."
 msgstr ""
 
-#: source/creator/windows/welcome.d:259
+#: source/creator/windows/welcome.d:257
 msgid "Import KRA..."
 msgstr ""
 
-#: source/creator/windows/welcome.d:271
+#: source/creator/windows/welcome.d:269
 msgid "Recent Projects"
 msgstr ""
 
-#: source/creator/windows/welcome.d:299
+#: source/creator/windows/welcome.d:294
 msgid "On the Web"
 msgstr ""
 
-#: source/creator/windows/welcome.d:304
+#: source/creator/windows/welcome.d:299
 msgid "Website"
 msgstr ""
 
-#: source/creator/windows/welcome.d:310
+#: source/creator/windows/welcome.d:305
 msgid "Documentation"
 msgstr ""
 
-#: source/creator/windows/welcome.d:316
+#: source/creator/windows/welcome.d:311
 msgid "Join our Discord"
 msgstr ""
 
-#: source/creator/windows/welcome.d:325
+#: source/creator/windows/welcome.d:320
 msgid "Buy a copy"
 msgstr ""
 
-#: source/creator/windows/welcome.d:330
+#: source/creator/windows/welcome.d:325
 msgid "Patreon"
 msgstr ""
 
-#: source/creator/windows/welcome.d:334
+#: source/creator/windows/welcome.d:329
 msgid "Github Sponsors"
 msgstr ""
 
-#: source/creator/windows/welcome.d:362
+#: source/creator/windows/welcome.d:357
 msgid "Inochi Creator Start"
 msgstr ""
