@@ -169,6 +169,7 @@ class PointTool : NodeSelect {
 
                     auto prevVertexIdx = impl.getVertexFromPoint(lastAddAction.vertices[$ - 1].position);
                     auto prevVertex = impl.getVerticesByIndex([prevVertexIdx])[0];
+                    if (prevVertex == null) return;
                     auto action = new MeshConnectAction(impl.getTarget().name, impl, mesh);
                     impl.foreachMirror((uint axis) {
                         MeshVertex* mPrev = impl.mirrorVertex(axis, prevVertex);
