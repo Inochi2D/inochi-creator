@@ -219,11 +219,7 @@ protected:
             }
 
             // assert user camera size is not odd, it will cause ffmpeg to fail and crash
-            bool userAssertOdd = false;
-            if (selectedCamera.getViewport().x % 2 != 0 || selectedCamera.getViewport().y % 2 != 0) {
-                userAssertOdd = true;
-                incTextColored(ImVec4(1, 0, 0, 1), _("Warning: Camera size must be even"));
-            }
+            bool userAssertOdd = incVerifyCameraSizeShowWarning(selectedCamera);
 
             igEndChild();
         igEndDisabled();
