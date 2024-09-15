@@ -187,7 +187,7 @@ jobs:
     #     product-path: 'out/Inochi Creator.app'
 
     - name: Make Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build-${{ matrix.config.platform }}
         path: out/*
