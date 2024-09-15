@@ -82,14 +82,6 @@ jobs:
       with:
         sparse-checkout:
           build-aux
-    
-    - name: Archive Zip
-      uses: thedoctor0/zip-release@main
-      with:
-        type: 'zip'
-        filename: 'inochi-creator-win32-x86_64.zip'
-        directory: 'out/'
-        path: '*'
 
     - name: 'Add msbuild to PATH'
       uses: microsoft/setup-msbuild@v1.1

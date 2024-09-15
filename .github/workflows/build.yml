@@ -9,6 +9,10 @@ on:
       variant:
         required: true
         type: string
+      build_type:
+        required: false
+        type: string
+        default: release
       generate_version:
         required: false
         type: boolean
@@ -98,7 +102,7 @@ jobs:
         export HOMEBREW_NO_INSTALL_CLEANUP=1
         export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
         brew update
-        brew install create-dmg gettext
+        brew install create-dmg
 
         # Remove conflicting brew items
         brew remove --ignore-dependencies libpng brotli harfbuzz
@@ -140,12 +144,12 @@ jobs:
 
         # First build ARM64 version...
         echo "Building arm64 binary..."
-        dub build --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }} --arch=arm64-apple-macos
+        dub build --build=${{ inputs.build_type }} --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }} --arch=arm64-apple-macos
         mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
 
         # Then the X86_64 version...
         echo "Building x86_64 binary..."
-        dub build --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }} --arch=x86_64-apple-macos
+        dub build --build=${{ inputs.build_type }} --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }} --arch=x86_64-apple-macos
         mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64"
 
         # Glue them together with lipo
@@ -167,14 +171,14 @@ jobs:
       run: |
         .\vcvars.ps1
         dub build --config=meta
-        dub build --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }}
+        dub build --build=${{ inputs.build_type }} --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }}
 
     - name: 'Build (Linux)'
       if: ${{ matrix.config.platform == 'linux' }}
       id: posix-build
       run: |
         dub build --config=meta
-        dub build --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }}
+        dub build --build=${{ inputs.build_type }} --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }}
 
     # TODO: Add signing workflow.
     # - name: 'Select latest XCode (OSX)'
