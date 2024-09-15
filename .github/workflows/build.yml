@@ -221,7 +221,7 @@ jobs:
         retention-days: 1
   
   package-msi:
-    if: 'do_package == true'
+    if: ${{ inputs.do_package == true }}
     needs: build
     runs-on: windows-latest
 
@@ -262,7 +262,7 @@ jobs:
         retention-days: 1
   
   package-dmg:
-    if: 'do_package == true'
+    if: ${{ inputs.do_package == true }}
     needs: build
     runs-on: macos-14
 
