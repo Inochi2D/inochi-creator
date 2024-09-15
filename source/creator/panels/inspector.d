@@ -984,7 +984,8 @@ void incInspectorModelCamera(ExCamera node) {
         incText(_("Viewport"));
         igIndent();
             igSetNextItemWidth(incAvailableSpace().x);
-            igDragFloat2("###VIEWPORT", &node.getViewport().vector);
+            igDragFloat2("###VIEWPORT", &node.getViewport().vector, 2);
+            incVerifyCameraSizeShowWarning(node);
         igUnindent();
 
         // Padding

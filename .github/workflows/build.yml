@@ -105,8 +105,6 @@ jobs:
       run: |
         export HOMEBREW_NO_INSTALL_CLEANUP=1
         export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
-        brew update
-        brew install create-dmg
 
         # Remove conflicting brew items
         brew remove --ignore-dependencies libpng brotli harfbuzz
@@ -257,7 +255,10 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-win32-msi
-        path: out/inochi-creator-win32.msi
+        path: |
+          out/inochi-creator-win32.msi
+          version.txt
+        overwrite: true
         retention-days: 1
   
   package-dmg:
@@ -274,6 +275,11 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: build-osx
+    
+    - name: 'Install create-dmg...'
+      run: |
+        brew update
+        brew install create-dmg
 
     - name: 'Build DMG'
       run: |
@@ -283,5 +289,8 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-osx-dmg
-        path: out/Install_Inochi_Creator.dmg
+        path: |
+          out/Install_Inochi_Creator.dmg
+          version.txt
+        overwrite: true
         retention-days: 1
