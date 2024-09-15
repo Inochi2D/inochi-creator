@@ -237,8 +237,8 @@ bool incKeepStructDialog(ImportKeepHandler handler) {
         // Show dialog
         incDialog(
             INC_KEEP_STRUCT_DIALOG_NAME,
-            __("Import File"),
-            _("Do you want to preserve the folder structure of the imported file? You can change this in the settings."),
+            __("File import"),
+            _("Would you like to keep the folder structure of the imported file?\n\nYou can change the default behaviour in the settings."),
             DialogLevel.Warning,
             DialogButtons.Yes | DialogButtons.No | DialogButtons.Cancel
         );
