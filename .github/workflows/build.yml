@@ -89,7 +89,7 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: translations
-        path: out/
+        path: out/i18n/
 
     - name: 'Preparing build... (Ubuntu)'
       if: ${{ matrix.config.platform == 'linux' }}
