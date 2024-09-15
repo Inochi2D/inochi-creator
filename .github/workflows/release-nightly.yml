@@ -24,12 +24,14 @@ jobs:
   steam-publish:
     needs: build
     uses: './.github/workflows/publish-steam.yml'
+    secrets: inherit
     with:
       branch: 'nightly'
   
   gh-publish:
     needs: build
     uses: './.github/workflows/publish-gh.yml'
+    secrets: inherit
     with:
       tag: 'nightly'
       name: 'Nightly'

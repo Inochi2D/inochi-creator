@@ -14,6 +14,7 @@ permissions:
   contents: write
 
 jobs:
+
   # Demo Build
   build-demo:
     uses: './.github/workflows/build.yml'
@@ -41,9 +42,21 @@ jobs:
   itch-publish:
     needs: build-full
     uses: './.github/workflows/publish-itch.yml'
+    secrets: inherit
 
   steam-publish:
     needs: build-full
     uses: './.github/workflows/publish-steam.yml'
+    secrets: inherit
     with:
       branch: 'staging'
+  
+  # Delete artifacts after use.
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: [itch-publish, steam-publish]
+    steps:
+    - uses: GeekyEggo/delete-artifact@v5
+      with: 
+        name: |
+          *
