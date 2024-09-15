@@ -73,15 +73,15 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/download-artifact@v4
-      with:
-        name: build-win32
-        path: out/
-    
     - uses: actions/checkout@v4.1.7
       with:
         sparse-checkout:
           build-aux
+    
+    - uses: actions/download-artifact@v4
+      with:
+        name: build-win32
+        path: out/
 
     - name: 'Add msbuild to PATH'
       uses: microsoft/setup-msbuild@v1.1
@@ -114,15 +114,15 @@ jobs:
     runs-on: macos-14
 
     steps:
-    - uses: actions/download-artifact@v4
-      with:
-        name: build-osx
-        path: out/
-    
     - uses: actions/checkout@v4.1.7
       with:
         sparse-checkout:
           build-aux
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: build-osx
+        path: out/
 
     - name: 'Build DMG'
       run: |
