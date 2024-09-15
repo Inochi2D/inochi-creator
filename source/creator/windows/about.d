@@ -11,6 +11,7 @@ import creator.widgets.label;
 import creator.widgets.markdown;
 import creator.windows;
 import creator.core;
+import creator.config;
 import creator;
 import std.string;
 import creator.utils.link;
@@ -107,7 +108,9 @@ protected:
             igSameLine(0, 0);
 
             space = incAvailableSpace();
-            float spacing = (space.x/3)-8;
+            float spacing = INC_RT_SHOW_DONATION_LINKS ? 
+                (space.x/3)-8 : 
+                (space.x/2)-8;
 
             if (igButton("GitHub", ImVec2(8+spacing, 0))) {
                 incOpenLink("https://github.com/Inochi2D/inochi-creator");
@@ -119,10 +122,12 @@ protected:
                 incOpenLink("https://twitter.com/Inochi2D");
             }
 
-            igSameLine(0, 8);
+            static if (INC_RT_SHOW_DONATION_LINKS) {
+                igSameLine(0, 8);
 
-            if (igButton(__("Donate"), ImVec2(spacing, 0))) {
-                incOpenLink("https://www.patreon.com/clipsey");
+                if (igButton(__("Donate"), ImVec2(spacing, 0))) {
+                    incOpenLink("https://www.patreon.com/clipsey");
+                }
             }
         }
         igEndChild();
