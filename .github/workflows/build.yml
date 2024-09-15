@@ -105,8 +105,6 @@ jobs:
       run: |
         export HOMEBREW_NO_INSTALL_CLEANUP=1
         export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
-        brew update
-        brew install create-dmg
 
         # Remove conflicting brew items
         brew remove --ignore-dependencies libpng brotli harfbuzz
@@ -274,6 +272,11 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: build-osx
+    
+    - name: 'Install create-dmg...'
+      run: |
+        brew update
+        brew install create-dmg
 
     - name: 'Build DMG'
       run: |
