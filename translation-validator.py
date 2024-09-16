@@ -23,21 +23,6 @@ fmt_str_keywords = ['%s', '%d', '%f', '%u', '%lu']
 check_fuzzy = False
 ignore_empty = False
 
-def parse_po_file(file_path):
-    with open(file_path, 'r', encoding='utf-8') as file:
-        catalog = read_po(file)
-    
-    entries = []
-    for message in catalog:
-        entries.append({
-            "msgid": message.id,
-            "msgstr": message.string,
-            "comments": message.user_comments,
-            "fuzzy": message.fuzzy,
-        })
-
-    return entries
-
 def validate_string_formatting(msgid, msgstr) -> bool:
     """
     Check if the string formatting is correct
@@ -79,38 +64,56 @@ class ValidationError(Exception):
         return self.message
 
 def validate_string(entry) -> bool:
-    if entry['msgstr'] == "" and not ignore_empty:
+    if entry.string == "" and not ignore_empty:
         raise ValidationError("msgstr is empty", entry)
     
-    if not validate_string_formatting(entry['msgid'], entry['msgstr']):
+    if not validate_string_formatting(entry.id, entry.string):
         raise ValidationError("msgstr fmtstr is incorrect", entry)
     
-    if not validate_non_ascii(entry['msgstr'], entry['msgid']):
+    if not validate_non_ascii(entry.string, entry.id):
         raise ValidationError("msgstr may lost icon", entry)
 
-    if entry['fuzzy'] and check_fuzzy:
+    if entry.fuzzy and check_fuzzy:
         raise ValidationError("msgstr is fuzzy", entry)
 
     return True
 
-def validate_file(file):
-    print("Validating file: " + file)
+escape_chars = {
+    "\n": "\\n", "\r": "\\r", "\t": "\\t",
+    "\"": "\\\""
+}
+escape_table = str.maketrans(escape_chars)
 
-    pofile = parse_po_file(file)
-    for entry in pofile:
+def escape_string(s) -> str:
+    return s.translate(escape_table)
+
+def validate_file(file_path) -> int:
+    ret_code = 0
+    print("Validating file: " + file_path)
+
+    with open(file_path, 'r', encoding='utf-8') as file:
+        catalog = read_po(file)
+
+    for entry in catalog:
         try:
             validate_string(entry)
         except ValidationError as e:
-            e.entry['msgid'] = e.entry['msgid'].replace("\n", "\\n").replace("\"", "\\\"")
-            e.entry['msgstr'] = e.entry['msgstr'].replace("\n", "\\n").replace("\"", "\\\"")
+            msgid = escape_string(e.entry.id)
+            msgstr = escape_string(e.entry.string)
             print("Validation Error: " + str(e))
-            print(f"\tmsgid: \"{e.entry['msgid']}\"")
-            print(f"\tmsgstr: \"{e.entry['msgstr']}\"")
+            print(f"\tmsgid: \"{msgid}\"")
+            print(f"\tmsgstr: \"{msgstr}\"")
+            ret_code = 1
             # sys.exit(1)
+    
+    return ret_code
 
-def validate_all():
+def validate_all() -> int:
+    ret_code = 0
     for tl_file in tl_files:
-        validate_file(tl_file)
+        ret_code += validate_file(tl_file)
+        
+    return ret_code
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Validate translation files')
@@ -127,9 +130,9 @@ if __name__ == "__main__":
         ignore_empty = True
 
     if args.all:
-        validate_all()
+        sys.exit(validate_all())
     elif args.file:
-        validate_file(args.file)
+        sys.exit(validate_file(args.file))
     else:
         print("No arguments given")
         parser.print_help()
