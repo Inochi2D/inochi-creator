@@ -21,6 +21,7 @@ ignore = [
 
 fmt_str_keywords = ['%s', '%d', '%f', '%u', '%lu']
 check_fuzzy = False
+ignore_empty = False
 
 def parse_po_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -78,7 +79,7 @@ class ValidationError(Exception):
         return self.message
 
 def validate_string(entry) -> bool:
-    if entry['msgstr'] == "":
+    if entry['msgstr'] == "" and not ignore_empty:
         raise ValidationError("msgstr is empty", entry)
     
     if not validate_string_formatting(entry['msgid'], entry['msgstr']):
@@ -116,10 +117,14 @@ if __name__ == "__main__":
     parser.add_argument('-a', '--all', action='store_true', help='Validate all files')
     parser.add_argument('-f', '--file', type=str, help='Validate specific file')
     parser.add_argument('--fuzzy', action='store_true', help='Check fuzzy entries')
+    parser.add_argument('--ignore-empty', action='store_true', help='Ignore empty msgstr')
     args = parser.parse_args()
     
     if args.fuzzy:
         check_fuzzy = True
+        
+    if args.ignore_empty:
+        ignore_empty = True
 
     if args.all:
         validate_all()
