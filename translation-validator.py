@@ -113,7 +113,7 @@ def validate_file(file_path) -> int:
         except ValidationError as e:
             msgid = escape_string(e.entry.id)
             msgstr = escape_string(e.entry.string)
-            print("Validation Error: " + str(e))
+            print("Validation Error: " + str(e) + f" ({file_path}:{e.entry.lineno})")
             print(f"\tmsgid: \"{msgid}\"")
             print(f"\tmsgstr: \"{msgstr}\"")
             ret_code = 1
