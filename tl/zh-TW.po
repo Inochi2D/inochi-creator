@@ -3,6 +3,8 @@
 # This file is distributed under the same license as the PACKAGE package.
 # choushin <thect@protonmail.com>, 2022.
 # LovelyA72 <a72@luotianyi.pro>, 2022.
+# Richardn <rniu5@jh.edu>, 2024.
+# r888800009 <r888800009@gmail.com>, 2024.
 #
 msgid ""
 msgstr ""
@@ -10,18 +12,18 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-15 23:19+0200\n"
 "PO-Revision-Date: 2022-10-10 21:14+0800\n"
-"Last-Translator: LovelyA72 <a72@luotianyi.pro>\n"
+"Last-Translator: r888800009 <r888800009@gmail.com>\n"
 "Language-Team: Language zh-tw\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.1.1\n"
+"Generated-By: Babel 2.16.0\n"
 
 #: source/app.d:95
 msgid "Warning!"
-msgstr ""
+msgstr "注意！"
 
 #: source/app.d:96
 msgid ""
@@ -29,10 +31,13 @@ msgid ""
 "Inochi Creator may crash unexpectedly and you will likely encounter bugs.\n"
 "Make sure to save and back up your work often!"
 msgstr ""
+"您正在運行 Inochi Creator 的每日構建版本！\n"
+"您很有可能會遇到漏洞，有些時候甚至會崩潰。\n"
+"請確保經常保存和備份您的工作！"
 
 #: source/app.d:103
 msgid "Thank you!"
-msgstr ""
+msgstr "謝謝！"
 
 #: source/app.d:104
 msgid ""
@@ -42,6 +47,11 @@ msgid ""
 "\n"
 "To remove this nagscreen, [buy a copy today!](https://inochi2d.com)"
 msgstr ""
+"感謝您下載 Inochi Creator！\n"
+"所有軟件的開發都需要大量資源，Inochi Creator 也不例外。\n"
+"如果可以的話，請考慮資助開發者！\n"
+"\n"
+"[購買](https://inochi2d.com)來去除這個提示框。"
 
 #: source/creator/actions/binding.d:74
 #, c-format
@@ -90,7 +100,7 @@ msgstr "已變更可繪製 %s"
 #: source/creator/actions/mesh.d:58
 #, c-format
 msgid "Mesh %s change is restored."
-msgstr ""
+msgstr "已恢復對網格 %s 的更改"
 
 #: source/creator/actions/mesh.d:65
 #, fuzzy, c-format
@@ -112,7 +122,7 @@ msgstr "參數 %s 已經被移除"
 #: source/creator/actions/mesh.d:489 source/creator/actions/mesh.d:497
 #, c-format
 msgid "%s: vertex was translated."
-msgstr ""
+msgstr "%s: 頂點已被移動"
 
 #: source/creator/actions/mesheditor.d:157
 #, c-format
@@ -162,12 +172,12 @@ msgstr "自 origin 移動 %s"
 #: source/creator/actions/node.d:224 source/creator/actions/node.d:233
 #, c-format
 msgid "%s is added to mask of %s"
-msgstr ""
+msgstr "%s 被添加到了 %s 的蒙版"
 
 #: source/creator/actions/node.d:225 source/creator/actions/node.d:232
 #, c-format
 msgid "%s is deleted from mask of %s"
-msgstr ""
+msgstr "%s 已經從 %s 的蒙版中移除"
 
 #: source/creator/actions/node.d:276 source/creator/actions/node.d:283
 msgid "Enabled"
@@ -249,11 +259,11 @@ msgstr "(不支援)"
 msgid ""
 "Oops! Your settings.json file is corrupted. inochi2d creator will load the "
 "default settings.\n"
-msgstr ""
+msgstr "誒？您的 settings.json 配置文件似乎損壞了。Inochi Creator 將會加載默認配置。\n"
 
 #: source/creator/core/settings.d:33
 msgid "The corrupted settings file has been moved to "
-msgstr ""
+msgstr "損壞的配置文件已被保存至 "
 
 #: source/creator/core/settings.d:34
 msgid ""
@@ -266,6 +276,8 @@ msgid ""
 "\n"
 "Error message: "
 msgstr ""
+"\n"
+"錯誤信息： "
 
 #. Also handle NFS or I/O errors
 #. Write error
@@ -309,7 +321,7 @@ msgstr "%s 引入出現錯誤 (%s)…"
 #. If this is executed it's a bug, using enforce here to prevent infinite loop.
 #: source/creator/io/inpexport.d:277
 msgid "A texture is too big for the atlas."
-msgstr ""
+msgstr "有一個過大的紋理無法被放入圖集。"
 
 #: source/creator/io/kra.d:26 source/creator/io/psd.d:26
 #: source/creator/panels/inspector.d:703 source/creator/widgets/mainmenu.d:188
@@ -356,6 +368,9 @@ msgid ""
 "\n"
 "You can change the default behaviour in the settings."
 msgstr ""
+"您希望同時導入文件中的圖層結構嗎？\n"
+"\n"
+"您可以在設置中更改默認的導入選項。"
 
 #: source/creator/io/psd.d:271
 #, c-format
@@ -488,7 +503,7 @@ msgstr "一般資訊"
 
 #: source/creator/panels/inspector.d:195
 msgid "Part Count"
-msgstr ""
+msgstr "組件計數"
 
 #: source/creator/panels/inspector.d:201
 msgid "Name"
@@ -733,7 +748,7 @@ msgstr "色調（螢幕）"
 
 #: source/creator/panels/inspector.d:792 source/creator/panels/inspector.d:1675
 msgid "Emission Strength"
-msgstr ""
+msgstr "發光強度"
 
 #. Header for the Blending options for Parts
 #: source/creator/panels/inspector.d:804 source/creator/panels/inspector.d:1016
@@ -765,7 +780,7 @@ msgstr "螢幕"
 #: source/creator/panels/inspector.d:819 source/creator/panels/inspector.d:1031
 #: source/creator/windows/inpexport.d:279
 msgid "Overlay"
-msgstr ""
+msgstr "疊加"
 
 #. Darken blending mode
 #: source/creator/panels/inspector.d:822 source/creator/panels/inspector.d:1034
@@ -797,7 +812,7 @@ msgstr "線性加亮"
 #: source/creator/panels/inspector.d:834 source/creator/panels/inspector.d:1046
 #: source/creator/windows/inpexport.d:294
 msgid "Add (Glow)"
-msgstr ""
+msgstr "增亮"
 
 #. Color Burn blending mode
 #: source/creator/panels/inspector.d:837 source/creator/panels/inspector.d:1049
@@ -824,19 +839,19 @@ msgstr "亮色主題"
 #: source/creator/panels/inspector.d:846 source/creator/panels/inspector.d:1058
 #: source/creator/windows/inpexport.d:306
 msgid "Subtract"
-msgstr ""
+msgstr "減去"
 
 #. Difference blending mode
 #: source/creator/panels/inspector.d:849 source/creator/panels/inspector.d:1061
 #: source/creator/windows/inpexport.d:309
 msgid "Difference"
-msgstr ""
+msgstr "差值"
 
 #. Exclusion blending mode
 #: source/creator/panels/inspector.d:852 source/creator/panels/inspector.d:1064
 #: source/creator/windows/inpexport.d:312
 msgid "Exclusion"
-msgstr ""
+msgstr "排除"
 
 #. Inverse blending mode
 #: source/creator/panels/inspector.d:855 source/creator/panels/inspector.d:1067
@@ -848,13 +863,13 @@ msgstr "反轉"
 #: source/creator/panels/inspector.d:856 source/creator/panels/inspector.d:1068
 #: source/creator/windows/inpexport.d:316
 msgid "Inverts the color by a factor of the overlying color"
-msgstr ""
+msgstr "用上層顏色的一個係數來反轉顏色"
 
 #. Destination In blending mode
 #: source/creator/panels/inspector.d:859 source/creator/panels/inspector.d:1071
 #: source/creator/windows/inpexport.d:319
 msgid "Destination In"
-msgstr ""
+msgstr "保留重疊部分的下層內容"
 
 #. Clip to Lower blending mode
 #: source/creator/panels/inspector.d:862 source/creator/windows/inpexport.d:322
@@ -951,11 +966,11 @@ msgstr "合成"
 
 #: source/creator/panels/inspector.d:1180
 msgid "Propagate MeshGroup"
-msgstr ""
+msgstr "傳遞網格組"
 
 #: source/creator/panels/inspector.d:1186
 msgid "Allow ascendant MeshGroup to deform children of Composite"
-msgstr ""
+msgstr "使位於父節點的網格組對合成節點的子節點進行變形"
 
 #: source/creator/panels/inspector.d:1196
 msgid "SimplePhysics"
@@ -1009,7 +1024,7 @@ msgstr "長度"
 
 #: source/creator/panels/inspector.d:1259
 msgid "YX"
-msgstr ""
+msgstr "YX"
 
 #: source/creator/panels/inspector.d:1269
 #, fuzzy
@@ -1020,7 +1035,7 @@ msgstr "變形"
 msgid ""
 "Whether the physics system only listens to the movement of the physics node "
 "itself"
-msgstr ""
+msgstr "物理系統是否只考慮物理節點的相對運動"
 
 #: source/creator/panels/inspector.d:1276
 #: source/creator/panels/inspector.d:1744
@@ -1049,17 +1064,19 @@ msgstr "輸出比例"
 
 #: source/creator/panels/inspector.d:1329 source/creator/panels/nodes.d:174
 msgid "MeshGroup"
-msgstr ""
+msgstr "網格組"
 
 #: source/creator/panels/inspector.d:1335
 msgid "Dynamic Deformation (slower)"
-msgstr ""
+msgstr "動態變形（速度較慢）"
 
 #: source/creator/panels/inspector.d:1338
 msgid ""
 "Whether the MeshGroup should dynamically deform children,\n"
 "this is an expensive operation and should not be overused."
 msgstr ""
+"是否令該網格組對子節點進行動態變形\n"
+"這是一個對性能需求大的操作，不應被過度使用"
 
 #: source/creator/panels/inspector.d:1341
 #, fuzzy
@@ -1068,7 +1085,7 @@ msgstr "移動"
 
 #: source/creator/panels/inspector.d:1344
 msgid "Translate origin of child nodes for non-Drawable object."
-msgstr ""
+msgstr "平移非繪製對象的子節點的原點"
 
 #. Header for texture options
 #: source/creator/panels/inspector.d:1663
@@ -1139,7 +1156,7 @@ msgstr "圖層：%s"
 
 #: source/creator/panels/nodes.d:238
 msgid "Recalculate origin"
-msgstr ""
+msgstr "重新計算原點"
 
 #: source/creator/panels/nodes.d:534
 #, fuzzy
@@ -1236,7 +1253,7 @@ msgstr "線性"
 
 #: source/creator/panels/parameters.d:559 source/creator/panels/timeline.d:83
 msgid "Cubic"
-msgstr ""
+msgstr "立方"
 
 #: source/creator/panels/parameters.d:569
 msgid "Copy to"
@@ -1264,7 +1281,7 @@ msgstr "分割"
 
 #: source/creator/panels/parameters.d:877
 msgid "To 2D"
-msgstr ""
+msgstr "轉為二維參數"
 
 #: source/creator/panels/parameters.d:882
 msgid "Flip X"
@@ -1284,7 +1301,7 @@ msgstr "鏡像自動填入"
 
 #: source/creator/panels/parameters.d:945
 msgid "Paste and Horizontal Flip"
-msgstr ""
+msgstr "粘貼並橫向翻轉"
 
 #. Sets the default value of the param
 #: source/creator/panels/parameters.d:971
@@ -1364,7 +1381,7 @@ msgstr "插值模式"
 
 #: source/creator/panels/timeline.d:77
 msgid "Stepped"
-msgstr ""
+msgstr "階梯"
 
 #: source/creator/panels/timeline.d:89
 #, fuzzy
@@ -1373,7 +1390,7 @@ msgstr "合併"
 
 #: source/creator/panels/timeline.d:93 source/creator/windows/editanim.d:90
 msgid "Additive"
-msgstr ""
+msgstr "疊加"
 
 #: source/creator/panels/timeline.d:96
 #, fuzzy
@@ -1382,11 +1399,11 @@ msgstr "複製"
 
 #: source/creator/panels/timeline.d:101
 msgid "Forced"
-msgstr ""
+msgstr "強制"
 
 #: source/creator/panels/timeline.d:211
 msgid "Lock playback to animation framerate"
-msgstr ""
+msgstr "鎖播放幀率到動畫幀率"
 
 #: source/creator/panels/timeline.d:281
 #, fuzzy
@@ -1541,31 +1558,31 @@ msgstr "一般"
 
 #: source/creator/viewport/common/automesh/contours.d:194
 msgid "Detailed mesh"
-msgstr ""
+msgstr "精細網格"
 
 #: source/creator/viewport/common/automesh/contours.d:202
 msgid "Large parts"
-msgstr ""
+msgstr "大組件"
 
 #: source/creator/viewport/common/automesh/contours.d:210
 msgid "Small parts"
-msgstr ""
+msgstr "小組件"
 
 #: source/creator/viewport/common/automesh/contours.d:219
 msgid "Thin and minimum parts"
-msgstr ""
+msgstr "超小組件"
 
 #: source/creator/viewport/common/automesh/contours.d:228
 msgid "Preserve edges"
-msgstr ""
+msgstr "保留輪廓"
 
 #: source/creator/viewport/common/automesh/contours.d:242
 msgid "Details"
-msgstr ""
+msgstr "詳細"
 
 #: source/creator/viewport/common/automesh/contours.d:245
 msgid "Sampling rate"
-msgstr ""
+msgstr "採樣率"
 
 #: source/creator/viewport/common/automesh/contours.d:260
 #: source/creator/viewport/common/automesh/grid.d:162
@@ -1580,17 +1597,17 @@ msgstr "三角定位點"
 
 #: source/creator/viewport/common/automesh/contours.d:275
 msgid "Minimum"
-msgstr ""
+msgstr "最小"
 
 #: source/creator/viewport/common/automesh/contours.d:289
 msgid "Maximum"
-msgstr ""
+msgstr "最大"
 
 #: source/creator/viewport/common/automesh/contours.d:357
 msgid ""
 "Specifying scaling factor to apply for contours. If multiple scales are "
 "specified, vertices are populated per scale factors."
-msgstr ""
+msgstr "指定應用於輪廓的比例因子。如果指定了多個比例，頂點將按比例係數填充。"
 
 #: source/creator/viewport/common/automesh/grid.d:161
 #, fuzzy
@@ -1599,15 +1616,15 @@ msgstr "文檔"
 
 #: source/creator/viewport/common/automesh/grid.d:175
 msgid "X Segments"
-msgstr ""
+msgstr "X 軸格點數"
 
 #: source/creator/viewport/common/automesh/grid.d:188
 msgid "Y Segments"
-msgstr ""
+msgstr "Y 軸格點數"
 
 #: source/creator/viewport/common/automesh/grid.d:201
 msgid "Margin"
-msgstr ""
+msgstr "邊距"
 
 #: source/creator/viewport/common/automesh/grid.d:216
 #, fuzzy
@@ -1654,7 +1671,7 @@ msgstr "對齊像素"
 
 #: source/creator/viewport/common/mesheditor/tools/brush.d:162
 msgid "SHIFT"
-msgstr ""
+msgstr "Shift 鍵"
 
 #: source/creator/viewport/common/mesheditor/tools/brush.d:163
 #, fuzzy
@@ -1663,7 +1680,7 @@ msgstr "隱藏 頂點"
 
 #: source/creator/viewport/common/mesheditor/tools/brush.d:163
 msgid "ALT"
-msgstr ""
+msgstr "Alt 鍵"
 
 #: source/creator/viewport/common/mesheditor/tools/brush.d:260
 #, fuzzy
@@ -1672,11 +1689,11 @@ msgstr "映射模式"
 
 #: source/creator/viewport/common/mesheditor/tools/brush.d:270
 msgid "Flow mode"
-msgstr ""
+msgstr "流動模式"
 
 #: source/creator/viewport/common/mesheditor/tools/brush.d:297
 msgid "Brush Tool"
-msgstr ""
+msgstr "筆刷工具"
 
 #: source/creator/viewport/common/mesheditor/tools/connect.d:34
 #: source/creator/viewport/common/mesheditor/tools/point.d:98
@@ -1702,15 +1719,15 @@ msgstr "邊緣工具"
 
 #: source/creator/viewport/common/mesheditor/tools/grid.d:240
 msgid "Drag to define 2x2 mesh"
-msgstr ""
+msgstr "拖曳來定義一個 2x2 網格"
 
 #: source/creator/viewport/common/mesheditor/tools/grid.d:241
 msgid "Add/remove key points to axes"
-msgstr ""
+msgstr "在軸上添加/刪除關鍵點"
 
 #: source/creator/viewport/common/mesheditor/tools/grid.d:242
 msgid "Change key point position in the axis"
-msgstr ""
+msgstr "改變關鍵點在軸上的位置"
 
 #: source/creator/viewport/common/mesheditor/tools/grid.d:377
 #, fuzzy
@@ -1719,16 +1736,16 @@ msgstr "點工具"
 
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:149
 msgid "Add Lasso Point"
-msgstr ""
+msgstr "為不規則選擇添加頂點"
 
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:150
 msgid "Additive Selection"
-msgstr ""
+msgstr "擴充選擇"
 
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:150
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:223
 msgid "Shift"
-msgstr ""
+msgstr "Shift 鍵"
 
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:151
 #, fuzzy
@@ -1739,7 +1756,7 @@ msgstr "插值模式"
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:152
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:222
 msgid "Ctrl"
-msgstr ""
+msgstr "Ctrl 鍵"
 
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:152
 #, fuzzy
@@ -1761,11 +1778,11 @@ msgstr ""
 
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:154
 msgid "ESC"
-msgstr ""
+msgstr "Esc 鍵"
 
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:246
 msgid "Lasso Selection"
-msgstr ""
+msgstr "不規則選擇工具"
 
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:217
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:220
@@ -1787,15 +1804,15 @@ msgstr "左鍵（x2）"
 
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:222
 msgid "Toggle locked point"
-msgstr ""
+msgstr "鎖定/解鎖點"
 
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:223
 msgid "Move point along with the path"
-msgstr ""
+msgstr "沿著路徑移動點"
 
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:415
 msgid "Define paths"
-msgstr ""
+msgstr "定義路徑"
 
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:426
 #, fuzzy
@@ -1809,7 +1826,7 @@ msgstr "訂為當前值"
 
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:452
 msgid "Move points along the path"
-msgstr ""
+msgstr "沿著路徑移動頂點"
 
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:459
 msgid "Path Deform Tool"
@@ -1841,7 +1858,7 @@ msgstr "排列中"
 
 #: source/creator/viewport/model/package.d:82
 msgid "Size-Sort"
-msgstr ""
+msgstr "按大小排序"
 
 #: source/creator/viewport/model/package.d:92
 msgid "Focus Selected"
@@ -1891,15 +1908,15 @@ msgstr "顯示 定向工具"
 #. Set clear color
 #: source/creator/viewport/model/package.d:228
 msgid "COLOR"
-msgstr ""
+msgstr "顏色"
 
 #: source/creator/viewport/model/package.d:243
 msgid "Background Color"
-msgstr ""
+msgstr "背景顏色"
 
 #: source/creator/viewport/model/package.d:247
 msgid "Gizmos"
-msgstr ""
+msgstr "工具"
 
 #: source/creator/viewport/package.d:301
 msgid "No tool selected..."
@@ -1907,15 +1924,15 @@ msgstr "未選擇工具…"
 
 #: source/creator/viewport/package.d:552
 msgid "Editing armed parameter..."
-msgstr ""
+msgstr "正在編輯開始錄製的參數"
 
 #: source/creator/viewport/package.d:552
 msgid "Editing base transform..."
-msgstr ""
+msgstr "正在編輯位移"
 
 #: source/creator/viewport/vertex/package.d:75
 msgid "Show Mesh Group Child Nodes Bounds"
-msgstr ""
+msgstr "顯示網格組的子節點的邊框"
 
 #: source/creator/viewport/vertex/package.d:88
 msgid "Flip Horizontally"
@@ -1942,11 +1959,11 @@ msgstr "三角定位點"
 #: source/creator/viewport/vertex/package.d:135
 #: source/creator/viewport/vertex/package.d:180
 msgid "Bake"
-msgstr ""
+msgstr "生成"
 
 #: source/creator/viewport/vertex/package.d:142
 msgid "Bakes the triangulation, applying it to the mesh."
-msgstr ""
+msgstr "生成三角形分割策略，將其應用到網格上"
 
 #: source/creator/viewport/vertex/package.d:146
 msgid "Triangulation Options"
@@ -1954,11 +1971,11 @@ msgstr "三角定位選項"
 
 #: source/creator/viewport/vertex/package.d:188
 msgid "Bakes the auto mesh."
-msgstr ""
+msgstr "烘焙自動網格"
 
 #: source/creator/viewport/vertex/package.d:192
 msgid "Auto Meshing Options"
-msgstr ""
+msgstr "自動網格選項"
 
 #: source/creator/viewport/vertex/package.d:204
 msgid " Apply"
@@ -2001,7 +2018,7 @@ msgstr "可繪製"
 msgid ""
 "This meshgroup has no drawables to deform. To deform, replace the child with "
 "a meshgroup or other type."
-msgstr ""
+msgstr "沒有供這個網格組形變的可繪製對象。添加網格組或者其他節點類型作為子節點來開始形變。"
 
 #: source/creator/viewport/vertex/package.d:387
 msgid ""
@@ -2132,7 +2149,7 @@ msgstr "圖片檔案夾"
 
 #: source/creator/widgets/mainmenu.d:247
 msgid "Merges (adds) selected image files to project"
-msgstr ""
+msgstr "選擇圖片合併（添加）到項目中"
 
 #: source/creator/widgets/mainmenu.d:249
 msgid "Inochi Creator Project"
@@ -2237,7 +2254,7 @@ msgstr "面板"
 
 #: source/creator/widgets/mainmenu.d:394
 msgid "Panel is not visible in current edit mode."
-msgstr ""
+msgstr "在當前的編輯模式下此面板不可見。"
 
 #: source/creator/widgets/mainmenu.d:402
 msgid "Configuration"
@@ -2280,21 +2297,21 @@ msgstr "模型"
 #. Opens the directory where configuration resides in the user's file browser.
 #: source/creator/widgets/mainmenu.d:466
 msgid "Import Inochi Session Data"
-msgstr ""
+msgstr "導入 Inochi Session 數據"
 
 #: source/creator/widgets/mainmenu.d:476
 msgid "Successfully overwrote Inochi Session tracking data..."
-msgstr ""
+msgstr "成功覆蓋 Inochi Session 跟蹤數據"
 
 #: source/creator/widgets/mainmenu.d:478
 msgid "There was no Inochi Session data to import!"
-msgstr ""
+msgstr "沒有可導入的 Inochi Session 數據"
 
 #: source/creator/widgets/mainmenu.d:484
 msgid ""
 "Imports tracking data from an exported Inochi2D model which has been set up "
 "in Inochi Session."
-msgstr ""
+msgstr "導入跟蹤數據，來自 Inochi Session 導出的 Inochi2D 模型"
 
 #: source/creator/widgets/mainmenu.d:487
 msgid "Puppet Texturing"
@@ -2417,7 +2434,7 @@ msgstr "透過 Patreon 贊助開發"
 #: source/creator/widgets/modal/nagscreen.d:116
 #: source/creator/windows/videoexport.d:278
 msgid "Close"
-msgstr ""
+msgstr "關閉"
 
 #: source/creator/widgets/toolbar.d:40
 #, fuzzy
@@ -2460,36 +2477,36 @@ msgstr "測試模型"
 
 #: source/creator/windows/autosave.d:45
 msgid "Inochi Creator closed unexpectedly while editing this file."
-msgstr ""
+msgstr "在編輯此文件時，Inochi Creator 意外關閉了。"
 
 #: source/creator/windows/autosave.d:46
 msgid "Restore data from a backup?"
-msgstr ""
+msgstr "從備份中恢復數據？"
 
 #: source/creator/windows/autosave.d:55
 msgid "Discard"
-msgstr ""
+msgstr "丟棄"
 
 #: source/creator/windows/autosave.d:61
 msgid "Restore"
-msgstr ""
+msgstr "恢復"
 
 #: source/creator/windows/autosave.d:72
 msgid "Restore Autosave"
-msgstr ""
+msgstr "恢復自動存檔"
 
 #: source/creator/windows/editanim.d:36 source/creator/windows/editanim.d:46
 msgid "Invalid Name"
-msgstr ""
+msgstr "無效名稱"
 
 #: source/creator/windows/editanim.d:37
 msgid "Name can not be empty!"
-msgstr ""
+msgstr "名稱不可為空！"
 
 #: source/creator/windows/editanim.d:47
 #, c-format
 msgid "%s is already taken! Please chose another animation name."
-msgstr ""
+msgstr "%s 已存在。請選擇一個不同的動畫名稱。"
 
 #: source/creator/windows/editanim.d:89
 #, fuzzy
@@ -2508,11 +2525,11 @@ msgstr "參數"
 
 #: source/creator/windows/editanim.d:96
 msgid "Lead In"
-msgstr ""
+msgstr "循環前幀數"
 
 #: source/creator/windows/editanim.d:97
 msgid "Lead Out"
-msgstr ""
+msgstr "循環後幀數"
 
 #: source/creator/windows/editanim.d:100
 #: source/creator/windows/videoexport.d:195
@@ -2522,7 +2539,7 @@ msgstr "相機"
 
 #: source/creator/windows/editanim.d:112
 msgid "Custom Framerate"
-msgstr ""
+msgstr "自定義幀率"
 
 #: source/creator/windows/editanim.d:119
 #, fuzzy, c-format
@@ -2531,23 +2548,23 @@ msgstr "%s 原先是 %s"
 
 #: source/creator/windows/editanim.d:139
 msgid "120 FPS"
-msgstr ""
+msgstr "120 FPS"
 
 #: source/creator/windows/editanim.d:140
 msgid "60 FPS"
-msgstr ""
+msgstr "60 FPS"
 
 #: source/creator/windows/editanim.d:141
 msgid "30 FPS"
-msgstr ""
+msgstr "30 FPS"
 
 #: source/creator/windows/editanim.d:142
 msgid "25 FPS"
-msgstr ""
+msgstr "25 FPS"
 
 #: source/creator/windows/editanim.d:143
 msgid "Custom Framrate"
-msgstr ""
+msgstr "自定義幀率"
 
 #: source/creator/windows/editanim.d:157
 #, fuzzy
@@ -2561,15 +2578,15 @@ msgstr "編輯網格"
 
 #: source/creator/windows/flipconfig.d:308
 msgid "<< Not assigned >>"
-msgstr ""
+msgstr "<< 未分配 >>"
 
 #: source/creator/windows/flipconfig.d:370
 msgid "< Add new row >"
-msgstr ""
+msgstr "< 添加新行 >"
 
 #: source/creator/windows/flipconfig.d:434
 msgid "Pair"
-msgstr ""
+msgstr "配對"
 
 #: source/creator/windows/flipconfig.d:442
 #, fuzzy
@@ -2583,7 +2600,7 @@ msgstr "組件"
 
 #: source/creator/windows/flipconfig.d:519
 msgid "Flip Pairing"
-msgstr ""
+msgstr "對稱配對"
 
 #: source/creator/windows/imgexport.d:93
 #: source/creator/windows/videoexport.d:157
@@ -2607,11 +2624,11 @@ msgstr "輸出圖像…"
 #: source/creator/windows/imgexport.d:144
 #: source/creator/windows/videoexport.d:303
 msgid "No cameras to export from in Scene, please add a Camera."
-msgstr ""
+msgstr "場景中沒有視角可以導出，請添加一個視角。"
 
 #: source/creator/windows/inpexport.d:106
 msgid "Atlassing"
-msgstr ""
+msgstr "紋理圖集化"
 
 #: source/creator/windows/inpexport.d:110
 #, fuzzy
@@ -2629,13 +2646,13 @@ msgstr "解析度"
 
 #: source/creator/windows/inpexport.d:158
 msgid "Non-linear Scaling"
-msgstr ""
+msgstr "非線性縮放"
 
 #: source/creator/windows/inpexport.d:159
 msgid ""
 "Whether too large parts should individually be scaled down instead of all "
 "parts being scaled down uniformly."
-msgstr ""
+msgstr "是否單獨縮小太大的組件（而非統一縮小全部組件）"
 
 #: source/creator/windows/inpexport.d:162
 msgid "Texture Scale"
@@ -2643,37 +2660,37 @@ msgstr "材質比例"
 
 #: source/creator/windows/inpexport.d:168
 msgid "Padding"
-msgstr ""
+msgstr "填充"
 
 #: source/creator/windows/inpexport.d:174
 msgid "Optimizations"
-msgstr ""
+msgstr "優化"
 
 #: source/creator/windows/inpexport.d:176
 msgid "Prune unused nodes"
-msgstr ""
+msgstr "清除未使用的節點"
 
 #: source/creator/windows/inpexport.d:177
 msgid "Prune nodes which have been disabled from the export."
-msgstr ""
+msgstr "清除已從導出中禁用的節點"
 
 #: source/creator/windows/inpexport.d:193
 msgid "Watermark"
-msgstr ""
+msgstr "水印"
 
 #. Allow saving texture to file
 #: source/creator/windows/inpexport.d:200
 msgid "Load"
-msgstr ""
+msgstr "加載"
 
 #: source/creator/windows/inpexport.d:256
 msgid "Preview"
-msgstr ""
+msgstr "預覽"
 
 #: source/creator/windows/inpexport.d:329
 #: source/creator/windows/videoexport.d:192
 msgid "Loops"
-msgstr ""
+msgstr "預覽"
 
 #: source/creator/windows/inpexport.d:342 source/creator/windows/settings.d:238
 msgid "No settings for this category."
@@ -2803,7 +2820,7 @@ msgstr "協助工具"
 
 #: source/creator/windows/settings.d:93
 msgid "File Handling"
-msgstr ""
+msgstr "文件存儲與導入"
 
 #: source/creator/windows/settings.d:113 source/creator/windows/welcome.d:175
 msgid "Color Theme"
@@ -2849,7 +2866,7 @@ msgstr "使用 OpenDyslexic 字體"
 
 #: source/creator/windows/settings.d:171
 msgid "Use the OpenDyslexic font for Latin text characters."
-msgstr ""
+msgstr "使用 OpenDyslexic 字體來顯示拉丁文字"
 
 #: source/creator/windows/settings.d:174
 #, fuzzy
@@ -2867,19 +2884,19 @@ msgstr "無法存檔 %s"
 
 #: source/creator/windows/settings.d:188
 msgid "Save Interval (Minutes)"
-msgstr ""
+msgstr "自動保存間隔（分鐘）"
 
 #: source/creator/windows/settings.d:193
 msgid "Maximum Autosaves"
-msgstr ""
+msgstr "最大自動保存文件數"
 
 #: source/creator/windows/settings.d:198
 msgid "Import behaviour"
-msgstr ""
+msgstr "導入策略"
 
 #: source/creator/windows/settings.d:200
 msgid "Always ask"
-msgstr ""
+msgstr "總是詢問"
 
 #: source/creator/windows/settings.d:201
 #, fuzzy
@@ -2888,11 +2905,11 @@ msgstr "重設"
 
 #: source/creator/windows/settings.d:202
 msgid "Don't preserve"
-msgstr ""
+msgstr "不導入"
 
 #: source/creator/windows/settings.d:208
 msgid "Preserve structure"
-msgstr ""
+msgstr "是否導入圖層結構"
 
 #: source/creator/windows/settings.d:222
 #, fuzzy
@@ -2901,7 +2918,7 @@ msgstr "模式"
 
 #: source/creator/windows/settings.d:232
 msgid "Zoom Speed"
-msgstr ""
+msgstr "縮放速度"
 
 #: source/creator/windows/settings.d:251 source/creator/windows/welcome.d:199
 msgid "Inochi Creator needs to be restarted for some changes to take effect."
@@ -2972,23 +2989,23 @@ msgstr "編輯動畫"
 
 #: source/creator/windows/videoexport.d:193
 msgid "How many times the animation should loop"
-msgstr ""
+msgstr "動畫應該循環的次數"
 
 #: source/creator/windows/videoexport.d:198
 msgid "[AUTO]"
-msgstr ""
+msgstr "[ 自動 ]"
 
 #: source/creator/windows/videoexport.d:200
 msgid "Framerate of the video file"
-msgstr ""
+msgstr "視頻的幀率"
 
 #: source/creator/windows/videoexport.d:202
 msgid "Lock to Animation Framerate"
-msgstr ""
+msgstr "鎖定幀率到動畫幀率"
 
 #: source/creator/windows/videoexport.d:204
 msgid "Codec"
-msgstr ""
+msgstr "編碼"
 
 #: source/creator/windows/videoexport.d:290
 #, fuzzy
@@ -2997,11 +3014,11 @@ msgstr "輸出失敗…"
 
 #: source/creator/windows/videoexport.d:293
 msgid "FFMPEG was not found, please install FFMPEG to export video."
-msgstr ""
+msgstr "沒有找到 FFMPEG，請安裝 FFMPEG 來導出視頻。"
 
 #: source/creator/windows/videoexport.d:311
 msgid "No animations are defined for this model, please add an animation."
-msgstr ""
+msgstr "這個模型沒有動畫，請添加一個動畫。"
 
 #: source/creator/windows/welcome.d:114
 msgid "Unsupported"
@@ -3054,7 +3071,7 @@ msgstr "加入我們的 Discord"
 
 #: source/creator/windows/welcome.d:320
 msgid "Buy a copy"
-msgstr ""
+msgstr "購買"
 
 #: source/creator/windows/welcome.d:324
 msgid "Patreon"
