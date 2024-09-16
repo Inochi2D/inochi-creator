@@ -95,9 +95,11 @@ def validate_file(file):
         try:
             validate_string(entry)
         except ValidationError as e:
+            e.entry['msgid'] = e.entry['msgid'].replace("\n", "\\n").replace("\"", "\\\"")
+            e.entry['msgstr'] = e.entry['msgstr'].replace("\n", "\\n").replace("\"", "\\\"")
             print("Validation Error: " + str(e))
-            print(f"\tmsgid: {e.entry['msgid']}")
-            print(f"\tmsgstr: {e.entry['msgstr']}")
+            print(f"\tmsgid: \"{e.entry['msgid']}\"")
+            print(f"\tmsgstr: \"{e.entry['msgstr']}\"")
             # sys.exit(1)
 
 def validate_all():
