@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-15 23:19+0200\n"
-"PO-Revision-Date: 2024-09-17 04:31+0800\n"
+"PO-Revision-Date: 2024-09-17 05:10+0800\n"
 "Last-Translator: r888800009 <r888800009@gmail.com>\n"
 "Language-Team: Language zh-tw\n"
 "Language: zh_TW\n"
@@ -93,29 +93,24 @@ msgid "Changed drawable mesh of %s"
 msgstr "已更改 %s 的可繪製網格"
 
 #: source/creator/actions/drawable.d:96
-#, c-format
 msgid "Drawable %s was changed"
-msgstr "已變更可繪製 %s"
+msgstr "可繪製 %s 已修改"
 
 #: source/creator/actions/mesh.d:58
-#, c-format
 msgid "Mesh %s change is restored."
 msgstr "已復原對網格 %s 的更改"
 
 #: source/creator/actions/mesh.d:65
-#, fuzzy, c-format
 msgid "Mesh %s was edited."
-msgstr "已輸出 %s ..."
+msgstr "網格 %s 已編輯"
 
 #: source/creator/actions/mesh.d:133 source/creator/actions/mesh.d:234
-#, fuzzy, c-format
 msgid "%s: vertex was added."
-msgstr "已新增參數 %s"
+msgstr "已新增頂點 %s"
 
 #: source/creator/actions/mesh.d:141 source/creator/actions/mesh.d:226
-#, fuzzy, c-format
 msgid "%s: vertex was removed."
-msgstr "參數 %s 已經被移除"
+msgstr "頂點 %s 已經被移除"
 
 #: source/creator/actions/mesh.d:315 source/creator/actions/mesh.d:323
 #: source/creator/actions/mesh.d:402 source/creator/actions/mesh.d:410
@@ -344,12 +339,11 @@ msgid "Import failed..."
 msgstr "匯入失敗…"
 
 #: source/creator/io/kra.d:278
-#, fuzzy, c-format
 msgid ""
 "An error occured during KRA import:\n"
 "%s"
 msgstr ""
-"PSD 檔載入錯誤:\n"
+"KRA 檔載入錯誤:\n"
 "%s"
 
 #: source/creator/io/package.d:194 source/creator/panels/inspector.d:659
@@ -455,9 +449,8 @@ msgid "Duplicate"
 msgstr "複製"
 
 #: source/creator/panels/animlist.d:49
-#, fuzzy
 msgid "Edit..."
-msgstr "編輯"
+msgstr "編輯..."
 
 #: source/creator/panels/animlist.d:52 source/creator/panels/inspector.d:909
 #: source/creator/panels/inspector.d:1113 source/creator/panels/nodes.d:194
@@ -467,9 +460,8 @@ msgid "Delete"
 msgstr "刪除"
 
 #: source/creator/panels/animlist.d:88
-#, fuzzy
 msgid "Animation List"
-msgstr "編輯動畫"
+msgstr "動畫列表"
 
 #: source/creator/panels/inspector.d:43 source/creator/panels/nodes.d:488
 #: source/creator/panels/parameters.d:1038
@@ -676,7 +668,7 @@ msgstr "對齊像素"
 #: source/creator/panels/inspector.d:541 source/creator/panels/inspector.d:548
 #: source/creator/panels/inspector.d:1652
 msgid "Sorting"
-msgstr "排列中"
+msgstr "排列"
 
 #. The main type of anything that can be drawn to the screen
 #. in Inochi2D.
@@ -1084,7 +1076,7 @@ msgstr "移動"
 
 #: source/creator/panels/inspector.d:1344
 msgid "Translate origin of child nodes for non-Drawable object."
-msgstr "平移非繪製對象的子節點的原點"
+msgstr "平移非繪製物件的子節點的原點"
 
 #. Header for texture options
 #: source/creator/panels/inspector.d:1663
@@ -1158,9 +1150,8 @@ msgid "Recalculate origin"
 msgstr "重新計算原點"
 
 #: source/creator/panels/nodes.d:534
-#, fuzzy
 msgid "Filter, search for specific nodes"
-msgstr "過濾、搜尋特定參數"
+msgstr "過濾、搜尋特定節點"
 
 #: source/creator/panels/nodes.d:612
 msgid "Nodes"
@@ -1229,9 +1220,8 @@ msgid "Bindings"
 msgstr "綁定"
 
 #: source/creator/panels/parameters.d:497
-#, fuzzy
 msgid "Show all nodes"
-msgstr "顯示 邊界"
+msgstr "顯示所有節點"
 
 #: source/creator/panels/parameters.d:497
 #, fuzzy
@@ -1313,9 +1303,8 @@ msgid "Arm Parameter"
 msgstr "手臂參數"
 
 #: source/creator/panels/parameters.d:1012
-#, fuzzy
 msgid "Add Keyframe"
-msgstr "新增參數"
+msgstr "新增關鍵影格"
 
 #: source/creator/panels/parameters.d:1047
 msgid "Add 1D Parameter (0..1)"
@@ -1405,9 +1394,8 @@ msgid "Lock playback to animation framerate"
 msgstr "鎖播放影格率到動畫影格率"
 
 #: source/creator/panels/timeline.d:281
-#, fuzzy
 msgid "Not in Animation Edit mode..."
-msgstr "未開啟測試模式…"
+msgstr "未開啟動畫編輯模式…"
 
 #: source/creator/panels/timeline.d:288
 msgid "Timeline"
@@ -1728,9 +1716,8 @@ msgid "Change key point position in the axis"
 msgstr "改變關鍵點在軸上的位置"
 
 #: source/creator/viewport/common/mesheditor/tools/grid.d:377
-#, fuzzy
 msgid "Grid Vertex Tool"
-msgstr "點工具"
+msgstr "網格頂點工具"
 
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:149
 msgid "Add Lasso Point"
@@ -1746,9 +1733,8 @@ msgid "Shift"
 msgstr "Shift 鍵"
 
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:151
-#, fuzzy
 msgid "Inverse Selection"
-msgstr "插值模式"
+msgstr "反轉選取"
 
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:151
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:152
@@ -1757,18 +1743,16 @@ msgid "Ctrl"
 msgstr "Ctrl 鍵"
 
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:152
-#, fuzzy
 msgid "Remove Selection"
-msgstr "解析度"
+msgstr "移除選取"
 
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:153
 msgid "Delete Last Lasso Point"
 msgstr "刪除最後一個不規則選擇點"
 
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:153
-#, fuzzy
 msgid "Right Mouse"
-msgstr "左鍵"
+msgstr "右鍵"
 
 #: source/creator/viewport/common/mesheditor/tools/lasso.d:154
 msgid "Clear All Lasso Points"
@@ -1842,17 +1826,15 @@ msgstr "CTRL+左鍵"
 
 #: source/creator/viewport/common/mesheditor/tools/point.d:471
 msgid "Vertex Tool"
-msgstr "點工具"
+msgstr "頂點工具"
 
 #: source/creator/viewport/common/mesheditor/tools/point.d:487
-#, fuzzy
 msgid "Auto connect vertices"
-msgstr "隱藏 頂點"
+msgstr "自動連接頂點"
 
 #: source/creator/viewport/model/package.d:82
-#, fuzzy
 msgid "Z-Sort"
-msgstr "排列中"
+msgstr "Z 排序"
 
 #: source/creator/viewport/model/package.d:82
 msgid "Size-Sort"
@@ -2007,15 +1989,14 @@ msgid "Cancel"
 msgstr "取消"
 
 #: source/creator/viewport/vertex/package.d:307
-#, fuzzy
 msgid "No Drawables"
-msgstr "可繪製"
+msgstr "可繪製物件"
 
 #: source/creator/viewport/vertex/package.d:308
 msgid ""
 "This meshgroup has no drawables to deform. To deform, replace the child with "
 "a meshgroup or other type."
-msgstr "沒有供這個網格組形變的可繪製對象。加入網格組或者其他節點類型作為子節點來開始形變。"
+msgstr "沒有供這個網格組形變的可繪製物件。加入網格組或者其他節點類型作為子節點來開始形變。"
 
 #: source/creator/viewport/vertex/package.d:387
 msgid ""
@@ -2067,9 +2048,8 @@ msgid "Recent"
 msgstr "最近開啟"
 
 #: source/creator/widgets/mainmenu.d:140 source/creator/windows/settings.d:181
-#, fuzzy
 msgid "Autosaves"
-msgstr "自動重新取名"
+msgstr "自動儲存"
 
 #. Actually saves the edited state for the axies points
 #. Settings are autosaved, but in case the user
@@ -2096,14 +2076,12 @@ msgid "Import a standard Photoshop PSD file."
 msgstr "匯入標準 Photoshop PSD 檔案。"
 
 #: source/creator/widgets/mainmenu.d:177 source/creator/widgets/mainmenu.d:218
-#, fuzzy
 msgid "Krita Document"
-msgstr "Photoshop 檔案"
+msgstr "Krita 檔案"
 
 #: source/creator/widgets/mainmenu.d:181
-#, fuzzy
 msgid "Import a standard Krita KRA file."
-msgstr "匯入標準 Photoshop PSD 檔案。"
+msgstr "匯入標準 Krita KRA 檔案。"
 
 #: source/creator/widgets/mainmenu.d:183 source/creator/widgets/mainmenu.d:266
 msgid "Inochi2D Puppet"
@@ -2135,14 +2113,12 @@ msgid "Merge layers from Photoshop document"
 msgstr "合併 Photoshop 檔案圖層"
 
 #: source/creator/widgets/mainmenu.d:229
-#, fuzzy
 msgid "Merge layers from Krita document"
-msgstr "合併 Photoshop 檔案圖層"
+msgstr "合併 Krita 檔案圖層"
 
 #: source/creator/widgets/mainmenu.d:231
-#, fuzzy
 msgid "Image Files"
-msgstr "圖片檔案夾"
+msgstr "圖片檔案"
 
 #: source/creator/widgets/mainmenu.d:247
 msgid "Merges (adds) selected image files to project"
@@ -2434,9 +2410,8 @@ msgid "Close"
 msgstr "關閉"
 
 #: source/creator/widgets/toolbar.d:40
-#, fuzzy
 msgid "Mirror View"
-msgstr "鏡像"
+msgstr "鏡像顯示"
 
 #: source/creator/widgets/toolbar.d:47
 msgid "Enable physics"
@@ -2451,14 +2426,12 @@ msgid "Reset physics"
 msgstr "重設物理"
 
 #: source/creator/widgets/toolbar.d:66
-#, fuzzy
 msgid "Configure Flip Pairings"
-msgstr "設定"
+msgstr "設定翻轉配對"
 
 #: source/creator/widgets/toolbar.d:75
-#, fuzzy
 msgid "Reset parameters"
-msgstr "移除參數 %s"
+msgstr "重設參數"
 
 #: source/creator/widgets/toolbar.d:95
 msgid "Edit Puppet"
@@ -2506,9 +2479,8 @@ msgid "%s is already taken! Please chose another animation name."
 msgstr "%s 已存在。請選擇一個不同的動畫名稱。"
 
 #: source/creator/windows/editanim.d:89
-#, fuzzy
 msgid "Options"
-msgstr "輸出選項"
+msgstr "選項"
 
 #: source/creator/windows/editanim.d:91
 #, fuzzy
@@ -2516,9 +2488,8 @@ msgid "Weight"
 msgstr "亮色主題"
 
 #: source/creator/windows/editanim.d:93
-#, fuzzy
 msgid "Frames"
-msgstr "參數"
+msgstr "影格數"
 
 #: source/creator/windows/editanim.d:96
 msgid "Lead In"
@@ -2530,9 +2501,8 @@ msgstr "循環後影格數"
 
 #: source/creator/windows/editanim.d:100
 #: source/creator/windows/videoexport.d:195
-#, fuzzy
 msgid "Framerate"
-msgstr "相機"
+msgstr "影格率"
 
 #: source/creator/windows/editanim.d:112
 msgid "Custom Framerate"
@@ -2564,9 +2534,8 @@ msgid "Custom Framrate"
 msgstr "自定義影格率"
 
 #: source/creator/windows/editanim.d:157
-#, fuzzy
 msgid "New Animation..."
-msgstr "編輯動畫"
+msgstr "新增動畫"
 
 #: source/creator/windows/editanim.d:170
 msgid "Edit %s..."
@@ -2630,9 +2599,8 @@ msgid "Decoration"
 msgstr "旋轉"
 
 #: source/creator/windows/inpexport.d:140
-#, fuzzy
 msgid "Atlas Settings"
-msgstr "工具設定"
+msgstr "紋理圖集設定"
 
 #: source/creator/windows/inpexport.d:142
 msgid "Resolution"
@@ -2861,9 +2829,8 @@ msgid "Use the OpenDyslexic font for Latin text characters."
 msgstr "使用 OpenDyslexic 字體來顯示拉丁文字"
 
 #: source/creator/windows/settings.d:174
-#, fuzzy
 msgid "Scroll to armed parameter"
-msgstr "分割參數"
+msgstr "滾動到選取的參數"
 
 #: source/creator/windows/settings.d:177
 msgid "Enable automatic scrolling to the top of the parameters list."
@@ -2902,7 +2869,6 @@ msgid "Preserve structure"
 msgstr "是否保留圖層結構"
 
 #: source/creator/windows/settings.d:222
-#, fuzzy
 msgid "Zoom Mode"
 msgstr "縮放模式"
 
@@ -2973,9 +2939,8 @@ msgid "Output"
 msgstr "輸出比例"
 
 #: source/creator/windows/videoexport.d:180
-#, fuzzy
 msgid "Animation"
-msgstr "編輯動畫"
+msgstr "動畫"
 
 #: source/creator/windows/videoexport.d:193
 msgid "How many times the animation should loop"
@@ -3034,9 +2999,8 @@ msgid "Import PSD..."
 msgstr "匯入 PSD…"
 
 #: source/creator/windows/welcome.d:257
-#, fuzzy
 msgid "Import KRA..."
-msgstr "匯入…"
+msgstr "匯入 KRA…"
 
 #: source/creator/windows/welcome.d:269
 msgid "Recent Projects"
