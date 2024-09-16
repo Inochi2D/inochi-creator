@@ -63,7 +63,16 @@ class ValidationError(Exception):
     def __str__(self):
         return self.message
 
-def validate_string(entry) -> bool:
+class Summary:
+    def __init__(self):
+        self.total = 0
+        self.success = 0
+
+    def print_summary(self):
+        print(f"Total: {self.total}, translated rate: {self.success}/{self.total} ({self.success/self.total*100:.2f}%)")
+
+def validate_string(entry, summary : Summary) -> bool:
+    summary.total += 1
     if entry.string == "" and not ignore_empty:
         raise ValidationError("msgstr is empty", entry)
     
@@ -75,6 +84,9 @@ def validate_string(entry) -> bool:
 
     if entry.fuzzy and check_fuzzy:
         raise ValidationError("msgstr is fuzzy", entry)
+
+    if not entry.fuzzy and entry.string != "":
+        summary.success += 1
 
     return True
 
@@ -89,6 +101,7 @@ def escape_string(s) -> str:
 
 def validate_file(file_path) -> int:
     ret_code = 0
+    summary = Summary()
     print("Validating file: " + file_path)
 
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -96,7 +109,7 @@ def validate_file(file_path) -> int:
 
     for entry in catalog:
         try:
-            validate_string(entry)
+            validate_string(entry, summary)
         except ValidationError as e:
             msgid = escape_string(e.entry.id)
             msgstr = escape_string(e.entry.string)
@@ -104,8 +117,9 @@ def validate_file(file_path) -> int:
             print(f"\tmsgid: \"{msgid}\"")
             print(f"\tmsgstr: \"{msgstr}\"")
             ret_code = 1
-            # sys.exit(1)
-    
+
+    summary.print_summary()
+
     return ret_code
 
 def validate_all() -> int:
