@@ -1673,7 +1673,7 @@ msgstr "選択できるパーツがありません"
 
 #: source/creator/viewport/model/package.d:129
 msgid " Copy Mesh"
-msgstr "メッシュをコピー"
+msgstr " メッシュをコピー"
 
 #: source/creator/viewport/model/package.d:129
 msgid " Edit Mesh"

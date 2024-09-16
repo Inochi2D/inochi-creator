@@ -49,7 +49,7 @@ The `<langcode>.mo` file can be put in the configuration directory, or next to t
 # Translation Storage
 Final translations will be stored in the .inochi-creator folder, which resides in
  * `~/.config/.inochi-creator` on Linux
- * `~/Library/Application Support/.inochi-creator` on macOS
+ * `~/Library/Application Support/inochi-creator` on macOS
  * `%AppData%/.inochi-creator` on Windows
 
 But Inochi Creator will also try to locate translation files in the current executable directory, as well as the current working directory.
