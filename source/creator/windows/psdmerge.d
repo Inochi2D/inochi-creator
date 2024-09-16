@@ -235,7 +235,7 @@ private:
             igPushID(cast(int)i);
                 const(char)* displayName = layer.layerName;
                 if (layer.replaceTexture) {
-                    displayName = _("%s  %s").format(layer.layer.name, layer.node.name).toStringz;
+                    displayName = "%s  %s".format(layer.layer.name, layer.node.name).toStringz;
                 }
 
                 if (layer.ignore) incTextDisabled("");

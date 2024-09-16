@@ -20,11 +20,25 @@ import inochi2d;
 import bindbc.imgui;
 import i18n;
 import std.stdio;
+import std.string : toStringz;
 
 private {
     Part[] foundParts;
 
     enum ENTRY_SIZE = 48;
+
+    bool viewportModel_stringLoaded = false;
+    const(char)* viewportModel_copyMeshString;
+    const(char)* viewportModel_editMeshString;
+
+    pragma(inline)
+    void incViewportModelLoadStrings() {
+        if(!viewportModel_stringLoaded){
+            viewportModel_copyMeshString = (" " ~ _("Copy Mesh")).toStringz();
+            viewportModel_editMeshString = (" " ~ _("Edit Mesh")).toStringz();
+            viewportModel_stringLoaded = true;
+        }
+    }
 }
 
 /** 
@@ -156,7 +170,8 @@ void incViewportModelConfirmBar() {
 
     igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(16, 4));
         if (Drawable node = cast(Drawable)incSelectedNode()) {
-            const(char)* text = incHasDragDrop("_PUPPETNTREE") ? __(" Copy Mesh") : __(" Edit Mesh");
+            incViewportModelLoadStrings();
+            const(char)* text = incHasDragDrop("_PUPPETNTREE") ? viewportModel_copyMeshString : viewportModel_editMeshString;
             
             if (igButton(text, ImVec2(0, 26))) {
                 incVertexEditStartEditing(node);

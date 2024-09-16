@@ -27,6 +27,20 @@ private {
         new GridAutoMeshProcessor()
     ];
     AutoMeshProcessor activeProcessor = null;
+
+    bool viewportVertex_stringLoaded = false;
+    const(char)* viewportVertex_applyString;
+    const(char)* viewportVertex_cancelString;
+
+    pragma(inline)
+    void incviewportVertexLoadStrings() {
+        if(!viewportVertex_stringLoaded){
+            viewportVertex_applyString = (" " ~ _("Apply")).toStringz();
+            viewportVertex_cancelString = (" " ~ _("Cancel")).toStringz();
+            viewportVertex_stringLoaded = true;
+        }
+    }
+
 }
 
 void incViewportVertexInspector(Drawable node) {
@@ -200,8 +214,9 @@ void incViewportVertexOptions() {
 
 void incViewportVertexConfirmBar() {
     auto target = editor.getTargets();
+    incviewportVertexLoadStrings();
     igPushStyleVar(ImGuiStyleVar.FramePadding, ImVec2(16, 4));
-        if (igButton(__(" Apply"), ImVec2(0, 26))) {
+        if (igButton(viewportVertex_applyString, ImVec2(0, 26))) {
             if (incMeshEditGetIsApplySafe()) {
                 incMeshEditApply();
             } else {
@@ -224,7 +239,7 @@ void incViewportVertexConfirmBar() {
         
         igSameLine(0, 0);
 
-        if (igButton(__(" Cancel"), ImVec2(0, 26))) {
+        if (igButton(viewportVertex_cancelString, ImVec2(0, 26))) {
             if (igGetIO().KeyShift) {
                 incMeshEditReset();
             } else {
