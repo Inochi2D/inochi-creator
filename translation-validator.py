@@ -20,6 +20,7 @@ ignore = [
 ]
 
 fmt_str_keywords = ['%s', '%d', '%f', '%u', '%lu']
+check_fuzzy = False
 
 def parse_po_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -30,7 +31,8 @@ def parse_po_file(file_path):
         entries.append({
             "msgid": message.id,
             "msgstr": message.string,
-            "comments": message.user_comments
+            "comments": message.user_comments,
+            "fuzzy": message.fuzzy,
         })
 
     return entries
@@ -85,6 +87,9 @@ def validate_string(entry) -> bool:
     if not validate_non_ascii(entry['msgstr'], entry['msgid']):
         raise ValidationError("msgstr may lost icon", entry)
 
+    if entry['fuzzy'] and check_fuzzy:
+        raise ValidationError("msgstr is fuzzy", entry)
+
     return True
 
 def validate_file(file):
@@ -110,8 +115,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Validate translation files')
     parser.add_argument('-a', '--all', action='store_true', help='Validate all files')
     parser.add_argument('-f', '--file', type=str, help='Validate specific file')
+    parser.add_argument('--fuzzy', action='store_true', help='Check fuzzy entries')
     args = parser.parse_args()
     
+    if args.fuzzy:
+        check_fuzzy = True
+
     if args.all:
         validate_all()
     elif args.file:
