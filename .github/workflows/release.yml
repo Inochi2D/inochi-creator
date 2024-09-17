@@ -22,6 +22,7 @@ jobs:
       target_ref: '${{ github.ref_name }}'
       variant: 'demo'
       generate_version: true
+      do_package: true
 
   gh-publish:
     needs: build-demo
@@ -38,6 +39,7 @@ jobs:
       target_ref: '${{ github.ref_name }}'
       variant: 'full'
       generate_version: true
+      do_package: true
 
   itch-publish:
     needs: build-full
