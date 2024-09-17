@@ -316,18 +316,16 @@ protected:
                             static if (INC_RT_SHOW_DONATION_LINKS) {
                                 igNewLine();
                                 igNewLine();
-                                static if (InDemo) {
-                                    if (incTextLinkWithIcon("", _("Buy a copy"))) {
-                                        incOpenLink(INC_INFO_BUY_URL);
-                                    }
+                                if (incTextLinkWithIcon("", _("Buy a copy"))) {
+                                    incOpenLink(INC_INFO_BUY_URL);
+                                }
 
-                                    if (incTextLinkWithIcon("", _("Patreon"))) {
-                                        incOpenLink("https://www.patreon.com/LunaFoxgirlVT");
-                                    }
+                                if (incTextLinkWithIcon("", _("Patreon"))) {
+                                    incOpenLink("https://www.patreon.com/LunaFoxgirlVT");
+                                }
 
-                                    if (incTextLinkWithIcon("", _("Github Sponsors"))) {
-                                        incOpenLink("https://github.com/sponsors/LunaTheFoxgirl/");
-                                    }
+                                if (incTextLinkWithIcon("", _("Github Sponsors"))) {
+                                    incOpenLink("https://github.com/sponsors/LunaTheFoxgirl/");
                                 }
                             }
                         igUnindent();
