@@ -50,6 +50,10 @@
 ### 中文
   [LovelyA72](https://twitter.com/LovelyA72) (简体中文)
   [cheetosysst](https://twitter.com/Thect_36) (繁體中文)
+### Español
+  [Grillo](https://vt.social/@grillo_delmal)
+  [Anasu](https://vt.social/@anasu)
+  [Yukusai](https://twitter.com/p_yukusai)
 
 ## Technology Used
   ImGui
