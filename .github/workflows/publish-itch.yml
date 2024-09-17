@@ -43,7 +43,7 @@ jobs:
         name: '${{ matrix.config.artifact }}'
 
 
-    - name: 'Publish to Itch'
+    - name: 'Publishing ${{ matrix.config.name }} to Itch...'
       uses: manleydev/butler-publish-itchio-action@master
       env:
         BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
