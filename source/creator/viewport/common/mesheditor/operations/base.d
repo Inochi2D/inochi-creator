@@ -67,6 +67,7 @@ public:
 
     // you should call updateVtxAtMouse() for updating vtxAtMouse
     // because it also updates prevVtxAtMouse
+    // Note: prevVtxAtMouse for Undo may not safe to use currently
     ulong vtxAtMouse;
     ulong prevVtxAtMouse;
 

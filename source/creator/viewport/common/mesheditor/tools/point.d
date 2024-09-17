@@ -163,10 +163,16 @@ class PointTool : NodeSelect {
                 void connectVertex(ref MeshVertex* vertex) {
                     if (vertex is null) return;
 
-                    auto prevMouse = impl.getVerticesByIndex([impl.prevVtxAtMouse])[0];
+                    // search last MeshAddAction to connect
+                    auto lastAddAction = incActionFindLast!MeshAddAction(3);
+                    if (lastAddAction is null || lastAddAction.vertices.length == 0) return;
+
+                    auto prevVertexIdx = impl.getVertexFromPoint(lastAddAction.vertices[$ - 1].position);
+                    auto prevVertex = impl.getVerticesByIndex([prevVertexIdx])[0];
+                    if (prevVertex == null) return;
                     auto action = new MeshConnectAction(impl.getTarget().name, impl, mesh);
                     impl.foreachMirror((uint axis) {
-                        MeshVertex* mPrev = impl.mirrorVertex(axis, prevMouse);
+                        MeshVertex* mPrev = impl.mirrorVertex(axis, prevVertex);
                         MeshVertex* mSel  = impl.mirrorVertex(axis, vertex);
 
                         if (mPrev !is null && mSel !is null) {
