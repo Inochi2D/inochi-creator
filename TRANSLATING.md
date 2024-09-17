@@ -30,6 +30,20 @@ Check if the merges make sense, if so replace `<langcode>.po` with `<langcode>_m
 &nbsp;
 &nbsp;
 
+## Validate Your Translation
+Our project uses material icons and includes fmtstr to avoid crashes when loading po or missing icon symbols. Please use the following tools to check
+```sh
+# install dependencies
+pip install babel
+# validate
+python translation-validator.py -f tl/<langcode>.po
+# or validate all
+python translation-validator.py -a
+```
+
+&nbsp;
+&nbsp;
+
 ## I need to reorder format parameters
 To specify which format parameter you're indexing, use the `<index>$` operator.  
 Eg. `%2$s` will index the second entry of the format string.
