@@ -2,6 +2,11 @@ name: 'Publish to itch.io'
 
 on:
   workflow_call:
+    inputs:
+      postfix:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   publish:
@@ -14,27 +19,27 @@ jobs:
         config:
           - name: "Windows (ZIP)"
             channel: 'windows'
-            artifact: 'build-win32-zip'
+            artifact: 'build-win32-zip${{ inputs.postfix }}'
             file: 'inochi-creator-win32.zip'
 
           - name: "Windows (MSI)"
             channel: 'windows-msi'
-            artifact: 'build-win32-msi'
+            artifact: 'build-win32-msi${{ inputs.postfix }}'
             file: 'inochi-creator-win32.msi'
 
           - name: "macOS (ZIP)"
             channel: 'osx'
-            artifact: 'build-osx-zip'
+            artifact: 'build-osx-zip${{ inputs.postfix }}'
             file: 'inochi-creator-osx.zip'
 
           - name: "macOS (DMG)"
             channel: 'osx'
-            artifact: 'build-osx-dmg'
+            artifact: 'build-osx-dmg${{ inputs.postfix }}'
             file: 'Install_Inochi_Creator.dmg'
 
           - name: "Linux"
             channel: 'linux'
-            artifact: 'build-linux-zip'
+            artifact: 'build-linux-zip${{ inputs.postfix }}'
             file: 'inochi-creator-linux.zip'
     steps:
     - name: 'Download ${{ matrix.config.artifact }}...'
