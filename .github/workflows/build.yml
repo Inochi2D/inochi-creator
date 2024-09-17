@@ -234,7 +234,7 @@ jobs:
         name: build-win32
 
     - name: 'Add msbuild to PATH'
-      uses: microsoft/setup-msbuild@v1.1
+      uses: microsoft/setup-msbuild@v2
     
     - name: 'Build MSI'
       run: |
