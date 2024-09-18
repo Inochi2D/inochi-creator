@@ -53,12 +53,15 @@ string getCrashDumpDir() {
     else return expandTilde("~");
 }
 
-
+string genCrashDumpPath(string filename) {
+    import std.datetime;
+    return buildPath(getCrashDumpDir(), filename ~ "-" ~ Clock.currTime.toISOString() ~ ".txt");
+}
 
 void crashdump(T...)(Throwable throwable, T state) {
 
     // Write crash dump to disk
-    write(buildPath(getCrashDumpDir(), "inochi-creator-crashdump.txt"), genCrashDump!T(throwable, state));
+    write(genCrashDumpPath("inochi-creator-crashdump"), genCrashDump!T(throwable, state));
 
     // Use appropriate system method to notify user where crash dump is.
     version(OSX) writeln(_("\n\n\n===   Inochi Creator has crashed   ===\nPlease send us the inochi-creator-crashdump.txt file in ~/Library/Logs\nAttach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/issues"));
