@@ -28,6 +28,8 @@ jobs:
   gh-publish:
     needs: build-demo
     uses: './.github/workflows/publish-gh.yml'
+    with:
+      postfix: '-demo'
 
   # Full Release
   # This needs "gh-publish-demo" due to the fact that

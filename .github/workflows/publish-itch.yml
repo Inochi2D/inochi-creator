@@ -54,6 +54,6 @@ jobs:
         BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
         CHANNEL: ${{ matrix.config.channel }}
         ITCH_GAME: inochi-creator
-        ITCH_USER: LunaFoxgirlVT
+        ITCH_USER: kitsunebi-games
         VERSION_FILE: version.txt
         PACKAGE: 'out/${{ matrix.config.file }}'
