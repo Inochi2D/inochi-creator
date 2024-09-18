@@ -28,6 +28,7 @@ jobs:
   gh-publish:
     needs: build-demo
     uses: './.github/workflows/publish-gh.yml'
+    secrets: inherit
     with:
       postfix: '-demo'
 
