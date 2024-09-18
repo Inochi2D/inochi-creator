@@ -231,6 +231,7 @@ bool incOpenProject(string path) {
 */
 bool incOpenProject(string mainPath, string backupPath) {
     import std.path : setExtension, baseName;
+    import std.file : FileException;
 
     incClearImguiData();
     
@@ -243,6 +244,10 @@ bool incOpenProject(string mainPath, string backupPath) {
         } else {
             puppet = inLoadPuppet!ExPuppet(mainPath);
         }
+    } catch (FileException ex) {
+        // Also handle NFS or I/O errors
+        incDialog(__("Error"), ex.msg);
+        return false;
     } catch (Exception ex) {
         // for user, we should show a dialog and dump the thrown stack
         import std.file : write;
