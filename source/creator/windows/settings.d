@@ -218,10 +218,15 @@ protected:
                         break;
                     case SettingsPane.Viewport:
                         beginSection(__("Viewport"));
+                            const char*[string] configShowing = [
+                                "normal": __("Normal"),
+                                "legacy-zooming": __("Legacy Zooming")
+                            ];
+
                             string selected = incGetCurrentViewportZoomMode();
-                            if(igBeginCombo(__("Zoom Mode"), selected.toStringz)) {
+                            if(igBeginCombo(__("Zoom Mode"), configShowing[incGetCurrentViewportZoomMode()])) {
                                 foreach (options; incGetViewportZoomModes()) {
-                                    if (igSelectable(options.toStringz)) {
+                                    if (igSelectable(configShowing[options], selected == options)) {
                                         incSetCurrentViewportZoomMode(options);
                                     }
                                 }
