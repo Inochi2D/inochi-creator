@@ -371,7 +371,7 @@ void incDeleteChildWithHistory(Node n) {
 }
 
 /**
-    Deletes child with history
+    Deletes multiple children with history
 */
 void incDeleteChildrenWithHistory(Node[] ns) {
     GroupAction group = null;
