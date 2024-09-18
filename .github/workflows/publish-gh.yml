@@ -9,7 +9,7 @@ on:
       tag:
         required: false
         type: string
-        default: ${{ github.ref }}
+        default: ${{ github.ref_name }}
       name:
         required: false
         type: string
