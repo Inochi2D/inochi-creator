@@ -32,6 +32,12 @@ mv -n out/*.mo out/Inochi\ Creator.app/Contents/Resources/i18n/
 cp res/*-LICENSE out/Inochi\ Creator.app/Contents/SharedSupport/
 cp LICENSE out/Inochi\ Creator.app/Contents/SharedSupport/LICENSE
 
+# CI step for i18n
+if [ -d "out/i18n/" ]; then
+    echo "(CI Step) Applying translations..."
+    mv -n out/i18n/*.mo out/Inochi\ Creator.app/Contents/Resources/i18n/
+fi
+
 
 # Create icons dir
 # TODO: check if dir exists, skip this step if it does
