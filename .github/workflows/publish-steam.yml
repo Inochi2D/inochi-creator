@@ -24,7 +24,7 @@ jobs:
           username: ${{ secrets.STEAM_USERNAME }}          
           configVdf: ${{ secrets.CONFIGVDF }}
           appId: 2108550
-          buildDescription: 'Automatic deployment'
+          buildDescription: 'Automatic deployment (${{ inputs.branch }})'
           depot3Path: 'build-win32${{ inputs.postfix }}/out/'
           depot4Path: 'build-linux${{ inputs.postfix }}/out/'
           depot5Path: 'build-osx${{ inputs.postfix }}/out/'
