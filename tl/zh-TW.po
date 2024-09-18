@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-15 23:19+0200\n"
-"PO-Revision-Date: 2024-09-17 05:10+0800\n"
+"PO-Revision-Date: 2024-09-18 14:08+0800\n"
 "Last-Translator: r888800009 <r888800009@gmail.com>\n"
 "Language-Team: Language zh-tw\n"
 "Language: zh_TW\n"
@@ -31,9 +31,9 @@ msgid ""
 "Inochi Creator may crash unexpectedly and you will likely encounter bugs.\n"
 "Make sure to save and back up your work often!"
 msgstr ""
-"您正在運行 Inochi Creator 的每日建置版本！\n"
+"您正在執行 Inochi Creator 的每日建置版本！\n"
 "您很有可能會遇到漏洞，有些時候甚至會崩潰。\n"
-"請確保經常保存和備份您的工作！"
+"請確保經常儲存和備份您的工作！"
 
 #: source/app.d:103
 msgid "Thank you!"
@@ -254,11 +254,11 @@ msgstr "(不支援)"
 msgid ""
 "Oops! Your settings.json file is corrupted. inochi2d creator will load the "
 "default settings.\n"
-msgstr "哎呀？您的 settings.json 設定文件似乎損壞了。Inochi Creator 將會載入預設設定。\n"
+msgstr "哎呀？您的 settings.json 設定檔似乎損壞了。Inochi Creator 將會載入預設設定。\n"
 
 #: source/creator/core/settings.d:33
 msgid "The corrupted settings file has been moved to "
-msgstr "損壞的設定文件已被保存至 "
+msgstr "損壞的設定檔已被儲存至 "
 
 #: source/creator/core/settings.d:34
 msgid ""
@@ -363,7 +363,7 @@ msgid ""
 "\n"
 "You can change the default behaviour in the settings."
 msgstr ""
-"您希望同時匯入文件中的圖層結構嗎？\n"
+"您希望同時匯入檔案中的圖層結構嗎？\n"
 "\n"
 "您可以在設定中更改預設的匯入選項。"
 
@@ -1427,11 +1427,11 @@ msgstr "VMC 伺服器預設聆聽地址 0.0.0.0"
 
 #: source/creator/panels/tracking.d:76
 msgid "Port"
-msgstr "端口"
+msgstr "連接埠"
 
 #: source/creator/panels/tracking.d:85
 msgid "The port that the VMC binding server should listen on, default 39540"
-msgstr "VMC 伺服器預設聆聽的端口為 39540"
+msgstr "VMC 伺服器預設聆聽的連接埠為 39540"
 
 #: source/creator/panels/tracking.d:88
 msgid "A reciever which uses the VTubeStudio iOS app"
@@ -1459,7 +1459,7 @@ msgstr "OSF 綁定地址"
 
 #: source/creator/panels/tracking.d:116
 msgid "OSF Listen Port"
-msgstr "OSF 端口"
+msgstr "OSF 連接埠"
 
 #: source/creator/panels/tracking.d:128
 msgid "Tracking Bindings"
@@ -1569,7 +1569,7 @@ msgstr "詳細"
 
 #: source/creator/viewport/common/automesh/contours.d:245
 msgid "Sampling rate"
-msgstr "採樣率"
+msgstr "取樣率"
 
 #: source/creator/viewport/common/automesh/contours.d:260
 #: source/creator/viewport/common/automesh/grid.d:162
@@ -2122,7 +2122,7 @@ msgstr "圖片檔案"
 
 #: source/creator/widgets/mainmenu.d:247
 msgid "Merges (adds) selected image files to project"
-msgstr "選擇圖片合併（加入）到項目中"
+msgstr "選擇圖片合併（加入）到專案中"
 
 #: source/creator/widgets/mainmenu.d:249
 msgid "Inochi Creator Project"
@@ -2135,13 +2135,13 @@ msgstr "合併其他 Inochi Creator 專案"
 #: source/creator/widgets/mainmenu.d:265 source/creator/windows/inpexport.d:364
 #: source/creator/windows/videoexport.d:234
 msgid "Export"
-msgstr "輸出"
+msgstr "匯出"
 
 #: source/creator/widgets/mainmenu.d:271 source/creator/widgets/mainmenu.d:280
 #: source/creator/widgets/mainmenu.d:289 source/creator/widgets/mainmenu.d:298
 #: source/creator/widgets/mainmenu.d:312
 msgid "Export..."
-msgstr "輸出…"
+msgstr "匯出…"
 
 #: source/creator/widgets/mainmenu.d:274
 msgid "Image"
@@ -2219,7 +2219,7 @@ msgstr "檢視"
 
 #: source/creator/widgets/mainmenu.d:367
 msgid "Reset Layout"
-msgstr "重設界面"
+msgstr "重設佈局"
 
 #: source/creator/widgets/mainmenu.d:376
 msgid "Panels"
@@ -2270,21 +2270,21 @@ msgstr "模型"
 #. Opens the directory where configuration resides in the user's file browser.
 #: source/creator/widgets/mainmenu.d:466
 msgid "Import Inochi Session Data"
-msgstr "匯入 Inochi Session 數據"
+msgstr "匯入 Inochi Session 資料"
 
 #: source/creator/widgets/mainmenu.d:476
 msgid "Successfully overwrote Inochi Session tracking data..."
-msgstr "成功覆蓋 Inochi Session 跟蹤數據"
+msgstr "成功覆蓋 Inochi Session 追蹤資料"
 
 #: source/creator/widgets/mainmenu.d:478
 msgid "There was no Inochi Session data to import!"
-msgstr "沒有可匯入的 Inochi Session 數據"
+msgstr "沒有可匯入的 Inochi Session 資料"
 
 #: source/creator/widgets/mainmenu.d:484
 msgid ""
 "Imports tracking data from an exported Inochi2D model which has been set up "
 "in Inochi Session."
-msgstr "匯入跟蹤數據，來自 Inochi Session 匯出的 Inochi2D 模型"
+msgstr "匯入追蹤資料，來自 Inochi Session 匯出的 Inochi2D 模型"
 
 #: source/creator/widgets/mainmenu.d:487
 msgid "Puppet Texturing"
@@ -2324,11 +2324,11 @@ msgstr ""
 
 #: source/creator/widgets/mainmenu.d:503
 msgid "Generate Mipmaps..."
-msgstr "生成 Mipmap..."
+msgstr "生成 Mipmaps..."
 
 #: source/creator/widgets/mainmenu.d:506
 msgid "Regenerates the puppet's mipmaps."
-msgstr "重新生成模型 Mipmap。"
+msgstr "重新生成模型 Mipmaps。"
 
 #: source/creator/widgets/mainmenu.d:508
 msgid "Generate fake layer name info..."
@@ -2447,11 +2447,11 @@ msgstr "測試模型"
 
 #: source/creator/windows/autosave.d:45
 msgid "Inochi Creator closed unexpectedly while editing this file."
-msgstr "在編輯此文件時，Inochi Creator 意外關閉了。"
+msgstr "在編輯此檔案時，Inochi Creator 意外關閉了。"
 
 #: source/creator/windows/autosave.d:46
 msgid "Restore data from a backup?"
-msgstr "從備份中還原數據？"
+msgstr "從備份中還原資料？"
 
 #: source/creator/windows/autosave.d:55
 msgid "Discard"
@@ -2568,7 +2568,7 @@ msgstr "對稱配對"
 #: source/creator/windows/imgexport.d:93
 #: source/creator/windows/videoexport.d:157
 msgid "Export Settings"
-msgstr "輸出設定"
+msgstr "匯出設定"
 
 #: source/creator/windows/imgexport.d:110
 #: source/creator/windows/videoexport.d:174
@@ -2582,7 +2582,7 @@ msgstr "啟用後期處理"
 
 #: source/creator/windows/imgexport.d:137
 msgid "Export Image..."
-msgstr "輸出圖像…"
+msgstr "匯出圖像…"
 
 #: source/creator/windows/imgexport.d:144
 #: source/creator/windows/videoexport.d:303
@@ -2666,11 +2666,11 @@ msgstr "材質過大無法放入材質圖集，材質比例已被調降。"
 
 #: source/creator/windows/inpexport.d:375
 msgid "Export failed..."
-msgstr "輸出失敗…"
+msgstr "匯出失敗…"
 
 #: source/creator/windows/inpexport.d:384
 msgid "Export Options"
-msgstr "輸出選項"
+msgstr "匯出選項"
 
 #: source/creator/windows/kramerge.d:242 source/creator/windows/psdmerge.d:238
 #, c-format
@@ -2780,7 +2780,7 @@ msgstr "協助工具"
 
 #: source/creator/windows/settings.d:93
 msgid "File Handling"
-msgstr "文件保存與匯入"
+msgstr "檔案儲存與匯入"
 
 #: source/creator/windows/settings.d:113 source/creator/windows/welcome.d:175
 msgid "Color Theme"
@@ -2838,15 +2838,15 @@ msgstr "啟用自動滾動到參數列表頂部"
 
 #: source/creator/windows/settings.d:183
 msgid "Enable Autosaves"
-msgstr "啟用自動保存"
+msgstr "啟用自動儲存"
 
 #: source/creator/windows/settings.d:188
 msgid "Save Interval (Minutes)"
-msgstr "自動保存間隔（分鐘）"
+msgstr "自動儲存間隔（分鐘）"
 
 #: source/creator/windows/settings.d:193
 msgid "Maximum Autosaves"
-msgstr "最大自動保存文件數"
+msgstr "最大自動儲存檔案數"
 
 #: source/creator/windows/settings.d:198
 msgid "Import behaviour"
@@ -2964,7 +2964,7 @@ msgstr "編碼"
 
 #: source/creator/windows/videoexport.d:290
 msgid "Export Video..."
-msgstr "輸出影片…"
+msgstr "匯出影片…"
 
 #: source/creator/windows/videoexport.d:293
 msgid "FFMPEG was not found, please install FFMPEG to export video."
@@ -3016,7 +3016,7 @@ msgstr "官網"
 
 #: source/creator/windows/welcome.d:305
 msgid "Documentation"
-msgstr "文檔"
+msgstr "文件"
 
 #: source/creator/windows/welcome.d:311
 msgid "Join our Discord"
