@@ -9,6 +9,7 @@ import std.file : write;
 //import i18n;
 import std.stdio;
 import std.path;
+import std.process : environment;
 import std.traits;
 import std.array;
 import i18n;
@@ -46,10 +47,15 @@ version(Windows) {
     }
 }
 
+string linuxStateHome() {
+    // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
+    return environment.get("XDG_STATE_HOME", buildPath(environment["HOME"], ".local", "state"));
+}
+
 string getCrashDumpDir() {
     version(Windows) return getDesktopDir();
     else version(OSX) return expandTilde("~/Library/Logs/");
-    else version(linux) return expandTilde("$XDG_STATE_HOME/"); // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
+    else version(linux) return expandTilde(linuxStateHome() ~ "/");
     else return expandTilde("~");
 }
 
@@ -58,9 +64,26 @@ string genCrashDumpPath(string filename) {
     return buildPath(getCrashDumpDir(), filename ~ "-" ~ Clock.currTime.toISOString() ~ ".txt");
 }
 
+void mkdirCrashDumpDir() {
+    import std.file : mkdir, exists, setAttributes;
+    auto dir = getCrashDumpDir();
+    if (exists(dir))
+        return;
+    
+    // Should we set recursively make the directory or not?
+    mkdir(dir);
+    version(linux) {
+        import std.conv : octal;
+        // https://specifications.freedesktop.org/basedir-spec/latest/#referencing
+        // TODO: Should we set permissions recursively?
+        setAttributes(dir, octal!700);
+    }
+}
+
 void crashdump(T...)(Throwable throwable, T state) {
     // Write crash dump to disk
     try {
+        mkdirCrashDumpDir();
         write(genCrashDumpPath("inochi-creator-crashdump"), genCrashDump(throwable, state));
     } catch (Exception ex) {
         writeln("Failed to write crash dump" ~ ex.msg);

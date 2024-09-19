@@ -255,6 +255,7 @@ bool incOpenProject(string mainPath, string backupPath) {
         string report;
 
         try {
+            mkdirCrashDumpDir();
             string path = genCrashDumpPath("inochi-creator-runtime-error");
             write(path, genCrashDump(ex));
             report = _("Please report this file to the developers:\n\n%s").format(path);
