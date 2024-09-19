@@ -89,8 +89,8 @@ void incLocaleInit() {
     incLocaleScan(incGetAppLocalePath());
     incLocaleScan(thisExePath().dirName);
 
-    // On Windows we want to store locales next to the exe file in a i18n folder
-    version(Windows) incLocaleScan(buildPath(thisExePath().dirName, "i18n"));
+    // For zip folder exports.
+    incLocaleScan(buildPath(thisExePath().dirName, "i18n"));
     
     // On macOS we store the locale in the app bundle under the Resources subdirectory.
     version(OSX) incLocaleScan(buildPath(thisExePath().dirName, "../Resources/i18n"));
