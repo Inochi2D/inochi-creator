@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-15 23:19+0200\n"
+"POT-Creation-Date: 2024-09-19 20:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -270,11 +270,11 @@ msgstr ""
 #: source/creator/core/settings.d:36 source/creator/io/kra.d:278
 #: source/creator/io/package.d:194 source/creator/io/package.d:195
 #: source/creator/io/psd.d:271 source/creator/package.d:249
-#: source/creator/package.d:307 source/creator/package.d:372
-#: source/creator/panels/inspector.d:640 source/creator/panels/inspector.d:659
-#: source/creator/panels/inspector.d:660 source/creator/panels/inspector.d:671
-#: source/creator/panels/nodes.d:406 source/creator/panels/nodes.d:439
-#: source/creator/panels/viewport.d:257
+#: source/creator/package.d:264 source/creator/package.d:322
+#: source/creator/package.d:387 source/creator/panels/inspector.d:640
+#: source/creator/panels/inspector.d:659 source/creator/panels/inspector.d:660
+#: source/creator/panels/inspector.d:671 source/creator/panels/nodes.d:406
+#: source/creator/panels/nodes.d:439 source/creator/panels/viewport.d:257
 #: source/creator/viewport/vertex/package.d:387
 #: source/creator/widgets/mainmenu.d:243 source/creator/widgets/mainmenu.d:478
 #: source/creator/windows/imgexport.d:144
@@ -318,13 +318,13 @@ msgid "Import..."
 msgstr ""
 
 #: source/creator/io/kra.d:274 source/creator/io/psd.d:267
-#: source/creator/package.d:368
+#: source/creator/package.d:383
 #, c-format
 msgid "%s was imported..."
 msgstr ""
 
 #: source/creator/io/kra.d:277 source/creator/io/psd.d:270
-#: source/creator/package.d:373
+#: source/creator/package.d:388
 msgid "Import failed..."
 msgstr ""
 
@@ -367,41 +367,53 @@ msgstr ""
 msgid "New Project"
 msgstr ""
 
-#: source/creator/package.d:270
+#: source/creator/package.d:259
+#, c-format
+msgid ""
+"Please report this file to the developers:\n"
+"\n"
+"%s"
+msgstr ""
+
+#: source/creator/package.d:261
+msgid "Failed to write crash dump file."
+msgstr ""
+
+#: source/creator/package.d:285
 #, c-format
 msgid "%s opened successfully."
 msgstr ""
 
-#: source/creator/package.d:303
+#: source/creator/package.d:318
 #, c-format
 msgid "%s saved successfully."
 msgstr ""
 
-#: source/creator/package.d:306
+#: source/creator/package.d:321
 #, c-format
 msgid "Failed to save %s"
 msgstr ""
 
-#: source/creator/package.d:342
+#: source/creator/package.d:357
 #, c-format
 msgid ""
 "The following errors occured during file loading\n"
 "%s"
 msgstr ""
 
-#: source/creator/package.d:352
+#: source/creator/package.d:367
 msgid "Folder import completed with errors..."
 msgstr ""
 
-#: source/creator/package.d:353
+#: source/creator/package.d:368
 msgid "Folder import completed..."
 msgstr ""
 
-#: source/creator/package.d:400
+#: source/creator/package.d:415
 msgid "Mipmap generation completed."
 msgstr ""
 
-#: source/creator/package.d:415
+#: source/creator/package.d:430
 msgid "Texture bleeding completed."
 msgstr ""
 
@@ -730,7 +742,7 @@ msgstr ""
 #. Normal blending mode as used in Photoshop, generally
 #. the default blending mode photoshop starts a layer out as.
 #: source/creator/panels/inspector.d:809 source/creator/panels/inspector.d:1021
-#: source/creator/windows/inpexport.d:269
+#: source/creator/windows/inpexport.d:269 source/creator/windows/settings.d:222
 msgid "Normal"
 msgstr ""
 
@@ -1439,7 +1451,7 @@ msgid "Tracking"
 msgstr ""
 
 #. Use appropriate system method to notify user where crash dump is.
-#: source/creator/utils/crashdump.d:64
+#: source/creator/utils/crashdump.d:99
 msgid ""
 "\n"
 "\n"
@@ -1450,7 +1462,7 @@ msgid ""
 "issues"
 msgstr ""
 
-#: source/creator/utils/crashdump.d:65
+#: source/creator/utils/crashdump.d:100
 msgid ""
 "\n"
 "\n"
@@ -1463,7 +1475,7 @@ msgid ""
 "issues"
 msgstr ""
 
-#: source/creator/utils/crashdump.d:67
+#: source/creator/utils/crashdump.d:102
 msgid ""
 "The application has unexpectedly crashed\n"
 "Please send the developers the inochi-creator-crashdump.txt which has been "
@@ -1471,7 +1483,7 @@ msgid ""
 "Via https://github.com/Inochi2D/inochi-creator/issues"
 msgstr ""
 
-#: source/creator/utils/crashdump.d:68
+#: source/creator/utils/crashdump.d:103
 msgid "Inochi Creator Crashdump"
 msgstr ""
 
@@ -1578,10 +1590,10 @@ msgstr ""
 #: source/creator/viewport/common/mesheditor/tools/grid.d:240
 #: source/creator/viewport/common/mesheditor/tools/grid.d:241
 #: source/creator/viewport/common/mesheditor/tools/grid.d:242
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:149
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:157
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:216
 #: source/creator/viewport/common/mesheditor/tools/point.d:98
-#: source/creator/viewport/common/mesheditor/tools/point.d:340
+#: source/creator/viewport/common/mesheditor/tools/point.d:346
 msgid "Left Mouse"
 msgstr ""
 
@@ -1615,7 +1627,7 @@ msgstr ""
 
 #: source/creator/viewport/common/mesheditor/tools/connect.d:34
 #: source/creator/viewport/common/mesheditor/tools/point.d:98
-#: source/creator/viewport/common/mesheditor/tools/point.d:340
+#: source/creator/viewport/common/mesheditor/tools/point.d:346
 msgid "Select"
 msgstr ""
 
@@ -1651,50 +1663,50 @@ msgstr ""
 msgid "Grid Vertex Tool"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:149
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:157
 msgid "Add Lasso Point"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:150
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:158
 msgid "Additive Selection"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:150
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:158
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:223
 msgid "Shift"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:151
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:159
 msgid "Inverse Selection"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:151
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:152
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:159
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:160
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:222
 msgid "Ctrl"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:152
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:160
 msgid "Remove Selection"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:153
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:161
 msgid "Delete Last Lasso Point"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:153
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:161
 msgid "Right Mouse"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:154
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:162
 msgid "Clear All Lasso Points"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:154
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:162
 msgid "ESC"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:246
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:254
 msgid "Lasso Selection"
 msgstr ""
 
@@ -1754,11 +1766,11 @@ msgstr ""
 msgid "Ctrl+Left Mouse"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/point.d:471
+#: source/creator/viewport/common/mesheditor/tools/point.d:477
 msgid "Vertex Tool"
 msgstr ""
 
-#: source/creator/viewport/common/mesheditor/tools/point.d:487
+#: source/creator/viewport/common/mesheditor/tools/point.d:493
 msgid "Auto connect vertices"
 msgstr ""
 
@@ -2117,7 +2129,7 @@ msgstr ""
 msgid "Cut"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:347 source/creator/windows/settings.d:274
+#: source/creator/widgets/mainmenu.d:347 source/creator/windows/settings.d:279
 msgid "Settings"
 msgstr ""
 
@@ -2311,13 +2323,13 @@ msgstr ""
 msgid "Request a Feature"
 msgstr ""
 
-#: source/creator/widgets/mainmenu.d:577 source/creator/windows/about.d:133
+#: source/creator/widgets/mainmenu.d:577 source/creator/windows/about.d:138
 msgid "About"
 msgstr ""
 
 #. Donate button
 #: source/creator/widgets/mainmenu.d:592 source/creator/widgets/mainmenu.d:615
-#: source/creator/windows/about.d:124
+#: source/creator/windows/about.d:128
 msgid "Donate"
 msgstr ""
 
@@ -2574,7 +2586,7 @@ msgstr ""
 msgid "Loops"
 msgstr ""
 
-#: source/creator/windows/inpexport.d:342 source/creator/windows/settings.d:238
+#: source/creator/windows/inpexport.d:342 source/creator/windows/settings.d:243
 msgid "No settings for this category."
 msgstr ""
 
@@ -2788,19 +2800,23 @@ msgstr ""
 msgid "Preserve structure"
 msgstr ""
 
-#: source/creator/windows/settings.d:222
+#: source/creator/windows/settings.d:223
+msgid "Legacy Zooming"
+msgstr ""
+
+#: source/creator/windows/settings.d:227
 msgid "Zoom Mode"
 msgstr ""
 
-#: source/creator/windows/settings.d:232
+#: source/creator/windows/settings.d:237
 msgid "Zoom Speed"
 msgstr ""
 
-#: source/creator/windows/settings.d:251 source/creator/windows/welcome.d:199
+#: source/creator/windows/settings.d:256 source/creator/windows/welcome.d:199
 msgid "Inochi Creator needs to be restarted for some changes to take effect."
 msgstr ""
 
-#: source/creator/windows/settings.d:259
+#: source/creator/windows/settings.d:264
 msgid "Done"
 msgstr ""
 
@@ -2941,18 +2957,18 @@ msgstr ""
 msgid "Join our Discord"
 msgstr ""
 
-#: source/creator/windows/welcome.d:320
+#: source/creator/windows/welcome.d:319
 msgid "Buy a copy"
 msgstr ""
 
-#: source/creator/windows/welcome.d:324
+#: source/creator/windows/welcome.d:323
 msgid "Patreon"
 msgstr ""
 
-#: source/creator/windows/welcome.d:328
+#: source/creator/windows/welcome.d:327
 msgid "Github Sponsors"
 msgstr ""
 
-#: source/creator/windows/welcome.d:357
+#: source/creator/windows/welcome.d:355
 msgid "Inochi Creator Start"
 msgstr ""
