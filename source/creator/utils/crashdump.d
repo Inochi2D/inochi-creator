@@ -59,9 +59,12 @@ string genCrashDumpPath(string filename) {
 }
 
 void crashdump(T...)(Throwable throwable, T state) {
-
     // Write crash dump to disk
-    write(genCrashDumpPath("inochi-creator-crashdump"), genCrashDump!T(throwable, state));
+    try {
+        write(genCrashDumpPath("inochi-creator-crashdump"), genCrashDump(throwable, state));
+    } catch (Exception ex) {
+        writeln("Failed to write crash dump" ~ ex.msg);
+    }
 
     // Use appropriate system method to notify user where crash dump is.
     version(OSX) writeln(_("\n\n\n===   Inochi Creator has crashed   ===\nPlease send us the inochi-creator-crashdump.txt file in ~/Library/Logs\nAttach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/issues"));
