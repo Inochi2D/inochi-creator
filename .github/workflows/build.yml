@@ -104,7 +104,8 @@ jobs:
     - name: 'Preparing build... (Ubuntu)'
       if: ${{ matrix.config.platform == 'linux' }}
       run: |
-        sudo apt install libsdl2-dev libfreetype6-dev
+        sudo apt-get update
+        sudo apt-get install libsdl2-dev libfreetype6-dev
 
     - name: 'Preparing build... (macOS)'
       if: ${{ matrix.config.platform == 'osx' }}
