@@ -22,27 +22,35 @@ jobs:
       target_ref: '${{ github.ref_name }}'
       variant: 'demo'
       generate_version: true
+      do_package: true
+      postfix: '-demo'
 
   gh-publish:
     needs: build-demo
     uses: './.github/workflows/publish-gh.yml'
+    secrets: inherit
+    with:
+      postfix: '-demo'
 
   # Full Release
   # This needs "gh-publish-demo" due to the fact that
   # we need to overwrite the artifacts related.
   build-full:
     if: ${{ ! contains(github.ref_name, 'rc') }}
-    needs: gh-publish
     uses: './.github/workflows/build.yml'
     with:
       target_ref: '${{ github.ref_name }}'
       variant: 'full'
       generate_version: true
+      do_package: true
+      postfix: '-full'
 
   itch-publish:
     needs: build-full
     uses: './.github/workflows/publish-itch.yml'
     secrets: inherit
+    with:
+      postfix: '-full'
 
   steam-publish:
     needs: build-full
@@ -50,6 +58,7 @@ jobs:
     secrets: inherit
     with:
       branch: 'staging'
+      postfix: '-full'
   
   # Delete artifacts after use.
   cleanup:

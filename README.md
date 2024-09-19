@@ -18,12 +18,12 @@ If you are a VTuber wanting to use Inochi2D we highly recommend checking out [In
 ### Stable Builds
 
 &nbsp;&nbsp;&nbsp;&nbsp;
-[![Buy on itch.io](https://img.shields.io/github/v/release/Inochi2D/inochi-creator?color=%23fa5c5c&label=itch.io&logo=itch.io&style=for-the-badge)](https://lunafoxgirlvt.itch.io/inochi-creator)
+[![Buy on itch.io](https://img.shields.io/github/v/release/Inochi2D/inochi-creator?color=%23fa5c5c&label=itch.io&logo=itch.io&style=for-the-badge)](https://lunafoxgirlvt.itch.io/inochi-creator) [![Wishlist on Steam](https://img.shields.io/github/v/release/Inochi2D/inochi-creator?style=for-the-badge&logo=steam&label=Steam&color=black)](https://store.steampowered.com/app/2108550/Inochi_Creator/)
 
 ### Experimental Builds
 
 &nbsp;&nbsp;&nbsp;&nbsp;
-[![Nightly Builds](https://img.shields.io/github/actions/workflow/status/Inochi2D/inochi-creator/nightly.yml?label=Nightly&style=for-the-badge)](https://github.com/Inochi2D/inochi-creator/releases/tag/nightly)  
+[![Nightly Builds](https://img.shields.io/github/actions/workflow/status/Inochi2D/inochi-creator/release-nightly.yml?label=Nightly&style=for-the-badge)](https://github.com/Inochi2D/inochi-creator/releases/tag/nightly)  
 
 &nbsp;
 

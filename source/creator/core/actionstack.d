@@ -120,6 +120,35 @@ Action incActionTop() {
 }
 
 /**
+    Gets the last Action by backtrack index
+*/
+Action incActionBacktrack(size_t backIndex) {
+    if (actionPointer[currentLevel] > backIndex)
+        return actions[currentLevel][actionPointer[currentLevel]-backIndex-1];
+
+    return null;
+}
+
+/**
+    Finds the last action of a specific type
+*/
+T incActionFindLast(T)(int maxSteps) {
+    for (int i = 0; i < maxSteps; i++) {
+        auto lastActionGroup = cast(GroupAction) incActionBacktrack(i);
+        if (lastActionGroup is null) return null;
+
+        if (lastActionGroup.actions.length == 0) continue;
+
+        foreach_reverse (action; lastActionGroup.actions) {
+            auto TAction = cast(T) action;
+            if (TAction !is null) return TAction;
+        }
+    }
+
+    return null;
+}
+
+/**
     Notify that the top action has changed
 */
 void incActionNotifyTopChanged() {

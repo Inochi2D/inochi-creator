@@ -21,6 +21,9 @@ if [ -d "out/Inochi Creator.app" ]; then
     cp ../LICENSE LICENSE
     cp -r "Inochi Creator.app" "InstallVolume/Inochi Creator.app"
     
+    # Downloaded artifact removes executable flag.
+    chmod +x "InstallVolume/Inochi Creator.app/Contents/MacOS/inochi-creator"
+    
     create-dmg \
         --volname "$DMGTITLE" \
         --volicon "InochiCreator.icns" \

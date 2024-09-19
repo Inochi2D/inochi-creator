@@ -72,7 +72,5 @@ enum INC_INFO_SHOW_DONATE_LINKS = true;
 
 
 // Runtime variable.
-static if (INC_INFO_SHOW_DONATE_LINKS) {
-    version(InDemo) enum INC_RT_SHOW_DONATION_LINKS = true;
-    else enum INC_RT_SHOW_DONATION_LINKS = false;
-}
+version(InDemo) enum INC_RT_SHOW_DONATION_LINKS = INC_INFO_SHOW_DONATE_LINKS;
+else enum INC_RT_SHOW_DONATION_LINKS = false;

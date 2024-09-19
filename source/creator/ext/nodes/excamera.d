@@ -118,3 +118,13 @@ public:
 void incRegisterExCamera() {
     inRegisterNodeType!ExCamera();
 }
+
+bool incVerifyCameraSizeShowWarning(ref ExCamera selectedCamera) {
+    import creator.widgets;
+    import i18n;
+    if (selectedCamera.getViewport().x % 2 != 0 || selectedCamera.getViewport().y % 2 != 0) {
+        incTextColored(ImVec4(1, 0, 0, 1), _("Warning: Camera size must be divisible by 2"));
+        return true;
+    }
+    return false;
+}

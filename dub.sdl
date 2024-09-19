@@ -12,7 +12,7 @@ dependency "bindbc-sdl" version="~>1.1.2"
 dependency "dcv:core" version="~>0.3.0"
 dependency "i18n-d" version="~>1.0.2"
 dependency "i2d-imgui" version="~>0.8.0"
-dependency "inochi2d" version="~>0.8.5"
+dependency "inochi2d" version="~>0.8.6"
 dependency "mir-linux-kernel" version="~>1.0.1"
 targetPath "out/"
 workingDirectory "out/"
@@ -29,19 +29,6 @@ configuration "barebones" {
 	targetType "executable"
 	subConfiguration "i2d-imgui" "static_dynamicCRT"
 	copyFiles "res/NotoSansCJK-Regular-LICENSE" "res/MaterialIcons-LICENSE" "res/OpenDyslexic-LICENSE" "LICENSE"
-}
-
-// Metadata generation
-configuration "update-version" {
-	targetType "none"
-	preGenerateCommands "dub run -y gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
-}
-
-
-// Metadata generation
-configuration "meta" {
-	targetType "none"
-	preGenerateCommands "rc.exe /v build-aux\\windows\\inochi-creator.rc" platform="windows"
 }
 
 // Linux build
@@ -134,4 +121,17 @@ configuration "win32-nightly" {
 	lflags "/SUBSYSTEM:windows" "/ENTRY:mainCRTStartup" platform="windows-dmd"
 	sourceFiles "build-aux\\windows\\inochi-creator.res"
 	versions "InBranding" "InNightly"
+}
+
+// Version info generation
+configuration "update-version" {
+	targetType "none"
+	preGenerateCommands "dub run -y gitver -- --prefix INC --file source/creator/ver.d --mod creator.ver --appname \"Inochi Creator\" --itchfile version.txt"
+}
+
+
+// Metadata generation
+configuration "meta" {
+	targetType "none"
+	preGenerateCommands "rc.exe /v build-aux\\windows\\inochi-creator.rc" platform="windows"
 }

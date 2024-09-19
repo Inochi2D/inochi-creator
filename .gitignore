@@ -31,8 +31,6 @@ settings.json
 *.mo
 .vscode
 
-source/creator/ver.d
-
 .DS_Store
 
 # WiX Install

@@ -169,6 +169,12 @@ protected:
                                 changesRequiresRestart = true;
                             }
                             incTooltip(_("Use the OpenDyslexic font for Latin text characters."));
+
+                            bool paramAutoScroll = incSettingsGet!bool("EnableParamAutoScroll", true);
+                            if (igCheckbox(__("Scroll to armed parameter"), &paramAutoScroll)) {
+                                incSettingsSet("EnableParamAutoScroll", paramAutoScroll);
+                            }
+                            incTooltip(_("Enable automatic scrolling to the top of the parameters list."));
                         endSection();
                         break;
                     case SettingsPane.FileHandling:
@@ -212,10 +218,15 @@ protected:
                         break;
                     case SettingsPane.Viewport:
                         beginSection(__("Viewport"));
+                            const char*[string] configShowing = [
+                                "normal": __("Normal"),
+                                "legacy-zooming": __("Legacy Zooming")
+                            ];
+
                             string selected = incGetCurrentViewportZoomMode();
-                            if(igBeginCombo(__("Zoom Mode"), selected.toStringz)) {
+                            if(igBeginCombo(__("Zoom Mode"), configShowing[incGetCurrentViewportZoomMode()])) {
                                 foreach (options; incGetViewportZoomModes()) {
-                                    if (igSelectable(options.toStringz)) {
+                                    if (igSelectable(configShowing[options], selected == options)) {
                                         incSetCurrentViewportZoomMode(options);
                                     }
                                 }

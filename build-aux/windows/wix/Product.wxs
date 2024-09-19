@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="5b6f6a6d-1759-4a73-9b49-54997bf758c9" Name="Inochi Creator" Language="1033" Version="0.8.4" Manufacturer="Inochi2D Project" UpgradeCode="545ff6a4-c555-46c2-9d67-f77896b5de9b">
+	<Product Id="5b6f6a6d-1759-4a73-9b49-54997bf758c9" Name="Inochi Creator" Language="1033" Version="0.8.6" Manufacturer="Inochi2D Project" UpgradeCode="545ff6a4-c555-46c2-9d67-f77896b5de9b">
 		<Package Description="Inochi Creator Installer" InstallerVersion="200" Compressed="yes" Platform="x64" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -127,6 +127,7 @@
 				<File Id="Spanish" Name="es.mo" Source="..\..\..\out\i18n\es.mo" />
 				<File Id="Italian" Name="it.mo" Source="..\..\..\out\i18n\it.mo" />
 				<File Id="Japanese" Name="ja.mo" Source="..\..\..\out\i18n\ja.mo" />
+				<File Id="Portugese" Name="pt-BR.mo" Source="..\..\..\out\i18n\pt-BR.mo" />
 				<File Id="ChineseCN" Name="zh-CN.mo" Source="..\..\..\out\i18n\zh-CN.mo" />
 				<File Id="ChineseTW" Name="zh-TW.mo" Source="..\..\..\out\i18n\zh-TW.mo" />
 			</Component>

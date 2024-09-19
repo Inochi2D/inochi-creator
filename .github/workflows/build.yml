@@ -1,4 +1,5 @@
 name: 'Build Inochi Creator'
+run-name: 'Build Inochi Creator (${{ inputs.variant }})...'
 
 on:
   workflow_call:
@@ -25,6 +26,11 @@ on:
         required: false
         type: boolean
         default: false
+      postfix:
+        required: false
+        type: string
+        default: ''
+
 
 permissions:
   contents: write
@@ -59,7 +65,7 @@ jobs:
     - name: Make Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: translations
+        name: translations${{ inputs.postfix }}
         path: otl/*
         retention-days: 1
 
@@ -92,21 +98,20 @@ jobs:
     # Download Translations
     - uses: actions/download-artifact@v4
       with:
-        name: translations
+        name: translations${{ inputs.postfix }}
         path: out/i18n/
 
     - name: 'Preparing build... (Ubuntu)'
       if: ${{ matrix.config.platform == 'linux' }}
       run: |
-        sudo apt install libsdl2-dev libfreetype6-dev
+        sudo apt-get update
+        sudo apt-get install libsdl2-dev libfreetype6-dev
 
     - name: 'Preparing build... (macOS)'
       if: ${{ matrix.config.platform == 'osx' }}
       run: |
         export HOMEBREW_NO_INSTALL_CLEANUP=1
         export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
-        brew update
-        brew install create-dmg
 
         # Remove conflicting brew items
         brew remove --ignore-dependencies libpng brotli harfbuzz
@@ -197,7 +202,7 @@ jobs:
     - name: 'Make Artifact (Main)'
       uses: actions/upload-artifact@v4
       with:
-        name: build-${{ matrix.config.platform }}
+        name: build-${{ matrix.config.platform }}${{ inputs.postfix }}
         path: |
           out/*
           version.txt
@@ -214,7 +219,7 @@ jobs:
     - name: 'Make Artifact (ZIP)'
       uses: actions/upload-artifact@v4
       with:
-        name: build-${{ matrix.config.platform }}-zip
+        name: build-${{ matrix.config.platform }}-zip${{ inputs.postfix }}
         path: |
           out/inochi-creator-${{ matrix.config.platform }}.zip
           version.txt
@@ -233,10 +238,10 @@ jobs:
     
     - uses: actions/download-artifact@v4
       with:
-        name: build-win32
+        name: build-win32${{ inputs.postfix }}
 
     - name: 'Add msbuild to PATH'
-      uses: microsoft/setup-msbuild@v1.1
+      uses: microsoft/setup-msbuild@v2
     
     - name: 'Build MSI'
       run: |
@@ -256,8 +261,11 @@ jobs:
     - name: Make Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: build-win32-msi
-        path: out/inochi-creator-win32.msi
+        name: build-win32-msi${{ inputs.postfix }}
+        path: |
+          out/inochi-creator-win32.msi
+          version.txt
+        overwrite: true
         retention-days: 1
   
   package-dmg:
@@ -273,7 +281,12 @@ jobs:
 
     - uses: actions/download-artifact@v4
       with:
-        name: build-osx
+        name: build-osx${{ inputs.postfix }}
+    
+    - name: 'Install create-dmg...'
+      run: |
+        brew update
+        brew install create-dmg
 
     - name: 'Build DMG'
       run: |
@@ -282,6 +295,9 @@ jobs:
     - name: Make Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: build-osx-dmg
-        path: out/Install_Inochi_Creator.dmg
+        name: build-osx-dmg${{ inputs.postfix }}
+        path: |
+          out/Install_Inochi_Creator.dmg
+          version.txt
+        overwrite: true
         retention-days: 1

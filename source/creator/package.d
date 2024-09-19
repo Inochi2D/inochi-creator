@@ -248,6 +248,21 @@ bool incOpenProject(string mainPath, string backupPath) {
         // Also handle NFS or I/O errors
         incDialog(__("Error"), ex.msg);
         return false;
+    } catch (Exception ex) {
+        // for user, we should show a dialog and dump the thrown stack
+        import std.file : write;
+        import creator.utils.crashdump;
+        string report;
+
+        try {
+            string path = writeCrashDump("inochi-creator-runtime-error", ex);
+            report = _("Please report this file to the developers:\n\n%s").format(path);
+        } catch (Exception dumpEx) {
+            report = _("Failed to write crash dump file." ~ dumpEx.msg);
+        }
+
+        incDialog(__("Error"), ex.msg ~ "\n\n" ~ report);
+        return false;
     }
 
     // Clear out stuff by creating a new project

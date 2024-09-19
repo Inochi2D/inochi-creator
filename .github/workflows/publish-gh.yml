@@ -1,35 +1,46 @@
 name: 'Publish to GitHub'
 
+permissions:
+  contents: write
+
 on:
   workflow_call:
     inputs:
       tag:
-        required: true
+        required: false
         type: string
-        default: ${{ github.ref }}
+        default: ${{ github.ref_name }}
       name:
-        required: true
+        required: false
         type: string
+        default: ''
       generate-notes:
         required: false
         type: boolean
         default: false
+      postfix:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/download-artifact@v4
+      with:
+        pattern: '*${{ inputs.postfix }}'
+        merge-multiple: true
 
     - name: 'Release to ${{ inputs.tag }}'
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         name: '${{ inputs.name }}'
         tag_name: ${{ inputs.tag }}
         files: |
-          build-linux-zip/out/inochi-creator-linux.zip
-          build-win32-zip/out/inochi-creator-win32.zip
-          build-osx-zip/out/inochi-creator-osx.zip
-          build-win32-msi/out/inochi-creator-win32.msi
-          build-osx-dmg/out/Install_Inochi_Creator.dmg
+          out/inochi-creator-linux.zip
+          out/inochi-creator-win32.zip
+          out/inochi-creator-osx.zip
+          out/inochi-creator-win32.msi
+          out/Install_Inochi_Creator.dmg
         generate_release_notes: ${{ inputs.generate-notes }}

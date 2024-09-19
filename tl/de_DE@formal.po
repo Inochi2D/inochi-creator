@@ -211,7 +211,7 @@ msgstr "100% (Gesperrt)"
 #. Eg. this would be "Dansk" for Danish and "日本語" for Japanese.
 #: source/creator/core/i18n.d:18
 msgid "LANG_NAME"
-msgstr "Deutsch"
+msgstr "Deutsch (formell)"
 
 #: source/creator/core/package.d:269
 msgid "(Debug Mode)"

@@ -9,6 +9,7 @@ import std.file : write;
 //import i18n;
 import std.stdio;
 import std.path;
+import std.process : environment;
 import std.traits;
 import std.array;
 import i18n;
@@ -46,19 +47,53 @@ version(Windows) {
     }
 }
 
+string linuxStateHome() {
+    // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
+    return environment.get("XDG_STATE_HOME", buildPath(environment["HOME"], ".local", "state"));
+}
+
 string getCrashDumpDir() {
     version(Windows) return getDesktopDir();
     else version(OSX) return expandTilde("~/Library/Logs/");
-    else version(linux) return expandTilde("$XDG_STATE_HOME/"); // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html#variables
+    else version(linux) return expandTilde(linuxStateHome() ~ "/");
     else return expandTilde("~");
 }
 
+string genCrashDumpPath(string filename) {
+    import std.datetime;
+    return buildPath(getCrashDumpDir(), filename ~ "-" ~ Clock.currTime.toISOString() ~ ".txt");
+}
 
+void mkdirCrashDumpDir() {
+    import std.file : mkdir, exists, setAttributes;
+    auto dir = getCrashDumpDir();
+    if (exists(dir))
+        return;
+    
+    // Should we set recursively make the directory or not?
+    mkdir(dir);
+    version(linux) {
+        import std.conv : octal;
+        // https://specifications.freedesktop.org/basedir-spec/latest/#referencing
+        // TODO: Should we set permissions recursively?
+        setAttributes(dir, octal!700);
+    }
+}
+
+string writeCrashDump(T...)(string filename, Throwable throwable, T state) {
+    mkdirCrashDumpDir();
+    string path = genCrashDumpPath(filename);
+    write(path, genCrashDump(throwable, state));
+    return path;
+}
 
 void crashdump(T...)(Throwable throwable, T state) {
-
     // Write crash dump to disk
-    write(buildPath(getCrashDumpDir(), "inochi-creator-crashdump.txt"), genCrashDump!T(throwable, state));
+    try {
+        writeCrashDump("inochi-creator-crashdump", throwable, state);
+    } catch (Exception ex) {
+        writeln("Failed to write crash dump" ~ ex.msg);
+    }
 
     // Use appropriate system method to notify user where crash dump is.
     version(OSX) writeln(_("\n\n\n===   Inochi Creator has crashed   ===\nPlease send us the inochi-creator-crashdump.txt file in ~/Library/Logs\nAttach the file as a git issue @ https://github.com/Inochi2D/inochi-creator/issues"));

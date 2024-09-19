@@ -1821,11 +1821,11 @@ msgstr "未找到组件"
 
 #: source/creator/viewport/model/package.d:159
 msgid " Copy Mesh"
-msgstr "复制网格"
+msgstr " 复制网格"
 
 #: source/creator/viewport/model/package.d:159
 msgid " Edit Mesh"
-msgstr "编辑网格"
+msgstr " 编辑网格"
 
 #: source/creator/viewport/model/package.d:167
 msgid "Copy Mesh Data"
