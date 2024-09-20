@@ -668,32 +668,61 @@ void incSetDefaultLayout() {
     igDockBuilderFinish(viewportDock);
 }
 
+enum SDLEventState {
+    PollMode, WaitMode
+}
+
+SDLEventState incSDLState = SDLEventState.PollMode;
+
+void incHandleEvent(SDL_Event *event) {
+    switch(event.type) {
+        case SDL_QUIT:
+            incExit();
+            break;
+
+        case SDL_DROPFILE:
+            files ~= cast(string)event.drop.file.fromStringz;
+            SDL_RaiseWindow(window);
+            break;
+
+        case SDL_WINDOWEVENT:
+            if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST && incSettingsGet!bool("RenderOnFocusOnly", true))
+                incSDLState = SDLEventState.WaitMode;
+            if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+                incSDLState = SDLEventState.PollMode;
+
+            // we can see the source code for this in imgui_impl_sdl2.cpp:ImGui_ImplSDL2_ProcessEvent()
+            // https://github.com/ocornut/imgui/blob/master/backends/imgui_impl_sdl2.cpp
+            // imgui will handle SDL_WINDOWEVENT, so we need to pass it to imgui
+            // incGLBackendProcessEvent() would invoke ImGui_ImplSDL2_ProcessEvent()
+            incGLBackendProcessEvent(event);
+            break;
+
+        default:
+            incGLBackendProcessEvent(event);
+            if (
+                event.type == SDL_WINDOWEVENT &&
+                event.window.event == SDL_WINDOWEVENT_CLOSE &&
+                event.window.windowID == SDL_GetWindowID(window)
+            ) incExit();
+            break;
+    }
+}
+
 /**
     Begins the Inochi Creator rendering loop
 */
 void incBeginLoop() {
     SDL_Event event;
 
-    while(SDL_PollEvent(&event)) {
-        switch(event.type) {
-            case SDL_QUIT:
-                incExit();
-                break;
-
-            case SDL_DROPFILE:
-                files ~= cast(string)event.drop.file.fromStringz;
-                SDL_RaiseWindow(window);
-                break;
-            
-            default: 
-                incGLBackendProcessEvent(&event);
-                if (
-                    event.type == SDL_WINDOWEVENT && 
-                    event.window.event == SDL_WINDOWEVENT_CLOSE && 
-                    event.window.windowID == SDL_GetWindowID(window)
-                ) incExit();
-                break;
-        }
+    // Using state machine to switch between poll and wait modes
+    // This is to prevent the app from eating up CPU when it's not focused
+    if (incSDLState == SDLEventState.PollMode) {
+        while(SDL_PollEvent(&event))
+            incHandleEvent(&event);
+    } else {
+        if (SDL_WaitEvent(&event))
+            incHandleEvent(&event);
     }
 
     incTaskUpdate();

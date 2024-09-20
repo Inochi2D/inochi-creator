@@ -152,6 +152,16 @@ protected:
                             }
                         endSection();
 
+                        beginSection(__("Performance"));
+                            bool renderOnFocusOnly = incSettingsGet!bool("RenderOnFocusOnly", true);
+                            if (igCheckbox(__("Render Only When Window Focused"), &renderOnFocusOnly)) {
+                                incSettingsSet("RenderOnFocusOnly", renderOnFocusOnly);
+                            }
+                            incTooltip(_("Stops rendering when you switch to other windows, saving CPU usage. " ~
+                                         "If you experience lag while recording or exporting videos," ~
+                                         "try turning off this feature."));
+                        endSection();
+
                         version(linux) {
                             beginSection(__("Linux Tweaks"));
                                 bool disableCompositor = incSettingsGet!bool("DisableCompositor");
