@@ -1,6 +1,6 @@
-# Language zh_CN translations for PACKAGE package.
+# Chinese (Simplified) translations for inochi-creator package.
 # Copyright (C) 2024 Inochi2D Project
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the inochi-creator package.
 # Luna the Foxgirl <cli-luna@protonmail.com>, 2022.
 # LovelyA72 <a72@luotianyi.pro>, 2022.
 # Richardn <rniu5@jh.edu>, 2024.
@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-15 05:08+0200\n"
-"PO-Revision-Date: 2024-09-15 11:24-0400\n"
+"POT-Creation-Date: 2024-09-19 20:44+0200\n"
+"PO-Revision-Date: 2024-09-19 20:04-0400\n"
 "Last-Translator: Richardn <rniu@umich.edu>\n"
 "Language-Team: Chinese (Simplified)\n"
 "Language: zh_CN\n"
@@ -285,13 +285,13 @@ msgstr ""
 #: source/creator/core/settings.d:36 source/creator/io/kra.d:278
 #: source/creator/io/package.d:194 source/creator/io/package.d:195
 #: source/creator/io/psd.d:271 source/creator/package.d:249
-#: source/creator/package.d:307 source/creator/package.d:372
-#: source/creator/panels/inspector.d:640 source/creator/panels/inspector.d:659
-#: source/creator/panels/inspector.d:660 source/creator/panels/inspector.d:671
-#: source/creator/panels/nodes.d:279 source/creator/panels/nodes.d:306
-#: source/creator/panels/viewport.d:257
+#: source/creator/package.d:264 source/creator/package.d:322
+#: source/creator/package.d:387 source/creator/panels/inspector.d:640
+#: source/creator/panels/inspector.d:659 source/creator/panels/inspector.d:660
+#: source/creator/panels/inspector.d:671 source/creator/panels/nodes.d:406
+#: source/creator/panels/nodes.d:439 source/creator/panels/viewport.d:257
 #: source/creator/viewport/vertex/package.d:387
-#: source/creator/widgets/mainmenu.d:245 source/creator/widgets/mainmenu.d:480
+#: source/creator/widgets/mainmenu.d:243 source/creator/widgets/mainmenu.d:478
 #: source/creator/windows/imgexport.d:144
 #: source/creator/windows/inpexport.d:217
 #: source/creator/windows/inpexport.d:244
@@ -299,11 +299,15 @@ msgstr ""
 #: source/creator/windows/paramaxes.d:187
 #: source/creator/windows/paramprop.d:105
 #: source/creator/windows/videoexport.d:148
-#: source/creator/windows/videoexport.d:284
-#: source/creator/windows/videoexport.d:294
-#: source/creator/windows/videoexport.d:302
+#: source/creator/windows/videoexport.d:293
+#: source/creator/windows/videoexport.d:303
+#: source/creator/windows/videoexport.d:311
 msgid "Error"
 msgstr "错误"
+
+#: source/creator/ext/nodes/excamera.d:126
+msgid "Warning: Camera size must be divisible by 2"
+msgstr "注意：摄像机的大小必须为 2 的倍数。"
 
 #: source/creator/io/imageexport.d:13 source/creator/windows/inpexport.d:369
 #, c-format
@@ -321,21 +325,21 @@ msgid "A texture is too big for the atlas."
 msgstr "有一个过大的纹理无法被放入图集。"
 
 #: source/creator/io/kra.d:26 source/creator/io/psd.d:26
-#: source/creator/panels/inspector.d:703 source/creator/widgets/mainmenu.d:190
-#: source/creator/widgets/mainmenu.d:212 source/creator/widgets/mainmenu.d:225
-#: source/creator/widgets/mainmenu.d:240 source/creator/widgets/mainmenu.d:473
+#: source/creator/panels/inspector.d:703 source/creator/widgets/mainmenu.d:188
+#: source/creator/widgets/mainmenu.d:210 source/creator/widgets/mainmenu.d:223
+#: source/creator/widgets/mainmenu.d:238 source/creator/widgets/mainmenu.d:471
 #: source/creator/windows/inpexport.d:207 source/creator/windows/welcome.d:246
 msgid "Import..."
 msgstr "导入..."
 
 #: source/creator/io/kra.d:274 source/creator/io/psd.d:267
-#: source/creator/package.d:368
+#: source/creator/package.d:383
 #, c-format
 msgid "%s was imported..."
 msgstr "已导入 %s..."
 
 #: source/creator/io/kra.d:277 source/creator/io/psd.d:270
-#: source/creator/package.d:373
+#: source/creator/package.d:388
 msgid "Import failed..."
 msgstr "导入失败..."
 
@@ -381,22 +385,37 @@ msgstr "（自动选择）"
 msgid "New Project"
 msgstr "创建项目"
 
-#: source/creator/package.d:270
+#: source/creator/package.d:259
+#, c-format
+msgid ""
+"Please report this file to the developers:\n"
+"\n"
+"%s"
+msgstr ""
+"请向开发者提供这个文件：\n"
+"\n"
+"%s"
+
+#: source/creator/package.d:261
+msgid "Failed to write crash dump file."
+msgstr "无法保存崩溃日志。"
+
+#: source/creator/package.d:285
 #, c-format
 msgid "%s opened successfully."
 msgstr "已打开 %s 。"
 
-#: source/creator/package.d:303
+#: source/creator/package.d:318
 #, c-format
 msgid "%s saved successfully."
 msgstr "已保存 %s 。"
 
-#: source/creator/package.d:306
+#: source/creator/package.d:321
 #, c-format
 msgid "Failed to save %s"
 msgstr "保存 %s 失败。"
 
-#: source/creator/package.d:342
+#: source/creator/package.d:357
 #, c-format
 msgid ""
 "The following errors occured during file loading\n"
@@ -405,19 +424,19 @@ msgstr ""
 "加载文件时发生了以下错误\n"
 "%s"
 
-#: source/creator/package.d:352
+#: source/creator/package.d:367
 msgid "Folder import completed with errors..."
 msgstr "文件夹已导入，但是包含错误..."
 
-#: source/creator/package.d:353
+#: source/creator/package.d:368
 msgid "Folder import completed..."
 msgstr "文件夹已导入..."
 
-#: source/creator/package.d:400
+#: source/creator/package.d:415
 msgid "Mipmap generation completed."
 msgstr "Mipmap 生成完成。"
 
-#: source/creator/package.d:415
+#: source/creator/package.d:430
 msgid "Texture bleeding completed."
 msgstr "纹理出血完成。"
 
@@ -440,7 +459,7 @@ msgstr "%d / %d"
 msgid "History"
 msgstr "历史"
 
-#: source/creator/panels/animlist.d:34 source/creator/panels/parameters.d:942
+#: source/creator/panels/animlist.d:34 source/creator/panels/parameters.d:950
 msgid "Duplicate"
 msgstr "克隆"
 
@@ -449,9 +468,9 @@ msgid "Edit..."
 msgstr "编辑..."
 
 #: source/creator/panels/animlist.d:52 source/creator/panels/inspector.d:909
-#: source/creator/panels/inspector.d:1112 source/creator/panels/nodes.d:142
-#: source/creator/panels/parameters.d:951
-#: source/creator/panels/parameters.d:1171 source/creator/panels/timeline.d:107
+#: source/creator/panels/inspector.d:1113 source/creator/panels/nodes.d:194
+#: source/creator/panels/parameters.d:959
+#: source/creator/panels/parameters.d:1192 source/creator/panels/timeline.d:107
 msgid "Delete"
 msgstr "删除"
 
@@ -459,8 +478,8 @@ msgstr "删除"
 msgid "Animation List"
 msgstr "动画列表"
 
-#: source/creator/panels/inspector.d:43 source/creator/panels/nodes.d:338
-#: source/creator/panels/parameters.d:1028
+#: source/creator/panels/inspector.d:43 source/creator/panels/nodes.d:488
+#: source/creator/panels/parameters.d:1038
 msgid "In vertex edit mode..."
 msgstr "正在顶点编辑模式中..."
 
@@ -477,7 +496,7 @@ msgid "Inspector"
 msgstr "属性"
 
 #. Selectable
-#: source/creator/panels/inspector.d:169 source/creator/panels/nodes.d:237
+#: source/creator/panels/inspector.d:169 source/creator/panels/nodes.d:360
 msgid "Puppet"
 msgstr "模型"
 
@@ -592,7 +611,7 @@ msgid ""
 "models."
 msgstr "使 Inochi2D 模型使用点过滤，这会去除低分辨率模型的模糊"
 
-#: source/creator/panels/inspector.d:298 source/creator/panels/inspector.d:1547
+#: source/creator/panels/inspector.d:298 source/creator/panels/inspector.d:1548
 msgid "Transform"
 msgstr "位移"
 
@@ -600,7 +619,7 @@ msgstr "位移"
 #. Translation
 #.
 #. Translation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:314 source/creator/panels/inspector.d:1562
+#: source/creator/panels/inspector.d:314 source/creator/panels/inspector.d:1563
 msgid "Translation"
 msgstr "位移"
 
@@ -622,7 +641,7 @@ msgstr ""
 "让这个节点的位移基于根节点，即使父节点移动了，这个节点也会保持在原来的位置"
 
 #. Rotation portion of the transformation matrix.
-#: source/creator/panels/inspector.d:404 source/creator/panels/inspector.d:1599
+#: source/creator/panels/inspector.d:404 source/creator/panels/inspector.d:1600
 msgid "Rotation"
 msgstr "旋转"
 
@@ -639,7 +658,7 @@ msgid "Rotation Z"
 msgstr "Z轴旋转"
 
 #. Scaling portion of the transformation matrix.
-#: source/creator/panels/inspector.d:476 source/creator/panels/inspector.d:1631
+#: source/creator/panels/inspector.d:476 source/creator/panels/inspector.d:1632
 msgid "Scale"
 msgstr "缩放"
 
@@ -663,7 +682,7 @@ msgstr "吸附到像素"
 #. negative values = closer to camera
 #. positive values = further away from camera
 #: source/creator/panels/inspector.d:541 source/creator/panels/inspector.d:548
-#: source/creator/panels/inspector.d:1651
+#: source/creator/panels/inspector.d:1652
 msgid "Sorting"
 msgstr "前后排序"
 
@@ -691,7 +710,7 @@ msgstr "保存到文件"
 msgid "Load from File"
 msgstr "从文件加载"
 
-#: source/creator/panels/inspector.d:710 source/creator/panels/parameters.d:526
+#: source/creator/panels/inspector.d:710 source/creator/panels/parameters.d:534
 #: source/creator/windows/inpexport.d:222
 msgid "Remove"
 msgstr "移除"
@@ -702,7 +721,7 @@ msgstr "移除"
 msgid "Make Emissive"
 msgstr "使其自发光"
 
-#: source/creator/panels/inspector.d:760 source/creator/panels/inspector.d:1658
+#: source/creator/panels/inspector.d:760 source/creator/panels/inspector.d:1659
 msgid "Part"
 msgstr "组件"
 
@@ -722,133 +741,133 @@ msgstr "自发光"
 msgid "Bumpmap"
 msgstr "凹凸贴图"
 
-#: source/creator/panels/inspector.d:786 source/creator/panels/inspector.d:1008
-#: source/creator/panels/inspector.d:1665
-#: source/creator/panels/inspector.d:1710
+#: source/creator/panels/inspector.d:786 source/creator/panels/inspector.d:1009
+#: source/creator/panels/inspector.d:1666
+#: source/creator/panels/inspector.d:1711
 msgid "Tint (Multiply)"
 msgstr "着色（正片叠底）"
 
-#: source/creator/panels/inspector.d:789 source/creator/panels/inspector.d:1011
-#: source/creator/panels/inspector.d:1670
-#: source/creator/panels/inspector.d:1715
+#: source/creator/panels/inspector.d:789 source/creator/panels/inspector.d:1012
+#: source/creator/panels/inspector.d:1671
+#: source/creator/panels/inspector.d:1716
 msgid "Tint (Screen)"
 msgstr "着色（滤色）"
 
-#: source/creator/panels/inspector.d:792 source/creator/panels/inspector.d:1674
+#: source/creator/panels/inspector.d:792 source/creator/panels/inspector.d:1675
 msgid "Emission Strength"
 msgstr "发光强度"
 
 #. Header for the Blending options for Parts
-#: source/creator/panels/inspector.d:804 source/creator/panels/inspector.d:1015
+#: source/creator/panels/inspector.d:804 source/creator/panels/inspector.d:1016
 #: source/creator/windows/inpexport.d:261
 msgid "Blending"
 msgstr "混合"
 
 #. Normal blending mode as used in Photoshop, generally
 #. the default blending mode photoshop starts a layer out as.
-#: source/creator/panels/inspector.d:809 source/creator/panels/inspector.d:1020
-#: source/creator/windows/inpexport.d:269
+#: source/creator/panels/inspector.d:809 source/creator/panels/inspector.d:1021
+#: source/creator/windows/inpexport.d:269 source/creator/windows/settings.d:222
 msgid "Normal"
 msgstr "常规"
 
 #. Multiply blending mode, in which this texture's color data
 #. will be multiplied with the color data already in the framebuffer.
-#: source/creator/panels/inspector.d:813 source/creator/panels/inspector.d:1024
+#: source/creator/panels/inspector.d:813 source/creator/panels/inspector.d:1025
 #: source/creator/windows/inpexport.d:273
 msgid "Multiply"
 msgstr "正片叠底"
 
 #. Screen blending mode
-#: source/creator/panels/inspector.d:816 source/creator/panels/inspector.d:1027
+#: source/creator/panels/inspector.d:816 source/creator/panels/inspector.d:1028
 #: source/creator/windows/inpexport.d:276
 msgid "Screen"
 msgstr "滤色"
 
 #. Overlay blending mode
-#: source/creator/panels/inspector.d:819 source/creator/panels/inspector.d:1030
+#: source/creator/panels/inspector.d:819 source/creator/panels/inspector.d:1031
 #: source/creator/windows/inpexport.d:279
 msgid "Overlay"
 msgstr "叠加"
 
 #. Darken blending mode
-#: source/creator/panels/inspector.d:822 source/creator/panels/inspector.d:1033
+#: source/creator/panels/inspector.d:822 source/creator/panels/inspector.d:1034
 #: source/creator/windows/inpexport.d:282
 msgid "Darken"
 msgstr "暗色"
 
 #. Lighten blending mode
-#: source/creator/panels/inspector.d:825 source/creator/panels/inspector.d:1036
+#: source/creator/panels/inspector.d:825 source/creator/panels/inspector.d:1037
 #: source/creator/windows/inpexport.d:285
 msgid "Lighten"
 msgstr "亮色"
 
 #. Color Dodge blending mode
-#: source/creator/panels/inspector.d:828 source/creator/panels/inspector.d:1039
+#: source/creator/panels/inspector.d:828 source/creator/panels/inspector.d:1040
 #: source/creator/windows/inpexport.d:288
 msgid "Color Dodge"
 msgstr "颜色减淡"
 
 #. Linear Dodge blending mode
-#: source/creator/panels/inspector.d:831 source/creator/panels/inspector.d:1042
+#: source/creator/panels/inspector.d:831 source/creator/panels/inspector.d:1043
 #: source/creator/windows/inpexport.d:291
 msgid "Linear Dodge"
 msgstr "线性躲避"
 
 #. Add (Glow) blending mode
-#: source/creator/panels/inspector.d:834 source/creator/panels/inspector.d:1045
+#: source/creator/panels/inspector.d:834 source/creator/panels/inspector.d:1046
 #: source/creator/windows/inpexport.d:294
 msgid "Add (Glow)"
 msgstr "增亮"
 
 #. Color Burn blending mode
-#: source/creator/panels/inspector.d:837 source/creator/panels/inspector.d:1048
+#: source/creator/panels/inspector.d:837 source/creator/panels/inspector.d:1049
 #: source/creator/windows/inpexport.d:297
 msgid "Color Burn"
 msgstr "颜色加深"
 
 #. Hard Light blending mode
-#: source/creator/panels/inspector.d:840 source/creator/panels/inspector.d:1051
+#: source/creator/panels/inspector.d:840 source/creator/panels/inspector.d:1052
 #: source/creator/windows/inpexport.d:300
 msgid "Hard Light"
 msgstr "强光"
 
 #. Soft Light blending mode
-#: source/creator/panels/inspector.d:843 source/creator/panels/inspector.d:1054
+#: source/creator/panels/inspector.d:843 source/creator/panels/inspector.d:1055
 #: source/creator/windows/inpexport.d:303
 msgid "Soft Light"
 msgstr "柔光"
 
 #. Subtract blending mode
-#: source/creator/panels/inspector.d:846 source/creator/panels/inspector.d:1057
+#: source/creator/panels/inspector.d:846 source/creator/panels/inspector.d:1058
 #: source/creator/windows/inpexport.d:306
 msgid "Subtract"
 msgstr "减去"
 
 #. Difference blending mode
-#: source/creator/panels/inspector.d:849 source/creator/panels/inspector.d:1060
+#: source/creator/panels/inspector.d:849 source/creator/panels/inspector.d:1061
 #: source/creator/windows/inpexport.d:309
 msgid "Difference"
 msgstr "差值"
 
 #. Exclusion blending mode
-#: source/creator/panels/inspector.d:852 source/creator/panels/inspector.d:1063
+#: source/creator/panels/inspector.d:852 source/creator/panels/inspector.d:1064
 #: source/creator/windows/inpexport.d:312
 msgid "Exclusion"
 msgstr "排除"
 
 #. Inverse blending mode
-#: source/creator/panels/inspector.d:855 source/creator/panels/inspector.d:1066
+#: source/creator/panels/inspector.d:855 source/creator/panels/inspector.d:1067
 #: source/creator/windows/inpexport.d:315
 msgid "Inverse"
 msgstr "反转"
 
-#: source/creator/panels/inspector.d:856 source/creator/panels/inspector.d:1067
+#: source/creator/panels/inspector.d:856 source/creator/panels/inspector.d:1068
 #: source/creator/windows/inpexport.d:316
 msgid "Inverts the color by a factor of the overlying color"
 msgstr "用上层颜色的一个系数来反转颜色"
 
 #. Destination In blending mode
-#: source/creator/panels/inspector.d:859 source/creator/panels/inspector.d:1070
+#: source/creator/panels/inspector.d:859 source/creator/panels/inspector.d:1071
 #: source/creator/windows/inpexport.d:319
 msgid "Destination In"
 msgstr "保留重叠部分的下层内容"
@@ -878,179 +897,179 @@ msgstr ""
 "不改变组件的透明度，将与下方所有内容的重叠部分去除的特殊混合模式\n"
 "可以理解为反-‘裁剪到下层’"
 
-#: source/creator/panels/inspector.d:874 source/creator/panels/inspector.d:1077
-#: source/creator/panels/inspector.d:1689
-#: source/creator/panels/inspector.d:1729
+#: source/creator/panels/inspector.d:874 source/creator/panels/inspector.d:1078
+#: source/creator/panels/inspector.d:1690
+#: source/creator/panels/inspector.d:1730
 #: source/creator/windows/inpexport.d:334
 msgid "Opacity"
 msgstr "透明度"
 
-#: source/creator/panels/inspector.d:879 source/creator/panels/inspector.d:1082
+#: source/creator/panels/inspector.d:879 source/creator/panels/inspector.d:1083
 msgid "Masks"
 msgstr "蒙版"
 
 #. Threshold slider name for adjusting how transparent a pixel can be
 #. before it gets discarded.
-#: source/creator/panels/inspector.d:884 source/creator/panels/inspector.d:1087
-#: source/creator/panels/inspector.d:1696
+#: source/creator/panels/inspector.d:884 source/creator/panels/inspector.d:1088
+#: source/creator/panels/inspector.d:1697
 msgid "Threshold"
 msgstr "阈值"
 
 #. The sources that the part gets masked by. Depending on the masking mode
 #. either the sources will cut out things that don't overlap, or cut out
 #. things that do.
-#: source/creator/panels/inspector.d:892 source/creator/panels/inspector.d:1095
+#: source/creator/panels/inspector.d:892 source/creator/panels/inspector.d:1096
 msgid "Mask Sources"
 msgstr "蒙版来源"
 
-#: source/creator/panels/inspector.d:895 source/creator/panels/inspector.d:1098
+#: source/creator/panels/inspector.d:895 source/creator/panels/inspector.d:1099
 msgid "(Drag a Part or Mask Here)"
 msgstr "(将零件或蒙版拖到此处)"
 
-#: source/creator/panels/inspector.d:902 source/creator/panels/inspector.d:1105
+#: source/creator/panels/inspector.d:902 source/creator/panels/inspector.d:1106
 msgid "Mode"
 msgstr "模式"
 
-#: source/creator/panels/inspector.d:903 source/creator/panels/inspector.d:1106
-#: source/creator/panels/nodes.d:100
+#: source/creator/panels/inspector.d:903 source/creator/panels/inspector.d:1107
+#: source/creator/panels/nodes.d:152
 msgid "Mask"
 msgstr "蒙版"
 
-#: source/creator/panels/inspector.d:904 source/creator/panels/inspector.d:1107
+#: source/creator/panels/inspector.d:904 source/creator/panels/inspector.d:1108
 msgid "Dodge"
 msgstr "反蒙版"
 
-#: source/creator/panels/inspector.d:921 source/creator/panels/inspector.d:1125
+#: source/creator/panels/inspector.d:921 source/creator/panels/inspector.d:1126
 #, c-format
 msgid "%s (Mask)"
 msgstr "%s （蒙版）"
 
-#: source/creator/panels/inspector.d:922 source/creator/panels/inspector.d:1126
+#: source/creator/panels/inspector.d:922 source/creator/panels/inspector.d:1127
 #, c-format
 msgid "%s (Dodge)"
 msgstr "%s （反蒙版）"
 
-#: source/creator/panels/inspector.d:982 source/creator/panels/nodes.d:118
+#: source/creator/panels/inspector.d:982 source/creator/panels/nodes.d:170
 #: source/creator/windows/imgexport.d:97
 #: source/creator/windows/videoexport.d:161
 msgid "Camera"
 msgstr "摄像机"
 
 #: source/creator/panels/inspector.d:984 source/creator/panels/viewport.d:319
-#: source/creator/windows/settings.d:85 source/creator/windows/settings.d:214
+#: source/creator/windows/settings.d:85 source/creator/windows/settings.d:220
 msgid "Viewport"
 msgstr "视图"
 
-#: source/creator/panels/inspector.d:998 source/creator/panels/inspector.d:1703
-#: source/creator/panels/nodes.d:107
+#: source/creator/panels/inspector.d:999 source/creator/panels/inspector.d:1704
+#: source/creator/panels/nodes.d:159
 msgid "Composite"
 msgstr "合成"
 
-#: source/creator/panels/inspector.d:1179
+#: source/creator/panels/inspector.d:1180
 msgid "Propagate MeshGroup"
 msgstr "传递网格组"
 
-#: source/creator/panels/inspector.d:1185
+#: source/creator/panels/inspector.d:1186
 msgid "Allow ascendant MeshGroup to deform children of Composite"
 msgstr "使位于父节点的网格组对合成节点的子节点进行变形"
 
-#: source/creator/panels/inspector.d:1195
+#: source/creator/panels/inspector.d:1196
 msgid "SimplePhysics"
 msgstr "简易物理"
 
-#: source/creator/panels/inspector.d:1207 source/creator/windows/kramerge.d:280
+#: source/creator/panels/inspector.d:1208 source/creator/windows/kramerge.d:280
 #: source/creator/windows/psdmerge.d:276
 msgid "Unmap"
 msgstr "取消映射"
 
-#: source/creator/panels/inspector.d:1212
+#: source/creator/panels/inspector.d:1213
 msgid "Unassigned"
 msgstr "未分配"
 
-#: source/creator/panels/inspector.d:1218 source/creator/windows/trkbind.d:47
+#: source/creator/panels/inspector.d:1219 source/creator/windows/trkbind.d:47
 msgid "Parameter"
 msgstr "参数"
 
-#: source/creator/panels/inspector.d:1219
+#: source/creator/panels/inspector.d:1220
 msgid "(unassigned)"
 msgstr "（未分配）"
 
-#: source/creator/panels/inspector.d:1237
+#: source/creator/panels/inspector.d:1238
 msgid "Type"
 msgstr "类型"
 
-#: source/creator/panels/inspector.d:1240
+#: source/creator/panels/inspector.d:1241
 msgid "Pendulum"
 msgstr "摆锤"
 
-#: source/creator/panels/inspector.d:1242
+#: source/creator/panels/inspector.d:1243
 msgid "SpringPendulum"
 msgstr "弹簧摆锤"
 
-#: source/creator/panels/inspector.d:1249
+#: source/creator/panels/inspector.d:1250
 msgid "Mapping mode"
 msgstr "映射模式"
 
-#: source/creator/panels/inspector.d:1252
+#: source/creator/panels/inspector.d:1253
 msgid "AngleLength"
 msgstr "角长度"
 
-#: source/creator/panels/inspector.d:1254
+#: source/creator/panels/inspector.d:1255
 msgid "XY"
 msgstr "XY"
 
-#: source/creator/panels/inspector.d:1256
+#: source/creator/panels/inspector.d:1257
 msgid "LengthAngle"
 msgstr "长度-角度"
 
-#: source/creator/panels/inspector.d:1258
+#: source/creator/panels/inspector.d:1259
 msgid "YX"
 msgstr "YX"
 
-#: source/creator/panels/inspector.d:1268
+#: source/creator/panels/inspector.d:1269
 msgid "Local Transform Lock"
 msgstr "仅考虑相对位移"
 
-#: source/creator/panels/inspector.d:1269
+#: source/creator/panels/inspector.d:1270
 msgid ""
 "Whether the physics system only listens to the movement of the physics node "
 "itself"
 msgstr "物理系统是否只考虑物理节点的相对运动"
 
-#: source/creator/panels/inspector.d:1275
-#: source/creator/panels/inspector.d:1743
+#: source/creator/panels/inspector.d:1276
+#: source/creator/panels/inspector.d:1744
 msgid "Gravity scale"
 msgstr "重力强度"
 
-#: source/creator/panels/inspector.d:1282
-#: source/creator/panels/inspector.d:1750
+#: source/creator/panels/inspector.d:1283
+#: source/creator/panels/inspector.d:1751
 msgid "Length"
 msgstr "长度"
 
-#: source/creator/panels/inspector.d:1289
-#: source/creator/panels/inspector.d:1757
+#: source/creator/panels/inspector.d:1290
+#: source/creator/panels/inspector.d:1758
 msgid "Resonant frequency"
 msgstr "共振频率"
 
-#: source/creator/panels/inspector.d:1296
-#: source/creator/panels/inspector.d:1764
+#: source/creator/panels/inspector.d:1297
+#: source/creator/panels/inspector.d:1765
 msgid "Damping"
 msgstr "阻尼"
 
-#: source/creator/panels/inspector.d:1307
-#: source/creator/panels/inspector.d:1775
+#: source/creator/panels/inspector.d:1308
+#: source/creator/panels/inspector.d:1776
 msgid "Output scale"
 msgstr "输出比例"
 
-#: source/creator/panels/inspector.d:1328 source/creator/panels/nodes.d:122
+#: source/creator/panels/inspector.d:1329 source/creator/panels/nodes.d:174
 msgid "MeshGroup"
 msgstr "网格组"
 
-#: source/creator/panels/inspector.d:1334
+#: source/creator/panels/inspector.d:1335
 msgid "Dynamic Deformation (slower)"
 msgstr "动态变形（速度较慢）"
 
-#: source/creator/panels/inspector.d:1337
+#: source/creator/panels/inspector.d:1338
 msgid ""
 "Whether the MeshGroup should dynamically deform children,\n"
 "this is an expensive operation and should not be overused."
@@ -1058,21 +1077,21 @@ msgstr ""
 "是否令该网格组对子节点进行动态变形\n"
 "这是一个对性能需求大的操作，不应被过度使用"
 
-#: source/creator/panels/inspector.d:1340
+#: source/creator/panels/inspector.d:1341
 msgid "Translate origins"
 msgstr "平移原点"
 
-#: source/creator/panels/inspector.d:1343
+#: source/creator/panels/inspector.d:1344
 msgid "Translate origin of child nodes for non-Drawable object."
 msgstr "平移非绘制对象的子节点的原点"
 
 #. Header for texture options
-#: source/creator/panels/inspector.d:1662
-#: source/creator/panels/inspector.d:1707
+#: source/creator/panels/inspector.d:1663
+#: source/creator/panels/inspector.d:1708
 msgid "Textures"
 msgstr "纹理"
 
-#: source/creator/panels/inspector.d:1738 source/creator/panels/nodes.d:113
+#: source/creator/panels/inspector.d:1739 source/creator/panels/nodes.d:165
 msgid "Simple Physics"
 msgstr "简易物理"
 
@@ -1080,259 +1099,263 @@ msgstr "简易物理"
 msgid "Logger"
 msgstr "日志"
 
-#: source/creator/panels/nodes.d:92
+#: source/creator/panels/nodes.d:144
 msgid "Add"
 msgstr "添加"
 
-#: source/creator/panels/nodes.d:96
+#: source/creator/panels/nodes.d:148
 msgid "Node"
 msgstr "节点"
 
 #. Switches Inochi Creator over to Mesh Edit mode
 #. and selects the mesh that you had selected previously
 #. in Model Edit mode.
-#: source/creator/panels/nodes.d:132
+#: source/creator/panels/nodes.d:184
 #: source/creator/viewport/model/package.d:186
 msgid "Edit Mesh"
 msgstr "网格编辑"
 
 #. Option to hide the node (and subnodes)
-#: source/creator/panels/nodes.d:138
+#: source/creator/panels/nodes.d:190
 msgid "Hide"
 msgstr "隐藏"
 
 #. Option to show the node (and subnodes)
-#: source/creator/panels/nodes.d:138
+#: source/creator/panels/nodes.d:190
 msgid "Show"
 msgstr "显示"
 
-#: source/creator/panels/nodes.d:162
+#: source/creator/panels/nodes.d:214
 msgid "More Info"
 msgstr "其他信息"
 
 #. %s is the name of the node in the More Info menu
 #. %u is the UUID of the node in the More Info menu
-#: source/creator/panels/nodes.d:168
+#: source/creator/panels/nodes.d:220
 #, c-format
 msgid "%s ID: %u"
 msgstr "%s ID: %u"
 
-#: source/creator/panels/nodes.d:171
+#: source/creator/panels/nodes.d:223
 #, c-format
 msgid "%s Layer: %s"
 msgstr "%s 图层: %s"
 
 #. %u is the UUID of the node in the More Info menu
-#: source/creator/panels/nodes.d:176
+#: source/creator/panels/nodes.d:228
 #, c-format
 msgid "ID: %u"
 msgstr "ID: %u"
 
-#: source/creator/panels/nodes.d:179
+#: source/creator/panels/nodes.d:231
 #, c-format
 msgid "Layer: %s"
 msgstr "图层: %s"
 
-#: source/creator/panels/nodes.d:186
+#: source/creator/panels/nodes.d:238
 msgid "Recalculate origin"
 msgstr "重新计算原点"
 
-#: source/creator/panels/nodes.d:439
+#: source/creator/panels/nodes.d:534
+msgid "Filter, search for specific nodes"
+msgstr "搜索特定节点"
+
+#: source/creator/panels/nodes.d:612
 msgid "Nodes"
 msgstr "节点树"
 
-#: source/creator/panels/parameters.d:268
+#: source/creator/panels/parameters.d:276
 msgid "Unset"
 msgstr "取消选定"
 
-#: source/creator/panels/parameters.d:277
+#: source/creator/panels/parameters.d:285
 msgid "Set to current"
 msgstr "设置为当前"
 
-#: source/creator/panels/parameters.d:286
+#: source/creator/panels/parameters.d:294
 #: source/creator/viewport/model/package.d:239
 msgid "Reset"
 msgstr "重置"
 
-#: source/creator/panels/parameters.d:295 source/creator/windows/trkbind.d:110
+#: source/creator/panels/parameters.d:303 source/creator/windows/trkbind.d:110
 msgid "Invert"
 msgstr "反向"
 
-#: source/creator/panels/parameters.d:304
-#: source/creator/panels/parameters.d:894
+#: source/creator/panels/parameters.d:312
+#: source/creator/panels/parameters.d:902
 msgid "Mirror"
 msgstr "镜像"
 
-#: source/creator/panels/parameters.d:305
-#: source/creator/panels/parameters.d:348
-#: source/creator/panels/parameters.d:895
+#: source/creator/panels/parameters.d:313
+#: source/creator/panels/parameters.d:356
+#: source/creator/panels/parameters.d:903
 msgid "Horizontally"
 msgstr "水平"
 
-#: source/creator/panels/parameters.d:314
-#: source/creator/panels/parameters.d:365
-#: source/creator/panels/parameters.d:899
+#: source/creator/panels/parameters.d:322
+#: source/creator/panels/parameters.d:373
+#: source/creator/panels/parameters.d:907
 msgid "Vertically"
 msgstr "垂直"
 
-#: source/creator/panels/parameters.d:325
+#: source/creator/panels/parameters.d:333
 msgid "Flip Deform"
 msgstr "翻转变形"
 
-#: source/creator/panels/parameters.d:347
-#: source/creator/panels/parameters.d:402
+#: source/creator/panels/parameters.d:355
+#: source/creator/panels/parameters.d:410
 msgid "Set from mirror"
 msgstr "从镜像设置"
 
-#: source/creator/panels/parameters.d:382
+#: source/creator/panels/parameters.d:390
 msgid "Diagonally"
 msgstr "斜对角"
 
-#: source/creator/panels/parameters.d:421
-#: source/creator/panels/parameters.d:930 source/creator/widgets/mainmenu.d:345
+#: source/creator/panels/parameters.d:429
+#: source/creator/panels/parameters.d:938 source/creator/widgets/mainmenu.d:343
 msgid "Copy"
 msgstr "复制"
 
-#: source/creator/panels/parameters.d:429
-#: source/creator/panels/parameters.d:933 source/creator/widgets/mainmenu.d:346
+#: source/creator/panels/parameters.d:437
+#: source/creator/panels/parameters.d:941 source/creator/widgets/mainmenu.d:344
 msgid "Paste"
 msgstr "粘贴"
 
-#: source/creator/panels/parameters.d:481
+#: source/creator/panels/parameters.d:489
 msgid "Bindings"
 msgstr "绑定"
 
-#: source/creator/panels/parameters.d:489
+#: source/creator/panels/parameters.d:497
 msgid "Show all nodes"
 msgstr "显示全部节点"
 
-#: source/creator/panels/parameters.d:489
+#: source/creator/panels/parameters.d:497
 msgid "Show only selected nodes"
 msgstr "显示选中节点"
 
-#: source/creator/panels/parameters.d:538
+#: source/creator/panels/parameters.d:546
 msgid "Interpolation Mode"
 msgstr "插值模式"
 
-#: source/creator/panels/parameters.d:539 source/creator/panels/timeline.d:74
+#: source/creator/panels/parameters.d:547 source/creator/panels/timeline.d:74
 msgid "Nearest"
 msgstr "最近"
 
-#: source/creator/panels/parameters.d:545 source/creator/panels/timeline.d:80
+#: source/creator/panels/parameters.d:553 source/creator/panels/timeline.d:80
 msgid "Linear"
 msgstr "线性"
 
-#: source/creator/panels/parameters.d:551 source/creator/panels/timeline.d:83
+#: source/creator/panels/parameters.d:559 source/creator/panels/timeline.d:83
 msgid "Cubic"
 msgstr "立方"
 
-#: source/creator/panels/parameters.d:561
+#: source/creator/panels/parameters.d:569
 msgid "Copy to"
 msgstr "复制到"
 
-#: source/creator/panels/parameters.d:569
+#: source/creator/panels/parameters.d:577
 msgid "Swap with"
 msgstr "交换"
 
-#: source/creator/panels/parameters.d:753
+#: source/creator/panels/parameters.d:761
 msgid "New Parameter Group"
 msgstr "新建参数组"
 
-#: source/creator/panels/parameters.d:857
+#: source/creator/panels/parameters.d:865
 msgid "Edit Properties"
 msgstr "编辑属性"
 
-#: source/creator/panels/parameters.d:861
+#: source/creator/panels/parameters.d:869
 msgid "Edit Axes Points"
 msgstr "编辑轴点"
 
-#: source/creator/panels/parameters.d:865
+#: source/creator/panels/parameters.d:873
 msgid "Split"
 msgstr "拆分"
 
-#: source/creator/panels/parameters.d:869
+#: source/creator/panels/parameters.d:877
 msgid "To 2D"
 msgstr "转为二维参数"
 
-#: source/creator/panels/parameters.d:874
+#: source/creator/panels/parameters.d:882
 msgid "Flip X"
 msgstr "翻转 X 轴"
 
-#: source/creator/panels/parameters.d:880
+#: source/creator/panels/parameters.d:888
 msgid "Flip Y"
 msgstr "翻转 Y 轴"
 
-#: source/creator/panels/parameters.d:887
+#: source/creator/panels/parameters.d:895
 msgid "Flip"
 msgstr "翻转"
 
-#: source/creator/panels/parameters.d:905
+#: source/creator/panels/parameters.d:913
 msgid "Mirrored Autofill"
 msgstr "镜像自动填充"
 
-#: source/creator/panels/parameters.d:937
+#: source/creator/panels/parameters.d:945
 msgid "Paste and Horizontal Flip"
 msgstr "粘贴并横向翻转"
 
 #. Sets the default value of the param
-#: source/creator/panels/parameters.d:963
+#: source/creator/panels/parameters.d:971
 msgid "Set Starting Position"
 msgstr "设置起始位置"
 
 #. Arms the parameter for recording values.
-#: source/creator/panels/parameters.d:989
+#: source/creator/panels/parameters.d:999
 msgid "Arm Parameter"
 msgstr "开始录制参数"
 
-#: source/creator/panels/parameters.d:1002
+#: source/creator/panels/parameters.d:1012
 msgid "Add Keyframe"
 msgstr "添加关键帧"
 
-#: source/creator/panels/parameters.d:1037
+#: source/creator/panels/parameters.d:1047
 msgid "Add 1D Parameter (0..1)"
 msgstr "新增一维参数 (0..1)"
 
-#: source/creator/panels/parameters.d:1045
+#: source/creator/panels/parameters.d:1055
 msgid "Add 1D Parameter (-1..1)"
 msgstr "新增一维参数 (-1..1)"
 
-#: source/creator/panels/parameters.d:1056
+#: source/creator/panels/parameters.d:1066
 msgid "Add 2D Parameter (0..1)"
 msgstr "新增二维参数 (0..1)"
 
-#: source/creator/panels/parameters.d:1064
+#: source/creator/panels/parameters.d:1074
 msgid "Add 2D Parameter (-1..+1)"
 msgstr "新增二维参数 (-1..+1)"
 
-#: source/creator/panels/parameters.d:1076
+#: source/creator/panels/parameters.d:1086
 msgid "Add Mouth Shape"
 msgstr "新增嘴型"
 
-#: source/creator/panels/parameters.d:1098
+#: source/creator/panels/parameters.d:1108
 msgid "Filter, search for specific parameters"
 msgstr "过滤器，搜索特定参数"
 
 #. Textbox
-#: source/creator/panels/parameters.d:1138 source/creator/windows/rename.d:42
+#: source/creator/panels/parameters.d:1159 source/creator/windows/rename.d:42
 #: source/creator/windows/rename.d:57
 msgid "Rename"
 msgstr "重命名"
 
-#: source/creator/panels/parameters.d:1142
+#: source/creator/panels/parameters.d:1163
 msgid "Colors"
 msgstr "颜色"
 
 #. CUSTOM COLOR PICKER
 #. Allows user to select a custom color for parameter group.
-#: source/creator/panels/parameters.d:1167
+#: source/creator/panels/parameters.d:1188
 msgid "Custom Color"
 msgstr "自定义颜色"
 
-#: source/creator/panels/parameters.d:1243
+#: source/creator/panels/parameters.d:1264
 msgid "Add Parameter"
 msgstr "添加参数"
 
-#: source/creator/panels/parameters.d:1248
+#: source/creator/panels/parameters.d:1269
 msgid "Parameters"
 msgstr "参数"
 
@@ -1458,7 +1481,7 @@ msgid "Tracking"
 msgstr "跟踪"
 
 #. Use appropriate system method to notify user where crash dump is.
-#: source/creator/utils/crashdump.d:64
+#: source/creator/utils/crashdump.d:99
 msgid ""
 "\n"
 "\n"
@@ -1478,7 +1501,7 @@ msgstr ""
 "请将该文件以附件的形式包含在issue中并汇报到GitHub。\n"
 "https://github.com/Inochi2D/inochi-creator/issues"
 
-#: source/creator/utils/crashdump.d:65
+#: source/creator/utils/crashdump.d:100
 msgid ""
 "\n"
 "\n"
@@ -1501,7 +1524,7 @@ msgstr ""
 "请将该文件以附件的形式包含在issue中并汇报到GitHub。\n"
 "https://github.com/Inochi2D/inochi-creator/issues"
 
-#: source/creator/utils/crashdump.d:67
+#: source/creator/utils/crashdump.d:102
 msgid ""
 "The application has unexpectedly crashed\n"
 "Please send the developers the inochi-creator-crashdump.txt which has been "
@@ -1512,7 +1535,7 @@ msgstr ""
 "请将您桌面上的 inochi-creator-crashdump.txt 上传到\n"
 "https://github.com/Inochi2D/inochi-creator/issues"
 
-#: source/creator/utils/crashdump.d:68
+#: source/creator/utils/crashdump.d:103
 msgid "Inochi Creator Crashdump"
 msgstr "Inochi Creator 崩溃日志"
 
@@ -1619,10 +1642,10 @@ msgstr "变形"
 #: source/creator/viewport/common/mesheditor/tools/grid.d:240
 #: source/creator/viewport/common/mesheditor/tools/grid.d:241
 #: source/creator/viewport/common/mesheditor/tools/grid.d:242
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:149
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:157
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:216
 #: source/creator/viewport/common/mesheditor/tools/point.d:98
-#: source/creator/viewport/common/mesheditor/tools/point.d:340
+#: source/creator/viewport/common/mesheditor/tools/point.d:346
 msgid "Left Mouse"
 msgstr "左键"
 
@@ -1656,7 +1679,7 @@ msgstr "笔刷工具"
 
 #: source/creator/viewport/common/mesheditor/tools/connect.d:34
 #: source/creator/viewport/common/mesheditor/tools/point.d:98
-#: source/creator/viewport/common/mesheditor/tools/point.d:340
+#: source/creator/viewport/common/mesheditor/tools/point.d:346
 msgid "Select"
 msgstr "选择"
 
@@ -1692,50 +1715,50 @@ msgstr "改变关键点在轴上的位置"
 msgid "Grid Vertex Tool"
 msgstr "网格顶点工具"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:149
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:157
 msgid "Add Lasso Point"
 msgstr "为不规则选择添加顶点"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:150
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:158
 msgid "Additive Selection"
 msgstr "扩充选择"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:150
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:158
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:223
 msgid "Shift"
 msgstr "Shift 键"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:151
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:159
 msgid "Inverse Selection"
 msgstr "反选"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:151
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:152
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:159
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:160
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:222
 msgid "Ctrl"
 msgstr "Ctrl 键"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:152
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:160
 msgid "Remove Selection"
 msgstr "移除选择"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:153
-msgid "Delete Last Point"
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:161
+msgid "Delete Last Lasso Point"
 msgstr "删除刚添加的顶点"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:153
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:161
 msgid "Right Mouse"
 msgstr "右键"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:154
-msgid "Clear"
-msgstr "全部清除"
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:162
+msgid "Clear All Lasso Points"
+msgstr "清除所有顶点"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:154
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:162
 msgid "ESC"
 msgstr "Esc 键"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:246
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:254
 msgid "Lasso Selection"
 msgstr "不规则选择工具"
 
@@ -1795,11 +1818,11 @@ msgstr "创建"
 msgid "Ctrl+Left Mouse"
 msgstr "Ctrl 键 + 左键"
 
-#: source/creator/viewport/common/mesheditor/tools/point.d:471
+#: source/creator/viewport/common/mesheditor/tools/point.d:477
 msgid "Vertex Tool"
 msgstr "顶点工具"
 
-#: source/creator/viewport/common/mesheditor/tools/point.d:487
+#: source/creator/viewport/common/mesheditor/tools/point.d:493
 msgid "Auto connect vertices"
 msgstr "自动连接顶点"
 
@@ -1955,7 +1978,7 @@ msgstr " 取消"
 #: source/creator/viewport/vertex/package.d:240
 #: source/creator/widgets/dialog.d:142 source/creator/windows/flipconfig.d:479
 #: source/creator/windows/paramaxes.d:169
-#: source/creator/windows/videoexport.d:264
+#: source/creator/windows/videoexport.d:272
 msgid "Cancel"
 msgstr "取消"
 
@@ -1991,36 +2014,36 @@ msgstr "确认"
 msgid "No"
 msgstr "否"
 
-#: source/creator/widgets/mainmenu.d:45 source/creator/windows/welcome.d:232
+#: source/creator/widgets/mainmenu.d:43 source/creator/windows/welcome.d:232
 #: source/creator/windows/welcome.d:237
 msgid "Open..."
 msgstr "打开..."
 
-#: source/creator/widgets/mainmenu.d:63
+#: source/creator/widgets/mainmenu.d:61
 msgid "Save..."
 msgstr "保存..."
 
-#: source/creator/widgets/mainmenu.d:75 source/creator/widgets/mainmenu.d:169
+#: source/creator/widgets/mainmenu.d:73 source/creator/widgets/mainmenu.d:167
 msgid "Save As..."
 msgstr "另存为..."
 
-#: source/creator/widgets/mainmenu.d:129
+#: source/creator/widgets/mainmenu.d:127
 msgid "File"
 msgstr "文件"
 
-#: source/creator/widgets/mainmenu.d:130
+#: source/creator/widgets/mainmenu.d:128
 msgid "New"
 msgstr "新建"
 
-#: source/creator/widgets/mainmenu.d:134
+#: source/creator/widgets/mainmenu.d:132
 msgid "Open"
 msgstr "打开"
 
-#: source/creator/widgets/mainmenu.d:140
+#: source/creator/widgets/mainmenu.d:138
 msgid "Recent"
 msgstr "近期打开的文件"
 
-#: source/creator/widgets/mainmenu.d:142 source/creator/windows/settings.d:175
+#: source/creator/widgets/mainmenu.d:140 source/creator/windows/settings.d:181
 msgid "Autosaves"
 msgstr "自动存档"
 
@@ -2028,7 +2051,7 @@ msgstr "自动存档"
 #. Settings are autosaved, but in case the user
 #. feels more safe with a save button then we have
 #. it here.
-#: source/creator/widgets/mainmenu.d:165 source/creator/windows/editanim.d:124
+#: source/creator/widgets/mainmenu.d:163 source/creator/windows/editanim.d:124
 #: source/creator/windows/flipconfig.d:486
 #: source/creator/windows/imgexport.d:122
 #: source/creator/windows/paramaxes.d:176
@@ -2036,239 +2059,239 @@ msgstr "自动存档"
 msgid "Save"
 msgstr "保存"
 
-#: source/creator/widgets/mainmenu.d:173
+#: source/creator/widgets/mainmenu.d:171
 msgid "Import"
 msgstr "导入"
 
-#: source/creator/widgets/mainmenu.d:174 source/creator/widgets/mainmenu.d:207
+#: source/creator/widgets/mainmenu.d:172 source/creator/widgets/mainmenu.d:205
 msgid "Photoshop Document"
 msgstr "PSD 文件"
 
-#: source/creator/widgets/mainmenu.d:178
+#: source/creator/widgets/mainmenu.d:176
 msgid "Import a standard Photoshop PSD file."
 msgstr "导入一个标准 PSD 文件"
 
-#: source/creator/widgets/mainmenu.d:179 source/creator/widgets/mainmenu.d:220
+#: source/creator/widgets/mainmenu.d:177 source/creator/widgets/mainmenu.d:218
 msgid "Krita Document"
 msgstr "Krita 文件"
 
-#: source/creator/widgets/mainmenu.d:183
+#: source/creator/widgets/mainmenu.d:181
 msgid "Import a standard Krita KRA file."
 msgstr "导入一个标准 Krita KRA 文件"
 
-#: source/creator/widgets/mainmenu.d:185 source/creator/widgets/mainmenu.d:268
+#: source/creator/widgets/mainmenu.d:183 source/creator/widgets/mainmenu.d:266
 msgid "Inochi2D Puppet"
 msgstr "Inochi2D 模型"
 
-#: source/creator/widgets/mainmenu.d:195
+#: source/creator/widgets/mainmenu.d:193
 msgid "Import existing puppet file, editing options limited"
 msgstr "导入 Inochi2D 模型，但是编辑操作受限"
 
-#: source/creator/widgets/mainmenu.d:197
+#: source/creator/widgets/mainmenu.d:195
 msgid "Image Folder"
 msgstr "图片文件夹"
 
-#: source/creator/widgets/mainmenu.d:198
+#: source/creator/widgets/mainmenu.d:196
 msgid "Select a Folder..."
 msgstr "选择一个文件夹..."
 
-#: source/creator/widgets/mainmenu.d:203
+#: source/creator/widgets/mainmenu.d:201
 msgid "Supports PNGs, TGAs and JPEGs."
 msgstr "支持 PNG, TGA, 和 JPEG"
 
-#: source/creator/widgets/mainmenu.d:206 source/creator/windows/kramerge.d:420
+#: source/creator/widgets/mainmenu.d:204 source/creator/windows/kramerge.d:420
 #: source/creator/windows/psdmerge.d:416
 msgid "Merge"
 msgstr "合并"
 
-#: source/creator/widgets/mainmenu.d:218
+#: source/creator/widgets/mainmenu.d:216
 msgid "Merge layers from Photoshop document"
 msgstr "将 PSD 文件的图层合并过来"
 
-#: source/creator/widgets/mainmenu.d:231
+#: source/creator/widgets/mainmenu.d:229
 msgid "Merge layers from Krita document"
 msgstr "将 KRA 文件的图层合并过来"
 
-#: source/creator/widgets/mainmenu.d:233
+#: source/creator/widgets/mainmenu.d:231
 msgid "Image Files"
 msgstr "图片"
 
-#: source/creator/widgets/mainmenu.d:249
+#: source/creator/widgets/mainmenu.d:247
 msgid "Merges (adds) selected image files to project"
 msgstr "选择图片合并（添加）到项目中"
 
-#: source/creator/widgets/mainmenu.d:251
+#: source/creator/widgets/mainmenu.d:249
 msgid "Inochi Creator Project"
 msgstr "Inochi Creator 项目"
 
-#: source/creator/widgets/mainmenu.d:262
+#: source/creator/widgets/mainmenu.d:260
 msgid "Merge another Inochi Creator project in to this one"
 msgstr "将另一个 Inochi Creator 项目合并到这个项目中"
 
-#: source/creator/widgets/mainmenu.d:267 source/creator/windows/inpexport.d:364
-#: source/creator/windows/videoexport.d:229
+#: source/creator/widgets/mainmenu.d:265 source/creator/windows/inpexport.d:364
+#: source/creator/windows/videoexport.d:234
 msgid "Export"
 msgstr "导出"
 
-#: source/creator/widgets/mainmenu.d:273 source/creator/widgets/mainmenu.d:282
-#: source/creator/widgets/mainmenu.d:291 source/creator/widgets/mainmenu.d:300
-#: source/creator/widgets/mainmenu.d:314
+#: source/creator/widgets/mainmenu.d:271 source/creator/widgets/mainmenu.d:280
+#: source/creator/widgets/mainmenu.d:289 source/creator/widgets/mainmenu.d:298
+#: source/creator/widgets/mainmenu.d:312
 msgid "Export..."
 msgstr "导出..."
 
-#: source/creator/widgets/mainmenu.d:276
+#: source/creator/widgets/mainmenu.d:274
 msgid "Image"
 msgstr "图片"
 
-#: source/creator/widgets/mainmenu.d:277
+#: source/creator/widgets/mainmenu.d:275
 msgid "PNG (*.png)"
 msgstr "PNG 图像 (*.png)"
 
-#: source/creator/widgets/mainmenu.d:286
+#: source/creator/widgets/mainmenu.d:284
 msgid "JPEG (*.jpeg)"
 msgstr "JPEG 图像 (*.jpeg)"
 
-#: source/creator/widgets/mainmenu.d:295
+#: source/creator/widgets/mainmenu.d:293
 msgid "TARGA (*.tga)"
 msgstr "TAGRA 图像 (*.tga)"
 
-#: source/creator/widgets/mainmenu.d:306
+#: source/creator/widgets/mainmenu.d:304
 msgid "Video"
 msgstr "视频"
 
 #. Close Project option
-#: source/creator/widgets/mainmenu.d:326
+#: source/creator/widgets/mainmenu.d:324
 msgid "Close Project"
 msgstr "关闭项目"
 
 #. Quit option
-#: source/creator/widgets/mainmenu.d:335
+#: source/creator/widgets/mainmenu.d:333
 msgid "Quit"
 msgstr "退出"
 
-#: source/creator/widgets/mainmenu.d:339
+#: source/creator/widgets/mainmenu.d:337
 msgid "Edit"
 msgstr "编辑"
 
-#: source/creator/widgets/mainmenu.d:340
+#: source/creator/widgets/mainmenu.d:338
 msgid "Undo"
 msgstr "撤销"
 
-#: source/creator/widgets/mainmenu.d:341
+#: source/creator/widgets/mainmenu.d:339
 msgid "Redo"
 msgstr "恢复"
 
-#: source/creator/widgets/mainmenu.d:344
+#: source/creator/widgets/mainmenu.d:342
 msgid "Cut"
 msgstr "剪切"
 
-#: source/creator/widgets/mainmenu.d:349 source/creator/windows/settings.d:268
+#: source/creator/widgets/mainmenu.d:347 source/creator/windows/settings.d:279
 msgid "Settings"
 msgstr "设置"
 
-#: source/creator/widgets/mainmenu.d:357
+#: source/creator/widgets/mainmenu.d:355
 msgid "ImGui Debugging"
 msgstr "ImGui 调试"
 
-#: source/creator/widgets/mainmenu.d:360
+#: source/creator/widgets/mainmenu.d:358
 msgid "Style Editor"
 msgstr "主题样式编辑器"
 
-#: source/creator/widgets/mainmenu.d:361
+#: source/creator/widgets/mainmenu.d:359
 msgid "ImGui Debugger"
 msgstr "ImGui 调试器"
 
-#: source/creator/widgets/mainmenu.d:362
+#: source/creator/widgets/mainmenu.d:360
 msgid "ImGui Metrics"
 msgstr "ImGui 数据"
 
-#: source/creator/widgets/mainmenu.d:363
+#: source/creator/widgets/mainmenu.d:361
 msgid "ImGui Stack Tool"
 msgstr "ImGui 栈工具"
 
-#: source/creator/widgets/mainmenu.d:368
+#: source/creator/widgets/mainmenu.d:366
 msgid "View"
-msgstr "查看"
+msgstr "视窗"
 
-#: source/creator/widgets/mainmenu.d:369
+#: source/creator/widgets/mainmenu.d:367
 msgid "Reset Layout"
 msgstr "重置布局"
 
-#: source/creator/widgets/mainmenu.d:378
+#: source/creator/widgets/mainmenu.d:376
 msgid "Panels"
 msgstr "面板"
 
-#: source/creator/widgets/mainmenu.d:396
+#: source/creator/widgets/mainmenu.d:394
 msgid "Panel is not visible in current edit mode."
 msgstr "在当前的编辑模式下此面板不可见。"
 
-#: source/creator/widgets/mainmenu.d:404
+#: source/creator/widgets/mainmenu.d:402
 msgid "Configuration"
 msgstr "选项"
 
 #. Opens the directory where configuration resides in the user's file browser.
-#: source/creator/widgets/mainmenu.d:407
+#: source/creator/widgets/mainmenu.d:405
 msgid "Open Configuration Folder"
 msgstr "打开配置文件夹"
 
-#: source/creator/widgets/mainmenu.d:416
+#: source/creator/widgets/mainmenu.d:414
 msgid "Extras"
 msgstr "附加"
 
-#: source/creator/widgets/mainmenu.d:419
+#: source/creator/widgets/mainmenu.d:417
 msgid "Save Screenshot"
 msgstr "截图"
 
-#: source/creator/widgets/mainmenu.d:424
+#: source/creator/widgets/mainmenu.d:422
 msgid "Save Screenshot..."
 msgstr "保存截图..."
 
-#: source/creator/widgets/mainmenu.d:450
+#: source/creator/widgets/mainmenu.d:448
 msgid "Saves screenshot as PNG of the editor framebuffer."
 msgstr "将当前编辑器截图"
 
-#: source/creator/widgets/mainmenu.d:452
+#: source/creator/widgets/mainmenu.d:450
 msgid "Show Stats for Nerds"
 msgstr "显示开发者数据"
 
-#: source/creator/widgets/mainmenu.d:461
+#: source/creator/widgets/mainmenu.d:459
 msgid "Tools"
 msgstr "工具"
 
-#: source/creator/widgets/mainmenu.d:464
+#: source/creator/widgets/mainmenu.d:462
 msgid "Puppet Data"
 msgstr "模型数据"
 
 #. Opens the directory where configuration resides in the user's file browser.
-#: source/creator/widgets/mainmenu.d:468
+#: source/creator/widgets/mainmenu.d:466
 msgid "Import Inochi Session Data"
 msgstr "导入 Inochi Session 数据"
 
-#: source/creator/widgets/mainmenu.d:478
+#: source/creator/widgets/mainmenu.d:476
 msgid "Successfully overwrote Inochi Session tracking data..."
 msgstr "成功覆盖 Inochi Session 跟踪数据"
 
-#: source/creator/widgets/mainmenu.d:480
+#: source/creator/widgets/mainmenu.d:478
 msgid "There was no Inochi Session data to import!"
 msgstr "没有可导入的 Inochi Session 数据"
 
-#: source/creator/widgets/mainmenu.d:486
+#: source/creator/widgets/mainmenu.d:484
 msgid ""
 "Imports tracking data from an exported Inochi2D model which has been set up "
 "in Inochi Session."
 msgstr "导入跟踪数据，来自 Inochi Session 导出的 Inochi2D 模型"
 
-#: source/creator/widgets/mainmenu.d:489
+#: source/creator/widgets/mainmenu.d:487
 msgid "Puppet Texturing"
 msgstr "模型纹理"
 
 #. Premultiply textures, causing every pixel value in every texture to
 #. be multiplied by their Alpha (transparency) component
-#: source/creator/widgets/mainmenu.d:494
+#: source/creator/widgets/mainmenu.d:492
 msgid "Premultiply textures"
 msgstr "纹理预乘"
 
-#: source/creator/widgets/mainmenu.d:498
+#: source/creator/widgets/mainmenu.d:496
 msgid ""
 "Premultiplies textures by their alpha component.\n"
 "\n"
@@ -2279,11 +2302,11 @@ msgstr ""
 "\n"
 "请只在导入旧版本的 Inochi Creator 文件时使用此功能。"
 
-#: source/creator/widgets/mainmenu.d:500
+#: source/creator/widgets/mainmenu.d:498
 msgid "Bleed textures..."
 msgstr "纹理溢出..."
 
-#: source/creator/widgets/mainmenu.d:503
+#: source/creator/widgets/mainmenu.d:501
 msgid ""
 "Causes color to bleed out in to fully transparent pixels, this solves "
 "outlines on straight alpha compositing.\n"
@@ -2294,90 +2317,90 @@ msgstr ""
 "\n"
 "请只在游戏引擎不支持预乘透明度的情况下使用此功能。"
 
-#: source/creator/widgets/mainmenu.d:505
+#: source/creator/widgets/mainmenu.d:503
 msgid "Generate Mipmaps..."
 msgstr "生成贴图..."
 
-#: source/creator/widgets/mainmenu.d:508
+#: source/creator/widgets/mainmenu.d:506
 msgid "Regenerates the puppet's mipmaps."
 msgstr "重新生成模型的贴图"
 
-#: source/creator/widgets/mainmenu.d:510
+#: source/creator/widgets/mainmenu.d:508
 msgid "Generate fake layer name info..."
 msgstr "生成假图层名..."
 
-#: source/creator/widgets/mainmenu.d:520
+#: source/creator/widgets/mainmenu.d:518
 msgid "Generates fake layer info based on node names"
 msgstr "为每个组件根据节点名生成假图层名称"
 
-#: source/creator/widgets/mainmenu.d:526
+#: source/creator/widgets/mainmenu.d:524
 msgid "Puppet Recovery"
 msgstr "模型修复"
 
 #. FULL REPAIR
-#: source/creator/widgets/mainmenu.d:530
+#: source/creator/widgets/mainmenu.d:528
 msgid "Attempt full repair..."
 msgstr "尝试修复..."
 
-#: source/creator/widgets/mainmenu.d:533
+#: source/creator/widgets/mainmenu.d:531
 msgid ""
 "Attempts all the recovery and repair methods below on the currently loaded "
 "model"
 msgstr "在当前加载的模型上尝试以下所有的修复方法"
 
 #. REGEN NODE IDs
-#: source/creator/widgets/mainmenu.d:536
+#: source/creator/widgets/mainmenu.d:534
 msgid "Regenerate Node IDs"
 msgstr "重新生成节点 ID"
 
-#: source/creator/widgets/mainmenu.d:540
+#: source/creator/widgets/mainmenu.d:538
 msgid "Regenerates all the unique IDs for the model"
 msgstr "重新生成模型所有节点的 ID 编号"
 
-#: source/creator/widgets/mainmenu.d:546
+#: source/creator/widgets/mainmenu.d:544
 msgid "Verify INP File..."
 msgstr "验证 INP 文件..."
 
-#: source/creator/widgets/mainmenu.d:549
+#: source/creator/widgets/mainmenu.d:547
 msgid "Attempts to verify and repair INP files"
 msgstr "尝试验证和修复 INP 文件"
 
-#: source/creator/widgets/mainmenu.d:554
+#: source/creator/widgets/mainmenu.d:552
 msgid "Help"
 msgstr "帮助"
 
-#: source/creator/widgets/mainmenu.d:556
+#: source/creator/widgets/mainmenu.d:554
 msgid "Online Documentation"
 msgstr "在线文档"
 
-#: source/creator/widgets/mainmenu.d:560
+#: source/creator/widgets/mainmenu.d:558
 msgid "Inochi2D Documentation"
 msgstr "Inochi2D 文档"
 
-#: source/creator/widgets/mainmenu.d:568
+#: source/creator/widgets/mainmenu.d:566
 msgid "Report a Bug"
 msgstr "汇报错误"
 
-#: source/creator/widgets/mainmenu.d:571
+#: source/creator/widgets/mainmenu.d:569
 msgid "Request a Feature"
 msgstr "新功能建议"
 
-#: source/creator/widgets/mainmenu.d:579 source/creator/windows/about.d:133
+#: source/creator/widgets/mainmenu.d:577 source/creator/windows/about.d:138
 msgid "About"
 msgstr "关于"
 
 #. Donate button
-#: source/creator/widgets/mainmenu.d:594 source/creator/widgets/mainmenu.d:617
-#: source/creator/windows/about.d:124
+#: source/creator/widgets/mainmenu.d:592 source/creator/widgets/mainmenu.d:615
+#: source/creator/windows/about.d:128
 msgid "Donate"
 msgstr "捐款"
 
-#: source/creator/widgets/mainmenu.d:621
+#: source/creator/widgets/mainmenu.d:619
 msgid "Support development via Patreon"
 msgstr "从 Patreon 支持软件的开发"
 
 #: source/creator/widgets/modal/nagscreen.d:116
-#: source/creator/windows/videoexport.d:270
+#: source/creator/windows/videoexport.d:278
 msgid "Close"
 msgstr "关闭"
 
@@ -2557,7 +2580,7 @@ msgid "Export Image..."
 msgstr "导出图片..."
 
 #: source/creator/windows/imgexport.d:144
-#: source/creator/windows/videoexport.d:294
+#: source/creator/windows/videoexport.d:303
 msgid "No cameras to export from in Scene, please add a Camera."
 msgstr "场景中没有视角可以导出，请添加一个视角。"
 
@@ -2625,7 +2648,7 @@ msgstr "预览"
 msgid "Loops"
 msgstr "预览"
 
-#: source/creator/windows/inpexport.d:342 source/creator/windows/settings.d:232
+#: source/creator/windows/inpexport.d:342 source/creator/windows/settings.d:243
 msgid "No settings for this category."
 msgstr "此分类无可设置项目。"
 
@@ -2751,11 +2774,11 @@ msgstr "辅助功能"
 
 #: source/creator/windows/settings.d:93
 msgid "File Handling"
-msgstr "文件存储与导入"
+msgstr "文件对策"
 
 #: source/creator/windows/settings.d:113 source/creator/windows/welcome.d:175
 msgid "Color Theme"
-msgstr "主题"
+msgstr "色彩主题"
 
 #: source/creator/windows/settings.d:113 source/creator/windows/settings.d:114
 #: source/creator/windows/welcome.d:175 source/creator/windows/welcome.d:176
@@ -2799,51 +2822,63 @@ msgstr "使用 OpenDyslexic 字体"
 msgid "Use the OpenDyslexic font for Latin text characters."
 msgstr "使用 OpenDyslexic 字体来显示拉丁文字"
 
+#: source/creator/windows/settings.d:174
+msgid "Scroll to armed parameter"
+msgstr "滚动到开始录制的参数"
+
 #: source/creator/windows/settings.d:177
+msgid "Enable automatic scrolling to the top of the parameters list."
+msgstr "允许一项参数自动滚动到参数列表的顶端。"
+
+#: source/creator/windows/settings.d:183
 msgid "Enable Autosaves"
 msgstr "启用自动保存"
 
-#: source/creator/windows/settings.d:182
+#: source/creator/windows/settings.d:188
 msgid "Save Interval (Minutes)"
 msgstr "自动保存间隔（分钟）"
 
-#: source/creator/windows/settings.d:187
+#: source/creator/windows/settings.d:193
 msgid "Maximum Autosaves"
 msgstr "最大自动保存文件数"
 
-#: source/creator/windows/settings.d:192
+#: source/creator/windows/settings.d:198
 msgid "Import behaviour"
 msgstr "导入策略"
 
-#: source/creator/windows/settings.d:194
+#: source/creator/windows/settings.d:200
 msgid "Always ask"
 msgstr "总是询问"
 
-#: source/creator/windows/settings.d:195
+#: source/creator/windows/settings.d:201
 msgid "Preserve"
 msgstr "导入"
 
-#: source/creator/windows/settings.d:196
+#: source/creator/windows/settings.d:202
 msgid "Don't preserve"
 msgstr "不导入"
 
-#: source/creator/windows/settings.d:202
+#: source/creator/windows/settings.d:208
 msgid "Preserve structure"
 msgstr "是否导入图层结构"
 
-#: source/creator/windows/settings.d:216
+#: source/creator/windows/settings.d:223
+msgid "Legacy Zooming"
+msgstr "缩放时保持屏幕中心"
+
+#: source/creator/windows/settings.d:227
 msgid "Zoom Mode"
 msgstr "缩放模式"
 
-#: source/creator/windows/settings.d:226
+#: source/creator/windows/settings.d:237
 msgid "Zoom Speed"
 msgstr "缩放速度"
 
-#: source/creator/windows/settings.d:245 source/creator/windows/welcome.d:199
+#: source/creator/windows/settings.d:256 source/creator/windows/welcome.d:199
 msgid "Inochi Creator needs to be restarted for some changes to take effect."
 msgstr "Inochi Creator 需要重新启动才能使某些更改生效。"
 
-#: source/creator/windows/settings.d:253
+#: source/creator/windows/settings.d:264
 msgid "Done"
 msgstr "完成"
 
@@ -2924,15 +2959,15 @@ msgstr "锁定帧率到动画帧率"
 msgid "Codec"
 msgstr "编码"
 
-#: source/creator/windows/videoexport.d:281
+#: source/creator/windows/videoexport.d:290
 msgid "Export Video..."
 msgstr "导出视频..."
 
-#: source/creator/windows/videoexport.d:284
+#: source/creator/windows/videoexport.d:293
 msgid "FFMPEG was not found, please install FFMPEG to export video."
 msgstr "没有找到 FFMPEG，请安装 FFMPEG 来导出视频。"
 
-#: source/creator/windows/videoexport.d:302
+#: source/creator/windows/videoexport.d:311
 msgid "No animations are defined for this model, please add an animation."
 msgstr "这个模型没有动画，请添加一个动画。"
 
@@ -2984,21 +3019,24 @@ msgstr "在线文档"
 msgid "Join our Discord"
 msgstr "进入我们的 Discord 群"
 
-#: source/creator/windows/welcome.d:320
+#: source/creator/windows/welcome.d:319
 msgid "Buy a copy"
 msgstr "购买"
 
-#: source/creator/windows/welcome.d:325
+#: source/creator/windows/welcome.d:323
 msgid "Patreon"
 msgstr "Patreon 赞助"
 
-#: source/creator/windows/welcome.d:329
+#: source/creator/windows/welcome.d:327
 msgid "Github Sponsors"
 msgstr "Github Sponsors 赞助"
 
-#: source/creator/windows/welcome.d:357
+#: source/creator/windows/welcome.d:355
 msgid "Inochi Creator Start"
 msgstr "Inochi Creator 启动"
+
+#~ msgid "Clear"
+#~ msgstr "全部清除"
 
 #~ msgid "Inochi Creator (Nightly)"
 #~ msgstr "Inochi Creator （每日构建版本）"
