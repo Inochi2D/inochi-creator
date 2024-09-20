@@ -25,7 +25,9 @@ import std.stdio;
 
 class PointTool : NodeSelect {
     Action action;
-    bool autoConnect = true;
+    
+    // using static for remembering the last setting
+    static bool autoConnect = true;
 
     override bool onDragStart(vec2 mousePos, IncMeshEditorOne impl) {
         if (!impl.deformOnly) {
