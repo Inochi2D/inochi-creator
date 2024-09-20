@@ -61,6 +61,9 @@ void incSettingsLoad() {
     // Always ask the user whether to preserve the folder structure during import
     // also see incGetKeepLayerFolder()
     settings["KeepLayerFolder"] = "Ask";
+
+    // Default Disable Touchpad, until ensure it works well on most devices
+    settings["TouchpadEnabled"] = false;
 }
 
 /**

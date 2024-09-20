@@ -16,6 +16,7 @@ import creator.widgets.dialog;
 import creator.widgets.modal;
 import creator.backend.gl;
 import creator.io.autosave;
+import creator.io.touchpad;
 
 import std.exception;
 
@@ -236,6 +237,10 @@ void incOpenWindow() {
         // HACK: For some reason this check fails on some macOS and Linux installations
         version(Windows) enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui library found!");
     }
+
+    // Allow touch events. The SDL_HINT_MOUSE_TOUCH_EVENTS option appears to be broken in bindbc.sdl.
+    // just hardcode c_str for now
+    SDL_SetHint("SDL_MOUSE_TOUCH_EVENTS", "1");
 
     SDL_Init(SDL_INIT_EVERYTHING);
     
@@ -678,6 +683,18 @@ void incBeginLoop() {
         switch(event.type) {
             case SDL_QUIT:
                 incExit();
+                break;
+
+            case SDL_MULTIGESTURE:
+                incUpdateTouchpad(event.mgesture.x, event.mgesture.y, event.mgesture.dDist);
+                break;
+
+            case SDL_FINGERDOWN:
+                incUpdateTouchpadDown();
+                break;
+
+            case SDL_FINGERUP:
+                incUpdateTouchpadUp();
                 break;
 
             case SDL_DROPFILE:

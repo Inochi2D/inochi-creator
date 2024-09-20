@@ -8,6 +8,7 @@ module creator.windows.settings;
 import creator.windows;
 import creator.viewport;
 import creator.widgets;
+import creator.io.touchpad;
 import creator.core;
 import creator.core.i18n;
 import creator.io;
@@ -231,6 +232,11 @@ protected:
                                     }
                                 }
                                 igEndCombo();
+                            }
+
+                            bool touchpadEnabled = incIsTouchpadEnabled();
+                            if (igCheckbox(__("Enable Touchpad (Experimental)"), &touchpadEnabled)) {
+                                incSettingsSet("TouchpadEnabled", touchpadEnabled);
                             }
 
                             float zoomSpeed = cast(float)incGetViewportZoomSpeed();

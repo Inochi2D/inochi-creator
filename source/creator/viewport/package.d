@@ -19,6 +19,7 @@ import creator.viewport.test;
 import creator.widgets.viewport;
 import creator.widgets.label;
 import creator.widgets.tooltip;
+import creator.io.touchpad;
 import i18n;
 import bindbc.imgui;
 import std.algorithm.sorting;
@@ -863,6 +864,8 @@ private {
     float csx, csy;
     bool isMovingPart;
 
+    bool prevIsTouchpad = false;
+
     void incViewportMovement(ImGuiIO* io, Camera camera) {
         float uiScale = incGetUIScale();
         
@@ -889,48 +892,91 @@ private {
             incViewportTargetPosition = camera.position;
         }
 
+        // move viewport for touchpad
+        if (incIsTouchpadUpdated()) {
+            vec2 xy = incGetTouchpadDeltaXY();
+            csx = camera.position.x;
+            csy = camera.position.y;
+
+            camera.position = vec2(
+                csx+((xy.x)/incViewportZoom)*uiScale,
+                csy+((xy.y)/incViewportZoom)*uiScale
+            );
+
+            incViewportTargetPosition = camera.position;
+        }
+
         // HANDLE ZOOM
         string zoomMode = incGetCurrentViewportZoomMode();
         if (zoomMode == "legacy-zooming")
             incViewportZoomLegacy(io, camera, uiScale);
         else if (zoomMode == "normal")
             incViewportZoomNew(io, camera, uiScale);
+
+        incClearTouchpad();
+    }
+
+    /** 
+        This function auto chooses wheel or touchpad
+     */
+    float incMouseTouchpadWheel(ImGuiIO* io) {
+        // return touchpad first if touchpad is down
+        if (incIsTouchpadUpdated()) {
+            prevIsTouchpad = true;
+            return incGetPinchDistance();
+        }
+
+        // fixed the issue when touchpad released detected as mouse wheel
+        if (prevIsTouchpad) {
+            prevIsTouchpad = false;
+            return 0;
+        }
+
+        if (incIsTouchpadDown())
+            return 0;
+
+        return io.MouseWheel;
     }
 
     void incViewportZoomNew(ImGuiIO* io, Camera camera, float uiScale) {
         // This value changes the zoom speed
         float speed = incGetViewportZoomSpeed();
-        if (io.MouseWheel != 0) {
-            float prevZoom = incViewportZoom;
-            incViewportZoom += (io.MouseWheel*speed/50)*incViewportZoom*uiScale;
-            incViewportZoom = clamp(incViewportZoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX);
-            camera.scale = vec2(incViewportZoom);
-            incViewportTargetZoom = incViewportZoom;
+        float zoomDelta = incMouseTouchpadWheel(io);
 
-            // Get canvas size and xy
-            int uiWidth, uiHeight;
-            inGetViewport(uiWidth, uiHeight);
-            ImVec2 panelPos;
-            igGetItemRectMin(&panelPos);
+        if (zoomDelta == 0)
+            return;
 
-            // Taking the canvas as the center point, calculate the relative position
-            vec2 relatedMousePos = vec2(
-              io.MousePos.x - (panelPos.x + cast(float) uiWidth / 2),
-              io.MousePos.y - (panelPos.y + cast(float) uiHeight / 2)
-            );
+        // Calculate zooming
+        float prevZoom = incViewportZoom;
+        incViewportZoom += (zoomDelta*speed/50)*incViewportZoom*uiScale;
+        incViewportZoom = clamp(incViewportZoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX);
+        camera.scale = vec2(incViewportZoom);
+        incViewportTargetZoom = incViewportZoom;
 
-            // Calculate the relative value to the center point before and after scaling
-            vec2 afterScaleVec = relatedMousePos / incViewportZoom * uiScale;
-            vec2 beforeScaleVec = relatedMousePos / prevZoom * uiScale;
-            camera.position -= beforeScaleVec - afterScaleVec;
-            incViewportTargetPosition = camera.position;
-        }
+        // Get canvas size and xy
+        int uiWidth, uiHeight;
+        inGetViewport(uiWidth, uiHeight);
+        ImVec2 panelPos;
+        igGetItemRectMin(&panelPos);
+
+        // Taking the canvas as the center point, calculate the relative position
+        vec2 relatedMousePos = vec2(
+            io.MousePos.x - (panelPos.x + cast(float) uiWidth / 2),
+            io.MousePos.y - (panelPos.y + cast(float) uiHeight / 2)
+        );
+
+        // Calculate the relative value to the center point before and after scaling
+        vec2 afterScaleVec = relatedMousePos / incViewportZoom * uiScale;
+        vec2 beforeScaleVec = relatedMousePos / prevZoom * uiScale;
+        camera.position -= beforeScaleVec - afterScaleVec;
+        incViewportTargetPosition = camera.position;
     }
 
     void incViewportZoomLegacy(ImGuiIO* io, Camera camera, float uiScale) {
         float speed = incGetViewportZoomSpeed();
-        if (io.MouseWheel != 0) {
-            incViewportZoom += (io.MouseWheel/50*speed)*incViewportZoom*uiScale;
+        float zoomDelta = incMouseTouchpadWheel(io);
+        if (zoomDelta != 0) {
+            incViewportZoom += (zoomDelta/50*speed)*incViewportZoom*uiScale;
             incViewportZoom = clamp(incViewportZoom, incVIEWPORT_ZOOM_MIN, incVIEWPORT_ZOOM_MAX);
             camera.scale = vec2(incViewportZoom);
             incViewportTargetZoom = incViewportZoom;
