@@ -130,7 +130,7 @@ class PointTool : NodeSelect {
                     impl.selected.length = 0;
                     impl.updateMirrorSelected();
                     impl.maybeSelectOne = ulong(-1);
-                    impl.updateVtxAtMouse(ulong(-1));
+                    impl.vtxAtMouse = ulong(-1);
                     changed = true;
                 }
 
