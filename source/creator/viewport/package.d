@@ -971,3 +971,37 @@ bool incSetViewportZoomSpeed(float speed) {
     incSettingsSet("ViewportZoomSpeed", speed);
     return true;
 }
+
+/**
+    Viewport smooth focus configuration
+    also see fdampen() function
+*/
+bool incIsEnabledSmoothFocus() {
+    return incSettingsGet!bool("Viewport.EnabledSmoothFocus", true);
+}
+
+void incSetEnabledSmoothFocus(bool enable) {
+    incSettingsSet("Viewport.EnabledSmoothFocus", enable);
+}
+
+float incGetViewportSmoothSpeed() {
+    return incSettingsGet!float("Viewport.SmoothSpeed", 5);
+}
+
+void incSetViewportSmoothSpeed(float speed) {
+    incSettingsSet("Viewport.SmoothSpeed", speed);
+}
+
+float incGetViewportSmoothMaxSpeed() {
+    return incSettingsGet!float("Viewport.SmoothMaxSpeed", 50);
+}
+
+void incSetViewportSmoothMaxSpeed(float speed) {
+    incSettingsSet("Viewport.SmoothMaxSpeed", speed);
+}
+
+void incResetViewportSmoothSpeed() {
+    incSettingsRemove("Viewport.SmoothSpeed");
+    incSettingsRemove("Viewport.SmoothMaxSpeed");
+    incSettingsRemove("Viewport.EnabledSmoothFocus");
+}

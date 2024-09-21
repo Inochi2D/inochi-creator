@@ -308,10 +308,23 @@ protected:
         }
         igEndChild();
 
-        // Handle smooth move
-        incViewportZoom = fdampen(incViewportZoom, incViewportTargetZoom, cast(float)deltaTime);
+        handleViewportSmoothMove(camera);
+    }
+
+    /**
+        Handle smooth movement of the viewport
+    */
+    void handleViewportSmoothMove(Camera camera) {
+        if (incIsEnabledSmoothFocus()) {
+            float maxSpeed = incGetViewportSmoothMaxSpeed();
+            float speed = incGetViewportSmoothSpeed();
+            incViewportZoom = fdampen(incViewportZoom, incViewportTargetZoom, cast(float)deltaTime, maxSpeed, speed);
+            camera.position = vec2(fdampen(camera.position, incViewportTargetPosition, cast(float)deltaTime, maxSpeed, speed));
+        } else {
+            incViewportZoom = incViewportTargetZoom;
+            camera.position = incViewportTargetPosition;
+        }
         camera.scale = vec2(incViewportZoom, incViewportZoom);
-        camera.position = vec2(fdampen(camera.position, incViewportTargetPosition, cast(float)deltaTime));
     }
 
 public:
@@ -327,7 +340,7 @@ mixin incPanel!ViewportPanel;
 
 import inmath.util;
 import std.traits;
-V fdampen(V, T)(V current, V target, T delta, T maxSpeed = 50) if(isVector!V && isFloatingPoint!T) {
+V fdampen(V, T)(V current, V target, T delta, T maxSpeed = 50, T conifgSpeed = 5.0) if(isVector!V && isFloatingPoint!T) {
     V out_ = current;
     V diff = current - target;
 
@@ -336,7 +349,7 @@ V fdampen(V, T)(V current, V target, T delta, T maxSpeed = 50) if(isVector!V && 
         V direction = (diff).normalized;
 
         T speed = min(
-            max(0.001, 5.0*(target - current).length) * delta,
+            max(0.001, conifgSpeed*(target - current).length) * delta,
             maxSpeed
         );
         V velocity = direction * speed;
@@ -353,7 +366,7 @@ V fdampen(V, T)(V current, V target, T delta, T maxSpeed = 50) if(isVector!V && 
     return out_;
 }
 
-T fdampen(T)(T current, T target, T delta, T maxSpeed = 50) if(isFloatingPoint!T) {
+T fdampen(T)(T current, T target, T delta, T maxSpeed = 50, T conifgSpeed = 5.0) if(isFloatingPoint!T) {
     T out_ = current;
     T diff = current - target;
     T diffLen = sqrt(diff^^2);
@@ -363,7 +376,7 @@ T fdampen(T)(T current, T target, T delta, T maxSpeed = 50) if(isFloatingPoint!T
     if (diffLen > 0) {
 
         T speed = min(
-            max(0.001, 5.0*sqrt((target - current)^^2)) * delta,
+            max(0.001, conifgSpeed*sqrt((target - current)^^2)) * delta,
             maxSpeed
         );
         T velocity = direction * speed;
