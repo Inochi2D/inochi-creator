@@ -14,7 +14,6 @@ import creator;
 import creator.widgets;
 import creator.ext;
 import creator.core;
-import creator.core.input;
 import creator.utils;
 import inochi2d;
 import std.string;
@@ -476,13 +475,7 @@ protected:
     override
     void onUpdate() {
 
-        if (incEditMode == EditMode.ModelEdit) {
-            if (!incArmedParameter && (igIsWindowFocused(ImGuiFocusedFlags.ChildWindows) || igIsWindowHovered(ImGuiHoveredFlags.ChildWindows))) {
-                if (incShortcut("Ctrl+A")) {
-                    incSelectAll();
-                }
-            }
-        }
+        incModelEditorCommonHotKeys();
 
         if (incEditMode == EditMode.VertexEdit) {
             incLabelOver(_("In vertex edit mode..."), ImVec2(0, 0), true);
