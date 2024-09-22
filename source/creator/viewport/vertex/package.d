@@ -27,6 +27,22 @@ private {
         new GridAutoMeshProcessor()
     ];
     AutoMeshProcessor activeProcessor = null;
+
+    void bakeTriangulation() {
+        if (editor.previewingTriangulation()) {
+            editor.applyPreview();
+            editor.refreshMesh();
+        }
+    }
+
+    void toggleTriangulation() {
+        if (editor.previewingTriangulation()) {
+            bakeTriangulation();
+        } else {
+            editor.setPreviewTriangulate(!editor.getPreviewTriangulate());
+            editor.refreshMesh();
+        }
+    }
 }
 
 void incViewportVertexInspector(Drawable node) {
@@ -121,9 +137,8 @@ void incViewportVertexOptions() {
 
         igBeginGroup();
             if (incButtonColored("", ImVec2(0, 0),
-                editor.getPreviewTriangulate() ? ImVec4(1, 1, 0, 1) : ImVec4.init)) {
-                editor.setPreviewTriangulate(!editor.getPreviewTriangulate());
-                editor.refreshMesh();
+                editor.previewingTriangulation() ? ImVec4(1, 1, 0, 1) : ImVec4.init)) {
+                toggleTriangulation();
             }
             incTooltip(_("Triangulate vertices"));
 
@@ -134,10 +149,7 @@ void incViewportVertexOptions() {
                 // In this case, a mesh is baked from the triangulation.
                 if (incButtonColored(__("Bake"), ImVec2(incAvailableSpace().x, 0),
                     editor.previewingTriangulation() ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-                    if (editor.previewingTriangulation()) {
-                        editor.applyPreview();
-                        editor.refreshMesh();
-                    }
+                    bakeTriangulation();
                 }
                 incTooltip(_("Bakes the triangulation, applying it to the mesh."));
                 
