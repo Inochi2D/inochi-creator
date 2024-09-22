@@ -43,6 +43,32 @@ private {
             editor.refreshMesh();
         }
     }
+
+    void drawTriangulationButton() {
+        igBeginGroup();
+            if (incButtonColored("", ImVec2(0, 0),
+                editor.previewingTriangulation() ? ImVec4(1, 1, 0, 1) : ImVec4.init)) {
+                toggleTriangulation();
+            }
+            incTooltip(_("Triangulate vertices"));
+
+            if (incBeginDropdownMenu("TRIANGULATE_SETTINGS")) {
+                incDummyLabel("TODO: Options Here", ImVec2(0, 192));
+
+                // Button which bakes some auto generated content
+                // In this case, a mesh is baked from the triangulation.
+                if (incButtonColored(__("Bake"), ImVec2(incAvailableSpace().x, 0),
+                    editor.previewingTriangulation() ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
+                    bakeTriangulation();
+                }
+                incTooltip(_("Bakes the triangulation, applying it to the mesh."));
+
+                incEndDropdownMenu();
+            }
+            incTooltip(_("Triangulation Options"));
+
+        igEndGroup();
+    }
 }
 
 void incViewportVertexInspector(Drawable node) {
@@ -135,29 +161,7 @@ void incViewportVertexOptions() {
 
         igSameLine(0, 4);
 
-        igBeginGroup();
-            if (incButtonColored("", ImVec2(0, 0),
-                editor.previewingTriangulation() ? ImVec4(1, 1, 0, 1) : ImVec4.init)) {
-                toggleTriangulation();
-            }
-            incTooltip(_("Triangulate vertices"));
-
-            if (incBeginDropdownMenu("TRIANGULATE_SETTINGS")) {
-                incDummyLabel("TODO: Options Here", ImVec2(0, 192));
-
-                // Button which bakes some auto generated content
-                // In this case, a mesh is baked from the triangulation.
-                if (incButtonColored(__("Bake"), ImVec2(incAvailableSpace().x, 0),
-                    editor.previewingTriangulation() ? ImVec4.init : ImVec4(0.6, 0.6, 0.6, 1))) {
-                    bakeTriangulation();
-                }
-                incTooltip(_("Bakes the triangulation, applying it to the mesh."));
-                
-                incEndDropdownMenu();
-            }
-            incTooltip(_("Triangulation Options"));
-
-        igEndGroup();
+        drawTriangulationButton();
 
         igSameLine(0, 4);
 
