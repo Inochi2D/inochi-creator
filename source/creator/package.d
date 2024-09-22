@@ -574,14 +574,15 @@ void incUnselectNodes() {
 */
 void incModelEditorCommonHotKeys() {
     import creator.core.input;
-    if (incEditMode == EditMode.ModelEdit) {
-        if (!incArmedParameter && (igIsWindowFocused(ImGuiFocusedFlags.ChildWindows) || igIsWindowHovered(ImGuiHoveredFlags.ChildWindows))) {
-            if (incShortcut("Ctrl+A"))
-                incSelectAll();
+    if (incEditMode != EditMode.ModelEdit)
+        return;
 
-            if (igIsKeyDown(ImGuiKey.Escape))
-                incUnselectNodes();
-        }
+    if (!incArmedParameter && (igIsWindowFocused(ImGuiFocusedFlags.ChildWindows) || igIsWindowHovered(ImGuiHoveredFlags.ChildWindows))) {
+        if (incShortcut("Ctrl+A"))
+            incSelectAll();
+
+        if (igIsKeyDown(ImGuiKey.Escape))
+            incUnselectNodes();
     }
 }
 
