@@ -13,10 +13,11 @@ import creator.core.input;
 import creator.utils.link;
 import creator.config;
 import creator.io.autosave;
+import creator.io.save;
 import creator;
 import inochi2d;
 import inochi2d.core.dbg;
-import tinyfiledialogs;
+
 import i18n;
 import creator.ext;
 
@@ -30,49 +31,6 @@ private {
     bool dbgShowDebugger;
     bool dbgShowMetrics;
     bool dbgShowStackTool;
-
-    void fileNew() {
-        incNewProject();
-    }
-
-    void fileOpen() {
-        const TFD_Filter[] filters = [
-            { ["*.inx"], "Inochi Creator Project (*.inx)" }
-        ];
-
-        string file = incShowOpenDialog(filters, _("Open..."));
-        if (file) incOpenProject(file);
-    }
-
-    void fileSave() {
-        incPopWelcomeWindow();
-
-        // If a projeect path is set then the user has opened or saved
-        // an existing file, we should just override that
-        if (incProjectPath.length > 0) {
-            // TODO: do backups on every save?
-
-            incSaveProject(incProjectPath);
-        } else {
-            const TFD_Filter[] filters = [
-                { ["*.inx"], "Inochi Creator Project (*.inx)" }
-            ];
-
-            string file = incShowSaveDialog(filters, "", _("Save..."));
-            if (file) incSaveProject(file);
-        }
-    }
-
-    void fileSaveAs() {
-        incPopWelcomeWindow();
-        const TFD_Filter[] filters = [
-            { ["*.inx"], "Inochi Creator Project (*.inx)" }
-        ];
-
-        string fname = incProjectPath().length > 0 ? incProjectPath : "";
-        string file = incShowSaveDialog(filters, fname, _("Save As..."));
-        if (file) incSaveProject(file);
-    }
 }
 
 void incMainMenu() {
@@ -88,10 +46,10 @@ void incMainMenu() {
     igPushStyleColor(ImGuiCol.BorderShadow, ImVec4(0, 0, 0, 0));
     igPushStyleColor(ImGuiCol.Separator, ImVec4(0, 0, 0, 0));
 
-        if (incShortcut("Ctrl+N")) fileNew();
-        if (incShortcut("Ctrl+O")) fileOpen();
-        if (incShortcut("Ctrl+S")) fileSave();
-        if (incShortcut("Ctrl+Shift+S")) fileSaveAs();
+        if (incShortcut("Ctrl+N")) incFileNew();
+        if (incShortcut("Ctrl+O")) incFileOpen();
+        if (incShortcut("Ctrl+S")) incFileSave();
+        if (incShortcut("Ctrl+Shift+S")) incFileSaveAs();
 
         if (!incSettingsGet("hasDoneQuickSetup", false)) igBeginDisabled();
 
@@ -126,11 +84,11 @@ void incMainMenu() {
             igPushStyleColor(ImGuiCol.Separator, seperator);
                 if (igBeginMenu(__("File"), true)) {
                     if(igMenuItem(__("New"), "Ctrl+N", false, true)) {
-                        fileNew();
+                        incFileNew();
                     }
 
                     if (igMenuItem(__("Open"), "Ctrl+O", false, true)) {
-                        fileOpen();
+                        incFileOpen();
                     }
 
                     string[] prevProjects = incGetPrevProjects();
@@ -161,11 +119,11 @@ void incMainMenu() {
                     }
                     
                     if(igMenuItem(__("Save"), "Ctrl+S", false, true)) {
-                        fileSave();
+                        incFileSave();
                     }
                     
                     if(igMenuItem(__("Save As..."), "Ctrl+Shift+S", false, true)) {
-                        fileSaveAs();
+                        incFileSaveAs();
                     }
 
                     if (igBeginMenu(__("Import"), true)) {
