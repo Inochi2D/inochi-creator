@@ -22,8 +22,11 @@ private:
     string paramName;
     vec2 min;
     vec2 max;
+    bool markSave = false;
 
     bool isValidName() {
+        if (paramName == "") return false;
+
         Parameter fparam = (cast(ExPuppet)incActivePuppet()).findParameter(paramName);
         return fparam is null || fparam.uuid == param.uuid;
     }
@@ -102,8 +105,10 @@ protected:
                 if (igButton(__("Save"), ImVec2(64, 24))) {
                     
                     if (!isValidName) {
-                        incDialog(__("Error"), _("Name is already taken"));
+                        incDialog(__("Error"), _("Name is already taken or empty"));
+                        markSave = false;
                     } else {
+                        markSave = true;
                         this.close();
                     }
                 }
@@ -115,6 +120,8 @@ protected:
 
     override
     void onClose() {
+        if (!markSave) return;
+
         param.name = paramName;
         param.makeIndexable();
 

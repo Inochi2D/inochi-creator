@@ -843,7 +843,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                     if (*grabParam == null)
                         *grabParam = param.name;
                 } else {
-                    *grabParam = "";
+                    *grabParam = null;
                 }
             }
             if (igIsItemClicked(ImGuiMouseButton.Right)) {
@@ -1030,7 +1030,7 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
 class ParametersPanel : Panel {
 private:
     string filter;
-    string grabParam = "";
+    string grabParam = null;
 protected:
     override
     void onUpdate() {
