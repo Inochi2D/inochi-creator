@@ -16,13 +16,16 @@ import creator;
 import tinyfiledialogs;
 import i18n;
 
-void incFileOpen() {
+bool incFileOpen() {
     const TFD_Filter[] filters = [
         { ["*.inx"], "Inochi Creator Project (*.inx)" }
     ];
 
     string file = incShowOpenDialog(filters, _("Open..."));
-    if (file) incOpenProject(file);
+    // FileException should handle in incOpenProject, so we don't write try/catch here
+    if (file) return incOpenProject(file);
+
+    return false;
 }
 
 bool incFileSave() {

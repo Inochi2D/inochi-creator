@@ -231,16 +231,8 @@ protected:
                             }
 
                             if (incTextLinkWithIcon("", _("Open..."))) {
-                                const TFD_Filter[] filters = [
-                                    { ["*.inx"], "Inochi Creator Project (*.inx)" }
-                                ];
-
-                                string file = incShowOpenDialog(filters, _("Open..."));
-                                if (file) {
-                                    // FileException should handle in incOpenProject, so we don't write try/catch here
-                                    if (incOpenProject(file))
-                                        this.close();
-                                }
+                                if (incFileOpen())
+                                    this.close();
                             }
 
 
