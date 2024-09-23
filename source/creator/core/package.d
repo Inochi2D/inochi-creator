@@ -687,11 +687,6 @@ void incBeginLoop() {
             
             default: 
                 incGLBackendProcessEvent(&event);
-                if (
-                    event.type == SDL_WINDOWEVENT && 
-                    event.window.event == SDL_WINDOWEVENT_CLOSE && 
-                    event.window.windowID == SDL_GetWindowID(window)
-                ) incExitSaveAsk();
                 break;
         }
     }
@@ -807,7 +802,7 @@ bool incIsProjectModified() {
 }
 
 /**
-    Popup Exit save ask and exit
+    Handle exit with save ask
 */
 void incExitSaveAsk() {
     if (!incIsProjectModified()) {
@@ -815,9 +810,27 @@ void incExitSaveAsk() {
         return;
     }
 
-    if (ExitAskHandler.isOpen)
-        return;
+    switch (incGetSaveProjectOnClose()) {
+        case "dontSave":
+            incExit();
+            return;
+        case "Save":
+            // maybe should not have "Save" option prevent users stuck when exit
+            if (incFileSave()) incExit();
+            return;
+        case "Ask":
+            incExitSaveAskPopup();
+            return;
+        default:
+            throw new Exception("Invalid save project on close setting");
+            return;
+    }
+}
 
+/**
+    Popup Exit save ask and exit
+*/
+void incExitSaveAskPopup() {
     ExitAskHandler handler = new ExitAskHandler();
     handler.register();
     handler.show();
@@ -828,18 +841,8 @@ import creator.io.save;
 class ExitAskHandler : DialogHandler {
     const(char)* INC_EXIT_ASK_DIALOG_NAME = "ExitAskDialog";
 
-    // make sure only one dialog is open
-    static bool isOpen = false;
-
     this () {
         super(INC_EXIT_ASK_DIALOG_NAME);
-        isOpen = true;
-    }
-
-    override
-    bool onClick(DialogButtons button) {
-        isOpen = false;
-        return super.onClick(button);
     }
 
     override

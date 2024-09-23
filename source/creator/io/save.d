@@ -26,7 +26,7 @@ void incFileOpen() {
     if (file) incOpenProject(file);
 }
 
-void incFileSave() {
+bool incFileSave() {
     incPopWelcomeWindow();
 
     // If a projeect path is set then the user has opened or saved
@@ -35,14 +35,19 @@ void incFileSave() {
         // TODO: do backups on every save?
 
         incSaveProject(incProjectPath);
+        return true;
     } else {
         const TFD_Filter[] filters = [
             { ["*.inx"], "Inochi Creator Project (*.inx)" }
         ];
 
         string file = incShowSaveDialog(filters, "", _("Save..."));
-        if (file) incSaveProject(file);
+        if (file) {
+            incSaveProject(file);
+            return true;
+        }
     }
+    return false;
 }
 
 void incFileSaveAs() {
@@ -54,4 +59,32 @@ void incFileSaveAs() {
     string fname = incProjectPath().length > 0 ? incProjectPath : "";
     string file = incShowSaveDialog(filters, fname, _("Save As..."));
     if (file) incSaveProject(file);
+}
+
+string incGetSaveProjectOnClose() {
+    auto config = incSettingsGet!string("SaveProjectOnClose", "Ask");
+
+    // validate config
+    import std.algorithm : canFind;
+    auto keys = incGetSaveProjectOption().keys();
+    if (keys.canFind(config) == false) {
+        config = "Ask";
+        incSetSaveProjectOnClose(config);
+    }
+    return config;
+}
+
+string[string] incGetSaveProjectOption() {
+    string[string] options = [
+        "Ask": _("Always ask"),
+        "dontSave": _("Don't save"),
+        // maybe should not have "Save" option prevent users stuck when exit
+        // "Save": _("Save")
+    ];
+    return options;
+}
+
+
+void incSetSaveProjectOnClose(string select) {
+    incSettingsSet("SaveProjectOnClose", select);
 }
