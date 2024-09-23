@@ -1,12 +1,15 @@
 /*
-    Copyright © 2020-2023, Inochi2D Project
+    Copyright © 2020-2024, Inochi2D Project
     Distributed under the 2-Clause BSD License, see LICENSE file.
     
-    Authors: Luna Nielsen
+    Authors:
+        Luna Nielsen
+        Lin, Yong Xiang <r888800009@gmail.com>
 */
 
 module creator.io.save;
 import creator.windows;
+import creator.widgets.dialog;
 import creator.core;
 import creator;
 
@@ -98,5 +101,79 @@ class NewProjectAskHandler : CloseAskHandler {
     override
     void onProjectClose() {
         incNewProject();
+    }
+}
+
+/**
+    Handle exit with save ask
+    NOTE: it is only called by UI, not by code
+*/
+void incExitSaveAsk() {
+    ExitAskHandler handler = new ExitAskHandler();
+    incCloseProjectAsk(handler);
+}
+
+class ExitAskHandler : CloseAskHandler {
+    override
+    void onProjectClose() {
+        incExit();
+    }
+}
+
+void incCloseProjectAsk(CloseAskHandler handler) {
+    if (!incIsProjectModified()) {
+        handler.onClickNo();
+        return;
+    }
+
+    switch (incGetSaveProjectOnClose()) {
+        case "dontSave":
+            handler.onClickNo();
+            return;
+        case "Save":
+            // maybe should not have "Save" option prevent users stuck when exit
+            handler.onClickYes();
+            return;
+        case "Ask":
+            handler.register();
+            handler.show();
+            return;
+        default:
+            throw new Exception("Invalid save project on close setting");
+            return;
+    }
+}
+
+class CloseAskHandler : DialogHandler {
+    const(char)* INC_EXIT_ASK_DIALOG_NAME = "CloseAskDialog";
+
+    this () {
+        super(INC_EXIT_ASK_DIALOG_NAME);
+    }
+
+    override
+    bool onClickYes() {
+        if (incFileSave()) this.onProjectClose();
+        return true;
+    }
+
+    override
+    bool onClickNo() {
+        this.onProjectClose();
+        return true;
+    }
+
+    void onProjectClose() {
+        // override
+    }
+
+    void show() {
+        incDialog(
+            INC_EXIT_ASK_DIALOG_NAME,
+            __("Save changes before close?"),
+            _("Would you like to save your changes before closing?\n\nYou can change the default behaviour in the settings."),
+            DialogLevel.Info,
+            DialogButtons.Yes | DialogButtons.No | DialogButtons.Cancel
+        );
     }
 }

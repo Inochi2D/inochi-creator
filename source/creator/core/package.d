@@ -16,6 +16,7 @@ import creator.widgets.dialog;
 import creator.widgets.modal;
 import creator.backend.gl;
 import creator.io.autosave;
+import creator.io.save;
 
 import std.exception;
 
@@ -799,82 +800,6 @@ bool incIsProjectModified() {
     // currently just assume user history action stack should record all changes
     // if not record, it is action stack bug
     return !incIsActionStackEmpty();
-}
-
-/**
-    Handle exit with save ask
-    NOTE: it is only called by UI, not by code
-*/
-void incExitSaveAsk() {
-    ExitAskHandler handler = new ExitAskHandler();
-    incCloseProjectAsk(handler);
-}
-
-class ExitAskHandler : CloseAskHandler {
-    override
-    void onProjectClose() {
-        incExit();
-    }
-}
-
-void incCloseProjectAsk(CloseAskHandler handler) {
-    if (!incIsProjectModified()) {
-        handler.onClickNo();
-        return;
-    }
-
-    switch (incGetSaveProjectOnClose()) {
-        case "dontSave":
-            handler.onClickNo();
-            return;
-        case "Save":
-            // maybe should not have "Save" option prevent users stuck when exit
-            handler.onClickYes();
-            return;
-        case "Ask":
-            handler.register();
-            handler.show();
-            return;
-        default:
-            throw new Exception("Invalid save project on close setting");
-            return;
-    }
-}
-
-import creator.widgets.dialog;
-import creator.io.save;
-class CloseAskHandler : DialogHandler {
-    const(char)* INC_EXIT_ASK_DIALOG_NAME = "CloseAskDialog";
-
-    this () {
-        super(INC_EXIT_ASK_DIALOG_NAME);
-    }
-
-    override
-    bool onClickYes() {
-        if (incFileSave()) this.onProjectClose();
-        return true;
-    }
-
-    override
-    bool onClickNo() {
-        this.onProjectClose();
-        return true;
-    }
-
-    void onProjectClose() {
-        // override
-    }
-
-    void show() {
-        incDialog(
-            INC_EXIT_ASK_DIALOG_NAME,
-            __("Save changes before close?"),
-            _("Would you like to save your changes before closing?\n\nYou can change the default behaviour in the settings."),
-            DialogLevel.Info,
-            DialogButtons.Yes | DialogButtons.No | DialogButtons.Cancel
-        );
-    }
 }
 
 /**
