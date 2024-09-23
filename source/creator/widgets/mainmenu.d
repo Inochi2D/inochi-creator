@@ -279,13 +279,8 @@ void incMainMenu() {
                     }
 
                     // Close Project option
-                    if (igMenuItem(__("Close Project"))) {
-
-                        // TODO: Check if changes were done to project and warn before
-                        // creating new project
-                        incNewProject();
-                        incPushWindow(new WelcomeWindow());
-                    }
+                    if (igMenuItem(__("Close Project")))
+                        incCloseProjectAsk();
 
                     // Quit option
                     if (igMenuItem(__("Quit"), "Alt+F4", false, true)) incExitSaveAsk();

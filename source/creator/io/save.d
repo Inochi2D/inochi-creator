@@ -94,7 +94,7 @@ void incSetSaveProjectOnClose(string select) {
 */
 void incNewProjectAsk() {
     auto handler = new NewProjectAskHandler();
-    incCloseProjectAsk(handler);
+    handler.start();
 }
 
 class NewProjectAskHandler : CloseAskHandler {
@@ -110,7 +110,7 @@ class NewProjectAskHandler : CloseAskHandler {
 */
 void incExitSaveAsk() {
     ExitAskHandler handler = new ExitAskHandler();
-    incCloseProjectAsk(handler);
+    handler.start();
 }
 
 class ExitAskHandler : CloseAskHandler {
@@ -120,28 +120,19 @@ class ExitAskHandler : CloseAskHandler {
     }
 }
 
-void incCloseProjectAsk(CloseAskHandler handler) {
-    if (!incIsProjectModified()) {
-        handler.onClickNo();
-        return;
-    }
+/**
+    Handle close project with save ask
+    NOTE: it is only called by UI, not by code
+*/
+void incCloseProjectAsk() {
+    CloseAskHandler handler = new CloseAskHandler();
+    handler.start();
+}
 
-    switch (incGetSaveProjectOnClose()) {
-        case "dontSave":
-            handler.onClickNo();
-            return;
-        case "Save":
-            // maybe should not have "Save" option prevent users stuck when exit
-            handler.onClickYes();
-            return;
-        case "Ask":
-            handler.register();
-            handler.show();
-            return;
-        default:
-            throw new Exception("Invalid save project on close setting");
-            return;
-    }
+void incCloseProject() {
+    // creating new project
+    incNewProject();
+    incPushWindow(new WelcomeWindow());
 }
 
 class CloseAskHandler : DialogHandler {
@@ -164,7 +155,8 @@ class CloseAskHandler : DialogHandler {
     }
 
     void onProjectClose() {
-        // override
+        // override this function for different close behaviour
+        incCloseProject();
     }
 
     void show() {
@@ -175,5 +167,29 @@ class CloseAskHandler : DialogHandler {
             DialogLevel.Info,
             DialogButtons.Yes | DialogButtons.No | DialogButtons.Cancel
         );
+    }
+
+    void start() {
+        if (!incIsProjectModified()) {
+            this.onClickNo();
+            return;
+        }
+
+        switch (incGetSaveProjectOnClose()) {
+            case "dontSave":
+                this.onClickNo();
+                return;
+            case "Save":
+                // maybe should not have "Save" option prevent users stuck when exit
+                this.onClickYes();
+                return;
+            case "Ask":
+                this.register();
+                this.show();
+                return;
+            default:
+                throw new Exception("Invalid save project on close setting");
+                return;
+        }
     }
 }
