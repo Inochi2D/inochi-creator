@@ -330,7 +330,7 @@ void incMainMenu() {
                     }
 
                     // Quit option
-                    if (igMenuItem(__("Quit"), "Alt+F4", false, true)) incExit();
+                    if (igMenuItem(__("Quit"), "Alt+F4", false, true)) incExitSaveAsk();
                     igEndMenu();
                 }
                 

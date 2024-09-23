@@ -677,7 +677,7 @@ void incBeginLoop() {
     while(SDL_PollEvent(&event)) {
         switch(event.type) {
             case SDL_QUIT:
-                incExit();
+                incExitSaveAsk();
                 break;
 
             case SDL_DROPFILE:
@@ -691,7 +691,7 @@ void incBeginLoop() {
                     event.type == SDL_WINDOWEVENT && 
                     event.window.event == SDL_WINDOWEVENT_CLOSE && 
                     event.window.windowID == SDL_GetWindowID(window)
-                ) incExit();
+                ) incExitSaveAsk();
                 break;
         }
     }
@@ -794,6 +794,57 @@ void incExit() {
     incSettingsSet("WinH", h);
     incSettingsSet!bool("WinMax", (flags & SDL_WINDOW_MAXIMIZED) > 0);
     incReleaseLockfile();
+}
+
+/**
+    Popup Exit save ask and exit
+*/
+void incExitSaveAsk() {
+    if (ExitAskHandler.isOpen) return;
+    ExitAskHandler handler = new ExitAskHandler();
+    handler.register();
+    handler.show();
+}
+
+import creator.widgets.dialog;
+class ExitAskHandler : DialogHandler {
+    const(char)* INC_EXIT_ASK_DIALOG_NAME = "ExitAskDialog";
+
+    // make sure only one dialog is open
+    static bool isOpen = false;
+
+    this () {
+        super(INC_EXIT_ASK_DIALOG_NAME);
+        isOpen = true;
+    }
+
+    override
+    bool onClick(DialogButtons button) {
+        isOpen = false;
+        return super.onClick(button);
+    }
+
+    override
+    bool onClickYes() {
+        //incExit();
+        return true;
+    }
+
+    override
+    bool onClickNo() {
+        incExit();
+        return true;
+    }
+
+    void show() {
+        incDialog(
+            INC_EXIT_ASK_DIALOG_NAME,
+            __("Save changes before exiting?"),
+            _("Would you like to save your changes before exiting?\n\nYou can change the default behaviour in the settings."),
+            DialogLevel.Info,
+            DialogButtons.Yes | DialogButtons.No | DialogButtons.Cancel
+        );
+    }
 }
 
 /**
