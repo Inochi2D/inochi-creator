@@ -229,8 +229,35 @@ class DialogHandler {
     }
 
     bool onClick(DialogButtons button) {
-        // Override this
+        switch (button) {
+            case DialogButtons.Cancel:
+                return onClickCancel();
+            case DialogButtons.Yes:
+                return onClickYes();
+            case DialogButtons.No:
+                return onClickNo();
+            default:
+                throw new Exception("Invalid button");
+        }
+    }
+
+    bool onClickCancel() {
+        // override this
         return false;
+    }
+
+    bool onClickYes() {
+        // override this
+        return false;
+    }
+
+    bool onClickNo() {
+        // override this
+        return false;
+    }
+
+    void register() {
+        incRegisterDialogHandler(this);
     }
 }
 

@@ -221,8 +221,6 @@ enum AskKeepLayerFolder {
     Preserve, NotPreserve, Cancel
 }
 
-const(char)* INC_KEEP_STRUCT_DIALOG_NAME = "ImportKeepFolderStructPopup";
-
 /**
     Function for importing pop-up dialog
 */
@@ -232,9 +230,41 @@ bool incKeepStructDialog(ImportKeepHandler handler) {
     } else if (incGetKeepLayerFolder() == "NotPreserve") {
         handler.load(AskKeepLayerFolder.NotPreserve);
     } else {
-        incRegisterDialogHandler(handler);
+        handler.register();
+        handler.show();
+    }
 
-        // Show dialog
+    return true;
+}
+
+class ImportKeepHandler : DialogHandler {
+    const(char)* INC_KEEP_STRUCT_DIALOG_NAME = "ImportKeepFolderStructPopup";
+
+    this () {
+        super(INC_KEEP_STRUCT_DIALOG_NAME);
+    }
+
+    override
+    bool onClickCancel() {
+        return this.load(AskKeepLayerFolder.Cancel);
+    }
+
+    override
+    bool onClickYes() {
+        return this.load(AskKeepLayerFolder.Preserve);
+    }
+
+    override
+    bool onClickNo() {
+        return this.load(AskKeepLayerFolder.NotPreserve);
+    }
+
+    bool load(AskKeepLayerFolder select) {
+        // override this
+        return false;
+    }
+
+    void show() {
         incDialog(
             INC_KEEP_STRUCT_DIALOG_NAME,
             __("File import"),
@@ -242,32 +272,5 @@ bool incKeepStructDialog(ImportKeepHandler handler) {
             DialogLevel.Warning,
             DialogButtons.Yes | DialogButtons.No | DialogButtons.Cancel
         );
-    }
-
-    return true;
-}
-
-class ImportKeepHandler : DialogHandler {
-    this () {
-        super(INC_KEEP_STRUCT_DIALOG_NAME);
-    }
-
-    override
-    bool onClick(DialogButtons button) {
-        switch (button) {
-            case DialogButtons.Cancel:
-                return this.load(AskKeepLayerFolder.Cancel);
-            case DialogButtons.Yes:
-                return this.load(AskKeepLayerFolder.Preserve);
-            case DialogButtons.No:
-                return this.load(AskKeepLayerFolder.NotPreserve);
-            default:
-                throw new Exception("Invalid button");
-        }
-    }
-
-    bool load(AskKeepLayerFolder select) {
-        // override this
-        return false;
     }
 }
