@@ -797,16 +797,34 @@ void incExit() {
 }
 
 /**
+    check project has changes
+*/
+bool incIsProjectModified() {
+    // TODO: we need more detailed check, maybe history action stack or tracking all changes
+    // currently just assume user history action stack should record all changes
+    // if not record, it is action stack bug
+    return !incIsActionStackEmpty();
+}
+
+/**
     Popup Exit save ask and exit
 */
 void incExitSaveAsk() {
-    if (ExitAskHandler.isOpen) return;
+    if (!incIsProjectModified()) {
+        incExit();
+        return;
+    }
+
+    if (ExitAskHandler.isOpen)
+        return;
+
     ExitAskHandler handler = new ExitAskHandler();
     handler.register();
     handler.show();
 }
 
 import creator.widgets.dialog;
+import creator.io.save;
 class ExitAskHandler : DialogHandler {
     const(char)* INC_EXIT_ASK_DIALOG_NAME = "ExitAskDialog";
 
@@ -826,7 +844,8 @@ class ExitAskHandler : DialogHandler {
 
     override
     bool onClickYes() {
-        //incExit();
+        incFileSave();
+        incExit();
         return true;
     }
 
