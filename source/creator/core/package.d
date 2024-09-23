@@ -803,6 +803,7 @@ bool incIsProjectModified() {
 
 /**
     Handle exit with save ask
+    NOTE: it is only called by UI, not by code
 */
 void incExitSaveAsk() {
     ExitAskHandler handler = new ExitAskHandler();

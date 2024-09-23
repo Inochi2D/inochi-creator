@@ -265,6 +265,7 @@ class DialogHandler {
     Register a dialog handler
 */
 void incRegisterDialogHandler(DialogHandler handler) {
+    // TODO: Trace stack allow debug
     dialogHandlers ~= handler;
 }
 

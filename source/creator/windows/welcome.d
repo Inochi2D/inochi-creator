@@ -17,6 +17,7 @@ import i18n;
 import inochi2d;
 import creator.ver;
 import creator.io;
+import creator.io.save;
 import creator;
 import creator.config;
 import creator.widgets.dialog;
@@ -225,7 +226,7 @@ protected:
                         incDummy(ImVec2(0, 2));
                         igIndent();
                             if (incTextLinkWithIcon("", _("New..."))) {
-                                incNewProject();
+                                incNewProjectAsk();
                                 this.close();
                             }
 

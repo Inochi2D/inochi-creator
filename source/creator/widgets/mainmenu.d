@@ -46,7 +46,7 @@ void incMainMenu() {
     igPushStyleColor(ImGuiCol.BorderShadow, ImVec4(0, 0, 0, 0));
     igPushStyleColor(ImGuiCol.Separator, ImVec4(0, 0, 0, 0));
 
-        if (incShortcut("Ctrl+N")) incFileNew();
+        if (incShortcut("Ctrl+N")) incNewProjectAsk();
         if (incShortcut("Ctrl+O")) incFileOpen();
         if (incShortcut("Ctrl+S")) incFileSave();
         if (incShortcut("Ctrl+Shift+S")) incFileSaveAs();
@@ -84,7 +84,7 @@ void incMainMenu() {
             igPushStyleColor(ImGuiCol.Separator, seperator);
                 if (igBeginMenu(__("File"), true)) {
                     if(igMenuItem(__("New"), "Ctrl+N", false, true)) {
-                        incFileNew();
+                        incNewProjectAsk();
                     }
 
                     if (igMenuItem(__("Open"), "Ctrl+O", false, true)) {

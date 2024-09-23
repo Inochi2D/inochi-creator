@@ -13,10 +13,6 @@ import creator;
 import tinyfiledialogs;
 import i18n;
 
-void incFileNew() {
-    incNewProject();
-}
-
 void incFileOpen() {
     const TFD_Filter[] filters = [
         { ["*.inx"], "Inochi Creator Project (*.inx)" }
@@ -87,4 +83,20 @@ string[string] incGetSaveProjectOption() {
 
 void incSetSaveProjectOnClose(string select) {
     incSettingsSet("SaveProjectOnClose", select);
+}
+
+/**
+    Handle New Project with save ask
+    NOTE: it is only called by UI, not by code
+*/
+void incNewProjectAsk() {
+    auto handler = new NewProjectAskHandler();
+    incCloseProjectAsk(handler);
+}
+
+class NewProjectAskHandler : CloseAskHandler {
+    override
+    void onProjectClose() {
+        incNewProject();
+    }
 }
