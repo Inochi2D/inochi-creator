@@ -805,21 +805,34 @@ bool incIsProjectModified() {
     Handle exit with save ask
 */
 void incExitSaveAsk() {
-    if (!incIsProjectModified()) {
+    ExitAskHandler handler = new ExitAskHandler();
+    incCloseProjectAsk(handler);
+}
+
+class ExitAskHandler : CloseAskHandler {
+    override
+    void onProjectClose() {
         incExit();
+    }
+}
+
+void incCloseProjectAsk(CloseAskHandler handler) {
+    if (!incIsProjectModified()) {
+        handler.onClickNo();
         return;
     }
 
     switch (incGetSaveProjectOnClose()) {
         case "dontSave":
-            incExit();
+            handler.onClickNo();
             return;
         case "Save":
             // maybe should not have "Save" option prevent users stuck when exit
-            if (incFileSave()) incExit();
+            handler.onClickYes();
             return;
         case "Ask":
-            incExitSaveAskPopup();
+            handler.register();
+            handler.show();
             return;
         default:
             throw new Exception("Invalid save project on close setting");
@@ -827,19 +840,10 @@ void incExitSaveAsk() {
     }
 }
 
-/**
-    Popup Exit save ask and exit
-*/
-void incExitSaveAskPopup() {
-    ExitAskHandler handler = new ExitAskHandler();
-    handler.register();
-    handler.show();
-}
-
 import creator.widgets.dialog;
 import creator.io.save;
-class ExitAskHandler : DialogHandler {
-    const(char)* INC_EXIT_ASK_DIALOG_NAME = "ExitAskDialog";
+class CloseAskHandler : DialogHandler {
+    const(char)* INC_EXIT_ASK_DIALOG_NAME = "CloseAskDialog";
 
     this () {
         super(INC_EXIT_ASK_DIALOG_NAME);
@@ -847,22 +851,25 @@ class ExitAskHandler : DialogHandler {
 
     override
     bool onClickYes() {
-        incFileSave();
-        incExit();
+        if (incFileSave()) this.onProjectClose();
         return true;
     }
 
     override
     bool onClickNo() {
-        incExit();
+        this.onProjectClose();
         return true;
+    }
+
+    void onProjectClose() {
+        // override
     }
 
     void show() {
         incDialog(
             INC_EXIT_ASK_DIALOG_NAME,
-            __("Save changes before exiting?"),
-            _("Would you like to save your changes before exiting?\n\nYou can change the default behaviour in the settings."),
+            __("Save changes before close?"),
+            _("Would you like to save your changes before closing?\n\nYou can change the default behaviour in the settings."),
             DialogLevel.Info,
             DialogButtons.Yes | DialogButtons.No | DialogButtons.Cancel
         );
