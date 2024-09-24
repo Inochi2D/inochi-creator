@@ -263,6 +263,7 @@ void incOpenWindow() {
 
     // Don't make KDE freak out when Inochi Creator opens
     if (!incSettingsGet!bool("DisableCompositor")) SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
+    SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
 
     version(InBranding) {
         debug string WIN_TITLE = "Inochi Creator "~_("(Debug Mode)");
