@@ -148,7 +148,7 @@ class PointTool : NodeSelect {
                     } else {
                         impl.foreachMirror((uint axis) {
                             vertex = new MeshVertex(impl.mirror(axis, impl.mousePos));
-                            action.addVertex(vertex);
+                            action.addVertex(vertex, axis);
                         });
                     }
                     impl.refreshMesh();
@@ -169,7 +169,7 @@ class PointTool : NodeSelect {
                     auto lastAddAction = incActionFindLast!MeshAddAction(3);
                     if (lastAddAction is null || lastAddAction.vertices.length == 0) return;
 
-                    auto prevVertexIdx = impl.getVertexFromPoint(lastAddAction.vertices[$ - 1].position);
+                    auto prevVertexIdx = impl.getVertexFromPoint(lastAddAction.axisVertices[0][$ - 1].position);
                     auto prevVertex = impl.getVerticesByIndex([prevVertexIdx])[0];
                     if (prevVertex == null) return;
                     auto action = new MeshConnectAction(impl.getTarget().name, impl, mesh);
