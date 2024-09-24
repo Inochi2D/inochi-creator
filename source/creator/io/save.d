@@ -165,7 +165,7 @@ class CloseAskHandler : DialogHandler {
     void show() {
         incDialog(
             INC_EXIT_ASK_DIALOG_NAME,
-            __("Save changes before close?"),
+            __("Save before closing?"),
             _("Would you like to save your changes before closing?\n\nYou can change the default behaviour in the settings."),
             DialogLevel.Info,
             DialogButtons.Yes | DialogButtons.No | DialogButtons.Cancel

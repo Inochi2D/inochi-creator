@@ -228,7 +228,7 @@ protected:
 
                                 igEndCombo();
                             }
-                            incTooltip(_("When closing a project, should it be saved automatically?"));
+                            incTooltip(_("Should changes be saved automatically when closing a project?"));
                         }
                         endSection();
                         break;
