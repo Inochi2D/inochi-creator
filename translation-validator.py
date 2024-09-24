@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os
+import functools
 import sys
 import glob
 import argparse
@@ -99,6 +99,30 @@ escape_table = str.maketrans(escape_chars)
 def escape_string(s) -> str:
     return s.translate(escape_table)
 
+@functools.lru_cache
+def load_template_msgid() -> set:
+    template_catalog = read_po(open("tl/template.pot", 'r', encoding='utf-8'))
+    return set([entry.id for entry in template_catalog])
+
+def check_is_latest_template(tl_catalog) -> bool:
+    """
+    Check if the translation file is the latest template
+    """
+    template_msgid = load_template_msgid()
+    success = True
+    
+    for msgid in template_msgid:
+        if msgid in tl_catalog:
+            continue
+            
+        if msgid == "":
+            continue
+
+        print(f"\tMissing msgid: '{escape_string(msgid)}'")
+        success = False
+        
+    return success
+
 def validate_file(file_path) -> int:
     ret_code = 0
     summary = Summary()
@@ -119,6 +143,12 @@ def validate_file(file_path) -> int:
             ret_code = 1
 
     summary.print_summary()
+    
+    if not check_is_latest_template(catalog):
+        print(f"Warning: {file_path} may not be the latest template")
+        print("Please update the translation file with the latest template")
+        print(f"\tmsgmerge -o {file_path}_merged.po {file_path} tl/template.pot")
+        ret_code = 1
 
     return ret_code
 

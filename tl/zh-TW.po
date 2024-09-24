@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-15 23:19+0200\n"
-"PO-Revision-Date: 2024-09-18 14:08+0800\n"
+"POT-Creation-Date: 2024-09-19 20:44+0200\n"
+"PO-Revision-Date: 2024-09-20 13:45+0800\n"
 "Last-Translator: r888800009 <r888800009@gmail.com>\n"
 "Language-Team: Language zh-tw\n"
 "Language: zh_TW\n"
@@ -93,22 +93,27 @@ msgid "Changed drawable mesh of %s"
 msgstr "已更改 %s 的可繪製網格"
 
 #: source/creator/actions/drawable.d:96
+#, c-format
 msgid "Drawable %s was changed"
 msgstr "可繪製 %s 已修改"
 
 #: source/creator/actions/mesh.d:58
+#, c-format
 msgid "Mesh %s change is restored."
 msgstr "已復原對網格 %s 的更改"
 
 #: source/creator/actions/mesh.d:65
+#, c-format
 msgid "Mesh %s was edited."
 msgstr "網格 %s 已編輯"
 
 #: source/creator/actions/mesh.d:133 source/creator/actions/mesh.d:234
+#, c-format
 msgid "%s: vertex was added."
 msgstr "已新增頂點 %s"
 
 #: source/creator/actions/mesh.d:141 source/creator/actions/mesh.d:226
+#, c-format
 msgid "%s: vertex was removed."
 msgstr "頂點 %s 已經被移除"
 
@@ -254,7 +259,9 @@ msgstr "(不支援)"
 msgid ""
 "Oops! Your settings.json file is corrupted. inochi2d creator will load the "
 "default settings.\n"
-msgstr "哎呀？您的 settings.json 設定檔似乎損壞了。Inochi Creator 將會載入預設設定。\n"
+msgstr ""
+"哎呀？您的 settings.json 設定檔似乎損壞了。Inochi Creator 將會載入預設設"
+"定。\n"
 
 #: source/creator/core/settings.d:33
 msgid "The corrupted settings file has been moved to "
@@ -264,8 +271,7 @@ msgstr "損壞的設定檔已被儲存至 "
 msgid ""
 "If you always see this message, please report this issue to inochi2d "
 "creator\n"
-msgstr ""
-"如果您總是遇到這個問題，請向 Inochi 開發人員回報此問題\n"
+msgstr "如果您總是遇到這個問題，請向 Inochi 開發人員回報此問題\n"
 
 #: source/creator/core/settings.d:35
 msgid ""
@@ -280,11 +286,11 @@ msgstr ""
 #: source/creator/core/settings.d:36 source/creator/io/kra.d:278
 #: source/creator/io/package.d:194 source/creator/io/package.d:195
 #: source/creator/io/psd.d:271 source/creator/package.d:249
-#: source/creator/package.d:307 source/creator/package.d:372
-#: source/creator/panels/inspector.d:640 source/creator/panels/inspector.d:659
-#: source/creator/panels/inspector.d:660 source/creator/panels/inspector.d:671
-#: source/creator/panels/nodes.d:406 source/creator/panels/nodes.d:439
-#: source/creator/panels/viewport.d:257
+#: source/creator/package.d:264 source/creator/package.d:322
+#: source/creator/package.d:387 source/creator/panels/inspector.d:640
+#: source/creator/panels/inspector.d:659 source/creator/panels/inspector.d:660
+#: source/creator/panels/inspector.d:671 source/creator/panels/nodes.d:406
+#: source/creator/panels/nodes.d:439 source/creator/panels/viewport.d:257
 #: source/creator/viewport/vertex/package.d:387
 #: source/creator/widgets/mainmenu.d:243 source/creator/widgets/mainmenu.d:478
 #: source/creator/windows/imgexport.d:144
@@ -328,17 +334,18 @@ msgid "Import..."
 msgstr "匯入…"
 
 #: source/creator/io/kra.d:274 source/creator/io/psd.d:267
-#: source/creator/package.d:368
+#: source/creator/package.d:383
 #, c-format
 msgid "%s was imported..."
 msgstr "已匯入 %s ..."
 
 #: source/creator/io/kra.d:277 source/creator/io/psd.d:270
-#: source/creator/package.d:373
+#: source/creator/package.d:388
 msgid "Import failed..."
 msgstr "匯入失敗…"
 
 #: source/creator/io/kra.d:278
+#, c-format
 msgid ""
 "An error occured during KRA import:\n"
 "%s"
@@ -385,22 +392,37 @@ msgstr "自動選取"
 msgid "New Project"
 msgstr "建立新專案"
 
-#: source/creator/package.d:270
+#: source/creator/package.d:259
+#, c-format
+msgid ""
+"Please report this file to the developers:\n"
+"\n"
+"%s"
+msgstr ""
+"請向開發人員回報此檔案：\n"
+"\n"
+"%s"
+
+#: source/creator/package.d:261
+msgid "Failed to write crash dump file."
+msgstr "無法寫入崩潰記錄檔。"
+
+#: source/creator/package.d:285
 #, c-format
 msgid "%s opened successfully."
 msgstr "成功開啟 %s。"
 
-#: source/creator/package.d:303
+#: source/creator/package.d:318
 #, c-format
 msgid "%s saved successfully."
 msgstr "成功存檔 %s ..."
 
-#: source/creator/package.d:306
+#: source/creator/package.d:321
 #, c-format
 msgid "Failed to save %s"
 msgstr "無法存檔 %s"
 
-#: source/creator/package.d:342
+#: source/creator/package.d:357
 #, c-format
 msgid ""
 "The following errors occured during file loading\n"
@@ -409,19 +431,19 @@ msgstr ""
 "下列錯誤於檔案載入時發生\n"
 "%s"
 
-#: source/creator/package.d:352
+#: source/creator/package.d:367
 msgid "Folder import completed with errors..."
 msgstr "匯入資料夾時發生錯誤..."
 
-#: source/creator/package.d:353
+#: source/creator/package.d:368
 msgid "Folder import completed..."
 msgstr "已匯入資料夾..."
 
-#: source/creator/package.d:400
+#: source/creator/package.d:415
 msgid "Mipmap generation completed."
 msgstr "完成 Mipmap 生成。"
 
-#: source/creator/package.d:415
+#: source/creator/package.d:430
 msgid "Texture bleeding completed."
 msgstr "材質滲透完成。"
 
@@ -750,7 +772,7 @@ msgstr "混和"
 #. Normal blending mode as used in Photoshop, generally
 #. the default blending mode photoshop starts a layer out as.
 #: source/creator/panels/inspector.d:809 source/creator/panels/inspector.d:1021
-#: source/creator/windows/inpexport.d:269
+#: source/creator/windows/inpexport.d:269 source/creator/windows/settings.d:222
 msgid "Normal"
 msgstr "一般"
 
@@ -1479,7 +1501,7 @@ msgid "Tracking"
 msgstr "追蹤"
 
 #. Use appropriate system method to notify user where crash dump is.
-#: source/creator/utils/crashdump.d:64
+#: source/creator/utils/crashdump.d:99
 #, fuzzy
 msgid ""
 "\n"
@@ -1497,7 +1519,7 @@ msgstr ""
 "請將家目錄中的 inochi-creater-crashdump.txt 檔案傳給開發者\n"
 "在 https://github.com/Inochi2D/inochi-creator/issues 提交該檔案"
 
-#: source/creator/utils/crashdump.d:65
+#: source/creator/utils/crashdump.d:100
 #, fuzzy
 msgid ""
 "\n"
@@ -1517,7 +1539,7 @@ msgstr ""
 "請將家目錄中的 inochi-creater-crashdump.txt 檔案傳給開發者\n"
 "在 https://github.com/Inochi2D/inochi-creator/issues 提交該檔案"
 
-#: source/creator/utils/crashdump.d:67
+#: source/creator/utils/crashdump.d:102
 msgid ""
 "The application has unexpectedly crashed\n"
 "Please send the developers the inochi-creator-crashdump.txt which has been "
@@ -1528,7 +1550,7 @@ msgstr ""
 "請將桌面上的 inochi-creater-crashdump.txt 檔案傳給開發者。\n"
 "網址：https://github.com/Inochi2D/inochi-creator/issues"
 
-#: source/creator/utils/crashdump.d:68
+#: source/creator/utils/crashdump.d:103
 msgid "Inochi Creator Crashdump"
 msgstr "Inochi Creator 崩潰報告"
 
@@ -1643,10 +1665,10 @@ msgstr "變形"
 #: source/creator/viewport/common/mesheditor/tools/grid.d:240
 #: source/creator/viewport/common/mesheditor/tools/grid.d:241
 #: source/creator/viewport/common/mesheditor/tools/grid.d:242
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:149
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:157
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:216
 #: source/creator/viewport/common/mesheditor/tools/point.d:98
-#: source/creator/viewport/common/mesheditor/tools/point.d:340
+#: source/creator/viewport/common/mesheditor/tools/point.d:346
 msgid "Left Mouse"
 msgstr "左鍵"
 
@@ -1683,7 +1705,7 @@ msgstr "筆刷工具"
 
 #: source/creator/viewport/common/mesheditor/tools/connect.d:34
 #: source/creator/viewport/common/mesheditor/tools/point.d:98
-#: source/creator/viewport/common/mesheditor/tools/point.d:340
+#: source/creator/viewport/common/mesheditor/tools/point.d:346
 msgid "Select"
 msgstr "選取"
 
@@ -1719,50 +1741,50 @@ msgstr "改變關鍵點在軸上的位置"
 msgid "Grid Vertex Tool"
 msgstr "網格頂點工具"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:149
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:157
 msgid "Add Lasso Point"
 msgstr "為不規則選擇加入頂點"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:150
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:158
 msgid "Additive Selection"
 msgstr "擴充選擇"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:150
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:158
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:223
 msgid "Shift"
 msgstr "Shift 鍵"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:151
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:159
 msgid "Inverse Selection"
 msgstr "反轉選取"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:151
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:152
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:159
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:160
 #: source/creator/viewport/common/mesheditor/tools/pathdeform.d:222
 msgid "Ctrl"
 msgstr "Ctrl 鍵"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:152
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:160
 msgid "Remove Selection"
 msgstr "移除選取"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:153
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:161
 msgid "Delete Last Lasso Point"
 msgstr "刪除最後一個不規則選擇點"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:153
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:161
 msgid "Right Mouse"
 msgstr "右鍵"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:154
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:162
 msgid "Clear All Lasso Points"
 msgstr "清除所有不規則選擇點"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:154
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:162
 msgid "ESC"
 msgstr "Esc 鍵"
 
-#: source/creator/viewport/common/mesheditor/tools/lasso.d:246
+#: source/creator/viewport/common/mesheditor/tools/lasso.d:254
 msgid "Lasso Selection"
 msgstr "不規則選擇工具"
 
@@ -1824,11 +1846,11 @@ msgstr "新增"
 msgid "Ctrl+Left Mouse"
 msgstr "CTRL+左鍵"
 
-#: source/creator/viewport/common/mesheditor/tools/point.d:471
+#: source/creator/viewport/common/mesheditor/tools/point.d:477
 msgid "Vertex Tool"
 msgstr "頂點工具"
 
-#: source/creator/viewport/common/mesheditor/tools/point.d:487
+#: source/creator/viewport/common/mesheditor/tools/point.d:493
 msgid "Auto connect vertices"
 msgstr "自動連接頂點"
 
@@ -1996,7 +2018,9 @@ msgstr "可繪製物件"
 msgid ""
 "This meshgroup has no drawables to deform. To deform, replace the child with "
 "a meshgroup or other type."
-msgstr "沒有供這個網格組形變的可繪製物件。加入網格組或者其他節點類型作為子節點來開始形變。"
+msgstr ""
+"沒有供這個網格組形變的可繪製物件。加入網格組或者其他節點類型作為子節點來開始"
+"形變。"
 
 #: source/creator/viewport/vertex/package.d:387
 msgid ""
@@ -2189,7 +2213,7 @@ msgstr "取消復原"
 msgid "Cut"
 msgstr "剪下"
 
-#: source/creator/widgets/mainmenu.d:347 source/creator/windows/settings.d:274
+#: source/creator/widgets/mainmenu.d:347 source/creator/windows/settings.d:279
 msgid "Settings"
 msgstr "設定"
 
@@ -2390,13 +2414,13 @@ msgstr "回報錯誤"
 msgid "Request a Feature"
 msgstr "功能請求"
 
-#: source/creator/widgets/mainmenu.d:577 source/creator/windows/about.d:133
+#: source/creator/widgets/mainmenu.d:577 source/creator/windows/about.d:138
 msgid "About"
 msgstr "關於"
 
 #. Donate button
 #: source/creator/widgets/mainmenu.d:592 source/creator/widgets/mainmenu.d:615
-#: source/creator/windows/about.d:124
+#: source/creator/windows/about.d:128
 msgid "Donate"
 msgstr "贊助"
 
@@ -2538,6 +2562,7 @@ msgid "New Animation..."
 msgstr "新增動畫"
 
 #: source/creator/windows/editanim.d:170
+#, c-format
 msgid "Edit %s..."
 msgstr "編輯 %s..."
 
@@ -2654,7 +2679,7 @@ msgstr "預覽"
 msgid "Loops"
 msgstr "預覽"
 
-#: source/creator/windows/inpexport.d:342 source/creator/windows/settings.d:238
+#: source/creator/windows/inpexport.d:342 source/creator/windows/settings.d:243
 msgid "No settings for this category."
 msgstr "此類別無設定選項。"
 
@@ -2868,19 +2893,23 @@ msgstr "不保留"
 msgid "Preserve structure"
 msgstr "是否保留圖層結構"
 
-#: source/creator/windows/settings.d:222
+#: source/creator/windows/settings.d:223
+msgid "Legacy Zooming"
+msgstr "縮放至螢幕中心"
+
+#: source/creator/windows/settings.d:227
 msgid "Zoom Mode"
 msgstr "縮放模式"
 
-#: source/creator/windows/settings.d:232
+#: source/creator/windows/settings.d:237
 msgid "Zoom Speed"
 msgstr "縮放速度"
 
-#: source/creator/windows/settings.d:251 source/creator/windows/welcome.d:199
+#: source/creator/windows/settings.d:256 source/creator/windows/welcome.d:199
 msgid "Inochi Creator needs to be restarted for some changes to take effect."
 msgstr "重啟 Inochi Creator 以讓變更生效。"
 
-#: source/creator/windows/settings.d:259
+#: source/creator/windows/settings.d:264
 msgid "Done"
 msgstr "完成"
 
@@ -3022,18 +3051,18 @@ msgstr "文件"
 msgid "Join our Discord"
 msgstr "加入我們的 Discord"
 
-#: source/creator/windows/welcome.d:320
+#: source/creator/windows/welcome.d:319
 msgid "Buy a copy"
 msgstr "購買"
 
-#: source/creator/windows/welcome.d:324
+#: source/creator/windows/welcome.d:323
 msgid "Patreon"
 msgstr "Patreon"
 
-#: source/creator/windows/welcome.d:328
+#: source/creator/windows/welcome.d:327
 msgid "Github Sponsors"
 msgstr "Github 贊助"
 
-#: source/creator/windows/welcome.d:357
+#: source/creator/windows/welcome.d:355
 msgid "Inochi Creator Start"
 msgstr "Inochi Creator 啟動"
