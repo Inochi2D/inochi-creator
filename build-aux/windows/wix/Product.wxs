@@ -115,7 +115,7 @@
 						   Type="integer"
 						   Value="1"
 						   KeyPath="yes" />
-			<Shortcut Id="DesktopCreator" Directory="DesktopFolder" Name="Inochi Creator" WorkingDirectory='INSTALLDIR' Icon="CreatorIcon.ico" IconIndex="0" Advertise="no" />
+			<Shortcut Id="DesktopCreator" Directory="DesktopFolder" Name="Inochi Creator" Target="[INSTALLFOLDER]inochi-creator.exe" WorkingDirectory="INSTALLFOLDER" Icon="CreatorIcon.ico" IconIndex="0" Advertise="no" />
 		</Component>
 
 		<ComponentGroup Id="Translations" Directory="i18n">
