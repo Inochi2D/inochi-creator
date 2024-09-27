@@ -16,6 +16,7 @@ import creator.widgets.dialog;
 import creator.widgets.modal;
 import creator.backend.gl;
 import creator.io.autosave;
+import creator.io.save;
 
 import std.exception;
 
@@ -681,7 +682,7 @@ void incBeginLoop() {
     while(SDL_PollEvent(&event)) {
         switch(event.type) {
             case SDL_QUIT:
-                incExit();
+                incExitSaveAsk();
                 break;
 
             case SDL_DROPFILE:
@@ -691,11 +692,6 @@ void incBeginLoop() {
             
             default: 
                 incGLBackendProcessEvent(&event);
-                if (
-                    event.type == SDL_WINDOWEVENT && 
-                    event.window.event == SDL_WINDOWEVENT_CLOSE && 
-                    event.window.windowID == SDL_GetWindowID(window)
-                ) incExit();
                 break;
         }
     }
@@ -798,6 +794,16 @@ void incExit() {
     incSettingsSet("WinH", h);
     incSettingsSet!bool("WinMax", (flags & SDL_WINDOW_MAXIMIZED) > 0);
     incReleaseLockfile();
+}
+
+/**
+    check project has changes
+*/
+bool incIsProjectModified() {
+    // TODO: we need more detailed check, maybe history action stack or tracking all changes
+    // currently just assume user history action stack should record all changes
+    // if not record, it is action stack bug
+    return !incIsActionStackEmpty();
 }
 
 /**

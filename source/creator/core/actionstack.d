@@ -253,3 +253,7 @@ void incActionPopStack() {
         currentGroup.length = currentLevel + 1;
     }
 }
+
+bool incIsActionStackEmpty() {
+    return actions[currentLevel].length == 0;
+}

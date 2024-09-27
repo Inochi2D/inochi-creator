@@ -195,17 +195,17 @@ protected:
                             }
                         endSection();
 
-                        beginSection(__("Import behaviour"));
+                        beginSection(__("Import behaviour")); {
                             string[string] configShowing = [
                                 "Ask": _("Always ask"),
                                 "Preserve": _("Preserve"),
                                 "NotPreserve": _("Don't preserve")
                             ];
 
-                            string selected = configShowing[incGetKeepLayerFolder()];
+                            string selected = configShowing.get(incGetKeepLayerFolder(), "Ask");
                             string keepLayerFolder = incSettingsGet!string("KeepLayerFolder");
 
-                            if(igBeginCombo(__("Preserve structure"), selected.toStringz)) {
+                            if (igBeginCombo(__("Preserve structure"), selected.toStringz)) {
                                 foreach(key, displayName ; configShowing) {
                                     if (igSelectable(displayName.toStringz, keepLayerFolder == key)) 
                                         incSetKeepLayerFolder(key);
@@ -213,7 +213,23 @@ protected:
 
                                 igEndCombo();
                             }
+                        }
+                        endSection();
 
+                        beginSection(__("On close project")); {
+                            import creator.io.save;
+                            string[string] option = incGetSaveProjectOption();
+                            string selected = option.get(incGetSaveProjectOnClose(), "Ask");
+                            if (igBeginCombo(__("Save project"), selected.toStringz)) {
+                                foreach(key, displayName ; option) {
+                                    if (igSelectable(displayName.toStringz, selected == key))
+                                        incSetSaveProjectOnClose(key);
+                                }
+
+                                igEndCombo();
+                            }
+                            incTooltip(_("Should changes be saved automatically when closing a project?"));
+                        }
                         endSection();
                         break;
                     case SettingsPane.Viewport:

@@ -17,6 +17,7 @@ import i18n;
 import inochi2d;
 import creator.ver;
 import creator.io;
+import creator.io.save;
 import creator;
 import creator.config;
 import creator.widgets.dialog;
@@ -225,21 +226,13 @@ protected:
                         incDummy(ImVec2(0, 2));
                         igIndent();
                             if (incTextLinkWithIcon("", _("New..."))) {
-                                incNewProject();
+                                incNewProjectAsk();
                                 this.close();
                             }
 
                             if (incTextLinkWithIcon("", _("Open..."))) {
-                                const TFD_Filter[] filters = [
-                                    { ["*.inx"], "Inochi Creator Project (*.inx)" }
-                                ];
-
-                                string file = incShowOpenDialog(filters, _("Open..."));
-                                if (file) {
-                                    // FileException should handle in incOpenProject, so we don't write try/catch here
-                                    if (incOpenProject(file))
-                                        this.close();
-                                }
+                                if (incFileOpen())
+                                    this.close();
                             }
 
 
