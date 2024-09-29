@@ -58,6 +58,8 @@ protected:
         auto drawList = igGetWindowDrawList();
         auto window = igGetCurrentWindow();
 
+        incModelEditorCommonHotKeys();
+
         // Draw viewport itself
         ImVec2 currSize;
         igGetContentRegionAvail(&currSize);

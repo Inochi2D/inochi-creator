@@ -562,6 +562,32 @@ void incSelectAll() {
 }
 
 /**
+    Unselects nodes
+*/
+void incUnselectNodes() {
+    if (incArmedParameter()) return;
+    incSelectNode();
+}
+
+/**
+    ModelEdit common Hotkeys
+    this hotkeys are used in Viewport Panel and Node Panel
+*/
+void incModelEditorCommonHotKeys() {
+    import creator.core.input;
+    if (incEditMode != EditMode.ModelEdit)
+        return;
+
+    if (!incArmedParameter && (igIsWindowFocused(ImGuiFocusedFlags.ChildWindows) || igIsWindowHovered(ImGuiHoveredFlags.ChildWindows))) {
+        if (incShortcut("Ctrl+A"))
+            incSelectAll();
+
+        if (igIsKeyDown(ImGuiKey.Escape))
+            incUnselectNodes();
+    }
+}
+
+/**
     Gets whether the node is in the selection
 */
 bool incNodeInSelection(Node n) {
