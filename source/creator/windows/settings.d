@@ -254,6 +254,27 @@ protected:
                                 incSetViewportZoomSpeed(zoomSpeed);
                             }
                         endSection();
+
+                        beginSection(__("Smooth Focus Transition Animation"));
+                            bool smoothFocus = incIsEnabledSmoothFocus();
+                            if (igCheckbox(__("Enable Smooth Focus Animation"), &smoothFocus))
+                                incSetEnabledSmoothFocus(smoothFocus);
+
+                            igBeginDisabled(!smoothFocus);
+                                float focusSpeed = incGetViewportSmoothSpeed();
+                                if (igDragFloat(__("Focus Speed"), &focusSpeed, 0.01, 0, 100, "%0.2f"))
+                                    incSetViewportSmoothSpeed(focusSpeed);
+
+                                float maxSpeed = incGetViewportSmoothMaxSpeed();
+                                if (igDragFloat(__("Max Speed"), &maxSpeed, 0.01, 0, 1000, "%0.2f"))
+                                    incSetViewportSmoothMaxSpeed(maxSpeed);
+
+                            igEndDisabled();
+
+                            if (igButton(__("Reset##Smooth Focus"), ImVec2(64, 24)))
+                                incResetViewportSmoothSpeed();
+
+                        endSection();
                         break;
                     default:
                         incLabelOver(_("No settings for this category."), ImVec2(0, 0), true);
