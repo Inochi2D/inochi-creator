@@ -18,12 +18,67 @@ import inochi2d;
 import inochi2d.core.dbg;
 import std.algorithm.mutation : swap;
 
+/**
+    the PolyLassoTool allow to draw a polygon and undo the last point
+    the RegualarLassoTool just click and drag to draw a lasso selection
+*/
+enum LassoType {
+    PolyLasso = 0,
+    RegularLasso = 1,
+}
+
+private {
+    const char* [LassoType] lassoTypeIcons = [
+        LassoType.PolyLasso: "\ue922", // google material icon "timeline"
+        LassoType.RegularLasso: "\ue155", // google material icon "gesture"
+    ];
+
+    string getLassoHint(LassoType lassoType) {
+        switch (lassoType) {
+            case LassoType.PolyLasso: return _("Poly Lasso Selection Mode");
+            case LassoType.RegularLasso: return _("Regular Lasso Selection Mode");
+            default:
+                throw new Exception("Invalid LassoType");
+        }
+    }
+
+    LassoType getNextLassoType(LassoType lassoType) {
+        switch (lassoType) {
+            case LassoType.PolyLasso: return LassoType.RegularLasso;
+            case LassoType.RegularLasso: return LassoType.PolyLasso;
+            default:
+                throw new Exception("Invalid LassoType");
+        }
+    }
+}
+
+class LassoIO {
+    bool addSelect = false;
+    bool removeSelect = false;
+    bool undo = false;
+    bool cleanup = false;
+
+    void update() {
+        addSelect = igIsKeyDown(ImGuiKey.ModShift);
+        removeSelect = igIsKeyDown(ImGuiKey.ModCtrl);
+        undo = igIsMouseClicked(ImGuiMouseButton.Right);
+        cleanup = igIsKeyPressed(ImGuiKey.Escape);
+    }
+}
+
 class LassoTool : NodeSelect {
 private:
     vec3[] lassoPoints;
     size_t[] rollbackCheckpoints;
 
 public:
+    LassoType lassoType = LassoType.RegularLasso;
+
+    void setNextMode() {
+        lassoType = getNextLassoType(lassoType);
+        cleanup();
+    }
+
     void cleanup() {
         lassoPoints.length = 0;
         rollbackCheckpoints.length = 0;
@@ -45,7 +100,10 @@ public:
         rollbackCheckpoints ~= lassoPoints.length;
     }
 
-    void doSelection(IncMeshEditorOne impl, bool addSelect, bool removeSelect) {
+    void doSelection(IncMeshEditorOne impl, LassoIO lassoIO) {
+        bool addSelect = lassoIO.addSelect;
+        bool removeSelect = lassoIO.removeSelect;
+
         // lassoPoints is stored the edge so multiply by 2
         if (lassoPoints.length < 2 * 2)
             return;
@@ -148,15 +206,29 @@ public:
         return crossings != 0;
     }
 
+    /**
+        if trigger the doSelection, return true
+    */
+    bool doSelectionTrigger(IncMeshEditorOne impl, LassoIO lassoIO) {
+        if (lassoPoints.length > 2) {
+            // force close the polygon prevent issue
+            lassoPoints[$ - 1] = lassoPoints[0];
+            doSelection(impl, lassoIO);
+            return true;
+        }
+
+        return false;
+    }
+
     override
     bool update(ImGuiIO* io, IncMeshEditorOne impl, int action, out bool changed) {
         super.update(io, impl, action, changed);
-        bool addSelect = igIsKeyDown(ImGuiKey.ModShift);
-        bool removeSelect = igIsKeyDown(ImGuiKey.ModCtrl);
+        LassoIO lassoIO = new LassoIO;
+        lassoIO.update();
 
         incStatusTooltip(_("Add Lasso Point"), _("Left Mouse"));
         incStatusTooltip(_("Additive Selection"), _("Shift"));
-        if (addSelect) incStatusTooltip(_("Inverse Selection"), _("Ctrl"));
+        if (lassoIO.addSelect) incStatusTooltip(_("Inverse Selection"), _("Ctrl"));
         else incStatusTooltip(_("Remove Selection"), _("Ctrl"));
         incStatusTooltip(_("Delete Last Lasso Point"), _("Right Mouse"));
         incStatusTooltip(_("Clear All Lasso Points"), _("ESC"));
@@ -172,18 +244,17 @@ public:
                 lassoPoints ~= lassoPoints[$ - 1];
             lassoPoints ~= vec3(impl.mousePos.x, impl.mousePos.y, 0);
 
-            size_t p = isClosestToStart(vec3(impl.mousePos.x, impl.mousePos.y, 0));
-            if (p == 0 && lassoPoints.length > 2) {
-                // force close the polygon prevent issue
-                lassoPoints[$ - 1] = lassoPoints[0];
-                doSelection(impl, addSelect, removeSelect);
-            }
+            if (isClosestToStart(vec3(impl.mousePos.x, impl.mousePos.y, 0)) == 0)
+                doSelectionTrigger(impl, lassoIO);
         }
 
-        if (igIsMouseClicked(ImGuiMouseButton.Right))
+        if (igIsMouseReleased(ImGuiMouseButton.Left) && lassoType == LassoType.RegularLasso)
+            doSelectionTrigger(impl, lassoIO);
+
+        if (lassoIO.undo)
             rollbackOnce();
 
-        if (igIsKeyPressed(ImGuiKey.Escape))
+        if (lassoIO.cleanup)
             cleanup();
 
         return true;
@@ -230,6 +301,11 @@ public:
                 inDbgSetBuffer([mirroredPoints[p]]);
                 inDbgPointsSize(10);
                 inDbgDrawPoints(vec4(1, 0, 0, 1), transform);
+            } else if (lassoType == LassoType.PolyLasso) {
+                // draw the first point to hint the user to close the polygon
+                inDbgSetBuffer([mirroredPoints[0]]);
+                inDbgPointsSize(7);
+                inDbgDrawPoints(vec4(0.6, 0.6, 0.6, 0.6), transform);
             }
 
             inDbgSetBuffer(mirroredPoints ~ mirrorLassoPoints(impl, axis, [lassoPoints[$ - 1], vec3(impl.mousePos.x, impl.mousePos.y, 0)]));
@@ -252,4 +328,23 @@ class LassoToolInfo : ToolInfoBase!LassoTool {
     // using material icons (deprecated) highlight_alt instead
     override string icon() { return "\uef52"; }
     override string description() { return _("Lasso Selection"); }
+
+    override
+    bool displayToolOptions(bool deformOnly, VertexToolMode toolMode, IncMeshEditorOne[Node] editors) { 
+        auto lassoTool = cast(LassoTool)(editors.length == 0 ? null: editors.values()[0].getTool());
+        igBeginGroup();
+            auto current_icon = lassoTypeIcons[lassoTool.lassoType];
+            if (incButtonColored(current_icon, ImVec2(0, 0), ImVec4.init)) {
+                foreach (e; editors) {
+                    auto lt = cast(LassoTool)(e.getTool());
+                    if (lt !is null)
+                        lt.setNextMode();
+                }
+            }
+            incTooltip(getLassoHint(lassoTool.lassoType));
+        igEndGroup();
+
+
+        return false;
+    }
 }
