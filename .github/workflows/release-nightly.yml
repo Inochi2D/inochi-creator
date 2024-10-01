@@ -19,6 +19,7 @@ jobs:
     with:
       target_ref: '${{ github.ref_name }}'
       variant: 'nightly'
+      build_type: 'release-debug'
       generate_version: true
       do_package: true
 
