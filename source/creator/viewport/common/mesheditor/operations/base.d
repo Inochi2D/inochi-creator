@@ -64,25 +64,13 @@ public:
     bool mutateSelection = false;
     bool invertSelection = false;
     ulong maybeSelectOne;
-
-    // you should call updateVtxAtMouse() for updating vtxAtMouse
-    // because it also updates prevVtxAtMouse
-    // Note: prevVtxAtMouse for Undo may not safe to use currently
     ulong vtxAtMouse;
-    ulong prevVtxAtMouse;
 
     vec2 selectOrigin;
     IncMesh previewMesh;
 
     bool deforming = false;
     float meshEditAOE = 4;
-
-    void updateVtxAtMouse(ulong vtxIndex) {
-        // we hope prevVtxAtMouse tracks the previous != -1 vtxAtMouse
-        if (vtxAtMouse != -1)
-            prevVtxAtMouse = vtxAtMouse;
-        vtxAtMouse = vtxIndex;
-    }
 
     bool isSelected(ulong vertIndex) {
         import std.algorithm.searching : canFind;
@@ -257,7 +245,6 @@ public:
 
     this(bool deformOnly) {
         this.deformOnly = deformOnly;
-        prevVtxAtMouse = ulong(-1);
     }
 
     VertexToolMode getToolMode() {

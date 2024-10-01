@@ -75,14 +75,16 @@ abstract class MeshAction  : LazyBoundAction {
 
 class MeshAddAction  : MeshAction {
     MeshVertex*[] vertices;
+    MeshVertex*[][4] axisVertices;
 
     this(string name, IncMeshEditorOne editor, IncMesh mesh, void delegate() update = null) {
         super(name, editor, mesh, update);
     }
 
-    void addVertex(MeshVertex* vertex) {
+    void addVertex(MeshVertex* vertex, int axis = 0) {
         vertices ~= vertex;
         mesh.vertices ~= vertex;
+        axisVertices[axis] ~= vertex;
         dirty = true;
     }
 
@@ -96,6 +98,9 @@ class MeshAddAction  : MeshAction {
     override
     void clear() {
         vertices.length = 0;
+        foreach (v; axisVertices) {
+            v.length = 0;
+        }
         super.clear();
     }
 
