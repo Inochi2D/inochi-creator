@@ -192,7 +192,6 @@ class CloseAskHandler : DialogHandler {
                 return;
             default:
                 throw new Exception("Invalid save project on close setting");
-                return;
         }
     }
 }
