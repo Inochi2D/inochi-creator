@@ -238,8 +238,13 @@ void incOpenWindow() {
         version(Windows) enforce(imSupport != ImGuiSupport.badLibrary, "Bad cimgui library found!");
     }
 
-    SDL_Init(SDL_INIT_EVERYTHING);
     
+    int code = SDL_Init(SDL_INIT_EVERYTHING);
+    enforce(
+        code == 0,
+        "Error initializing SDL2! %s".format(SDL_GetError())
+    );
+
     version(Windows) {
         incSetWin32DPIAwareness();
     }
