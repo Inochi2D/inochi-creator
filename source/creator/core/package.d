@@ -44,11 +44,11 @@ version(OSX) {
     enum const(char)*[] SDL_VERSIONS = ["SDL2.dll"];
 } else {
     enum const(char)*[] SDL_VERSIONS = [
-        "libSDL2-2.0.so",
-        "/usr/local/lib/libSDL2-2.0.so",
         "libSDL2-2.0.so.0",
-        "/usr/local/lib/libSDL2-2.0.so.0",
+        "libSDL2-2.0.so",
         "libSDL2.so",
+        "/usr/local/lib/libSDL2-2.0.so.0",
+        "/usr/local/lib/libSDL2-2.0.so",
         "/usr/local/lib/libSDL2.so",
     ];
 }
