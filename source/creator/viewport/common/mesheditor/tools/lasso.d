@@ -28,10 +28,14 @@ enum LassoType {
 }
 
 private {
-    const char* [LassoType] lassoTypeIcons = [
-        LassoType.PolyLasso: "\ue922", // google material icon "timeline"
-        LassoType.RegularLasso: "\ue155", // google material icon "gesture"
-    ];
+    const(char)* getLassoIcon(LassoType type) {
+        final switch(type) {
+            case LassoType.PolyLasso:
+                return "\ue922";
+            case LassoType.RegularLasso:
+                return "\ue155";
+        }
+    }
 
     string getLassoHint(LassoType lassoType) {
         switch (lassoType) {
@@ -333,7 +337,7 @@ class LassoToolInfo : ToolInfoBase!LassoTool {
     bool displayToolOptions(bool deformOnly, VertexToolMode toolMode, IncMeshEditorOne[Node] editors) { 
         auto lassoTool = cast(LassoTool)(editors.length == 0 ? null: editors.values()[0].getTool());
         igBeginGroup();
-            auto current_icon = lassoTypeIcons[lassoTool.lassoType];
+            auto current_icon = getLassoIcon(lassoTool.lassoType);
             if (incButtonColored(current_icon, ImVec2(0, 0), ImVec4.init)) {
                 foreach (e; editors) {
                     auto lt = cast(LassoTool)(e.getTool());

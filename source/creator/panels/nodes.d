@@ -146,13 +146,6 @@ protected:
                 igSameLine(0, 2);
                 if (igMenuItem(__("Node"), "", false, true)) incAddChildWithHistory(new Node(cast(Node)null), n);
                 
-                incText(incTypeIdToIcon("Mask"));
-                igSameLine(0, 2);
-                if (igMenuItem(__("Mask"), "", false, true)) {
-                    MeshData empty;
-                    incAddChildWithHistory(new Mask(empty, cast(Node)null), n);
-                }
-                
                 incText(incTypeIdToIcon("Composite"));
                 igSameLine(0, 2);
                 if (igMenuItem(__("Composite"), "", false, true)) {

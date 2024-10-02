@@ -32,7 +32,7 @@ public:
     }
 
     override
-    FghjException deserializeFromFghj(Fghj data) {
+    SerdeException deserializeFromFghj(Fghj data) {
         data["groupUUID"].deserializeValue(this.uuid);
         if (!data["name"].isEmpty) data["name"].deserializeValue(this.name);
         if (!data["color"].isEmpty) data["color"].deserializeValue(this.color.vector);
@@ -92,7 +92,7 @@ public:
         this.parent = parent;
     }
     override
-    FghjException deserializeFromFghj(Fghj data) {
+    SerdeException deserializeFromFghj(Fghj data) {
         if (!data["parentUUID"].isEmpty)
             data["parentUUID"].deserializeValue(this.parentUUID);
         return super.deserializeFromFghj(data);

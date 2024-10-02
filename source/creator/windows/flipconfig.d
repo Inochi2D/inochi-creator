@@ -44,12 +44,12 @@ class FlipPair : ISerializable {
     }
 
     void serialize(S)(ref S serializer) {
-        auto state = serializer.objectBegin();
+        auto state = serializer.structBegin();
             serializer.putKey("uuid1");
             serializer.putValue(parts[0]? parts[0].uuid: InInvalidUUID);
             serializer.putKey("uuid2");
             serializer.putValue(parts[1]? parts[1].uuid: InInvalidUUID);
-        serializer.objectEnd(state);
+        serializer.structEnd(state);
     }
 
     SerdeException deserializeFromFghj(Fghj data) {
@@ -105,12 +105,12 @@ void incDumpFlipConfig(Puppet puppet) {
     if (flipPairs.length > 0) {
         auto app = appender!(char[]);
         auto serializer = inCreateSerializer(app);
-        auto i = serializer.arrayBegin();
+        auto i = serializer.listBegin();
         foreach (pair; flipPairs) {
             serializer.elemBegin;
             serializer.serializeValue(pair);
         }
-        serializer.arrayEnd(i);
+        serializer.listEnd(i);
         serializer.flush();
         puppet.extData[FlipConfigPath] = cast(ubyte[])app.data;
 

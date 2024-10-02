@@ -87,7 +87,7 @@ void incInitAtlassing() {
     glGenVertexArrays(1, &writeVAO);
     glGenBuffers(1, &writeVBO);
 
-    atlasShader = new Shader(import("shaders/atlassing.vert"), import("shaders/atlassing.frag"));
+    atlasShader = new Shader("atlassing", import("shaders/atlassing.vert"), import("shaders/atlassing.frag"));
     atlasMVP = atlasShader.getUniformLocation("mvp");
     atlasRenderOpacity = atlasShader.getUniformLocation("opacity");
 }

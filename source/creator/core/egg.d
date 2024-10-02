@@ -94,7 +94,7 @@ version(InBranding) {
     }
 
     void incInitAda() {
-        adaShader = new Shader(import("shaders/ada.vert"), import("shaders/ada.frag"));
+        adaShader = new Shader("ada", import("shaders/ada.vert"), import("shaders/ada.frag"));
             
         cam = new Camera();
         cam.position = vec2(0, 0);

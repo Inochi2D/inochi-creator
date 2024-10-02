@@ -16,6 +16,7 @@ import inochi2d;
 import std.conv;
 import i18n;
 import std.string;
+import inmath;
 
 
 /**
@@ -30,6 +31,19 @@ protected:
             &inSceneAmbientLight.vector, 
             ImGuiColorEditFlags.PickerHueWheel |
                 ImGuiColorEditFlags.NoInputs
+        );
+
+        igColorEdit3(
+            __("Scene Light Color"), 
+            &inSceneLightColor.vector, 
+            ImGuiColorEditFlags.PickerHueWheel |
+                ImGuiColorEditFlags.NoInputs
+        );
+
+        igSliderFloat3(
+            __("Light Direction"),
+            cast(float[3]*)inSceneLightDirection.ptr,
+            -1, 1
         );
     }
 
