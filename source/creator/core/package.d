@@ -195,6 +195,7 @@ ImGuiID incGetViewportDockSpace() {
 */
 void incOpenWindow() {
     import std.process : environment;
+    import std.string : fromStringz;
 
     switch(environment.get("XDG_SESSION_DESKTOP")) {
         case "i3":
@@ -249,10 +250,10 @@ void incOpenWindow() {
     }
 
     
-    int code = SDL_Init(SDL_INIT_EVERYTHING);
+    int code = SDL_Init(SDL_INIT_EVERYTHING & ~SDL_INIT_AUDIO);
     enforce(
         code == 0,
-        "Error initializing SDL2! %s".format(SDL_GetError())
+        "Error initializing SDL2! %s".format(SDL_GetError().fromStringz)
     );
 
     version(Windows) {
