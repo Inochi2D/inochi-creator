@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>com.inochi2d.inochi-creator</id>
+  <name>Inochi Creator</name>
+  <summary>Create and edit Inochi2D puppets</summary>
+  <developer id="com.inochi2d">
+    <name>Luna the Foxgirl</name>
+  </developer>
+  <launchable type="desktop-id">com.inochi2d.inochi-creator.desktop</launchable>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>BSD-2-Clause</project_license>
+  <description>
+    <p>Inochi2D is a framework for realtime 2D puppet animation which can be used for VTubing, 
+      game development and digital animation.</p>
+    <p>Inochi Creator is a tool that lets you create and edit Inochi2D puppets.</p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Title screen</caption>
+      <image type="source">https://user-images.githubusercontent.com/7032834/194462402-74c4a3e0-50ca-4b50-8e8d-164d97371f5a.png</image>
+    </screenshot>
+  </screenshots>
+  <releases>
+    <release version="stable"/>
+  </releases>
+  <url type="homepage">https://lunafoxgirlvt.itch.io/inochi-creator</url>
+  <url type="bugtracker">https://github.com/Inochi2D/inochi-creator/issues</url>
+  <url type="help">https://docs.inochi2d.com</url>
+  <url type="donation">https://inochi2d.com/#donate</url>
+  <url type="vcs-browser">https://github.com/Inochi2D/inochi-creator</url>
+  <url type="contribute">https://github.com/Inochi2D/inochi-creator</url>
+  <categories>
+    <category>Graphics</category>
+  </categories>
+  <recommends>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </recommends>
+  <branding>
+    <color type="primary" scheme_preference="light">#dbdbdb</color>
+    <color type="primary" scheme_preference="dark">#242424</color>
+  </branding>
+  <content_rating type="oars-1.1"/>
+</component>
