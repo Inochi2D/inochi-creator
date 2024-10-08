@@ -15,7 +15,7 @@ jobs:
       options: --privileged
 
     env:
-      MANIFEST_PATH: build-aux/flatpak/${{ inputs.flatpak_branch }}/com.inochi2d.inochi-creator.yml
+      MANIFEST_PATH: build-aux/linux/flatpak/com.inochi2d.inochi-creator.yml
       FLATPAK_BRANCH: ${{ inputs.flatpak_branch }}
       FLATPAK_BUILD_DIR: build-dir
       FLATPAK_BUILD_REPO: build-repo
