@@ -867,7 +867,11 @@ private {
         float uiScale = incGetUIScale();
         
         // HANDLE MOVE VIEWPORT
-        if (!isMovingViewport && io.MouseDown[1] && incInputIsDragRequested()) {
+        bool mouseRightStart = io.MouseDown[1] && incInputIsDragRequested();
+        bool mouseRightEnd = !io.MouseDown[1];
+        bool spaceStart = io.KeysDown[ImGuiKey.Space];
+        bool spaceEnd = !io.KeysDown[ImGuiKey.Space];
+        if (!isMovingViewport && (mouseRightStart || spaceStart)) {
             isMovingViewport = true;
             sx = io.MousePos.x;
             sy = io.MousePos.y;
@@ -875,7 +879,7 @@ private {
             csy = camera.position.y;
         }
 
-        if (isMovingViewport && !io.MouseDown[1]) {
+        if (isMovingViewport && (mouseRightEnd && spaceEnd)) {
             isMovingViewport = false;
         }
 
