@@ -47,6 +47,7 @@ private:
     SelectStateData curSelectState;
     Node[] rangeSelectNodes;
     bool selectStateUpdate = false;
+    bool revserseOrder = false;
 
 protected:
     /**
@@ -407,12 +408,12 @@ protected:
 
         if (open) {
             // Draw children
-            foreach(i, child; n.children) {
+            void drawChildren(ref Node child, ulong i) {
                 if (child.uuid !in filterResult)
-                    continue;
+                    return;
 
                 if (!filterResult[child.uuid])
-                    continue;
+                    return;
 
                 igPushID(cast(int)i);
                     igTableNextRow();
@@ -441,6 +442,14 @@ protected:
                 igPopID();
 
                 treeAddNode(child);
+            }
+
+            if (revserseOrder) {
+                foreach_reverse(i, child; n.children)
+                    drawChildren(child, i);
+            } else {
+                foreach(i, child; n.children)
+                    drawChildren(child, i);
             }
             igTreePop();
         }
@@ -563,7 +572,16 @@ protected:
             auto selected = incSelectedNodes();
             if (igButton("", ImVec2(24, 24))) {
                 foreach(payloadNode; selected) incDeleteChildWithHistory(payloadNode);
+                // should clean up selection, prevents unexpected behaviour
+                incSelectNode(null);
             }
+            incTooltip(_("Delete selected nodes"));
+
+            igSameLine(0, 2);
+            if (incButtonColored("\ue164##SortNodeOrder", ImVec2(24, 24), revserseOrder ? ImVec4.init : ImVec4(0.6f, 0.6f, 0.6f, 1f))) {
+                revserseOrder = !revserseOrder;
+            }
+            incTooltip(_("Reverse Node Order"));
 
             if(igBeginDragDropTarget()) {
                 const(ImGuiPayload)* payload = igAcceptDragDropPayload("_PUPPETNTREE");
