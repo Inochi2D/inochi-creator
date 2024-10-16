@@ -21,14 +21,7 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="nightly">
-      <url>https://github.com/Inochi2D/inochi-creator/</url>
-      <description>
-         <p>This is a nightly build of Inochi Creator!</p>
-         <p>Inochi Creator may crash unexpectedly and you will likely encounter bugs.</p>
-         <p>Make sure to save and back up your work often!</p>
-      </description>
-    </release>
+    <release version="stable"/>
   </releases>
   <url type="homepage">https://lunafoxgirlvt.itch.io/inochi-creator</url>
   <url type="bugtracker">https://github.com/Inochi2D/inochi-creator/issues</url>
