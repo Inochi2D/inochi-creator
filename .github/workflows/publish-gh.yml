@@ -43,4 +43,6 @@ jobs:
           out/inochi-creator-osx.zip
           out/inochi-creator-win32.msi
           out/Install_Inochi_Creator.dmg
+          out/inochi-creator.flatpak
+          out/inochi-creator.debug.flatpak
         generate_release_notes: ${{ inputs.generate-notes }}
