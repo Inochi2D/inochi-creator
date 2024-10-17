@@ -25,8 +25,15 @@ jobs:
       do_package: true
       postfix: '-demo'
 
+  build-flatpak-demo:
+    uses: './.github/workflows/build-flatpak.yml'
+    with:
+      target_ref: '${{ github.ref_name }}'
+      flatpak_branch: 'release'
+      postfix: '-demo'
+
   gh-publish:
-    needs: build-demo
+    needs: [build-demo, build-flatpak-demo]
     uses: './.github/workflows/publish-gh.yml'
     secrets: inherit
     with:

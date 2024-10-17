@@ -21,9 +21,7 @@ cleanup-commands:
   - mkdir -p ${FLATPAK_DEST}/lib/ffmpeg
 
 modules:
-
-  # --- Inochi Creator ---
-  - name: Inochi-Creator
+  - name: inochi-creator
     buildsystem: simple
     build-options:
       build-args:
@@ -48,9 +46,9 @@ modules:
 
     sources:
       - type: dir
-        path: ../../.. # The root of the Inochi Creator repo
+        path: ../../../.. # The root of the Inochi Creator repo
 
-  - name: Metadata
+  - name: metadata
     buildsystem: simple
     build-commands:
 
@@ -66,4 +64,4 @@ modules:
         commit: a412602d346ba69c63237217ae286112e300927d
 
       - type: dir
-        path: ./nightly/
+        path: .

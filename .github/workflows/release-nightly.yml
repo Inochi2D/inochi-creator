@@ -23,6 +23,12 @@ jobs:
       generate_version: true
       do_package: true
 
+  build-flatpak:
+    uses: './.github/workflows/build-flatpak.yml'
+    with:
+      target_ref: '${{ github.ref_name }}'
+      flatpak_branch: 'nightly'
+
   steam-publish:
     needs: build
     uses: './.github/workflows/publish-steam.yml'
@@ -31,7 +37,7 @@ jobs:
       branch: 'nightly'
   
   gh-publish:
-    needs: build
+    needs: [build, build-flatpak]
     uses: './.github/workflows/publish-gh.yml'
     secrets: inherit
     with:

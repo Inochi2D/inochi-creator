@@ -2,10 +2,17 @@ name: 'Build Inochi Creator (Flatpak)'
 
 on:
   workflow_call:
-    flatpak_branch:
-      required: true
-      type: string
-      
+    inputs:
+      target_ref:
+        required: true
+        type: string
+      flatpak_branch:
+        required: true
+        type: string
+      postfix:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   build-flatpak:
@@ -15,7 +22,7 @@ jobs:
       options: --privileged
 
     env:
-      MANIFEST_PATH: build-aux/linux/flatpak/com.inochi2d.inochi-creator.yml
+      MANIFEST_PATH: build-aux/linux/flatpak/${{ inputs.flatpak_branch }}/com.inochi2d.inochi-creator.yml
       FLATPAK_BRANCH: ${{ inputs.flatpak_branch }}
       FLATPAK_BUILD_DIR: build-dir
       FLATPAK_BUILD_REPO: build-repo
@@ -23,7 +30,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4.1.7
       with:
-        submodules: true
+        ref: '${{ inputs.target_ref }}'
 
     - name: Dump canonical manifest
       run: |
@@ -38,7 +45,7 @@ jobs:
         flatpak-builder --default-branch=${FLATPAK_BRANCH} --download-only /dev/null ${MANIFEST_PATH}
 
     - name: Prime cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           .flatpak-builder/ccache
@@ -54,10 +61,11 @@ jobs:
     - name: Upload flatpak repo
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ env.FLATPAK_BUILD_REPO }}
+        name: ${{ env.FLATPAK_BUILD_REPO }}${{ inputs.postfix }}
         path: |
           ${{ env.FLATPAK_BUILD_REPO }}
           !${{ env.FLATPAK_BUILD_REPO }}/.lock
+        retention-days: 1
 
   build-flatpak-bundle:
     needs: build-flatpak
@@ -65,31 +73,39 @@ jobs:
 
     env:
       APP_ID: com.inochi2d.inochi-creator
-      FLATPAK_BUNDLE: inochi-creator
       FLATPAK_BRANCH: ${{ inputs.flatpak_branch }}
       FLATPAK_BUILD_REPO: build-repo
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install flatpak
       run: |
         set -e
-        sudo apt install -y flatpak
+        sudo apt-get update && sudo apt-get -y --no-install-recommends install flatpak
 
     - name: Download flatpak repo
       uses: actions/download-artifact@v4
       with:
-        name: ${{ env.FLATPAK_BUILD_REPO }}
+        name: ${{ env.FLATPAK_BUILD_REPO }}${{ inputs.postfix }}
+        path: ${{ env.FLATPAK_BUILD_REPO }}
 
     - name: Create flatpak bundle
       run: |
         set -e
-        mkdir -p ${FLATPAK_BUILD_REPO}/{extensions,refs/{mirrors,remotes},state,tmp/cache}
-        flatpak build-bundle --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo ${FLATPAK_BUILD_REPO} ${FLATPAK_BUNDLE}.flatpak ${APP_ID} ${FLATPAK_BRANCH}
+        mkdir -p {out,${FLATPAK_BUILD_REPO}/{extensions,refs/{mirrors,remotes},state,tmp/cache}}
+        flatpak build-bundle --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo ${FLATPAK_BUILD_REPO} inochi-creator.flatpak ${APP_ID} ${FLATPAK_BRANCH}
+        flatpak build-bundle --runtime ${FLATPAK_BUILD_REPO} inochi-creator.debug.flatpak ${APP_ID/-/_}.Debug ${FLATPAK_BRANCH}
+        mv inochi-creator.flatpak inochi-creator.debug.flatpak out/
+        touch .flatpak
 
-    - name: Upload flatpak bundle
+    - name: Make Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: "build-flatpak"
-        path: ${{ env.FLATPAK_BUNDLE }}.flatpak
+        name: build-flatpak${{ inputs.postfix }}
+        path: |
+          out/inochi-creator.flatpak
+          out/inochi-creator.debug.flatpak
+          .flatpak
+        overwrite: true
+        retention-days: 1
