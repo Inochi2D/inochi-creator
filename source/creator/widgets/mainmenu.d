@@ -423,9 +423,19 @@ void incMainMenu() {
 
                         if (string path = incShowImportDialog(filters, _("Import..."))) {
                             Puppet p = inLoadPuppet!ExPuppet(path);
+                            bool imported = false;
 
                             if ("com.inochi2d.inochi-session.bindings" in p.extData) {
                                 incActivePuppet().extData["com.inochi2d.inochi-session.bindings"] = p.extData["com.inochi2d.inochi-session.bindings"].dup;
+                                imported = true;
+                            }
+
+                            if ("com.inochi2d.inochi-session.animations" in p.extData) {
+                                incActivePuppet().extData["com.inochi2d.inochi-session.animations"] = p.extData["com.inochi2d.inochi-session.animations"].dup;
+                                imported = true;
+                            }
+                            
+                            if(imported){
                                 incSetStatus(_("Successfully overwrote Inochi Session tracking data..."));
                             } else {
                                 incDialog(__("Error"), _("There was no Inochi Session data to import!"));
