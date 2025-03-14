@@ -81,6 +81,13 @@ void incSettingsSet(T)(string name, T value) if (!is(T == string[]))  {
 }
 
 /**
+    Removes a setting
+*/
+void incSettingsRemove(string name) {
+    settings.object.remove(name);
+}
+
+/**
     Gets a value from the settings store
 */
 T incSettingsGet(T)(string name) if (!is(T == string[])) {
