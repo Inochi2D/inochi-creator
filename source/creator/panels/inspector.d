@@ -692,7 +692,7 @@ void incInspectorTextureSlot(Part p, TextureUsage usage, string title, ImVec2 el
                     }
                 }
 
-                // Allow saving texture to file
+                // Allow loading texture from file
                 if (igMenuItem(__("Load from File"))) {
                     TFD_Filter[] filters = [
                         { ["*.png"], "Portable Network Graphics (*.png)" },
