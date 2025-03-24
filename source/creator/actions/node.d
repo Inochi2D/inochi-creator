@@ -332,6 +332,9 @@ void incAddChildWithHistory(Node n, Node to, string name=null) {
     incActivePuppet().rescanNodes();
 }
 
+/**
+    Duplicates a node and all of its children
+*/
 Node recursiveDuplicate(Node n){
     Node x;
     if (cast(Part) n) {
@@ -345,6 +348,7 @@ Node recursiveDuplicate(Node n){
         p.opacity = c.opacity;
         p.maskAlphaThreshold = c.maskAlphaThreshold;
         p.masks = c.masks;
+        p.rebuffer(c.getMesh());
         x = p;
     } else if (cast(Composite) n) {
         //Do Composites hold any unique data?
@@ -359,7 +363,9 @@ Node recursiveDuplicate(Node n){
         x = p;    
     } else if (cast(MeshGroup) n) {
         //Do meshgroups hold into any unique data?
+        MeshGroup c = cast(MeshGroup) n;
         MeshGroup p = new MeshGroup(null);
+        p.rebuffer(c.getMesh());
         x = p;
     } else if (cast(SimplePhysics) n) {
         SimplePhysics c = cast(SimplePhysics) n;
@@ -381,11 +387,11 @@ Node recursiveDuplicate(Node n){
         return null; 
     } else x = new Node(inCreateUUID(),null);    
     //Applies to all node types
-    x.name = n.name;
+    x.name = n.name.dup;
     x.enabled = n.enabled;
     x.globalTransform = n.globalTransform;
     x.localTransform = n.localTransform;
-    x.zSort = n.zSort;
+    x.relZSort = n.relZSort;
     foreach (child; n.children()) {
         x.addChild(recursiveDuplicate(child));
     }

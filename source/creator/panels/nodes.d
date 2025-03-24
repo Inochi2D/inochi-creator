@@ -175,14 +175,9 @@ protected:
                     igSameLine(0, 2); 
                     if (igMenuItem(__("Duplicate"), "", false, true)) {                   
                         Node x = recursiveDuplicate(n);
-                        if (x !is null){
-                            x.parent = n.parent;
-                            //reordering the nodes for user friendliness.
-                            Node[] l = n.parent.children;
-                            l.insertInPlace(l.countUntil!(c => c is n)+1,x);
-                            l=l[0..$-1];
-                        }
-                        incActivePuppet().rescanNodes();
+                        Transform t = x.localTransform;
+                        incAddChildWithHistory(x,n.parent,n.name~(" Copy"));
+                        x.localTransform = t;
                     }
                 }
                 igEndMenu();

@@ -143,7 +143,8 @@ private {
             auto binding = incBindingGetPairFor(param, target, pair, srcBinding.getName(), true);
             // Check if the binding was found or created
             if(binding is null) continue;
-
+            if (axis == 5)
+                axis = 2;//Retaining the functionality of older paste
             uint xCount = param.axisPointCount(0);
             uint yCount = param.axisPointCount(1);
             foreach(x; 0..xCount) {
@@ -938,11 +939,15 @@ void incParameterView(bool armedParam=false)(size_t idx, Parameter param, string
                         if (igMenuItem(__("Copy"), "", false, true)) {
                             cClipboardParameter = param.dup;
                         }
-                        if (igMenuItem(__("Paste"), "", false, true)) {
+                        if (igMenuItem(__("Paste Without Pair"), "", false, true)) {
                             pasteParameter(param, 2);
                             incViewportNodeDeformNotifyParamValueChanged();
                         }
-                        if (igMenuItem(__("Paste and Horizontal Flip"), "", false, true)) {
+                        if (igMenuItem(__("Paste With Pairing"), "", false, true)) {
+                            pasteParameter(param, 5);
+                            incViewportNodeDeformNotifyParamValueChanged();
+                        }
+                        if (igMenuItem(__("Paste Pair with Horizontal Flip"), "", false, true)) {
                             pasteParameter(param, 0);
                             incViewportNodeDeformNotifyParamValueChanged();
                         }

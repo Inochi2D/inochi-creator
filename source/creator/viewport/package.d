@@ -767,7 +767,7 @@ void incViewportTransformHandle() {
 //
 
 enum incVIEWPORT_ZOOM_MIN = 0.05;
-enum incVIEWPORT_ZOOM_MAX = 12.0;
+enum incVIEWPORT_ZOOM_MAX = 50.0;
 
 /**
     Target camera position in scene
