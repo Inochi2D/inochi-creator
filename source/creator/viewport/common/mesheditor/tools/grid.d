@@ -17,7 +17,7 @@ import creator;
 import inochi2d;
 import inochi2d.core.dbg;
 import bindbc.opengl;
-import bindbc.imgui;
+import i2d.imgui;
 import std.stdio;
 import std.array;
 import std.algorithm.searching: countUntil;

@@ -1,4 +1,4 @@
-module creator.core.path;
+module uilib.settings.cfg;
 import std.path;
 import std.process;
 import std.file : getcwd, mkdirRecurse, exists;
@@ -24,7 +24,7 @@ enum ENV_CONFIG_PATH = "INOCHI_CONFIG_PATH";
 /**
     Returns the app configuration directory for the platform
 */
-string incGetAppConfigPath() {
+string uiGetAppConfigPath() {
     if (cachedConfigDir) return cachedConfigDir;
     if (inForcedConfigDir) return inForcedConfigDir;
     string appDataDir;
@@ -112,7 +112,7 @@ string incGetAppConfigPath() {
 /**
     Gets the directory for an imgui config file.
 */
-string incGetAppImguiConfigFile() {
+string uiGetAppImguiConfigFile() {
     if (cachedImguiFileDir) return cachedImguiFileDir;
     cachedImguiFileDir = buildPath(incGetAppConfigPath(), "imgui.ini");
     return cachedImguiFileDir;
@@ -121,7 +121,7 @@ string incGetAppImguiConfigFile() {
 /**
     Gets directory for custom fonts
 */
-string incGetAppFontsPath() {
+string uiGetAppFontsPath() {
     if (cachedFontDir) return cachedFontDir;
     cachedFontDir = buildPath(incGetAppConfigPath(), "fonts");
     if (!exists(cachedFontDir)) {
@@ -135,7 +135,7 @@ string incGetAppFontsPath() {
 /**
     Gets directory for custom locales
 */
-string incGetAppLocalePath() {
+string uiGetAppLocalePath() {
     if (cachedLocaleDir) return cachedLocaleDir;
 
     cachedLocaleDir = buildPath(incGetAppConfigPath(), "i18n");
@@ -150,7 +150,7 @@ string incGetAppLocalePath() {
 /**
     Gets special directory for locales
 */
-string incGetAppLocalePathExtra() {
+string uiGetAppLocalePathExtra() {
     
     // AppImage locale dir is the root of the appimage
     version(linux) {
@@ -162,3 +162,4 @@ string incGetAppLocalePathExtra() {
 
     return null;
 }
+

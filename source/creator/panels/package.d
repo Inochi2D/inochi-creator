@@ -9,7 +9,7 @@ import creator.core;
 import creator.core.settings;
 import creator.widgets;
 import creator : EditMode, incEditMode;
-import bindbc.imgui;
+import i2d.imgui;
 import std.string;
 import i18n;
 

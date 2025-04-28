@@ -7,7 +7,7 @@ import creator.widgets.drag;
 import inochi2d;
 import inochi2d.core.dbg;
 import inmath;
-import bindbc.imgui;
+import i2d.imgui;
 
 class RectangleBrush : Brush {
     float width;

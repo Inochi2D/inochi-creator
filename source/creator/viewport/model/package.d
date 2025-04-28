@@ -17,7 +17,7 @@ import creator.core;
 import creator.viewport.vertex;
 import creator;
 import inochi2d;
-import bindbc.imgui;
+import i2d.imgui;
 import i18n;
 import std.stdio;
 

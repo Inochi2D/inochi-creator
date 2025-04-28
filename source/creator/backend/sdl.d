@@ -1,5 +1,5 @@
 module creator.backend.sdl;
-import bindbc.imgui;
+import i2d.imgui;
 import bindbc.sdl;
 
 // private {

@@ -20,7 +20,7 @@ import creator.widgets.viewport;
 import creator.widgets.label;
 import creator.widgets.tooltip;
 import i18n;
-import bindbc.imgui;
+import i2d.imgui;
 import std.algorithm.sorting;
 import std.algorithm.searching;
 import std.stdio;

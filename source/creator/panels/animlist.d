@@ -8,7 +8,7 @@ module creator.panels.animlist;
 import creator.panels;
 import creator : EditMode;
 import i18n;
-import bindbc.imgui;
+import i2d.imgui;
 import creator;
 import std.string;
 import inochi2d;

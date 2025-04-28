@@ -15,7 +15,7 @@ import std.algorithm;
 import std.algorithm.iteration: map, reduce;
 import std.stdio;
 import std.array;
-import bindbc.imgui;
+import i2d.imgui;
 
 class ContourAutoMeshProcessor : AutoMeshProcessor {
     float SAMPLING_STEP = 32;

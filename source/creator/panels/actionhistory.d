@@ -6,7 +6,7 @@
 */
 module creator.panels.actionhistory;
 import creator.panels;
-import bindbc.imgui;
+import i2d.imgui;
 import creator.core.actionstack;
 import std.string;
 import creator.widgets;

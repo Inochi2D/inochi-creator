@@ -1,13 +1,16 @@
 /*
+    UILib GL Backend
+
     Copyright © 2020-2023, ImGui & Inochi2D Project
     Distributed under the MIT, see ImGui LICENSE file.
     
     Authors: Luna Nielsen
 */
-module creator.backend.gl;
+module uilib.gl;
+import uilib;
 import creator.core.dpi;
 import bindbc.opengl;
-import bindbc.imgui;
+import i2d.imgui;
 import core.stdc.stdio;
 import inmath;
 import bindbc.sdl;
@@ -103,38 +106,7 @@ void incGLBackendBeginRender() {
     }
 }
 
-bool incGLBackendProcessEvent(const(SDL_Event)* event) {
-    version (UseUIScaling) {
-        version (OSX) {
-            
-            // macOS handles the UI scaling automatically, as such we don't need to do as much cursed shit(TM) there.
-            return ImGui_ImplSDL2_ProcessEvent(event);
-        } else {
-            switch(event.type) {
-
-                // For UI Scaling we want to send in our own scaled UI inputs
-                case SDL_EventType.SDL_MOUSEMOTION:
-                    float uiScale = incGetUIScale();
-                    ImGuiIO_AddMousePosEvent(
-                        igGetIO(), 
-                        cast(float)event.motion.x/uiScale, 
-                        cast(float)event.motion.y/uiScale
-                    );
-                    return true;
-                
-                default:
-                    return ImGui_ImplSDL2_ProcessEvent(event);
-            }
-        }
-
-    } else {
-        return ImGui_ImplSDL2_ProcessEvent(event);
-    }
-
-}
-
 static void incGLBackendSetupRenderState(ImDrawData* draw_data, float fb_width, float fb_height, GLuint vertex_array_object) {
-    float uiScale = incGetUIScale();
 
     // Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor enabled, polygon fill
     glEnable(GL_BLEND);

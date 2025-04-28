@@ -16,7 +16,7 @@ import creator.widgets.label : incText;
 import creator.io.autosave;
 import i18n;
 import std.path : stripExtension;
-import bindbc.imgui;
+import i2d.imgui;
 
 class RestoreSaveWindow : Window {
 private:

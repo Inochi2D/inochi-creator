@@ -1,5 +1,5 @@
 module creator.widgets.label;
-import bindbc.imgui;
+import i2d.imgui;
 import creator.widgets.dummy;
 import creator.core.font;
 import inochi2d.core.nodes : Node;

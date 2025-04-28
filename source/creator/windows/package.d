@@ -6,7 +6,7 @@
 */
 module creator.windows;
 import creator.core;
-import bindbc.imgui;
+import i2d.imgui;
 import creator.widgets;
 import std.string;
 import std.conv;

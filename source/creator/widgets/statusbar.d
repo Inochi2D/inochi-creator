@@ -6,7 +6,7 @@
 */
 module creator.widgets.statusbar;
 import bindbc.sdl;
-import bindbc.imgui;
+import i2d.imgui;
 import creator.core;
 import creator.widgets;
 import creator.utils.link;

@@ -8,7 +8,7 @@ module creator.panels.timeline;
 import creator.panels;
 import i18n;
 import inochi2d;
-import bindbc.imgui;
+import i2d.imgui;
 import creator.widgets;
 import creator;
 import inmath.noise;

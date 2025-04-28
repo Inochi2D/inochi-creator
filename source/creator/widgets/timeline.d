@@ -3,7 +3,7 @@ import inochi2d.core.animation;
 import inochi2d;
 import inochi2d.core.animation.player;
 import creator.widgets;
-import bindbc.imgui;
+import i2d.imgui;
 
 enum MIN_TRACK_HEIGHT = 26;
 enum MIN_HEADER_WIDTH = 128;

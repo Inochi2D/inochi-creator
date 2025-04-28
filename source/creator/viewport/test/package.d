@@ -8,7 +8,7 @@ module creator.viewport.test;
 import creator.core;
 import creator;
 import inochi2d;
-import bindbc.imgui;
+import i2d.imgui;
 import ft;
 
 enum TrackingMode {

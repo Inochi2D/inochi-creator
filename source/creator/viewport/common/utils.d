@@ -5,7 +5,7 @@
     Author: Luna Nielsen
 */
 module creator.viewport.common.utils;
-import bindbc.imgui;
+import i2d.imgui;
 
 /**
     Returns the given color with the alpha channel modified.

@@ -15,7 +15,7 @@ import std.algorithm;
 import std.algorithm.iteration: map, reduce;
 import std.stdio;
 import std.array;
-import bindbc.imgui;
+import i2d.imgui;
 
 class GridAutoMeshProcessor : AutoMeshProcessor {
     float[] scaleX = [-0.1, 0.0, 0.5, 1.0, 1.1];

@@ -11,7 +11,7 @@ import creator.panels;
 import creator.windows;
 import creator.widgets;
 import creator;
-import bindbc.imgui;
+import i2d.imgui;
 import inochi2d;
 import std.conv;
 import i18n;

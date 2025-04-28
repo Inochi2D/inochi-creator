@@ -1,6 +1,6 @@
 module creator.widgets.dragdrop;
 import creator.widgets;
-import bindbc.imgui;
+import i2d.imgui;
 import inochi2d;
 
 void incDragdropNodeList(Node node) {

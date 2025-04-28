@@ -23,7 +23,7 @@
 */
 module creator.widgets.markdown;
 import creator.widgets.dummy;
-import bindbc.imgui;
+import i2d.imgui;
 
 struct MarkdownLinkCallbackData {
     string text;
@@ -40,7 +40,7 @@ struct MarkdownTooltipCallbackData {
 struct MarkdownImageData {
     bool                    isValid = false;                    // if true, will draw the image
     bool                    useLinkCallback = false;            // if true, linkCallback will be called when image is clicked
-    ImTextureID             userTextureId = null;                  // see ImGui::Image
+    ImTextureID             userTextureId = 0;                  // see ImGui::Image
     ImVec2                  size = ImVec2( 100.0f, 100.0f );    // see ImGui::Image
     ImVec2                  uv0 = ImVec2( 0, 0 );               // see ImGui::Image
     ImVec2                  uv1 = ImVec2( 1, 1 );               // see ImGui::Image

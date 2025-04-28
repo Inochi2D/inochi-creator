@@ -1,7 +1,7 @@
 module creator.widgets.texture;
 import creator.widgets;
 import creator.core;
-import bindbc.imgui;
+import i2d.imgui;
 import inmath;
 import inochi2d;
 import std.math : quantize;

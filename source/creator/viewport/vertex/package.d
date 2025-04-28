@@ -15,7 +15,7 @@ import creator.core.actionstack;
 import creator.widgets;
 import creator;
 import inochi2d;
-import bindbc.imgui;
+import i2d.imgui;
 import std.stdio;
 import std.string;
 import bindbc.opengl;

@@ -8,7 +8,7 @@ module creator.widgets.dialog;
 import creator.widgets.dummy;
 import creator.widgets.label;
 import creator.core.font;
-import bindbc.imgui;
+import i2d.imgui;
 import inochi2d;
 import i18n;
 import std.algorithm.iteration: filter;

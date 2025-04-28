@@ -1,5 +1,5 @@
 module creator.widgets.shadow;
-import bindbc.imgui;
+import i2d.imgui;
 import std.stdio : writeln;
 
 /**

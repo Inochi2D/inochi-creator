@@ -9,7 +9,7 @@ import creator.viewport;
 import creator.panels;
 import creator.windows;
 import creator : incActivePuppet;
-import bindbc.imgui;
+import i2d.imgui;
 import inochi2d;
 import std.conv;
 import i18n;

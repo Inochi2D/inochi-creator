@@ -1,7 +1,7 @@
 module creator.widgets.category;
 import creator.core;
 import creator.widgets;
-import bindbc.imgui;
+import i2d.imgui;
 
 private {
     struct CategoryData {

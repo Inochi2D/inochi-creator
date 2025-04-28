@@ -1,6 +1,6 @@
 module creator.core.tasks;
 import core.thread.fiber;
-import bindbc.imgui;
+import i2d.imgui;
 
 private {
 __gshared:

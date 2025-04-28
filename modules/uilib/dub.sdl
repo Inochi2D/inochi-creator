@@ -1,0 +1,10 @@
+name "uilib"
+
+// Path dependencies while development is happening.
+dependency "inochi2d" path="../inochi2d"
+dependency "numem" path="../../numem"
+dependency "nulib" path="../../nulib"
+dependency "numem:hookset-libc" version="*"
+dependency "sdl-d" path="../sdl-d"
+dependency "hairetsu" path="../hairetsu"
+dependency "i2d-imgui" path="../i2d-imgui"

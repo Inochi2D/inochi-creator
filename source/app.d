@@ -23,11 +23,6 @@ import inochi2d;
 import creator;
 import i18n;
 
-version(D_X32) {
-    pragma(msg, "Inochi Creator does not support compilation on 32 bit platforms");
-    static assert(0, "😎👉👉 no");
-}
-
 version(Windows) {
     debug {
 

@@ -16,7 +16,7 @@ import creator.actions;
 import creator;
 import inochi2d;
 import inochi2d.core.dbg;
-import bindbc.imgui;
+import i2d.imgui;
 import std.string;
 import i18n;
 

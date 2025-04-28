@@ -6,7 +6,7 @@
 */
 module creator.core.font;
 import creator.core;
-import bindbc.imgui;
+import i2d.imgui;
 import core.stdc.stdlib : malloc;
 import core.stdc.string : memcpy;
 import std.string;

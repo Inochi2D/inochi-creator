@@ -13,7 +13,7 @@ import inochi2d.core.dbg;
 import creator.core;
 import creator;
 import inochi2d;
-import bindbc.imgui;
+import i2d.imgui;
 import i18n;
 
 private {

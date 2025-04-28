@@ -14,7 +14,6 @@ import creator.utils.link;
 import creator;
 import creator.widgets.dialog;
 import creator.widgets.modal;
-import creator.backend.gl;
 import creator.io.autosave;
 import creator.io.save;
 
@@ -28,8 +27,8 @@ import std.stdio;
 import std.conv;
 import std.range : repeat;
 
-public import bindbc.imgui;
-public import bindbc.imgui.ogl;
+public import i2d.imgui;
+public import i2d.imgui.ogl;
 public import creator.core.settings;
 public import creator.core.actionstack;
 public import creator.core.tasks;
@@ -55,58 +54,6 @@ version(OSX) {
 
 version(linux) {
     import dportals;
-}
-
-version(Windows) {
-    import core.sys.windows.windows;
-    import core.sys.windows.winuser;
-
-    // Windows 8.1+ DPI awareness context enum
-    enum DPIAwarenessContext { 
-        DPI_AWARENESS_CONTEXT_UNAWARE = 0,
-        DPI_AWARENESS_CONTEXT_SYSTEM_AWARE = 1,
-        DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE = 2,
-        DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = 3
-    }
-
-    // Windows 8.1+ DPI awareness enum
-    enum ProcessDPIAwareness { 
-        PROCESS_DPI_UNAWARE = 0,
-        PROCESS_SYSTEM_DPI_AWARE = 1,
-        PROCESS_PER_MONITOR_DPI_AWARE = 2
-    }
-
-
-    void incSetWin32DPIAwareness() {
-        void* userDLL, shcoreDLL;
-
-        bool function() dpiAwareFunc8;
-        HRESULT function(DPIAwarenessContext) dpiAwareFuncCtx81;
-        HRESULT function(ProcessDPIAwareness) dpiAwareFunc81;
-
-        userDLL = SDL_LoadObject("USER32.DLL");
-        if (userDLL) {
-            dpiAwareFunc8 = cast(typeof(dpiAwareFunc8)) SDL_LoadFunction(userDLL, "SetProcessDPIAware");
-            dpiAwareFuncCtx81 = cast(typeof(dpiAwareFuncCtx81)) SDL_LoadFunction(userDLL, "SetProcessDpiAwarenessContext");
-        }
-        
-        shcoreDLL = SDL_LoadObject("SHCORE.DLL");
-        if (shcoreDLL) {
-            dpiAwareFunc81 = cast(typeof(dpiAwareFunc81)) SDL_LoadFunction(shcoreDLL, "SetProcessDpiAwareness");
-        }
-        
-        if (dpiAwareFuncCtx81) {
-            dpiAwareFuncCtx81(DPIAwarenessContext.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
-            dpiAwareFuncCtx81(DPIAwarenessContext.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-        } else if (dpiAwareFunc81) {
-            dpiAwareFunc81(ProcessDPIAwareness.PROCESS_PER_MONITOR_DPI_AWARE);
-        } else if (dpiAwareFunc8) dpiAwareFunc8();
-
-
-        // Unload the DLLs
-        if (userDLL) SDL_UnloadObject(userDLL);
-        if (shcoreDLL) SDL_UnloadObject(shcoreDLL);        
-    }
 }
 
 private {
@@ -256,22 +203,6 @@ void incOpenWindow() {
         "Error initializing SDL2! %s".format(SDL_GetError().fromStringz)
     );
 
-    version(Windows) {
-        incSetWin32DPIAwareness();
-    }
-
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-
     SDL_WindowFlags flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
 
     if (incSettingsGet!bool("WinMax", false)) {
@@ -328,15 +259,6 @@ void incOpenWindow() {
         
         // Windows is heck when it comes to /SUBSYSTEM:windows
     } else {
-        debug {
-            writefln("GLInfo:\n\t%s\n\t%s\n\t%s\n\t%s\n\tgls=%s",
-                glGetString(GL_VERSION).fromStringz,
-                glGetString(GL_VENDOR).fromStringz,
-                glGetString(GL_RENDERER).fromStringz,
-                glGetString(GL_SHADING_LANGUAGE_VERSION).fromStringz,
-                support
-            );
-        }
     }
 
     // Setup Inochi2D
@@ -432,160 +354,6 @@ void incCreateContext() {
     incInitStyling();
     incInitDialogs();
     incResetClearColor();
-}
-
-
-/**
-    Initialize styling
-*/
-void incInitStyling() {
-    //style.WindowBorderSize = 0;
-    auto style = igGetStyle();
-    style.FrameBorderSize = 1;
-    style.TabBorderSize = 1;
-    style.ChildBorderSize = 1;
-    style.PopupBorderSize = 1;
-    style.FrameBorderSize = 1;
-    style.TabBorderSize = 1;
-
-    style.WindowRounding = 4;
-    style.ChildRounding = 0;
-    style.FrameRounding = 3;
-    style.PopupRounding = 6;
-    style.ScrollbarRounding = 18;
-    style.GrabRounding = 3;
-    style.LogSliderDeadzone = 6;
-    style.TabRounding = 6;
-
-    style.IndentSpacing = 10;
-    style.ItemSpacing.y = 3;
-    style.FramePadding.y = 4;
-
-    style.GrabMinSize = 13;
-    style.ScrollbarSize = 14;
-    style.ChildBorderSize = 1;
-
-    // Don't draw the silly roll menu
-    style.WindowMenuButtonPosition = ImGuiDir.None;
-
-    // macOS support
-    version(OSX) style.WindowTitleAlign = ImVec2(0.5, 0.5);
-    
-    
-    igStyleColorsDark(style);
-    style.Colors[ImGuiCol.Text]                   = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
-    style.Colors[ImGuiCol.TextDisabled]           = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
-    style.Colors[ImGuiCol.WindowBg]               = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
-    style.Colors[ImGuiCol.ChildBg]                = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-    style.Colors[ImGuiCol.PopupBg]                = ImVec4(0.08f, 0.08f, 0.08f, 0.94f);
-    style.Colors[ImGuiCol.Border]                 = ImVec4(0.00f, 0.00f, 0.00f, 0.16f);
-    style.Colors[ImGuiCol.BorderShadow]           = ImVec4(0.00f, 0.00f, 0.00f, 0.16f);
-    style.Colors[ImGuiCol.FrameBg]                = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
-    style.Colors[ImGuiCol.FrameBgHovered]         = ImVec4(0.15f, 0.15f, 0.15f, 0.40f);
-    style.Colors[ImGuiCol.FrameBgActive]          = ImVec4(0.22f, 0.22f, 0.22f, 0.67f);
-    style.Colors[ImGuiCol.TitleBg]                = ImVec4(0.04f, 0.04f, 0.04f, 1.00f);
-    style.Colors[ImGuiCol.TitleBgActive]          = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol.TitleBgCollapsed]       = ImVec4(0.00f, 0.00f, 0.00f, 0.51f);
-    style.Colors[ImGuiCol.MenuBarBg]              = ImVec4(0.05f, 0.05f, 0.05f, 1.00f);
-    style.Colors[ImGuiCol.ScrollbarBg]            = ImVec4(0.02f, 0.02f, 0.02f, 0.53f);
-    style.Colors[ImGuiCol.ScrollbarGrab]          = ImVec4(0.31f, 0.31f, 0.31f, 1.00f);
-    style.Colors[ImGuiCol.ScrollbarGrabHovered]   = ImVec4(0.41f, 0.41f, 0.41f, 1.00f);
-    style.Colors[ImGuiCol.ScrollbarGrabActive]    = ImVec4(0.51f, 0.51f, 0.51f, 1.00f);
-    style.Colors[ImGuiCol.CheckMark]              = ImVec4(0.76f, 0.76f, 0.76f, 1.00f);
-    style.Colors[ImGuiCol.SliderGrab]             = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
-    style.Colors[ImGuiCol.SliderGrabActive]       = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
-    style.Colors[ImGuiCol.Button]                 = ImVec4(0.39f, 0.39f, 0.39f, 0.40f);
-    style.Colors[ImGuiCol.ButtonHovered]          = ImVec4(0.44f, 0.44f, 0.44f, 1.00f);
-    style.Colors[ImGuiCol.ButtonActive]           = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
-    style.Colors[ImGuiCol.Header]                 = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
-    style.Colors[ImGuiCol.HeaderHovered]          = ImVec4(0.28f, 0.28f, 0.28f, 0.80f);
-    style.Colors[ImGuiCol.HeaderActive]           = ImVec4(0.44f, 0.44f, 0.44f, 1.00f);
-    style.Colors[ImGuiCol.Separator]              = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol.SeparatorHovered]       = ImVec4(0.29f, 0.29f, 0.29f, 0.78f);
-    style.Colors[ImGuiCol.SeparatorActive]        = ImVec4(0.47f, 0.47f, 0.47f, 1.00f);
-    style.Colors[ImGuiCol.ResizeGrip]             = ImVec4(0.35f, 0.35f, 0.35f, 0.00f);
-    style.Colors[ImGuiCol.ResizeGripHovered]      = ImVec4(0.40f, 0.40f, 0.40f, 0.00f);
-    style.Colors[ImGuiCol.ResizeGripActive]       = ImVec4(0.55f, 0.55f, 0.56f, 0.00f);
-    style.Colors[ImGuiCol.Tab]                    = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol.TabHovered]             = ImVec4(0.34f, 0.34f, 0.34f, 0.80f);
-    style.Colors[ImGuiCol.TabActive]              = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
-    style.Colors[ImGuiCol.TabUnfocused]           = ImVec4(0.14f, 0.14f, 0.14f, 0.97f);
-    style.Colors[ImGuiCol.TabUnfocusedActive]     = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
-    style.Colors[ImGuiCol.DockingPreview]         = ImVec4(0.62f, 0.68f, 0.75f, 0.70f);
-    style.Colors[ImGuiCol.DockingEmptyBg]         = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
-    style.Colors[ImGuiCol.PlotLines]              = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
-    style.Colors[ImGuiCol.PlotLinesHovered]       = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
-    style.Colors[ImGuiCol.PlotHistogram]          = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol.PlotHistogramHovered]   = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol.TableHeaderBg]          = ImVec4(0.19f, 0.19f, 0.20f, 1.00f);
-    style.Colors[ImGuiCol.TableBorderStrong]      = ImVec4(0.31f, 0.31f, 0.35f, 1.00f);
-    style.Colors[ImGuiCol.TableBorderLight]       = ImVec4(0.23f, 0.23f, 0.25f, 1.00f);
-    style.Colors[ImGuiCol.TableRowBg]             = ImVec4(0.310f, 0.310f, 0.310f, 0.267f);
-    style.Colors[ImGuiCol.TableRowBgAlt]          = ImVec4(0.463f, 0.463f, 0.463f, 0.267f);
-    style.Colors[ImGuiCol.TextSelectedBg]         = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
-    style.Colors[ImGuiCol.DragDropTarget]         = ImVec4(1.00f, 1.00f, 0.00f, 0.90f);
-    style.Colors[ImGuiCol.NavHighlight]           = ImVec4(0.32f, 0.32f, 0.32f, 1.00f);
-    style.Colors[ImGuiCol.NavWindowingHighlight]  = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
-    style.Colors[ImGuiCol.NavWindowingDimBg]      = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
-    style.Colors[ImGuiCol.ModalWindowDimBg]       = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
-    incDarkModeColors = style.Colors.dup;
-    
-    igStyleColorsLight(style);
-    style.Colors[ImGuiCol.Border] = ImVec4(0.8, 0.8, 0.8, 0.5);
-    style.Colors[ImGuiCol.BorderShadow] = ImVec4(0, 0, 0, 0.05);
-    style.Colors[ImGuiCol.TitleBg] = ImVec4(0.902, 0.902, 0.902, 1);
-    style.Colors[ImGuiCol.TitleBgActive] = ImVec4(0.98, 0.98, 0.98, 1);
-    style.Colors[ImGuiCol.Separator] = ImVec4(0.86, 0.86, 0.86, 1);
-    style.Colors[ImGuiCol.ScrollbarGrab] = ImVec4(0.68, 0.68, 0.68, 1);
-    style.Colors[ImGuiCol.ScrollbarGrabActive] = ImVec4(0.68, 0.68, 0.68, 1);
-    style.Colors[ImGuiCol.ScrollbarGrabHovered] = ImVec4(0.64, 0.64, 0.64, 1);
-    style.Colors[ImGuiCol.FrameBg] = ImVec4(1, 1, 1, 1);
-    style.Colors[ImGuiCol.FrameBgHovered] = ImVec4(0.78, 0.88, 1, 1);
-    style.Colors[ImGuiCol.FrameBgActive] = ImVec4(0.76, 0.86, 1, 1);
-    style.Colors[ImGuiCol.Button] = ImVec4(0.98, 0.98, 0.98, 1);
-    style.Colors[ImGuiCol.ButtonHovered] = ImVec4(1, 1, 1, 1);
-    style.Colors[ImGuiCol.ButtonActive] = ImVec4(0.8, 0.8, 0.8, 1);
-    style.Colors[ImGuiCol.CheckMark] = ImVec4(0, 0, 0, 1);
-    style.Colors[ImGuiCol.Tab] = ImVec4(0.98, 0.98, 0.98, 1);
-    style.Colors[ImGuiCol.TabHovered] = ImVec4(1, 1, 1, 1);
-    style.Colors[ImGuiCol.TabActive] = ImVec4(0.8, 0.8, 0.8, 1);
-    style.Colors[ImGuiCol.TabUnfocused] = ImVec4(0.92, 0.92, 0.92, 1);
-    style.Colors[ImGuiCol.TabUnfocusedActive] = ImVec4(0.88, 0.88, 0.88, 1);
-    style.Colors[ImGuiCol.MenuBarBg] = ImVec4(0.863, 0.863, 0.863, 1);  
-    style.Colors[ImGuiCol.PopupBg] = ImVec4(0.941, 0.941, 0.941, 1);  
-    style.Colors[ImGuiCol.Header] = ImVec4(0.990, 0.990, 0.990, 1);  
-    style.Colors[ImGuiCol.HeaderHovered] = ImVec4(1, 1, 1, 1);
-    incLightModeColors = style.Colors.dup;
-    
-    style.Colors = isDarkMode ? incDarkModeColors : incLightModeColors;
-}
-
-void incPushDarkColorScheme() {
-    auto ctx = igGetCurrentContext();
-    ctx.Style.Colors = incDarkModeColors;
-}
-
-void incPushLightColorScheme() {
-    auto ctx = igGetCurrentContext();
-    ctx.Style.Colors = incLightModeColors;
-}
-
-void incPopColorScheme() {
-    auto ctx = igGetCurrentContext();
-    ctx.Style.Colors = isDarkMode ? incDarkModeColors : incLightModeColors;
-}
-
-void incSetDarkMode(bool darkMode) {
-    auto style = igGetStyle();
-    style.Colors = darkMode ? incDarkModeColors : incLightModeColors;
-
-    // Set Dark mode setting
-    incSettingsSet("DarkMode", darkMode);
-    isDarkMode = darkMode;
-}
-
-bool incGetDarkMode() {
-    return isDarkMode;
 }
 
 /**
