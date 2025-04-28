@@ -4,9 +4,10 @@ import std.json;
 import std.file;
 import uilib.msgbox;
 
-enum APP_LOAD_ERROR_STRING = "Oops! Your settings.json file is corrupted. inochi2d creator will load the default settings.
+enum APP_LOAD_ERROR_STRING = "Oops! Your settings.json file is corrupted. Inochi Creator will load the default settings.
 The corrupted settings file has been moved to '%s'.
-If you see this message repeatedly, please report this on the issue tracker.
+
+If you see this message repeatedly, please report it on the issue tracker.
 Error Message: %s";
 
 /**
