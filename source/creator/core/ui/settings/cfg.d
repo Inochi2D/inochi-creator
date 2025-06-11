@@ -1,4 +1,4 @@
-module uilib.settings.cfg;
+module creator.core.ui.settings.cfg;
 import std.path;
 import std.process;
 import std.file : getcwd, mkdirRecurse, exists;

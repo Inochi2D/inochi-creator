@@ -1,4 +1,4 @@
-module uilib.msgbox;
+module creator.core.ui.msgbox;
 import sdl.messagebox;
 
 enum MessageType : SDL_MessageBoxFlags {

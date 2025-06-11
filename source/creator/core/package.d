@@ -5,7 +5,6 @@
     Authors: Luna Nielsen
 */
 module creator.core;
-import creator.core.dpi;
 import creator.core.input;
 import creator.core.egg;
 import creator.panels;

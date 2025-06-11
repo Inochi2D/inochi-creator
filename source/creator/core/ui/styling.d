@@ -1,4 +1,4 @@
-module uilib.styling;
+module creator.core.ui.styling;
 import std.math : PI;
 import i2d.imgui;
 

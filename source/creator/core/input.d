@@ -1,7 +1,7 @@
 module creator.core.input;
 import creator.core;
 import inochi2d.core;
-import inochi2d.math;
+import inochi2d.core.math;
 import i2d.imgui;
 import bindbc.sdl;
 import std.algorithm;

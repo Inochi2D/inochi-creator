@@ -4,7 +4,7 @@
     
     Authors: Luna Nielsen
 */
-module uilib.backend.win32;
+module creator.core.ui.backend.win32;
 version(Windows):
 
 import sdl.loadso;
@@ -29,9 +29,9 @@ enum ProcessDPIAwareness {
 void uiSetWin32DPIAwareness() {
     void* userDLL, shcoreDLL;
 
-    bool function() dpiAwareFunc8;
-    HRESULT function(DPIAwarenessContext) dpiAwareFuncCtx81;
-    HRESULT function(ProcessDPIAwareness) dpiAwareFunc81;
+    extern(Windows) bool function() dpiAwareFunc8;
+    extern(Windows) HRESULT function(DPIAwarenessContext) dpiAwareFuncCtx81;
+    extern(Windows) HRESULT function(ProcessDPIAwareness) dpiAwareFunc81;
 
     userDLL = SDL_LoadObject("USER32.DLL");
     if (userDLL) {

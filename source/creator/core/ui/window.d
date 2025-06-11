@@ -1,5 +1,5 @@
-module uilib.window;
-import uilib.backend;
+module creator.core.ui.window;
+import creator.core.ui.backend;
 import nulib.string;
 import i2d.imgui;
 import sdl;
@@ -25,7 +25,7 @@ private:
     //
 
     static BackendData* getBackendData() {
-        return ImGui_UILib_GetBackendData();
+        return ImGui_creator.core.ui_GetBackendData();
     }
 
     //
@@ -98,8 +98,8 @@ private:
 
         // Setup DPI Awareness.
         version(Windows) {
-            import uilib.win32 : uilibSetWin32DPIAwareness;
-            uilibSetWin32DPIAwareness();
+            import creator.core.ui.win32 : creator.core.uiSetWin32DPIAwareness;
+            creator.core.uiSetWin32DPIAwareness();
         }
     }
 
@@ -119,12 +119,12 @@ private:
         version(OSX) io.ConfigMacOSXBehaviors = true;
 
         // Finally setup the UI library.
-        ImGui_ImplUILib_Init(appWindow);
+        ImGui_Implcreator.core.ui_Init(appWindow);
         incGLBackendInit(null);
     }
 
     void shutdown() {
-        ImGui_ImplUILib_Shutdown();
+        ImGui_Implcreator.core.ui_Shutdown();
         igShutdown();
         this.globalIgContext = null;
         SDL_Quit();
@@ -216,7 +216,7 @@ public:
             version (OSX) {
                 
                 // macOS handles the UI scaling automatically, as such we don't need to do as much cursed shit(TM) there.
-                return ImGui_ImplUILib_ProcessEvent(event);
+                return ImGui_Implcreator.core.ui_ProcessEvent(event);
             } else {
                 switch(event.type) {
 
@@ -231,11 +231,11 @@ public:
                         return true;
                     
                     default:
-                        return ImGui_ImplUILib_ProcessEvent(event);
+                        return ImGui_Implcreator.core.ui_ProcessEvent(event);
                 }
             }
         } else {
-            return ImGui_ImplUILib_ProcessEvent(event);
+            return ImGui_Implcreator.core.ui_ProcessEvent(event);
         }
     }
 
