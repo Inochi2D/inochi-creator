@@ -944,7 +944,7 @@ string[] incGetViewportZoomModes() {
 
 string incGetCurrentViewportZoomMode() {
     if (incSettingsCanGet("ViewportZoomMode"))
-      return incSettingsGet!string("ViewportZoomMode");
+      return AppSettings.get!string("ViewportZoomMode");
     else
       return "normal";
 }
@@ -956,18 +956,18 @@ bool incSetCurrentViewportZoomMode(string select) {
     if (viewportZoomModes.canFind(select) == -1)
       return false;
 
-    incSettingsSet("ViewportZoomMode", select);
+    AppSettings.set("ViewportZoomMode", select);
     return true;
 }
 
 float incGetViewportZoomSpeed() {
     if (incSettingsCanGet("ViewportZoomSpeed"))
-      return incSettingsGet!float("ViewportZoomSpeed");
+      return AppSettings.get!float("ViewportZoomSpeed");
     else
       return 5.0;
 }
 
 bool incSetViewportZoomSpeed(float speed) {
-    incSettingsSet("ViewportZoomSpeed", speed);
+    AppSettings.set("ViewportZoomSpeed", speed);
     return true;
 }

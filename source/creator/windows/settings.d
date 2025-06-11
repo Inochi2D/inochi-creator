@@ -154,25 +154,25 @@ protected:
 
                         version(linux) {
                             beginSection(__("Linux Tweaks"));
-                                bool disableCompositor = incSettingsGet!bool("DisableCompositor");
+                                bool disableCompositor = AppSettings.get!bool("DisableCompositor");
                                 if (igCheckbox(__("Disable Compositor"), &disableCompositor)) {
-                                    incSettingsSet("DisableCompositor", disableCompositor);
+                                    AppSettings.set("DisableCompositor", disableCompositor);
                                 }
                             endSection();
                         }
                         break;
                     case SettingsPane.Accessibility:
                         beginSection(__("Accessibility"));
-                            bool disableCompositor = incSettingsGet!bool("useOpenDyslexic");
+                            bool disableCompositor = AppSettings.get!bool("useOpenDyslexic");
                             if (igCheckbox(__("Use OpenDyslexic Font"), &disableCompositor)) {
-                                incSettingsSet("useOpenDyslexic", disableCompositor);
+                                AppSettings.set("useOpenDyslexic", disableCompositor);
                                 changesRequiresRestart = true;
                             }
                             incTooltip(_("Use the OpenDyslexic font for Latin text characters."));
 
-                            bool paramAutoScroll = incSettingsGet!bool("EnableParamAutoScroll", true);
+                            bool paramAutoScroll = AppSettings.get!bool("EnableParamAutoScroll", true);
                             if (igCheckbox(__("Scroll to armed parameter"), &paramAutoScroll)) {
-                                incSettingsSet("EnableParamAutoScroll", paramAutoScroll);
+                                AppSettings.set("EnableParamAutoScroll", paramAutoScroll);
                             }
                             incTooltip(_("Enable automatic scrolling to the top of the parameters list."));
                         endSection();
@@ -203,7 +203,7 @@ protected:
                             ];
 
                             string selected = configShowing.get(incGetKeepLayerFolder(), "Ask");
-                            string keepLayerFolder = incSettingsGet!string("KeepLayerFolder");
+                            string keepLayerFolder = AppSettings.get!string("KeepLayerFolder");
 
                             if (igBeginCombo(__("Preserve structure"), selected.toStringz)) {
                                 foreach(key, displayName ; configShowing) {

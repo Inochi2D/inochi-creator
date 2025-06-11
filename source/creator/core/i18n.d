@@ -86,7 +86,8 @@ public:
 void incLocaleInit() {
 
     // These exist for testing + user added localization
-    incLocaleScan(incGetAppLocalePath());
+    foreach(localePath; AppSettings.localePaths)
+        incLocaleScan(localePath);
     incLocaleScan(thisExePath().dirName);
 
     // For zip folder exports.
@@ -94,11 +95,6 @@ void incLocaleInit() {
     
     // On macOS we store the locale in the app bundle under the Resources subdirectory.
     version(OSX) incLocaleScan(buildPath(thisExePath().dirName, "../Resources/i18n"));
-    
-    // Some distribution platforms like AppImage has its own locale path
-    // this is here to detect it and add it in to the scan area.
-    auto extraLocalePath = incGetAppLocalePathExtra();
-    if (extraLocalePath) incLocaleScan(extraLocalePath);
     
     // sort the files by human readable name
     localeFiles.sort!(compareEntries);
@@ -149,7 +145,7 @@ void markDups(TLEntry[] entries) {
     Gets the current selected locale human name
 */
 string incLocaleCurrentName() {
-    string code = incSettingsGet("lang", "en");
+    string code = AppSettings.get("lang", "en");
     string currCode = code.length == 0 ? "en": code;
     return incGetCultureExpression(currCode);
 }
@@ -158,7 +154,7 @@ string incLocaleCurrentName() {
     Sets the locale for the application
 */
 void incLocaleSet(string code) {
-    incSettingsSet("lang", code);
+    AppSettings.set("lang", code);
     
     // Builtin EN has no .po file
     if (code.length == 0 || code == "en") {

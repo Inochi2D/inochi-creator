@@ -248,14 +248,14 @@ class MeshEditorAction(T)  : LazyBoundAction {
     void rollback() {
         if (action !is null) {
             if (self !is null) {
-                param.pushIOffset(param.getKeypointValue(newKeypoint), ParamMergeMode.Forced);
+                param.pushIOffset(param.getKeypointValue(newKeypoint), ParamMergeMode.forced);
             }
             action.rollback();
             if (isApplyable()) {
                 self.transform = oldEditorTransform;
             }
             if (self !is null) {
-                param.pushIOffset(param.getKeypointValue(oldKeypoint), ParamMergeMode.Forced);
+                param.pushIOffset(param.getKeypointValue(oldKeypoint), ParamMergeMode.forced);
                 self.forceResetAction();
             }
         }
@@ -268,13 +268,13 @@ class MeshEditorAction(T)  : LazyBoundAction {
         if (action !is null) {
             action.redo();
             if (self !is null) {
-                param.pushIOffset(param.getKeypointValue(oldKeypoint), ParamMergeMode.Forced);
+                param.pushIOffset(param.getKeypointValue(oldKeypoint), ParamMergeMode.forced);
             }
             if (isApplyable()) {
                 self.transform = newEditorTransform;
             }
             if (self !is null) {
-                param.pushIOffset(param.getKeypointValue(newKeypoint), ParamMergeMode.Forced);
+                param.pushIOffset(param.getKeypointValue(newKeypoint), ParamMergeMode.forced);
                 self.forceResetAction();
             }
         }

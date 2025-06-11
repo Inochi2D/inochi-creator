@@ -26,7 +26,7 @@ enum ActionStackClear {
     Initialize actions system
 */
 void incActionInit() {
-    maxUndoHistory = incSettingsGet!size_t("MaxUndoHistory", 100);
+    maxUndoHistory = AppSettings.get!size_t("MaxUndoHistory", 100);
     actions.length = currentLevel + 1;
     actionPointer.length = currentLevel + 1;
     actionIndex.length = currentLevel + 1;
@@ -161,7 +161,7 @@ void incActionNotifyTopChanged() {
 void incActionSetUndoHistoryLength(size_t length) {
     length = clamp(length, 0, 1000);
     maxUndoHistory = length;
-    incSettingsSet("MaxUndoHistory", maxUndoHistory);
+    AppSettings.set!size_t("MaxUndoHistory", maxUndoHistory);
 }
 
 /**

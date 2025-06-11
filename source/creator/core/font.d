@@ -20,7 +20,7 @@ private {
 
     FontEntry[] families;
     void _incInitFontList() {
-        string fontsPath = incGetAppFontsPath();
+        string fontsPath = AppSettings.fontsPath;
         // TODO: load fonts
     }
 
@@ -72,7 +72,7 @@ void incInitFonts() {
     _incInitFontList();
     atlas = igGetIO().Fonts;
     atlas.FontBuilderIO = GetBuilderForHairetsu();
-        if (incSettingsGet!bool("useOpenDyslexic")) {
+        if (AppSettings.get!bool("useOpenDyslexic")) {
 
             // Use OpenDyslexic for Latin
             _incAddFontData("APP\0", OPEN_DYSLEXIC, 24, (cast(ImWchar[])[

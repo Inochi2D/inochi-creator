@@ -51,7 +51,7 @@ void incMainMenu() {
         if (incShortcut("Ctrl+S")) incFileSave();
         if (incShortcut("Ctrl+Shift+S")) incFileSaveAs();
 
-        if (!incSettingsGet("hasDoneQuickSetup", false)) igBeginDisabled();
+        if (!AppSettings.get("hasDoneQuickSetup", false)) igBeginDisabled();
 
         if(igBeginMainMenuBar()) {
                 
@@ -339,7 +339,7 @@ void incMainMenu() {
                         // Show menu item for panel
                         if(igMenuItem(panel.displayNameC, null, panel.visible, true)) {
                             panel.visible = !panel.visible;
-                            incSettingsSet(panel.name~".visible", panel.visible);
+                            AppSettings.set(panel.name~".visible", panel.visible);
                         }
 
                         if (!panel.isActive()) {
@@ -402,7 +402,7 @@ void incMainMenu() {
 
                     if (igMenuItem(__("Show Stats for Nerds"), "", incShowStatsForNerds, true)) {
                         incShowStatsForNerds = !incShowStatsForNerds;
-                        incSettingsSet("NerdStats", incShowStatsForNerds);
+                        AppSettings.set("NerdStats", incShowStatsForNerds);
                     }
 
 
@@ -584,7 +584,7 @@ void incMainMenu() {
         igEndMainMenuBar();
 
         // For quick-setup stuff
-        if (!incSettingsGet("hasDoneQuickSetup", false)) igEndDisabled();
+        if (!AppSettings.get("hasDoneQuickSetup", false)) igEndDisabled();
 
     igPopStyleColor();
     igPopStyleColor();

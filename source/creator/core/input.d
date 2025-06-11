@@ -1,4 +1,5 @@
 module creator.core.input;
+import creator.core.ui;
 import creator.core;
 import inochi2d.core;
 import inochi2d.core.math;
@@ -23,8 +24,8 @@ vec2 WorldToViewport(float x, float y, Camera camera = null) {
         camera = inGetCamera();
     vec2 camPos = camera.position;
     vec2 camScale = camera.scale;
-    vec2 camCenter = camera.getCenterOffset();
-    float uiScale = incGetUIScale();
+    vec2 camCenter = camera.centerOffset;
+    float uiScale = AppWindow.mainWindow.uiScale;
 
     return (
         mat3.scaling(uiScale, uiScale,1).inverse()
@@ -41,7 +42,7 @@ void incInputSetViewportMouse(float x, float y) {
     vec2 camPos = inGetCamera().position;
     vec2 camScale = inGetCamera().scale;
     vec2 camCenter = inGetCamera().getCenterOffset();
-    float uiScale = incGetUIScale();
+    float uiScale = AppWindow.mainWindow.uiScale;
 
     mpos = (
         mat3.translation(

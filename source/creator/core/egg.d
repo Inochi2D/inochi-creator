@@ -5,6 +5,7 @@
     Authors: Luna Nielsen
 */
 module creator.core.egg;
+import creator.core.ui;
 import creator.core;
 import inochi2d;
 import bindbc.sdl;
@@ -33,7 +34,7 @@ version(InBranding) {
         if (logoClickCounter == CLICK_THRESH) {
             lhs = !lhs;
 
-            float uiScale = incGetUIScale();
+            float uiScale = AppWindow.mainWindow.uiScale;
             int w, h;
             SDL_GetWindowSize(incGetWindowPtr(), &w, &h);
 
@@ -52,7 +53,7 @@ version(InBranding) {
     void incAdaUpdate() {
         if (logoClickCounter >= CLICK_THRESH) {
             float fbScale = igGetIO().DisplayFramebufferScale.x;
-            float uiScale = incGetUIScale();
+            float uiScale = AppWindow.mainWindow.uiScale;
 
             cam.scale = vec2(1*fbScale, 1*fbScale);
 

@@ -33,34 +33,34 @@ public void startAutosaveTimer() {
     The time in minutes between autosaves.
 */
 int incGetAutosaveInterval() {
-    int interval = incSettingsGet!int("AutosaveInterval", 5);
+    int interval = AppSettings.get!int("AutosaveInterval", 5);
     return interval;
 }
 
 void incSetAutosaveInterval(int interval) {
     // Limit the setting to 24 hours.
     interval = clamp(interval, 1, 1440);
-    incSettingsSet("AutosaveInterval", interval);
+    AppSettings.set("AutosaveInterval", interval);
 }
 
 int incGetAutosaveFileLimit() {
-    int fileLimit = incSettingsGet!int("AutosaveFileLimit", 3);
+    int fileLimit = AppSettings.get!int("AutosaveFileLimit", 3);
     return fileLimit;
 }
 
 void incSetAutosaveFileLimit(int fileLimit) {
     // Limit the setting to 1000 files.
     fileLimit = clamp(fileLimit, 1, 1000);
-    incSettingsSet("AutosaveFileLimit", fileLimit);
+    AppSettings.set("AutosaveFileLimit", fileLimit);
 }
 
 bool incGetAutosaveEnabled() {
-    bool enabled = incSettingsGet!bool("AutosaveEnabled", true);
+    bool enabled = AppSettings.get!bool("AutosaveEnabled", true);
     return enabled;
 }
 
 void incSetAutosaveEnabled(bool enabled) {
-    incSettingsSet("AutosaveEnabled", enabled);
+    AppSettings.set("AutosaveEnabled", enabled);
 }
 
 struct AutosaveRecord {
@@ -70,8 +70,8 @@ struct AutosaveRecord {
 
 AutosaveRecord[] incGetPrevAutosaves() {
     AutosaveRecord[] saveRecords;
-    string[] autosavePaths = incSettingsGet!(string[])("prev_autosaves");
-    string[] mainsavePaths = incSettingsGet!(string[])("prev_autosave_mainpaths");
+    string[] autosavePaths = AppSettings.get!(string[])("prev_autosaves");
+    string[] mainsavePaths = AppSettings.get!(string[])("prev_autosave_mainpaths");
     foreach (i, autosavePath; autosavePaths) {
         string mainsavePath = "";
         if (i < mainsavePaths.length) {
@@ -104,8 +104,8 @@ void incAddPrevAutosave(string autosavePath) {
         autosavePaths ~= saveRecord.autosavePath;
         mainsavePaths ~= saveRecord.mainsavePath;
     }
-    incSettingsSet("prev_autosaves", autosavePaths);
-    incSettingsSet("prev_autosave_mainpaths", mainsavePaths);
+    AppSettings.set("prev_autosaves", autosavePaths);
+    AppSettings.set("prev_autosave_mainpaths", mainsavePaths);
     incSettingsSave();
 }
 
@@ -181,8 +181,8 @@ void incPruneAutosaveList() {
         mainsavePaths ~= saveRecord.mainsavePath;
     }
 
-    incSettingsSet("prev_autosaves", autosavePaths);
-    incSettingsSet("prev_autosave_mainpaths", mainsavePaths);
+    AppSettings.set("prev_autosaves", autosavePaths);
+    AppSettings.set("prev_autosave_mainpaths", mainsavePaths);
     incSettingsSave();
 }
 

@@ -10,14 +10,27 @@ import std.algorithm.mutation: remove;
 
 class ExParameterGroup : Parameter {
 protected:
+
     override
-    void serializeSelf(ref InochiSerializer serializer) {
-        serializer.putKey("groupUUID");
-        serializer.putValue(uuid);
-        serializer.putKey("name");
-        serializer.putValue(name);
-        serializer.putKey("color");
-        serializer.serializeValue(color.vector);
+    void onSerialize(ref JSONValue object) {
+        super.onSerialize(object);
+        object["groupUUID"] = uuid;
+        object["name"] = name;
+        object["color"] = color.serialize();
+    }
+
+    override
+    void onDeserialize(ref JSONValue object) {
+        super.onDeserialize(object);
+        object.tryGetRef(uuid, "groupUUID");
+        object.tryGetRef(name, "name");
+        object.tryGetRef(color, "color");
+        if ("children" in object) {
+            foreach(childData; object.array) {
+                auto child = inParameterCreate(childData);
+                children ~= child;
+            }
+        }
     }
 
 public:
@@ -29,19 +42,6 @@ public:
     this(string name, Parameter[] children) { 
         super(name, false); 
         this.children = children;    
-    }
-
-    override
-    SerdeException deserializeFromFghj(Fghj data) {
-        data["groupUUID"].deserializeValue(this.uuid);
-        if (!data["name"].isEmpty) data["name"].deserializeValue(this.name);
-        if (!data["color"].isEmpty) data["color"].deserializeValue(this.color.vector);
-        if (!data["children"].isEmpty)
-            foreach (childData; data["children"].byElement) {
-                auto child = inParameterCreate(childData);
-                children ~= child;
-            }
-        return null;
     }
 
     override
@@ -68,8 +68,26 @@ public:
 }
 
 class ExParameter : Parameter {
+private:
     ExParameterGroup parent;
     uint parentUUID = InInvalidUUID;
+
+protected:
+    
+
+    override
+    void onSerialize(ref JSONValue object) {
+        if (parent) {
+            object["parentUUID"] = parent.uuid;
+        }
+        super.onSerialize(object);
+    }
+
+    override
+    void onDeserialize(ref JSONValue object) {
+        object.tryGetRef(parentUUID, "parentUUID");
+        super.onDeserialize(object);
+    }
 public:
     this() { 
         super(); 
@@ -90,21 +108,6 @@ public:
     this(string name, bool isVec2, ExParameterGroup parent) { 
         super(name, isVec2); 
         this.parent = parent;
-    }
-    override
-    SerdeException deserializeFromFghj(Fghj data) {
-        if (!data["parentUUID"].isEmpty)
-            data["parentUUID"].deserializeValue(this.parentUUID);
-        return super.deserializeFromFghj(data);
-    }
-
-    override
-    void serializeSelf(ref InochiSerializer serializer) {
-        if (parent !is null) {
-            serializer.putKey("parentUUID");
-            serializer.putValue(parent.uuid);
-        }
-        super.serializeSelf(serializer);
     }
 
     ExParameterGroup getParent() { return parent; }

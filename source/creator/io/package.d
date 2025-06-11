@@ -205,7 +205,7 @@ void incCreatePartsFromFiles(string[] files) {
 
 string incGetKeepLayerFolder() {
     if (incSettingsCanGet("KeepLayerFolder"))
-        return incSettingsGet!string("KeepLayerFolder");
+        return AppSettings.get!string("KeepLayerFolder");
     else
         // also see incSettingsLoad()
         // Preserve the original behavior for existing users
@@ -213,7 +213,7 @@ string incGetKeepLayerFolder() {
 }
 
 bool incSetKeepLayerFolder(string select) {
-    incSettingsSet("KeepLayerFolder", select);
+    AppSettings.set("KeepLayerFolder", select);
     return true;
 }
 

@@ -115,22 +115,20 @@ public:
     }
 
     override
-    SerdeException deserializeFromFghj(Fghj data) {
-        if (!data["groups"].isEmpty) {
-            foreach(key; data["groups"].byElement) {
-                auto group = cast(ExParameterGroup)inParameterCreate(key);
-                this.groups ~= group;
-            }
-        }
-        super.deserializeFromFghj(data);
-        return null;
+    void onSerialize(ref JSONValue object) {
+        super.onSerialize(object);
+        object["groups"] = groups.serialize();
     }
 
     override
-    void serializeSelf(ref InochiSerializer serializer) {
-        super.serializeSelf(serializer);
-        serializer.putKey("groups");
-        serializer.serializeValue(groups);
+    void onDeserialize(ref JSONValue object) {
+        if (("groups" in object) && object["groups"].isArray) {
+            foreach(groupData; object["groups"].arrayNoRef) {
+                auto group = cast(ExParameterGroup)inParameterCreate(groupData);
+                this.groups ~= group;
+            }
+        }
+        super.onDeserialize(object);
     }
 
     override

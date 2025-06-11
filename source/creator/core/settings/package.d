@@ -16,117 +16,21 @@ Error Message: %s";
 */
 class AppSettings {
 private:
-    __gshared JSONValue settingsStore;
-
-    /**
-        Encodes values recursively.
-    */
-    JSONValue encode(T)(T value) {
-        import std.traits : isArray, isAssociativeArray;
-
-        static if (isArray!T) {
-            JSONValue[] data;
-            foreach(i; 0..value.length) {
-                data ~= this.encode(value[i]);
-            }
-            src = data;
-        } else static if (isAssociativeArray!T) {
-            JSONValue[string] data;
-            foreach(key, value; value) {
-                data[key.toString()] = this.encode(value[key]);
-            }
-        } else {
-            return JSONValue(value);
-        }
-    }
-
-    /**
-        Encodes values recursively.
-    */
-    JSONValue decode(T)(JSONValue from, T defaultValue) {
-        import std.traits : isArray, isAssociativeArray, KeyType, ValueType;
-        import std.range : ElementType;
-        import std.exception : enforce;
-        import std.conv : to;
-        T retval;
-
-        static if (is(T : string) || is(T : wstring) || is (T : dstring)) {
-            return from.str.to!T;
-        } else static if (isArray!T) {
-            if (!from.array)
-                return defaultValue;
-
-            alias ET = ElementType!T;
-            
-            retval.length = from.array.length;
-            foreach(i, ref JSONValue element; retval) {
-                retval = this.decode!ET(element, ET.init);
-            }
-        } else static if (isAssociativeArray!T) {
-            if (!from.object)
-                return defaultValue;
-            
-            alias KT = KeyType!T;
-            alias VT = ValueType!T;
-            foreach(key, value; from.object) {
-                try {
-                    retval[key.to!KT] = this.decode!VT(value, VT.init);
-                } catch(Exception ex) {
-                    // Ignore.
-                }
-            }
-        } else {
-            return from.get!T();
-        }
-
-        return retval;
-    }
-
-    string moveCorruptedFile() {
-        import std.datetime;
-
-        // move the corrupted settings file to a new location
-        string backupPath = AppSettings.settingsFile ~ "." ~ Clock.currTime().toISOString();
-        rename(this.settingsFile, backupPath);
-        return backupPath;
-    }
-
-    void load() {
-        try {
-            if (settingsFile.exists()) {
-                settingsStore = parseJSON(readText(settingsFile));
-            }
-        } catch (Exception ex) {
-            MessageBox.show(MessageType.error, _("Error"), _(APP_LOAD_ERROR_STRING).format(this.moveCorruptedFile(), ex.msg()));
-        }
-
-        // This code is used to configure default values for new users
-        // New users use MousePosition, old users keep ScreenCenter
-
-        // File Handling
-        // Always ask the user whether to preserve the folder structure during import
-        // also see incGetKeepLayerFolder()
-        settings["KeepLayerFolder"] = "Ask";
-    }
-
+    __gshared SettingsStore store;
     __gshared AppSettings instance;
 
     /*
         Destructor
     */
     ~this() {
-        this.save();
+        store.sync();
     }
 
     /**
         Constructs the settings manager.
     */
     this() {
-        if (!AppSettings.instance) {
-
-            this.load();
-            AppSettings.instance = this;
-        }
+        store = __inc_get_settings_store("com.inochi2d.inochi-creator");
     }
 
 public:
@@ -160,41 +64,35 @@ public:
         Saves the app settings.
     */
     static void save() {
-
-        // using swp prevent file corruption
-        string swapPath = AppSettings.settingsFile ~ ".swp";
-        write(swapPath, settingsStore.toString());
-        rename(swapPath, AppSettings.settingsFile);
+        AppSettings.instance.store.sync();
     }
 
     /**
         Sets a setting.
     */
     static void set(T)(string name, T value) {
-        AppSettings.instance.settingsStore[name] = this.encode(value);
+        AppSettings.instance.store.set!T(name, value);
     }
 
     /**
         Unsets a setting.
     */
-    static void unset(T)(string name) {
-        if (name in AppSettings.instance.settingsStore) {
-            AppSettings.instance.settingsStore.object.remove(name);
-        }
+    static bool unset(T)(string name) {
+        return AppSettings.instance.store.unset(name);
     }
 
     /**
         Gets a setting.
     */
     static T get(T)(string name, T defaultValue = T.init) {
-        return AppSettings.instance.decode!T(settingsStore[name], defaultValue);
+        return AppSettings.instance.store.get!T(name, defaultValue);
     }
 
     /**
         Gets whether the settings store has a setting with the given name.
     */
     static bool has(string name) {
-        return (name in AppSettings.instance.settingsStore) !is null;
+        return AppSettings.instance.store.has(name);
     }
 }
 
@@ -206,4 +104,161 @@ shared static this() {
 // Saves the app settings.
 shared static ~this() {
     destroy(AppSettings.instance);
+}
+
+private
+SettingsStore __inc_get_settings_store(string storeId);
+
+/**
+    A settings store, implemented by a store backend.
+*/
+abstract
+class SettingsStore {
+private:
+    string storeId_;
+
+    /**
+        Encodes values recursively.
+    */
+    JSONValue encode(T)(T value) {
+        import std.traits : isArray, isAssociativeArray;
+
+        static if (isArray!T) {
+            JSONValue[] data;
+            foreach(i; 0..value.length) {
+                data ~= this.encode(value[i]);
+            }
+            return JSONValue(data);
+        } else static if (isAssociativeArray!T) {
+            JSONValue[string] data;
+            foreach(key, value; value) {
+                data[key.toString()] = this.encode(value[key]);
+            }
+            return JSONValue(data);
+        } else {
+            return JSONValue(value);
+        }
+    }
+
+    /**
+        Encodes values recursively.
+    */
+    T decode(T)(JSONValue from, T defaultValue) {
+        import std.traits : isArray, isAssociativeArray, KeyType, ValueType;
+        import std.range : ElementType;
+        import std.exception : enforce;
+        import std.conv : to;
+        T retval;
+
+        static if (is(T : string) || is(T : wstring) || is (T : dstring)) {
+            return from.str().to!T;
+        } else static if (isArray!T) {
+            if (!from.array)
+                return defaultValue;
+
+            alias ET = ElementType!T;
+            
+            retval.length = from.array.length;
+            foreach(i, ref JSONValue element; retval) {
+                retval = this.decode!ET(element, ET.init);
+            }
+        } else static if (isAssociativeArray!T) {
+            if (!from.object)
+                return defaultValue;
+            
+            alias KT = KeyType!T;
+            alias VT = ValueType!T;
+            foreach(key, value; from.object) {
+                try {
+                    retval[key.to!KT] = this.decode!VT(value, VT.init);
+                } catch(Exception ex) {
+                    // Ignore.
+                }
+            }
+        } else {
+            return from.get!T();
+        }
+
+        return retval;
+    }
+
+protected:
+    abstract long getIntImpl(string name, long defaultValue = 0);
+    abstract ulong getUIntImpl(string name, ulong defaultValue = 0);
+    abstract double getDoubleImpl(string name, double defaultValue = 0);
+    abstract string getStringImpl(string name, string defaultValue = null);
+    abstract JSONValue getJSONImpl(string name);
+
+    abstract void setIntImpl(string name, long value);
+    abstract void setUIntImpl(string name, ulong value);
+    abstract void setDoubleImpl(string name, double value);
+    abstract void setStringImpl(string name, string value);
+    abstract void setJSONImpl(string name, JSONValue value);
+
+public:
+
+    /**
+        Constructor
+    */
+    this(string storeId) {
+        this.storeId_ = storeId;
+    }
+
+    /**
+        ID of the data store in reverse domain notation.
+    */
+    final
+    @property string storeId() => storeId_;
+
+    /**
+        Synchronises the settings store with the on-disk
+        store.
+    */
+    abstract void sync();
+
+    /**
+        Un-sets a value.
+    */
+    abstract bool unset(string name);
+
+    /**
+        Gets whether the store has a given value.
+    */
+    abstract bool has(string name);
+
+    /**
+        Gets a value from the settings store.
+    */
+    void set(T)(string name, T value) {
+        static if (is(T == string)) {
+            this.setStringImpl(name, value);
+        } else static if (__traits(isIntegral, T)) {
+            static if (__traits(isUnsigned, T))
+                this.setUIntImpl(name, cast(ulong)value);
+            else
+                this.setIntImpl(name, cast(long)value);
+        } else static if (__traits(isFloating, T)) {
+            this.setDoubleImpl(name, cast(double)value);
+        } else {
+            this.setJSONImpl(name, encode!T(value));
+        }
+    }
+
+    /**
+        Gets a value from the settings store.
+    */
+    T get(T)(string name, T defaultValue = T.init) {
+        static if (is(T == string)) {
+            return this.getStringImpl(name, defaultValue);
+        } else static if (__traits(isIntegral, T)) {
+            static if (__traits(isUnsigned, T))
+                return cast(T)this.getUIntImpl(name, cast(ulong)defaultValue);
+            else
+                return cast(T)this.getIntImpl(name, cast(long)defaultValue);
+        } else static if (__traits(isFloating, T)) {
+            return cast(T)this.getDoubleImpl(name, cast(double)defaultValue);
+        } else {
+            return decode!T(this.getJSONImpl(name), defaultValue);
+        }
+    }
 }

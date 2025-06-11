@@ -17,20 +17,18 @@ import inmath;
 @TypeId("Part")
 class ExPart : Part {
 protected:
+
     override
-    void serializeSelf(ref InochiSerializer serializer) {
-        super.serializeSelf(serializer);
-        serializer.putKey("psdLayerPath");
-        serializer.putValue(layerPath);
+    void onSerialize(ref JSONValue object) {
+        super.onSerialize(object);
+        object["psdLayerPath"] = layerPath;
     }
 
     override
-    SerdeException deserializeFromFghj(Fghj data) {
-        auto err = super.deserializeFromFghj(data);
-        if (err) return err;
-
-        if (!data["psdLayerPath"].isEmpty) data["psdLayerPath"].deserializeValue(layerPath);
-        return null;
+    void onDeserialize(ref JSONValue object) {
+        super.onDeserialize(object);
+        
+        object.tryGetRef(layerPath, "psdLayerPath");
     }
 
 

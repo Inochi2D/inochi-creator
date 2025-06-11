@@ -109,7 +109,7 @@ private {
 
 void incTestSetTrackingMode(TrackingMode mode) {
     trackingMode = mode;
-    incSettingsSet("tracking_mode", mode);
+    AppSettings.set("tracking_mode", mode);
 
     // Stop old adaptor before switching
     if (adaptor && adaptor.isRunning) adaptor.stop();
@@ -215,10 +215,10 @@ void incViewportTestToolbar() {
 void incViewportTestPresent() {
     import std.conv : text;
 
-    incTestSetTrackingMode(incSettingsGet("tracking_mode", TrackingMode.None));
-    incTestSetAdaptorOption("address", incSettingsGet("vmc_bind_ip", "0.0.0.0"));
-    incTestSetAdaptorOption("port", incSettingsGet("vmc_bind_port", 39540).text);
-    incTestSetAdaptorOption("phoneIP", incSettingsGet("vts_phone_ip", "0.0.0.0"));
+    incTestSetTrackingMode(AppSettings.get("tracking_mode", TrackingMode.None));
+    incTestSetAdaptorOption("address", AppSettings.get("vmc_bind_ip", "0.0.0.0"));
+    incTestSetAdaptorOption("port", AppSettings.get("vmc_bind_port", 39540).text);
+    incTestSetAdaptorOption("phoneIP", AppSettings.get("vts_phone_ip", "0.0.0.0"));
     incTestSetAdaptorOption("appName", "inochi-creator");
     incTestRestartTracker();
 }

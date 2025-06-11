@@ -64,7 +64,7 @@ void incFileSaveAs() {
 }
 
 string incGetSaveProjectOnClose() {
-    auto config = incSettingsGet!string("SaveProjectOnClose", "Ask");
+    auto config = AppSettings.get!string("SaveProjectOnClose", "Ask");
 
     // validate config
     import std.algorithm : canFind;
@@ -88,7 +88,7 @@ string[string] incGetSaveProjectOption() {
 
 
 void incSetSaveProjectOnClose(string select) {
-    incSettingsSet("SaveProjectOnClose", select);
+    AppSettings.set("SaveProjectOnClose", select);
 }
 
 /**

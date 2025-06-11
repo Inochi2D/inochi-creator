@@ -85,8 +85,8 @@ private {
             title.toStringz, 
             SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED,
-            cast(uint)incSettingsGet!int("WinW", 1280), 
-            cast(uint)incSettingsGet!int("WinH", 800), 
+            cast(uint)AppSettings.get!int("WinW", 1280), 
+            cast(uint)AppSettings.get!int("WinH", 800), 
             flags
         );
         if (w) SDL_SetWindowMinimumSize(window, 960, 720);
@@ -107,28 +107,6 @@ bool incIsTilingWM() {
 }
 
 /**
-    Finalizes everything by freeing imgui resources, etc.
-*/
-void incFinalize() {
-
-    // This is important to prevent thread leakage
-    import creator.viewport.test : incViewportTestWithdraw;
-    incViewportTestWithdraw();
-
-    // Save settings
-    igSaveIniSettingsToDisk(igGetIO().IniFilename);
-
-    // Cleanup
-    incGLBackendShutdown();
-    ImGui_ImplSDL2_Shutdown();
-    igDestroyContext(null);
-
-    SDL_GL_DeleteContext(gl_context);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-}
-
-/**
     Gets dockspace of the viewport
 */
 ImGuiID incGetViewportDockSpace() {
@@ -141,37 +119,6 @@ ImGuiID incGetViewportDockSpace() {
 void incOpenWindow() {
     import std.process : environment;
     import std.string : fromStringz;
-
-    switch(environment.get("XDG_SESSION_DESKTOP")) {
-        case "i3":
-
-        // Items beyond this point are just guesstimations.
-        case "awesome":
-        case "bspwm":
-        case "dwm":
-        case "echinus":
-        case "euclid-wm":
-        case "herbstluftwm":
-        case "leftwm":
-        case "notion":
-        case "qtile":
-        case "ratpoison":
-        case "snapwm":
-        case "stumpwm":
-        case "subtle":
-        case "wingo":
-        case "wmfs":
-        case "xmonad":
-        case "wayfire":
-        case "river":
-        case "labwc":
-            isTilingWM = true;
-            break;
-        
-        default:
-            isTilingWM = false;
-            break;
-    }
 
 
     // Load SDL2 in the order required for Steam
@@ -203,12 +150,12 @@ void incOpenWindow() {
 
     SDL_WindowFlags flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
 
-    if (incSettingsGet!bool("WinMax", false)) {
+    if (AppSettings.get!bool("WinMax", false)) {
         flags |= SDL_WINDOW_MAXIMIZED;
     }
 
     // Don't make KDE freak out when Inochi Creator opens
-    if (!incSettingsGet!bool("DisableCompositor")) SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
+    if (!AppSettings.get!bool("DisableCompositor")) SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
     SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
 
     version(InBranding) {
@@ -298,7 +245,7 @@ void incOpenWindow() {
     incGrid.setWrapping(Wrapping.Repeat);
 
     // Load Settings
-    incShowStatsForNerds = incSettingsCanGet("NerdStats") ? incSettingsGet!bool("NerdStats") : false;
+    incShowStatsForNerds = incSettingsCanGet("NerdStats") ? AppSettings.get!bool("NerdStats") : false;
 
     version(linux) {
         dpInit();
@@ -324,7 +271,7 @@ void incCreateContext() {
     memcpy(cast(void*)io.IniFilename, toStringz(incGetAppImguiConfigFile), incGetAppImguiConfigFile().length+1);
     igLoadIniSettingsFromDisk(io.IniFilename);
 
-    incSetDarkMode(incSettingsGet!bool("DarkMode", true));
+    incSetDarkMode(AppSettings.get!bool("DarkMode", true));
 
     io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;                               // Enable Docking
     io.ConfigWindowsResizeFromEdges = true;                                         // Enable Edge resizing
@@ -354,166 +301,8 @@ void incCreateContext() {
     incResetClearColor();
 }
 
-/**
-    Gets whether a frame should be processed
-*/
-bool incShouldProcess() {
-    return (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) == 0;
-}
-
-/**
-    Gets SDL Window Pointer
-*/
-SDL_Window* incGetWindowPtr() {
-    return window;
-}
-
 void incFinishFileDrag() {
     files.length = 0;
-}
-
-void incBeginLoopNoEv() {
-    // Start the Dear ImGui frame
-    incGLBackendNewFrame();
-    ImGui_ImplSDL2_NewFrame();
-
-    // Do our DPI pre-processing
-    igNewFrame();
-    incGLBackendBeginRender();
-
-    version(linux) dpUpdate();
-
-    // HACK: prevents the app freezing when files are drag and drop on the nagscreen.
-    // freeze is caused by `igSetDragDropPayload()`, so we check if the modal is open.
-    if (files.length > 0 && !incModalIsOpen()) {
-        if (igBeginDragDropSource(ImGuiDragDropFlags.SourceExtern)) {
-            igSetDragDropPayload("__PARTS_DROP", &files, files.sizeof);
-            igBeginTooltip();
-            foreach(file; files) {
-                import creator.widgets.label : incText;
-                incText(file);
-            }
-            igEndTooltip();
-            igEndDragDropSource();
-        }
-    } else if (incModalIsOpen()) {
-        // clean up the files array
-        files.length = 0;
-    }
-
-    // Add docking space
-    viewportDock = igDockSpaceOverViewport(null, ImGuiDockNodeFlags.NoDockingInCentralNode, null);
-    if (!incSettingsCanGet("firstrun_complete")) {
-        incSetDefaultLayout();
-        incSettingsSet("firstrun_complete", true);
-    }
-
-    // HACK: ImGui Crashes if a popup is rendered on the first frame, let's avoid that.
-    if (firstFrame) firstFrame = false;
-    else {
-        // imgui can not igOpenPopup two popups at the same time, that causes a freeze
-        // so we sperate the popups rendering
-        if (incModalIsOpen())
-            incModalRender();
-        else
-            incRenderDialogs();
-    }
-    incStatusUpdate();
-
-    incHandleDialogHandlers();
-}
-
-void incSetDefaultLayout() {
-    import creator.panels;
-    
-    igDockBuilderRemoveNodeChildNodes(viewportDock);
-    ImGuiID 
-        dockMainID, dockIDNodes, dockIDInspector, dockIDHistory, dockIDParams,
-        dockIDToolSettings, dockIDLoggerAndTextureSlots, dockIDTimeline, dockIDAnimList;
-
-    dockMainID = viewportDock;
-    dockIDAnimList = igDockBuilderSplitNode(dockMainID, ImGuiDir.Left, 0.10f, null, &dockMainID);
-    dockIDNodes = igDockBuilderSplitNode(dockMainID, ImGuiDir.Left, 0.10f, null, &dockMainID);
-    dockIDInspector = igDockBuilderSplitNode(dockIDNodes, ImGuiDir.Down, 0.60f, null, &dockIDNodes);
-    dockIDToolSettings = igDockBuilderSplitNode(dockMainID, ImGuiDir.Right, 0.10f, null, &dockMainID);
-    dockIDHistory = igDockBuilderSplitNode(dockIDToolSettings, ImGuiDir.Down, 0.50f, null, &dockIDToolSettings);
-    dockIDTimeline = igDockBuilderSplitNode(dockMainID, ImGuiDir.Down, 0.15f, null, &dockMainID);
-    dockIDParams = igDockBuilderSplitNode(dockMainID, ImGuiDir.Left, 0.15f, null, &dockMainID);
-
-    igDockBuilderDockWindow("###Nodes", dockIDNodes);
-    igDockBuilderDockWindow("###Inspector", dockIDInspector);
-    igDockBuilderDockWindow("###Tool Settings", dockIDToolSettings);
-    igDockBuilderDockWindow("###History", dockIDHistory);
-    igDockBuilderDockWindow("###Scene", dockIDHistory);
-    debug(InExperimental) igDockBuilderDockWindow("###Tracking", dockIDHistory);
-    igDockBuilderDockWindow("###Timeline", dockIDTimeline);
-    igDockBuilderDockWindow("###Animation List", dockIDAnimList);
-    igDockBuilderDockWindow("###Logger", dockIDTimeline);
-    igDockBuilderDockWindow("###Parameters", dockIDParams);
-    igDockBuilderDockWindow("###Texture Slots", dockIDLoggerAndTextureSlots);
-
-    igDockBuilderFinish(viewportDock);
-}
-
-/**
-    Begins the Inochi Creator rendering loop
-*/
-void incBeginLoop() {
-    SDL_Event event;
-
-    while(SDL_PollEvent(&event)) {
-        switch(event.type) {
-            case SDL_QUIT:
-                incExitSaveAsk();
-                break;
-
-            case SDL_DROPFILE:
-                files ~= cast(string)event.drop.file.fromStringz;
-                SDL_RaiseWindow(window);
-                break;
-            
-            default: 
-                incGLBackendProcessEvent(&event);
-                break;
-        }
-    }
-
-    incTaskUpdate();
-
-    // Begin loop post-event
-    incBeginLoopNoEv();
-}
-
-/**
-    Ends the Inochi Creator rendering loop
-*/
-void incEndLoop() {
-    // incGLBackendEndRender();
-
-    incCleanupDialogs();
-
-    // Rendering
-    igRender();
-    glViewport(0, 0, cast(int)(io.DisplaySize.x*incGetUIScale), cast(int)(io.DisplaySize.y*incGetUIScale));
-    glClearColor(0.5, 0.5, 0.5, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
-    incGLBackendRenderDrawData(igGetDrawData());
-
-    if (io.ConfigFlags & ImGuiConfigFlags.ViewportsEnable) {
-        SDL_Window* currentWindow = SDL_GL_GetCurrentWindow();
-        SDL_GLContext currentCtx = SDL_GL_GetCurrentContext();
-        igUpdatePlatformWindows();
-        igRenderPlatformWindowsDefault();
-        SDL_GL_MakeCurrent(currentWindow, currentCtx);
-    }
-
-    
-    version(InBranding) {
-        import creator.core.egg : incAdaUpdate;
-        incAdaUpdate();
-    }
-
-    SDL_GL_SwapWindow(window);
 }
 
 /**
@@ -541,7 +330,7 @@ void incDebugImGuiState(string msg, int indent = 0) {
         if (indent < 0) {
             currentIndent += indent;
             if (currentIndent < 0) {
-                debug writeln("ERROR: dedented too far!");
+                writeln("ERROR: dedented too far!");
                 currentIndent = 0;
             }
         }
@@ -566,16 +355,14 @@ bool incIsCloseRequested() {
     Exit Inochi Creator
 */
 void incExit() {
-    done = true;
-
-    int w, h;
-    SDL_WindowFlags flags;
-    flags = SDL_GetWindowFlags(window);
-    SDL_GetWindowSize(window, &w, &h);
-    incSettingsSet("WinW", w);
-    incSettingsSet("WinH", h);
-    incSettingsSet!bool("WinMax", (flags & SDL_WINDOW_MAXIMIZED) > 0);
+    auto size = AppWindow.mainWindow.size;
+    AppSettings.set("WinW", size.width);
+    AppSettings.set("WinH", size.height);
+    AppSettings.set!bool("WinMax", (AppWindow.mainWindow.flags & SDL_WINDOW_MAXIMIZED) > 0);
     incReleaseLockfile();
+
+    // Request exit.
+    AppWindow.mainWindow.close();
 }
 
 /**

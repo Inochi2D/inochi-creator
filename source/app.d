@@ -8,6 +8,7 @@ import std.stdio;
 import std.string;
 import creator.core;
 import creator.core.settings;
+import creator.core.ui;
 import creator.utils.crashdump;
 import creator.panels;
 import creator.windows;
@@ -45,10 +46,9 @@ version(Windows) {
 int main(string[] args)
 {
     try {
-        incSettingsLoad();
         incLocaleInit();
-        if (incSettingsCanGet("lang")) {
-            string lang = incSettingsGet!string("lang");
+        if (AppSettings.has("lang")) {
+            string lang = AppSettings.get!string("lang", "C");
             auto entry = incLocaleGetEntryFor(lang);
             if (entry !is null) {
                 i18nLoadLanguage(entry.file);
@@ -77,7 +77,7 @@ int main(string[] args)
         inPostProcessingAddBasicLighting();
 
         // Open or create project
-        if (incSettingsGet!bool("hasDoneQuickSetup", false) && args.length > 1) incOpenProject(args[1]);
+        if (AppSettings.get!bool("hasDoneQuickSetup", false) && args.length > 1) incOpenProject(args[1]);
         else {
             incNewProject();
 
@@ -104,8 +104,9 @@ int main(string[] args)
         while(!incIsCloseRequested()) {
             incUpdate();
         }
-        incSettingsSave();
-        incFinalize();
+        
+        AppSettings.save();
+        AppWindow.mainWindow.close();
     } catch(Throwable ex) {
         debug {
             version(Windows) {

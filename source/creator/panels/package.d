@@ -41,7 +41,7 @@ protected:
 
         // Handle panel visibility settings save for closing tabs
         // and skipping content draw
-        if (wasVisible != visible) incSettingsSet(name~".visible", visible);
+        if (wasVisible != visible) AppSettings.set(name~".visible", visible);
         if (!drewContents) return;
 
         // Setup debug state and such.
@@ -89,7 +89,7 @@ public:
         // Workaround for the fact that panels are initialized in shared static this
         this.displayName_ = _(this.displayName_);
         if (incSettingsCanGet(this.name_~".visible")) {
-            visible = incSettingsGet!bool(this.name_~".visible");
+            visible = AppSettings.get!bool(this.name_~".visible");
             wasVisible = visible;
         }
 

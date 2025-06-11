@@ -211,7 +211,7 @@ protected:
                     incDummy(ImVec2(-64, 24));
                     igSameLine(0, 0);
                     if (igButton(__("Next"), ImVec2(64, 24))) {
-                        incSettingsSet!bool("hasDoneQuickSetup", true);
+                        AppSettings.set!bool("hasDoneQuickSetup", true);
                         step++;
                     }
                     break;
@@ -339,7 +339,7 @@ protected:
 
     override
     void onClose() {
-        if (step > 0) incSettingsSet!bool("hasDoneQuickSetup", true);
+        if (step > 0) AppSettings.set!bool("hasDoneQuickSetup", true);
         incDestroyWindowDrawList(shadowDrawList);
     }
 
@@ -356,7 +356,7 @@ public:
             inTexPremultiply(bannerLogoTex.data); 
             bannerLogo = new Texture(bannerLogoTex);
         }
-        if (!incSettingsGet!bool("hasDoneQuickSetup", false)) step = 0;
+        if (!AppSettings.get!bool("hasDoneQuickSetup", false)) step = 0;
 
         // Load UI scale
         tmpUIScale = cast(int)(incGetUIScale()*100);

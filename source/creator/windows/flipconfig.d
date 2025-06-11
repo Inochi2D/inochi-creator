@@ -27,7 +27,7 @@ import std.stdio;
     Binding between layer and node
 */
 @TypeId("FlipPair")
-class FlipPair : ISerializable {
+class FlipPair : ISerializable, IDeserializable {
     Node[2] parts;
     uint[2] uuids;
     string name;
@@ -43,19 +43,18 @@ class FlipPair : ISerializable {
         name = "%s <-> %s".format((parts[0] !is null)? parts[0].name: "", (parts[1] !is null)? parts[1].name: "");
     }
 
-    void serialize(S)(ref S serializer) {
-        auto state = serializer.structBegin();
-            serializer.putKey("uuid1");
-            serializer.putValue(parts[0]? parts[0].uuid: InInvalidUUID);
-            serializer.putKey("uuid2");
-            serializer.putValue(parts[1]? parts[1].uuid: InInvalidUUID);
-        serializer.structEnd(state);
+    override
+    void onSerialize(ref JSONValue object) {
+        super.onSerialize(object);
+        object["uuid1"] = this.uuids[0];
+        object["uuid2"] = this.uuids[1];
     }
 
-    SerdeException deserializeFromFghj(Fghj data) {
-        if (auto exc = data["uuid1"].deserializeValue(this.uuids[0])) return exc;
-        if (auto exc = data["uuid2"].deserializeValue(this.uuids[1])) return exc;
-        return null;
+    override
+    void onDeserialize(ref JSONValue object) {
+        object.tryGetRef(this.uuids[0], "uuid1");
+        object.tryGetRef(this.uuids[1], "uuid2");
+        super.onDeserialize(object);
     }
 
     void reconstruct(Puppet puppet) { }

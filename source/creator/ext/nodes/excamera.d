@@ -9,6 +9,7 @@
 module creator.ext.nodes.excamera;
 import inochi2d.core.nodes.part;
 import inochi2d.core.nodes;
+import inochi2d.core.math;
 import inochi2d.core;
 import inochi2d.fmt.serialize;
 import std.stdio : writeln;
@@ -21,19 +22,15 @@ protected:
     vec2 viewport = vec2(1920, 1080);
 
     override
-    void serializeSelf(ref InochiSerializer serializer) {
-        super.serializeSelf(serializer);
-        serializer.putKey("viewport");
-        serializer.serializeValue(viewport.vector);
+    void onSerialize(ref JSONValue object) {
+        super.onSerialize(object);
+        object["viewport"] = viewport.serialize();
     }
 
     override
-    SerdeException deserializeFromFghj(Fghj data) {
-        auto err = super.deserializeFromFghj(data);
-        if (err) return err;
-
-        if (!data["viewport"].isEmpty) data["viewport"].deserializeValue(viewport.vector);
-        return null;
+    void onDeserialize(ref JSONValue object) {
+        super.onDeserialize(object);
+        object.tryGetRef(viewport.vector, "viewport");
     }
 
     override

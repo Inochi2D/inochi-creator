@@ -457,7 +457,7 @@ struct Skyline {
         Returns:
             A new reactangle with the bounds.
     */
-    inrecti pack(vec2u size) {
+    inrecti pack(invec2u size) {
         if (size.x == 0 || size.y == 0)
             return inrecti.init;
         

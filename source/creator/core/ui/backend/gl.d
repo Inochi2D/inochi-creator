@@ -6,7 +6,7 @@
     
     Authors: Luna Nielsen
 */
-module creator.core.ui.gl;
+module creator.core.ui.backend.gl;
 import creator.core.ui;
 import bindbc.opengl;
 import i2d.imgui;

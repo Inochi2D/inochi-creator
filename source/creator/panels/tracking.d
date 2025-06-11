@@ -60,9 +60,9 @@ protected:
             if (trackingModeCheckbox("VMC", _("A reciever which uses your phone and associated app to track your body"), TrackingMode.VMC)) {
                 auto adaptorOptions = incTestGetAdaptorOptions();
 
-                string bindingIP = incSettingsGet("vmc_bind_ip", "0.0.0.0");
+                string bindingIP = AppSettings.get("vmc_bind_ip", "0.0.0.0");
                 if (incInputText(_("Bind Address"), avail.x/2, bindingIP, ImGuiInputTextFlags.None)) {
-                    incSettingsSet("vmc_bind_ip", bindingIP);
+                    AppSettings.set("vmc_bind_ip", bindingIP);
 
                     if (this.canParseAddr(bindingIP)) {
                         incSettingsSave();
@@ -72,9 +72,9 @@ protected:
                 }
                 incTooltip(_("The IP address that the VMC binding server should listen on, default 0.0.0.0"));
 
-                int bindingPort = incSettingsGet("vmc_bind_port", 39540);
+                int bindingPort = AppSettings.get("vmc_bind_port", 39540);
                 if (igInputInt(__("Port"), &bindingPort)) {
-                    incSettingsSet("vmc_bind_port", bindingPort);
+                    AppSettings.set("vmc_bind_port", bindingPort);
 
                     if (bindingPort > 1 && bindingPort < ushort.max) {
                         incSettingsSave();
@@ -87,9 +87,9 @@ protected:
 
             if (trackingModeCheckbox("VTube Studio", _("A reciever which uses the VTubeStudio iOS app"), TrackingMode.VTS)) {
                 
-                string bindingIP = incSettingsGet!string("vts_phone_ip");
+                string bindingIP = AppSettings.get!string("vts_phone_ip");
                 if (incInputText("iPhoneIP", _("iPhone IP"), avail.x/2, bindingIP, ImGuiInputTextFlags.None)) {
-                    incSettingsSet("vts_phone_ip", bindingIP);
+                    AppSettings.set("vts_phone_ip", bindingIP);
 
                     if (this.canParseAddr(bindingIP)) {
                         incSettingsSave();
@@ -101,9 +101,9 @@ protected:
             }
 
             if (trackingModeCheckbox("OpenSeeFace", _("A receiver which uses OpenSeeFace application"), TrackingMode.OSF)) {
-                string bindingIP = incSettingsGet("osf_bind_ip", "0.0.0.0");
+                string bindingIP = AppSettings.get("osf_bind_ip", "0.0.0.0");
                 if (incInputText("osfBindAddress", _("OSF Bind Address"), avail.x/2, bindingIP, ImGuiInputTextFlags.None)) {
-                    incSettingsSet("osf_bind_ip", bindingIP);
+                    AppSettings.set("osf_bind_ip", bindingIP);
 
                     if (this.canParseAddr(bindingIP)) {
                         incSettingsSave();
@@ -112,9 +112,9 @@ protected:
                     }
                 }
 
-                int bindingPort = incSettingsGet("osf_bind_port", 11573);
+                int bindingPort = AppSettings.get("osf_bind_port", 11573);
                 if (igInputInt(__("OSF Listen Port"), &bindingPort)) {
-                    incSettingsSet("osf_bind_port", bindingPort);
+                    AppSettings.set("osf_bind_port", bindingPort);
 
                     if (bindingPort > 1 && bindingPort < ushort.max) {
                         incSettingsSave();

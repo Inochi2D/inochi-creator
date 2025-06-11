@@ -257,7 +257,7 @@ void incSetDarkMode(bool darkMode) {
     style.Colors = darkMode ? DARK_MODE.Colors : LIGHT_MODE.Colors;
 
     // Set Dark mode setting
-    incSettingsSet("DarkMode", darkMode);
+    AppSettings.set("DarkMode", darkMode);
     isDarkMode = darkMode;
 }
 
@@ -267,4 +267,28 @@ void incSetDarkMode(bool darkMode) {
 bool incGetDarkMode() {
     auto style = igGetStyle();
     return style.Colors.ptr == DARK_MODE.Colors.ptr;
+}
+
+/**
+    A visual style for the application
+*/
+class VisualStyle {
+private:
+    ImGuiStyle[] imStyles;
+
+public:
+
+    /**
+        The name of the visual style.
+    */
+    string styleName;
+
+    /**
+        The underlying imgui style information
+    */
+    @property ImGuiStyle style() => imStyle;
+}
+
+struct StyleVariant {
+    
 }

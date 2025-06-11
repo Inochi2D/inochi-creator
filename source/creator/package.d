@@ -137,7 +137,7 @@ string incProjectPath() {
     Return a list of prior projects
 */
 string[] incGetPrevProjects() {
-    return incSettingsGet!(string[])("prev_projects");
+    return AppSettings.get!(string[])("prev_projects");
 }
 
 void incAddPrevProject(string path) {
@@ -156,7 +156,7 @@ void incAddPrevProject(string path) {
     if(projects.length > 10) projects.length = 10;
 
     // Then save.
-    incSettingsSet("prev_projects", projects);
+    AppSettings.set("prev_projects", projects);
     incSettingsSave();
 }
 
