@@ -6,7 +6,7 @@
 */
 module creator.widgets.progress;
 import creator.widgets;
-import inochi2d.math;
+import inmath;
 
 //
 //  BORROWED AND MODIFIED FROM

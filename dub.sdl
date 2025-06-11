@@ -12,6 +12,7 @@ dependency "facetrack-d" version="~>0.8.0"
 dependency "dcv:core" version="~>0.3.0"
 dependency "i18n-d" version="~>1.0.2"
 dependency "mir-linux-kernel" version="~>1.0.1"
+dependency "sdl-d" version="3.2.0-rc2"
 
 dependency "inochi2d" path="../inochi2d"
 dependency "i2d-imgui" path="../i2d-imgui"

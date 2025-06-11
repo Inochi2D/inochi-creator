@@ -7,7 +7,6 @@
 module creator.core.ui;
 
 public import creator.core.ui.window;
-public import creator.core.ui.settings;
 public import creator.core.ui.styling;
 public import creator.core.ui.msgbox;
 

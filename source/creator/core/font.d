@@ -5,6 +5,7 @@
     Authors: Luna Nielsen
 */
 module creator.core.font;
+import creator.core.ui.backend.hairetsu;
 import creator.core;
 import i2d.imgui;
 import core.stdc.stdlib : malloc;
@@ -70,6 +71,7 @@ struct FontEntry {
 void incInitFonts() {
     _incInitFontList();
     atlas = igGetIO().Fonts;
+    atlas.FontBuilderIO = GetBuilderForHairetsu();
         if (incSettingsGet!bool("useOpenDyslexic")) {
 
             // Use OpenDyslexic for Latin

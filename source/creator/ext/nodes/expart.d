@@ -12,7 +12,7 @@ import inochi2d.core.nodes;
 import inochi2d.core;
 import inochi2d.fmt.serialize;
 import std.stdio : writeln;
-import inochi2d.math;
+import inmath;
 
 @TypeId("Part")
 class ExPart : Part {

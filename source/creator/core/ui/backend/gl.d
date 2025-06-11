@@ -8,7 +8,6 @@
 */
 module creator.core.ui.gl;
 import creator.core.ui;
-import creator.core.dpi;
 import bindbc.opengl;
 import i2d.imgui;
 import core.stdc.stdio;

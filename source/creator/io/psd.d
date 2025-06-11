@@ -9,7 +9,7 @@ import creator;
 import creator.ext;
 import creator.core.tasks;
 import creator.widgets.dialog;
-import inochi2d.math;
+import inmath;
 import inochi2d;
 import psd;
 import i18n;

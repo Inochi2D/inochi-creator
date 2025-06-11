@@ -6,7 +6,7 @@
 */
 module creator.widgets.viewport;
 import creator.widgets;
-import inochi2d.math;
+import inmath;
 
 private {
     struct ViewportToolAreaData {

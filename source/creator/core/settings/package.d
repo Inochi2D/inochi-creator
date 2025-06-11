@@ -1,8 +1,9 @@
-module creator.core.ui.settings;
-import sdl;
+module creator.core.settings;
 import std.json;
 import std.file;
 import creator.core.ui.msgbox;
+
+public import creator.core.settings.cfg;
 
 enum APP_LOAD_ERROR_STRING = "Oops! Your settings.json file is corrupted. Inochi Creator will load the default settings.
 The corrupted settings file has been moved to '%s'.

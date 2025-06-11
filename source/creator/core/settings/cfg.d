@@ -1,4 +1,4 @@
-module creator.core.ui.settings.cfg;
+module creator.core.settings.cfg;
 import std.path;
 import std.process;
 import std.file : getcwd, mkdirRecurse, exists;

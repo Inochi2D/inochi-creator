@@ -25,7 +25,7 @@ private:
     //
 
     static BackendData* getBackendData() {
-        return ImGui_creator.core.ui_GetBackendData();
+        return ImGui_CreatorGetBackendData();
     }
 
     //
@@ -98,8 +98,8 @@ private:
 
         // Setup DPI Awareness.
         version(Windows) {
-            import creator.core.ui.win32 : creator.core.uiSetWin32DPIAwareness;
-            creator.core.uiSetWin32DPIAwareness();
+            import creator.core.ui.win32 : uiSetWin32DPIAwareness;
+            uiSetWin32DPIAwareness();
         }
     }
 
@@ -119,12 +119,12 @@ private:
         version(OSX) io.ConfigMacOSXBehaviors = true;
 
         // Finally setup the UI library.
-        ImGui_Implcreator.core.ui_Init(appWindow);
+        ImGui_ImplInit(appWindow);
         incGLBackendInit(null);
     }
 
     void shutdown() {
-        ImGui_Implcreator.core.ui_Shutdown();
+        ImGui_ImplShutdown();
         igShutdown();
         this.globalIgContext = null;
         SDL_Quit();

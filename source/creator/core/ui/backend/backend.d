@@ -70,7 +70,7 @@ struct BackendData {
 /**
     Gets the backend window data.
 */
-BackendData* ImGui_creator.core.ui_GetBackendData(ImGuiContext* ctx = null) {
+BackendData* ImGui_CreatorGetBackendData(ImGuiContext* ctx = null) {
     if (!ctx)
         ctx = igGetCurrentContext();
     return ctx ? cast(BackendData*)igGetIO().BackendPlatformUserData : null;
@@ -81,16 +81,16 @@ BackendData* ImGui_creator.core.ui_GetBackendData(ImGuiContext* ctx = null) {
 //
 
 // Gets the text in the clipboard for the window for the given context.
-const(char)* ImGui_Implcreator.core.ui_GetClipboardText(ImGuiContext* ctx) {
-    if (auto bd = ImGui_creator.core.ui_GetBackendData(ctx)) {
+const(char)* ImGui_ImplGetClipboardText(ImGuiContext* ctx) {
+    if (auto bd = ImGui_CreatorGetBackendData(ctx)) {
         return bd.clipboardData.ptr;
     }
     return null;
 }
 
 // Sets the text in the clipboard for the window for the given context.
-void ImGui_Implcreator.core.ui_SetClipboardText(ImGuiContext* ctx, const(char)* text) {
-    if (auto bd = ImGui_creator.core.ui_GetBackendData(ctx)) {
+void ImGui_ImplSetClipboardText(ImGuiContext* ctx, const(char)* text) {
+    if (auto bd = ImGui_CreatorGetBackendData(ctx)) {
         bd.clipboardText = text;
     }
 }
@@ -99,8 +99,8 @@ void ImGui_Implcreator.core.ui_SetClipboardText(ImGuiContext* ctx, const(char)* 
 //              INPUT
 //
 
-void ImGui_Implcreator.core.ui_PlatformSetImeData(ImGuiContext* ctx, ImGuiViewport* viewport, ImGuiPlatformImeData* data) {
-    WindowData* bd = ImGui_creator.core.ui_GetBackendData(ctx);
+void ImGui_ImplPlatformSetImeData(ImGuiContext* ctx, ImGuiViewport* viewport, ImGuiPlatformImeData* data) {
+    WindowData* bd = ImGui_CreatorGetBackendData(ctx);
     SDL_WindowID id = viewport.PlatformHandle;
     SDL_Window* handle = SDL_GetWindowFromID(id);
 
@@ -124,7 +124,7 @@ void ImGui_Implcreator.core.ui_PlatformSetImeData(ImGuiContext* ctx, ImGuiViewpo
         SDL_StartTextInput(handle);
 }
 
-ImGuiKey ImGui_Implcreator.core.ui_KeyEventToImGuiKey(SDL_Keycode keycode, SDL_Scancode scancode) {
+ImGuiKey ImGui_ImplKeyEventToImGuiKey(SDL_Keycode keycode, SDL_Scancode scancode) {
     // Keypad doesn't have individual key values in SDL3
     switch (scancode) {
     case SDL_Scancode.SDL_SCANCODE_KP_0:
@@ -397,7 +397,7 @@ ImGuiKey ImGui_Implcreator.core.ui_KeyEventToImGuiKey(SDL_Keycode keycode, SDL_S
     return ImGuiKey.None;
 }
 
-void ImGui_Implcreator.core.ui_UpdateKeyModifiers(SDL_Keymod sdlKeyMods) {
+void ImGui_ImplUpdateKeyModifiers(SDL_Keymod sdlKeyMods) {
     ImGuiIO io = igGetIO();
     ImGuiIO_AddKeyEvent(io, ImGuiMod.Ctrl, (sdlKeyMods & SDL_Keymod.SDL_KMOD_CTRL) != 0);
     ImGuiIO_AddKeyEvent(io, ImGuiMod.Shift, (sdlKeyMods & SDL_Keymod.SDL_KMOD_SHIFT) != 0);
@@ -405,19 +405,19 @@ void ImGui_Implcreator.core.ui_UpdateKeyModifiers(SDL_Keymod sdlKeyMods) {
     ImGuiIO_AddKeyEvent(io, ImGuiMod.Super, (sdlKeyMods & SDL_Keymod.SDL_KMOD_GUI) != 0);
 }
 
-ImGuiViewport* ImGui_Implcreator.core.ui_GetViewportForWindowID(SDL_WindowID id) {
-    BackendData* bd = ImGui_creator.core.ui_GetBackendData(ctx);
+ImGuiViewport* ImGui_ImplGetViewportForWindowID(SDL_WindowID id) {
+    BackendData* bd = ImGui_CreatorGetBackendData(ctx);
     return (id == bd.mainWindow.id) ? igGetMainViewport() : null;
 }
 
-bool ImGui_Implcreator.core.ui_ProcessEvent(const(SDL_Event)* event) {
-    BackendData* bd = ImGui_creator.core.ui_GetBackendData();
-    assert(bd !is null, "Context or backend not initialized! Did you call ImGui_Implcreator.core.ui_Init()?");
+bool ImGui_ImplProcessEvent(const(SDL_Event)* event) {
+    BackendData* bd = ImGui_CreatorGetBackendData();
+    assert(bd !is null, "Context or backend not initialized! Did you call ImGui_ImplInit()?");
     ImGuiIO* io = igGetIOEx();
 
     switch (event.type) {
     case SDL_EventType.SDL_EVENT_MOUSE_MOTION:
-        if (ImGui_Implcreator.core.ui_GetViewportForWindowID(event.motion.windowID) is null)
+        if (ImGui_ImplGetViewportForWindowID(event.motion.windowID) is null)
             return false;
 
         ImVec2 mousePos = {cast(float) event.motion.x, cast(float) event.motion.y};
@@ -429,7 +429,7 @@ bool ImGui_Implcreator.core.ui_ProcessEvent(const(SDL_Event)* event) {
         return true;
 
     case SDL_EventType.SDL_EVENT_MOUSE_WHEEL:
-        if (ImGui_Implcreator.core.ui_GetViewportForWindowID(event.wheel.windowID) is null)
+        if (ImGui_ImplGetViewportForWindowID(event.wheel.windowID) is null)
             return false;
 
         ImVec2 wheel = {cast(float)-event.wheel.x, cast(float) event.wheel.y};
@@ -442,7 +442,7 @@ bool ImGui_Implcreator.core.ui_ProcessEvent(const(SDL_Event)* event) {
 
     case SDL_EventType.SDL_EVENT_MOUSE_BUTTON_DOWN:
     case SDL_EventType.SDL_EVENT_MOUSE_BUTTON_UP:
-        if (ImGui_Implcreator.core.ui_GetViewportForWindowID(event.button.windowID) is null)
+        if (ImGui_ImplGetViewportForWindowID(event.button.windowID) is null)
             return false;
         int mouseButton = -1;
         if (event.button.button == SDL_MouseButtonFlags.SDL_BUTTON_LEFT) {
@@ -481,7 +481,7 @@ bool ImGui_Implcreator.core.ui_ProcessEvent(const(SDL_Event)* event) {
         return true;
 
     case SDL_EventType.SDL_EVENT_TEXT_INPUT:
-        if (ImGui_Implcreator.core.ui_GetViewportForWindowID(event.text.windowID) is null)
+        if (ImGui_ImplGetViewportForWindowID(event.text.windowID) is null)
             return false;
         
         ImGuiIO_AddInputCharactersUTF8(io, event.text.text);
@@ -489,18 +489,18 @@ bool ImGui_Implcreator.core.ui_ProcessEvent(const(SDL_Event)* event) {
 
     case SDL_EventType.SDL_EVENT_KEY_DOWN:
     case SDL_EventType.SDL_EVENT_KEY_UP:
-        if (ImGui_Implcreator.core.ui_GetViewportForWindowID(event.key.windowID) is null)
+        if (ImGui_ImplGetViewportForWindowID(event.key.windowID) is null)
             return false;
 
-        ImGuiKey key = ImGui_Implcreator.core.ui_KeyEventToImGuiKey(event.key.key, event.key.scancode);
+        ImGuiKey key = ImGui_ImplKeyEventToImGuiKey(event.key.key, event.key.scancode);
 
-        ImGui_Implcreator.core.ui_UpdateKeyModifiers(cast(SDL_Keymod) event.key.mod);
+        ImGui_ImplUpdateKeyModifiers(cast(SDL_Keymod) event.key.mod);
         ImGuiIO_AddKeyEvent(io, key, (event.type == SDL_EVENT_KEY_DOWN));
         ImGuiIO_SetKeyEventNativeData(io, key, event.key.key, event.key.scancode, event.key.scancode);
         return true;
 
     case SDL_EventType.SDL_EVENT_WINDOW_MOUSE_ENTER:
-        if (ImGui_Implcreator.core.ui_GetViewportForWindowID(event.window.windowID) is null)
+        if (ImGui_ImplGetViewportForWindowID(event.window.windowID) is null)
             return false;
         
         bd.activeWindowId = event.window.windowID;
@@ -508,15 +508,15 @@ bool ImGui_Implcreator.core.ui_ProcessEvent(const(SDL_Event)* event) {
         return true;
 
     case SDL_EventType.SDL_EVENT_WINDOW_MOUSE_LEAVE:
-        if (ImGui_Implcreator.core.ui_GetViewportForWindowID(event.window.windowID) is null)
+        if (ImGui_ImplGetViewportForWindowID(event.window.windowID) is null)
             return false;
         
         bd.pendingLeaveFrame = igGetFrameCount() + 1;
         return true;
 
     case SDL_EventType.SDL_EVENT_WINDOW_FOCUS_GAINED:
-    case SDL_EventType.ImGui_Implcreator.core.ui_GetViewportForWindowID:
-        if (ImGui_Implcreator.core.ui_GetViewportForWindowID(event.window.windowID) is null)
+    case SDL_EventType.ImGui_ImplGetViewportForWindowID:
+        if (ImGui_ImplGetViewportForWindowID(event.window.windowID) is null)
             return false;
 
         ImGuiIO_AddFocusEvent(io, event.type == SDL_EventType.SDL_EVENT_WINDOW_FOCUS_GAINED);
@@ -530,7 +530,7 @@ bool ImGui_Implcreator.core.ui_ProcessEvent(const(SDL_Event)* event) {
 //          INITIALIZATION
 //
 
-void ImGui_Implcreator.core.ui_SetupPlatformHandles(ImGuiViewport* viewport, SDL_Window* window) {
+void ImGui_ImplSetupPlatformHandles(ImGuiViewport* viewport, SDL_Window* window) {
     viewport.PlatformHandle = cast(void*)SDL_GetWindowID(window);
 
     version(Windows) {
@@ -542,7 +542,7 @@ void ImGui_Implcreator.core.ui_SetupPlatformHandles(ImGuiViewport* viewport, SDL
     }
 }
 
-bool ImGui_Implcreator.core.ui_Init(AppWindow window) {
+bool ImGui_ImplInit(AppWindow window) {
     ImGuiIO* io = igGetIO();
     assert(io.BackendPlatformUserData is null, "Already initialized a platform backend!");
 
@@ -567,9 +567,9 @@ bool ImGui_Implcreator.core.ui_Init(AppWindow window) {
     }
 
     ImGuiPlatformIO* platformIO = igGetPlatformIO();
-    platformIO.Platform_SetClipboardTextFn = &ImGui_Implcreator.core.ui_SetClipboardText;
-    platformIO.Platform_GetClipboardTextFn = &ImGui_Implcreator.core.ui_GetClipboardText;
-    platformIO.Platform_SetImeDataFn = &ImGui_Implcreator.core.ui_PlatformSetImeData;
+    platformIO.Platform_SetClipboardTextFn = &ImGui_ImplSetClipboardText;
+    platformIO.Platform_GetClipboardTextFn = &ImGui_ImplGetClipboardText;
+    platformIO.Platform_SetImeDataFn = &ImGui_ImplPlatformSetImeData;
     platformIO.Platform_OpenInShellFn = (ImGuiContext*, const char* url) { return SDL_OpenURL(url) == 0; };
 
     // Load mouse cursors
@@ -588,7 +588,7 @@ bool ImGui_Implcreator.core.ui_Init(AppWindow window) {
     // Set platform dependent data in viewport
     // Our mouse update function expect PlatformHandle to be filled for the main viewport
     ImGuiViewport* mainViewport = igGetMainViewport();
-    ImGui_Implcreator.core.ui_SetupPlatformHandles(mainViewport, window);
+    ImGui_ImplSetupPlatformHandles(mainViewport, window);
 
     // From 2.0.5: Set SDL hint to receive mouse click events on window focus, otherwise SDL doesn't emit the event.
     // Without this, when clicking to gain focus, our widgets wouldn't activate even though they showed as hovered.
@@ -602,8 +602,8 @@ bool ImGui_Implcreator.core.ui_Init(AppWindow window) {
     return true;
 }
 
-void ImGui_Implcreator.core.ui_Shutdown() {
-    if (BackendData* bd = ImGui_creator.core.ui_GetBackendData()) {
+void ImGui_ImplShutdown() {
+    if (BackendData* bd = ImGui_CreatorGetBackendData()) {
         ImGuiIO* io = igGetIO();
 
         bd.clipboardData.clear();

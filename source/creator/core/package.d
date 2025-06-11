@@ -30,10 +30,9 @@ public import i2d.imgui;
 public import i2d.imgui.ogl;
 public import creator.core.settings;
 public import creator.core.actionstack;
+public import creator.core.settings;
 public import creator.core.tasks;
-public import creator.core.path;
 public import creator.core.font;
-public import creator.core.dpi;
 import i18n;
 
 version(OSX) {
