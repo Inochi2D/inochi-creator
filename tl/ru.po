@@ -49,7 +49,7 @@ msgstr ""
 "Спасибо за загрузку Inochi Creator!\n"
 "Разработка программного обеспечения - это дорогостоящий процесс, и то же "
 "самое касается Inochi Creator.\n"
-"Любезно рассмотрите возможность внести свой вклад в тфинансирование "
+"Любезно рассмотрите возможность внести свой вклад в финансирование "
 "разработки!\n"
 "\n"
 "Чтобы удалить это сообщение, [Купите копию сегодня!](https://inochi2d.com)\n"
@@ -246,7 +246,7 @@ msgstr "100% (Заблокирован)"
 #. Eg. this would be "Dansk" for Danish and "日本語" for Japanese.
 #: source/creator/core/i18n.d:18
 msgid "LANG_NAME"
-msgstr ""
+msgstr "Русский"
 
 #: source/creator/core/package.d:268
 msgid "(Debug Mode)"
@@ -451,7 +451,7 @@ msgstr "Размытие текстур завершено."
 #: source/creator/panels/actionhistory.d:26
 #: source/creator/windows/settings.d:148
 msgid "Undo History"
-msgstr "История отмен"
+msgstr "История изменений"
 
 #: source/creator/panels/actionhistory.d:56
 msgid "Clear History"
