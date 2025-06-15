@@ -435,6 +435,11 @@ public:
     }
 
     /**
+        Called when the window is updated.
+    */
+    abstract void onUpdate(float deltaTime, long time);
+
+    /**
         Applies the default UI layout
     */
     void applyDefaultLayout() {
