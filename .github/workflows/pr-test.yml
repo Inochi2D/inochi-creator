@@ -6,7 +6,7 @@ name: Pull Request Test
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "v0_8" ]
 
 permissions:
   contents: read
@@ -14,7 +14,7 @@ permissions:
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v4.1.7
@@ -28,10 +28,10 @@ jobs:
       
     - name: "Clone dependencies & set versions"
       run: |
-        git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules
-        git clone https://github.com/Inochi2D/inochi2d.git
-        dub add-local i2d-imgui/ "0.8.0"
-        dub add-local inochi2d/ "0.8.5"
+        git clone --branch v0.8.1 --depth 1 --recurse-submodules --shallow-submodules https://github.com/Inochi2D/i2d-imgui.git
+        git clone --branch v0.8.7 --depth 1 https://github.com/Inochi2D/inochi2d.git
+        dub add-local i2d-imgui/ "0.8.1"
+        dub add-local inochi2d/ "0.8.7"
 
     - name: 'Build'
       run: |
@@ -47,7 +47,7 @@ jobs:
 
     - name: "Upload Artifacts"  
       if: success()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: inochi-creator
         path: out/inochi-creator

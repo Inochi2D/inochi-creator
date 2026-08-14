@@ -83,15 +83,24 @@ jobs:
             os: windows-latest
 
           - platform: 'linux'
-            os: ubuntu-20.04
+            os: ubuntu-22.04
       
     steps:
     - uses: actions/checkout@v4
       with:
         ref: '${{ inputs.target_ref }}'
         
-    # Setup D Compiler
-    - uses: dlang-community/setup-dlang@v1.4.0
+    # LDC 1.41 contains the macOS 15.4 TLS runtime fix. Newer compiler releases
+    # need to be validated against Creator's Objective-C bridge before updating.
+    - name: 'Setup D compiler (macOS)'
+      if: ${{ matrix.config.platform == 'osx' }}
+      uses: dlang-community/setup-dlang@v1.4.0
+      with:
+        compiler: ldc-1.41.0
+
+    - name: 'Setup D compiler'
+      if: ${{ matrix.config.platform != 'osx' }}
+      uses: dlang-community/setup-dlang@v1.4.0
       with:
         compiler: ldc-latest
 
@@ -109,22 +118,11 @@ jobs:
 
     - name: 'Preparing build... (macOS)'
       if: ${{ matrix.config.platform == 'osx' }}
+      env:
+        MACOSX_DEPLOYMENT_TARGET: '12.0'
       run: |
-        export HOMEBREW_NO_INSTALL_CLEANUP=1
-        export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
-
-        # Remove conflicting brew items
-        brew remove --ignore-dependencies libpng brotli harfbuzz
-
-        # Delete fake harfbuzz if need be
-        if [ -f "/usr/local/lib/libharfbuzz.dylib" ]; then
-          sudo rm -r /usr/local/lib/libharfbuzz.dylib
-        fi
-
-        # And the .a for it as well
-        if [ -f "/usr/local/lib/libharfbuzz.a" ]; then
-          sudo rm -r /usr/local/lib/libharfbuzz.a
-        fi
+        ldc2 --version
+        ./build-aux/osx/smoke-test-runtime.sh ldc2
 
     - name: 'Preparing build... (Windows)'
       if: ${{ matrix.config.platform == 'win32' }}
@@ -134,9 +132,9 @@ jobs:
       
     - name: "Clone dependencies & set versions"
       run: |
-        git clone https://github.com/Inochi2D/i2d-imgui.git --recurse-submodules
-        git clone https://github.com/Inochi2D/dcv-i2d
-        dub add-local i2d-imgui/ "0.8.0"
+        git clone --branch v0.8.1 --depth 1 --recurse-submodules --shallow-submodules https://github.com/Inochi2D/i2d-imgui.git
+        git clone --depth 1 https://github.com/Inochi2D/dcv-i2d
+        dub add-local i2d-imgui/ "0.8.1"
         dub add-local dcv-i2d/ "0.3.0"
 
     - name: 'Update version info'
@@ -148,17 +146,21 @@ jobs:
     - name: 'Build (OSX Universal)'
       if: ${{ matrix.config.platform == 'osx' }}
       id: osx-build
+      env:
+        MACOSX_DEPLOYMENT_TARGET: '12.0'
+        CMAKE_POLICY_VERSION_MINIMUM: '3.5'
+        CMAKE_TOOLCHAIN_FILE: '${{ github.workspace }}/build-aux/osx/universal-toolchain.cmake'
       run: |
         dub build --config=meta
 
         # First build ARM64 version...
         echo "Building arm64 binary..."
-        dub build --build=${{ inputs.build_type }} --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }} --arch=arm64-apple-macos
+        dub build --build=${{ inputs.build_type }} --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }} --arch=arm64-apple-macosx12.0.0
         mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-arm64"
 
         # Then the X86_64 version...
         echo "Building x86_64 binary..."
-        dub build --build=${{ inputs.build_type }} --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }} --arch=x86_64-apple-macos
+        dub build --build=${{ inputs.build_type }} --compiler=ldc2 --config=${{ matrix.config.platform }}-${{ inputs.variant }} --arch=x86_64-apple-macosx12.0.0
         mv "out/Inochi Creator.app/Contents/MacOS/inochi-creator" "out/Inochi Creator.app/Contents/MacOS/inochi-creator-x86_64"
 
         # Glue them together with lipo
@@ -172,6 +174,9 @@ jobs:
         # Bundle
         echo "Bundling up to app"
         ./build-aux/osx/osxbundle.sh
+
+        echo "Validating app bundle"
+        ./build-aux/osx/validate-bundle.sh
 
     - name: 'Build (Windows)'
       if: ${{ matrix.config.platform == 'win32' }}
