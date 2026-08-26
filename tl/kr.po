@@ -1,0 +1,167 @@
+# Inochi Creator Korean Translation.
+msgid ""
+msgstr ""
+"Project-Id-Version: Inochi Creator\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-09-19 20:44+0200\n"
+"PO-Revision-Date: 2026-08-26 18:00+0900\n"
+"Last-Translator: 신령\ <ssinryeong@gmail.com>"
+"Language-Team: Korean\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: source/app.d:95
+msgid "Warning!"
+msgstr "경고!"
+
+#: source/app.d:96
+msgid ""
+"You're running a nightly build of Inochi Creator!\n"
+"Inochi Creator may crash unexpectedly and you will likely encounter bugs.\n"
+"Make sure to save and back up your work often!"
+msgstr ""
+"Inochi Creator의 나이틀리(Nightly) 빌드를 실행 중입니다!\n"
+"프로그램이 예기치 않게 종료되거나 버그가 발생할 수 있습니다.\n"
+"작업물을 자주 저장하고 백업하세요!"
+
+#: source/app.d:103
+msgid "Thank you!"
+msgstr "감사합니다!"
+
+#: source/app.d:104
+msgid ""
+"Thank you for downloading Inochi Creator!\n"
+"Software is expensive to create and the same goes for Inochi Creator.\n"
+"Kindly consider chipping in to fund the development!\n"
+"\n"
+"To remove this nagscreen, [buy a copy today!](https://inochi2d.com)"
+msgstr ""
+"Inochi Creator를 다운로드해주셔서 감사합니다!\n"
+"소프트웨어 개발에는 많은 비용이 듭니다.\n"
+"개발을 후원해주시면 큰 힘이 됩니다!\n"
+"\n"
+"이 화면을 보지 않으려면, [정식 버전을 구매하세요!](https://inochi2d.com)"
+
+#: source/creator/actions/binding.d:74
+#, c-format
+msgid "Added binding %s"
+msgstr "바인딩 %s 추가됨"
+
+#: source/creator/actions/binding.d:76
+#, c-format
+msgid "Removed binding %s"
+msgstr "바인딩 %s 제거됨"
+
+#: source/creator/actions/drawable.d:88
+#, c-format
+msgid "Changed drawable mesh of %s"
+msgstr "%s의 드로어블 메쉬 변경됨"
+
+#: source/creator/actions/mesh.d:65
+#, c-format
+msgid "Mesh %s was edited."
+msgstr "메쉬 %s이(가) 편집되었습니다."
+
+#: source/creator/actions/node.d:134 source/creator/actions/node.d:143
+#, c-format
+msgid "Created %s"
+msgstr "%s 생성됨"
+
+#: source/creator/actions/node.d:135
+#, c-format
+msgid "Deleted %s"
+msgstr "%s 삭제됨"
+
+#: source/creator/actions/node.d:276 source/creator/actions/node.d:283
+msgid "Enabled"
+msgstr "활성화됨"
+
+#: source/creator/actions/node.d:276 source/creator/actions/node.d:283
+msgid "Disabled"
+msgstr "비활성화됨"
+
+#: source/creator/core/i18n.d:18
+msgid "LANG_NAME"
+msgstr "한국어"
+
+#: source/creator/panels/inspector.d:125
+msgid "Inspector"
+msgstr "인스펙터"
+
+#: source/creator/panels/inspector.d:201
+msgid "Name"
+msgstr "이름"
+
+#: source/creator/panels/inspector.d:208
+msgid "Artist(s)"
+msgstr "아티스트"
+
+#: source/creator/panels/inspector.d:215
+msgid "Rigger(s)"
+msgstr "리거"
+
+#: source/creator/panels/inspector.d:261
+msgid "Gravity"
+msgstr "중력"
+
+#: source/creator/panels/inspector.d:298 source/creator/panels/inspector.d:1548
+msgid "Transform"
+msgstr "변형(Transform)"
+
+#: source/creator/panels/inspector.d:314 source/creator/panels/inspector.d:1563
+msgid "Translation"
+msgstr "위치"
+
+#: source/creator/panels/inspector.d:404 source/creator/panels/inspector.d:1600
+msgid "Rotation"
+msgstr "회전"
+
+#: source/creator/panels/inspector.d:476 source/creator/panels/inspector.d:1632
+msgid "Scale"
+msgstr "크기"
+
+#: source/creator/panels/inspector.d:804 source/creator/panels/inspector.d:1016
+msgid "Blending"
+msgstr "블렌딩"
+
+#: source/creator/panels/inspector.d:809
+msgid "Normal"
+msgstr "보통(Normal)"
+
+#: source/creator/panels/inspector.d:813
+msgid "Multiply"
+msgstr "곱하기(Multiply)"
+
+#: source/creator/panels/inspector.d:816
+msgid "Screen"
+msgstr "스크린(Screen)"
+
+#: source/creator/panels/nodes.d:612
+msgid "Nodes"
+msgstr "노드"
+
+#: source/creator/panels/parameters.d:1269
+msgid "Parameters"
+msgstr "파라미터"
+
+#: source/creator/widgets/mainmenu.d:127
+msgid "File"
+msgstr "파일"
+
+#: source/creator/widgets/mainmenu.d:132
+msgid "Open"
+msgstr "열기"
+
+#: source/creator/widgets/mainmenu.d:163
+msgid "Save"
+msgstr "저장"
+
+#: source/creator/widgets/mainmenu.d:338
+msgid "Undo"
+msgstr "실행 취소"
+
+#: source/creator/widgets/mainmenu.d:339
+msgid "Redo"
+msgstr "다시 실행"
