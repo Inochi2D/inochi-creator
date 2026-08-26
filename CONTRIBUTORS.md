@@ -54,6 +54,9 @@
   [Grillo](https://vt.social/@grillo_delmal)
   [Anasu](https://vt.social/@anasu)
   [Yukusai](https://twitter.com/p_yukusai)
+### 한국어
+  [신령](https://x.com/Sinryeong_San)
+  [ddr4](https://x.com/ddr4_1031gb)
 
 ## Technology Used
   ImGui
