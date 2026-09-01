@@ -7,6 +7,7 @@
 module creator.viewport.model.deform;
 import creator.viewport.common.mesh;
 import creator.viewport.common.mesheditor;
+import creator.viewport.common.mesheditor.tools.pathdeform;
 import creator.widgets.tooltip;
 import creator.core.input;
 import inochi2d.core.dbg;
@@ -19,6 +20,16 @@ import i18n;
 private {
     IncMeshEditor editor;
     Drawable selected = null;
+
+    void resetPathDeformTarget(IncMeshEditorOne meshEditor) {
+        auto pathTool = cast(PathDeformTool)meshEditor.getTool();
+        if (pathTool is null || pathTool.getMode() != PathDeformTool.Mode.Transform)
+            return;
+
+        auto path = pathTool.path;
+        if (path !is null && path.target !is null)
+            meshEditor.createPathTarget();
+    }
 }
 
 void incViewportNodeDeformNotifyParamValueChanged() {
@@ -47,6 +58,7 @@ void incViewportNodeDeformNotifyParamValueChanged() {
                     e.applyOffsets(binding.vertexOffsets[]);
                 }
                 e.adjustPathTransform();
+                resetPathDeformTarget(e);
             }
         }
     } else {
